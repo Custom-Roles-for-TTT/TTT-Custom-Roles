@@ -12,7 +12,7 @@ local StringUpper = string.upper
 -- CONVARS --
 -------------
 
-local hivemind_vision_enable = GetConVar("ttt_hivemind_vision_enable")
+local hivemind_vision_enabled = GetConVar("ttt_hivemind_vision_enabled")
 local hivemind_friendly_fire = GetConVar("ttt_hivemind_friendly_fire")
 local hivemind_join_heal_pct = GetConVar("ttt_hivemind_join_heal_pct")
 local hivemind_regen_timer = GetConVar("ttt_hivemind_regen_timer")
@@ -128,7 +128,7 @@ end
 
 AddHook("TTTUpdateRoleState", "HiveMind_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    hivemind_vision = hivemind_vision_enable:GetBool()
+    hivemind_vision = hivemind_vision_enabled:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -216,12 +216,12 @@ AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", function(role, ti
 
         html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " also has a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>shared pool of credits</span> -- gaining or spending credits affects the collective.</span>"
 
-        if hivemind_vision_enable:GetBool() then
+        if hivemind_vision_enabled:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>To help identify other members of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ", they are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>highlighted with a visible glow</span>.</span>"
         end
 
         if hivemind_friendly_fire:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful thought! Members of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>CAN damage eachother</span> so watch where you're shooting.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful though! Members of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>CAN damage eachother</span> so watch where you're shooting.</span>"
         end
 
         return html

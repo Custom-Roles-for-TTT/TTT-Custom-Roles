@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - Table Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Table Methods</h1>
         <p>Methods created to help with the manipulation of tables</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="tableexcludedkeystbl-excludes" href="#tableexcludedkeystbl-excludes">table.ExcludedKeys(tbl, excludes)</a></h3>
         <p>
             Returns new table that contains the keys not present as values in in the given exclude table.<br>
@@ -84,5 +90,6 @@
             <li><em>excludes</em> - Table of values to exclude from the union. (Optional)</li>
         </ul>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

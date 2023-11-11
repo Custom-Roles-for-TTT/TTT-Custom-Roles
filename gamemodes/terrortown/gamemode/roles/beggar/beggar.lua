@@ -31,10 +31,19 @@ local beggar_respawn_delay = GetConVar("ttt_beggar_respawn_delay")
 local beggar_respawn_change_role = GetConVar("ttt_beggar_respawn_change_role")
 local beggar_scan = GetConVar("ttt_beggar_scan")
 local beggar_scan_time = GetConVar("ttt_beggar_scan_time")
+local beggar_announce_delay = GetConVar("ttt_beggar_announce_delay")
 
 -------------------
 -- ROLE TRACKING --
 -------------------
+
+local function AnnounceTeamChange(ply, role)
+    for _, v in ipairs(GetAllPlayers()) do
+        if v ~= ply and v:ShouldRevealBeggar(ply) then
+            v:QueueMessage(MSG_PRINTBOTH, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
+        end
+    end
+end
 
 hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
     if not IsValid(wep) or not IsPlayer(ply) then return end
@@ -55,10 +64,14 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
         ply:QueueMessage(MSG_PRINTBOTH, "You have joined the " .. ROLE_STRINGS[role] .. " team")
         timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
 
-        for _, v in ipairs(GetAllPlayers()) do
-            if v ~= ply and v:ShouldRevealBeggar(ply) then
-                v:QueueMessage(MSG_PRINTBOTH, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
-            end
+        local announceDelay = beggar_announce_delay:GetInt()
+        if announceDelay > 0 then
+            timer.Create(ply:Nick() .. "BeggarAnnounce", announceDelay, 1, function()
+                if not IsPlayer(ply) then return end
+                AnnounceTeamChange(ply, role)
+            end)
+        else
+            AnnounceTeamChange(ply, role)
         end
 
         net.Start("TTT_BeggarConverted")
@@ -76,6 +89,7 @@ hook.Add("TTTPrepareRound", "Beggar_PrepareRound", function()
         v:SetNWBool("WasBeggar", false)
         v:SetNWBool("BeggarIsRespawning", false)
         timer.Remove(v:Nick() .. "BeggarRespawn")
+        timer.Remove(v:Nick() .. "BeggarAnnounce")
     end
 end)
 

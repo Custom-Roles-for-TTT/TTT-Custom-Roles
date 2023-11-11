@@ -11,8 +11,9 @@ local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled")
 local killer_crowbar_enabled = GetConVar("ttt_killer_crowbar_enabled")
 local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled")
 local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon")
-local killer_vision_enable = GetConVar("ttt_killer_vision_enable")
+local killer_vision_enabled = GetConVar("ttt_killer_vision_enabled")
 local killer_warn_all = GetConVar("ttt_killer_warn_all")
+local killer_can_see_jesters = GetConVar("ttt_killer_can_see_jesters")
 
 ------------------
 -- TRANSLATIONS --
@@ -61,17 +62,19 @@ end)
 
 local killer_vision = false
 local vision_enabled = false
+local can_see_jesters = false
 local client = nil
 
 local function EnableKillerHighlights()
     hook.Add("PreDrawHalos", "Killer_Highlight_PreDrawHalos", function()
-        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, GetConVar("ttt_killer_can_see_jesters"):GetBool(), false, false)
+        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, can_see_jesters, false, false)
     end)
 end
 
 hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    killer_vision = killer_vision_enable:GetBool()
+    killer_vision = killer_vision_enabled:GetBool()
+    can_see_jesters = killer_can_see_jesters:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -163,7 +166,7 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
 
         -- Crowbar
         if killer_crowbar_enabled:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>They have a special crowbar <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>can be thrown</span>.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>They have a special crowbar that <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>can be thrown</span>.</span>"
         end
 
         -- Smoke
@@ -172,7 +175,7 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
         end
 
         -- Vision
-        local hasVision = killer_vision_enable:GetBool()
+        local hasVision = killer_vision_enabled:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>blood lust</span> helps them see their targets through walls by highlighting their enemies.</span>"
         end
@@ -183,7 +186,7 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
             if hasVision then
                 html = html .. " also"
             end
-            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
+            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>skull</span> icon floating over their heads.</span>"
         end
 
         return html

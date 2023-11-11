@@ -14,7 +14,7 @@ local StringUpper = string.upper
 -- CONVARS --
 -------------
 
-local cupid_lover_vision_enable = GetConVar("ttt_cupid_lover_vision_enable")
+local cupid_lover_vision_enabled = GetConVar("ttt_cupid_lover_vision_enabled")
 local cupid_is_independent = GetConVar("ttt_cupid_is_independent")
 local cupid_lovers_notify_mode = GetConVar("ttt_cupid_lovers_notify_mode")
 local cupid_can_damage_lovers = GetConVar("ttt_cupid_can_damage_lovers")
@@ -300,7 +300,7 @@ end
 
 AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    lover_vision = cupid_lover_vision_enable:GetBool()
+    lover_vision = cupid_lover_vision_enabled:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then

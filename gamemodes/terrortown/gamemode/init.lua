@@ -1666,6 +1666,7 @@ function SelectRoles()
                     if not delayed or not JESTER_ROLES[r] then continue end
                     HandleDelayedRole(r, independentRoles)
                 end
+                -- Allow external addons to modify available roles and their weights
                 CallHook("TTTSelectRolesJesterOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
             end
 
@@ -1690,6 +1691,7 @@ function SelectRoles()
                 if not delayed or not JESTER_ROLES[r] then continue end
                 HandleDelayedRole(r, jesterRoles)
             end
+            -- Allow external addons to modify available roles and their weights
             CallHook("TTTSelectRolesJesterOptions", nil, jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
             if #jesterRoles ~= 0 then
@@ -1702,6 +1704,32 @@ function SelectRoles()
                 for i = #jesterRoles, 1, -1 do
                     if jesterRoles[i] == role then
                         table.remove(jesterRoles, i)
+                    end
+                end
+            end
+        end
+    end
+
+    if monster_count > 0 and #choices > 0 then
+        for r, delayed in pairs(delayedCheckRoles) do
+            if not delayed or not MONSTER_ROLES[r] then continue end
+            HandleDelayedRole(r, monsterRoles)
+        end
+
+        -- Allow external addons to modify available roles and their weights
+        CallHook("TTTSelectRolesMonsterOptions", nil, monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
+        for _ = 1, monster_count do
+            if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 then
+                local plyPick = math.random(1, #choices)
+                local ply = table.remove(choices, plyPick)
+                local rolePick = math.random(1, #monsterRoles)
+                local role = monsterRoles[rolePick]
+                ply:SetRole(role)
+                PrintRole(ply, role)
+                for i = #monsterRoles, 1, -1 do
+                    if monsterRoles[i] == role then
+                        table.remove(monsterRoles, i)
                     end
                 end
             end
@@ -1741,34 +1769,6 @@ function SelectRoles()
                         table.remove(specialInnocentRoles, i)
                     end
                 end
-            end
-        end
-    end
-
-    if monster_count > 0 then
-        local monster_chosen = false
-        for _ = 1, monster_count do
-            for r, delayed in pairs(delayedCheckRoles) do
-                if not delayed or not MONSTER_ROLES[r] then continue end
-                HandleDelayedRole(r, monsterRoles)
-            end
-
-            -- Allow external addons to modify available roles and their weights
-            CallHook("TTTSelectRolesMonsterOptions", nil, monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
-
-            if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
-                local plyPick = math.random(1, #choices)
-                local ply = table.remove(choices, plyPick)
-                local rolePick = math.random(1, #monsterRoles)
-                local role = monsterRoles[rolePick]
-                ply:SetRole(role)
-                PrintRole(ply, role)
-                for i = #monsterRoles, 1, -1 do
-                    if monsterRoles[i] == role then
-                        table.remove(monsterRoles, i)
-                    end
-                end
-                monster_chosen = true
             end
         end
     end

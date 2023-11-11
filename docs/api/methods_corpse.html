@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - CORPSE Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>CORPSE Methods</h1>
         <p>Helper methods that can be used when interacting with player corpses</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="corpsecanbesearchedply-rag" href="#corpsecanbesearchedply-rag">CORPSE.CanBeSearched(ply, rag)</a></h3>
         <p>
             Determines whether a ragdoll entity can be searched by a player.<br>
@@ -23,5 +29,6 @@
             <li><em>rag</em> - The ragdoll entity that is being interacted with</li>
         </ul>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

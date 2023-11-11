@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - HUD Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>HUD Methods</h1>
         <p>Helper methods that can be used when displaying client-side UIs</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="crhudpaintbarr-x-y-w-h-colors-value" href="#crhudpaintbarr-x-y-w-h-colors-value">CRHUD:PaintBar(r, x, y, w, h, colors, value)</a></h3>
         <p>
             Paints a rounded bar that is some-percentaged filled. Can be used as a progress bar.<br>
@@ -104,5 +110,6 @@
             <li><em>yalign</em> - The <a href="https://wiki.facepunch.com/gmod/Enums/TEXT_ALIGN" target="_blank">TEXT_ALIGN</a> enum value to use for the vertical alignment of the text</li>
         </ul>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

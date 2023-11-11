@@ -1,0 +1,342 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Roles for TTT - Tutorials - Configuring ConVars</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark-dimmed.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#tutorials" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>ConVars</h1>
+        <p>Console variables (or ConVars) are used by games running on Source engine such as Garry's Mod to configure various options. As the name implies, ConVars are often viewed or changed from the console. However, in most cases, changes made via the console will only be temporary and will reset when the server restarts or the map changes.</p>
+        <p>This page will provide a list of server ConVars that can be used to configure Custom Roles for TTT, as well as instructions on setting up your server so that your ConVars won't be automatically reset.</p>
+        <p>A list of ConVars from base Trouble in Terrorist Town can be found on their website's <a href="http://www.troubleinterroristtown.com/config/settings/" target="_blank">Server Settings</a> page.</p>
+        <p>This tutorial will not explain how to create a Garry's Mod server from scratch, only how to configure them for Custom Roles for TTT.</p>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
+        <ol>
+            <li><a href="#config-files">Config Files</a>
+                <ol>
+                    <li><a href="#listen-servers-vs-dedicated-servers">Listen Servers vs Dedicated Servers</a></li>
+                    <li><a href="#editing-config-files">Editing Config Files</a></li>
+                </ol>
+            </li>
+            <li><a href="#custom-roles-for-ttt-convars">Custom Roles for TTT ConVars</a>
+                <ol>
+                    <li><a href="#shared-role-convars">Shared Role ConVars</a></li>
+                    <li><a href="#shop-convars">Shop ConVars</a></li>
+                    <li><a href="#miscellaneous-convars">Miscellaneous ConVars</a></li>
+                </ol>
+            </li>
+        </ol>
+
+        <h2 id="config-files">Config Files</h2>
+        <p>As ConVars reset every time the server restarts or the map changes, it is important to create a config file that will automatically update ConVars to the desired value any time this happens.</p>
+
+        <h3 id="listen-servers-vs-dedicated-servers">Listen Servers vs Dedicated Servers</h3>
+        <p>There are two types of Garry's Mod servers and they each need to be configured through different files. The process is otherwise identical but make sure you know which type of server you are running and have the correct file path before continuing.</p>
+        <p>If you are starting a multiplayer game from within the Garry's Mod client then you are running a <b>listen server</b>. The config file for listen servers is located within your Garry's Mod game files. In Steam, right click on Garry's Mod and select 'Manage', then 'Browse local files'. An explorer window should open to the folder containing your Garry's Mod game files. Open 'garrysmod', then 'cfg'. Inside this folder is a file named 'listenserver.cfg' which is the config file you should use for the rest of the tutorial.</p>
+        <p>If you are running your server separately from your Garry's Mod client, either through another process or a server hosting platform, you are running a <b>dedicated server</b>. The config file for dedicated servers is located inside the server folders. Open the folder containing your server and open 'garrysmod', then 'cfg'. Inside this folder is a file named 'server.cfg' which is the config file you should use for the rest of the tutorial.</p>
+
+        <h3 id="editing-config-files">Editing Config Files</h3>
+        <p>Once you have located your config file, open it using a plain text editor such as Notepad. You can add ConVars to this file such that each line contains a single ConVar followed by one or more spaces and then the value you want to set that ConVar to. Comments can be added to the file by typing '//'. Anything after those slashes on the same line will be ignored when the file is loaded by the server. This allows you to write notes and reminders to help organise your config file. Blank lines will also be ignored by the server allowing you to organise ConVars into groups.</p>
+        <p>ConVars can come in four different types. Depending on the type you may need to format the ConVar value in a specific way:</p>
+        <ul>
+            <li><b>Integers</b> require whole number values. Any decimal values will be rounded down and anything that isn't a number will be treated as if it were 0. (e.g. <code>ttt_example_integer_convar 15</code> will set the value of the ConVar <code>ttt_example_integer_convar</code> to 15.)</li>
+            <li><b>Floats</b> are numbers that can be decimals or whole numbers. Anything that isn't a number will be treated as if it were 0. (e.g. <code>ttt_example_float_convar 0.33</code> will set the value of the ConVar <code>ttt_example_float_convar</code> to 0.33.)</li>
+            <li><b>Booleans</b> are true or false values. For true use a value of 1 and for false use a value of 0. (e.g. <code>ttt_example_boolean_convar 0</code> will set the value of the ConVar <code>ttt_example_boolean_convar</code> to false.)</li>
+            <li><b>Strings</b> are text. When setting the value of a string ConVar, you need to surround the text you want to provide as the value with quotation marks. (e.g. <code>ttt_example_string_convar "test"</code> will set the value of the ConVar <code>ttt_example_string_convar</code> to "test".)</li>
+        </ul>
+        <p>Below is an example of what a functional config file could look like:</p>
+        <div><pre><code class="language-c++">ttt_example_convar 1 // This text will be ignored because it comes after two slashes
+ttt_another_example 0.5 // This line will set the value of the ConVar 'ttt_another_example' to 0.5
+ttt_yet_another_example           10 // You can have as many spaces as you want between the ConVar and its value
+// Comments can take up full lines and lines can even be left blank
+
+// ConVars can use whole numbers (integers), decimals (floats), true/false (booleans), or text (strings) as their values
+ttt_boolean_convar 0 // If a ConVar requires true or false (otherwise known as a 'boolean') as its value, use 0 for false and 1 for true
+ttt_another_boolean 1 // This line would set the value of the ConVar 'ttt_another_boolean' to true
+
+ttt_string_convar "hello" // If a ConVar requires text (otherwise known as a 'string') as its value, put the text inside quotation marks
+ttt_another_string "custom roles for ttt" // This line would set the value of the ConVar 'ttt_another_string' to "custom roles for ttt"</code></pre></div>
+        <p>A full list of Custom Roles for TTT ConVars and their default values in a config file ready format can be found on the <a href="https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/release/CONVARS.md" target="_blank">Custom Roles for TTT GitHub repository</a>.</p>
+
+        <h2 id="custom-roles-for-ttt-convars">Custom Roles for TTT ConVars</h2>
+        <p>Custom Roles for TTT has over 800 ConVars that can be used to customise your server. Most of these ConVars are unique to each role and won't be listed here, but you can find them in the expandable sections for each role on their respective team's page.</p>
+
+        <h3 id="shared-role-convars">Shared Role ConVars</h3>
+        <p>Some ConVars are automatically generated for each role and have been grouped here to save space. For each of these ConVars replace the '<b>*</b>' with the name of the role you want to configure in lower case and without spaces.</p>
+        <table style="width:100%;">
+            <thead>
+            <tr>
+                <th>ConVar</th>
+                <th>Default</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>ttt_*_enabled</td>
+                <td>0</td>
+                <td>Boolean</td>
+                <td>Whether this role is able to spawn at the start of the round. <i>(The regular Innocent, Traitor, and Detective roles are always enabled.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_spawn_weight</td>
+                <td>1</td>
+                <td>Integer</td>
+                <td>The weight assigned to spawning this role compared to other roles on the same team. <i>(e.g. A role with a weight of 2 will be twice as likely to spawn as a role with a weight of 1 on the same team. The regular Innocent, Traitor, and Detective roles cannot have weights assigned.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_min_players</td>
+                <td>0</td>
+                <td>Integer</td>
+                <td>The minimum number of players required to spawn this role. <i>(The regular Innocent, Traitor, and Detective roles cannot have minimum player requirements.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_starting_health</td>
+                <td>100 <i>(Killer: 150, Loot Goblin: 50, Old Man: 1, Sponge: 150)</i></td>
+                <td>Integer</td>
+                <td>The amount of health this role spawns with. <i>(The Killer, Loot Goblin, Old Man, and Sponge have different default values. Set to 0 or -1 to use the game's default starting health.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_max_health</td>
+                <td>100 <i>(Killer: 150, Loot Goblin: 50, Old Man: 1, Sponge: 150)</i></td>
+                <td>Integer</td>
+                <td>The maximum amount of health this role can have. <i>(The Killer, Loot Goblin, Old Man, and Sponge have different default values. Set to 0 or -1 to use the game's default maximum health.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_name</td>
+                <td><i>Blank</i></td>
+                <td>String</td>
+                <td>The name you would like this role to be called. <i>(Automatically attempts to generate articles and plurals, but it is not always successful. Use <code>ttt_*_name_plural</code> and <code>ttt_*_name_article</code> to manually fix these if required.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_name_plural</td>
+                <td><i>Blank</i></td>
+                <td>String</td>
+                <td>The plural form of the name you would like this role to be called.</td>
+            </tr>
+            <tr>
+                <td>ttt_*_name_article</td>
+                <td><i>Blank</i></td>
+                <td>String</td>
+                <td>The article that comes before the name you would like this role to be called. <i>(e.g. If the role was called 'innocent' the article would be 'an', and if the role was called 'traitor' the article would be 'a'.)</i></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3 id="shop-convars">Shop ConVars</h3>
+        <p>Some ConVars are used to configure who has access to a shop, what items are available and how many credits they have. For each of these ConVars replace the '<b>*</b>' with the name of the role you want to configure in lower case and without spaces. These ConVars only apply to roles that are configured to have access to a shop.</p>
+        <table style="width:100%;">
+            <thead>
+            <tr>
+                <th>ConVar</th>
+                <th>Default</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>ttt_shop_for_all</td>
+                <td>0</td>
+                <td>Boolean</td>
+                <td>Whether all roles should have a shop. <i>(Roles that normally do not have a shop will need to have items added via the roleweapon system. Details on the roleweapon system can be found on the <a href="../tutorials/configuring_role_weapons.html">Role Weapon Shop</a> tutorial page.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_credits_starting</td>
+                <td>0 <i>(Doctor: 1, Killer: 2, Mercenary: 1, Quartermaster: 3, Other special detectives: 1, Special traitors: 1)</i></td>
+                <td>Integer</td>
+                <td>The number of credits this role should start with. <i>(The Doctor, Killer, Mercenary, special detectives, and special traitors have different default values. The default Traitor and Detective use uniquely named ConVars that are from vanilla TTT.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_shop_random_position</td>
+                <td>0</td>
+                <td>Boolean</td>
+                <td>Whether to randomize the position of the items in the shop.</td>
+            </tr>
+            <tr>
+                <td>ttt_shop_random_percent</td>
+                <td>50</td>
+                <td>Integer</td>
+                <td>The percent chance that a weapon in the shop will be not be shown. <i>(e.g. 50 = 50%.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_shop_random_percent</td>
+                <td>0</td>
+                <td>Integer</td>
+                <td>The percent chance that a weapon in the shop will be not be shown for this role. <i>(e.g. 50 = 50%. Set to 0 to use the value of <code>ttt_shop_random_percent</code> instead.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_shop_random_enabled</td>
+                <td>0</td>
+                <td>Boolean</td>
+                <td>Whether role shop randomization is enabled for this role.</td>
+            </tr>
+            <tr>
+                <td>ttt_*_shop_sync</td>
+                <td>0</td>
+                <td>Boolean</td>
+                <td>Whether this role should have access to all weapons that the regular role for their team has access to. <i>(e.g. If the Hypnotist should have access to Traitor items, or if the Marshal should have access to Detective items. Only applies to special traitor and special detective roles.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_*_shop_mode</td>
+                <td>0 <i>(Mercenary: 2)</i></td>
+                <td>Boolean</td>
+                <td>What additional items are available to the Hive Mind in the shop:
+                    <ol start="0">
+                        <li>(Disabled) Nothing.</li>
+                        <li>(Union) Weapons available to either the Traitor or the Detective.</li>
+                        <li>(Intersect) Only weapons available to both the Traitor and the Detective.</li>
+                        <li>(Detective) All weapons available to the Detective.</li>
+                        <li>(Traitor) All weapons available to the Traitor.</li>
+                    </ol>
+                    <i>(The Mercenary has a different default value. Only applies to independent roles and where otherwise specified.)</i>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3 id="miscellaneous-convars">Miscellaneous ConVars</h3>
+        <table style="width:100%;">
+            <thead>
+            <tr>
+                <th>ConVar</th>
+                <th>Default</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>ttt_roundtime_win_draw</td>
+                <td>0</td>
+                <td>Boolean</td>
+                <td>Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the innocent team teams.</td>
+            </tr>
+            <tr>
+                <td>ttt_debug_logkills</td>
+                <td>1</td>
+                <td>Boolean</td>
+                <td>Whether to log when a player is killed in the console.</td>
+            </tr>
+            <tr>
+                <td>ttt_debug_logroles</td>
+                <td>1</td>
+                <td>Boolean</td>
+                <td>Whether to log what roles players are assigned in the console.</td>
+            </tr>
+            <tr>
+                <td>ttt_sprint_enabled</td>
+                <td>1</td>
+                <td>Boolean</td>
+                <td>Whether sprinting is enabled.</td>
+            </tr>
+            <tr>
+                <td>ttt_sprint_bonus_rel</td>
+                <td>0.4</td>
+                <td>Float</td>
+                <td>The relative speed bonus given while sprinting. (e.g. 0.4 = 40% speed increase.)</td>
+            </tr>
+            <tr>
+                <td>ttt_sprint_regenerate_innocent</td>
+                <td>0.08</td>
+                <td>Float</td>
+                <td>Stamina regeneration speed for non-traitors while they are not sprinting.</td>
+            </tr>
+            <tr>
+                <td>ttt_sprint_regenerate_traitor</td>
+                <td>0.12</td>
+                <td>Float</td>
+                <td>Stamina regeneration speed for traitors while they are not sprinting.</td>
+            </tr>
+            <tr>
+                <td>ttt_sprint_consume</td>
+                <td>0.2</td>
+                <td>Float</td>
+                <td>Stamina consumption speed for all players while they are sprinting.</td>
+            </tr>
+            <tr>
+                <td>ttt_bem_allow_change</td>
+                <td>Boolean</td>
+                <td>1</td>
+                <td>Whether to allow clients to change the look of the shop menu.</td>
+            </tr>
+            <tr>
+                <td>ttt_bem_sv_cols</td>
+                <td>4</td>
+                <td>Integer</td>
+                <td>The number of columns in the shop menu's item list.</td>
+            </tr>
+            <tr>
+                <td>ttt_bem_sv_rows</td>
+                <td>5</td>
+                <td>Integer</td>
+                <td>The number of rows in the shop menu's item list.</td>
+            </tr>
+            <tr>
+                <td>ttt_bem_sv_size</td>
+                <td>64</td>
+                <td>Integer</td>
+                <td>The item size in the shop menu's item list.</td>
+            </tr>
+            <tr>
+                <td>ttt_scoreboard_deaths</td>
+                <td>0</td>
+                <td>Boolean</td>
+                <td>Whether to show the deaths column on the scoreboard. <i>(Server must be restarted for changes to take effect.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_scoreboard_score</td>
+                <td>0</td>
+                <td>Boolean</td>
+                <td>Whether to show the score column on the scoreboard. <i>(Server must be restarted for changes to take effect.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_round_summary_tabs</td>
+                <td>"summary,hilite,events,scores"</td>
+                <td>String</td>
+                <td>The tabs to show in the round summary screen. <i>(Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Server or round must be restarted for changes to take effect.)</i></td>
+            </tr>
+            <tr>
+                <td>ttt_death_notifier_enabled/td>
+                <td>1</td>
+                <td>Boolean</td>
+                <td>Whether the name and role of a player's Killer should be shown to the victim.</td>
+            </tr>
+            <tr>
+                <td>ttt_smokegrenade_extinguish</td>
+                <td>1</td>
+                <td>Boolean</td>
+                <td>Whether smoke grenades should extinguish fire.</td>
+            </tr>
+            <tr>
+                <td>ttt_player_set_color</td>
+                <td>1</td>
+                <td>Boolean</td>
+                <td>Whether player colors are set each time that player spawns.</td>
+            </tr>
+            <tr>
+                <td>ttt_dna_scan_on_dialog</td>
+                <td>1</td>
+                <td>Boolean</td>
+                <td>Whether to show a button to open the DNA scanner on the body search dialog.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="footerpadding panel"></div>
+</body>
+</html>

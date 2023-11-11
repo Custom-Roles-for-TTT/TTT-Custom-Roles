@@ -1,21 +1,330 @@
 <!doctype html>
 <html>
 <head>
-    <title>Jesters - Custom Roles for TTT Wiki</title>
+    <title>Custom Roles for TTT - Jesters</title>
     <link type="text/css" rel="stylesheet" href="../fonts/roleicons.css">
-    <link type="text/css" rel="stylesheet" href="../css/style.css"></head>
-    <script type="text/javascript" src="../js/expandable.js" defer></script>
+    <link type="text/css" rel="stylesheet" href="../css/style.css">
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#jester" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel" style="margin-bottom: 15px;">
+        <iframe id="nav" src="../nav.html#jester" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--jester); margin-top: 0;">Jester Roles</h1>
+            <div style="margin: 10px;">
+                <p><span style="color:var(--jester);">Jesters</span> have unique win conditions for each role, often focused on causing chaos and confusion. Typically, there are very few jesters in each round.</p>
+                <p>Jesters are not part of a team. Even if there are multiple different jesters in the same round, they will often be competing against each other either directly or indirectly.</p>
+                <p>Members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>, <span style="color:var(--monster);"><a href="../teams/monster.html">monster team</a></span>, and some <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> are made aware of which players are jesters, but not told which specific role they are.</p>
+                <p>Under normal circumstances jesters cannot deal damage to players and are also immune to most forms of environmental damage, e.g. falling, drowning, fire, etc.</p>
+            </div>
+        </div>
+    </div>
+    <div class="contentbody panel">
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+            <div class="content">
+                <p>Each round after detectives and traitors are chosen, some of the remaining players may be chosen as jesters. The following ConVars can be used to configure the requirements and restrictions on how jesters spawn.</p>
+                <table style="width:100%; margin-bottom: 10px;">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_independent_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a single independent <i>(or jester if <code>ttt_single_jester_independent</code> is enabled)</i> will spawn in a round. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be disabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a single jester will spawn in a round. <i>(Requires <code>ttt_single_jester_independent</code> and <code>ttt_multiple_jesters_independents</code> to be disabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_jester_independent</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether only a single jester or independent should spawn in a round.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_jester_independent_max_players</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The maximum players to have only a single jester or independent spawn in a row. If there are more players than this both a jester and an independent can spawn in the same round. <i>(Set to 0 to disable. Requires <code>ttt_single_jester_independent</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_multiple_jesters_independents</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether more than one jester/independent should be allowed to spawn in each round. <i>(Enabling this will ignore <code>ttt_independent_chance</code>, <code>ttt_jester_chance</code>, <code>ttt_single_jester_independent</code>, and <code>ttt_single_jester_independent_max_players</code>.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_independent_max</td>
+                        <td>2</td>
+                        <td>Integer</td>
+                        <td>The maximum number of players that can spawn as a jester or independent. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_independent_pct</td>
+                        <td>0.13</td>
+                        <td>Float (0-1)</td>
+                        <td>Percentage of players, rounded up, that have the chance to spawn as a jester or independent. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_independent_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a jester or independent will spawn in each individual slot made by <code>ttt_jester_independent_pct</code>. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_*_notify_confetti</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to throw confetti when this role is killed. Replace * with the name of the jester role you want to configure without spaces or capital letters. <i>(Does not apply to the Clown.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_*_notify_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that this role is killed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detectives.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detectives.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                            Replace * with the name of the jester role you want to configure without spaces or capital letters. <i>(Does not apply to the Clown.)</i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_*_notify_sound</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cheering sound when this role is killed. Replace * with the name of the jester role you want to configure without spaces or capital letters. <i>(Does not apply to the Clown.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p><b>Example:</b> <code>ttt_independent_chance</code> is 0.5, <code>ttt_jester_chance</code> is 0.5, <code>ttt_single_jester_independent</code> is 1, and <code>ttt_single_jester_independent_max_players</code> is 0 as per the default values above. As <code>ttt_single_jester_independent</code> is set to 1 there can only be a single jester or independent in each round and <code>ttt_jester_chance</code> will be ignored. This means there is a 50% chance that a jester or independent will spawn in the round as <code>ttt_independent_chance</code> is set to 0.5. If <code>ttt_single_jester_independent</code> were instead set to 0, there is a 50% chance that a jester will spawn in the round as <code>ttt_jester_chance</code> is set to 0.5. This jester could spawn in addition to an independent, but there will only ever be one of each. If <code>ttt_single_jester_independent_max_players</code> were now set to 8, this would mean that in games with 8 or less players only a single jester or independent could spawn, but in games with 9 or more players there is a chance for both a jester and an independent to spawn.</p>
+                <p>If <code>ttt_multiple_jesters_independents</code> was set to 1, <code>ttt_independent_chance</code>, <code>ttt_jester_chance</code>, <code>ttt_single_jester_independent</code>, and <code>ttt_single_jester_independent_max_players</code> would all be ignored and the jester and independent roles are combined into one group. In this example there are eight players in the game, <code>ttt_jester_independent_pct</code> is 0.13, and <code>ttt_jester_independent_chance</code> is 0.5 as per the default values above. At most 13% of players (rounded up) can be jesters or independents as <code>ttt_jester_independent_pct</code> is set to 0.13. This means that there will be at most two jesters or independents. However, each of those players only has a 50% chance to be a jester or independent as <code>ttt_jester_independent_chance</code> is set to 0.5. This means it is possible for the round to have zero, one, or two jesters and independents. All remaining players who have not had a role assigned will be part of the innocent or monster teams.</p>
+                <p>If you always wanted the same number of jesters and independents in each round with no variation, set <code>ttt_jester_independent_chance</code> to 1. Setting either <code>ttt_jester_independent_pct</code> or <code>ttt_jester_independent_chance</code> to 0 will make it impossible for jesters and independents to spawn while <code>ttt_multiple_jesters_independents</code> is enabled.</p>
+                <p>Additionally, the following miscellaneous ConVars can be used to configure options that apply to all jesters.</p>
+                <table style="width:100%; margin-bottom: 10px;">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_jesters_trigger_traitor_testers</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether jesters trigger traitor testers as if they were traitors.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jesters_visible_to_traitors</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to members of the traitor team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jesters_visible_to_monsters</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to members of the monster team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_karma_jesterkill_penalty</td>
+                        <td>50</td>
+                        <td>Integer</td>
+                        <td>The karma penalty for killing the jester.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_karma_jesterdmg_ratio</td>
+                        <td>0.5</td>
+                        <td>Float</td>
+                        <td>The fraction of damage dealt to jesters, that should be taken from the attacker's karma. <i>(e.g. If a player dealt 40 damage to a jester and <code>ttt_karma_jesterdmg_ratio</code> is 0.5, the attacker would lose 20 karma as 40x0.5=20.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+            </div>
+        </div>
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Role Guidelines</button>
+            <div class="content">
+                <p>When designing roles it is important to make sure your role is part of the correct team. Each team has a unique identity along with strengths and weaknesses that play better with some roles than others. If you are designing a jester role, keep the following in mind:</p>
+                <b>Jesters should:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Have a config option to be a part of the independent team instead if the role could also work as one that does damage but has no team.</li>
+                    <li>Have unique win conditions, secondary win conditions, or some way of changing into a role that has a win condition.</li>
+                    <li>Have some interesting mechanic or ability to help them toward their win condition or help with changing into a role that has a win condition.</li>
+                </ul>
+                <b>Jesters should <u>NOT</u>:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Be able to damage other players. If you role relies on being able to damage other players at all times, consider the following:</li>
+                    <ul>
+                        <li>Your role might be a better fit as an independent. In most cases independents are roles that are not on the team of any other roles that can freely do damage to other players.</li>
+                        <li>If your role only needs to deal damage after certain criteria have been met, consider changing your role's team from jester to independent mid-round like with the <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="#clown">Clown</a></span>.</li>
+                    </ul>
+                </ul>
+                <p>These are just guidelines and in some special circumstances a role might be best fit as a jester even if it doesn't align with the above suggestions. However, in general following these suggestions will ensure that your role works well within the framework that Custom Roles for TTT provides.</p>
+                <p>A walkthrough for creating your own role can be found on the <a href="../tutorials/create_your_own_role.html">Create Your Own Role</a> tutorial page.</p>
+            </div>
+        </div>
         <div id="beggar" class="collapsible">
             <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-beggar"></i>Beggar</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-beggar"></i><a href="#beggar">Beggar</a></span> joins someone's team and becomes an <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="../teams/innocent.html#innocent">Innocent</a></span> or a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitor</a></span> when they are given a shop item by another player.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>The Beggar joins the team of the player that bought the item they were given, not the player who gave the Beggar the item.</p>
+                    <p>When the Beggar changes team, other players are notified. The <code>ttt_beggar_reveal_innocent</code> and <code>ttt_beggar_reveal_traitor</code> ConVars configure who is notified when the Beggar becomes an <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="../teams/innocent.html#innocent">Innocent</a></span> or a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitor</a></span> respectively as detailed in the ConVars table below. The <code>ttt_beggar_announce_delay</code> can be configured to add a delay between the Beggar switching role and players being notified.</p>
+                    <p>If the Beggar is killed before they have the chance to change team, they can optionally respawn or join the opposite team of the player who killed them. <code>ttt_beggar_respawn</code>, <code>ttt_beggar_respawn_limit</code>, and <code>ttt_beggar_respawn_change_role</code> can be configured to do this as detailed in the ConVars table below.</p>
+                    <p>The Beggar can optionally have access to an <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-informant"></i><a href="../teams/traitor.html#informant">Informant</a></span> style scanner that can be used to learn if other players are <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span> or have access to a shop. This is disabled by default but can be configured with <code>ttt_beggar_scan</code>.</p>
+                    <p>The scanning starts as soon as the Beggar looks at another player and finishes if they can maintain line of sight for a length of time determined by <code>ttt_beggar_scan_time</code>. They are allowed to break line of sight for a short window of time determined by <code>ttt_beggar_scan_float_time</code> withing interrupting their scan, but losing line of sight for any longer will abort the scan. The scanner will then go on cooldown and be unusable for an amount of time determined by <code>ttt_beggar_scan_cooldown</code>.</p>
+                    <p>The Beggar can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html.html">independent</a></span> instead of being a jester by enabling <code>ttt_beggar_is_independent</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_beggar_announce_delay</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>How long in seconds the delay between the Beggar changing role and other players receiving an announcement should be.</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_can_see_jesters</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Beggar <i>(Requires <code>ttt_beggar_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_is_independent</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Beggars should be treated as members of the independent team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_respawn</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Beggar respawns when they are killed before joining another team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_respawn_change_role</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether to change the role of the respawning the Beggar. Their role will be Traitor if killed by an innocent player and Innocent otherwise. <i>(Requires <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_respawn_delay</td>
+                            <td>3</td>
+                            <td>Integer</td>
+                            <td>The delay in seconds to use when respawning the Beggar. <i>(Requires <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_respawn_limit</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The maximum number of times the Beggar can respawn. Set to 0 to allow infinite respawns. <i>(Requires <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_reveal_innocent</td>
+                            <td>2</td>
+                            <td>Integer (0-4)</td>
+                            <td>Who the Beggar is revealed to when they join the innocent team:
+                                <ol start="0">
+                                    <li>No one.</li>
+                                    <li>Everyone.</li>
+                                    <li>Traitors.</li>
+                                    <li>Innocents.</li>
+                                    <li>Roles that can see jesters.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_reveal_traitor</td>
+                            <td>1</td>
+                            <td>Integer (0-4)</td>
+                            <td>Who the Beggar is revealed to when they join the traitor team:
+                                <ol start="0">
+                                    <li>No one.</li>
+                                    <li>Everyone.</li>
+                                    <li>Traitors.</li>
+                                    <li>Innocents.</li>
+                                    <li>Roles that can see jesters.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_scan</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>Whether the Beggar can scan players to see if they are traitors
+                                <ol start="0">
+                                    <li>Disabled.</li>
+                                    <li>Can only scan traitors.</li>
+                                    <li>Can scan any role that has a shop.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_scan_cooldown</td>
+                            <td>3</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the Beggar's tracker goes on cooldown for after losing it's target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_scan_distance</td>
+                            <td>2500</td>
+                            <td>Integer</td>
+                            <td>The maximum distance away the scanner target can be.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_scan_float_time</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds it takes for the Beggar's scanner to lose it's target without line of sight.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_scan_time</td>
+                            <td>15</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the Beggar's scanner takes to use.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_beggar_update_scoreboard</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Beggar shows dead players as missing in action. <i>(Requires <code>ttt_beggar_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -25,7 +334,144 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-bodysnatcher"></i><a href="#bodysnatcher">Bodysnatcher</a></span> can use their bodysnatching device on a body to steal their role.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>The Bodysnatcher is shown the role of any player they use the bodysnatching device on unless <code>ttt_bodysnatcher_show_role</code> is disabled.</p>
+                    <p>Once the Bodysnatcher successfully steals a dead player's role, the body they used the bodysnatching device on is removed if <code>ttt_bodysnatcher_destroy_body</code> is enabled.</p>
+                    <p>When the Bodysnatcher steals someone's role, other players are notified. The <code>ttt_bodysnatcher_reveal_innocent</code>, <code>ttt_bodysnatcher_reveal_traitor</code>, <code>ttt_bodysnatcher_reveal_jester</code>, <code>ttt_bodysnatcher_reveal_independent</code>, and <code>ttt_bodysnatcher_reveal_monster</code> ConVars configure who is notified depending on what team the Bodysnatcher joined as detailed in the ConVars table below.</p>
+                    <p>If the Bodysnatcher is killed before they have the chance to change role, they can optionally respawn. <code>ttt_bodysnatcher_respawn</code>, <code>ttt_bodysnatcher_respawn_delay</code>, and <code>ttt_bodysnatcher_respawn_limit</code> can be configured to do this as detailed in the ConVars table below.</p>
+                    <p>The Bodysnatcher can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html.html">independent</a></span> instead of being a jester by enabling <code>ttt_bodysnatcher_is_independent</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_bodysnatcher_can_see_jesters</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Bodysnatcher. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_destroy_body</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the bodysnatching device destroys the body it is used on or not.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_device_time</td>
+                            <td>5</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the Bodysnatcher's device takes to use.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_is_independent</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Bodysnatchers should be treated as members of the independent team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_respawn</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Bodysnatcher respawns when they are killed before joining another team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_respawn_delay</td>
+                            <td>3</td>
+                            <td>Integer</td>
+                            <td>The delay in seconds to use when respawning the Bodysnatcher. <i>(Requires <code>ttt_bodysnatcher_respawn</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_respawn_limit</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The maximum number of times the Bodysnatcher can respawn. Set to 0 to allow infinite respawns. <i>(Requires <code>ttt_bodysnatcher_respawn</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_reveal_independent</td>
+                            <td>1</td>
+                            <td>Integer (0-3)</td>
+                            <td>Who the Bodysnatcher is revealed to when they join the independent team:
+                                <ol start="0">
+                                    <li>No one.</li>
+                                    <li>Everyone.</li>
+                                    <li>Their new team.</li>
+                                    <li>Roles that can see jesters.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_reveal_innocent</td>
+                            <td>1</td>
+                            <td>Integer (0-3)</td>
+                            <td>Who the Bodysnatcher is revealed to when they join the innocent team:
+                                <ol start="0">
+                                    <li>No one.</li>
+                                    <li>Everyone.</li>
+                                    <li>Their new team.</li>
+                                    <li>Roles that can see jesters.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_reveal_jester</td>
+                            <td>1</td>
+                            <td>Integer (0-3)</td>
+                            <td>Who the Bodysnatcher is revealed to when they join the jester team:
+                                <ol start="0">
+                                    <li>No one.</li>
+                                    <li>Everyone.</li>
+                                    <li>Their new team.</li>
+                                    <li>Roles that can see jesters.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_reveal_monster</td>
+                            <td>1</td>
+                            <td>Integer (0-3)</td>
+                            <td>Who the Bodysnatcher is revealed to when they join the monster team:
+                                <ol start="0">
+                                    <li>No one.</li>
+                                    <li>Everyone.</li>
+                                    <li>Their new team.</li>
+                                    <li>Roles that can see jesters.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_reveal_traitor</td>
+                            <td>1</td>
+                            <td>Integer (0-3)</td>
+                            <td>Who the Bodysnatcher is revealed to when they join the traitor team:
+                                <ol start="0">
+                                    <li>No one.</li>
+                                    <li>Everyone.</li>
+                                    <li>Their new team.</li>
+                                    <li>Roles that can see jesters.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_show_role</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the bodysnatching device shows the role of the corpse it is used on or not.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_update_scoreboard</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Bodysnatcher shows dead players as missing in action. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -33,9 +479,125 @@
             <button class="header" style="background-color:var(--jester);"><i class="icon-clown"></i>Clown</button>
             <div class="content">
                 <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="#clown">Clown</a></span> pretends to be a <span class="inline-icon" style="color:var(--jester);"><i class="icon-jester"></i><a href="#jester">Jester</a></span> until someone is about to win, then they can deal damage and must kill everyone else to win.</p>
+                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="#clown">Clown</a></span> pretends to be a <span class="inline-icon" style="color:var(--jester);"><i class="icon-jester"></i><a href="#jester">Jester</a></span> until someone is about to win, then they become an <span style="color:var(--independent)">independent</span> and can deal damage and must kill everyone else to win.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>When the Clown becomes an independent (or 'activates'), their role is revealed to all players unless <code>ttt_clown_hide_when_active</code> is enabled.</p>
+                    <p>The Clown has access to a shop, but by default it is only available once they activate. The <code>ttt_clown_shop_active_only</code> and <code>ttt_clown_shop_delay</code> ConVars can change the behavior of when the shop is available and what happens when it's used.</p>
+                    <p>When the Clown activates they can optionally receive a full heal or bonus health above their maximum. <code>ttt_clown_heal_on_activate</code> and <code>ttt_clown_heal_bonus</code> can be used to configure this as detailed in the ConVars table below.</p>
+                    <p>The Clown can be allowed to use traitor traps once they activate by enabling <code>ttt_clown_use_traps_when_active</code>.</p>
+                    <p>Players can have an icon above their head that is visible to the Clown through walls by enabling <code>ttt_clown_show_target_icon</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_clown_activation_credits</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The number of credits to give the Clown when they are activated.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_can_see_jesters</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Clown after they activate.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_credits_starting</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Clown should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_damage_bonus</td>
+                            <td>0</td>
+                            <td>Float</td>
+                            <td>Damage bonus that the Clown has after being activated. <i>(e.g. 0.5 = 50% more damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_heal_bonus</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The amount of bonus health to give the Clown if they are healed when they are activated.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_heal_on_activate</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Clown should fully heal when they activate or not.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_hide_when_active</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Clown should be hidden from other players' overhead icons when they are activated. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_shop_active_only</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Clown's shop should be available only after they activate.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_shop_delay</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Clown's purchased shop items should be held until they activate.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_shop_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-4)</td>
+                            <td>What additional items are available to the Clown in the shop:
+                                <ol start="0">
+                                    <li>(Disabled) Nothing.</li>
+                                    <li>(Union) Weapons available to either the Traitor or the Detective.</li>
+                                    <li>(Intersect) Only weapons available to both the Traitor and the Detective.</li>
+                                    <li>(Detective) All weapons available to the Detective.</li>
+                                    <li>(Traitor) All weapons available to the Traitor.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_show_target_icon</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Clown has an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_update_scoreboard</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Clown shows dead players as missing in action after they activate.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_clown_use_traps_when_active</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Clown can see and use traitor traps when they are activated.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_drunk_clown</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether only a single Drunk or Clown should spawn in a round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_drunk_clown_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a Drunk should have an opportunity to spawn instead of a Clown. <i>(e.g. 0.7 = 70% chance forDrunk, 30% chance for Clown. Requires <code>ttt_single_drunk_clown</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -45,7 +607,81 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-cupid"></i><a href="#cupid">Cupid</a></span> can use their bow to make two players fall in love. Those players then win and die together.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>Shooting a player with Cupid's bow will cause them to become a lover. This is an effect applied to that player, and it does not replace their role.</p>
+                    <p>Once two players are lovers their roles are revealed to each other, and they can win the game together by surviving until the end of the round or being the last two players (other than the Cupid) alive. If one lover dies, the other one also dies immediately.</p>
+                    <p>When Cupid makes two players fall in love, other players are notified. The <code>ttt_cupid_lovers_notify_mode</code> ConVar configures who is notified as detailed in the ConVars table below.</p>
+                    <p>By default, lovers are unable to deal damage to the Cupid but can damage each other. The <code>ttt_cupid_can_damage_lovers</code>, <code>ttt_cupid_lovers_can_damage_cupid</code>, and <code>ttt_cupid_lovers_can_damage_lovers</code> ConVars configure who can and can't deal damage to who.</p>
+                    <p>The Cupid can see lovers through walls if <code>ttt_cupid_lover_vision_enabled</code> is enabled.</p>
+                    <p>The Cupid can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html.html">independent</a></span> instead of being a jester by enabling <code>ttt_cupid_is_independent</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_cupid_can_damage_lovers</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Cupid should be able to damage the lovers.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cupid_can_see_jesters</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to Cupid. <i>(Requires <code>ttt_cupid_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cupid_is_independent</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Cupids should be treated as members of the independent team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cupid_lover_vision_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the lovers can see outlines of each other through walls.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cupid_lovers_can_damage_cupid</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the lovers should be able to damage Cupid.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cupid_lovers_can_damage_lovers</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the lovers should be able to damage each other.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cupid_lovers_notify_mode</td>
+                            <td>1</td>
+                            <td>Integer (0-3)</td>
+                            <td>Who is notified with Cupid makes two players fall in love:
+                                <ol start="0">
+                                    <li>No one.</li>
+                                    <li>Everyone.</li>
+                                    <li>Traitors.</li>
+                                    <li>Innocents.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cupid_update_scoreboard</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Cupid shows dead players as missing in action. <i>(Requires <code>ttt_cupid_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -55,7 +691,59 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-guesser"></i><a href="#guesser">Guesser</a></span> must guess another player's role to swap roles with them. If they guess wrong, they die.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>The Guesser is immune to almost all forms of damage. However as players attempt to deal damage to the Guesser, the attacker's team and role will be revealed to the Guesser after an amount of damage determined by <code>ttt_guesser_show_team_threshold</code> and <code>ttt_guesser_show_role_threshold</code> has been prevented.</p>
+                    <p>The Guesser is unable to guess <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span> unless <code>ttt_guesser_can_guess_detectives</code> is enabled. They are also unable to guess the <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="#loot-goblin">Loot Goblin</a></span> or the <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span> by default, but this list of unguessable roles can be configured with <code>ttt_guesser_unguessable_roles</code> as detailed in the ConVars table below.</p>
+                    <p>Players will be notified if there is a Guesser at the start of the round if <code>ttt_guesser_warn_all</code> is enabled.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_guesser_can_guess_detectives</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Guesser is allowed to guess detectives.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_guesser_minimum_radius</td>
+                            <td>5</td>
+                            <td>Float</td>
+                            <td>The minimum radius of the Guesser's device in meters. <i>(Set to 0 to disable.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_guesser_show_role_threshold</td>
+                            <td>100</td>
+                            <td>Integer</td>
+                            <td>The amount of damage that needs to be dealt to a Guesser before they learn the attacker's role.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_guesser_show_team_threshold</td>
+                            <td>50</td>
+                            <td>Integer</td>
+                            <td>The amount of damage that needs to be dealt to a Guesser before they learn the attacker's team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_guesser_unguessable_roles</td>
+                            <td>"lootgoblin,zombie"</td>
+                            <td>String</td>
+                            <td>Names of roles that cannot be guessed by the Guesser, separated with commas. <i>(Do not include spaces or capital letters.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_guesser_warn_all</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether all players are warned when there's a Guesser in a round.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -65,7 +753,52 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-jester"></i><a href="#jester">Jester</a></span> wins the round if they can get another player to kill them.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>If <code>ttt_jester_win_by_traitors</code> is disabled, <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span> will be able to kill the Jester without causing the Jester to win.</p>
+                    <p>When the Jester uses a health station their max health will be reduced instead of healing like normal, giving the illusion of gaining health to other players. This can be disabled by disabling <code>ttt_jester_healthstation_reduce_max</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_jester_credits_starting</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The number of credits a jester should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_jester_healthstation_reduce_max</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the jester's max health should be reduced to match their current health when using a health station, instead of being healed.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_jester_win_by_traitors</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the jester will win the round if they are killed by a traitor.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_jester_swapper</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether only a single jester or Swapper should spawn in a round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_jester_swapper_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a jester should have an opportunity to spawn instead of a Swapper. <i>(e.g. 0.7 = 70% chance for jester, 30% chance for Swapper. Requires <code>ttt_single_jester_swapper</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -75,7 +808,149 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="#loot-goblin">Loot Goblin</a></span> is revealed to all players and drops random shop items when they die. They win if they can survive until the end of the round.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>At the start of each round, the Loot Gobling will be given a random amount of time between <code>ttt_lootgoblin_activation_timer</code> and <code>ttt_lootgoblin_activation_timer_max</code> before they activate.</p>
+                    <p>Once they activate, other players are notified. The <code>ttt_lootgoblin_announce</code> ConVar configures who is notified as detailed in the ConVars table below.</p>
+                    <p>Activated Loot Goblins are smaller, faster, and regenerate health over time. The <code>ttt_lootgoblin_regen_delay</code>, <code>ttt_lootgoblin_regen_mode</code>, <code>ttt_lootgoblin_regen_rate</code>, <code>ttt_lootgoblin_size</code>, <code>ttt_lootgoblin_speed_mult</code>, and <code>ttt_lootgoblin_sprint_recovery</code> ConVars can be used to configure these as detailed in the ConVars table below.</p>
+                    <p>The activated Loot Goblin will jingle as they move unless <code>ttt_lootgoblin_jingle_enabled</code> is disabled. They will also cackle at random intervals unless <code>ttt_lootgoblin_cackle_enabled</code> is disabled. The time between cackles is randomly chosen between <code>ttt_lootgoblin_cackle_timer_min</code> and <code>ttt_lootgoblin_cackle_timer_max</code>.</p>
+                    <p>Players will see an icon above the activated Loot Goblin's head and in the scoreboard unless <code>ttt_lootgoblin_active_display</code> is disabled.</p>
+                    <p>A radar can also be enabled with <code>ttt_lootgoblin_radar_enabled</code> that will frequently show the Loot Goblin's previous location. <code>ttt_lootgoblin_radar_timer</code> determines the time between radar updates and <code>ttt_lootgoblin_radar_delay</code> determines how many seconds behind the Loot Goblin's current location the radar should show.</p>
+                    <p>If an activated Loot Goblin is killed they will drop a random selection of shop weapons. The number of weapons they drop is determined by <code>ttt_lootgoblin_weapons_dropped</code>. Killing the Loot Goblin before they activate will not cause them to drop weapons.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_lootgoblin_activation_timer</td>
+                            <td>30</td>
+                            <td>Integer</td>
+                            <td>Minimum time in seconds before the Loot Goblin is revealed.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_activation_timer_max</td>
+                            <td>60</td>
+                            <td>Integer</td>
+                            <td>Maximum time in seconds before the Loot Goblin is revealed.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_active_display</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether to show the Loot Goblin's information over their head and on the scoreboard once they are activated.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_announce</td>
+                            <td>4</td>
+                            <td>Integer (0-4)</td>
+                            <td>The logic to use when notifying players that a Loot Goblin has been revealed:
+                                <ol start="0">
+                                    <li>Don't notify anyone.</li>
+                                    <li>Only notify traitors and detective.</li>
+                                    <li>Only notify traitors.</li>
+                                    <li>Only notify detective.</li>
+                                    <li>Notify everyone.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_cackle_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether to play a cackle sound periodically when a Loot Goblin is activated.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_cackle_timer_max</td>
+                            <td>12</td>
+                            <td>Integer</td>
+                            <td>The maximum time between Loot Goblin cackles.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_cackle_timer_min</td>
+                            <td>4</td>
+                            <td>Integer</td>
+                            <td>The minimum time between Loot Goblin cackles.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_drop_timer</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>How often in seconds the Loot Goblin should drop a piece of loot behind them.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_jingle_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether to play a jingle sound when an activated Loot Goblin is moving.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_radar_delay</td>
+                            <td>15</td>
+                            <td>Integer</td>
+                            <td>How delayed in seconds the radar ping for the Loot Goblin should be.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_radar_enabled</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the radar ping for the Loot Goblin should be enabled or not.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_radar_timer</td>
+                            <td>15</td>
+                            <td>Integer</td>
+                            <td>How often in seconds the radar ping for the Loot Goblin should update.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_regen_delay</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The length of the delay in seconds before the Loot Goblin's health will start to regenerate.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_regen_mode</td>
+                            <td>2</td>
+                            <td>Boolean</td>
+                            <td>Whether the Loot Goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_regen_rate</td>
+                            <td>3</td>
+                            <td>Integer</td>
+                            <td>How often in seconds a Loot Goblin should regain health while regenerating.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_size</td>
+                            <td>0.5</td>
+                            <td>Float</td>
+                            <td>The size multiplier for the Loot Goblin to use when they are revealed. <i>(e.g. 0.5 = 50% size.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_speed_mult</td>
+                            <td>1.2</td>
+                            <td>Float</td>
+                            <td>The multiplier to use on the Loot Goblin's movement speed when they are activated. <i>(e.g. 1.2 = 120% normal speed.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_sprint_recovery</td>
+                            <td>0.12</td>
+                            <td>Float</td>
+                            <td>The amount of stamina to recover per tick when the Loot Goblin is activated.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_lootgoblin_weapons_dropped</td>
+                            <td>8</td>
+                            <td>Integer</td>
+                            <td>How many weapons the Loot Goblin drops when they are killed.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -85,7 +960,27 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-sponge"></i><a href="#sponge">Sponge</a></span> has an aura that absorbs damage that would be dealt to nearby players and wins the round if they die.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>If all players are inside the Sponge's aura, it will stop working and players will be able to damage each other as normal.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_sponge_aura_radius</td>
+                            <td>5</td>
+                            <td>Float</td>
+                            <td>The radius of the Sponge's aura in meters.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -95,10 +990,89 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-swapper"></i><a href="#swapper">Swapper</a></span> swaps roles with their killer instead of dying.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>After swapping, the killer's new health and max health are determined by <code>ttt_swapper_killer_health</code> and <code>ttt_swapper_killer_max_health</code>. Setting <code>ttt_swapper_killer_health</code> to 0 will kill the Swapper's killer. They will still swap roles even if they die.</p>
+                    <p>After the Swapper swaps roles, their new health is determined by <code>ttt_swapper_respawn_health</code>.</p>
+                    <p>When the Swapper uses a health station their max health will be reduced instead of healing like normal, giving the illusion of gaining health to other players. This can be disabled by disabling <code>ttt_swapper_healthstation_reduce_max</code>.</p>
+                    <p>When swapping with another player, some or all weapons can also be swapped between the two players. By default, only role specific weapons will swap between the two players, but this can be configured with <code>ttt_swapper_weapon_mode</code> as detailed in the ConVars table below.</p>
+                    <p>The Swapper also interacts with <span class="inline-icon" style="color:var(--jester);"><i class="icon-cupid"></i><a href="#cupid">Cupid's</a></span> lovers such that when two players swap roles, their lovers (if any) will also be swapped. This can be disabled by disabling <code>ttt_swapper_swap_lovers</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_swapper_credits_starting</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Swapper should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_swapper_healthstation_reduce_max</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Swapper's max health should be reduced to match their current health when using a health station, instead of being healed.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_swapper_killer_health</td>
+                            <td>100</td>
+                            <td>Integer</td>
+                            <td>The amount of health the Swapper's killer should set to. Set to "0" to kill them.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_swapper_killer_max_health</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The maximum health value to set on the Swapper's killer. Set to "0" to use the Swapper's default.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_swapper_respawn_health</td>
+                            <td>100</td>
+                            <td>Integer</td>
+                            <td>What amount of health to give the Swapper when they are killed and respawned.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_swapper_swap_lovers</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Swapper should swap lovers with their attacker or not.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_swapper_weapon_mode</td>
+                            <td>1</td>
+                            <td>Integer (0-2)</td>
+                            <td>How to handle weapons when the Swapper is killed:
+                                <ol start="0">
+                                    <li>Don't swap anything.</li>
+                                    <li>Swap role weapons if there are any.</li>
+                                    <li>Swap all weapons.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_jester_swapper</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether only a single jester or Swapper should spawn in a round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_jester_swapper_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a jester should have an opportunity to spawn instead of a Swapper. <i>(e.g. 0.7 = 70% chance for jester, 30% chance for Swapper. Requires <code>ttt_single_jester_swapper</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 </html>

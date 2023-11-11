@@ -12,7 +12,7 @@ local StringUpper = string.upper
 -------------
 
 local zombie_show_target_icon = GetConVar("ttt_zombie_show_target_icon")
-local zombie_vision_enable = GetConVar("ttt_zombie_vision_enable")
+local zombie_vision_enabled = GetConVar("ttt_zombie_vision_enabled")
 local zombie_damage_penalty = GetConVar("ttt_zombie_damage_penalty")
 local zombie_damage_reduction = GetConVar("ttt_zombie_damage_reduction")
 local zombie_spit_convert = GetConVar("ttt_zombie_spit_convert")
@@ -249,7 +249,7 @@ end
 
 hook.Add("TTTUpdateRoleState", "Zombie_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    zombie_vision = zombie_vision_enable:GetBool()
+    zombie_vision = zombie_vision_enabled:GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
     jesters_visible_to_monsters = GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
     jesters_visible_to_independents = INDEPENDENT_ROLES[ROLE_ZOMBIE] and GetConVar("ttt_zombie_can_see_jesters"):GetBool()
@@ -303,12 +303,12 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
         html = html .. "<span style='display: block; margin-top: 10px;'>Killing a player with their claws will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>turn the target</span> into " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " thrall.</span>"
 
         -- Leap
-        if GetConVar("ttt_zombie_leap_enable"):GetBool() then
+        if GetConVar("ttt_zombie_leap_enabled"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>By using the secondary attack with the claws, " .. ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] .. " can <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>leap in the air</span> to surprise their potential targets.</span>"
         end
 
         -- Spit
-        if GetConVar("ttt_zombie_spit_enable"):GetBool() then
+        if GetConVar("ttt_zombie_spit_enabled"):GetBool() then
             local keyMappingStyles = "font-size: 12px; color: black; display: inline-block; padding: 0px 3px; height: 16px; border-width: 4px; border-style: solid; border-left-color: rgb(221, 221, 221); border-bottom-color: rgb(119, 119, 102); border-right-color: rgb(119, 119, 119); border-top-color: rgb(255, 255, 255); background-color: rgb(204, 204, 187);"
             html = html .. "<span style='display: block; margin-top: 10px;'>If the target is out of range of the claws, the " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " can <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>spit acid</span> at them by pressing the "
 
@@ -323,7 +323,7 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
         end
 
         -- Vision
-        local hasVision = zombie_vision_enable:GetBool()
+        local hasVision = zombie_vision_enabled:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>hunger for brains</span> helps them see their targets through walls by highlighting their enemies.</span>"
         end
@@ -334,7 +334,7 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
             if hasVision then
                 html = html .. " also"
             end
-            html = html .. " be identified by the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
+            html = html .. " be identified by the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>skull</span> icon floating over their heads.</span>"
         end
 
         -- Damage penalty

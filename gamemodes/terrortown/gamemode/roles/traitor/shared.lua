@@ -64,7 +64,7 @@ end)
 --------------------
 
 ROLETEAM_IS_TARGET_HIGHLIGHTED[ROLE_TEAM_TRAITOR] = function(ply, tgt)
-    local traitor_vision = GetConVar("ttt_traitors_vision_enable"):GetBool()
+    local traitor_vision = GetConVar("ttt_traitors_vision_enabled"):GetBool()
     if ply:IsActiveTraitorTeam() and tgt:IsActiveTraitorTeam() then return traitor_vision end
     if ply:IsActiveTraitorTeam() and tgt:IsActiveJesterTeam() then return traitor_vision and GetConVar("ttt_jesters_visible_to_traitors"):GetBool() end
     return false

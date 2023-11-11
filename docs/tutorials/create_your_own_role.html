@@ -3,20 +3,25 @@
 <head>
     <title>Custom Roles for TTT - Tutorials - Creating Your Own Custom Role</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark-dimmed.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#tutorials" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#tutorials" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Creating Your Own Custom Role</h1>
         <p>This tutorial aims to provide the step-by-step instructions that a developer would need to create their own custom role. It covers creation of the role's basic features, what options are available for preset advanced features to choose from, all the way through creating the role icons and publishing to the workshop.</p>
         <p>This tutorial assumes you have some programming experience, even if it's not directly in Lua itself. Lua is a pretty straight-forward language, so knowledge of its specifics are not necessary as long as you are good at googling. Of course, if you have any questions about how to do more advanced things, feel free to join our Discord server to ask.</p>
-
-        <h2 class="force-break"><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
         <ol>
             <li><a href="#before-you-start">Before You Start</a></li>
             <li><a href="#code">Code</a>
@@ -234,7 +239,7 @@ ROLE.nameshort = "sum"</code></pre></div>
                 </tr>
                 <tr>
                     <td><code>{comrades}</code></td>
-                    <td>Information about fellow traitors and glitches</td>
+                    <td>Information about fellow traitors and Glitches</td>
                     <td>These are your comrades: (includes a list of traitors)</td>
                 </tr>
                 <tr>
@@ -363,14 +368,14 @@ end</code></pre></div>
         end</code></pre></div>
 
         <h3><a id="acting-like-a-jester" href="#acting-like-a-jester">Acting Like a Jester</a></h3>
-        <p>The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the clown role -- when they first spawn, they:</p>
+        <p>The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the Clown role -- when they first spawn, they:</p>
         <ol>
             <li>Cannot do damage</li>
             <li>Don't take various forms of damage (fire, explosion, falling, etc.)</li>
             <li>Appear as a jester to other roles (on the radar, scoreboard, icon over their head, etc.)</li>
         </ol>
 
-        <p>Once the role activates (in the case of the clown, this happens when there is only one team remaining) then they no longer act like a jester, allowing them to do damage and potentially win the round.</p>
+        <p>Once the role activates (in the case of the Clown, this happens when there is only one team remaining) then they no longer act like a jester, allowing them to do damage and potentially win the round.</p>
         <p>To make your role behave similarly, you need to define the following property:</p>
         <div><pre><code class="language-lua">ROLE.shouldactlikejester = nil</code></pre></div>
 
@@ -407,11 +412,11 @@ end</code></pre></div>
         <p>Once a translation is defined, it can be used in client-side code via <code>LANG.GetTranslation</code> (or <code>LANG.GetParamTranslation</code> if it requires parameters).</p>
 
         <h3><a id="custom-spectator-hud" href="#custom-spectator-hud">Custom Spectator HUD</a></h3>
-        <p>Some roles have features which are activated once the player dies, such as the phantom. In the phantom's case, they build up some amount of power over time and can use that power to use one of four different abilities against the player the killed them. While the power generation logic will be up to you to design and implement (you may want to look at the phantom code for reference), the spectator HUD display and action implementation have been made easier through the use of hooks and shared methods.</p>
+        <p>Some roles have features which are activated once the player dies, such as the Phantom. In the Phantom's case, they build up some amount of power over time and can use that power to use one of four different abilities against the player the killed them. While the power generation logic will be up to you to design and implement (you may want to look at the Phantom code for reference), the spectator HUD display and action implementation have been made easier through the use of hooks and shared methods.</p>
         <p>This section of the guide will explain the pieces of the system which should make these kind of spectator HUDs easier and provide a proof-of-concept example with the summoner role.</p>
-        <p>To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about <a href="#translations">above</a>. The <code>TTTSpectatorShowHUD</code> hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the <code>TTTSpectatorHUDKeyPress</code> hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The <code>ROLE.shouldshowspectatorhud</code> method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.</p>
+        <p>To implement a spectator HUD like the Phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about <a href="#translations">above</a>. The <code>TTTSpectatorShowHUD</code> hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the <code>TTTSpectatorHUDKeyPress</code> hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The <code>ROLE.shouldshowspectatorhud</code> method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.</p>
         <p>Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.</p>
-        <p>For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the <code>ROLE.shouldshowspectatorhud</code> function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the <code>TTTSpectatorShowHUD</code> hook. Within that hook we prepare the information required and call the shared <code>CRHUD:PaintPowersHUD</code> method which handles the rendering for us. The server side is similar, we use the <code>TTTSpectatorHUDKeyPress</code> hook to intercept key presses and define what action each keypress should result in. The <a href="../api.html" target="_blank">API</a> has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:</p>
+        <p>For our example's sake we've taken the Phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the <code>ROLE.shouldshowspectatorhud</code> function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the <code>TTTSpectatorShowHUD</code> hook. Within that hook we prepare the information required and call the shared <code>CRHUD:PaintPowersHUD</code> method which handles the rendering for us. The server side is similar, we use the <code>TTTSpectatorHUDKeyPress</code> hook to intercept key presses and define what action each keypress should result in. The <a href="../api.html" target="_blank">API</a> has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:</p>
         <div><pre><code class="language-lua">ROLE.shouldshowspectatorhud = function(ply)
     if ply:GetNWBool("Haunting") then
         return true
@@ -505,13 +510,13 @@ end</code></pre></div>
                 <tr>  <!-- TODO: Remove after 2.0.0 -->
                     <td><code>ROLE.shoulddelayannouncements</code> <b>DEPRECATED IN 1.9.4</b></td>
                     <td>boolean</td>
-                    <td>Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.</td>
+                    <td>Whether this role should delay announcements when they kill a player that shows a message (like Phantom and Parasite). Used for things like preventing the Assassin's target update message from getting overlapped.</td>
                     <td>1.2.7</td>
                 </tr>
                 <tr>
                     <td><code>ROLE.haspassivewin</code></td>
                     <td>boolean</td>
-                    <td>Whether this role should not block another role from winning (like the old man).</td>
+                    <td>Whether this role should not block another role from winning (like the Old Man).</td>
                     <td>1.3.1</td>
                 </tr>
                 <tr>
@@ -577,7 +582,7 @@ end</code></pre></div>
                 <tr>
                     <td><code>ROLE.isdetectivelike</code></td>
                     <td>boolean</td>
-                    <td>Whether this role can be activated to gain detective features (e.g. the deputy and impersonator).</td>
+                    <td>Whether this role can be activated to gain detective features (e.g. the Deputy and Impersonator).</td>
                     <td>1.9.9</td>
                 </tr>
                 <tr>
@@ -601,13 +606,13 @@ ROLE.canusetraitorbuttons = false
 ROLE.shoulddelayshop = true</code></pre></div>
 
         <h3><a id="role-change-logic" href="#role-change-logic">Role Change Logic</a></h3>
-        <p>Sometimes a role has to handle the specific cases of when a role is initially assigned to a player (e.g. at the start of the round or when the drunk remembers what role they are) or when a role is stolen (e.g. by the bodysnatcher or the swapper). To make those situations handleable there are two different functions that can optionally be added to your role.</p>
-        <p>The first function is called when a role is initially assigned to a player and can be used to set up some logic like the assignment of the assassin's first target. The function can be defined like this:</p>
+        <p>Sometimes a role has to handle the specific cases of when a role is initially assigned to a player (e.g. at the start of the round or when the Drunk remembers what role they are) or when a role is stolen (e.g. by the Bodysnatcher or the Swapper). To make those situations handleable there are two different functions that can optionally be added to your role.</p>
+        <p>The first function is called when a role is initially assigned to a player and can be used to set up some logic like the assignment of the Assassin's first target. The function can be defined like this:</p>
         <div><pre><code class="language-lua">ROLE.onroleassigned = function(ply)
     -- Do something with the 'ply', the player being assigned the role, here
 end</code></pre></div>
 
-        <p>The other function that might be useful is called when someone takes the role from someone else. This can be used to transfer some part of the role state (such as an assassin's current target) to the new player. This function looks something like:</p>
+        <p>The other function that might be useful is called when someone takes the role from someone else. This can be used to transfer some part of the role state (such as an Assassin's current target) to the new player. This function looks something like:</p>
         <div><pre><code class="language-lua">ROLE.moverolestate = function(source, target, keepOnSource)
     -- In this function 'source' is the player whose state is being moved to 'target'
     -- The 'keepOnSource' tells you whether the 'source' player should keep whatever information is being copied to 'target'
@@ -1078,5 +1083,6 @@ end</pre></code></div>
         <p>If you have any problems or questions please jump into the <a href="https://discord.gg/BAPZrykC3F" target="_blank">Custom Roles for TTT Discord Server</a>! We love to see what everyone has making and there are almost always people online willing to help out if you need a hand.</p>
 
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

@@ -295,13 +295,13 @@ local function RemoveCorpseCall()
 end
 net.Receive("TTT_RemoveCorpseCall", RemoveCorpseCall)
 
-local function RecieveTeleportMark()
+local function ReceiveTeleportMark()
     local pos = net.ReadVector()
     pos.z = pos.z + 50
     RADAR.teleport_marks = {}
     table.insert(RADAR.teleport_marks, { pos = pos, called = CurTime() })
 end
-net.Receive("TTT_TeleportMark", RecieveTeleportMark)
+net.Receive("TTT_TeleportMark", ReceiveTeleportMark)
 
 local function ClearRadarExtras()
     RADAR.called_corpses = {}

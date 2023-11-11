@@ -1,21 +1,207 @@
 <!doctype html>
 <html>
 <head>
-    <title>Independents - Custom Roles for TTT Wiki</title>
+    <title>Custom Roles for TTT - Independents</title>
     <link type="text/css" rel="stylesheet" href="../fonts/roleicons.css">
-    <link type="text/css" rel="stylesheet" href="../css/style.css"></head>
-    <script type="text/javascript" src="../js/expandable.js" defer></script>
+    <link type="text/css" rel="stylesheet" href="../css/style.css">
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#independent" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel" style="margin-bottom: 15px;">
+        <iframe id="nav" src="../nav.html#independent" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--independent); margin-top: 0;">Independent Roles</h1>
+            <div style="margin: 10px;">
+                <p><span style="color:var(--independent);">Independents</span> have unique win conditions for each role. There is very little in common between different independents, and they can play completely different to each other. Typically, there are very few independents in each round.</p>
+                <p>Most independents do not have their role known to any other players, and are not part of a team. Even if there are multiple different independents in the same round, they will often be competing against each other either directly or indirectly. However, there are exceptions to this as some independents have a goal of converting other players to their team. In these cases those players will be aware of each other's roles and can win together.</p>
+                <p>Some independents are made aware of <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, and have the ability to see players who are dead but have not had their bodies found as "missing in action" on the scoreboard. These abilities are usually reserved for independents whose goal requires killing other players. Independents with a more passive goal will tend not to have these abilities.</p>
+            </div>
+        </div>
+    </div>
+    <div class="contentbody panel">
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+            <div class="content">
+                <p>Each round after detectives and traitors are chosen, some of the remaining players may be chosen as independents. The following ConVars can be used to configure the requirements and restrictions on how independents spawn.</p>
+                <table style="width:100%; margin-bottom: 10px;">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_independent_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a single independent <i>(or jester if <code>ttt_single_jester_independent</code> is enabled)</i> will spawn in a round. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be disabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_jester_independent</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether only a single jester or independent should spawn in a round.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_jester_independent_max_players</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The maximum players to have only a single jester or independent spawn in a row. If there are more players than this both a jester and an independent can spawn in the same round. <i>(Set to 0 to disable. Requires <code>ttt_single_jester_independent</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_multiple_jesters_independents</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether more than one jester/independent should be allowed to spawn in each round. <i>(Enabling this will ignore <code>ttt_independent_chance</code>, <code>ttt_jester_chance</code>, <code>ttt_single_jester_independent</code>, and <code>ttt_single_jester_independent_max_players</code>.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_independent_max</td>
+                        <td>2</td>
+                        <td>Integer</td>
+                        <td>The maximum number of players that can spawn as a jester or independent. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_independent_pct</td>
+                        <td>0.13</td>
+                        <td>Float (0-1)</td>
+                        <td>Percentage of players, rounded up, that have the chance to spawn as a jester or independent. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_independent_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a jester or independent will spawn in each individual slot made by <code>ttt_jester_independent_pct</code>. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p><b>Example:</b> <code>ttt_independent_chance</code> is 0.5, <code>ttt_single_jester_independent</code> is 1, and <code>ttt_single_jester_independent_max_players</code> is 0 as per the default values above. As <code>ttt_single_jester_independent</code> is set to 1 there can only be a single jester or independent in each round. This means there is a 50% chance that a jester or independent will spawn in the round as <code>ttt_independent_chance</code> is set to 0.5. If <code>ttt_single_jester_independent</code> were instead set to 0, there is a 50% chance that an independent will spawn in the round and this independent could spawn in addition to a jester, but there will only ever be one of each. If <code>ttt_single_jester_independent_max_players</code> were now set to 8, this would mean that in games with 8 or less players only a single jester or independent could spawn, but in games with 9 or more players there is a chance for both a jester and an independent to spawn.</p>
+                <p>If <code>ttt_multiple_jesters_independents</code> was set to 1, <code>ttt_independent_chance</code>, <code>ttt_single_jester_independent</code>, and <code>ttt_single_jester_independent_max_players</code> would all be ignored and the jester and independent roles are combined into one group. In this example there are eight players in the game, <code>ttt_jester_independent_pct</code> is 0.13, and <code>ttt_jester_independent_chance</code> is 0.5 as per the default values above. At most 13% of players (rounded up) can be jesters or independents as <code>ttt_jester_independent_pct</code> is set to 0.13. This means that there will be at most two jesters or independents. However, each of those players only has a 50% chance to be a jester or independent as <code>ttt_jester_independent_chance</code> is set to 0.5. This means it is possible for the round to have zero, one, or two jesters and independents. All remaining players who have not had a role assigned will be part of the innocent or monster teams.</p>
+                <p>If you always wanted the same number of jesters and independents in each round with no variation, set <code>ttt_jester_independent_chance</code> to 1. Setting either <code>ttt_jester_independent_pct</code> or <code>ttt_jester_independent_chance</code> to 0 will make it impossible for jesters and independents to spawn while <code>ttt_multiple_jesters_independents</code> is enabled.</p>
+                <p>Additionally, the following miscellaneous ConVars can be used to configure options that apply to all independents.</p>
+                <table style="width:100%; margin-bottom: 10px;">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_independents_trigger_traitor_testers</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether independents trigger traitor testers as if they were traitors.</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+            </div>
+        </div>
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Role Guidelines</button>
+            <div class="content">
+                <p>When designing roles it is important to make sure your role is part of the correct team. Each team has a unique identity along with strengths and weaknesses that play better with some roles than others. If you are designing an independent role, keep the following in mind:</p>
+                <b>Independents should:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Have unique win conditions, secondary win conditions, or some way of changing into a role that has a win condition.</li>
+                    <li>Have some interesting mechanic or ability to help them toward their win condition or help with changing into a role that has a win condition.</li>
+                    <li>Have a config option to be a part of the monster team instead if the role is a thematic fit.</li>
+                </ul>
+                <b>Independents should <u>NOT</u>:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Rely on other players. Independents are independent after all and they generally have no team and no allies. If the role relies on other players, consider making them a traitor instead.</li>
+                </ul>
+                <p>These are just guidelines and in some special circumstances a role might be best fit as an independent even if it doesn't align with the above suggestions. However, in general following these suggestions will ensure that your role works well within the framework that Custom Roles for TTT provides.</p>
+                <p>A walkthrough for creating your own role can be found on the <a href="../tutorials/create_your_own_role.html">Create Your Own Role</a> tutorial page.</p>
+            </div>
+        </div>
         <div id="arsonist" class="collapsible">
             <button class="header" style="background-color:var(--independent);"><i class="icon-arsonist"></i>Arsonist</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-arsonist"></i><a href="#arsonist">Arsonist</a></span> can douse players and set them on fire. They win if they are the last player alive.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>They can douse players in gasoline by standing near them and then set them on fire using their igniter weapon once all other players have all been doused. If <code>ttt_arsonist_early_ignite</code> is enabled, the igniter weapon can be used at any time, but keep in mind it can only be used once.</p>
+                    <p>Players are notified when they are doused after a configurable delay (see <code>ttt_arsonist_douse_notify_delay_min</code> and <code>ttt_arsonist_douse_notify_delay_max</code> below). This is to encourage Arsonists to be sneaky or blend in with other players to disguise themselves.</p>
+                    <p>Dead players' corpses can also be doused and will be ignited with living doused players. Dousing all corpses is not required to activate the igniter when <code>ttt_arsonist_early_ignite</code> is disabled.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_arsonist_can_see_jesters</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Arsonist.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_arsonist_corpse_ignite_time</td>
+                            <td>10</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds to ignite doused dead player corpses for before destroying them.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_arsonist_douse_distance</td>
+                            <td>250</td>
+                            <td>Integer</td>
+                            <td>The maximum distance away the dousing target can be.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_arsonist_douse_notify_delay_max</td>
+                            <td>30</td>
+                            <td>Integer</td>
+                            <td>The maximum delay before a player is notified they've been doused.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_arsonist_douse_notify_delay_min</td>
+                            <td>10</td>
+                            <td>Integer</td>
+                            <td>The minimum delay before a player is notified they've been doused.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_arsonist_douse_time</td>
+                            <td>8</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the Arsonist takes to douse someone.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_arsonist_early_ignite</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether to allow the Arsonist to use their igniter without dousing everyone first.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_arsonist_update_scoreboard</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Arsonist shows dead players as missing in action.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_detectives_search_only_arsonistdouse</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether only detectives can see information about whether a corpse was doused by an Arsonist and when. Once a detective searches a body, this information will be available to all players. <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -23,9 +209,111 @@
             <button class="header" style="background-color:var(--independent);"><i class="icon-drunk"></i>Drunk</button>
             <div class="content">
                 <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-drunk"></i><a href="#drunk">Drunk</a></span> has forgotten their role and remembers after enough time passes or when there are no members of the <span style="color:var(--innocent);">innocent team</span> or <span style="color:var(--traitor);">traitor team</span> left alive.</p>
+                <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-drunk"></i><a href="#drunk">Drunk</a></span> has forgotten their role and remembers after enough time passes or when there are no members of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> or <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> left alive.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>If there is only one team remaining, the Drunk will instantly sober up and remember they are.</p>
+                    <p>After some time has passed (configurable by the <code>ttt_drunk_sober_time</code> ConVar) and the round has not ended, the Drunk will sober up and remember what role they are.</p>
+                    <p>Which role the Drunk becomes depends on the situation and various ConVars (For example, <code>ttt_drunk_any_role</code>, <code>ttt_drunk_can_be_*</code>, <code>ttt_drunk_become_clown</code>, <code>ttt_drunk_innocent_chance</code>, and <code>ttt_drunk_join_losing_team</code>). By default, the Drunk will join the losing team and become their most basic role (e.g. the <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="../teams/innocent.html#innocent">Innocent</a></span> for the innocent team and the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitor</a></span> for the traitor team) in the case of the round ending. If the Drunk is remembering their role due to the sober timer running out, they have a 70% chance of becoming an Innocent and, therefore, a 30% chance of becoming a Traitor.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_drunk_any_role</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Drunk can become any enabled role other than theDrunk, the Glitch, or roles that were already used this round. <i>(The <code>ttt_drunk_can_be_*</code> ConVars can be used to prevent the Drunk from becoming specific roles.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_can_be_*</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Drunk can become a specific role when they sober up. Replace * with the name of the role you want to configure without spaces or capital letters. <i>(Requires <code>ttt_drunk_any_role</code> to be enabled. The Glitch and Drunk cannot be configured in this way.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_any_role_include_disabled</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether disabled roles should be included in the list of possible roles for the Drunk to sober up to. <i>(Requires <code>ttt_drunk_any_role</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_become_clown</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Drunk should become a Clown instead of joining the losing team if the round would end before they sober up.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_can_see_jesters</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Drunk.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_innocent_chance</td>
+                            <td>0.7</td>
+                            <td>Float (0-1)</td>
+                            <td>Chance that the Drunk will become an innocent role when remembering their role.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_join_losing_team</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Drunk should join the losing team when their sober timer runs out. <i>(This isn't 100% accurate as we can't know for sure which team is losing but we can try based on the available information.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_notify_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-4)</td>
+                            <td>The logic to use when notifying players that a Drunk has sobered up:
+                                <ol start="0">
+                                    <li>Don't notify anyone.</li>
+                                    <li>Only notify traitors and detective.</li>
+                                    <li>Only notify traitors.</li>
+                                    <li>Only notify detective.</li>
+                                    <li>Notify everyone.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_sober_time</td>
+                            <td>180</td>
+                            <td>Integer</td>
+                            <td>Time in seconds for the Drunk to remember their role.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_traitor_chance</td>
+                            <td>0</td>
+                            <td>Float (0-1)</td>
+                            <td>Chance that the Drunk will become a traitor role when remembering their role. If disabled, player chance of becoming a traitor is equal to every other non-innocent role. <i>(Requires <code>ttt_drunk_any_role</code> to be disabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_drunk_update_scoreboard</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Drunk shows dead players as missing in action.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_drunk_clown</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether only a single Drunk or Clown should spawn in a round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_drunk_clown_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a Drunk should have an opportunity to spawn instead of a Clown. <i>(e.g. 0.7 = 70% chance forDrunk, 30% chance for Clown. Requires <code>ttt_single_drunk_clown</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -33,9 +321,87 @@
             <button class="header" style="background-image:linear-gradient(110deg, var(--independent) 0%, var(--independent) 70%, var(--monster) 70%, var(--monster) 100%);"><i class="icon-hive-mind"></i>Hive Mind</button>
             <div class="content">
                 <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-hive-mind"></i><a href="#hive-mind">Hive Mind</a></span>'s goal is to assimilate all other non-<span style="color:var(--jester);">jester</span> players, gaining access to their shop items as they do.</p>
+                <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-hive-mind"></i><a href="#hive-mind">Hive Mind</a></span> can assimilate other players into the <span class="inline-icon" style="color:var(--independent);"><i class="icon-hive-mind"></i><a href="#hive-mind">Hive Mind</a></span>, gaining access to their shop items and sharing a health pool as they do. They win by assimilating all living players.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>Players killed by the Hive Mind will be assimilated and will respawn as part of the Hive Mind.</p>
+                    <p>When a player with a shop is assimilated, their available shop items are added to the Hive Mind's shop.</p>
+                    <p>All members of the Hive Mind have a shared pool of health -- gaining members increases the collective's maximum health and any healing or damage done to one member affects them all.</p>
+                    <p>The Hive Mind also has a shared pool of credits -- gaining or spending credits affects the collective.</p>
+                    <p>When each new member joins the Hive Mind, the collective is healed by a percentage of the new member's former maximum health. By default it is 25%, but that value is configurable via the <code>ttt_hivemind_join_heal_pct</code> ConVar.</p>
+                    <p>Members of the Hive Mind can identify each other through walls by a highlight, but that can be removed by disabling the <code>ttt_hivemind_vision_enabled</code> ConVar.</p>
+                    <p>By default, members of the Hive Mind cannot damage each other but this behavior can be changed via the <code>ttt_hivemind_friendly_fire</code> ConVar.</p>
+                    <p>Health regeneration can be enabled for the Hive Mind and adjusted via the <code>ttt_hivemind_regen_timer</code>, <code>ttt_hivemind_regen_per_member_amt</code>, and <code>ttt_hivemind_regen_max_pct</code> ConVars.</p>
+                    <p>The Hive Mind can optionally be part of the <span style="color:var(--monster)"><a href="../teams/monster.html">monster team</a></span> instead of being an independent by enabling <code>ttt_hivemind_is_monster</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_hivemind_friendly_fire</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether a member of the Hive Mind can damage other members of the Hive Mind.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hivemind_is_monster</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Hive Mind should be treated as a member of the monster team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hivemind_join_heal_pct</td>
+                            <td>0.25</td>
+                            <td>Float</td>
+                            <td>The percentage a new member's maximum health that the Hive Mind should be healed. <i>(e.g. 0.25 = 25% of their health healed.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hivemind_regen_max_pct</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The percentage of the Hive Mind's maximum health to heal them up to. <i>(e.g. 0.5 = 50% of their max health.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hivemind_regen_per_member_amt</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The amount of health per-member of the Hive Mind that they should regenerate over time.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hivemind_regen_timer</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds between each health regeneration.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hivemind_shop_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-4)</td>
+                            <td>What additional items are available to the Hive Mind in the shop:
+                                <ol start="0">
+                                    <li>(Disabled) Nothing.</li>
+                                    <li>(Union) Weapons available to either the Traitor or the Detective.</li>
+                                    <li>(Intersect) Only weapons available to both the Traitor and the Detective.</li>
+                                    <li>(Detective) All weapons available to the Detective.</li>
+                                    <li>(Traitor) All weapons available to the Traitor.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hivemind_vision_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Hive Mind's member highlighting is enabled.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -45,7 +411,154 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-killer"></i><a href="#killer">Killer</a></span> spawns with a knife and throwable crowbar. They win if they are the last player alive.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>When <code>ttt_killer_warn_all</code> is enabled, all players are warned when there is Killer in the game.</p>
+                    <p>They are given a knife that does high damage to aid in their slaughter. This knife can be disabled by changing <code>ttt_killer_knife_enabled</code> and adjusted by <code>ttt_killer_knife_damage</code> and <code>ttt_killer_knife_delay</code>.</p>
+                    <p>They have a special crowbar that can be thrown. It can be disabled by changing <code>ttt_killer_crowbar_enabled</code> and adjusted by <code>ttt_killer_crowbar_damage</code> and <code>ttt_killer_crowbar_thrown_damage</code>.</p>
+                    <p>If they don't kill often enough they will begin to smoke, alerting the other players. The Killer will be warned in chat in advance of the smoke starting, and the smoke can be disabled by changing <code>ttt_killer_smoke_enabled</code>.</p>
+                    <p>The Killer's blood lust helps them see their targets through walls by highlighting their enemies unless <code>ttt_killer_vision_enabled</code> is disabled.</p>
+                    <p>Their targets can also be identified by the skull icon floating over their heads, which can be disabled by changing <code>ttt_killer_show_target_icon</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_killer_can_see_jesters</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Killer.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_credits_award_pct</td>
+                            <td>0.35</td>
+                            <td>Float (0-1)</td>
+                            <td>When this percentage of non-jester players are dead, Killers are awarded a number of credits equal to <code>ttt_killer_credits_award_size</code>.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_credits_award_repeat</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the credit award determined by <code>ttt_killer_credits_award_pct</code> and <code>ttt_killer_credits_award_size</code> is handed out multiple times. <i>(e.g. If <code>ttt_killer_credits_award_pct</code> is 0.25, Killers will be awarded credits at 25% killed, 50% killed, and 75% killed.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_credits_award_size</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits awarded to Killers when the percentage determined by <code>ttt_killer_credits_award_pct</code> of non-jester players are dead.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_credits_starting</td>
+                            <td>2</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Killer should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_crowbar_damage</td>
+                            <td>20</td>
+                            <td>Integer</td>
+                            <td>How much damage the crowbar should do when the Killer bashes another player with it. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_crowbar_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Killer throwable crowbar is enabled.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_crowbar_thrown_damage</td>
+                            <td>50</td>
+                            <td>Integer</td>
+                            <td>How much damage the crowbar should do when the Killer throws it at another player. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_damage_penalty</td>
+                            <td>0.25</td>
+                            <td>Float (0-1)</td>
+                            <td>The fraction a Killer's damage will be scaled by when they are attacking without using their knife. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_damage_reduction</td>
+                            <td>0</td>
+                            <td>Float (0-1)</td>
+                            <td>The fraction an attacker's bullet damage will be reduced by when they are shooting a Killer. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_knife_damage</td>
+                            <td>65</td>
+                            <td>Integer</td>
+                            <td>How much damage the Killer's knife does. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_knife_delay</td>
+                            <td>0.8</td>
+                            <td>Float</td>
+                            <td>The amount of time between knife attacks for a Killer. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_knife_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Killer's knife is enabled.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_shop_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-4)</td>
+                            <td>What additional items are available to the Killer in the shop:
+                                <ol start="0">
+                                    <li>(Disabled) Nothing.</li>
+                                    <li>(Union) Weapons available to either the Traitor or the Detective.</li>
+                                    <li>(Intersect) Only weapons available to both the Traitor and the Detective.</li>
+                                    <li>(Detective) All weapons available to the Detective.</li>
+                                    <li>(Traitor) All weapons available to the Traitor.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_show_target_icon</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether Killers have an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_smoke_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Killer smoke is enabled.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_smoke_timer</td>
+                            <td>60</td>
+                            <td>Integer</td>
+                            <td>Number of seconds before a Killer will start to smoke after their last kill.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_update_scoreboard</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Killer shows dead players as missing in action.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_vision_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether Killers have their special vision highlights enabled.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_warn_all</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether to warn all players if there is a Killer. If 0, only traitors will be warned.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -55,7 +568,52 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-mad-scientist"></i><a href="#mad-scientist">Mad Scientist</a></span> can use their zombification device to revive players as <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombies</a></span>. They win when everyone is either dead, a <span class="inline-icon" style="color:var(--independent);"><i class="icon-mad-scientist"></i><a href="#mad-scientist">Mad Scientist</a></span> or a <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombie</a></span>.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>When <code>ttt_madscientist_respawn_enabled</code> is enabled, the Mad Scientist will respawn as a Zombie thrall when killed.</p>
+                    <p>The Mad Scientist can optionally be part of the <span style="color:var(--monster)"><a href="../teams/monster.html">monster team</a></span> instead of being an independent by enabling <code>ttt_madscientist_is_monster</code>. However, the Mad Scientist will only be able to spawn if the Mad Scientist and the Zombie are part of the same team.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_madscientist_can_see_jesters</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Mad Scientist. <i>(Requires <code>ttt_madscientist_is_monster</code> to be disabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_madscientist_device_time</td>
+                            <td>4</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the Mad Scientist's device takes to use.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_madscientist_is_monster</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Mad Scientist should be treated as a member of the monster team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_madscientist_respawn_enabled</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Mad Scientist should respawn as a Zombie when they are killed.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_madscientist_update_scoreboard</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Mad Scientist shows dead players as missing in action. <i>(Requires <code>ttt_madscientist_is_monster</code> to be disabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -65,7 +623,70 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-old-man"></i><a href="#old-man">Old Man</a></span> has barely any health and is given a short invulnerability period and a double barrel shotgun when they are about to die. They win if they can survive until the end of the round.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>The Old Man's adrenaline rush can be adjusted by changing <code>ttt_oldman_adrenaline_rush</code>, <code>ttt_oldman_adrenaline_ramble</code>, <code>ttt_oldman_adrenaline_shotgun</code>, or <code>ttt_oldman_adrenaline_shotgun_damage</code> ConVars.</p>
+                    <p>If having the Old Man start with a low amount of health (as is the default) is not desirable, their starting health can be changed via the <code>ttt_oldman_starting_health</code> ConVar. To keep the urgency of the role, <code>ttt_oldman_drain_health_to</code> can be set to cause their health to slowly drain over time.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_oldman_adrenaline_ramble</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the rambling speech sound plays when the Old Man is having their adrenaline rush.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_oldman_adrenaline_rush</td>
+                            <td>5</td>
+                            <td>Integer</td>
+                            <td>The time in seconds the Old Man's adrenaline rush lasts for. <i>(Set to 0 to disable.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_oldman_adrenaline_shotgun</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Old Man is given a double barrel shotgun when their adrenaline rush is triggered.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_oldman_adrenaline_shotgun_damage</td>
+                            <td>10</td>
+                            <td>Integer</td>
+                            <td>How much damage the double barrel shotgun should do.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_oldman_can_see_jesters</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Old Man.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_oldman_drain_health_to</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The amount of health to drain the Old Man down to. <i>(Set to 0 to disable.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_oldman_hide_when_active</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Old Man should be hidden from other players' overhead icons when their adrenaline rush is triggered. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_oldman_update_scoreboard</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Old Man shows dead players as missing in action.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -75,7 +696,184 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-shadow"></i><a href="#shadow">Shadow</a></span> needs to stay close to their target or they will die. If they stay can close to their target for long enough they join their team. They win if they can survive until the end of the round.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>By default, the Shadow is automatically killed if they kill their target, but this behavior can be adjusted by changing the <code>ttt_shadow_soul_link</code> ConVar.</p>
+                    <p>Shadows can see their target highlighted through walls and are given limited time to find and stay with their target. If they fail to find their target or spend too much time away from them once they are found, the Shadow is killed.</p>
+                    <p>If their target dies, the Shadow still need to stay close to their body. Staying too far away from their body for too long will kill the Shadow.</p>
+                    <p><code>ttt_shadow_weaken_health_to</code> can be set to have the Shadow have their health temporarily drain while away from their target instead, if that is desired.</p>
+                    <p>The Shadow is configured to have a movement speed and sprint stamina regeneration buff that increases the further away from their target they are. This makes it easier for the Shadow to get to their target, even on larger maps. The bonuses can be changed via the <code>ttt_shadow_speed_mult</code>, <code>ttt_shadow_speed_mult_max</code>, <code>ttt_shadow_sprint_recovery</code>, and <code>ttt_shadow_sprint_recovery_max</code> ConVars.</p>
+                    <p>When the Shadow has spent enough time with their target, they will join their team and help fight as their ally. This behavior can be changed or adjusted via the ConVars that start with <code>ttt_shadow_target_buff</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_shadow_alive_radius</td>
+                            <td>8</td>
+                            <td>Float</td>
+                            <td>The radius in meters from the living target that the Shadow has to stay within.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_buffer_timer</td>
+                            <td>7</td>
+                            <td>Integer</td>
+                            <td>How much time in seconds the Shadow can stay out of their target's radius without dying.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_can_see_jesters</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Shadow.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_dead_radius</td>
+                            <td>3</td>
+                            <td>Float</td>
+                            <td>The radius in meters from the death target that the Shadow has to stay within.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_soul_link</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Shadow should die when their target dies and vice-versa.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_speed_mult</td>
+                            <td>1.1</td>
+                            <td>Float</td>
+                            <td>The minimum multiplier to use on the Shadow's sprint speed when they are outside of their target radius. <i>(e.g. 1.1 = 110% normal speed.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_speed_mult_max</td>
+                            <td>1.5</td>
+                            <td>Float</td>
+                            <td>The maximum multiplier to use on the Shadow's sprint speed when they are FAR outside of their target radius. <i>(e.g. 1.5 = 150% normal speed.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_sprint_recovery</td>
+                            <td>0.1</td>
+                            <td>Float</td>
+                            <td>The minimum amount of stamina to recover per tick when the Shadow is outside of their target radius.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_sprint_recovery_max</td>
+                            <td>0.5</td>
+                            <td>Float</td>
+                            <td>The maximum amount of stamina to recover per tick when the Shadow is FAR outside of their target radius.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_start_timer</td>
+                            <td>30</td>
+                            <td>Integer</td>
+                            <td>How much time in seconds the Shadow has to find their target at the start of the round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_buff</td>
+                            <td>4</td>
+                            <td>Integer (0-4)</td>
+                            <td>The type of buff to Shadow's target should get:
+                                <ol start="0">
+                                    <li>None.</li>
+                                    <li>Heal over time.</li>
+                                    <li>Single respawn.</li>
+                                    <li>Damage bonus.</li>
+                                    <li>Team join.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_buff_damage_bonus</td>
+                            <td>0.15</td>
+                            <td>Float</td>
+                            <td>Damage bonus the Shadow's target should get. <i>(e.g. 0.15 = 15% extra damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_buff_delay</td>
+                            <td>90</td>
+                            <td>Integer</td>
+                            <td>How long in seconds the Shadow needs to be near their target before the buff takes effect.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_buff_heal_amount</td>
+                            <td>5</td>
+                            <td>Integer</td>
+                            <td>The amount of health the Shadow's target should be healed per-interval.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_buff_heal_interval</td>
+                            <td>10</td>
+                            <td>Integer</td>
+                            <td>How often in seconds the Shadow's target should be healed.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_buff_notify</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Shadow's target should be notified when they are buffed.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_buff_respawn_delay</td>
+                            <td>10</td>
+                            <td>Integer</td>
+                            <td>How often in seconds before the Shadow's target should respawn.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_buff_role_copy</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Shadow should instead copy the role of their target if the team join buff is enabled.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_independent</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Shadow should be able to target an independent player.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_jester</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Shadow should be able to target a member of the jester team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_target_notify_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>How the Shadow's target should be notified they have a Shadow:
+                                <ol start="0">
+                                    <li>Don't notify.</li>
+                                    <li>Anonymously notify.</li>
+                                    <li>Identify the Shadow.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_update_scoreboard</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Shadow shows dead players as missing in action.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_weaken_health_to</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>How low to reduce the Shadow's health to when they are outside of the target circle instead of killing them. <i>(Setting to 0 will kill them.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_weaken_timer</td>
+                            <td>3</td>
+                            <td>Integer</td>
+                            <td>How often in seconds to adjust the Shadow's health when they are outside of the target circle.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -85,20 +883,183 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombie</a></span> can turn other players into <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombies</a></span> with their claws. They win when everyone is either dead, a <span class="inline-icon" style="color:var(--independent);"><i class="icon-mad-scientist"></i><a href="#mad-scientist">Mad Scientist</a></span> or a <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombie</a></span>.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>Killing a player with their claws will turn the target into a Zombie thrall.</p>
+                    <p>By using the secondary attack with the claws, Zombies can leap in the air to surprise their potential targets. This can be disabled by changing <code>ttt_zombie_leap_enabled</code>.</p>
+                    <p>If the target is out of range of the claws, the Zombie can spit acid at them by pressing the reload button. This can be disabled by changing <code>ttt_zombie_spit_enabled</code>. Killing a player with acid spit will not convert them unless <code>ttt_zombie_spit_convert</code> is enabled.</p>
+                    <p>When <code>ttt_zombie_vision_enabled</code> is enabled, their hunger for brains helps them see their targets through walls by highlighting their enemies.</p>
+                    <p>If <code>ttt_zombie_show_target_icon</code> is enabled, their targets can also be identified by the skull icon floating over their heads.</p>
+                    <p>To encourage the use of their claws, Zombies do less damage with other weapons. This can be adjusted or disabled via the <code>ttt_zombie_damage_penalty</code> ConVar. <code>ttt_zombie_damage_reduction</code> can be set to cause the Zombies to take less bullet damage from other players, allowing them to survive more easily when attacking.</p>
+                    <p>Any Zombie that spawns into a round at the beginning is known as a prime Zombie. Prime Zombies are special compared to Zombie thralls (the Zombies created by the prime), in that by default only the prime Zombie can use weapons other than their claws. This behavior can be disabled via the <code>ttt_zombie_prime_only_weapons</code> ConVar. Furthermore, the prime Zombie does more damage and can attack faster compared to the thralls, but all of that can be adjusted by the <code>ttt_zombie_prime_*</code> and <code>ttt_zombie_thrall_*</code> ConVars (see more information below).</p>
+                    <p>The Zombie has access to a shop containing a small handful of useful perks. Zombies start with no credits but receive a credit whenever they convert another player into a Zombie.</p>
+                    <p>The Zombie can optionally be part of the <span style="color:var(--traitor)"><a href="../teams/traitor.html">traitor team</a></span> or <span style="color:var(--monster)"><a href="../teams/monster.html">monster team</a></span> instead of being an independent by enabling <code>ttt_zombie_is_traitor</code> or <code>ttt_zombie_is_monster</code> respectively. However, the Mad Scientist will only be able to spawn if the Mad Scientist and the Zombie are part of the same team.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_zombie_can_see_jesters</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to Zombies. <i>(Requires <code>ttt_zombie_is_monster</code> and <code>ttt_zombie_is_traitor</code> to be disabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_damage_penalty</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The fraction a Zombie's damage will be scaled by when they are attacking without using their claws. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_damage_reduction</td>
+                            <td>0</td>
+                            <td>Float (0-1)</td>
+                            <td>The fraction an attacker's bullet damage will be reduced by when they are shooting a Zombie. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_friendly_fire</td>
+                            <td>2</td>
+                            <td>Integer (0-2)</td>
+                            <td>How to handle friendly fire damage between Zombies:
+                                <ol start="0">
+                                    <li>Do nothing.</li>
+                                    <li>Reflect the damage back to the attacker.</li>
+                                    <li>Negate the damage.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_is_monster</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies should be treated as members of the monster team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_is_traitor</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies should be treated as members of the traitors team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_leap_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies have their leap attack enabled.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_prime_attack_damage</td>
+                            <td>65</td>
+                            <td>Integer</td>
+                            <td>The amount of a damage a prime Zombie does with their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_prime_attack_delay</td>
+                            <td>0.7</td>
+                            <td>Float</td>
+                            <td>The amount of time between claw attacks for a prime Zombie. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_prime_convert_chance</td>
+                            <td>1</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a prime Zombie will convert other players who are killed by their claws to be Zombies as well. <i>(Set to 0 to disable.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_prime_only_weapons</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether only prime Zombies are allowed to pick up weapons.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_prime_speed_bonus</td>
+                            <td>0.35</td>
+                            <td>Float</td>
+                            <td>The amount of bonus speed a prime Zombie should get when using their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_respawn_block_win</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether a player respawning as a Zombie blocks the round from ending, allowing them to join the winning team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_respawn_health</td>
+                            <td>100</td>
+                            <td>Integer</td>
+                            <td>The amount of health a player should respawn with when they are converted to a Zombie thrall.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_round_chance</td>
+                            <td>0.1</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a "zombie round" will occur where all players who would have been traitors are made Zombies instead. <i>(Requires <code>ttt_zombie_is_traitor</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_show_target_icon</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies have an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_spit_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies have their spit attack enabled.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_thrall_attack_damage</td>
+                            <td>45</td>
+                            <td>Integer</td>
+                            <td>The amount of a damage a Zombie thrall does with their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_thrall_attack_delay</td>
+                            <td>1.4</td>
+                            <td>Float</td>
+                            <td>The amount of time between claw attacks for a Zombie thrall. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_thrall_convert_chance</td>
+                            <td>1</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a Zombie thrall will convert other players who are killed by their claws to be Zombies as well. <i>(Set to 0 to disable.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_thrall_speed_bonus</td>
+                            <td>0.15</td>
+                            <td>Float</td>
+                            <td>The amount of bonus speed a Zombie thrall should get when using their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_update_scoreboard</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Zombies show dead players as missing in action. <i>(Requires <code>ttt_zombie_is_monster</code> and <code>ttt_zombie_is_traitor</code> to be disabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_vision_enabled</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies have their special vision highlights enabled.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
-        <div class="collapsible">
-            <button class="header" style="background-color:var(--independent);"><i class="icon-team"></i>Configurable Independents</button>
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:var(--independent);"><i class="icon-team"></i>Configurable Independents</button>
             <div class="content">
-                <div class="moreless">[more]</div>
                 <p>The following roles can be configured to be an <span style="color:var(--independent);">independent</span> instead of their default team: <span class="inline-icon" style="color:var(--jester);"><i class="icon-beggar"></i><a href="../teams/jester.html#beggar">Beggar</a></span>, <span class="inline-icon" style="color:var(--jester);"><i class="icon-bodysnatcher"></i><a href="../teams/jester.html#bodysnatcher">Bodysnatcher</a></span>, <span class="inline-icon" style="color:var(--jester);"><i class="icon-cupid"></i><a href="../teams/jester.html#cupid">Cupid</a></span>, and <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="../teams/traitor.html#vampire">Vampire</a></span>.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
             </div>
         </div>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 </html>
