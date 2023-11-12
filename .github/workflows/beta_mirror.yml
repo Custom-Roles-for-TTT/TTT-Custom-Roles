@@ -14,11 +14,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Pushes to another repository
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        uses: pixta-dev/repository-mirroring-action@v1.1.1
         with:
-          source-directory: .
-          destination-github-username: 'Custom-Roles-for-TTT'
-          destination-repository-name: 'TTT-Custom-Roles-Beta'
-          user-email: mirrorbot@custom-roles-for-ttt.github.io
+          target-repo-url: git@github.com:Custom-Roles-for-TTT/TTT-Custom-Roles-Beta.git
+          ssh_private_key: ${{ secrets.SSH_DEPLOY_KEY }}
