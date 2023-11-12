@@ -1,0 +1,23 @@
+name: Beta Mirroring
+
+on:
+  push:
+    branches: [ beta ]
+  pull_request:
+    branches: [ beta ]
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          destination-github-username: 'Custom-Roles-for-TTT'
+          destination-repository-name: 'TTT-Custom-Roles-Beta'
+          user-email: mirrorbot@custom-roles-for-ttt.github.io
