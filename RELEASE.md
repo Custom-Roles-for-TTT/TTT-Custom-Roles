@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.0.0
+**Released:**\
+Includes beta updates [1.8.3](#193-beta) to [1.8.11](#1914-beta).
+
+### Fixes
+- Fixed various low-frequency errors by adding sanity checks
+
 ## 1.9.14 (Beta)
 **Released: November 11th, 2023**
 
