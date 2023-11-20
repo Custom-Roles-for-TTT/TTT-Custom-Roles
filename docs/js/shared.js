@@ -29,8 +29,7 @@ window.onload = openAnchor();
 
 var coll = document.getElementsByClassName("collapsible");
 for (var i = 0; i < coll.length; i++) {
-    coll[i].addEventListener("click", function(event)
-    {
+    coll[i].addEventListener("click", function(event) {
         var targetTag = event.target.tagName;
         if (targetTag == "DIV" || targetTag == "BUTTON") {
             expandContent(this);

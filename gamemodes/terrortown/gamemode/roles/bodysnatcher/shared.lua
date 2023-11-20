@@ -28,7 +28,7 @@ function plymeta:ShouldRevealBodysnatcher(tgt)
     local sameTeam = self:IsSameTeam(tgt) and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM
     local traitorTeam = self:IsTraitorTeam() and bodysnatcherMode == BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER
     local monsterTeam = self:IsMonsterTeam() and bodysnatcherMode == BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER
-    local indepTeam = self:IsIndependentTeam() and bodysnatcherMode == BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER and GetConVar("ttt_" .. ROLE_STRINGS_RAW[self:GetRole()] .. "_can_see_jesters"):GetBool()
+    local indepTeam = self:IsIndependentTeam() and bodysnatcherMode == BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[self:GetRole()] .. "_can_see_jesters", false)
 
     -- Check the setting value and whether the player and the target are the same team or a member of a team that can see jesters
     return bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or sameTeam or traitorTeam or monsterTeam or indepTeam

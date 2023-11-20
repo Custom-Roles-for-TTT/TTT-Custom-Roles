@@ -705,6 +705,7 @@ ttt_zombie_is_traitor                       0       // Whether zombies should be
 ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombie_is_traitor" is set to "1"
 ttt_zombie_vision_enabled                   0       // Whether zombies have their special vision highlights enabled
 ttt_zombie_spit_enabled                     1       // Whether zombies have their spit attack enabled
+ttt_zombie_spit_convert                     0       // Whether players killed by a spitting Zombie will be converted to be a Zombie themselves
 ttt_zombie_leap_enabled                     1       // Whether zombies have their leap attack enabled
 ttt_zombie_show_target_icon                 0       // Whether zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws. For example, setting this to 0.25 will let the zombie deal 75% of normal gun damage, and 0.66 will let the zombie deal 33% of normal damage
@@ -776,6 +777,8 @@ ttt_hivemind_join_heal_pct                  0.25    // The percentage a new memb
 ttt_hivemind_regen_timer                    0       // The amount of time (in seconds) between each health regeneration
 ttt_hivemind_regen_per_member_amt           1       // The amount of health per-member of the hive mind that they should regenerate over time
 ttt_hivemind_regen_max_pct                  0.5     // The percentage of the hive mind's maximum health to heal them up to (e.g. 0.5 = 50% of their max health)
+ttt_hivemind_can_see_jesters                1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the hive mind
+ttt_hivemind_update_scoreboard              1       // Whether the hive mind shows dead players as missing in action
 // ----------------------------------------
 
 // WEAPON SHOP SETTINGS

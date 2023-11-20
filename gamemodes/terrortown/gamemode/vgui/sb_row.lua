@@ -179,7 +179,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
             end
         end
     elseif client:IsIndependentTeam() then
-        if showJester and GetConVar("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters"):GetBool() then
+        if showJester and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters", false) then
             return ROLE_JESTER
         end
     elseif client:IsMonsterTeam() then
@@ -291,10 +291,12 @@ function PANEL:Paint(width, height)
     if new_color then c = new_color end
     if new_role_str then roleStr = new_role_str end
 
-    surface.SetDrawColor(c)
+    if c then
+        surface.SetDrawColor(c)
+    end
     surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
 
-    if ROLE_TAB_ICON_MATERIALS[roleStr] then
+    if roleStr and ROLE_TAB_ICON_MATERIALS[roleStr] then
         self.sresult:SetMaterial(ROLE_TAB_ICON_MATERIALS[roleStr])
         self.sresult:SetVisible(true)
     else
