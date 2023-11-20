@@ -262,6 +262,13 @@ Whether the player is the prime (e.g. first-spawned) vampire.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+### plymeta:IsVictimChangingRole(victim)
+Whether victims killed by this player are changing their role.\
+*Realm:* Client and Server\
+*Added in:* 1.9.12\
+*Parameters:*
+- *victim* - The player who was killed by this player
+
 ### plymeta:IsZombieAlly()/plymeta:GetZombieAlly()
 Whether the player is allied with the zombie role.\
 *Realm:* Client and Server\
@@ -351,7 +358,8 @@ Whether the player should act like a jester (e.g. in what damage they do, what d
 *Realm:* Client and Server\
 *Added in:* 1.2.5
 
-### plymeta:ShouldDelayAnnouncements()
+### plymeta:ShouldDelayAnnouncements()  <!-- TODO: Remove after 2.0.0 -->
+**DEPRECATED IN 1.9.4**\
 Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.\
 *Realm:* Client and Server\
 *Added in:* 1.2.7
@@ -384,6 +392,11 @@ Whether the player should reveal the fact that the target player is no longer a 
 *Added in:* 1.2.5\
 *Parameters:*
 - *tgt* - The target player bodysnatcher. If a value is not provided, the context player will be used instead (e.g. `ply:ShouldRevealBodysnatcher()` is the same as `ply:ShouldRevealBodysnatcher(ply)`)
+
+### plymeta:ShouldRevealRoleWhenActive()
+Whether this player should have their role revealed (over their head, on the scoreboard, etc.) when their role is active.\
+*Realm:* Client and Server\
+*Added in:* 1.9.9
 
 ### plymeta:ShouldShowSpectatorHUD()
 Whether this player should currently be shown a spectator HUD. Used for things like the Phantom and Parasite spectator HUDs.\

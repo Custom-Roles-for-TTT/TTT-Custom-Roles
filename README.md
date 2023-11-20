@@ -13,19 +13,19 @@ See the links below for the list of available roles in each available version:
 - Beta/Development - Please see [this](https://steamcommunity.com/workshop/filedetails/discussion/2404251054/3110277460812045123/) discussion on the Steam Workshop
 ### *Renaming*
 If you would like to rename one of the existing roles, see below for how to do it for each available version:
-- Release - See [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/CONVARS.md#Renaming-Roles)
-- Beta/Development - See [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/beta/CONVARS.md#Renaming-Roles)
+- Release - See [here](https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/release/CONVARS.md#Renaming-Roles)
+- Beta/Development - See [here](https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/beta/CONVARS.md#Renaming-Roles)
 ### *Creating Custom Roles*
 If you would like to create your own role to integrate with Custom Roles for TTT, see, see [here](CREATE_YOUR_OWN_ROLE.md).
 
 ## Configuration
 This addon has many ConVars available so it can be customized to how you want your server to run. All custom roles are disabled by default.\
-A full list of ConVars can be found [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/CONVARS.md) (for the release version) or [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/beta/CONVARS.md) (for the beta and development versions).\
+A full list of ConVars can be found [here](https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/release/CONVARS.md) (for the release version) or [here](https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/beta/CONVARS.md) (for the beta and development versions).\
 \
 If you would like to test the available configurations, we recommend using ULX/ULib and our ULX plugin for Custom Roles for TTT. See below for links to the various versions:
 - [Release](https://steamcommunity.com/sharedfiles/filedetails/?id=2421043753)
 - [Beta](https://steamcommunity.com/sharedfiles/filedetails/?id=2414297330)
-- [Development](https://github.com/NoxxFlame/TTT-Custom-Roles-ULX)
+- [Development](https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles-ULX)
 
 **NOTE**: Changing settings via the ULX module will *NOT* save them when the map changes or server restarts. You can use the ULX module to test settings changes and identify which ones to put in the appropriate configuration file (server.cfg for dedicated servers or listenserver.cfg for peer-to-peer, listen, and local servers)
 
@@ -37,6 +37,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [Fresh Garry](https://steamcommunity.com/id/Fresh_Garry) for the ['TTT Sprint'](https://steamcommunity.com/sharedfiles/filedetails/?id=933056549) mod which was used as the base for this mod's sprinting mechanics.
 - [Lykrast](https://steamcommunity.com/id/Lykrast) for the code and models used to create the old man's double barrel shotgun taken from ['Lykrast's TTT Weapon Collection'](https://steamcommunity.com/sharedfiles/filedetails/?id=337994500).
 - [Shad](https://steamcommunity.com/id/Shad686) and [Juckey](https://steamcommunity.com/id/mzku) for the code and models used to create cupid's bow taken from ['Hunting Bow'](https://steamcommunity.com/sharedfiles/filedetails/?id=1323286207).
+- MaxCooljazz from the CR4TTT Community for allowing us to integrate their Spy role into the mod.
 - [Game icons](https://game-icons.net), [Noun Project](https://thenounproject.com), and [Icons8](https://icons8.com) for the role icons.
 - [Videvo](https://www.videvo.net/profile/videvo/) for the royalty-free [extinguish sound](https://www.videvo.net/sound-effect/short-light-fire-exti-pe363704/255924/) and cough sounds: [1](https://www.videvo.net/sound-effect/human-cough-33/427996/), [2](https://www.videvo.net/sound-effect/human-cough-36/427999/), [3](https://www.videvo.net/sound-effect/human-cough-39/428002/), [4](https://www.videvo.net/sound-effect/human-cough-63/428026/)
 - Our friends and everyone on the Discord server for their suggestions and help testing.
@@ -92,7 +93,7 @@ This is most likely caused by a conflict with a mod like 'TTT: Advanced Body Sea
 If you are using a Linux machine to host your server you may need to lowercase the folder name for it to be loaded properly. For example, `[INSTALL_DIR]/garrysmod/addons/TTT-Custom-Roles` would become `[INSTALL_DIR]/garrysmod/ttt-custom-roles`. See [GMod Linux Dedicated Server Hosting](https://wiki.facepunch.com/gmod/Linux_Dedicated_Server_Hosting#addonsnotworking) for details.
 
 ## Official Links:
-- GitHub: https://github.com/NoxxFlame/TTT-Custom-Roles
+- GitHub: https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles
 - Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=2421039084
 - Steam Workshop (Beta): https://steamcommunity.com/sharedfiles/filedetails/?id=2404251054
 - Discord: https://discord.gg/BAPZrykC3F

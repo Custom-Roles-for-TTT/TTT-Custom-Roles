@@ -1,24 +1,94 @@
 <!doctype html>
 <html>
 <head>
-    <title>Monsters - Custom Roles for TTT Wiki</title>
+    <title>Custom Roles for TTT - Monsters</title>
     <link type="text/css" rel="stylesheet" href="../fonts/roleicons.css">
-    <link type="text/css" rel="stylesheet" href="../css/style.css"></head>
-    <script type="text/javascript" src="../js/expandable.js" defer></script>
+    <link type="text/css" rel="stylesheet" href="../css/style.css">
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#monster" width="220" height="278" style="float: left; margin-right: 10px;" />
-    <div>
-        <div class="collapsible">
-            <button class="header" style="background-color:var(--monster);"><i class="icon-team"></i>Configurable Monsters</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The following roles can be configured to be part of the <span style="color:var(--monster);">monster team</span> instead of their default team: <span class="inline-icon" style="color:var(--independent);"><i class="icon-mad-scientist"></i><a href="../teams/independent.html#mad-scientist">Mad Scientist</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-parasite"></i><a href="../teams/traitor.html#parasite">Parasite</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="../teams/traitor.html#vampire">Vampire</a></span>, and <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span>.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel" style="margin-bottom: 15px;">
+        <iframe id="nav" src="../nav.html#monster" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--monster); margin-top: 0;">Monster Roles</h1>
+            <div style="margin: 10px;">
+                <p>The <span style="color:var(--monster);">monster team</span> has no members by default, but it can be configured to act as a third team fighting against both the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> and the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>.</p>
+                <p>The main goal of the monster team is to eliminate all members of the innocent team and the traitor team. In some cases, they also need to take out <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
+                <p>Members of the monster team have their roles known to each other, and jesters are also known to monsters. Additionally, monsters have the ability to see players who are dead but have not had their bodies found as "missing in action" on the scoreboard. This makes the monster team very similar to the traitor team and gives them a significant advantage over the innocent team, whose roles are not known to each other, and who cannot see MIA players on the scoreboard. To address this, most games have a higher number of innocent players than monsters and traitors.</p>
+                <p>Monsters often have access to weapons or abilities that give them additional advantages against the innocent team and the traitor team, but can give away their allegiance if not used in secret.</p>
             </div>
         </div>
     </div>
+    <div class="contentbody panel">
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+            <div class="content">
+                <p>Each round after detectives, traitors, jesters, and independents are chosen, a percentage of the remaining players will be part of the monster team. The following ConVars can be used to configure the requirements and restrictions on how monsters spawn.</p>
+                <table style="width:100%; margin-bottom: 10px;">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_monster_max</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The maximum number of players that can spawn as a member of the monster team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_monster_pct</td>
+                        <td>0.33</td>
+                        <td>Float (0-1)</td>
+                        <td>Percentage of innocents, rounded up, that have the chance to spawn as a monster.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_monster_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a monster will spawn in each individual slot made by <code>ttt_monster_pct</code>.</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p><b>Example:</b> There are eight players in the game. <code>ttt_monster_pct</code> is 0.33, and <code>ttt_monster_chance</code> is 0.5 as per the default values above. Four players have already been picked as traitors, detectives, jesters and independents. At most 33% of the remaining players (rounded up) can be monsters as <code>ttt_monster_pct</code> is set to 0.33. This means that there will be at most two monsters. However, each of those players only has a 50% chance to be a monster as <code>ttt_monster_chance</code> is set to 0.5. This means it is possible for the round to have zero, one, or two monsters. All remaining players who have not had a role assigned will be part of the innocent team.</p>
+                <p>If you wanted it to be possible for all non-traitor, non-detective, non-jester, non-independent players to be monsters at once, set <code>ttt_monster_pct</code> to 1. Alternately, if you always wanted the same number of monsters in each round with no variation, set <code>ttt_monster_chance</code> to 1. Setting either <code>ttt_monster_pct</code> or <code>ttt_monster_chance</code> to 0 will make it impossible for monsters to spawn.</p>
+                <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+            </div>
+        </div>
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Role Guidelines</button>
+            <div class="content">
+                <p>When designing roles it is important to make sure your role is part of the correct team. Each team has a unique identity along with strengths and weaknesses that play better with some roles than others. If you are designing a monster role, keep the following in mind:</p>
+                <b>Monsters should:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Be either a traitor or an independent by default with a config option to change them into a monster. The monster team is completely disabled by default and any role that works on the monster team should also work as either a traitor or an independent as well.</li>
+                    <li>Win by working with other monsters to kill the innocents and traitors.</li>
+                </ul>
+                <b>Monsters should <u>NOT</u>:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Have unique win conditions. If your role requires a unique win condition consider making them a jester or independent.</li>
+                    <li>Have any reason to kill/damage/annoy other monsters. If your role wants to interfere with the monsters' goals consider making them an innocent, traitor, detective, jester or independent.</li>
+                </ul>
+                <p>These are just guidelines and in some special circumstances a role might be best fit as an independent even if it doesn't align with the above suggestions. However, in general following these suggestions will ensure that your role works well within the framework that Custom Roles for TTT provides.</p>
+                <p>A walkthrough for creating your own role can be found on the <a href="../tutorials/create_your_own_role.html">Create Your Own Role</a> tutorial page.</p>
+            </div>
+        </div>
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:var(--monster);"><i class="icon-team"></i>Configurable Monsters</button>
+            <div class="content">
+                <p>The following roles can be configured to be part of the <span style="color:var(--monster);">monster team</span> instead of their default team: <span class="inline-icon" style="color:var(--independent);"><i class="icon-hive-mind"></i><a href="../teams/independent.html#hive-mind">Hive Mind</a></span>, <span class="inline-icon" style="color:var(--independent);"><i class="icon-mad-scientist"></i><a href="../teams/independent.html#mad-scientist">Mad Scientist</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-parasite"></i><a href="../teams/traitor.html#parasite">Parasite</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="../teams/traitor.html#vampire">Vampire</a></span>, and <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span>.</p>
+            </div>
+        </div>
+    </div>
+    <div class="footerpadding panel"></div>
 </body>
 </html>

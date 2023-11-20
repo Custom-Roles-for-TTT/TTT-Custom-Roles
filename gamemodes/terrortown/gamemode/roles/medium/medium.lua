@@ -15,14 +15,8 @@ resource.AddFile("materials/particle/wisp.vmt")
 -- CONVARS --
 -------------
 
-local medium_spirit_color = CreateConVar("ttt_medium_spirit_color", "1")
-local medium_spirit_vision = CreateConVar("ttt_medium_spirit_vision", "1")
-local medium_dead_notify = CreateConVar("ttt_medium_dead_notify", "1")
-
-hook.Add("TTTSyncGlobals", "Medium_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_medium_spirit_color", medium_spirit_color:GetBool())
-    SetGlobalBool("ttt_medium_spirit_vision", medium_spirit_vision:GetBool())
-end)
+local medium_spirit_color = GetConVar("ttt_medium_spirit_color")
+local medium_dead_notify = GetConVar("ttt_medium_dead_notify")
 
 -------------------
 -- ROLE FEATURES --
@@ -84,8 +78,7 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
 
         -- Let the player who died know there is a medium as long as this player isn't the only medium and they are not turning into a zombie
         if medium_dead_notify:GetBool() and (#mediums > 1 or not victim:IsMedium()) and not victim:IsZombifying() then
-            victim:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
-            victim:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
+            victim:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
         end
     end
 end)

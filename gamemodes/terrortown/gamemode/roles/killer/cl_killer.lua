@@ -3,6 +3,18 @@ local string = string
 
 local RemoveHook = hook.Remove
 
+-------------
+-- CONVARS --
+-------------
+
+local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled")
+local killer_crowbar_enabled = GetConVar("ttt_killer_crowbar_enabled")
+local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled")
+local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon")
+local killer_vision_enabled = GetConVar("ttt_killer_vision_enabled")
+local killer_warn_all = GetConVar("ttt_killer_warn_all")
+local killer_can_see_jesters = GetConVar("ttt_killer_can_see_jesters")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -37,30 +49,12 @@ end)
 -- TARGET ID --
 ---------------
 
--- Show "KILL" icon over all non-jester team heads
-hook.Add("TTTTargetIDPlayerKillIcon", "Killer_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
-    if cli:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false) and not showJester then
-        return true
+-- Show skull icon over all non-jester team heads
+hook.Add("TTTTargetIDPlayerTargetIcon", "Killer_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    if cli:IsKiller() and killer_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) then
+        return "kill", true, ROLE_COLORS_SPRITE[ROLE_KILLER], "down"
     end
 end)
-
--- Show the jester role icon for any jester team player
-hook.Add("TTTTargetIDPlayerRoleIcon", "Killer_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if cli:IsKiller() and showJester then
-        return ROLE_JESTER
-    end
-end)
-
-ROLE_IS_TARGETID_OVERRIDDEN[ROLE_KILLER] = function(ply, target, showJester)
-    if not ply:IsKiller() then return end
-    if not IsPlayer(target) then return end
-
-    local show_kill = GetGlobalBool("ttt_killer_show_target_icon", false) and not showJester
-    local show_role = showJester
-
-    ------ icon,                   ring,  text
-    return show_kill or show_role, false, false
-end
 
 ------------------
 -- HIGHLIGHTING --
@@ -68,17 +62,19 @@ end
 
 local killer_vision = false
 local vision_enabled = false
+local can_see_jesters = false
 local client = nil
 
 local function EnableKillerHighlights()
     hook.Add("PreDrawHalos", "Killer_Highlight_PreDrawHalos", function()
-        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, true, false, false)
+        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, can_see_jesters, false, false)
     end)
 end
 
 hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    killer_vision = GetGlobalBool("ttt_killer_vision_enable", false)
+    killer_vision = killer_vision_enabled:GetBool()
+    can_see_jesters = killer_can_see_jesters:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -158,29 +154,39 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
         -- Use this for highlighting things like "kill"
         roleColor = ROLE_COLORS[ROLE_TRAITOR]
 
+        -- Warning
+        if killer_warn_all:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>All players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>warned</span> when there is "  .. ROLE_STRINGS_EXT[ROLE_KILLER] .. " in the game.</span>"
+        end
+
         -- Knife
-        if GetGlobalBool("ttt_killer_knife_enabled", true) then
-            html = html .. "<span style='display: block; margin-top: 10px;'>They are given a knife that does high damage to aid in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>slaughter.</span></span>"
+        if killer_knife_enabled:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>They are given a knife that does high damage to aid in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>slaughter</span>.</span>"
+        end
+
+        -- Crowbar
+        if killer_crowbar_enabled:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>They have a special crowbar that <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>can be thrown</span>.</span>"
         end
 
         -- Smoke
-        if GetGlobalBool("ttt_killer_smoke_enabled", true) then
+        if killer_smoke_enabled:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>If they don't <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>kill</span> often enough they will begin to smoke, alerting the other players.</span>"
         end
 
         -- Vision
-        local hasVision = GetGlobalBool("ttt_killer_vision_enable", true)
+        local hasVision = killer_vision_enabled:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>blood lust</span> helps them see their targets through walls by highlighting their enemies.</span>"
         end
 
         -- Target ID
-        if GetGlobalBool("ttt_killer_show_target_icon", true) then
+        if killer_show_target_icon:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their targets can"
             if hasVision then
                 html = html .. " also"
             end
-            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
+            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>skull</span> icon floating over their heads.</span>"
         end
 
         return html

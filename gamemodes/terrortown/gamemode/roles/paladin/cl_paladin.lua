@@ -5,6 +5,15 @@ local MathCos = math.cos
 local MathSin = math.sin
 local GetAllPlayers = player.GetAll
 
+-------------
+-- CONVARS --
+-------------
+
+local paladin_aura_radius = GetConVar("ttt_paladin_aura_radius")
+local paladin_protect_self = GetConVar("ttt_paladin_protect_self")
+local paladin_heal_self = GetConVar("ttt_paladin_heal_self")
+local paladin_damage_reduction = GetConVar("ttt_paladin_damage_reduction")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -32,7 +41,7 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
             ply.AuraEmitter:SetPos(pos)
             ply.AuraNextPart = CurTime() + 0.02
             ply.AuraDir = ply.AuraDir + 0.05
-            local radius = GetGlobalFloat("ttt_paladin_aura_radius", UNITS_PER_FIVE_METERS)
+            local radius = paladin_aura_radius:GetFloat() * UNITS_PER_METER
             local vec = Vector(MathSin(ply.AuraDir) * radius, MathCos(ply.AuraDir) * radius, 10)
             local particle = ply.AuraEmitter:Add("particle/shield.vmt", ply:GetPos() + vec)
             particle:SetVelocity(Vector(0, 0, 20))
@@ -64,7 +73,7 @@ hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
 
     local inside = false
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() and p:Alive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_paladin_aura_radius", UNITS_PER_FIVE_METERS) then
+        if p:IsActive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= (paladin_aura_radius:GetFloat() * UNITS_PER_METER) then
             inside = true
             break
         end
@@ -79,31 +88,40 @@ end)
 hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_PALADIN then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
-        local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
+        local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
         local html = "The " .. ROLE_STRINGS[ROLE_PALADIN] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have a healing and damage reduction aura.</span>"
-
-        -- Damage Reduction
-        html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_PALADIN] .. "'s <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>damage reduction</span> "
-        if GetGlobalBool("ttt_paladin_protect_self", false) then
-            html = html .. "applies to them as well"
-        else
-            html = html .. "does NOT apply to them, however"
+        -- Aura
+        local has_damage_reduction = paladin_damage_reduction:GetFloat() > 0
+        html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have a healing"
+        if has_damage_reduction then
+            html = html .. " and damage reduction"
         end
-        html = html .. ".</span>"
+        html = html .. " aura.</span>"
+
+        -- Damage reduction
+        if has_damage_reduction then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_PALADIN] .. "'s <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>damage reduction</span> "
+            if paladin_protect_self:GetBool() then
+                html = html .. "applies to them as well"
+            else
+                html = html .. "does NOT apply to them, however"
+            end
+            html = html .. ".</span>"
+        end
 
         -- Healing
         html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>healing</span> "
-        if GetGlobalBool("ttt_paladin_heal_self", true) then
+        if paladin_heal_self:GetBool() then
             html = html .. "affects them as well"
         else
             html = html .. "does NOT affect them, unfortunately"
         end
         html = html .. ".</span>"
 
+        -- Hide special detectives mode
         html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
-        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then
             html = html .. ", but not what specific type of " .. ROLE_STRINGS[ROLE_DETECTIVE]
             if special_detective_mode == SPECIAL_DETECTIVE_HIDE_FOR_ALL then

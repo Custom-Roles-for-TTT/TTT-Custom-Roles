@@ -46,24 +46,18 @@ SWEP.ViewModelFOV = 70
 SWEP.ViewModel = "models/weapons/v_doublebarrl.mdl"
 SWEP.WorldModel = "models/weapons/w_double_barrel_shotgun.mdl"
 
-SWEP.IronSightsPos = Vector(0, 0, 0)
-SWEP.IronSightsAng = Vector(0, 0, 0)
+SWEP.IronSightsPos = vector_origin
+SWEP.IronSightsAng = vector_origin
 
-if SERVER then
-    CreateConVar("ttt_oldman_adrenaline_shotgun_damage", "10", FCVAR_NONE, "How much damage the double barrel shotgun should do", 0, 100)
-end
+local oldman_adrenaline_shotgun_damage = CreateConVar("ttt_oldman_adrenaline_shotgun_damage", "10", FCVAR_REPLICATED, "How much damage the double barrel shotgun should do", 0, 100)
 
 function SWEP:Initialize()
     self:SetWeaponHoldType(self.HoldType)
-
-    if SERVER then
-        SetGlobalInt("ttt_oldman_adrenaline_shotgun_damage", GetConVar("ttt_oldman_adrenaline_shotgun_damage"):GetInt())
-    end
     return self.BaseClass.Initialize(self)
 end
 
 function SWEP:Deploy()
-    self.Primary.Damage = GetGlobalInt("ttt_oldman_adrenaline_shotgun_damage", 10)
+    self.Primary.Damage = oldman_adrenaline_shotgun_damage:GetInt()
 end
 
 function SWEP:OnDrop()

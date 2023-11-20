@@ -43,9 +43,18 @@ hook.Add("TTTPrepareRound", "Impersonator_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
 
+hook.Add("TTTRoleSpawnsArtificially", "Impersonator_TTTRoleSpawnsArtificially", function(role)
+    if role == ROLE_IMPERSONATOR and GetConVar("ttt_marshal_enabled"):GetBool() then
+        return true
+    end
+end)
+
 ------------------
 -- ROLE CONVARS --
 ------------------
+
+CreateConVar("ttt_impersonator_use_detective_icon", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_impersonator_damage_penalty", "0", FCVAR_REPLICATED, "Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)", 0, 1)
 
 ROLE_CONVARS[ROLE_IMPERSONATOR] = {}
 table.insert(ROLE_CONVARS[ROLE_IMPERSONATOR], {

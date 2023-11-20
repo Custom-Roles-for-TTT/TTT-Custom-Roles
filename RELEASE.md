@@ -1,5 +1,249 @@
 # Release Notes
 
+## 2.0.0
+**Released: November 21st, 2023**\
+Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).
+
+### Changes
+- Changed hive mind to be able to see jesters and that players are missing-in-action on the scoreboard by default
+
+### Fixes
+- Fixed various low-frequency errors by adding sanity checks
+- Fixed edge case errors when a role changes to independent part-way through the round but doesn't have certain independent-only convars created
+
+### Developer
+- Removed bot SteamID64 client-side shims now that the client-side values match the server-side
+
+## 1.9.14 (Beta)
+**Released: November 11th, 2023**
+
+### Additions
+- Added `ttt_beggar_announce_delay` (disabled by default) to allow delaying the announcement of the beggar's role change
+
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_traitor_credits_timer` to `ttt_traitors_credits_timer`
+- **BREAKING CHANGE** - Renamed the following ConVars to change the `_enable` ending to `_enabled` for consistency:
+  - ttt_assassin_target_vision_enable -> ttt_assassin_target_vision_enabled
+  - ttt_cupid_lover_vision_enable -> ttt_cupid_lover_vision_enabled
+  - ttt_death_notifier_enable -> ttt_death_notifier_enabled
+  - ttt_detective_glow_enable -> ttt_detective_glow_enabled
+  - ttt_hivemind_vision_enable -> ttt_hivemind_vision_enabled
+  - ttt_infected_respawn_enable -> ttt_infected_respawn_enabled
+  - ttt_killer_vision_enable -> ttt_killer_vision_enabled
+  - ttt_madscientist_respawn_enable -> ttt_madscientist_respawn_enabled
+  - ttt_vampire_convert_enable -> ttt_vampire_convert_enabled
+  - ttt_vampire_drain_enable -> ttt_vampire_drain_enabled
+  - ttt_vampire_vision_enable -> ttt_vampire_vision_enabled
+  - ttt_zombie_leap_enable -> ttt_zombie_leap_enabled
+  - ttt_zombie_spit_enable -> ttt_zombie_spit_enabled
+  - ttt_zombie_vision_enable -> ttt_zombie_vision_enabled
+- **BREAKING CHANGE** - Changed vampire to use the new `ttt_vampire_credits_award_pct`, `ttt_vampire_credits_award_size`, and `ttt_vampire_credits_award_repeat` convars instead of the traitor ones when the vampire is not a traitor
+- **BREAKING CHANGE** - Changed killer to use the new `ttt_killer_credits_award_pct`, `ttt_killer_credits_award_size`, and `ttt_killer_credits_award_repeat` convars instead of the traitor ones
+
+### Fixes
+- Ported "TTT: Prevent error when NPC fires SWEP derived from weapon_tttbase" from base TTT
+- Fixed `ttt_monster_max` greater than 1 not working
+- Fixed infected player that is in the process of respawning due dying while `ttt_infected_respawn_enabled` is enabled not counting as zombifying for the purposes of delaying the round end
+- Fixed paramedic's defibrillator not changing detective-like roles not on the innocent or traitor teams to be their base role when resurrected
+
+## 1.9.13 (Beta)
+**Released: October 21st, 2023**
+
+### Additions
+- Added new mode for the `ttt_beggar_reveal_*` convars, allowing the beggar's team change to be announced and shown to any role that can see jesters (e.g. traitors, monsters, and independents with that feature enabled)
+- Added new mode for the `ttt_bodysnatcher_reveal_*` convars, allowing the beggar's team change to be announced and shown to any role that can see jesters (e.g. traitors, monsters, and independents with that feature enabled)
+
+### Fixes
+- Fixed killer highlighting of jesters not obeying `ttt_killer_can_see_jesters`
+- Fixed killer seeing generic jester role icon instead of question mark
+- Fixed minor capitalization typo in the cupid pairing message
+- Fixed view angle corruption when using the cupid's bow
+- Fixed bodysnatchers that joined the traitor team receiving traitor team text chat even if `ttt_bodysnatcher_reveal_traitor` is set to `0` (none)
+- Fixed some role information not being properly hidden when a role (like the beggar or bodysnatcher) changes to another role but that change is not revealed
+
+## 1.9.12 (Beta)
+**Released: October 7th, 2023**
+
+### Additions
+- Added new tracking radar to the tracker's shop, allow them to track living players and player corpses
+  - The tracking radar icons use the same color as the tracker footprints
+
+### Changes
+- Changed zombie claws weapon to use a player's custom model if they have one and it's compatible
+  - They also change to the zombie color to make it match how other players see them
+- Changed the clown to become an independent when activated to make their ability to do damage make more sense
+- Changed player colors used by tracker and medium to avoid brightnesses and saturations that can be hard to see
+
+### Fixes
+- Fixed vindicator win result message conflicting with killer
+- Fixed minor capitalization typo in the vindicator announcement message
+- Fixed vindicator not having their team changed and their target shown on the round summary if their target died before they respawned
+
+### Developer
+- Added `plymeta:IsVictimChangingRole` and corresponding role feature to help determine whether a player killed by another player will be changing their role (e.g. zombie, hive mind)
+- Changed `player.ExecuteAgainstTeamPlayers` to skip the rest of the execution when `callback` returns `true`
+
+## 1.9.11 (Beta)
+**Released: October 1st, 2023**
+
+### Changes
+- Changed the vindicator so they don't see the role of their killer in their death message
+
+## 1.9.10 (Beta)
+**Released: September 23rd, 2023**
+
+### Additions
+- Added new innocent role: vindicator
+
+## 1.9.9 (Beta)
+**Released: September 17th, 2023**
+
+### Changes
+- Changed informant and beggar scan logic to work better with roles that are revealed when they activate
+
+### Fixes
+- Fixed marshal badge use distance being shorter than intended
+- Fixed error on round start when a hive mind was being spawned
+- Fixed new zombie leap animation not working on dedicated servers
+- Fixed spy breaking other addons trying to manipulate or hide player names when mousing over players
+
+### Developer
+- Added `ROLE.isdetectivelike` optional feature to make it easier for custom roles to be treated like deputy and impersonator
+- Added `ROLE.shouldrevealrolewhenactive` optional feature to control whether a role's information should be revealed (over their head, on the scoreboard, etc.) when they are active
+
+## 1.9.8 (Beta)
+**Released: September 9th, 2023**
+
+### Fixes
+- Fixed quartermaster not always counting as an innocent (for example, on the round summary screen)
+- Fixed error on round start sometimes when there was a hive mind in the round
+- Fixed parasite cures to attribute target kills to the owner so jester wins are properly triggered
+
+## 1.9.7 (Beta)
+**Released: August 27th, 2023**
+
+### Additions
+- Added convar (`ttt_drunk_any_role_include_disabled`) to control whether disabled roles are included in the list of possible drunk roles when `ttt_drunk_any_role` is enabled (disabled by default)
+- Added ability for an activated loot goblin to periodically drop weapons behind them while they are alive (disabled by default)
+- Added ability to show a warning message to all players when there is a guesser in a round (disabled by default)
+- Added ability to have the hive mind be healed by a percentage of a new member's former max health (defaults to 0.25, or 25%)
+- Added ability for the hive mind to have a health regeneration over time that scales up as more players are assimilated (disabled by default)
+
+### Changes
+- Changed players who join the hive mind to keep the credits they had before death
+- Changed hive mind to sync available credits between members
+- Changed hive mind tutorial to mention the shared health pool feature
+
+### Fixes
+- Fixed clown not being revealed when they activate when there's an informant in the round
+
+### Developer
+- Added `TTTPlayerCreditsChanged` hook to detect when a player's credits were added to or subtracted from
+
+## 1.9.6 (Beta)
+**Released: August 19th, 2023**
+
+### Additions
+- Added new special detective role: quartermaster
+- Added convar to control whether a zombie killing a player with spit converts that player to be a zombie as well (defaults to disabled)
+- Added sound and animation when a zombie uses their spit weapon
+
+### Changes
+- Changed zombie claws to randomly alternate between attacking with left and right claws
+- Changed zombies to use more appropriate thirdperson animations while using the claws
+
+### Fixes
+- Fixed typo in the hive mind's tutorial
+- Fixed players getting zombie claws as non-zombies if they were turned right before a round restarted
+- Fixed sponge role being hidden to traitors when there was an informant in the round
+
+### Developer
+- Added `TTTInformantDefaultScanStage` hook to help roles override their default informant scan stage
+
+## 1.9.5 (Beta)
+**Released: August 13th, 2023**
+
+### Additions
+- Added new independent role: hive mind
+- Added new jester role: guesser
+- Added heart icon over the head of the revenger's soulmate
+
+### Changes
+- Changed infected icon so that it is unique and not shared with zombies
+
+### Fixes
+- Fixed parasite infecting a dead host if they died at the exact same time as their attacker
+- Fixed error when a queued message tries to send to a player who has disconnected
+
+### Developer
+- Added `ROLE.hasshopmode` and `ROLE.hasshopsync` optional role features to control creation of `ttt_*_shop_mode` and `ttt_*_shop_sync` convars
+- Added `ROLE.shopsyncroles` optional role feature to allow a role to automatically inherit the shop items from a list of other roles
+- Added `TTTPlayerHealthChanged` hook for detecting when a player's health changed using `entmeta:SetHealth`
+- Added `TTTRoleSpawnsArtificially` hook to determine if a role could be spawned artificially. (i.e. Spawned in a way other than naturally spawning when the role is enabled)
+- Added `util.CanRoleSpawnArtificially` and `util.CanRoleSpawn` methods to check if roles could be spawned into a round
+
+## 1.9.4 (Beta)
+**Released: August 5th, 2023**
+
+### Additions
+- Added new traitor role: spy
+- Added target icon above undoused player's heads for the arsonist, lover's heads for cupid and the lovers, and the shadow's target's head for the shadow
+- Added jester player information to the clown's scoreboard when they are active, matching their target ID (icon, ring, text) visibility
+
+### Changes
+- Changed appearance of 'KILL' icon used by multiple roles
+- Expanded the `ttt_roleweapons` admin command to have additional modes such as list, clean, and reload. See the command documentation for more information.
+- Changed jester and missing in action (MIA) visibility for independent roles to be configurable on a per role basis (Arsonist, killer, mad scientist, and zombie enabled by default. Drunk, old man, and shadow disabled by default)
+  - **BREAKING CHANGE** - The previous convars that governed these features for the independent team (`ttt_jesters_visible_to_independents` and `ttt_independents_update_scoreboard`) have been removed
+- Changed many role tutorials to include additional information for new and changed features
+
+### Fixes
+- Fixed clown seeing jester icons (instead of question mark icons) over all jester team members' heads when they are activated
+- Fixed clown seeing jester icon over the activated loot goblin's head (instead of the loot goblin icon)
+- Fixed `ttt_cupid_lovers_notify_mode` not working
+- Fixed loot goblin not being revealed to traitor team members if they had an informant on their team
+- Fixed cupid's bow having two crosshairs
+
+### Developer
+- Changed `plymeta:IsActive` to ensure the player is alive like it was always supposed to
+- Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
+- Added `TTTTargetIDPlayerTargetIcon` hook to control what target icon and background color should be shown over the target's head
+- Added `plymeta:QueueMessage` method to queue messages to be printed to chat and the center of the screen one at a time
+- Fixed loot goblin's definition of `ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN` and `ROLE_IS_TARGETID_OVERRIDDEN` using the parameters backwards
+- **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`
+  - Use the `TTTTargetIDPlayerTargetIcon` hook instead and return `"kill", true, ROLE_COLORS_SPRITE[ply:GetRole()], "down"`
+- **BREAKING CHANGE** - Deprecated `plymeta:ShouldDelayAnnouncements` and the corresponding `ROLE_SHOULD_DELAY_ANNOUNCEMENTS` table and `ROLE.shoulddelayannouncements` external role feature
+  - Use `plymeta:QueueMessage` to automatically queue announcements instead
+
+## 1.9.3 (Beta)
+**Released: July 29th, 2023**
+
+### Changes
+- Changed settings menu entry for notification sound cue to match base TTT
+- **BREAKING CHANGE** - Renamed some convars so similar convars now have consistent plurality. Added a warning message when the old convars are being used so server admins can find and rename these convars before the old one are removed in the major release after this change goes into effect. The list of convars changed is:
+  - ttt_detective_hide_special_mode -> ttt_detectives_hide_special_mode
+  - ttt_detective_search_only -> ttt_detectives_search_only
+  - ttt_detective_search_only_* -> ttt_detectives_search_only_*
+  - ttt_detective_disable_looting -> ttt_detectives_disable_looting
+  - ttt_traitor_vision_enable -> ttt_traitors_vision_enable
+  - ttt_beggars_are_independent -> ttt_beggar_is_independent
+  - ttt_bodysnatchers_are_independent -> ttt_bodysnatcher_is_independent
+  - ttt_cupids_are_independent -> ttt_cupid_is_independent
+  - ttt_detective_glow_enable -> ttt_detectives_glow_enable
+  - ttt_detective_credits_timer -> ttt_detectives_credits_timer
+  - ttt_vampires_are_monsters -> ttt_vampire_is_monster
+  - ttt_vampires_are_independent -> ttt_vampire_is_independent
+  - ttt_zombies_are_monsters -> ttt_zombie_is_monster
+  - ttt_zombies_are_traitors -> ttt_zombie_is_traitor
+
+### Fixes
+- Fixed `ttt_sapper_protect_self` not allowing sapper to be protected from a different sapper if there are somehow multiple
+- Fixed sprinting, then changing your crosshair size, then sprinting again causing your crosshair to revert to the original unchanged size
+- Fixed sprinting causing crosshair size to be rounded to the nearest whole number
+- Fixed loot goblin transform message being shown multiple times
+- Fixed `ttt_bodysnatcher_respawn_delay` not working
+- Fixed deputy, impersonator and zombie tutorial screens so they show if the marshal or madscientist could spawn them while the role isn't enabled
+
 ## 1.9.2
 **Released: July 22nd, 2023**
 

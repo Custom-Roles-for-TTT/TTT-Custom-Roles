@@ -1,4 +1,5 @@
 include("shared.lua")
+include("init_shd.lua")
 
 local cam = cam
 local concommand = concommand
@@ -229,8 +230,8 @@ local function ReceiveRole()
     client:SetRole(role)
 
     -- Update the local state
-    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable", false)
-    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors", false)
+    traitor_vision = GetConVar("ttt_traitors_vision_enabled"):GetBool()
+    jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -292,6 +293,12 @@ function GM:ClearClientState()
     client.last_id = nil
     client.radio = nil
     client.called_corpses = {}
+
+    -- Reset the player's viewmodel color
+    local vm = client:GetViewModel()
+    if IsValid(vm) then
+        vm:SetColor(COLOR_WHITE)
+    end
 
     VOICE.InitBattery()
 
@@ -403,23 +410,21 @@ function GM:Think()
                 if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
                 if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
                 local pos = v:GetPos() + smokeOffset
-                if v.SmokeNextPart < CurTime() then
-                    if client:GetPos():Distance(pos) <= 3000 then
-                        v.SmokeEmitter:SetPos(pos)
-                        v.SmokeNextPart = CurTime() + MathRand(0.003, 0.01)
-                        local vec = Vector(MathRand(-8, 8), MathRand(-8, 8), MathRand(10, 55))
-                        local particle = v.SmokeEmitter:Add(smokeParticle, v:LocalToWorld(vec))
-                        particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
-                        particle:SetDieTime(MathRand(0.5, 2))
-                        particle:SetStartAlpha(MathRandom(150, 220))
-                        particle:SetEndAlpha(0)
-                        local size = MathRandom(4, 7)
-                        particle:SetStartSize(size)
-                        particle:SetEndSize(size + 1)
-                        particle:SetRoll(0)
-                        particle:SetRollDelta(0)
-                        particle:SetColor(smokeColor.r, smokeColor.g, smokeColor.b)
-                    end
+                if v.SmokeNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+                    v.SmokeEmitter:SetPos(pos)
+                    v.SmokeNextPart = CurTime() + MathRand(0.003, 0.01)
+                    local vec = Vector(MathRand(-8, 8), MathRand(-8, 8), MathRand(10, 55))
+                    local particle = v.SmokeEmitter:Add(smokeParticle, v:LocalToWorld(vec))
+                    particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
+                    particle:SetDieTime(MathRand(0.5, 2))
+                    particle:SetStartAlpha(MathRandom(150, 220))
+                    particle:SetEndAlpha(0)
+                    local size = MathRandom(4, 7)
+                    particle:SetStartSize(size)
+                    particle:SetEndSize(size + 1)
+                    particle:SetRoll(0)
+                    particle:SetRollDelta(0)
+                    particle:SetColor(smokeColor.r, smokeColor.g, smokeColor.b)
                 end
             elseif v.SmokeEmitter then
                 v.SmokeEmitter:Finish()
@@ -461,7 +466,8 @@ function CheckIdle()
         return
     end
 
-    if GetRoundState() == ROUND_ACTIVE and client:IsTerror() and client:Alive() then
+    -- Player is alive, not a spectator, and round is active
+    if client:IsActive() then
         local idle_limit = GetGlobalInt("ttt_idle_limit", 300) or 300
         if idle_limit <= 0 then idle_limit = 300 end -- networking sucks sometimes
 
@@ -599,9 +605,9 @@ end
 -- Monster-as-traitors equipment
 
 net.Receive("TTT_LoadMonsterEquipment", function()
-    local zombies_are_traitors = net.ReadBool()
-    local vampires_are_traitors = net.ReadBool()
-    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
+    local zombie_is_traitor = net.ReadBool()
+    local vampire_is_traitor = net.ReadBool()
+    LoadMonsterEquipment(zombie_is_traitor, vampire_is_traitor)
 end)
 
 -- Footsteps

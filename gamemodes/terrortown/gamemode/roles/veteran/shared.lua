@@ -11,6 +11,9 @@ end
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_veteran_full_heal", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_veteran_announce", "0", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_VETERAN] = {}
 table.insert(ROLE_CONVARS[ROLE_VETERAN], {
     cvar = "ttt_veteran_damage_bonus",

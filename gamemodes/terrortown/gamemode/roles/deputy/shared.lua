@@ -70,9 +70,18 @@ hook.Add("TTTPrepareRound", "Deputy_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
 
+hook.Add("TTTRoleSpawnsArtificially", "Deputy_TTTRoleSpawnsArtificially", function(role)
+    if role == ROLE_DEPUTY and GetConVar("ttt_marshal_enabled"):GetBool() then
+        return true
+    end
+end)
+
 ------------------
 -- ROLE CONVARS --
 ------------------
+
+CreateConVar("ttt_deputy_use_detective_icon", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_deputy_damage_penalty", "0", FCVAR_REPLICATED, "Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)", 0, 1)
 
 ROLE_CONVARS[ROLE_DEPUTY] = {}
 table.insert(ROLE_CONVARS[ROLE_DEPUTY], {

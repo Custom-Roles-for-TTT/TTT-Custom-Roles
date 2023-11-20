@@ -3,6 +3,9 @@
 local plymeta = FindMetaTable("Player")
 if not plymeta then return end
 
+local entmeta = FindMetaTable("Entity")
+if not entmeta then return end
+
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
@@ -25,17 +28,6 @@ function plymeta:SetupDataTables()
     self:NetworkVar("Float", 0, "SprintStamina")
 end
 
-if CLIENT then
-    local oldSteamID64 = plymeta.SteamID64
-    function plymeta:SteamID64()
-        if self:IsBot() then
-            return self:GetNWString("BotSteamID64", "90071996842377216") -- 90071996842377216 is the first SteamID64 used by bots
-        else
-            return oldSteamID64(self)
-        end
-    end
-end
-
 AccessorFunc(plymeta, "role", "Role", FORCE_NUMBER)
 
 local oldSetRole = plymeta.SetRole
@@ -56,8 +48,19 @@ function plymeta:SetRole(role)
     self:BeginRoleChecks()
 end
 
+local oldSetHealth = entmeta.SetHealth
+function entmeta:SetHealth(health)
+    local oldHealth = self:Health()
+    oldSetHealth(self, health)
+
+    -- Only call this if the health changed and the entity is a player
+    if health ~= oldHealth and IsPlayer(self) then
+        CallHook("TTTPlayerHealthChanged", nil, self, oldHealth, health)
+    end
+end
+
 -- Player is alive and in an active round
-function plymeta:IsActive() return self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
+function plymeta:IsActive() return self:Alive() and self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
 
 -- convenience functions for common patterns
 function plymeta:IsRole(role) return self:GetRole() == role end
@@ -106,7 +109,7 @@ function plymeta:IsShopRole()
     local role = self:GetRole()
     local hasShop = SHOP_ROLES[role] or false
     -- Don't perform the additional checks if "shop for all" is enabled
-    if GetGlobalBool("ttt_shop_for_all", false) then
+    if GetConVar("ttt_shop_for_all"):GetBool() then
         return hasShop
     end
 
@@ -116,8 +119,8 @@ function plymeta:IsShopRole()
         -- Only allow roles with a delayed shop to use it if they have weapons or will be having weapons synced and are active or "active_only" is disabled
         if DELAYED_SHOP_ROLES[role] then
             local rolestring = ROLE_STRINGS_RAW[role]
-            hasWeapon = (hasWeapon or GetGlobalInt("ttt_" .. rolestring .. "_shop_mode", SHOP_SYNC_MODE_NONE) > SHOP_SYNC_MODE_NONE) and
-                (not GetGlobalBool("ttt_" .. rolestring .. "_shop_active_only", false) or self:IsRoleActive())
+            hasWeapon = (hasWeapon or cvars.Number("ttt_" .. rolestring .. "_shop_mode", SHOP_SYNC_MODE_NONE) > SHOP_SYNC_MODE_NONE) and
+                (not cvars.Bool("ttt_" .. rolestring .. "_shop_active_only", false) or self:IsRoleActive())
         end
         return hasWeapon
     end
@@ -129,7 +132,7 @@ end
 function plymeta:ShouldDelayShopPurchase()
     local role = self:GetRole()
     if DELAYED_SHOP_ROLES[role] then
-        return GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_delay", false) and not self:IsRoleActive()
+        return cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_delay", false) and not self:IsRoleActive()
     end
     return false
 end
@@ -165,16 +168,16 @@ function plymeta:ShouldActLikeJester()
 end
 function plymeta:ShouldHideJesters()
     if self:IsTraitorTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_traitors", false)
+        return not GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
     elseif self:IsMonsterTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_monsters", false)
+        return not GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
     elseif self:IsIndependentTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_independents", false)
+        return not cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[self:GetRole()] .. "_can_see_jesters", false)
     end
     return true
 end
 
-function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
+function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end -- TODO: Remove after 2.0.0
 function plymeta:ShouldNotDrown() return ROLE_SHOULD_NOT_DROWN[self:GetRole()] or false end
 function plymeta:CanSeeC4()
     if self:IsActiveTraitorTeam() then
@@ -188,6 +191,24 @@ function plymeta:ShouldShowSpectatorHUD()
     local role = self:GetRole()
     if ROLE_SHOULD_SHOW_SPECTATOR_HUD[role] then
         return ROLE_SHOULD_SHOW_SPECTATOR_HUD[role](self)
+    end
+    return false
+end
+
+function plymeta:ShouldRevealRoleWhenActive()
+    -- Check if this role has an external definition for whether to show reveal their role when they are active
+    local role = self:GetRole()
+    if ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[role] then
+        return ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[role](self)
+    end
+    return false
+end
+
+function plymeta:IsVictimChangingRole(victim)
+    -- Check if this role has an external definition for whether players killed by them are changing their role
+    local role = self:GetRole()
+    if ROLE_VICTIM_CHANGING_ROLE[role] then
+        return ROLE_VICTIM_CHANGING_ROLE[role](self, victim)
     end
     return false
 end
@@ -216,7 +237,7 @@ end
 
 function plymeta:GetDisplayedRole()
     if self:IsDetectiveTeam() and not self:IsDetective() then
-        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         -- By default, show detective unless this is disabled
         local show_detective = special_detective_mode ~= SPECIAL_DETECTIVE_HIDE_NONE
 
@@ -413,8 +434,9 @@ if CLIENT then
         local role = self:GetRole()
         if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self, target, showJester) end
 
-        ------ icon,  ring,  text
-        return false, false, false
+        local revealed = self:ShouldRevealRoleWhenActive() and self:IsRoleActive()
+        ------ icon,     ring,     text
+        return revealed, revealed, revealed
     end
 
     function plymeta:IsScoreboardInfoOverridden(target)
@@ -423,7 +445,7 @@ if CLIENT then
         if ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role] then return ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role](self, target) end
 
         ------ name,  role
-        return false, false
+        return false, self:ShouldRevealRoleWhenActive() and self:IsRoleActive()
     end
 
     function plymeta:IsTargetHighlighted(target)
@@ -563,6 +585,19 @@ if CLIENT then
         end
         emitter:Finish()
     end
+
+    function plymeta:QueueMessage(message_type, message, time)
+        if LocalPlayer() ~= self then
+            ErrorNoHalt("`plymeta:QueueMessage` cannot be used to send messages to other players when called clientside.\n")
+            return
+        end
+        time = time or 5
+        net.Start("TTT_QueueMessage")
+        net.WriteUInt(message_type, 3)
+        net.WriteString(message)
+        net.WriteFloat(time)
+        net.SendToServer()
+    end
 else
     -- SERVER
 
@@ -597,21 +632,6 @@ else
                 table.Empty(self.DeathRoleWeapons)
             end
         end)
-    end
-end
-
-if CLIENT then
-    local oldGetBySteamID64 = player.GetBySteamID64
-    function player.GetBySteamID64(sid64)
-        local minSID64 = "90071996842377216" -- 90071996842377216 is the first SteamID64 used by bots
-        if sid64 >= minSID64 then -- We compare using strings instead of numbers here because these numbers are so large that lua's arithmetic is inaccurate
-            for _, v in pairs(player.GetBots()) do
-                local botSID64 = v:GetNWString("BotSteamID64", "90071996842377216")
-                if botSID64 == sid64 then return v end
-            end
-        else
-            return oldGetBySteamID64(sid64)
-        end
     end
 end
 
@@ -697,8 +717,8 @@ function player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, alive
     for _, v in ipairs(GetAllPlayers()) do
         if not aliveOnly or (v:Alive() and v:IsTerror()) then
             local playerTeam = player.GetRoleTeam(v:GetRole(), detectivesAreInnocent)
-            if playerTeam == roleTeam then
-                callback(v)
+            if playerTeam == roleTeam and callback(v) then
+                return
             end
         end
     end

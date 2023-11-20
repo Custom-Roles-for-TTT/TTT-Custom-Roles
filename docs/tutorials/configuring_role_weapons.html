@@ -3,16 +3,22 @@
 <head>
     <title>Custom Roles for TTT - Tutorials - Configuring Role Weapons</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#tutorials" width="220" height="278" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#tutorials" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Role Weapon Shop</h1>
         <p>In TTT some roles have shops where they are allowed to purchase weapons. Given the prevalence of custom weapons from the workshop, the ability to add more weapons to each role's shop has been added.</p>
         <p>Follow the sections below to add any shop weapon to any role's shop, via step-by-steps instructions using our in-game UI or by manipulating files on your host server.</p>
-
-        <h2 style="margin-top: 77px;"><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
         <ol>
             <li><a href="#configuration-by-ui">Configuration by UI</a>
                 <ol>
@@ -34,7 +40,6 @@
                         <ol>
                             <li><a href="#adding-equipment">Adding Equipment</a></li>
                             <li><a href="#removing-equipment">Removing Equipment</a></li>
-                            <li><a href="#bypassing-equipment-randomization">Bypassing Equipment Randomization</a></li>
                             <li><a href="#finding-an-equipment-items-name">Finding an Equipment Item's Name</a></li>
                         </ol>
                     </li>
@@ -130,5 +135,6 @@
             <li>Run the following command in console to get a full list of your equipment item names: <code>lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end</code></li>
         </ol>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 </html>

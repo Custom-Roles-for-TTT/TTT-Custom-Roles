@@ -1,5 +1,14 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local marshal_monster_deputy_chance = GetConVar("ttt_marshal_monster_deputy_chance")
+local marshal_jester_deputy_chance = GetConVar("ttt_marshal_jester_deputy_chance")
+local marshal_independent_deputy_chance = GetConVar("ttt_marshal_independent_deputy_chance")
+local marshal_announce_deputy = GetConVar("ttt_marshal_announce_deputy")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -58,7 +67,7 @@ net.Receive("TTT_Deputized", function(len)
     })
 
     -- Announce to this player
-    if GetGlobalBool("ttt_marshal_announce_deputy", true) then
+    if marshal_announce_deputy:GetBool() then
         local PT = LANG.GetParamTranslation
         local client = LocalPlayer()
         local message = PT("marshal_deputize_announce", {
@@ -66,8 +75,7 @@ net.Receive("TTT_Deputized", function(len)
             amarshal = string.Capitalize(ROLE_STRINGS_EXT[ROLE_MARSHAL]),
             adeputy = ROLE_STRINGS_EXT[ROLE_DEPUTY]
         })
-        client:PrintMessage(HUD_PRINTTALK, message)
-        client:PrintMessage(HUD_PRINTCENTER, message)
+        client:QueueMessage(MSG_PRINTBOTH, message)
     end
 end)
 
@@ -91,22 +99,22 @@ hook.Add("TTTTutorialRoleText", "Marshal_TTTTutorialRoleText", function(role, ti
     if role == ROLE_MARSHAL then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
-        local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
+        local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
         local html = "The " .. ROLE_STRINGS[ROLE_MARSHAL] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have the ability to promote another player to be their " .. ROLE_STRINGS[ROLE_DEPUTY] .. ".</span>"
 
-        if GetGlobalBool("ttt_marshal_announce_deputy", true) then
+        if marshal_announce_deputy:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>When a player is deputized it will be <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>announced to everybody</span>.</span>"
         end
 
-        local monster_deputy_chance = GetGlobalFloat("ttt_marshal_monster_deputy_chance", "0.5")
+        local monster_deputy_chance = marshal_monster_deputy_chance:GetFloat()
         html = html .. GetChanceTutorialString(monster_deputy_chance, "monster", roleColor, detectiveColor, traitorColor)
 
-        local jester_deputy_chance = GetGlobalFloat("ttt_marshal_jester_deputy_chance", "0.5")
+        local jester_deputy_chance = marshal_jester_deputy_chance:GetFloat()
         html = html .. GetChanceTutorialString(jester_deputy_chance, "jester", roleColor, detectiveColor, traitorColor)
 
-        local independent_deputy_chance = GetGlobalFloat("ttt_marshal_independent_deputy_chance", "0.5")
+        local independent_deputy_chance = marshal_independent_deputy_chance:GetFloat()
         html = html .. GetChanceTutorialString(independent_deputy_chance, "independent", roleColor, detectiveColor, traitorColor)
 
         return html

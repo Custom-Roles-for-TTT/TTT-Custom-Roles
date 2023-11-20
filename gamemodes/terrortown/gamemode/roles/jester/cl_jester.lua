@@ -1,6 +1,13 @@
 local hook = hook
 local string = string
 
+-------------
+-- CONVARS --
+-------------
+
+local jester_win_by_traitors = GetConVar("ttt_jester_win_by_traitors")
+local jester_healthstation_reduce_max = GetConVar("ttt_jester_healthstation_reduce_max")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -69,9 +76,13 @@ hook.Add("TTTTutorialRoleText", "Jester_TTTTutorialRoleText", function(role, tit
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html =  "The " .. ROLE_STRINGS[ROLE_JESTER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player."
 
-        if not GetGlobalBool("ttt_jester_win_by_traitors", true) then
+        if not jester_win_by_traitors:GetBool() then
             local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
             html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! Jesters <span style='text-decoration: underline'>DO NOT</span> win if they are killed by a member of the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>traitor team</span>!</span>"
+        end
+
+        if jester_healthstation_reduce_max:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_JESTER] .. " uses a health station, their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>maximum health is reduced</span> toward their current health instead of them being healed.</span>"
         end
 
         return html

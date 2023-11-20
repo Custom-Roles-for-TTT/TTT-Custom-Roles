@@ -187,9 +187,9 @@ function RADAR:Draw(client)
 
     local mpos = Vector(ScrW() / 2, ScrH() / 2, 0)
 
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
-    local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
-    local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
+    local beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
+    local bodysnatcherMode = GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt()
     local role, alpha, scrpos, md
     for _, tgt in pairs(RADAR.targets) do
         alpha = alpha_base
@@ -206,8 +206,8 @@ function RADAR:Draw(client)
             local color
             if client:IsTraitorTeam() then
                 local hideSpecialTraitors = glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false)
-                local hideBeggar = tgt.was_beggar and (beggarMode == ANNOUNCE_REVEAL_NONE or beggarMode == ANNOUNCE_REVEAL_INNOCENTS)
-                local hideBodysnatcher = tgt.was_bodysnatcher and not (bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (TRAITOR_ROLES[role] and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM))
+                local hideBeggar = tgt.was_beggar and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
+                local hideBodysnatcher = tgt.was_bodysnatcher and not (bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or bodysnatcherMode == BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER or (TRAITOR_ROLES[role] and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM))
                 local showJester = (tgt.should_act_like_jester or ((role == ROLE_TRAITOR or role == ROLE_INNOCENT) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
                 if showJester then
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_JESTER], alpha)
@@ -231,7 +231,7 @@ function RADAR:Draw(client)
             end
 
             -- If the target is an active clown but they should be hidden, hide them from the radar
-            local hidden = tgt.killer_clown_active and GetGlobalBool("ttt_clown_hide_when_active", false)
+            local hidden = tgt.killer_clown_active and GetConVar("ttt_clown_hide_when_active"):GetBool()
 
             local newColor, newHidden = CallHook("TTTRadarPlayerRender", nil, client, tgt, color, hidden)
             if newColor then color = newColor end
@@ -295,13 +295,13 @@ local function RemoveCorpseCall()
 end
 net.Receive("TTT_RemoveCorpseCall", RemoveCorpseCall)
 
-local function RecieveTeleportMark()
+local function ReceiveTeleportMark()
     local pos = net.ReadVector()
     pos.z = pos.z + 50
     RADAR.teleport_marks = {}
     table.insert(RADAR.teleport_marks, { pos = pos, called = CurTime() })
 end
-net.Receive("TTT_TeleportMark", RecieveTeleportMark)
+net.Receive("TTT_TeleportMark", ReceiveTeleportMark)
 
 local function ClearRadarExtras()
     RADAR.called_corpses = {}

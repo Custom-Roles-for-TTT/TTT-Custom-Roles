@@ -56,16 +56,13 @@ SWEP.Secondary.Sound        = ""
 SWEP.InLoadoutFor           = {ROLE_ARSONIST}
 SWEP.InLoadoutForDefault    = {ROLE_ARSONIST}
 
+local arsonist_early_ignite = CreateConVar("ttt_arsonist_early_ignite", "0", FCVAR_NONE, "Whether to allow the arsonist to use their igniter without dousing everyone first", 0, 1)
 if SERVER then
-    CreateConVar("ttt_arsonist_early_ignite", "0", FCVAR_NONE, "Whether to allow the arsonist to use their igniter without dousing everyone first", 0, 1)
     CreateConVar("ttt_arsonist_corpse_ignite_time", "10", FCVAR_NONE, "The amount of time (in seconds) to ignite doused dead player corpses for before destroying them", 1, 30)
 end
 
 function SWEP:Initialize()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
-    if SERVER then
-        SetGlobalBool("ttt_arsonist_early_ignite", GetConVar("ttt_arsonist_early_ignite"):GetBool())
-    end
     if CLIENT then
         self:AddHUDHelp("arsonistigniter_help_pri", "arsonistigniter_help_sec", true)
     end
@@ -91,11 +88,9 @@ function SWEP:PrimaryAttack()
     if not IsPlayer(owner) then return end
 
     -- Don't ignite if all players aren't doused unless early ignition is enabled
-    if not GetGlobalBool("ttt_arsonist_early_ignite", false) and not owner:GetNWBool("TTTArsonistDouseComplete", false) then
+    if not arsonist_early_ignite:GetBool() and not owner:GetNWBool("TTTArsonistDouseComplete", false) then
         if SERVER then
-            local message = "Not all players have been doused in gasoline yet"
-            owner:PrintMessage(HUD_PRINTCENTER, message)
-            owner:PrintMessage(HUD_PRINTTALK, message)
+            owner:QueueMessage(MSG_PRINTBOTH, "Not all players have been doused in gasoline yet")
         end
         return
     end
@@ -126,9 +121,7 @@ function SWEP:PrimaryAttack()
         -- Normally we would set the inflictor to be the igniter, but since we're destroying it below it won't be valid anymore
         p.ignite_info = {att=owner, infl=owner}
 
-        local message = "You have been ignited by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
-        p:PrintMessage(HUD_PRINTCENTER, message)
-        p:PrintMessage(HUD_PRINTTALK, message)
+        p:QueueMessage(MSG_PRINTBOTH, "You have been ignited by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!")
 
         -- Remove the notification delay timer since the message above already tells them the same thing
         timer.Remove("TTTArsonistNotifyDelay_" .. p:SteamID64())
@@ -138,8 +131,7 @@ function SWEP:PrimaryAttack()
     if igniteCount == 0 then
         message = "No players were doused so your igniter just fizzles out"
     end
-    owner:PrintMessage(HUD_PRINTCENTER, message)
-    owner:PrintMessage(HUD_PRINTTALK, message)
+    owner:QueueMessage(MSG_PRINTBOTH, message)
 
     -- Log the event
     net.Start("TTT_ArsonistIgnited")

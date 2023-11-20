@@ -8,6 +8,17 @@ local util = util
 local MathMax = math.max
 local StringUpper = string.upper
 
+-------------
+-- CONVARS --
+-------------
+
+local infected_prime = GetConVar("ttt_infected_prime")
+local infected_cough_enabled = GetConVar("ttt_infected_cough_enabled")
+local infected_respawn_enabled = GetConVar("ttt_infected_respawn_enabled")
+local infected_show_icon = GetConVar("ttt_infected_show_icon")
+local infected_succumb_time = GetConVar("ttt_infected_succumb_time")
+local infected_full_health = GetConVar("ttt_infected_full_health")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -42,28 +53,28 @@ end)
 
 -- Reveal the infected to all zombie allies if enabled
 hook.Add("TTTTargetIDPlayerRoleIcon", "Infected_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideInfected, showJester, hideBodysnatcher)
-    if not GetGlobalBool("ttt_infected_show_icon", true) then return end
+    if not infected_show_icon:GetBool() then return end
     if ply:IsActiveInfected() and client:IsZombieAlly() then
         return ROLE_INFECTED, false
     end
 end)
 
 hook.Add("TTTTargetIDPlayerRing", "Infected_TTTTargetIDPlayerRing", function(ent, client, ringVisible)
-    if not GetGlobalBool("ttt_infected_show_icon", true) then return end
+    if not infected_show_icon:GetBool() then return end
     if IsPlayer(ent) and ent:IsActiveInfected() and client:IsZombieAlly() then
         return true, ROLE_COLORS_RADAR[ROLE_INFECTED]
     end
 end)
 
 hook.Add("TTTTargetIDPlayerText", "Infected_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
-    if not GetGlobalBool("ttt_infected_show_icon", true) then return end
+    if not infected_show_icon:GetBool() then return end
     if IsPlayer(ent) and ent:IsActiveInfected() and client:IsZombieAlly() then
         return StringUpper(ROLE_STRINGS[ROLE_INFECTED]), ROLE_COLORS_RADAR[ROLE_INFECTED]
     end
 end)
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_INFECTED] = function(ply, target)
-    if not GetGlobalBool("ttt_infected_show_icon", true) then return end
+    if not infected_show_icon:GetBool() then return end
     if not IsPlayer(target) then return end
     if not target:IsActiveInfected() then return end
     if not ply:IsZombieAlly() then return end
@@ -77,14 +88,14 @@ end
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "Infected_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
-    if not GetGlobalBool("ttt_infected_show_icon", true) then return end
+    if not infected_show_icon:GetBool() then return end
     if ply:IsActiveInfected() and client:IsZombieAlly() then
         return ROLE_COLORS_SCOREBOARD[ROLE_INFECTED], ROLE_STRINGS_SHORT[ROLE_INFECTED]
     end
 end)
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_INFECTED] = function(ply, target)
-    if not GetGlobalBool("ttt_infected_show_icon", true) then return end
+    if not infected_show_icon:GetBool() then return end
     if not IsPlayer(target) then return end
     if not target:IsActiveInfected() then return end
     if not ply:IsZombieAlly() then return end
@@ -162,14 +173,26 @@ hook.Add("TTTTutorialRoleText", "Infected_TTTTutorialRoleText", function(role, t
         local zombieColor = ROLE_COLORS[ROLE_ZOMBIE]
         local html = "The " .. ROLE_STRINGS[ROLE_INFECTED] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> who is hiding a secret deadly disease."
 
-        local succumbTime = GetGlobalInt("ttt_infected_succumb_time", 180)
+        local succumbTime = infected_succumb_time:GetInt()
         html = html .. "<span style='display: block; margin-top: 10px;'>After " .. succumbTime .. " seconds, the " .. ROLE_STRINGS[ROLE_INFECTED] .. " will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>succumb to their disease</span> and change into <span style='color: rgb(" .. zombieColor.r .. ", " .. zombieColor.g .. ", " .. zombieColor.b .. ")'>" .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. "</span>.</span>"
 
-        if GetGlobalBool("ttt_infected_respawn_enable", false) then
+        if infected_show_icon:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Before the " .. ROLE_STRINGS[ROLE_INFECTED] .. "'s infection has taken hold, they are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>identifiable</span> to their future <span style='color: rgb(" .. zombieColor.r .. ", " .. zombieColor.g .. ", " .. zombieColor.b .. ")'>" .. ROLE_STRINGS[ROLE_ZOMBIE] .. " comrades</span> via role icons and displayed colors.</span>"
+        end
+
+        if infected_full_health:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Once the " .. ROLE_STRINGS[ROLE_INFECTED] .. " has succumbed to their infection, they are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>healed back to full health</span>.</span>"
+        end
+
+        if infected_respawn_enabled:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_INFECTED] .. " will also turn into " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " if <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>they are killed</span>.</span>"
         end
 
-        if GetGlobalBool("ttt_infected_cough_enabled", true) then
+        if infected_prime:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_INFECTED] .. " will come back back as a <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. "</span>, meaning they have all the abilities and stat bonuses that " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " spawning into the round normally would have.</span>"
+        end
+
+        if infected_cough_enabled:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>While the " .. ROLE_STRINGS[ROLE_INFECTED] .. " is still alive, they will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>periodically cough</span> which other players who are observant can use to identify them.</span>"
         end
 

@@ -19,15 +19,10 @@ local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
 
--- HACK: Workaround to make sure this is defined until the x86-64 branch is updated
-if not string.StartsWith then
-    string.StartsWith = string.StartWith
-end
-
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.9.2"
+CR_VERSION = "2.0.0"
 CR_BETA = false
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -91,21 +86,34 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
     CRDebug.HooksChecked = CRDebug.HooksChecked or {}
     local oldHookAdd = hook.Add
     hook.Add = function(eventName, identifier, func)
-        local info = debug.getinfo(2, "S")
+        local info = debug.getinfo(2, "Sl")
         -- Only run the hook checks for custom roles code
         if StringFind(info.short_src, "custom-roles", 1, true) or StringFind(info.short_src, "customroles", 1, true) then
             local key = eventName .. "_" .. tostring(identifier)
             -- Keep track of which ones we've checked already so we don't spam ourselves on reload
             -- Also ignore the ones that are known to replace themselves... for whatever reason
-            if not CRDebug.HooksChecked[key] and not table.HasValue(CRDebug.IgnoredHookDupes, key) then
-                local hooks = hook.GetTable()
-                if hooks[eventName] and hooks[eventName][identifier] then
+            if not table.HasValue(CRDebug.IgnoredHookDupes, key) then
+                local locationKey = info.short_src .. "_" .. info.currentline
+                -- If we have a location key saved but it's different this time then it's a duplicate
+                if CRDebug.HooksChecked[key] and CRDebug.HooksChecked[key] ~= locationKey then
                     ErrorNoHaltWithStack("Hook for '" .. eventName .. "' with identifier '" .. identifier .. "' already exists!")
+                else
+                    CRDebug.HooksChecked[key] = locationKey
                 end
-                CRDebug.HooksChecked[key] = true
             end
         end
         oldHookAdd(eventName, identifier, func)
+    end
+
+    local oldHookRemove = hook.Remove
+    hook.Remove = function(eventName, identifier)
+        local info = debug.getinfo(2, "S")
+        -- Only run the hook checks for custom roles code
+        if StringFind(info.short_src, "custom-roles", 1, true) or StringFind(info.short_src, "customroles", 1, true) then
+            local key = eventName .. "_" .. tostring(identifier)
+            CRDebug.HooksChecked[key] = false
+        end
+        oldHookRemove(eventName, identifier)
     end
 end
 
@@ -158,8 +166,13 @@ ROLE_CUPID = 37
 ROLE_SHADOW = 38
 ROLE_SPONGE = 39
 ROLE_ARSONIST = 40
+ROLE_SPY = 41
+ROLE_HIVEMIND = 42
+ROLE_GUESSER = 43
+ROLE_QUARTERMASTER = 44
+ROLE_VINDICATOR = 45
 
-ROLE_MAX = 40
+ROLE_MAX = 45
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -181,28 +194,31 @@ function GetTeamRoles(list, excludes)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL, ROLE_MADSCIENTIST})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL, ROLE_MADSCIENTIST, ROLE_SPY, ROLE_HIVEMIND, ROLE_QUARTERMASTER})
 
 DELAYED_SHOP_ROLES = {}
 AddRoleAssociations(DELAYED_SHOP_ROLES, {ROLE_CLOWN, ROLE_VETERAN, ROLE_DEPUTY})
 
 TRAITOR_ROLES = {}
-AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE, ROLE_INFORMANT})
+AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE, ROLE_INFORMANT, ROLE_SPY})
 
 INNOCENT_ROLES = {}
-AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_TURNCOAT, ROLE_SAPPER, ROLE_MARSHAL, ROLE_INFECTED})
+AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_TURNCOAT, ROLE_SAPPER, ROLE_MARSHAL, ROLE_INFECTED, ROLE_QUARTERMASTER, ROLE_VINDICATOR})
 
 JESTER_ROLES = {}
-AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE})
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE, ROLE_GUESSER})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST, ROLE_HIVEMIND})
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
 
 DETECTIVE_ROLES = {}
-AddRoleAssociations(DETECTIVE_ROLES, {ROLE_DETECTIVE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_MARSHAL})
+AddRoleAssociations(DETECTIVE_ROLES, {ROLE_DETECTIVE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_MARSHAL, ROLE_QUARTERMASTER})
+
+DETECTIVE_LIKE_ROLES = {}
+AddRoleAssociations(DETECTIVE_LIKE_ROLES, {ROLE_DEPUTY, ROLE_IMPERSONATOR})
 
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
@@ -213,7 +229,7 @@ AddRoleAssociations(TRAITOR_BUTTON_ROLES, {ROLE_TRICKSTER})
 
 -- Shop roles get this ability by default
 CAN_LOOT_CREDITS_ROLES = {}
-AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER, ROLE_LOOTGOBLIN})
+AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER, ROLE_LOOTGOBLIN, ROLE_HIVEMIND})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -421,61 +437,42 @@ if CLIENT then
         return teamName, teamColor
     end
 else
-    function CreateCreditConVar(role)
-        -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
-        if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
-            local rolestring = ROLE_STRINGS_RAW[role]
-            local credits = "0"
-            if ROLE_STARTING_CREDITS[role] then credits = ROLE_STARTING_CREDITS[role]
-            elseif TRAITOR_ROLES[role] then credits = "1"
-            elseif DETECTIVE_ROLES[role] then credits = "1" end
-            CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
-        end
-    end
-
-    function CreateShopConVars(role)
-        local rolestring = ROLE_STRINGS_RAW[role]
-        CreateCreditConVar(role)
-
-        CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
-        CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
-
-        if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
-            CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
-        end
-
-        if (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
-            CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
-        end
-
-        if DELAYED_SHOP_ROLES[role] then
-            CreateConVar("ttt_" .. rolestring .. "_shop_active_only", "1")
-            CreateConVar("ttt_" .. rolestring .. "_shop_delay", "0")
-        end
-    end
-
-    function SyncShopConVars(role)
-        local rolestring = ROLE_STRINGS_RAW[role]
-        SetGlobalInt("ttt_" .. rolestring .. "_shop_random_percent", GetConVar("ttt_" .. rolestring .. "_shop_random_percent"):GetInt())
-        SetGlobalBool("ttt_" .. rolestring .. "_shop_random_enabled", GetConVar("ttt_" .. rolestring .. "_shop_random_enabled"):GetBool())
-
-        local sync_cvar = "ttt_" .. rolestring .. "_shop_sync"
-        if ConVarExists(sync_cvar) then
-            SetGlobalBool(sync_cvar, GetConVar(sync_cvar):GetBool())
-        end
-
-        local mode_cvar = "ttt_" .. rolestring .. "_shop_mode"
-        if ConVarExists(mode_cvar) then
-            SetGlobalInt(mode_cvar, GetConVar(mode_cvar):GetInt())
-        end
-
-        if DELAYED_SHOP_ROLES[role] then
-            SetGlobalBool("ttt_" .. rolestring .. "_shop_active_only", GetConVar("ttt_" .. rolestring .. "_shop_active_only"):GetBool())
-            SetGlobalBool("ttt_" .. rolestring .. "_shop_delay", GetConVar("ttt_" .. rolestring .. "_shop_delay"):GetBool())
-        end
-    end
-
     GetRoleTeamName = GetRawRoleTeamName
+end
+
+function CreateCreditConVar(role)
+    -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
+    if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
+        local rolestring = ROLE_STRINGS_RAW[role]
+        local credits = "0"
+        if ROLE_STARTING_CREDITS[role] then credits = ROLE_STARTING_CREDITS[role]
+        elseif TRAITOR_ROLES[role] then credits = "1"
+        elseif DETECTIVE_ROLES[role] then credits = "1" end
+        CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
+    end
+end
+
+function CreateShopConVars(role)
+    local rolestring = ROLE_STRINGS_RAW[role]
+    CreateCreditConVar(role)
+
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
+
+    local hassync = (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or ROLE_HAS_SHOP_SYNC[role]
+    if hassync then
+        CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
+    end
+
+    -- Roles don't get both shop sync and shop mode
+    if (INDEPENDENT_ROLES[role] or DELAYED_SHOP_ROLES[role] or ROLE_HAS_SHOP_MODE[role]) and not hassync then
+        CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
+    end
+
+    if DELAYED_SHOP_ROLES[role] then
+        CreateConVar("ttt_" .. rolestring .. "_shop_active_only", "1", FCVAR_REPLICATED)
+        CreateConVar("ttt_" .. rolestring .. "_shop_delay", "0", FCVAR_REPLICATED)
+    end
 end
 
 ROLE_COLORS = {}
@@ -554,7 +551,12 @@ ROLE_STRINGS_RAW = {
     [ROLE_CUPID] = "cupid",
     [ROLE_SHADOW] = "shadow",
     [ROLE_SPONGE] = "sponge",
-    [ROLE_ARSONIST] = "arsonist"
+    [ROLE_ARSONIST] = "arsonist",
+    [ROLE_SPY] = "spy",
+    [ROLE_HIVEMIND] = "hivemind",
+    [ROLE_GUESSER] = "guesser",
+    [ROLE_QUARTERMASTER] = "quartermaster",
+    [ROLE_VINDICATOR] = "vindicator"
 }
 
 ROLE_STRINGS = {
@@ -598,7 +600,12 @@ ROLE_STRINGS = {
     [ROLE_CUPID] = "Cupid",
     [ROLE_SHADOW] = "Shadow",
     [ROLE_SPONGE] = "Sponge",
-    [ROLE_ARSONIST] = "Arsonist"
+    [ROLE_ARSONIST] = "Arsonist",
+    [ROLE_SPY] = "Spy",
+    [ROLE_HIVEMIND] = "Hive Mind",
+    [ROLE_GUESSER] = "Guesser",
+    [ROLE_QUARTERMASTER] = "Quartermaster",
+    [ROLE_VINDICATOR] = "Vindicator"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -642,7 +649,12 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_CUPID] = "Cupids",
     [ROLE_SHADOW] = "Shadows",
     [ROLE_SPONGE] = "Sponges",
-    [ROLE_ARSONIST] = "Arsonists"
+    [ROLE_ARSONIST] = "Arsonists",
+    [ROLE_SPY] = "Spies",
+    [ROLE_HIVEMIND] = "Hive Mind",
+    [ROLE_GUESSER] = "Guessers",
+    [ROLE_QUARTERMASTER] = "Quartermasters",
+    [ROLE_VINDICATOR] = "Vindicators"
 }
 
 ROLE_STRINGS_EXT = {
@@ -687,7 +699,12 @@ ROLE_STRINGS_EXT = {
     [ROLE_CUPID] = "a Cupid",
     [ROLE_SHADOW] = "a Shadow",
     [ROLE_SPONGE] = "a Sponge",
-    [ROLE_ARSONIST] = "an Arsonist"
+    [ROLE_ARSONIST] = "an Arsonist",
+    [ROLE_SPY] = "a Spy",
+    [ROLE_HIVEMIND] = "the Hive Mind",
+    [ROLE_GUESSER] = "a Guesser",
+    [ROLE_QUARTERMASTER] = "a Quartermaster",
+    [ROLE_VINDICATOR] = "a Vindicator"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -732,7 +749,12 @@ ROLE_STRINGS_SHORT = {
     [ROLE_CUPID] = "cup",
     [ROLE_SHADOW] = "sha",
     [ROLE_SPONGE] = "spn",
-    [ROLE_ARSONIST] = "ars"
+    [ROLE_ARSONIST] = "ars",
+    [ROLE_SPY] = "spy",
+    [ROLE_HIVEMIND] = "hmd",
+    [ROLE_GUESSER] = "gue",
+    [ROLE_QUARTERMASTER] = "qmr",
+    [ROLE_VINDICATOR] = "vin"
 }
 
 function StartsWithVowel(word)
@@ -746,11 +768,11 @@ end
 
 function UpdateRoleStrings()
     for role = 0, ROLE_MAX do
-        local name = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name", "")
+        local name = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name"):GetString()
         if name ~= "" then
             ROLE_STRINGS[role] = name
 
-            local plural = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural", "")
+            local plural = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural"):GetString()
             if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
                 local lastChar = StringLower(StringSub(name, #name, #name))
                 if lastChar == "s" then
@@ -764,7 +786,7 @@ function UpdateRoleStrings()
                 ROLE_STRINGS_PLURAL[role] = plural
             end
 
-            local article = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article", "")
+            local article = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article"):GetString()
             if article == "" then -- Fallback if no article is given. Does NOT handle all cases properly
                 if StartsWithVowel(name) then
                     ROLE_STRINGS_EXT[role] = "an " .. name
@@ -838,10 +860,15 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_CONVARS = {}
 
 -- Optional features
-ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
+ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {} -- TODO: Remove after 2.0.0
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
+ROLE_CAN_SEE_JESTERS = {}
+ROLE_CAN_SEE_MIA = {}
+ROLE_HAS_SHOP_MODE = {}
+ROLE_HAS_SHOP_SYNC = {}
+ROLE_SHOP_SYNC_ROLES = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -852,6 +879,8 @@ ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 ROLE_IS_TARGETID_OVERRIDDEN = {}
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
 ROLE_IS_TARGET_HIGHLIGHTED = {}
+ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE = {}
+ROLE_VICTIM_CHANGING_ROLE = {}
 ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
@@ -950,7 +979,7 @@ function RegisterRole(tbl)
         DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
     end
 
-    if type(tbl.shoulddelayannouncements) == "boolean" then
+    if type(tbl.shoulddelayannouncements) == "boolean" then -- TODO: Remove after 2.0.0
         ROLE_SHOULD_DELAY_ANNOUNCEMENTS[roleID] = tbl.shoulddelayannouncements
     end
 
@@ -964,6 +993,38 @@ function RegisterRole(tbl)
 
     if type(tbl.canseec4) == "boolean" then
         ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
+    end
+
+    if type(tbl.canseejesters) == "boolean" then
+        ROLE_CAN_SEE_JESTERS[roleID] = tbl.canseejesters
+    end
+
+    if type(tbl.canseemia) == "boolean" then
+        ROLE_CAN_SEE_MIA[roleID] = tbl.canseemia
+    end
+
+    if type(tbl.hasshopmode) == "boolean" then
+        ROLE_HAS_SHOP_MODE[roleID] = tbl.hasshopmode
+    end
+
+    if type(tbl.hasshopsync) == "boolean" then
+        ROLE_HAS_SHOP_SYNC[roleID] = tbl.hasshopsync
+    end
+
+    if type(tbl.shopsyncroles) == "table" then
+        ROLE_SHOP_SYNC_ROLES[roleID] = tbl.shopsyncroles
+    end
+
+    if type(tbl.isdetectivelike) == "boolean" then
+        DETECTIVE_LIKE_ROLES[roleID] = tbl.isdetectivelike
+    end
+
+    if type(tbl.shouldrevealrolewhenactive) == "function" then
+        ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[roleID] = tbl.shouldrevealrolewhenactive
+    end
+
+    if type(tbl.victimchangingrole) == "function" then
+        ROLE_VICTIM_CHANGING_ROLE[roleID] = tbl.victimchangingrole
     end
 
     -- Equipment
@@ -1155,8 +1216,13 @@ EVENT_DEPUTIZED = 30
 EVENT_INFECTEDSUCCUMBED = 31
 EVENT_CUPIDPAIRED = 32
 EVENT_ARSONISTIGNITED = 33
+EVENT_GUESSERCORRECT = 34
+EVENT_GUESSERINCORRECT = 35
+EVENT_VINDICATORACTIVE = 36
+EVENT_VINDICATORSUCCESS = 37
+EVENT_VINDICATORFAIL = 38
 
-EVENT_MAX = EVENT_MAX or 33
+EVENT_MAX = EVENT_MAX or 38
 EVENTS_BY_ROLE = EVENTS_BY_ROLE or {}
 
 if SERVER then
@@ -1212,8 +1278,10 @@ WIN_CUPID = 13
 WIN_SHADOW = 14
 WIN_SPONGE = 15
 WIN_ARSONIST = 16
+WIN_HIVEMIND = 17
+WIN_VINDICATOR = 18
 
-WIN_MAX = WIN_MAX or 16
+WIN_MAX = WIN_MAX or 18
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
@@ -1289,6 +1357,7 @@ MUTE_ALL = 2
 MUTE_SPEC = 1002
 
 -- Jester notify modes
+JESTER_NOTIFY_NONE = 0
 JESTER_NOTIFY_DETECTIVE_AND_TRAITOR = 1
 JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3
@@ -1308,6 +1377,11 @@ SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
 -- Misc. role constants
 UNITS_PER_METER = 52.49
 UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
+
+-- Message queue modes
+MSG_PRINTBOTH = 1
+MSG_PRINTTALK = 3 -- Keep this the same value as HUD_PRINTTALK just in case
+MSG_PRINTCENTER = 4 -- Keep this the same value as HUD_PRINTCENTER just in case
 
 -- Corpse stuff
 CORPSE_ICON_TYPES = {
@@ -1459,8 +1533,8 @@ function UpdateRoleWeaponState()
 end
 
 function UpdateRoleState()
-    local disable_looting = GetGlobalBool("ttt_detective_disable_looting", false)
-    local special_detectives_armor_loadout = GetGlobalBool("ttt_special_detectives_armor_loadout", true)
+    local disable_looting = GetConVar("ttt_detectives_disable_looting"):GetBool()
+    local special_detectives_armor_loadout = GetConVar("ttt_special_detectives_armor_loadout"):GetBool()
     for r, e in pairs(DETECTIVE_ROLES) do
         if e then
             -- Don't overwrite custom roles that have this specifically disabled
@@ -1487,7 +1561,7 @@ function UpdateRoleState()
     UpdateRoleColours()
 
     -- Enable the shop for all roles if configured to do so
-    if GetGlobalBool("ttt_shop_for_all", false) then
+    if GetConVar("ttt_shop_for_all"):GetBool() then
         for role = 0, ROLE_MAX do
             if not SHOP_ROLES[role] then
                 SHOP_ROLES[role] = true
@@ -1511,7 +1585,7 @@ function ShouldShowTraitorExtraInfo()
     -- Don't display Parasite and Assassin information if there is a glitch that is distorting the role information
     -- If the glitch mode is "Show as Special Traitor" then we don't want to show this because it reveals which of the traitors is real (because this doesn't show for glitches)
     -- If the glitch mode is "Hide Special Traitor Roles" then we don't want to show anything that reveals what role a traitor really is
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
     local hasGlitch = GetGlobalBool("ttt_glitch_round", false)
     return not hasGlitch or glitchMode == GLITCH_SHOW_AS_TRAITOR
 end
@@ -1569,9 +1643,9 @@ if SERVER then
         for _, ply in pairs(GetAllPlayers()) do
             if ply == attacker then
                 local role_string = ROLE_STRINGS[role]
-                ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
+                ply:QueueMessage(MSG_PRINTCENTER, "You killed the " .. role_string .. "!")
             elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
-                ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
+                ply:QueueMessage(MSG_PRINTCENTER, getkillstring(ply))
             end
 
             if play_sound or show_confetti then
@@ -1627,3 +1701,124 @@ DefaultEquipment = {
         "weapon_ttt_glock"
     }
 };
+
+-----------------
+-- Old ConVars --
+-----------------
+
+local function OldCVarWarning(oldName, newName)
+    cvars.AddChangeCallback(oldName, function(convar, oldValue, newValue)
+        RunConsoleCommand(newName, newValue)
+        ErrorNoHalt("WARNING: ConVar \'" .. oldName .. "\' deprecated. Use \'" .. newName .. "\' instead!\n")
+    end)
+end
+
+-- init_shd
+CreateConVar("ttt_detective_disable_looting", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_disable_looting", "ttt_detectives_disable_looting")
+
+CreateConVar("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE, FCVAR_REPLICATED, "How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)", SPECIAL_DETECTIVE_HIDE_NONE, SPECIAL_DETECTIVE_HIDE_FOR_OTHERS)
+OldCVarWarning("ttt_detective_hide_special_mode", "ttt_detectives_hide_special_mode")
+
+CreateConVar("ttt_detective_search_only", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_search_only", "ttt_detectives_search_only")
+
+for _, dataType in ipairs(CORPSE_ICON_TYPES) do
+    CreateConVar("ttt_detective_search_only_" .. dataType, "0", FCVAR_REPLICATED)
+    OldCVarWarning("ttt_detective_search_only_" .. dataType, "ttt_detectives_search_only_" .. dataType)
+end
+
+CreateConVar("ttt_traitor_vision_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_traitor_vision_enable", "ttt_traitors_vision_enabled")
+
+-- Assassin
+CreateConVar("ttt_assassin_target_vision_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_assassin_target_vision_enable", "ttt_assassin_target_vision_enabled")
+
+-- Arsonist
+CreateConVar("ttt_detective_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_search_only_arsonistdouse", "ttt_detectives_search_only_arsonistdouse")
+
+-- Beggar
+CreateConVar("ttt_beggars_are_independent", "0", FCVAR_REPLICATED, "Whether beggars should be treated as members of the independent team", 0, 1)
+OldCVarWarning("ttt_beggars_are_independent", "ttt_beggar_is_independent")
+
+-- Bodysnatcher
+CreateConVar("ttt_bodysnatchers_are_independent", "0", FCVAR_REPLICATED, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
+OldCVarWarning("ttt_bodysnatchers_are_independent", "ttt_bodysnatcher_is_independent")
+
+-- Cupid
+CreateConVar("ttt_cupids_are_independent", "0", FCVAR_REPLICATED, "Whether cupids should be treated as members of the independent team", 0, 1)
+OldCVarWarning("ttt_cupids_are_independent", "ttt_cupid_is_independent")
+
+CreateConVar("ttt_cupid_lover_vision_enable", "1", FCVAR_REPLICATED, "Whether the lovers can see outlines of each other through walls", 0, 1)
+OldCVarWarning("ttt_cupid_lover_vision_enable", "ttt_cupid_lover_vision_enabled")
+
+-- Detective-Like
+CreateConVar("ttt_detective_glow_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_glow_enable", "ttt_detectives_glow_enabled")
+
+if SERVER then
+    CreateConVar("ttt_detective_credits_timer", "0")
+    OldCVarWarning("ttt_detective_credits_timer", "ttt_detectives_credits_timer")
+end
+
+-- Hive Mind
+CreateConVar("ttt_hivemind_vision_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_hivemind_vision_enable", "ttt_hivemind_vision_enabled")
+
+-- Infected
+CreateConVar("ttt_infected_respawn_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_infected_respawn_enable", "ttt_infected_respawn_enabled")
+
+-- Killer
+CreateConVar("ttt_killer_vision_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_killer_vision_enable", "ttt_killer_vision_enabled")
+
+-- Mad Scientist
+CreateConVar("ttt_madscientist_respawn_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_madscientist_respawn_enable", "ttt_madscientist_respawn_enabled")
+
+-- Traitor
+if SERVER then
+    CreateConVar("ttt_traitor_credits_timer", "0")
+    OldCVarWarning("ttt_traitor_credits_timer", "ttt_traitors_credits_timer")
+end
+
+-- Vampire
+CreateConVar("ttt_vampires_are_monsters", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampires_are_monsters", "ttt_vampire_is_monster")
+
+CreateConVar("ttt_vampires_are_independent", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampires_are_independent", "ttt_vampire_is_independent")
+
+CreateConVar("ttt_vampire_convert_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampire_convert_enable", "ttt_vampire_convert_enabled")
+
+CreateConVar("ttt_vampire_drain_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampire_drain_enable", "ttt_vampire_drain_enabled")
+
+CreateConVar("ttt_vampire_vision_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampire_vision_enable", "ttt_vampire_vision_enabled")
+
+-- Zombie
+CreateConVar("ttt_zombies_are_monsters", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombies_are_monsters", "ttt_zombie_is_monster")
+
+CreateConVar("ttt_zombies_are_traitors", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombies_are_traitors", "ttt_zombie_is_traitor")
+
+CreateConVar("ttt_zombie_leap_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombie_leap_enable", "ttt_zombie_leap_enabled")
+
+CreateConVar("ttt_zombie_spit_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombie_spit_enable", "ttt_zombie_spit_enabled")
+
+CreateConVar("ttt_zombie_vision_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombie_vision_enable", "ttt_zombie_vision_enabled")
+
+-- Death Notifier
+if SERVER then
+    CreateConVar("ttt_death_notifier_enable", "1")
+    OldCVarWarning("ttt_death_notifier_enable", "ttt_death_notifier_enabled")
+end

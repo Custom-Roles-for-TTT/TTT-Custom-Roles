@@ -19,6 +19,13 @@ local function GetLoverKiller(cli)
     return player.GetBySteamID64(sid)
 end
 
+-------------
+-- CONVARS --
+-------------
+
+local revenger_radar_timer = GetConVar("ttt_revenger_radar_timer")
+local revenger_damage_bonus = GetConVar("ttt_revenger_damage_bonus")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -49,6 +56,12 @@ end)
 ---------------
 -- TARGET ID --
 ---------------
+
+hook.Add("TTTTargetIDPlayerTargetIcon", "Revenger_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    if cli:IsRevenger() and IsLover(cli, ply) then
+        return "lover", false, ROLE_COLORS_RADAR[ROLE_REVENGER], "up"
+    end
+end)
 
 hook.Add("TTTTargetIDPlayerText", "Revenger_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
     if not IsPlayer(ent) then return end
@@ -112,7 +125,7 @@ local function UpdateRevengerLoverKiller()
     local active = net.ReadBool()
     if active then
         SetRevengerLoverKillerPosition()
-        timer.Create("updaterevengerloverkiller", GetGlobalInt("ttt_revenger_radar_timer", 15), 0, SetRevengerLoverKillerPosition)
+        timer.Create("updaterevengerloverkiller", revenger_radar_timer:GetInt(), 0, SetRevengerLoverKillerPosition)
     else
         revenger_lover_killers = {}
     end
@@ -161,7 +174,12 @@ hook.Add("TTTTutorialRoleText", "Revenger_TTTTutorialRoleText", function(role, t
         html = html .. "<span style='display: block; margin-top: 10px;'>If their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>soulmate is killed</span>, the " .. ROLE_STRINGS[ROLE_REVENGER] .. "'s goal becomes tracking down and <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>exacting revenge</span> against their soulmate's killer.</span>"
 
         -- Radar
-        html = html .. "<span style='display: block; margin-top: 10px;'>To accomplish this, the " .. ROLE_STRINGS[ROLE_REVENGER] .. " is shown <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the location of their soulmate's killer</span> via radar-like pings, every " .. GetGlobalInt("ttt_revenger_radar_timer", 15) .. " seconds.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>To accomplish this, the " .. ROLE_STRINGS[ROLE_REVENGER] .. " is shown <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the location of their soulmate's killer</span> via radar-like pings, every " .. revenger_radar_timer:GetInt() .. " seconds.</span>"
+
+        -- Damage bonus
+        if revenger_damage_bonus:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Once the " .. ROLE_STRINGS[ROLE_REVENGER] .. "'s soulmate is killed, they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>do more damage</span> to their soulmate's killer.</span>"
+        end
 
         return html
     end

@@ -372,7 +372,7 @@ To implement a spectator HUD like the phantom has, you will need to create two h
 
 Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.
 
-For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the `ROLE.shouldshowspectatorhud` function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the `TTTSpectatorShowHUD` hook. Within that hook we prepare the information required and call the shared `CRHUD:PaintPowersHUD` method which handles the rendering for us. The server side is similar, first we initialize the convars and sync the values as globals so they are available on the client. Then we use the `TTTSpectatorHUDKeyPress` hook to intercept key presses and define what action each keypress should result in. The [API](API.md) has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:
+For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the `ROLE.shouldshowspectatorhud` function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the `TTTSpectatorShowHUD` hook. Within that hook we prepare the information required and call the shared `CRHUD:PaintPowersHUD` method which handles the rendering for us. The server side is similar, we use the `TTTSpectatorHUDKeyPress` hook to intercept key presses and define what action each keypress should result in. The [API](API.md) has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:
 
 ```lua
 ROLE.shouldshowspectatorhud = function(ply)
@@ -389,6 +389,10 @@ ROLE.translations = {
     }
 }
 
+local summoner_killer_haunt_power_max = CreateConVar("ttt_summoner_killer_haunt_power_max", "100", FCVAR_REPLICATED)
+local summoner_killer_haunt_jump_cost = CreateConVar("ttt_summoner_killer_haunt_jump_cost", "50", FCVAR_REPLICATED)
+local summoner_killer_haunt_drop_cost = CreateConVar("ttt_summoner_killer_haunt_drop_cost", "75", FCVAR_REPLICATED)
+
 if CLIENT then
     hook.Add("TTTSpectatorShowHUD", "Summoner_TTTSpectatorShowHUD", function(cli, tgt)
         if not cli:IsSummoner() then return end
@@ -400,10 +404,10 @@ if CLIENT then
             fill = Color(82, 226, 255, 255)
         }
         local powers = {
-            [L.summoner_haunt_jump] = GetGlobalInt("ttt_summoner_killer_haunt_jump_cost", 50),
-            [L.summoner_haunt_drop] = GetGlobalInt("ttt_summoner_killer_haunt_drop_cost", 75)
+            [L.summoner_haunt_jump] = summoner_killer_haunt_jump_cost:GetInt(),
+            [L.summoner_haunt_drop] = summoner_killer_haunt_drop_cost:GetInt()
         }
-        local max_power = GetGlobalInt("ttt_summoner_killer_haunt_power_max", 100)
+        local max_power = summoner_killer_haunt_power_max:GetInt()
         local current_power = cli:GetNWInt("PhantomPossessingPower", 0)
 
         CRHUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.summoner_haunt_title)
@@ -411,18 +415,8 @@ if CLIENT then
 end
 
 if SERVER then
-    local summoner_killer_haunt_power_max = CreateConVar("ttt_summoner_killer_haunt_power_max", "100")
-    local summoner_killer_haunt_jump_cost = CreateConVar("ttt_summoner_killer_haunt_jump_cost", "50")
-    local summoner_killer_haunt_drop_cost = CreateConVar("ttt_summoner_killer_haunt_drop_cost", "75")
-
-    hook.Add("TTTSyncGlobals", "Summoner_TTTSyncGlobals", function()
-        SetGlobalInt("ttt_summoner_killer_haunt_power_max", summoner_killer_haunt_power_max:GetInt())
-        SetGlobalInt("ttt_summoner_killer_haunt_jump_cost", summoner_killer_haunt_jump_cost:GetInt())
-        SetGlobalInt("ttt_summoner_killer_haunt_drop_cost", summoner_killer_haunt_drop_cost:GetInt())
-    end)
-
     hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:IsActive() then
             powers[IN_ATTACK2] = {
                 start_command = "+menu",
                 end_command = "-menu",
@@ -442,24 +436,30 @@ if SERVER then
 end
 ```
 
-*(NOTE: If your role is already using the `TTTSyncGlobals` hook elsewhere then consider merging the hooks together in your role file. If you don't want to do that, just be careful that the hook instance name (the 2nd parameter) is unique for each hook you add)*
-
 ### Optional Rules
 
 There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role to the file.
 
-| Option | Type | Description | Added in |
-| --- | --- | --- | --- |
-| `ROLE.canlootcredits` | boolean | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop and will automatically create the `ttt_%NAMERAW%_credits_starting` convar. | 1.1.8 |
-| `ROLE.canusetraitorbuttons` | boolean |  Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. | 1.1.8 |
-| `ROLE.shoulddelayshop` | boolean |  Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)). | 1.2.2 |
-| `ROLE.shoulddelayannouncements` | boolean |  Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped. | 1.2.7 |
-| `ROLE.haspassivewin` | boolean |  Whether this role should not block another role from winning (like the old man). | 1.3.1 |
-| `ROLE.shouldnotdrown` | boolean |  Whether the player should not show the drown effect or take drowning damage. | 1.5.7 |
-| `ROLE.canseec4` | boolean | Whether the player should be able to see the C4 icons like traitors can. | 1.5.14 |
-| `ROLE.istargetidoverridden` | function(ply, target, showJester) | Whether the player's target ID information (role icon, circle, text) are being overridden by a hook. Called by the `plymeta:IsTargetIDOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
-| `ROLE.isscoreboardinfooverridden` | function(ply, target) | Whether the player's scoreboard (player name, role color and icon) are being overridden by a hook. Called by the `plymeta:IsScoreboardInfoOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
-| `ROLE.istargethighlighted` | function(ply, target) | Whether the target is being highlighted per the player's role rules. Called by the `plymeta:IsTargetHighlighted` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
+| Option                                                  | Type                              | Description                                                                                                                                                                                                                                                                                                                                                                                            | Added in |
+|---------------------------------------------------------|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `ROLE.canlootcredits`                                   | boolean                           | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop and will automatically create the `ttt_%NAMERAW%_credits_starting` convar.                                    | 1.1.8    |
+| `ROLE.canusetraitorbuttons`                             | boolean                           | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association.                                                                                        | 1.1.8    |
+| `ROLE.shoulddelayshop`                                  | boolean                           | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)). | 1.2.2    |
+| `ROLE.shoulddelayannouncements` **DEPRECATED IN 1.9.4** | boolean                           | Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.                                                                                                                                                                                   | 1.2.7    | <!-- TODO: Remove after 2.0.0 -->
+| `ROLE.haspassivewin`                                    | boolean                           | Whether this role should not block another role from winning (like the old man).                                                                                                                                                                                                                                                                                                                       | 1.3.1    |
+| `ROLE.shouldnotdrown`                                   | boolean                           | Whether the player should not show the drown effect or take drowning damage.                                                                                                                                                                                                                                                                                                                           | 1.5.7    |
+| `ROLE.canseec4`                                         | boolean                           | Whether the player should be able to see the C4 icons like traitors can.                                                                                                                                                                                                                                                                                                                               | 1.5.14   |
+| `ROLE.istargetidoverridden`                             | function(ply, target, showJester) | Whether the player's target ID information (role icon, circle, text) are being overridden by a hook. Called by the `plymeta:IsTargetIDOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function.                                                                                                                                                          | 1.5.15   |
+| `ROLE.isscoreboardinfooverridden`                       | function(ply, target)             | Whether the player's scoreboard (player name, role color and icon) are being overridden by a hook. Called by the `plymeta:IsScoreboardInfoOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function.                                                                                                                                                      | 1.5.15   |
+| `ROLE.istargethighlighted`                              | function(ply, target)             | Whether the target is being highlighted per the player's role rules. Called by the `plymeta:IsTargetHighlighted` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function.                                                                                                                                                                                           | 1.5.15   |
+| `ROLE.canseejesters`                                    | boolean                           | Whether the player should be able to see jesters like traitors can. (Only applies if `ROLE.team = ROLE_TEAM_INDEPENDENT`)                                                                                                                                                                                                                                                                              | 1.9.4    |
+| `ROLE.canseemia`                                        | boolean                           | Whether the player should be able to see missing in action players on the scoreboard like traitors can. (Only applies if `ROLE.team = ROLE_TEAM_INDEPENDENT`)                                                                                                                                                                                                                                          | 1.9.4    |
+| `ROLE.hasshopmode`                                      | boolean                           | Whether the `ttt_%NAMERAW%_shop_mode` convar should be created when it normally wouldn't.                                                                                                                                                                                                                                                                                                              | 1.9.5    |
+| `ROLE.hasshopsync`                                      | boolean                           | Whether the `ttt_%NAMERAW%_shop_sync` convar should be created when it normally wouldn't.                                                                                                                                                                                                                                                                                                              | 1.9.5    |
+| `ROLE.shopsyncroles`                                    | sequential table                  | The list of roles that this should inherit shop items from.                                                                                                                                                                                                                                                                                                                                            | 1.9.5    |
+| `ROLE.isdetectivelike`                                  | boolean                           | Whether this role can be activated to gain detective features (e.g. the deputy and impersonator).                                                                                                                                                                                                                                                                                                      | 1.9.9    |
+| `ROLE.shouldrevealrolewhenactive`                       | function(ply)                     | Whether this role should have their role revealed (over their head, on the scoreboard, etc.) when their role is active.                                                                                                                                                                                                                                                                                | 1.9.9    |
+| `ROLE.victimchangingrole`                               | function(ply, victim)             | Whether this role's victims are having their role changed.                                                                                                                                                                                                                                                                                                                                             | 1.9.12   |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
@@ -522,7 +522,7 @@ ttt_%NAMERAW%_shop_sync (Whether the role should have access to all traitor/dete
 ttt_%NAMERAW%_shop_mode (Whether the role should have access to traitor and/or detective shop items) [INDEPENDENT ONLY]
 ```
 
-For more information on the specifics of these ConVars you can read the full list of ConVars [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations).
+For more information on the specifics of these ConVars you can read the full list of ConVars [here](https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations).
 
 If you would like to add your own ConVars that aren't automatically created you can do so here. First create the ConVars as you would normally with `CreateConVar`. *(Note: Please try to keep your ConVars as consistently named as possible. The recommended naming scheme for role specific convars is `ttt_%NAMERAW%_...`.)*
 

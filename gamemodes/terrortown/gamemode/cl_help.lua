@@ -10,6 +10,7 @@ local string = string
 local table = table
 local timer = timer
 local vgui = vgui
+local util = util
 
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
@@ -535,11 +536,8 @@ local function ShowTutorialPage(pnl, page)
 end
 
 local function ShowRoleTutorial(role)
-    -- If the role is enabled, show the page
-    if DEFAULT_ROLES[role] then return true end
-    if GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled", false) then
-        return true
-    end
+    -- If the role can spawn, show the page
+    if util.CanRoleSpawn(role) then return true end
 
     -- Otherwise check if there are special rules for this role
     if HookCall("TTTTutorialRoleEnabled", nil, role) then
@@ -733,6 +731,9 @@ function HELPSCRN:CreateConfig(dsettings)
 
     dgui:CheckBox(GetTranslation("set_cues"), "ttt_cl_soundcues")
 
+    cb = dgui:CheckBox(GetTranslation("set_msg_cue"), "ttt_cl_msg_soundcue")
+    cb:SetTooltip(GetTranslation("set_msg_cue_tip"))
+
     cb = dgui:CheckBox(GetTranslation("set_raw_karma"), "ttt_show_raw_karma_value")
     cb:SetTooltip(GetTranslation("set_raw_karma_tip"))
 
@@ -750,10 +751,6 @@ function HELPSCRN:CreateConfig(dsettings)
 
     cb = dgui:CheckBox(GetTranslation("set_bypass_culling"), "ttt_bypass_culling")
     cb:SetTooltip(GetTranslation("set_bypass_culling_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_popup_hint_sounds"), "ttt_cl_msg_soundcue")
-    cb:SetTooltip(GetTranslation("set_popup_hint_sounds_tip"))
-
     HookCall("TTTSettingsConfigTabFields", nil, "Interface", dgui)
 
     dsettings:AddItem(dgui)
@@ -979,7 +976,7 @@ function HELPSCRN:CreateRoles(droles)
     local enabled_roles = {}
     for r = ROLE_NONE + 1, ROLE_MAX do
         -- Skip disabled roles
-        if not DEFAULT_ROLES[r] and not GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled", false) then continue end
+        if not DEFAULT_ROLES[r] and not GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() then continue end
 
         table.insert(enabled_roles, {role = r, role_string = ROLE_STRINGS[r]})
     end

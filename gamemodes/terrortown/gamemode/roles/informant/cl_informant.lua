@@ -32,6 +32,12 @@ end)
 -- CONVARS --
 -------------
 
+local informant_share_scans = GetConVar("ttt_informant_share_scans")
+local informant_can_scan_jesters = GetConVar("ttt_informant_can_scan_jesters")
+local informant_can_scan_glitches = GetConVar("ttt_informant_can_scan_glitches")
+local informant_scanner_time = GetConVar("ttt_informant_scanner_time")
+local informant_requires_scanner = GetConVar("ttt_informant_requires_scanner")
+
 local informant_show_scan_radius = CreateClientConVar("ttt_informant_show_scan_radius", "0", true, false, "Whether the scan radius circle should show", 0, 1)
 
 hook.Add("TTTSettingsRolesTabSections", "Informant_TTTSettingsRolesTabSections", function(role, parentForm)
@@ -46,7 +52,7 @@ end)
 ---------------
 
 local function GetTeamRole(ply, cli)
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
 
     -- Treat hidden beggars and bodysnatchers as if they are still on the jester team
     if (ply:GetNWBool("WasBeggar", false) and not cli:ShouldRevealBeggar(ply)) or
@@ -77,7 +83,10 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", fun
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
-    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
+
+    if cli:IsInformant() or (cli:IsTraitorTeam() and informant_share_scans:GetBool()) then
         local newRole = role
         local newNoZ = noz
         local newColorRole = colorRole
@@ -107,7 +116,10 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
     local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
-    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
+
+    if cli:IsInformant() or (cli:IsTraitorTeam() and informant_share_scans:GetBool()) then
         local newRingVisible = ringVisible
         local newColor = false
 
@@ -130,7 +142,10 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
     local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
-    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
+
+    if cli:IsInformant() or (cli:IsTraitorTeam() and informant_share_scans:GetBool()) then
         local newText = text
         local newColor = col
 
@@ -144,14 +159,14 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
             local labelParam
 
             if TRAITOR_ROLES[role] then
-                local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+                local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
                 if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
                     labelParam = T("traitor")
                 elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
                     labelName = "target_unconfirmed_role"
                     labelParam = ROLE_STRINGS[role]
                 end
-            elseif DETECTIVE_ROLES[role] then labelParam = ROLE_STRINGS[ROLE_DETECTIVE]
+            elseif DETECTIVE_ROLES[role] then labelParam = T("detective")
             elseif INNOCENT_ROLES[role] then labelParam = T("innocent")
             elseif INDEPENDENT_ROLES[role] then labelParam = T("independent")
             elseif JESTER_ROLES[role] then labelParam = T("jester")
@@ -175,8 +190,11 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target, showJester)
     local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
+
     -- Info is only overridden for the informant or members of their team when enabled
-    if not ply:IsInformant() and (not ply:IsTraitorTeam() or not GetGlobalBool("ttt_informant_share_scans", true)) then return end
+    if not ply:IsInformant() and (not ply:IsTraitorTeam() or not informant_share_scans:GetBool()) then return end
 
     ------ icon, ring, text
     return true, true, true
@@ -192,7 +210,10 @@ hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", functio
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
-    if IsPlayer(ply) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
+
+    if IsPlayer(ply) and cli:IsInformant() or (cli:IsTraitorTeam() and informant_share_scans:GetBool()) then
         local newColor = c
         local newRoleStr = roleStr
 
@@ -214,8 +235,11 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target)
     local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
+
     -- Info is only overridden for the informant or members of their team when enabled
-    if not ply:IsInformant() and (not ply:IsTraitorTeam() or not GetGlobalBool("ttt_informant_share_scans", true)) then return end
+    if not ply:IsInformant() and (not ply:IsTraitorTeam() or not informant_share_scans:GetBool()) then return end
 
     ------ name,  role
     return false, true
@@ -233,7 +257,7 @@ hook.Add("HUDPaint", "Informant_HUDPaint", function()
     if not IsValid(client) or client:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
     if not client:IsInformant() then return end
 
-    if not GetGlobalBool("ttt_informant_requires_scanner", false) or (client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_inf_scanner") then
+    if not informant_requires_scanner:GetBool() or (client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_inf_scanner") then
         local state = client:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
 
         if informant_show_scan_radius:GetBool() then
@@ -244,7 +268,7 @@ hook.Add("HUDPaint", "Informant_HUDPaint", function()
             return
         end
 
-        local scan = GetGlobalInt("ttt_informant_scanner_time", 8)
+        local scan = informant_scanner_time:GetInt()
         local time = client:GetNWFloat("TTTInformantScannerStartTime", -1) + scan
 
         local x = ScrW() / 2.0
@@ -288,10 +312,30 @@ hook.Add("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", function(role, 
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local jesterColor = ROLE_COLORS[ROLE_JESTER]
         local glitchColor = ROLE_COLORS[ROLE_GLITCH]
-        local html = "The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to learn more about their enemies using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>scanner</span>."
+        local html = "The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to learn more about their enemies using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>"
+        if informant_requires_scanner:GetBool() then
+            html = html .. "scanner"
+        else
+            html = html .. "scanning ability"
+        end
+        html = html .. "</span>."
 
-        local scanJesters = GetGlobalBool("ttt_informant_can_scan_jesters", false)
-        local scanGlitches = GetGlobalBool("ttt_informant_can_scan_glitches", false)
+        local scanner_circle_state
+        local scanner_circle_state_opposite
+        local scannerColor
+        if informant_show_scan_radius:GetBool() then
+            scanner_circle_state = "enabled"
+            scanner_circle_state_opposite = "disabled"
+            scannerColor = ROLE_COLORS[ROLE_INNOCENT]
+        else
+            scanner_circle_state = "disabled"
+            scanner_circle_state_opposite = "enabled"
+            scannerColor = ROLE_COLORS[ROLE_TRAITOR]
+        end
+        html = html .. "<span style='display: block; margin-top: 10px;'>The scan area circle is currently <span style='color: rgb(" .. scannerColor.r .. ", " .. scannerColor.g .. ", " .. scannerColor.b .. ")'>" .. scanner_circle_state .. "</span> but can be " .. scanner_circle_state_opposite .. " on the role settings tab of this window.</span>"
+
+        local scanJesters = informant_can_scan_jesters:GetBool()
+        local scanGlitches = informant_can_scan_glitches:GetBool()
         if not (scanJesters and scanGlitches) then
             html = html .. "<span style='display: block; margin-top: 10px;'>You cannot scan "
             if not scanJesters then
@@ -306,7 +350,7 @@ hook.Add("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", function(role, 
             html = html .. ".</span>"
         end
 
-        if GetGlobalBool("ttt_informant_share_scans", false) then
+        if informant_share_scans:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Information you discover is automatically shared with fellow <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitors</span>.</span>"
         end
 

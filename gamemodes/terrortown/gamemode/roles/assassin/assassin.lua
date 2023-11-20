@@ -13,23 +13,15 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-local assassin_show_target_icon = CreateConVar("ttt_assassin_show_target_icon", "0")
-local assassin_target_vision_enable = CreateConVar("ttt_assassin_target_vision_enable", "0")
-local assassin_next_target_delay = CreateConVar("ttt_assassin_next_target_delay", "5", FCVAR_NONE, "The delay (in seconds) before an assassin is assigned their next target", 0, 30)
-local assassin_target_damage_bonus = CreateConVar("ttt_assassin_target_damage_bonus", "1", FCVAR_NONE, "Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)", 0, 1)
-local assassin_target_bonus_bought = CreateConVar("ttt_assassin_target_bonus_bought", "1")
-local assassin_wrong_damage_penalty = CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5", FCVAR_NONE, "Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)", 0, 1)
-local assassin_failed_damage_penalty = CreateConVar("ttt_assassin_failed_damage_penalty", "0.5", FCVAR_NONE, "Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)", 0, 1)
 local assassin_shop_roles_last = CreateConVar("ttt_assassin_shop_roles_last", "0")
-CreateConVar("ttt_assassin_allow_lootgoblin_kill", "1")
-CreateConVar("ttt_assassin_allow_zombie_kill", "1")
-CreateConVar("ttt_assassin_allow_vampire_kill", "1")
 
-hook.Add("TTTSyncGlobals", "Assassin_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_assassin_show_target_icon", assassin_show_target_icon:GetBool())
-    SetGlobalBool("ttt_assassin_target_vision_enable", assassin_target_vision_enable:GetBool())
-    SetGlobalFloat("ttt_assassin_next_target_delay", assassin_next_target_delay:GetFloat())
-end)
+local assassin_show_target_icon = GetConVar("ttt_assassin_show_target_icon")
+local assassin_target_vision_enabled = GetConVar("ttt_assassin_target_vision_enabled")
+local assassin_next_target_delay = GetConVar("ttt_assassin_next_target_delay")
+local assassin_target_damage_bonus = GetConVar("ttt_assassin_target_damage_bonus")
+local assassin_target_bonus_bought = GetConVar("ttt_assassin_target_bonus_bought")
+local assassin_wrong_damage_penalty = GetConVar("ttt_assassin_wrong_damage_penalty")
+local assassin_failed_damage_penalty = GetConVar("ttt_assassin_failed_damage_penalty")
 
 -----------------------
 -- TARGET ASSIGNMENT --
@@ -52,16 +44,12 @@ local function AssignAssassinTarget(ply, start, delay)
     local shops = {}
     local detectives = {}
     local independents = {}
-    local beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
     local shopRolesLast = assassin_shop_roles_last:GetBool()
-    local bodysnatcherModeInno = GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt()
-    local bodysnatcherModeMon = GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt()
-    local bodysnatcherModeIndep = GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt()
 
-    local function AddEnemy(p, bodysnatcherMode)
-        -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
-        if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and beggarMode ~= ANNOUNCE_REVEAL_ALL and beggarMode ~= ANNOUNCE_REVEAL_TRAITORS then return end
-        if p:GetNWBool("WasBodysnatcher", false) and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then return end
+    local function AddEnemy(p)
+        -- Don't add the former beggar or bodysnatcher to the list of enemies unless the "reveal" setting is enabled
+        if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and ply:ShouldRevealBeggar(p) then return end
+        if p:GetNWBool("WasBodysnatcher", false) and ply:ShouldRevealBodysnatcher(p) then return end
 
         -- Put shop roles into a list if they should be targeted last
         if shopRolesLast and p:IsShopRole() then
@@ -78,15 +66,12 @@ local function AssignAssassinTarget(ply, start, delay)
                 table.insert(detectives, p:SteamID64())
             -- Exclude Glitch from this list so they don't get discovered immediately
             elseif p:IsInnocentTeam() and not p:IsGlitch() then
-                AddEnemy(p, bodysnatcherModeInno)
+                AddEnemy(p)
             elseif p:IsMonsterTeam() then
-                AddEnemy(p, bodysnatcherModeMon)
+                AddEnemy(p)
             -- Exclude roles that have a passive win because they just want to survive
             elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
-                -- Also exclude bodysnatchers turned into an independent if their role hasn't been revealed
-                if not p:GetNWBool("WasBodysnatcher", false) or bodysnatcherModeIndep == BODYSNATCHER_REVEAL_ALL then
-                    table.insert(independents, p:SteamID64())
-                end
+                AddEnemy(p)
             end
         end
     end
@@ -121,8 +106,7 @@ local function AssignAssassinTarget(ply, start, delay)
 
     if ply:Alive() and not ply:IsSpec() then
         if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
-        ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
-        ply:PrintMessage(HUD_PRINTTALK, targetMessage)
+        ply:QueueMessage(MSG_PRINTBOTH, targetMessage)
     end
 end
 
@@ -138,9 +122,8 @@ local function UpdateAssassinTargets(ply)
                 local delay = assassin_next_target_delay:GetFloat()
                 -- Delay giving the next target if we're configured to do so
                 if delay > 0 then
-                    if v:Alive() and not v:IsSpec() then
-                        v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                        v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                    if v:IsActive() then
+                        v:QueueMessage(MSG_PRINTBOTH, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
                     end
                     timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
                         AssignAssassinTarget(v, false, true)
@@ -149,8 +132,7 @@ local function UpdateAssassinTargets(ply)
                     AssignAssassinTarget(v, false, false)
                 end
             else
-                v:PrintMessage(HUD_PRINTCENTER, "Final target eliminated.")
-                v:PrintMessage(HUD_PRINTTALK, "Final target eliminated.")
+                v:QueueMessage(MSG_PRINTBOTH, "Final target eliminated.")
             end
         end
     end
@@ -168,8 +150,7 @@ ROLE_MOVE_ROLE_STATE[ROLE_ASSASSIN] = function(ply, target, keep_on_source)
         if not keep_on_source then ply:SetNWString("AssassinTarget", "") end
         target:SetNWString("AssassinTarget", assassinTarget)
         local target_nick = player.GetBySteamID64(assassinTarget):Nick()
-        target:PrintMessage(HUD_PRINTCENTER, "You have learned that your predecessor's target was " .. target_nick)
-        target:PrintMessage(HUD_PRINTTALK, "You have learned that your predecessor's target was " .. target_nick)
+        target:QueueMessage(MSG_PRINTBOTH, "You have learned that your predecessor's target was " .. target_nick)
     elseif ply:IsAssassin() then
         -- If the player we're taking the role state from was an assassin but they didn't have a target, try to assign a target to this player
         -- Use a slight delay to let the role change go through first just in case
@@ -224,8 +205,7 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
         local skipPenalty = ConVarExists(convar) and GetConVar(convar):GetBool() and ply:IsRoleActive()
         if wasNotTarget and not skipPenalty then
             timer.Remove(attacker:Nick() .. "AssassinTarget")
-            attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
-            attacker:PrintMessage(HUD_PRINTTALK, "Contract failed. You killed the wrong player.")
+            attacker:QueueMessage(MSG_PRINTBOTH, "Contract failed. You killed the wrong player.")
             attacker:SetNWBool("AssassinFailed", true)
             attacker:SetNWString("AssassinTarget", "")
         end
@@ -290,7 +270,7 @@ end)
 hook.Add("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility", function(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveAssassin() then return end
-    if not assassin_target_vision_enable:GetBool() and not assassin_show_target_icon:GetBool() then return end
+    if not assassin_target_vision_enabled:GetBool() and not assassin_show_target_icon:GetBool() then return end
 
     local target_sid64 = ply:GetNWString("AssassinTarget", "")
     for _, v in ipairs(GetAllPlayers()) do

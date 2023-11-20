@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - Net Messages</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Net Messages</h1>
         <p>Messages that the Custom Roles for TTT addon is set up to listen to in the defined realm.</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="ttt_resetbuyableweaponscache" href="#ttt_resetbuyableweaponscache">TTT_ResetBuyableWeaponsCache</a></h3>
         <p>
             Resets the client's buyable weapons cache. This should be called if a weapon's CanBuy list has been updated.<br>
@@ -18,7 +24,7 @@
             <em>Added in:</em> 1.0.0
         </p>
 
-        <h3 style="margin-top: 30px"><a id="ttt_playerfootstep" href="#ttt_playerfootstep">TTT_PlayerFootstep</a></h3>
+        <h3><a id="ttt_playerfootstep" href="#ttt_playerfootstep">TTT_PlayerFootstep</a></h3>
         <p>
             Adds a footstep to the list's list of footsteps to show.<br>
             <em>Realm:</em> Client<br>
@@ -60,5 +66,6 @@
             <em>Added in:</em> 1.0.7
         </p>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

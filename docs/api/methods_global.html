@@ -3,17 +3,23 @@
 <head>
     <title>Custom Roles for TTT - API - Global Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Global Methods</h1>
         <p>Methods available globally (within the defined realm)</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="assignassassintargetply-start-delay" href="#assignassassintargetply-start-delay">AssignAssassinTarget(ply, start, delay)</a></h3>
         <p>
-            Assigns the target player their next assassination target (if they are the assassin role).<br>
+            Assigns the target player their next assassination target (if they are the Assassin role).<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0<br>
             <em>Parameters:</em>
@@ -21,7 +27,7 @@
         <ul>
             <li><em>ply</em> - The target player</li>
             <li><em>start</em> - Whether this is running at the start of the round (Defaults to <code>false</code>)</li>
-            <li><em>delay</em> - Whether the assassin's target assignment is delayed (Defaults to false)</li>
+            <li><em>delay</em> - Whether the Assassin's target assignment is delayed (Defaults to false)</li>
         </ul>
 
         <h3><a id="crversionversion" href="#crversionversion">CRVersion(version)</a></h3>
@@ -95,7 +101,7 @@
 
         <h3><a id="getrolenamefilteraliveonly" href="#getrolenamefilteraliveonly">Get{RoleName}Filter(aliveOnly)</a></h3>
         <p>
-            Dynamically created functions for each role that returns a function that filters net messages to players that are role. For example: <code>GetTraitorFilter()</code> and <code>GetPhantomFilter()</code> return a filter function that can be used to send a message to players who are a traitor or a phantom, respectively.<br>
+            Dynamically created functions for each role that returns a function that filters net messages to players that are role. For example: <code>GetTraitorFilter()</code> and <code>GetPhantomFilter()</code> return a filter function that can be used to send a message to players who are a Traitor or a Phantom, respectively.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> Whenever each role is added<br>
             <em>Parameters:</em>
@@ -267,7 +273,7 @@
 
         <h3><a id="registerroleroletable" href="#registerroleroletable">RegisterRole(roleTable)</a></h3>
         <p>
-            Registers a role with Custom Roles for TTT. See <a href="/NoxxFlame/TTT-Custom-Roles/blob/release/API/CREATE_YOUR_OWN_ROLE.md">here</a> for instructions on how to create a role and role table structure.<br>
+            Registers a role with Custom Roles for TTT. See <a href="/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/release/API/CREATE_YOUR_OWN_ROLE.md">here</a> for instructions on how to create a role and role table structure.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.9
         </p>
@@ -307,14 +313,14 @@
 
         <h3><a id="shouldshowtraitorextrainfo" href="#shouldshowtraitorextrainfo">ShouldShowTraitorExtraInfo()</a></h3>
         <p>
-            Whether extra information should be shown for the traitor team (e.g. teammate assassin's target and teammate parasite's infection).<br>
+            Whether extra information should be shown for the traitor team (e.g. teammate Assassin's target and teammate Parasite's infection).<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.5.7
         </p>
 
         <h3><a id="shouldpromotedetectivelike" href="#shouldpromotedetectivelike">ShouldPromoteDetectiveLike()</a></h3>
         <p>
-            Whether an unpromoted detective-like player (deputy/impersonator) should be promoted.<br>
+            Whether an unpromoted detective-like player (deputy/Impersonator) should be promoted.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.2.5
         </p>
@@ -354,5 +360,6 @@
             <em>Added in:</em> 1.0.0
         </p>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

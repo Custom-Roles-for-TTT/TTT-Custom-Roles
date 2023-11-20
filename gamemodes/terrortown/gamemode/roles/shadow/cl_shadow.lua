@@ -14,6 +14,22 @@ local MathRand = math.Rand
 local AddHook = hook.Add
 local StringUpper = string.upper
 
+-------------
+-- CONVARS --
+-------------
+
+local shadow_start_timer = GetConVar("ttt_shadow_start_timer")
+local shadow_buffer_timer = GetConVar("ttt_shadow_buffer_timer")
+local shadow_alive_radius = GetConVar("ttt_shadow_alive_radius")
+local shadow_dead_radius = GetConVar("ttt_shadow_dead_radius")
+local shadow_target_buff = GetConVar("ttt_shadow_target_buff")
+local shadow_target_buff_delay = GetConVar("ttt_shadow_target_buff_delay")
+local shadow_soul_link = GetConVar("ttt_shadow_soul_link")
+local shadow_weaken_health_to = GetConVar("ttt_shadow_weaken_health_to")
+local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
+local shadow_speed_mult = GetConVar("ttt_shadow_speed_mult")
+local shadow_sprint_recovery = GetConVar("ttt_shadow_sprint_recovery")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -133,8 +149,19 @@ end)
 -- TARGET ID --
 ---------------
 
+-- Show shadow target icon over the shadow's target
+hook.Add("TTTTargetIDPlayerTargetIcon", "Shadow_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    if cli:IsShadow() and ply:SteamID64() == cli:GetNWString("ShadowTarget", "") then
+        local iconColor = ROLE_COLORS_SPRITE[ROLE_TRAITOR]
+        if cli:GetPos():Distance(ply:GetPos()) <= shadow_alive_radius:GetFloat() * UNITS_PER_METER then
+            iconColor = ROLE_COLORS_SPRITE[ROLE_INNOCENT]
+        end
+        return "shadow", true, iconColor, "up"
+    end
+end)
+
 AddHook("TTTTargetIDPlayerRoleIcon", "Shadow_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ply:IsActiveShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+    if shadow_target_notify_mode:GetInt() == SHADOW_NOTIFY_IDENTIFY and ply:IsActiveShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
         return ROLE_SHADOW, true
     end
 end)
@@ -142,7 +169,7 @@ end)
 AddHook("TTTTargetIDPlayerRing", "Shadow_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
     if not IsPlayer(ent) then return end
 
-    if GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+    if shadow_target_notify_mode:GetInt() == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
         return true, ROLE_COLORS_RADAR[ROLE_SHADOW]
     end
 end)
@@ -154,7 +181,7 @@ AddHook("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText", function(ent, c
                 return LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
             end
             return text, clr, LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
-        elseif GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+        elseif shadow_target_notify_mode:GetInt() == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
             return StringUpper(ROLE_STRINGS[ROLE_SHADOW]), ROLE_COLORS_RADAR[ROLE_SHADOW]
         end
     end
@@ -167,7 +194,7 @@ end)
 AddHook("TTTScoreboardPlayerRole", "Shadow_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
     if cli:IsActiveShadow() and ply:SteamID64() == cli:GetNWString("ShadowTarget", "") then
         return c, roleStr, ROLE_SHADOW
-    elseif GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ply:IsShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+    elseif shadow_target_notify_mode:GetInt() == SHADOW_NOTIFY_IDENTIFY and ply:IsShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
         return ROLE_COLORS_SCOREBOARD[ROLE_SHADOW], ROLE_STRINGS_SHORT[ROLE_SHADOW]
     end
 end)
@@ -194,12 +221,12 @@ local function EnableShadowTargetHighlights()
         if not IsValid(target) then return end
 
         local ent
-        local r = GetGlobalFloat("ttt_shadow_alive_radius", 419.92)
+        local r = shadow_alive_radius:GetFloat() * UNITS_PER_METER
         if target:IsActive() then
             ent = target
         else
             ent = ClientGetRagdollEntity(sid64)
-            r = GetGlobalFloat("ttt_shadow_dead_radius", 157.47)
+            r = shadow_dead_radius:GetFloat() * UNITS_PER_METER
         end
         if not IsValid(ent) then return end
 
@@ -295,7 +322,7 @@ local function DrawLink(ply, ent)
             ent.LinkEmitter:SetPos(pos)
             ent.LinkNextPart = CurTime() + 0.02
             local particle = ent.LinkEmitter:Add("particle/wisp.vmt", pos)
-            particle:SetVelocity(Vector(0, 0, 0))
+            particle:SetVelocity(vector_origin)
             particle:SetDieTime(0.25)
             particle:SetStartAlpha(200)
             particle:SetEndAlpha(0)
@@ -348,7 +375,7 @@ AddHook("Think", "Shadow_Think", function()
         targetPlayer = targetPlayer or player.GetBySteamID64(client:GetNWString("ShadowTarget", ""))
         if IsValid(targetPlayer) then
             if targetPlayer:IsActive() then
-                local alive_radius = GetGlobalFloat("ttt_shadow_alive_radius", 419.92)
+                local alive_radius = shadow_alive_radius:GetFloat() * UNITS_PER_METER
                 DrawRadius(client, targetPlayer, alive_radius)
                 if client:GetPos():Distance(targetPlayer:GetPos()) > alive_radius then
                     DrawLink(client, targetPlayer)
@@ -358,7 +385,7 @@ AddHook("Think", "Shadow_Think", function()
                 RemoveLink(targetPlayer)
                 targetBody = targetBody or ClientGetRagdollEntity(client:GetNWString("ShadowTarget", ""))
                 if IsValid(targetBody) then
-                    local dead_radius = GetGlobalFloat("ttt_shadow_dead_radius", 157.47)
+                    local dead_radius = shadow_dead_radius:GetFloat() * UNITS_PER_METER
                     DrawRadius(client, targetBody, dead_radius)
                     if client:GetPos():Distance(targetBody:GetPos()) > dead_radius then
                         DrawLink(client, targetBody)
@@ -396,10 +423,10 @@ AddHook("HUDPaint", "Shadow_HUDPaint", function()
         local total
         if client:IsRoleActive() then
             message = PT("shadow_return_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
-            total = GetGlobalInt("ttt_shadow_buffer_timer", 7)
+            total = shadow_buffer_timer:GetInt()
         else
             message = PT("shadow_find_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
-            total = GetGlobalInt("ttt_shadow_start_timer", 30)
+            total = shadow_start_timer:GetInt()
         end
 
         local x = ScrW() / 2.0
@@ -425,7 +452,7 @@ AddHook("TTTHUDInfoPaint", "Shadow_TTTHUDInfoPaint", function(cli, label_left, l
 
     if hide_role then return end
 
-    local shadowBuff = GetGlobalInt("ttt_shadow_target_buff", 1)
+    local shadowBuff = shadow_target_buff:GetInt()
     if shadowBuff <= SHADOW_BUFF_NONE then return end
 
     local buffTimer = cli:GetNWFloat("ShadowBuffTimer", -1)
@@ -468,7 +495,7 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
         local roleColor = ROLE_COLORS[ROLE_SHADOW]
         local html = "The " .. ROLE_STRINGS[ROLE_SHADOW] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role that wins by staying close to their target without dying. "
 
-        local soul_link = GetGlobalInt("ttt_shadow_soul_link", SHADOW_SOUL_LINK_NONE)
+        local soul_link = shadow_soul_link:GetInt()
         if soul_link == SHADOW_SOUL_LINK_BOTH then
             html = html .. "If the shadow dies, their target dies and vice-versa. "
         elseif soul_link == SHADOW_SOUL_LINK_TARGET then
@@ -478,11 +505,11 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
         end
         html = html .. "If the shadow survives until the end of the round they win."
 
-        local start_timer = GetGlobalInt("ttt_shadow_start_timer", 30)
-        local buffer_timer = GetGlobalInt("ttt_shadow_buffer_timer", 7)
+        local start_timer = shadow_start_timer:GetInt()
+        local buffer_timer = shadow_buffer_timer:GetInt()
         html = html .. "<span style='display: block; margin-top: 10px;'>They can see their target through walls and are given <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. start_timer .. " seconds</span> to find them at the start of the round. Once the shadow has found their target, they are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " second</span> warning if they start to get too far away. If either of these timers run out before the shadow can find their target, the shadow "
 
-        if GetGlobalInt("ttt_shadow_weaken_health_to", 0) > 0 then
+        if shadow_weaken_health_to:GetInt() > 0 then
             html = html .. "has their health temporarily reduced over time. Once they get close to their target again, though, they will start to recover their max health back to normal"
         else
             html = html .. "dies"
@@ -491,9 +518,9 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
 
         html = html .. "<span style='display: block; margin-top: 10px;'>If your target dies you still need to stay close to their body. Staying too far away from their body for more than <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " seconds</span> will kill you.</span>"
 
-        local buff = GetGlobalInt("ttt_shadow_target_buff", SHADOW_BUFF_NONE)
+        local buff = shadow_target_buff:GetInt()
         if buff ~= SHADOW_BUFF_NONE then
-            local buffDelay = GetGlobalInt("ttt_shadow_target_buff_delay", 90)
+            local buffDelay = shadow_target_buff_delay:GetInt()
             local buffType = LANG.GetTranslation("shadow_buff_" .. buff)
             html = html .. "<span style='display: block; margin-top: 10px;'>If you stay with your target for " .. buffDelay .. " seconds "
             if buff == SHADOW_BUFF_TEAM_JOIN then
@@ -506,6 +533,24 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
             if buff == SHADOW_BUFF_RESPAWN then
                 html = html .. "<span style='display: block; margin-top: 10px;'>The first time your target dies while the buff is active, they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>respawn</span> after a short delay.</span>"
             end
+        end
+
+        local has_speed_mult = shadow_speed_mult:GetFloat() > 1
+        local has_sprint_recovery = shadow_sprint_recovery:GetFloat() > 0
+        if has_speed_mult or has_sprint_recovery then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_SHADOW] .. " is outside of their target's radius, they "
+            if has_speed_mult then
+                html = html .. "get a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>speed bonus</span>"
+            end
+
+            if has_speed_mult and has_sprint_recovery then
+                html = html .. " and "
+            end
+
+            if has_sprint_recovery then
+                html = html .. "<span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>recover sprint stamina faster</span>"
+            end
+            html = html .. ".</span>"
         end
 
         return html

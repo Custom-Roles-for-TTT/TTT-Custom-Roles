@@ -3,6 +3,22 @@ local net = net
 local surface = surface
 local string = string
 
+-------------
+-- CONVARS --
+-------------
+
+local bodysnatcher_respawn = GetConVar("ttt_bodysnatcher_respawn")
+local bodysnatcher_respawn_delay = GetConVar("ttt_bodysnatcher_respawn_delay")
+local bodysnatcher_respawn_limit = GetConVar("ttt_bodysnatcher_respawn_limit")
+local bodysnatcher_reveal_innocent = GetConVar("ttt_bodysnatcher_reveal_innocent")
+local bodysnatcher_reveal_traitor = GetConVar("ttt_bodysnatcher_reveal_traitor")
+local bodysnatcher_reveal_jester = GetConVar("ttt_bodysnatcher_reveal_jester")
+local bodysnatcher_reveal_independent = GetConVar("ttt_bodysnatcher_reveal_independent")
+local bodysnatcher_reveal_monster = GetConVar("ttt_bodysnatcher_reveal_monster")
+local bodysnatcher_is_independent = GetConVar("ttt_bodysnatcher_is_independent")
+local bodysnatcher_destroy_body = GetConVar("ttt_bodysnatcher_destroy_body")
+local bodysnatcher_show_role = GetConVar("ttt_bodysnatcher_show_role")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -28,7 +44,7 @@ end)
 hook.Add("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride", function(client, roleString)
     if not IsPlayer(client) or not client:IsBodysnatcher() then return end
 
-    if GetGlobalBool("ttt_bodysnatchers_are_independent", false) then
+    if bodysnatcher_is_independent:GetBool() then
         return roleString .. "_indep"
     end
     return roleString .. "_jester"
@@ -117,12 +133,12 @@ hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, lab
 
     if client:GetNWBool("WasBodysnatcher", false) then
         local bodysnatcherMode = BODYSNATCHER_REVEAL_ALL
-        if client:IsInnocentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsTraitorTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsMonsterTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsIndependentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsJesterTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_jester", BODYSNATCHER_REVEAL_ALL) end
-        if bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then
+        if client:IsInnocentTeam() then bodysnatcherMode = bodysnatcher_reveal_innocent:GetInt()
+        elseif client:IsTraitorTeam() then bodysnatcherMode = bodysnatcher_reveal_traitor:GetInt()
+        elseif client:IsMonsterTeam() then bodysnatcherMode = bodysnatcher_reveal_monster:GetInt()
+        elseif client:IsIndependentTeam() then bodysnatcherMode = bodysnatcher_reveal_independent:GetInt()
+        elseif client:IsJesterTeam() then bodysnatcherMode = bodysnatcher_reveal_jester:GetInt() end
+        if bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
@@ -156,6 +172,8 @@ local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
         modeString = modeString .. "everyone"
     elseif revealMode == BODYSNATCHER_REVEAL_TEAM then
         modeString = modeString .. "only <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>their new team</span>"
+    elseif revealMode == BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER then
+        modeString = modeString .. "any role that can see <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. string.lower(LANG.GetTranslation("jesters")) .. "</span>"
     else
         modeString = modeString .. "nobody"
     end
@@ -166,20 +184,32 @@ hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(rol
     if role == ROLE_BODYSNATCHER then
         local roleTeam = player.GetRoleTeam(ROLE_BODYSNATCHER, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
-        local html = "The " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role whose goal is to steal the role of a dead player using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bodysnatching device</span>."
+        local html = "The " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> team whose goal is to steal the role of a dead player using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bodysnatching device</span>."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>After <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>stealing a corpse's role</span>, they take over the goal of their new role.</span>"
 
+        -- Show role
+        html = html .. "<span style='display: block; margin-top: 10px;'>The corpse's role <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will "
+        if not bodysnatcher_show_role:GetBool() then
+            html = html .. "not "
+        end
+        html = html .. "be shown</span> while using the bodysnatching device.</span>"
+
+        -- Destroy body
+        if bodysnatcher_destroy_body:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Once the corpse's role has been snatched, the corpse <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will be destroyed</span>.</span>"
+        end
+
         -- Respawn
-        if GetGlobalBool("ttt_bodysnatcher_respawn", false) then
+        if bodysnatcher_respawn:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. " is killed before they join a team, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>they will respawn</span>"
 
-            local respawnLimit = GetGlobalInt("ttt_bodysnatcher_respawn_limit", 0)
+            local respawnLimit = bodysnatcher_respawn_limit:GetInt()
             if respawnLimit > 0 then
                 html = html .. " up to " .. respawnLimit .. " time(s)"
             end
 
-            local respawnDelay = GetGlobalInt("ttt_bodysnatcher_respawn_delay", 0)
+            local respawnDelay = bodysnatcher_respawn_delay:GetInt()
             if respawnDelay > 0 then
                 html = html .. " after a " .. respawnDelay .. " second delay"
             end
@@ -188,27 +218,27 @@ hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(rol
         end
 
         -- Innocent Reveal
-        local revealMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
+        local revealMode = bodysnatcher_reveal_innocent:GetInt()
         local teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_INNOCENT, true)
         html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
 
         -- Traitor Reveal
-        revealMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+        revealMode = bodysnatcher_reveal_traitor:GetInt()
         teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_TRAITOR, true)
         html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
 
         -- Monster Reveal
-        revealMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
+        revealMode = bodysnatcher_reveal_monster:GetInt()
         teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_MONSTER, true)
         html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
 
         -- Independent Reveal
-        revealMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL)
+        revealMode = bodysnatcher_reveal_independent:GetInt()
         teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_INDEPENDENT, true)
         html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
 
         -- Jester Reveal
-        revealMode = GetGlobalInt("ttt_bodysnatcher_reveal_jester", BODYSNATCHER_REVEAL_ALL)
+        revealMode = bodysnatcher_reveal_jester:GetInt()
         teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_JESTER, true)
         html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
 

@@ -7,6 +7,21 @@ local string = string
 local RemoveHook = hook.Remove
 local GetAllPlayers = player.GetAll
 
+-------------
+-- CONVARS --
+-------------
+
+local assassin_show_target_icon = GetConVar("ttt_assassin_show_target_icon")
+local assassin_target_vision_enabled = GetConVar("ttt_assassin_target_vision_enabled")
+local assassin_next_target_delay = GetConVar("ttt_assassin_next_target_delay")
+local assassin_allow_lootgoblin_kill = GetConVar("ttt_assassin_allow_lootgoblin_kill")
+local assassin_allow_zombie_kill = GetConVar("ttt_assassin_allow_zombie_kill")
+local assassin_allow_vampire_kill = GetConVar("ttt_assassin_allow_vampire_kill")
+local assassin_target_damage_bonus = GetConVar("ttt_assassin_target_damage_bonus")
+local assassin_target_bonus_bought = GetConVar("ttt_assassin_target_bonus_bought")
+local assassin_wrong_damage_penalty = GetConVar("ttt_assassin_wrong_damage_penalty")
+local assassin_failed_damage_penalty = GetConVar("ttt_assassin_failed_damage_penalty")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -35,10 +50,10 @@ end)
 -- TARGET ID --
 ---------------
 
--- Show "KILL" icon over the target's head
-hook.Add("TTTTargetIDPlayerKillIcon", "Assassin_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
-    if cli:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester then
-        return true
+-- Show skull icon over the target's head
+hook.Add("TTTTargetIDPlayerTargetIcon", "Assassin_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    if cli:IsAssassin() and assassin_show_target_icon:GetBool() and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester and not cli:IsSameTeam(ply) then
+        return "kill", true, ROLE_COLORS_SPRITE[ROLE_ASSASSIN], "down"
     end
 end)
 
@@ -58,9 +73,8 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target, showJester)
     -- Shared logic
     local show = (target:SteamID64() == ply:GetNWString("AssassinTarget", "")) and not showJester
 
-    local icon = show and GetGlobalBool("ttt_assassin_show_target_icon", false)
     ------ icon,  ring, text
-    return icon, false, show
+    return false, false, show
 end
 
 ----------------
@@ -112,7 +126,7 @@ local function EnableAssassinTargetHighlights()
 
         local target = nil
         for _, v in pairs(GetAllPlayers()) do
-            if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:SteamID64() == target_sid64 then
+            if IsValid(v) and v:IsActive() and v ~= client and v:SteamID64() == target_sid64 then
                 target = v
                 break
             end
@@ -127,7 +141,7 @@ end
 
 hook.Add("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    assassin_target_vision = GetGlobalBool("ttt_assassin_target_vision_enable", false)
+    assassin_target_vision = assassin_target_vision_enabled:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -189,28 +203,70 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to eliminate their enemies, one target at a time."
 
-        local delay = GetGlobalInt("ttt_assassin_next_target_delay", 0)
+        local delay = assassin_next_target_delay:GetInt()
         html = html .. "<span style='display: block; margin-top: 10px;'>They are assigned an initial target at the start of the round. A new target is assigned "
         if delay > 0 then
             html = html .. delay .. " seconds "
         end
         html = html .. "after their current target is <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>killed</span>.</span>"
 
-        local hasVision = GetGlobalBool("ttt_assassin_target_vision_enable", false)
+        local hasVision = assassin_target_vision_enabled:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>target intel</span> helps them see their target through walls by highlighting them.</span>"
         end
 
-        if GetGlobalBool("ttt_assassin_show_target_icon", false) then
+        if assassin_show_target_icon:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their current target can"
             if hasVision then
                 html = html .. " also"
             end
-            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>KILL</span> icon floating over their head.</span>"
+            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>skull</span> icon floating over their head.</span>"
         end
 
-        if GetGlobalBool("ttt_traitor_vision_enable", false) then
+        if GetConVar("ttt_traitors_vision_enabled"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
+        end
+
+        local allow_lootgoblin_kill = assassin_allow_lootgoblin_kill:GetBool() and GetConVar("ttt_lootgoblin_enabled"):GetBool()
+        local allow_zombie_kill = assassin_allow_zombie_kill:GetBool() and GetConVar("ttt_zombie_enabled"):GetBool()
+        local allow_vampire_kill = assassin_allow_vampire_kill:GetBool() and GetConVar("ttt_vampire_enabled"):GetBool()
+        if allow_lootgoblin_kill or allow_zombie_kill or allow_vampire_kill then
+            local allowed_roles = {}
+            if allow_lootgoblin_kill then
+                table.insert(allowed_roles, ROLE_STRINGS[ROLE_LOOTGOBLIN])
+            end
+            if allow_zombie_kill then
+                table.insert(allowed_roles, ROLE_STRINGS[ROLE_ZOMBIE])
+            end
+            if allow_vampire_kill then
+                table.insert(allowed_roles, ROLE_STRINGS[ROLE_VAMPIRE])
+            end
+
+            -- Build the table of allowed rules into a properly punctutated list with the last two elements joined by an "and"
+            local allowed_string = table.concat(allowed_roles, ", ")
+            local allowed_replace = " and"
+            if #allowed_roles > 2 then
+                allowed_replace  = "," .. allowed_replace
+            end
+            allowed_string = string.gsub(allowed_string, "(.*),(.*)", "%1" .. allowed_replace .. "%2")
+
+            html = html .. "<span style='display: block; margin-top: 10px;'>The following role(s) are still killable even if they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>aren't the " .. ROLE_STRINGS[ROLE_ASSASSIN] .. "'s target</span>: " .. allowed_string .. "</span>"
+        end
+
+        if assassin_target_damage_bonus:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When damaging their target, the " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " gets a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bonus to their damage</span> ("
+            if not assassin_target_bonus_bought:GetBool() then
+                html = html .. "not "
+            end
+            html = html .. "including when using weapons bought from the shop).</span>"
+        end
+
+        if assassin_wrong_damage_penalty:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When damaging a player that is not their target, the " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>does reduced damage</span>.</span>"
+        end
+
+        if assassin_failed_damage_penalty:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " kills a player who is not their target, they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>do reduced damage</span> for the rest of the round.</span>"
         end
 
         return html

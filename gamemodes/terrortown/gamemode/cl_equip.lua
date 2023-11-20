@@ -142,8 +142,8 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
     WEPS.PrepWeaponsLists(role)
 
     -- Determine which role sync variable to use, if any
-    local rolemode = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
-    local traitorsync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
+    local rolemode = cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
+    local traitorsync = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
     local sync_traitor_weapons = traitorsync or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
@@ -151,12 +151,22 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
         GetEquipmentForRole(ROLE_TRAITOR, false, true, block_exclusion, ignore_cache)
     end
 
-    local detectivesync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
+    local detectivesync = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
     local sync_detective_weapons = detectivesync or promoted or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
         GetEquipmentForRole(ROLE_DETECTIVE, false, true, block_exclusion, ignore_cache)
+    end
+
+    -- Pre-load all role weapons for all the sync roles (if there are any)
+    local sync_roles = ROLE_SHOP_SYNC_ROLES[role]
+    if sync_roles and #sync_roles > 0 then
+        for _, r in pairs(sync_roles) do
+            if not Equipment[r] then
+                GetEquipmentForRole(r, false, true, block_exclusion, ignore_cache)
+            end
+        end
     end
 
     -- Cache the equipment unless the role's shop can change mid round
@@ -166,7 +176,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
 
         -- find buyable weapons to load info from
         for _, v in pairs(weapons.GetList()) do
-            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion)
+            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles)
             if v and v.CanBuy then
                 local data = v.EquipMenuData or {}
                 local base = {
@@ -202,6 +212,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
         local traitor_equipment_ids = {}
         local detective_equipment = {}
         local detective_equipment_ids = {}
+        local sync_equipment = {}
         local available = {}
         for r, is in pairs(tbl) do
             for _, i in pairs(is) do
@@ -209,8 +220,8 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     -- Mark custom items
                     i.custom = not TableHasValue(DefaultEquipment[r], i.id)
 
-                    -- Run through this again to make sure non-custom equipment is saved to be synced below
-                    if not ItemIsWeapon(i) and i.custom then
+                    -- Save the equipment to be synced below
+                    if not ItemIsWeapon(i) then
                         -- Track the items already available to this role to avoid duplicates
                         if r == role then
                             available[i.id] = true
@@ -222,6 +233,11 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                         elseif r == ROLE_DETECTIVE then
                             TableInsert(detective_equipment, i)
                             TableInsert(detective_equipment_ids, i.id)
+                        end
+
+                        -- If we have sync roles and this role is one of them, save the item info for later
+                        if sync_roles and table.HasValue(sync_roles, r) then
+                            TableInsert(sync_equipment, i)
                         end
                     end
                 end
@@ -259,6 +275,15 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     TableInsert(tbl[role], i)
                     available[i.id] = true
                 end
+            end
+        end
+
+        -- Add all the equipment from the sync roles
+        for _, i in pairs(sync_equipment) do
+            -- Avoid duplicates
+            if not available[i.id] then
+                TableInsert(tbl[role], i)
+                available[i.id] = true
             end
         end
 
@@ -789,7 +814,7 @@ local function TraitorMenuPopup()
 
             -- non favorites second
             -- Randomize positions if this is enabled
-            if GetGlobalBool("ttt_shop_random_position", false) then
+            if GetConVar("ttt_shop_random_position"):GetBool() then
                 -- Gather all the panels into one list
                 local panels = {}
                 for i = 0, 9 do
@@ -1068,7 +1093,7 @@ local function ReceiveBought()
 end
 net.Receive("TTT_Bought", ReceiveBought)
 
--- Player received the item he has just bought, so run clientside init
+-- Player received the item they have just bought, so run clientside init
 local function ReceiveBoughtItem()
     local is_item = net.ReadBit() == 1
     local id

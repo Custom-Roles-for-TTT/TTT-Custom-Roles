@@ -1,6 +1,21 @@
 local hook = hook
 local net = net
 
+-------------
+-- CONVARS --
+-------------
+
+local phantom_killer_smoke = GetConVar("ttt_phantom_killer_smoke")
+local phantom_killer_haunt = GetConVar("ttt_phantom_killer_haunt")
+local phantom_killer_haunt_power_max = GetConVar("ttt_phantom_killer_haunt_power_max")
+local phantom_killer_haunt_move_cost = GetConVar("ttt_phantom_killer_haunt_move_cost")
+local phantom_killer_haunt_attack_cost = GetConVar("ttt_phantom_killer_haunt_attack_cost")
+local phantom_killer_haunt_jump_cost = GetConVar("ttt_phantom_killer_haunt_jump_cost")
+local phantom_killer_haunt_drop_cost = GetConVar("ttt_phantom_killer_haunt_drop_cost")
+local phantom_weaker_each_respawn = GetConVar("ttt_phantom_weaker_each_respawn")
+local phantom_announce_death = GetConVar("ttt_phantom_announce_death")
+local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -124,19 +139,19 @@ hook.Add("TTTSpectatorShowHUD", "Phantom_Haunting_TTTSpectatorShowHUD", function
         fill = Color(82, 226, 255, 255)
     }
     local powers = {
-        [L.haunt_move] = GetGlobalInt("ttt_phantom_killer_haunt_move_cost", 25),
-        [L.haunt_jump] = GetGlobalInt("ttt_phantom_killer_haunt_jump_cost", 50),
-        [L.haunt_drop] = GetGlobalInt("ttt_phantom_killer_haunt_drop_cost", 75),
-        [L.haunt_attack] = GetGlobalInt("ttt_phantom_killer_haunt_attack_cost", 100)
+        [L.haunt_move] = phantom_killer_haunt_move_cost:GetInt(),
+        [L.haunt_jump] = phantom_killer_haunt_jump_cost:GetInt(),
+        [L.haunt_drop] = phantom_killer_haunt_drop_cost:GetInt(),
+        [L.haunt_attack] = phantom_killer_haunt_attack_cost:GetInt()
     }
-    local max_power = GetGlobalInt("ttt_phantom_killer_haunt_power_max", 100)
+    local max_power = phantom_killer_haunt_power_max:GetInt()
     local current_power = cli:GetNWInt("PhantomPossessingPower", 0)
 
     CRHUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.haunt_title)
 end)
 
 hook.Add("TTTShouldPlayerSmoke", "Phantom_Haunting_TTTShouldPlayerSmoke", function(v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
-    if v:GetNWBool("PhantomHaunted", false) and GetGlobalBool("ttt_phantom_killer_smoke", false) then
+    if v:GetNWBool("PhantomHaunted", false) and phantom_killer_smoke:GetBool() then
         return true
     end
 end)
@@ -153,18 +168,43 @@ hook.Add("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", function(role, ti
         -- Respawn
         html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is killed, they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>be resurrected</span> if the person that killed them then dies.</span>"
 
-        -- Smoke
-        if GetGlobalBool("ttt_phantom_killer_smoke", false) then
-            html = html .. "<span style='display: block; margin-top: 10px;'>Before the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is respawned, their killer is enveloped in a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>shroud of smoke</span>, revealing themselves as the " .. ROLE_STRINGS[ROLE_PHANTOM] .. "'s killer to other players.</span>"
+        -- Weaker each respawn
+        if phantom_weaker_each_respawn:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Each time the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is killed, they will respawn with <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>half as much health</span>, down to a minimum of 1hp.</span>"
+        end
+
+        -- Announce death
+        if phantom_announce_death:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is killed, all " .. LANG.GetTranslation("detectives") .. " (and promoted " .. LANG.GetTranslation("detective") .. "-like roles) <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>are notified</span>.<span>"
+        end
+
+        local has_smoke = phantom_killer_smoke:GetBool()
+        local has_footsteps = phantom_killer_footstep_time:GetInt() > 0
+        -- Smoke and Killer footsteps
+        if has_smoke or has_footsteps then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Before the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is respawned, their killer "
+            if has_smoke then
+                html = html .. "is enveloped in a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>shroud of smoke</span>"
+            end
+
+            if has_smoke and has_footsteps then
+                html = html .. " and "
+            end
+
+            if has_footsteps then
+                html = html .. "leaves behind <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bloody footprints</span>"
+            end
+
+            html = html .. ", revealing themselves as the " .. ROLE_STRINGS[ROLE_PHANTOM] .. "'s killer to other players.</span>"
         end
 
         -- Possessing
-        if GetGlobalBool("ttt_phantom_killer_haunt", true) then
-            local max = GetGlobalInt("ttt_phantom_killer_haunt_power_max", 100)
-            local move_cost = GetGlobalInt("ttt_phantom_killer_haunt_move_cost", 25)
-            local jump_cost = GetGlobalInt("ttt_phantom_killer_haunt_jump_cost", 50)
-            local drop_cost = GetGlobalInt("ttt_phantom_killer_haunt_drop_cost", 75)
-            local attack_cost = GetGlobalInt("ttt_phantom_killer_haunt_attack_cost", 100)
+        if phantom_killer_haunt:GetBool() then
+            local max = phantom_killer_haunt_power_max:GetInt()
+            local move_cost = phantom_killer_haunt_move_cost:GetInt()
+            local jump_cost = phantom_killer_haunt_jump_cost:GetInt()
+            local drop_cost = phantom_killer_haunt_drop_cost:GetInt()
+            local attack_cost = phantom_killer_haunt_attack_cost:GetInt()
 
             -- Possessing powers
             if move_cost > 0 or jump_cost > 0 or drop_cost > 0 or attack_cost > 0 then

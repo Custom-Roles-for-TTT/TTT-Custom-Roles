@@ -7,6 +7,21 @@ local StringUpper = string.upper
 
 local client = nil
 
+-------------
+-- CONVARS --
+-------------
+
+local beggar_is_independent = GetConVar("ttt_beggar_is_independent")
+local beggar_respawn = GetConVar("ttt_beggar_respawn")
+local beggar_respawn_limit = GetConVar("ttt_beggar_respawn_limit")
+local beggar_respawn_delay = GetConVar("ttt_beggar_respawn_delay")
+local beggar_respawn_change_role = GetConVar("ttt_beggar_respawn_change_role")
+local beggar_reveal_traitor = GetConVar("ttt_beggar_reveal_traitor")
+local beggar_reveal_innocent = GetConVar("ttt_beggar_reveal_innocent")
+local beggar_scan = GetConVar("ttt_beggar_scan")
+local beggar_scan_time = GetConVar("ttt_beggar_scan_time")
+local beggar_announce_delay = GetConVar("ttt_beggar_announce_delay")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -36,7 +51,7 @@ end)
 hook.Add("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride", function(cli, roleString)
     if not IsPlayer(cli) or not cli:IsBeggar() then return end
 
-    if GetGlobalBool("ttt_beggars_are_independent", false) then
+    if beggar_is_independent:GetBool() then
         return roleString .. "_indep"
     end
     return roleString .. "_jester"
@@ -50,7 +65,7 @@ local beggar_show_scan_radius = CreateClientConVar("ttt_beggar_show_scan_radius"
 
 hook.Add("TTTSettingsRolesTabSections", "Beggar_TTTSettingsRolesTabSections", function(role, parentForm)
     if role ~= ROLE_BEGGAR then return end
-    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    local scanMode = beggar_scan:GetInt()
     if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     parentForm:CheckBox(LANG.GetTranslation("beggar_config_show_radius"), "ttt_beggar_show_scan_radius")
@@ -140,11 +155,13 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Beggar_TTTTargetIDPlayerRoleIcon", functi
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsBeggar() then return end
 
+    if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
+
     local state = ply:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
     -- This should already be covered by the scan stage check, but just in case
-    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    local scanMode = beggar_scan:GetInt()
     if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
@@ -161,11 +178,13 @@ hook.Add("TTTTargetIDPlayerRing", "Beggar_TTTTargetIDPlayerRing", function(ent, 
     if not cli:IsBeggar() then return end
     if not IsPlayer(ent) then return end
 
+    if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
+
     local state = ent:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
     -- This should already be covered by the scan stage check, but just in case
-    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    local scanMode = beggar_scan:GetInt()
     if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
@@ -182,11 +201,13 @@ hook.Add("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", function(ent, 
     if not cli:IsBeggar() then return end
     if not IsPlayer(ent) then return end
 
+    if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
+
     local state = ent:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state <= BEGGAR_UNSCANNED then return end
 
     -- This should already be covered by the scan stage check, but just in case
-    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    local scanMode = beggar_scan:GetInt()
     if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     local PT = LANG.GetParamTranslation
@@ -212,6 +233,8 @@ end)
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
 
+    if target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
+
     local state = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state <= BEGGAR_UNSCANNED then return end
 
@@ -219,7 +242,7 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target, showJester)
     if not ply:IsBeggar() then return end
 
     -- This should already be covered by the scan stage check, but just in case
-    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    local scanMode = beggar_scan:GetInt()
     if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     -- Icon and ring are shown for the target group, text is shown for everyone
@@ -245,11 +268,13 @@ hook.Add("TTTScoreboardPlayerRole", "Beggar_TTTScoreboardPlayerRole", function(p
     if not cli:IsBeggar() then return end
     if not IsPlayer(ply) then return end
 
+    if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
+
     local state = ply:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
     -- This should already be covered by the scan stage check, but just in case
-    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    local scanMode = beggar_scan:GetInt()
     if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
@@ -265,11 +290,13 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target)
     if not ply:IsBeggar() then return end
     if not IsPlayer(target) then return end
 
+    if target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
+
     local state = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
     -- This should already be covered by the scan stage check, but just in case
-    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    local scanMode = beggar_scan:GetInt()
     if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     -- Info is only overridden for targetted players viewed by the beggar
@@ -299,19 +326,19 @@ hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(cli, label_left, 
     if hide_role then return end
 
     if (cli:IsInnocent() or cli:IsTraitor()) and cli:GetNWBool("WasBeggar", false) then
-        local beggarMode = ANNOUNCE_REVEAL_ALL
-        if cli:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", ANNOUNCE_REVEAL_TRAITORS)
-        elseif cli:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL) end
-        if beggarMode ~= ANNOUNCE_REVEAL_ALL then
+        local beggarMode = BEGGAR_REVEAL_ALL
+        if cli:IsInnocent() then beggarMode = beggar_reveal_innocent:GetInt()
+        elseif cli:IsTraitor() then beggarMode = beggar_reveal_traitor:GetInt() end
+        if beggarMode ~= BEGGAR_REVEAL_ALL and beggarMode ~= BEGGAR_REVEAL_ROLES_THAT_CAN_SEE_JESTER then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
             local text
-            if beggarMode == ANNOUNCE_REVEAL_NONE then
+            if beggarMode == BEGGAR_REVEAL_NONE then
                 text = LANG.GetParamTranslation("beggar_hidden_all_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR] })
-            elseif beggarMode == ANNOUNCE_REVEAL_TRAITORS then
+            elseif beggarMode == BEGGAR_REVEAL_TRAITORS then
                 text = LANG.GetParamTranslation("beggar_hidden_innocent_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-            elseif beggarMode == ANNOUNCE_REVEAL_INNOCENTS then
+            elseif beggarMode == BEGGAR_REVEAL_INNOCENTS then
                 text = LANG.GetParamTranslation("beggar_hidden_traitor_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
             end
             local _, h = surface.GetTextSize(text)
@@ -340,7 +367,7 @@ hook.Add("HUDPaint", "Beggar_HUDPaint", function()
     if not IsValid(client) or client:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
     if not client:IsBeggar() then return end
 
-    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    local scanMode = beggar_scan:GetInt()
     if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     if beggar_show_scan_radius:GetBool() then
@@ -352,7 +379,7 @@ hook.Add("HUDPaint", "Beggar_HUDPaint", function()
         return
     end
 
-    local scan = GetGlobalInt("ttt_beggar_scan_time", 15)
+    local scan = beggar_scan_time:GetInt()
     local time = client:GetNWFloat("TTTBeggarScannerStartTime", -1) + scan
 
     local x = ScrW() / 2.0
@@ -383,67 +410,78 @@ end)
 -- TUTORIAL --
 --------------
 
-local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
+local function GetRevealModeInfo(roleColor, revealMode, teamName, teamColor)
     local modeString = "When joining the <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>" .. string.lower(teamName) .. "</span> team, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_BEGGAR] .. "</span>'s new role will be revealed to "
-    if revealMode == ANNOUNCE_REVEAL_ALL then
+    local revealed = true
+    if revealMode == BEGGAR_REVEAL_ALL then
         modeString = modeString .. "everyone"
-    elseif revealMode == ANNOUNCE_REVEAL_TRAITORS then
+    elseif revealMode == BEGGAR_REVEAL_TRAITORS then
         local revealColor = ROLE_COLORS[ROLE_TRAITOR]
         modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. string.lower(LANG.GetTranslation("traitors")) .. "</span>"
-    elseif revealMode == ANNOUNCE_REVEAL_INNOCENTS then
+    elseif revealMode == BEGGAR_REVEAL_INNOCENTS then
         local revealColor = ROLE_COLORS[ROLE_TRAITOR]
         modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. string.lower(LANG.GetTranslation("innocents")) .. "</span>"
+    elseif revealMode == BEGGAR_REVEAL_ROLES_THAT_CAN_SEE_JESTER then
+        modeString = modeString .. "any role that can see <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. string.lower(LANG.GetTranslation("jesters")) .. "</span>"
     else
         modeString = modeString .. "nobody"
+        revealed = false
     end
-    return modeString .. "."
+    return modeString .. ".", revealed
 end
 
 hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_BEGGAR then
         local roleTeam = player.GetRoleTeam(ROLE_BEGGAR, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
-        local html = "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role whose goal is to convince another players to give them a shop item."
+        local html = "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> team whose goal is to convince another players to give them a shop item."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " then <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>joins the team</span> of whichever player <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bought the item</span> they are given.</span>"
 
         -- Respawn
-        if GetGlobalBool("ttt_beggar_respawn", false) then
+        if beggar_respawn:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_BEGGAR] .. " is killed before they join a team, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>they will respawn</span>"
 
-            local respawnLimit = GetGlobalInt("ttt_beggar_respawn_limit", 0)
+            local respawnLimit = beggar_respawn_limit:GetInt()
             if respawnLimit > 0 then
                 html = html .. " up to " .. respawnLimit .. " time(s)"
             end
 
-            local respawnDelay = GetGlobalInt("ttt_beggar_respawn_delay", 0)
+            local respawnDelay = beggar_respawn_delay:GetInt()
             if respawnDelay > 0 then
                 html = html .. " after a " .. respawnDelay .. " second delay"
             end
 
             html = html .. ".</span>"
 
-            if GetGlobalBool("ttt_beggar_respawn_change_role", false) then
+            if beggar_respawn_change_role:GetBool() then
                 html = html .. "<span style='display: block; margin-top: 10px;'>When respawning, the " .. ROLE_STRINGS[ROLE_BEGGAR] .. " will switch to the opposite team of their killer.</span>"
             end
         end
 
         -- Innocent Reveal
-        local revealMode = GetGlobalInt("ttt_beggar_reveal_innocent", ANNOUNCE_REVEAL_TRAITORS)
+        local revealMode = beggar_reveal_innocent:GetInt()
         local teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_INNOCENT, true)
-        html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
+        local innoRevealString, innoRevealed = GetRevealModeInfo(roleColor, revealMode, teamName, teamColor)
+        html = html .. "<span style='display: block; margin-top: 10px;'>" .. innoRevealString .. "</span>"
 
         -- Traitor Reveal
-        revealMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
+        revealMode = beggar_reveal_traitor:GetInt()
         teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_TRAITOR, true)
-        html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
+        local traRevealString, traRevealed = GetRevealModeInfo(roleColor, revealMode, teamName, teamColor)
+        html = html .. "<span style='display: block; margin-top: 10px;'>" .. traRevealString .. "</span>"
+
+        local announceDelay = beggar_announce_delay:GetInt()
+        if (innoRevealed or traRevealed) and announceDelay > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>There is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>delay of " .. announceDelay .. " seconds</span> between when the " .. ROLE_STRINGS[ROLE_BEGGAR] .. " changes teams and when the announcement happens.</span>"
+        end
 
         -- Traitor scanning
-        local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+        local scanMode = beggar_scan:GetInt()
         if scanMode > BEGGAR_SCAN_MODE_DISABLED then
             local mode_string
             if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
-                mode_string = "members of the " .. LANG.GetTranslation("traitor") ..  " team"
+                mode_string = "members of the " .. LANG.GetTranslation("traitor") .. " team"
             else
                 mode_string = "out if they have a shop"
             end

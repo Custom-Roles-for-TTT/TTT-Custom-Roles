@@ -23,6 +23,10 @@ end)
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_medium_spirit_color", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_medium_spirit_vision", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_medium_dead_notify", "1", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_MEDIUM] = {}
 table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
     cvar = "ttt_medium_spirit_color",

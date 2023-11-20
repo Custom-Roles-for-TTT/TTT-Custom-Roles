@@ -20,34 +20,30 @@ util.AddNetworkString("TTT_BeggarKilled")
 CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the beggar is killed", 0, 4)
 CreateConVar("ttt_beggar_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a beggar is killed", 0, 1)
 CreateConVar("ttt_beggar_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a beggar is a killed", 0, 1)
-local beggars_are_independent = CreateConVar("ttt_beggars_are_independent", "0", FCVAR_NONE, "Whether beggars should be treated as members of the independent team", 0, 1)
-local beggar_reveal_traitor = CreateConVar("ttt_beggar_reveal_traitor", "1", FCVAR_NONE, "Who the beggar is revealed to when they join the traitor team", 0, 3)
-local beggar_reveal_innocent = CreateConVar("ttt_beggar_reveal_innocent", "2", FCVAR_NONE, "Who the beggar is revealed to when they join the innocent team", 0, 3)
-local beggar_respawn = CreateConVar("ttt_beggar_respawn", "0", FCVAR_NONE, "Whether the beggar respawns when they are killed before joining another team", 0, 1)
-local beggar_respawn_limit = CreateConVar("ttt_beggar_respawn_limit", "0", FCVAR_NONE, "The maximum number of times the beggar can respawn (if \"ttt_beggar_respawn\" is enabled). Set to 0 to allow infinite", 0, 30)
-local beggar_respawn_delay = CreateConVar("ttt_beggar_respawn_delay", "3", FCVAR_NONE, "The delay to use when respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 60)
-local beggar_respawn_change_role = CreateConVar("ttt_beggar_respawn_change_role", "0", FCVAR_NONE, "Whether to change the role of the respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 1)
-local beggar_scan = CreateConVar("ttt_beggar_scan", "0", FCVAR_NONE, "Whether the beggar can scan players to see if they are traitors. 0 - Disabled. 1 - Can only scan traitors. 2 - Can scan any role that has a shop.", 0, 2)
-local beggar_scan_time = CreateConVar("ttt_beggar_scan_time", "15", FCVAR_NONE, "The amount of time (in seconds) the beggar's scanner takes to use", 0, 60)
+
 local beggar_scan_float_time = CreateConVar("ttt_beggar_scan_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight", 0, 60)
 local beggar_scan_cooldown = CreateConVar("ttt_beggar_scan_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target", 0, 60)
 local beggar_scan_distance = CreateConVar("ttt_beggar_scan_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
 
-hook.Add("TTTSyncGlobals", "Beggar_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_beggars_are_independent", beggars_are_independent:GetBool())
-    SetGlobalBool("ttt_beggar_respawn", beggar_respawn:GetBool())
-    SetGlobalInt("ttt_beggar_respawn_limit", beggar_respawn_limit:GetInt())
-    SetGlobalInt("ttt_beggar_respawn_delay", beggar_respawn_delay:GetInt())
-    SetGlobalBool("ttt_beggar_respawn_change_role", beggar_respawn_change_role:GetBool())
-    SetGlobalInt("ttt_beggar_reveal_traitor", beggar_reveal_traitor:GetInt())
-    SetGlobalInt("ttt_beggar_reveal_innocent", beggar_reveal_innocent:GetInt())
-    SetGlobalInt("ttt_beggar_scan", beggar_scan:GetInt())
-    SetGlobalInt("ttt_beggar_scan_time", beggar_scan_time:GetInt())
-end)
+local beggar_respawn = GetConVar("ttt_beggar_respawn")
+local beggar_respawn_limit = GetConVar("ttt_beggar_respawn_limit")
+local beggar_respawn_delay = GetConVar("ttt_beggar_respawn_delay")
+local beggar_respawn_change_role = GetConVar("ttt_beggar_respawn_change_role")
+local beggar_scan = GetConVar("ttt_beggar_scan")
+local beggar_scan_time = GetConVar("ttt_beggar_scan_time")
+local beggar_announce_delay = GetConVar("ttt_beggar_announce_delay")
 
 -------------------
 -- ROLE TRACKING --
 -------------------
+
+local function AnnounceTeamChange(ply, role)
+    for _, v in ipairs(GetAllPlayers()) do
+        if v ~= ply and v:ShouldRevealBeggar(ply) then
+            v:QueueMessage(MSG_PRINTBOTH, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
+        end
+    end
+end
 
 hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
     if not IsValid(wep) or not IsPlayer(ply) then return end
@@ -57,26 +53,25 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
         wep.BoughtBy = ply
     elseif ply:IsBeggar() and (wep.BoughtBy:IsTraitorTeam() or wep.BoughtBy:IsInnocentTeam()) then
         local role
-        local beggarMode
         if wep.BoughtBy:IsTraitorTeam() then
             role = ROLE_TRAITOR
-            beggarMode = beggar_reveal_traitor:GetInt()
         else
             role = ROLE_INNOCENT
-            beggarMode = beggar_reveal_innocent:GetInt()
         end
 
         ply:SetRole(role)
         ply:SetNWBool("WasBeggar", true)
-        ply:PrintMessage(HUD_PRINTTALK, "You have joined the " .. ROLE_STRINGS[role] .. " team")
-        ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. ROLE_STRINGS[role] .. " team")
+        ply:QueueMessage(MSG_PRINTBOTH, "You have joined the " .. ROLE_STRINGS[role] .. " team")
         timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
 
-        for _, v in ipairs(GetAllPlayers()) do
-            if v ~= ply and (beggarMode == ANNOUNCE_REVEAL_ALL or (v:IsActiveTraitorTeam() and beggarMode == ANNOUNCE_REVEAL_TRAITORS) or (not v:IsActiveTraitorTeam() and beggarMode == ANNOUNCE_REVEAL_INNOCENTS)) then
-                v:PrintMessage(HUD_PRINTTALK, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
-                v:PrintMessage(HUD_PRINTCENTER, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
-            end
+        local announceDelay = beggar_announce_delay:GetInt()
+        if announceDelay > 0 then
+            timer.Create(ply:Nick() .. "BeggarAnnounce", announceDelay, 1, function()
+                if not IsPlayer(ply) then return end
+                AnnounceTeamChange(ply, role)
+            end)
+        else
+            AnnounceTeamChange(ply, role)
         end
 
         net.Start("TTT_BeggarConverted")
@@ -94,6 +89,7 @@ hook.Add("TTTPrepareRound", "Beggar_PrepareRound", function()
         v:SetNWBool("WasBeggar", false)
         v:SetNWBool("BeggarIsRespawning", false)
         timer.Remove(v:Nick() .. "BeggarRespawn")
+        timer.Remove(v:Nick() .. "BeggarAnnounce")
     end
 end)
 
@@ -139,11 +135,9 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
 
         local delay = beggar_respawn_delay:GetInt()
         if delay > 0 then
-            victim:PrintMessage(HUD_PRINTTALK, "You were killed but will respawn" .. message_extra .. " in " .. delay .. " seconds.")
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn" .. message_extra .. " in " .. delay .. " seconds.")
+            victim:QueueMessage(MSG_PRINTBOTH, "You were killed but will respawn" .. message_extra .. " in " .. delay .. " seconds.")
         else
-            victim:PrintMessage(HUD_PRINTTALK, "You were killed but are about to respawn" .. message_extra .. ".")
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but are about to respawn" .. message_extra .. ".")
+            victim:QueueMessage(MSG_PRINTBOTH, "You were killed but are about to respawn" .. message_extra .. ".")
             -- Introduce a slight delay to prevent player getting stuck as a spectator
             delay = 0.1
         end
@@ -296,19 +290,30 @@ local function ScanAllowed(ply, target)
     return InRange(ply, target)
 end
 
+local function GetFinalScanStage(target)
+    local scan_mode = beggar_scan:GetInt()
+    if scan_mode == BEGGAR_SCAN_MODE_TRAITORS then
+        if not target:IsTraitorTeam() then
+            return BEGGAR_SCANNED_HIDDEN
+        end
+    elseif not target:IsShopRole() then
+        return BEGGAR_SCANNED_HIDDEN
+    end
+    return BEGGAR_SCANNED_TEAM
+end
+
 local function Scan(ply, target)
     if not IsValid(ply) or not IsValid(target) then return end
 
     if target:IsActive() then
         if CurTime() - ply:GetNWFloat("TTTBeggarScannerStartTime", -1) >= beggar_scan_time:GetInt() then
-            local stage = BEGGAR_SCANNED_TEAM
+            local stage = GetFinalScanStage(target)
             local message = "You have discovered that " .. target:Nick()
             local scan_mode = beggar_scan:GetInt()
             if scan_mode == BEGGAR_SCAN_MODE_TRAITORS then
                 message = message .. " is "
                 if not target:IsTraitorTeam() then
                     message = message .. "not "
-                    stage = BEGGAR_SCANNED_HIDDEN
                 end
                 message = message .. "a traitor role."
             else
@@ -316,7 +321,6 @@ local function Scan(ply, target)
                     message = message .. " has "
                 else
                     message = message .. " does not have "
-                    stage = BEGGAR_SCANNED_HIDDEN
                 end
                 message = message .. "a shop."
             end
@@ -341,11 +345,20 @@ hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
         local state = ply:GetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
         if state == BEGGAR_SCANNER_IDLE then
             local target = IsTargetingPlayer(ply)
-            if target and target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED) < BEGGAR_SCANNED_HIDDEN and ScanAllowed(ply, target) then
-                ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_LOCKED)
-                ply:SetNWString("TTTBeggarScannerTarget", target:SteamID64())
-                ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()))
-                ply:SetNWFloat("TTTBeggarScannerStartTime", CurTime())
+            if target then
+                local stage = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
+                -- If their role is already revealed by feature then their scan stage should be at least that
+                if stage < BEGGAR_SCANNED_HIDDEN and target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then
+                    stage = GetFinalScanStage(target)
+                    target:SetNWInt("TTTBeggarScanStage", stage)
+                end
+
+                if stage < BEGGAR_SCANNED_HIDDEN and ScanAllowed(ply, target) then
+                    ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_LOCKED)
+                    ply:SetNWString("TTTBeggarScannerTarget", target:SteamID64())
+                    ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                    ply:SetNWFloat("TTTBeggarScannerStartTime", CurTime())
+                end
             end
         elseif state == BEGGAR_SCANNER_LOCKED then
             local target = player.GetBySteamID64(ply:GetNWString("TTTBeggarScannerTarget", ""))

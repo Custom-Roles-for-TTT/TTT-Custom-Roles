@@ -24,13 +24,11 @@ local drunk_sober_time = CreateConVar("ttt_drunk_sober_time", "180", FCVAR_NONE,
 local drunk_notify_mode = CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the drunk sobers up", 0, 4)
 local drunk_innocent_chance = CreateConVar("ttt_drunk_innocent_chance", "0.7", FCVAR_NONE, "Chance that the drunk will become an innocent role when remembering their role", 0, 1)
 local drunk_traitor_chance = CreateConVar("ttt_drunk_traitor_chance", "0", FCVAR_NONE, "Chance that the drunk will become a traitor role when remembering their role and \"all roles\" logic is enabled. If disabled (0), player chance of becoming a traitor is equal to every other non-innocent role", 0, 1)
-local drunk_become_clown = CreateConVar("ttt_drunk_become_clown", "0")
-local drunk_any_role = CreateConVar("ttt_drunk_any_role", "0")
 local drunk_join_losing_team = CreateConVar("ttt_drunk_join_losing_team", "0")
 
-hook.Add("TTTSyncGlobals", "Drunk_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_drunk_become_clown", drunk_become_clown:GetBool())
-end)
+local drunk_become_clown = GetConVar("ttt_drunk_become_clown")
+local drunk_any_role = GetConVar("ttt_drunk_any_role")
+local drunk_any_role_include_disabled = GetConVar("ttt_drunk_any_role_include_disabled")
 
 -----------------------
 -- ROLE CHANGE LOGIC --
@@ -259,7 +257,7 @@ function plymeta:SoberDrunk(team)
             -- Remove any roles that are not enabled or allowed
             for _, r in ipairs(role_options) do
                 local rolestring = ROLE_STRINGS_RAW[r]
-                if GetConVar("ttt_drunk_can_be_" .. rolestring):GetBool() and (DEFAULT_ROLES[r] or GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool()) then
+                if GetConVar("ttt_drunk_can_be_" .. rolestring):GetBool() and (DEFAULT_ROLES[r] or drunk_any_role_include_disabled:GetBool() or GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool()) then
                     table.insert(allowed_options, r)
                 end
             end
@@ -296,7 +294,7 @@ function plymeta:DrunkRememberRole(role, hidecenter)
     self:SetNWBool("WasDrunk", true)
     self:SetRole(role)
     self:PrintMessage(HUD_PRINTTALK, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".")
-    if not hidecenter then self:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".") end
+    if not hidecenter then self:QueueMessage(MSG_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".") end
     self:SetDefaultCredits()
 
     local mode = drunk_notify_mode:GetInt()

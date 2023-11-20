@@ -13,12 +13,7 @@ util.AddNetworkString("TTT_Promotion")
 -- CONVARS --
 -------------
 
-local detective_glow_enable = CreateConVar("ttt_detective_glow_enable", "0")
-local detective_credits_timer = CreateConVar("ttt_detective_credits_timer", "0")
-
-hook.Add("TTTSyncGlobals", "DetectiveLike_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_detective_glow_enable", detective_glow_enable:GetBool())
-end)
+local detectives_credits_timer = CreateConVar("ttt_detectives_credits_timer", "0")
 
 -- Server-side functions shared by detective-like roles (Deputy, Impersonator)
 
@@ -64,22 +59,20 @@ end
 local function FindAndPromoteDetectiveLike()
     for _, ply in pairs(GetAllPlayers()) do
         if ply:IsDetectiveLikePromotable() then
-            local alive = ply:Alive()
+            local alive = ply:IsActive()
             if alive then
-                ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
-                ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
+                ply:QueueMessage(MSG_PRINTBOTH, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
             end
 
-            -- If the player is an Impersonator, tell all their team members when they get promoted
-            if ply:IsImpersonator() then
+            -- If the player is a member of the traitor team, tell all their team members when they get promoted
+            if ply:IsTraitorTeam() then
                 for _, v in pairs(GetAllPlayers()) do
-                    if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
-                        local message = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
+                    if v ~= ply and v:IsActiveTraitorTeam() then
+                        local message = "The " .. ROLE_STRINGS[ply:GetRole()] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
                         if not alive then
                             message = message .. " Too bad they're dead..."
                         end
-                        v:PrintMessage(HUD_PRINTTALK, message)
-                        v:PrintMessage(HUD_PRINTCENTER, message)
+                        v:QueueMessage(MSG_PRINTBOTH, message)
                     end
                 end
             end
@@ -115,12 +108,12 @@ end)
 ------------------
 
 hook.Add("TTTBeginRound", "DetectiveLike_TTTBeginRound", function()
-    local credit_timer = detective_credits_timer:GetInt()
+    local credit_timer = detectives_credits_timer:GetInt()
     if credit_timer <= 0 then return end
 
     timer.Create("DetectiveCreditTimer", credit_timer, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            if v:Alive() and not v:IsSpec() and v:IsDetectiveLike() then
+            if v:IsActiveDetectiveLike() then
                 v:AddCredits(1)
                 LANG.Msg(v, "credit_all", { role = ROLE_STRINGS[v:GetRole()], num = 1 })
             end

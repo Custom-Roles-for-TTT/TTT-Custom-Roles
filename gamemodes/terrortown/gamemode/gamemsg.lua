@@ -50,12 +50,12 @@ function TraitorMsg(ply_or_rfilter, msg)
 end
 
 local function ShouldHideTraitorBeggar()
-    local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
-    return beggarMode == ANNOUNCE_REVEAL_NONE or beggarMode == ANNOUNCE_REVEAL_INNOCENTS
+    local beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
+    return beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS
 end
 
 local function ShouldHideTraitorBodysnatcher()
-    local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+    local bodysnatcherMode = GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt()
     return bodysnatcherMode == BODYSNATCHER_REVEAL_NONE
 end
 
@@ -116,7 +116,7 @@ function GetTraitorTeamFilterWithExcludes(alive_only)
         if alive_only and (not p:Alive() or p:IsSpec()) then return false end
 
         if hideBeggar and p:IsTraitor() and p:GetNWBool("WasBeggar", false) then return false end
-        if hideBodysnatcher and p:GetNWBool("WasBodysnatcher", false) then return false end
+        if hideBodysnatcher and p:IsTraitor() and p:GetNWBool("WasBodysnatcher", false) then return false end
 
         return true
     end)

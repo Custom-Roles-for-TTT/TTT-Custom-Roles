@@ -5,27 +5,21 @@ local IsValid = IsValid
 local pairs = pairs
 
 local GetAllPlayers = player.GetAll
+local CallHook = hook.Call
 
 -------------
 -- CONVARS --
 -------------
 
-local informant_share_scans = CreateConVar("ttt_informant_share_scans", "1")
-local informant_can_scan_jesters = CreateConVar("ttt_informant_can_scan_jesters", "0")
-local informant_can_scan_glitches = CreateConVar("ttt_informant_can_scan_glitches", "0")
-local informant_requires_scanner = CreateConVar("ttt_informant_requires_scanner", "0")
-local informant_scanner_time = CreateConVar("ttt_informant_scanner_time", "8", FCVAR_NONE, "The amount of time (in seconds) the informant's scanner takes to use", 0, 60)
 local informant_scanner_float_time = CreateConVar("ttt_informant_scanner_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight", 0, 60)
 local informant_scanner_cooldown = CreateConVar("ttt_informant_scanner_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target", 0, 60)
 local informant_scanner_distance = CreateConVar("ttt_informant_scanner_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
 
-hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_informant_share_scans", informant_share_scans:GetBool())
-    SetGlobalBool("ttt_informant_can_scan_jesters", informant_can_scan_jesters:GetBool())
-    SetGlobalBool("ttt_informant_can_scan_glitches", informant_can_scan_glitches:GetBool())
-    SetGlobalBool("ttt_informant_requires_scanner", informant_requires_scanner:GetBool())
-    SetGlobalInt("ttt_informant_scanner_time", informant_scanner_time:GetInt())
-end)
+local informant_share_scans = GetConVar("ttt_informant_share_scans")
+local informant_can_scan_jesters = GetConVar("ttt_informant_can_scan_jesters")
+local informant_can_scan_glitches = GetConVar("ttt_informant_can_scan_glitches")
+local informant_requires_scanner = GetConVar("ttt_informant_requires_scanner")
+local informant_scanner_time = GetConVar("ttt_informant_scanner_time")
 
 ------------------
 -- ROLE WEAPONS --
@@ -59,7 +53,7 @@ local function ShouldHideRoleForTraitors(ply, oldRole, newRole)
     if (oldRole == ROLE_BEGGAR and ply:GetNWBool("WasBeggar")) or (oldRole == ROLE_BODYSNATCHER and ply:GetNWBool("WasBodysnatcher")) then
         local role_team = player.GetRoleTeam(newRole, true)
         local convar_team = GetRawRoleTeamName(role_team)
-        local reveal_traitor = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[oldRole] .. "_reveal_" .. convar_team, ANNOUNCE_REVEAL_ALL)
+        local reveal_traitor = cvars.Number("ttt_" .. ROLE_STRINGS_RAW[oldRole] .. "_reveal_" .. convar_team, ANNOUNCE_REVEAL_ALL)
         return reveal_traitor ~= ANNOUNCE_REVEAL_ALL and reveal_traitor ~= ANNOUNCE_REVEAL_TRAITORS
     end
     return false
@@ -71,7 +65,7 @@ local function SetDefaultScanState(ply, oldRole, newRole)
         ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
     elseif ply:IsDetectiveTeam() then
         -- If the detective's role is not known, only skip the team scan
-        if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
+        if GetConVar("ttt_detectives_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
             ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
         -- Otherwise skip the team and role scan
         else
@@ -90,6 +84,12 @@ local function SetDefaultScanState(ply, oldRole, newRole)
         ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
     else
         ply:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    end
+
+    -- Allow roles to overwrite their default scan stages if there's some reason why they should be known or hidden
+    local scan_stage = CallHook("TTTInformantDefaultScanStage", nil, ply, oldRole, newRole)
+    if type(scan_stage) == "number" and scan_stage >= INFORMANT_UNSCANNED and scan_stage <= INFORMANT_SCANNED_TRACKED then
+        ply:SetNWInt("TTTInformantScanStage", scan_stage)
     end
 end
 
@@ -135,7 +135,7 @@ hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply,
     if HasInformant() then
         -- Only notify if there is an informant and the player had some info being reset
         if scanStage > INFORMANT_UNSCANNED then
-            local share = GetGlobalBool("ttt_informant_share_scans", true)
+            local share = informant_share_scans:GetBool()
             local hideRole = ShouldHideRoleForTraitors(ply, oldRole, newRole)
             for _, v in pairs(GetAllPlayers()) do
                 -- Don't tell people about this role change if we're not revealing them
@@ -183,7 +183,7 @@ local function Announce(ply, message)
     if not IsValid(ply) then return end
 
     ply:PrintMessage(HUD_PRINTTALK, "You have " .. message)
-    if not GetGlobalBool("ttt_informant_share_scans", true) then return end
+    if not informant_share_scans:GetBool() then return end
 
     for _, p in pairs(GetAllPlayers()) do
         if p:IsActiveTraitorTeam() and p ~= ply then
@@ -273,8 +273,15 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
         local state = ply:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
         if state == INFORMANT_SCANNER_IDLE then
             local target = IsTargetingPlayer(ply)
-            if target and (not GetGlobalBool("ttt_informant_requires_scanner", false) or (ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_inf_scanner")) then
-                if target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) < INFORMANT_SCANNED_TRACKED and ScanAllowed(ply, target) then
+            if target and (not informant_requires_scanner:GetBool() or (ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_inf_scanner")) then
+                local stage = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+                -- If their role is already revealed by feature then their scan stage should be at least that
+                if stage < INFORMANT_SCANNED_ROLE and target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then
+                    stage = INFORMANT_SCANNED_ROLE
+                    target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
+                end
+
+                if stage < INFORMANT_SCANNED_TRACKED and ScanAllowed(ply, target) then
                     ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOCKED)
                     ply:SetNWString("TTTInformantScannerTarget", target:SteamID64())
                     ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()))

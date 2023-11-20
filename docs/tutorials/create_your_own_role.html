@@ -3,19 +3,24 @@
 <head>
     <title>Custom Roles for TTT - Tutorials - Creating Your Own Custom Role</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark-dimmed.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#tutorials" width="220" height="278" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#tutorials" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Creating Your Own Custom Role</h1>
         <p>This tutorial aims to provide the step-by-step instructions that a developer would need to create their own custom role. It covers creation of the role's basic features, what options are available for preset advanced features to choose from, all the way through creating the role icons and publishing to the workshop.</p>
         <p>This tutorial assumes you have some programming experience, even if it's not directly in Lua itself. Lua is a pretty straight-forward language, so knowledge of its specifics are not necessary as long as you are good at googling. Of course, if you have any questions about how to do more advanced things, feel free to join our Discord server to ask.</p>
-
+    </div>
+    <div class="contentbody panel">
         <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
         <ol>
             <li><a href="#before-you-start">Before You Start</a></li>
@@ -87,7 +92,7 @@
             <li><strong>.lua</strong> - This can be done in Notepad in a pinch but at the very least we would recommend <a href="https://notepad-plus-plus.org/" target="_blank">Notepad++</a>.</li>
             <li><strong>.vmt and .vtf</strong> - <a href="https://nemstools.github.io/pages/VTFLib-Download.html" target="_blank">VTFEdit</a> is the best way to edit these files but if you know what you are doing there are plugins for other apps.</li>
         </ul>
-        <p>In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/templates">here</a>.</p>
+        <p>In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using <a href="https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/release/templates">here</a>.</p>
         <p>Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:</p>
         <p><img src="https://i.imgur.com/UCyxklx.png" style="max-width: 100%;" /></p>
 
@@ -234,7 +239,7 @@ ROLE.nameshort = "sum"</code></pre></div>
                 </tr>
                 <tr>
                     <td><code>{comrades}</code></td>
-                    <td>Information about fellow traitors and glitches</td>
+                    <td>Information about fellow traitors and Glitches</td>
                     <td>These are your comrades: (includes a list of traitors)</td>
                 </tr>
                 <tr>
@@ -363,14 +368,14 @@ end</code></pre></div>
         end</code></pre></div>
 
         <h3><a id="acting-like-a-jester" href="#acting-like-a-jester">Acting Like a Jester</a></h3>
-        <p>The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the clown role -- when they first spawn, they:</p>
+        <p>The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the Clown role -- when they first spawn, they:</p>
         <ol>
             <li>Cannot do damage</li>
             <li>Don't take various forms of damage (fire, explosion, falling, etc.)</li>
             <li>Appear as a jester to other roles (on the radar, scoreboard, icon over their head, etc.)</li>
         </ol>
 
-        <p>Once the role activates (in the case of the clown, this happens when there is only one team remaining) then they no longer act like a jester, allowing them to do damage and potentially win the round.</p>
+        <p>Once the role activates (in the case of the Clown, this happens when there is only one team remaining) then they no longer act like a jester, allowing them to do damage and potentially win the round.</p>
         <p>To make your role behave similarly, you need to define the following property:</p>
         <div><pre><code class="language-lua">ROLE.shouldactlikejester = nil</code></pre></div>
 
@@ -407,11 +412,11 @@ end</code></pre></div>
         <p>Once a translation is defined, it can be used in client-side code via <code>LANG.GetTranslation</code> (or <code>LANG.GetParamTranslation</code> if it requires parameters).</p>
 
         <h3><a id="custom-spectator-hud" href="#custom-spectator-hud">Custom Spectator HUD</a></h3>
-        <p>Some roles have features which are activated once the player dies, such as the phantom. In the phantom's case, they build up some amount of power over time and can use that power to use one of four different abilities against the player the killed them. While the power generation logic will be up to you to design and implement (you may want to look at the phantom code for reference), the spectator HUD display and action implementation have been made easier through the use of hooks and shared methods.</p>
+        <p>Some roles have features which are activated once the player dies, such as the Phantom. In the Phantom's case, they build up some amount of power over time and can use that power to use one of four different abilities against the player the killed them. While the power generation logic will be up to you to design and implement (you may want to look at the Phantom code for reference), the spectator HUD display and action implementation have been made easier through the use of hooks and shared methods.</p>
         <p>This section of the guide will explain the pieces of the system which should make these kind of spectator HUDs easier and provide a proof-of-concept example with the summoner role.</p>
-        <p>To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about <a href="#translations">above</a>. The <code>TTTSpectatorShowHUD</code> hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the <code>TTTSpectatorHUDKeyPress</code> hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The <code>ROLE.shouldshowspectatorhud</code> method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.</p>
+        <p>To implement a spectator HUD like the Phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about <a href="#translations">above</a>. The <code>TTTSpectatorShowHUD</code> hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the <code>TTTSpectatorHUDKeyPress</code> hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The <code>ROLE.shouldshowspectatorhud</code> method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.</p>
         <p>Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.</p>
-        <p>For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the <code>ROLE.shouldshowspectatorhud</code> function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the <code>TTTSpectatorShowHUD</code> hook. Within that hook we prepare the information required and call the shared <code>CRHUD:PaintPowersHUD</code> method which handles the rendering for us. The server side is similar, first we initialize the convars and sync the values as globals so they are available on the client. Then we use the <code>TTTSpectatorHUDKeyPress</code> hook to intercept key presses and define what action each keypress should result in. The <a href="../api.html" target="_blank">API</a> has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:</p>
+        <p>For our example's sake we've taken the Phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the <code>ROLE.shouldshowspectatorhud</code> function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the <code>TTTSpectatorShowHUD</code> hook. Within that hook we prepare the information required and call the shared <code>CRHUD:PaintPowersHUD</code> method which handles the rendering for us. The server side is similar, we use the <code>TTTSpectatorHUDKeyPress</code> hook to intercept key presses and define what action each keypress should result in. The <a href="../api.html" target="_blank">API</a> has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:</p>
         <div><pre><code class="language-lua">ROLE.shouldshowspectatorhud = function(ply)
     if ply:GetNWBool("Haunting") then
         return true
@@ -426,6 +431,10 @@ ROLE.translations = {
     }
 }
 
+local summoner_killer_haunt_power_max = CreateConVar("ttt_summoner_killer_haunt_power_max", "100", FCVAR_REPLICATED)
+local summoner_killer_haunt_jump_cost = CreateConVar("ttt_summoner_killer_haunt_jump_cost", "50", FCVAR_REPLICATED)
+local summoner_killer_haunt_drop_cost = CreateConVar("ttt_summoner_killer_haunt_drop_cost", "75", FCVAR_REPLICATED)
+
 if CLIENT then
     hook.Add("TTTSpectatorShowHUD", "Summoner_TTTSpectatorShowHUD", function(cli, tgt)
         if not cli:IsSummoner() then return end
@@ -437,10 +446,10 @@ if CLIENT then
             fill = Color(82, 226, 255, 255)
         }
         local powers = {
-            [L.summoner_haunt_jump] = GetGlobalInt("ttt_summoner_killer_haunt_jump_cost", 50),
-            [L.summoner_haunt_drop] = GetGlobalInt("ttt_summoner_killer_haunt_drop_cost", 75)
+            [L.summoner_haunt_jump] = summoner_killer_haunt_jump_cost:GetInt(),
+            [L.summoner_haunt_drop] = summoner_killer_haunt_drop_cost:GetInt()
         }
-        local max_power = GetGlobalInt("ttt_summoner_killer_haunt_power_max", 100)
+        local max_power = summoner_killer_haunt_power_max:GetInt()
         local current_power = cli:GetNWInt("PhantomPossessingPower", 0)
 
         CRHUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.summoner_haunt_title)
@@ -448,18 +457,8 @@ if CLIENT then
 end
 
 if SERVER then
-    local summoner_killer_haunt_power_max = CreateConVar("ttt_summoner_killer_haunt_power_max", "100")
-    local summoner_killer_haunt_jump_cost = CreateConVar("ttt_summoner_killer_haunt_jump_cost", "50")
-    local summoner_killer_haunt_drop_cost = CreateConVar("ttt_summoner_killer_haunt_drop_cost", "75")
-
-    hook.Add("TTTSyncGlobals", "Summoner_TTTSyncGlobals", function()
-        SetGlobalInt("ttt_summoner_killer_haunt_power_max", summoner_killer_haunt_power_max:GetInt())
-        SetGlobalInt("ttt_summoner_killer_haunt_jump_cost", summoner_killer_haunt_jump_cost:GetInt())
-        SetGlobalInt("ttt_summoner_killer_haunt_drop_cost", summoner_killer_haunt_drop_cost:GetInt())
-    end)
-
     hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:IsActive() then
             powers[IN_ATTACK2] = {
                 start_command = "+menu",
                 end_command = "-menu",
@@ -477,8 +476,6 @@ if SERVER then
         end
     end)
 end</code></pre></div>
-
-        <p><em>(NOTE: If your role is already using the <code>TTTSyncGlobals</code> hook elsewhere then consider merging the hooks together in your role file. If you don't want to do that, just be careful that the hook instance name (the 2nd parameter) is unique for each hook you add)</em></p>
 
         <h3><a id="optional-rules" href="#optional-rules">Optional Rules</a></h3>
         <p>There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role to the file.</p>
@@ -510,16 +507,16 @@ end</code></pre></div>
                     <td>Whether this role's shop purchases are delayed. Purchases will only be given to the player when <code>plymeta:GiveDelayedShopItems</code> is called by your own role logic. Enabling this feature will automatically create <code>ttt_%NAMERAW%_shop_active_only</code> and <code>ttt_%NAMERAW%_shop_delay</code> convars. Requires that the role has a shop and has role activation defined (see <a href="#role-activation">Role Activation</a>).</td>
                     <td>1.2.2</td>
                 </tr>
-                <tr>
-                    <td><code>ROLE.shoulddelayannouncements</code></td>
+                <tr>  <!-- TODO: Remove after 2.0.0 -->
+                    <td><code>ROLE.shoulddelayannouncements</code> <b>DEPRECATED IN 1.9.4</b></td>
                     <td>boolean</td>
-                    <td>Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.</td>
+                    <td>Whether this role should delay announcements when they kill a player that shows a message (like Phantom and Parasite). Used for things like preventing the Assassin's target update message from getting overlapped.</td>
                     <td>1.2.7</td>
                 </tr>
                 <tr>
                     <td><code>ROLE.haspassivewin</code></td>
                     <td>boolean</td>
-                    <td>Whether this role should not block another role from winning (like the old man).</td>
+                    <td>Whether this role should not block another role from winning (like the Old Man).</td>
                     <td>1.3.1</td>
                 </tr>
                 <tr>
@@ -552,6 +549,54 @@ end</code></pre></div>
                     <td>Whether the target is being highlighted per the player's role rules. Called by the <code>plymeta:IsTargetHighlighted</code> function. See <a href="../api/methods_player_object.html" target="_blank">the API</a> for more information on the function.</td>
                     <td>1.5.15</td>
                 </tr>
+                <tr>
+                    <td><code>ROLE.canseejesters</code></td>
+                    <td>boolean</td>
+                    <td>Whether the player should be able to see jesters like traitors can. (Only applies if <code>ROLE.team = ROLE_TEAM_INDEPENDENT</code>)</td>
+                    <td>1.9.4</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.canseemia</code></td>
+                    <td>boolean</td>
+                    <td>Whether the player should be able to see missing in action players on the scoreboard like traitors can. (Only applies if <code>ROLE.team = ROLE_TEAM_INDEPENDENT</code>)</td>
+                    <td>1.9.4</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.hasshopmode</code></td>
+                    <td>boolean</td>
+                    <td>Whether the <code>ttt_%NAMERAW%_shop_mode</code> convar should be created when it normally wouldn't.</td>
+                    <td>1.9.5</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.hasshopsync</code></td>
+                    <td>boolean</td>
+                    <td>Whether the <code>ttt_%NAMERAW%_shop_sync</code> convar should be created when it normally wouldn't.</td>
+                    <td>1.9.5</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.shopsyncroles</code></td>
+                    <td>sequential table</td>
+                    <td>The list of roles that this should inherit shop items from.</td>
+                    <td>1.9.5</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.isdetectivelike</code></td>
+                    <td>boolean</td>
+                    <td>Whether this role can be activated to gain detective features (e.g. the Deputy and Impersonator).</td>
+                    <td>1.9.9</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.shouldrevealrolewhenactive</code></td>
+                    <td>function(ply)</td>
+                    <td>Whether this role should have their role revealed (over their head, on the scoreboard, etc.) when their role is active.</td>
+                    <td>1.9.9</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.victimchangingrole</code></td>
+                    <td>function(ply, victim)</td>
+                    <td>Whether this role's victims are having their role changed.</td>
+                    <td>1.9.12</td>
+                </tr>
             </tbody>
         </table>
 
@@ -561,13 +606,13 @@ ROLE.canusetraitorbuttons = false
 ROLE.shoulddelayshop = true</code></pre></div>
 
         <h3><a id="role-change-logic" href="#role-change-logic">Role Change Logic</a></h3>
-        <p>Sometimes a role has to handle the specific cases of when a role is initially assigned to a player (e.g. at the start of the round or when the drunk remembers what role they are) or when a role is stolen (e.g. by the bodysnatcher or the swapper). To make those situations handleable there are two different functions that can optionally be added to your role.</p>
-        <p>The first function is called when a role is initially assigned to a player and can be used to set up some logic like the assignment of the assassin's first target. The function can be defined like this:</p>
+        <p>Sometimes a role has to handle the specific cases of when a role is initially assigned to a player (e.g. at the start of the round or when the Drunk remembers what role they are) or when a role is stolen (e.g. by the Bodysnatcher or the Swapper). To make those situations handleable there are two different functions that can optionally be added to your role.</p>
+        <p>The first function is called when a role is initially assigned to a player and can be used to set up some logic like the assignment of the Assassin's first target. The function can be defined like this:</p>
         <div><pre><code class="language-lua">ROLE.onroleassigned = function(ply)
     -- Do something with the 'ply', the player being assigned the role, here
 end</code></pre></div>
 
-        <p>The other function that might be useful is called when someone takes the role from someone else. This can be used to transfer some part of the role state (such as an assassin's current target) to the new player. This function looks something like:</p>
+        <p>The other function that might be useful is called when someone takes the role from someone else. This can be used to transfer some part of the role state (such as an Assassin's current target) to the new player. This function looks something like:</p>
         <div><pre><code class="language-lua">ROLE.moverolestate = function(source, target, keepOnSource)
     -- In this function 'source' is the player whose state is being moved to 'target'
     -- The 'keepOnSource' tells you whether the 'source' player should keep whatever information is being copied to 'target'
@@ -599,7 +644,7 @@ ttt_%NAMERAW%_shop_mode (Whether the role should have access to traitor and/or d
 </code></pre></div>
 
         <!--TODO: Replace this link with the HTML version-->
-        <p>For more information on the specifics of these ConVars you can read the full list of ConVars <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations">here</a>.</p>
+        <p>For more information on the specifics of these ConVars you can read the full list of ConVars <a href="https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations">here</a>.</p>
         <p>If you would like to add your own ConVars that aren't automatically created you can do so here. First create the ConVars as you would normally with <code>CreateConVar</code>. <em>(Note: Please try to keep your ConVars as consistently named as possible. The recommended naming scheme for role specific convars is <code>ttt_%NAMERAW%_...</code>.)</em></p>
         <p>Once you have defined your ConVar you can add it to the <code>convars</code> table to get it to show up inside ULX menus. Each entry in the <code>convars</code> table needs two properties. <code>cvar</code> is the name of the ConVar you want to add and <code>type</code> is one of three values depending on if you want your ConVar to show up as a slider, checkbox or textbox.</p>
         <table>
@@ -1036,3 +1081,8 @@ end</pre></code></div>
 
         <h2><a id="wrapping-up" href="#wrapping-up">Wrapping Up</a></h2>
         <p>If you have any problems or questions please jump into the <a href="https://discord.gg/BAPZrykC3F" target="_blank">Custom Roles for TTT Discord Server</a>! We love to see what everyone has making and there are almost always people online willing to help out if you need a hand.</p>
+
+    </div>
+    <div class="footerpadding panel"></div>
+</body>
+<html>

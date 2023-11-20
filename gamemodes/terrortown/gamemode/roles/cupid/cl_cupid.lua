@@ -10,6 +10,17 @@ local RemoveHook = hook.Remove
 local TableInsert = table.insert
 local StringUpper = string.upper
 
+-------------
+-- CONVARS --
+-------------
+
+local cupid_lover_vision_enabled = GetConVar("ttt_cupid_lover_vision_enabled")
+local cupid_is_independent = GetConVar("ttt_cupid_is_independent")
+local cupid_lovers_notify_mode = GetConVar("ttt_cupid_lovers_notify_mode")
+local cupid_can_damage_lovers = GetConVar("ttt_cupid_can_damage_lovers")
+local cupid_lovers_can_damage_lovers = GetConVar("ttt_cupid_lovers_can_damage_lovers")
+local cupid_lovers_can_damage_cupid = GetConVar("ttt_cupid_lovers_can_damage_cupid")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -43,7 +54,7 @@ end)
 AddHook("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride", function(cli, roleString)
     if not IsPlayer(cli) or not cli:IsCupid() then return end
 
-    if GetGlobalBool("ttt_cupids_are_independent", false) then
+    if cupid_is_independent:GetBool() then
         return roleString .. "_indep"
     end
     return roleString .. "_jester"
@@ -64,10 +75,10 @@ AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(win
 
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:Alive() and p:IsTerror() and lover ~= "" then
+        if p:Alive() and not p:IsSpec() and lover ~= "" then
             local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
-            if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
+            if IsPlayer(loverPly) and loverPly:Alive() and not loverPly:IsSpec() then
                 TableInsert(secondary_wins, {
                     rol = ROLE_CUPID,
                     txt = LANG.GetTranslation("hilite_lovers_secondary"),
@@ -98,10 +109,10 @@ end)
 AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:Alive() and p:IsTerror() and lover ~= "" then
+        if p:IsActive() and lover ~= "" then
             local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
-            if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
+            if IsPlayer(loverPly) and loverPly:IsActive() then
                 CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
                     id = EVENT_FINISH,
                     win = WIN_CUPID
@@ -171,17 +182,29 @@ end)
 -- HEARTS --
 ------------
 
+local heart_color = Color(230, 90, 200, 255)
+
 AddHook("TTTShouldPlayerSmoke", "Cupid_TTTShouldPlayerSmoke", function(ply, cli, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
     local target = ply:SteamID64()
     if (cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")))
         or (target == cli:GetNWString("TTTCupidLover", "")) then
-        return true, Color(230, 90, 200, 255), "particle/heart.vmt"
+        return true, heart_color, "particle/heart.vmt"
     end
 end)
 
 ---------------
 -- TARGET ID --
 ---------------
+
+-- Show lover icon over all lover players
+hook.Add("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    local target = ply:SteamID64()
+    if cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")) then
+        return "lover", false, heart_color, "up"
+    elseif target == cli:GetNWString("TTTCupidLover", "") then
+        return "lover", true, heart_color, "up"
+    end
+end)
 
 AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
@@ -207,7 +230,7 @@ AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, cl
     if ent:IsActiveCupid() and ent:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return StringUpper(ROLE_STRINGS[ROLE_CUPID]), ROLE_COLORS_RADAR[ROLE_CUPID]
     elseif ent:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
-        return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), Color(230, 90, 200, 255)
+        return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), heart_color
     end
 end)
 
@@ -269,15 +292,21 @@ local function EnableLoverHighlights()
     AddHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos", function()
         local lover = client:GetNWString("TTTCupidLover", "")
         local loverPly = player.GetBySteamID64(lover)
-        if not IsPlayer(loverPly) or not loverPly:Alive() or not loverPly:IsTerror() then return end
+        if not IsPlayer(loverPly) or not loverPly:IsActive() then return end
 
-        HaloAdd({ loverPly }, Color(230, 90, 200, 255), 1, 1, 1, true, true)
+        HaloAdd({ loverPly }, heart_color, 1, 1, 1, true, true)
     end)
 end
 
 AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    lover_vision = GetGlobalBool("ttt_cupid_lover_vision_enable", false)
+    lover_vision = cupid_lover_vision_enabled:GetBool()
+
+    -- Disable highlights on role change
+    if vision_enabled then
+        RemoveHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos")
+        vision_enabled = false
+    end
 end)
 
 AddHook("Think", "Cupid_Highlight_Think", function()
@@ -305,9 +334,44 @@ AddHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText", function(role, title
     if role == ROLE_CUPID then
         local roleTeam = player.GetRoleTeam(ROLE_CUPID, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
-        local html = "The " .. ROLE_STRINGS[ROLE_CUPID] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role that wins by making two players fall in love and helping them win together. However, players that fall in love die together and cannot survive while the other is dead."
+        local html = "The " .. ROLE_STRINGS[ROLE_CUPID] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> team that wins by making two players fall in love and helping them win together. However, players that fall in love die together and cannot survive while the other is dead."
+
+        -- Bow weapon
         html = html .. "<span style='display: block; margin-top: 10px;'>They are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bow</span> that will cause a player to fall in love when they are shot. Once two players have fallen in love they win the round by surviving until the end of the round or being the last players left standing.</span>"
+
+        -- Lovers created notifications
+        local lovers_notify_mode = cupid_lovers_notify_mode:GetInt()
+        html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_CUPID] .. " makes two players fall in love, an announcement is shown <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>"
+        if lovers_notify_mode == ANNOUNCE_REVEAL_NONE then
+            html = html .. "only to them"
+        elseif lovers_notify_mode == ANNOUNCE_REVEAL_INNOCENTS then
+            html = html .. "to all " .. LANG.GetTranslation("innocents")
+        elseif lovers_notify_mode == ANNOUNCE_REVEAL_TRAITORS then
+            html = html .. "to all " .. LANG.GetTranslation("traitors")
+        else
+            html = html .. "to everyone"
+        end
+        html = html .. "</span>.</span>"
+
+        -- Win condition
         html = html .. "<span style='display: block; margin-top: 10px;'>As <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS_EXT[ROLE_CUPID] .. "</span> you do not need to survive until the end of the round to win. As long as the lovers survive you still win.</span>"
+
+        -- Friendly fire
+        -- Cupid -> Lovers
+        if roleTeam ~= ROLE_TEAM_JESTER and not cupid_can_damage_lovers:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_CUPID] .. " can fight alongside the lovers without worrying, as they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot damage</span> the players they made fall in love.</span>"
+        end
+
+        -- Lover -> Lover
+        if not cupid_lovers_can_damage_lovers:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>To help the lovers stay alive, they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot damage</span> eachother.</span>"
+        end
+
+        -- Lovers -> Cupid
+        if not cupid_lovers_can_damage_cupid:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>To help prevent friendly fire, the lovers <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot damage</span> " .. ROLE_STRINGS[ROLE_CUPID] .. ".</span>"
+        end
+
         return html
     end
 end)

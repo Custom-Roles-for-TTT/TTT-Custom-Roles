@@ -128,6 +128,17 @@ Called after player information such as role, health, and ammo and equipment inf
 - *labelY* - The Y value representing the first clear space to add information
 - *activeLabels* - The list of current active additional labels. Used to determine the labelY offset to use via: `labelY = labelY + (20 * #activeLabels)`. Be sure to insert an entry when you add your own label so other addons can space appropriately. *(Added in 1.6.11)*
 
+### TTTInformantDefaultScanStage(ply, oldRole, newRole)
+Called when an informant is trying to determine the default scan stage of a plyer. Used to override that value.\
+*Realm:* Server\
+*Added in:* 1.9.6\
+*Parameters:*
+- *ply* - The player whose default stage stage is being determined
+- *oldRole* - The target player's old role. Only used when this hook is called due to a player's role changing
+- *newRole* - The target player's new role. Only used when this hook is called due to a player's role changing
+
+*Return:* The default scan stage to use for this player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
 ### TTTInformantScanStageChanged(ply, tgt, stage)
 Called when an informant has scanned additional information from a target player.\
 *Realm:* Server\
@@ -198,6 +209,23 @@ Called for each player who is alive during the `Tick` hook.\
 *Parameters:*
 - *ply* - The current alive player target
 
+### TTTPlayerCreditsChanged(ply, amount)
+Called whenever a player's credits are added to or subtracted from.\
+*Realm:* Server\
+*Added in:* 1.9.7\
+*Parameters:*
+- *ply* - The player whose credits changed
+- *amount* - The amount the player's credits changed by
+
+### TTTPlayerHealthChanged(ply, oldHealth, newHealth)
+Called when a player's health changes.\
+*Realm:* Client and Server\
+*Added in:* 1.9.5\
+*Parameters:*
+- *ply* - The player whose health changed
+- *oldHealth* - The player's old health
+- *newHealth* - The player's new health
+
 ### TTTPlayerRoleChanged(ply, oldRole, newRole)
 Called after a player's role has changed.\
 *Realm:* Client and Server\
@@ -242,6 +270,15 @@ Called before the round win results message is printed to the top-right corner o
 - *type* - The round win type
 
 *Return:* `true` if the default print messages should be skipped (Defaults to `false`).
+
+#### TTTQuartermasterCrateOpened(ply, tgt, item_id)
+Called when a player opens a crate from a quartermaster.\
+*Realm:* Server\
+*Added in:* 1.9.6\
+*Parameters:*
+- *ply* - The quartermaster who provided the crate
+- *tgt* - The player who opened the crate
+- *item_id* - The ID of the item/equipment in the crate
 
 ### TTTRadarPlayerRender(client, tgt, color, hidden)
 Called before a target's radar ping is rendered, allowing the color and whether the ping should be shown to be changed.\
@@ -358,6 +395,15 @@ Called before a player's role start-of-round popup message is displayed, allowin
 Called after all roles and role modifications have been loaded.\
 *Realm:* Client\
 *Added in:* 1.5.3
+
+### TTTRoleSpawnsArtificially(role)
+Called when checking if a role can be spawned artificially. (i.e. Spawned in a way other than naturally spawning when the role is enabled.)\
+*Realm:* Client and Server\
+*Added in:* 1.9.5\
+*Parameters:*
+- *roleID* - The ID of the role being checked
+
+*Return:* `true` when the role could be spawned artificially. Don't return anything otherwise
 
 ### TTTRoleRegistered(roleID)
 Called after an external role has been registered.\
@@ -789,7 +835,8 @@ Called before a player's karma status text (shown when you look at a player) is 
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 
-### TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)
+### TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)  <!-- TODO: Remove after 2.0.0 -->
+**DEPRECATED IN 1.9.4**\
 Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\
@@ -846,6 +893,21 @@ Called before player Target ID icon (over their head) is rendered allowing chang
 - *role* - The new role value to use or the original passed into the hook. Return `false` to stop the icon from being rendered
 - *noZ* - The new noZ value to use or the original passed into the hook. *NOTE:* The matching icon .vmt for this flag needs to exist. If *noZ* is `true`, a "sprite\_{ROLESHORTNAME}\_noz.vmt" file must exist and if *noZ* is `false`, a "sprite_{ROLESHORTNAME}.vmt" file must exist
 - *colorRole* - The new colorRole value to use or the original passed into the hook
+
+### TTTTargetIDPlayerTargetIcon(ply, client, showJester)
+Called before player Target ID icon (over their head) is rendered allowing adding a secondary icon.\
+*Realm:* Client\
+*Added in:* 1.9.4\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *showJester* - Whether the target is a jester and the local player would normally know that
+
+*Return:*
+- *icon* - The icon name used in the filename of the icon
+- *iconNoZ* - Whether the icon should be visible through walls. *NOTE:* A .vmt file for the icon must exist in "vgui/ttt/targeticons/{ICONTYPE}". If *iconNoZ* is `true`, a "sprite_target_{ICONNAME}_noz.vmt" file must exist and if *iconNoZ* is `false`, a "sprite_target_{ICONNAME}.vmt" file must exist
+- *iconColor* - The [Color](https://wiki.facepunch.com/gmod/Color) to use for the icon
+- *iconType* - The icon type used in the filename of the icon. `"down"` if you want the icon background to be a downwards pointing triangle, or `"up"` for an upwards pointing triangle
 
 ### TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)
 Called before player Target ID text (shown when you look at a player) is rendered.\

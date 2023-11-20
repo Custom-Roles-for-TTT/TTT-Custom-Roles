@@ -23,6 +23,8 @@ if SERVER then
     resource.AddFile("materials/vgui/ttt/beacon_back.vmt")
     resource.AddFile("materials/vgui/ttt/beacon_det.vmt")
     resource.AddFile("materials/vgui/ttt/beacon_rev.vmt")
+    resource.AddFile("materials/vgui/ttt/beacon_skull.vmt")
+    resource.AddFile("materials/vgui/ttt/beacon_trk.vmt")
 
     -- Round Summary
     resource.AddSingleFile("materials/vgui/ttt/score_disconicon.png")
@@ -40,8 +42,24 @@ if SERVER then
     resource.AddSingleFile("materials/vgui/ttt/sprite_roleback_noz.vmt")
     resource.AddFile("materials/vgui/ttt/sprite_rolefront.vmt")
     resource.AddSingleFile("materials/vgui/ttt/sprite_rolefront_noz.vmt")
-    resource.AddSingleFile("materials/vgui/ttt/sprite_target_noz.vmt")
-    resource.AddSingleFile("materials/vgui/ttt/sprite_target.vtf")
+    resource.AddFile("materials/vgui/ttt/sprite_targetdownback.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/sprite_targetdownback_noz.vmt")
+    resource.AddFile("materials/vgui/ttt/sprite_targetdownfront.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/sprite_targetdownfront_noz.vmt")
+    resource.AddFile("materials/vgui/ttt/sprite_targetupback.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/sprite_targetupback_noz.vmt")
+    resource.AddFile("materials/vgui/ttt/sprite_targetupfront.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/sprite_targetupfront_noz.vmt")
+
+    -- Target Icons
+    resource.AddFile("materials/vgui/ttt/targeticons/down/sprite_target_douse.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/targeticons/down/sprite_target_douse_noz.vmt")
+    resource.AddFile("materials/vgui/ttt/targeticons/down/sprite_target_kill.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/targeticons/down/sprite_target_kill_noz.vmt")
+    resource.AddFile("materials/vgui/ttt/targeticons/up/sprite_target_lover.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/targeticons/up/sprite_target_lover_noz.vmt")
+    resource.AddFile("materials/vgui/ttt/targeticons/up/sprite_target_shadow.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/targeticons/up/sprite_target_shadow_noz.vmt")
 
     -- "Nil" role
     resource.AddFile("materials/vgui/ttt/roles/nil/icon_nil.vmt")

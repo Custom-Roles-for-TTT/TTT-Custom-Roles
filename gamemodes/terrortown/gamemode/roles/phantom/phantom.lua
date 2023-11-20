@@ -18,32 +18,21 @@ util.AddNetworkString("TTT_PhantomHaunt")
 -- CONVARS --
 -------------
 
+local phantom_killer_haunt = GetConVar("ttt_phantom_killer_haunt")
+local phantom_killer_haunt_power_max = GetConVar("ttt_phantom_killer_haunt_power_max")
+local phantom_killer_haunt_move_cost = GetConVar("ttt_phantom_killer_haunt_move_cost")
+local phantom_killer_haunt_attack_cost = GetConVar("ttt_phantom_killer_haunt_attack_cost")
+local phantom_killer_haunt_jump_cost = GetConVar("ttt_phantom_killer_haunt_jump_cost")
+local phantom_killer_haunt_drop_cost = GetConVar("ttt_phantom_killer_haunt_drop_cost")
+local phantom_weaker_each_respawn = GetConVar("ttt_phantom_weaker_each_respawn")
+local phantom_announce_death = GetConVar("ttt_phantom_announce_death")
+local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time")
+
 local phantom_respawn_health = CreateConVar("ttt_phantom_respawn_health", "50", FCVAR_NONE, "The amount of health a phantom will respawn with", 1, 100)
-local phantom_weaker_each_respawn = CreateConVar("ttt_phantom_weaker_each_respawn", "0")
-local phantom_announce_death = CreateConVar("ttt_phantom_announce_death", "0")
-local phantom_killer_smoke = CreateConVar("ttt_phantom_killer_smoke", "0")
-local phantom_killer_footstep_time = CreateConVar("ttt_phantom_killer_footstep_time", "0", FCVAR_NONE, "The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable", 1, 60)
-local phantom_killer_haunt = CreateConVar("ttt_phantom_killer_haunt", "1")
-local phantom_killer_haunt_power_max = CreateConVar("ttt_phantom_killer_haunt_power_max", "100", FCVAR_NONE, "The maximum amount of power a phantom can have when haunting their killer", 1, 200)
 local phantom_killer_haunt_power_rate = CreateConVar("ttt_phantom_killer_haunt_power_rate", "10", FCVAR_NONE, "The amount of power to regain per second when a phantom is haunting their killer", 1, 25)
 local phantom_killer_haunt_power_starting = CreateConVar("ttt_phantom_killer_haunt_power_starting", "0", FCVAR_NONE, "The amount of power to the phantom starts with", 0, 200)
-local phantom_killer_haunt_move_cost = CreateConVar("ttt_phantom_killer_haunt_move_cost", "25", FCVAR_NONE, "The amount of power to spend when a phantom is moving their killer via a haunting. Set to 0 to disable", 1, 100)
-local phantom_killer_haunt_jump_cost = CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer jump via a haunting. Set to 0 to disable", 1, 100)
-local phantom_killer_haunt_drop_cost = CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable", 1, 100)
-local phantom_killer_haunt_attack_cost = CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable", 1, 100)
 local phantom_killer_haunt_without_body = CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
 local phantom_haunt_saves_lover = CreateConVar("ttt_phantom_haunt_saves_lover", "1", FCVAR_NONE, "Whether the phantom's lover should survive if the phantom is haunting a player", 0, 1)
-
-
-hook.Add("TTTSyncGlobals", "Phantom_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_phantom_killer_smoke", phantom_killer_smoke:GetBool())
-    SetGlobalBool("ttt_phantom_killer_haunt", phantom_killer_haunt:GetBool())
-    SetGlobalInt("ttt_phantom_killer_haunt_power_max", phantom_killer_haunt_power_max:GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_move_cost", phantom_killer_haunt_move_cost:GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_attack_cost", phantom_killer_haunt_attack_cost:GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_jump_cost", phantom_killer_haunt_jump_cost:GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", phantom_killer_haunt_drop_cost:GetInt())
-end)
 
 --------------
 -- HAUNTING --
@@ -114,7 +103,7 @@ end)
 hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if valid_kill and victim:IsPhantom() then
-        local attacker_alive = attacker:Alive() and not attacker:IsSpec()
+        local attacker_alive = attacker:IsActive()
         local will_posses = phantom_killer_haunt:GetBool() and not victim:IsZombifying() and attacker_alive
 
         -- Only bother looking this up if we're going to use it
@@ -125,8 +114,8 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
 
         if phantom_announce_death:GetBool() then
             for _, v in pairs(GetAllPlayers()) do
-                if v ~= attacker and v:IsDetectiveLike() and v:Alive() and not v:IsSpec() and v:SteamID64() ~= loverSID then
-                    v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
+                if v ~= attacker and v:IsActiveDetectiveLike() and v:SteamID64() ~= loverSID then
+                    v:QueueMessage(MSG_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
                 end
             end
         end
@@ -134,8 +123,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
         if victim:IsZombifying() then return end
 
         if not attacker_alive then
-            victim:PrintMessage(HUD_PRINTCENTER, "Your attacker is already dead so you have nobody to haunt.")
-            victim:PrintMessage(HUD_PRINTTALK, "Your attacker is already dead so you have nobody to haunt.")
+            victim:QueueMessage(MSG_PRINTBOTH, "Your attacker is already dead so you have nobody to haunt.")
             return
         end
 
@@ -159,8 +147,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
                         victim:SetNWBool("PhantomPossessing", false)
                         victim:SetNWInt("PhantomPossessingPower", 0)
 
-                        victim:PrintMessage(HUD_PRINTCENTER, "Your body has been destroyed, removing your tether to the world.")
-                        victim:PrintMessage(HUD_PRINTTALK, "Your body has been destroyed, removing your tether to the world.")
+                        victim:QueueMessage(MSG_PRINTBOTH, "Your body has been destroyed, removing your tether to the world.")
 
                         if phantom_haunt_saves_lover:GetBool() and loverSID ~= "" then
                             local lover = player.GetBySteamID64(loverSID)
@@ -190,19 +177,12 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
             end)
         end
 
-        -- Delay this message so the player can see whatever other message is being shown on death
-        if attacker:ShouldDelayAnnouncements() then
-            timer.Simple(3, function()
-                attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
-            end)
-        else
-            attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
-        end
-        victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
+        attacker:QueueMessage(MSG_PRINTCENTER, "You have been haunted.")
+        victim:QueueMessage(MSG_PRINTCENTER, "Your attacker has been haunted.")
 
         if loverSID ~= "" then
             local lover = player.GetBySteamID64(loverSID)
-            lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died... but they are haunting someone!")
+            lover:QueueMessage(MSG_PRINTCENTER, "Your lover has died... but they are haunting someone!")
         end
 
         local sid = victim:SteamID64()
@@ -221,7 +201,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
 end)
 
 hook.Add("TTTSpectatorHUDKeyPress", "Phantom_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-    if ply:GetNWBool("PhantomPossessing", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+    if ply:GetNWBool("PhantomPossessing", false) and IsValid(tgt) and tgt:IsActive() then
         powers[IN_ATTACK] = {
             start_command = "+attack",
             end_command = "-attack",
@@ -307,12 +287,10 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
                         end
                         deadPhantom:SetHealth(health)
                         phantomBody:Remove()
-                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
-                        deadPhantom:PrintMessage(HUD_PRINTTALK, "Your attacker died and you have been respawned.")
+                        deadPhantom:QueueMessage(MSG_PRINTBOTH, "Your attacker died and you have been respawned.")
                         respawn = true
                     else
-                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died but your body has been destroyed.")
-                        deadPhantom:PrintMessage(HUD_PRINTTALK, "Your attacker died but your body has been destroyed.")
+                        deadPhantom:QueueMessage(MSG_PRINTBOTH, "Your attacker died but your body has been destroyed.")
                     end
                 end
             end
@@ -320,8 +298,8 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
 
         if respawn and phantom_announce_death:GetBool() then
             for _, v in pairs(GetAllPlayers()) do
-                if v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
-                    v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been respawned.")
+                if v:IsActiveDetectiveLike() then
+                    v:QueueMessage(MSG_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been respawned.")
                 end
             end
         end
@@ -376,7 +354,6 @@ hook.Add("PostPlayerDeath", "Phantom_Lovers_PostPlayerDeath", function(ply)
     if not IsPlayer(lover) then return end
 
     if IsPhantomHaunting(lover) then
-        lover:PrintMessage(HUD_PRINTTALK, "Your lover has died and so you will not survive if you respawn!")
-        lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died and so you will not survive if you respawn!")
+        lover:QueueMessage(MSG_PRINTBOTH, "Your lover has died and so you will not survive if you respawn!")
     end
 end)

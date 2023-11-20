@@ -43,32 +43,20 @@ CreateConVar("ttt_lootgoblin_notify_sound", "1")
 CreateConVar("ttt_lootgoblin_notify_confetti", "1")
 local lootgoblin_activation_timer = CreateConVar("ttt_lootgoblin_activation_timer", "30", FCVAR_NONE, "Minimum time in seconds before the loot goblin is revealed", 0, 120)
 local lootgoblin_activation_timer_max = CreateConVar("ttt_lootgoblin_activation_timer_max", "60", FCVAR_NONE, "Maximum time in seconds before the loot goblin is revealed", 0, 120)
-local lootgoblin_announce = CreateConVar("ttt_lootgoblin_announce", "4", FCVAR_NONE, "The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone", 0, 4)
 local lootgoblin_size = CreateConVar("ttt_lootgoblin_size", "0.5", FCVAR_NONE, "The size multiplier for the loot goblin to use when they are revealed (e.g. 0.5 = 50% size)", 0, 1)
 local lootgoblin_cackle_timer_min = CreateConVar("ttt_lootgoblin_cackle_timer_min", "4", FCVAR_NONE, "The minimum time between loot goblin cackles", 0, 30)
 local lootgoblin_cackle_timer_max = CreateConVar("ttt_lootgoblin_cackle_timer_max", "12", FCVAR_NONE, "The maximum time between loot goblin cackles", 0, 30)
-local lootgoblin_cackle_enabled = CreateConVar("ttt_lootgoblin_cackle_enabled", "1")
 local lootgoblin_weapons_dropped = CreateConVar("ttt_lootgoblin_weapons_dropped", "8", FCVAR_NONE, "How many weapons the loot goblin drops when they are killed", 0, 10)
-local lootgoblin_jingle_enabled = CreateConVar("ttt_lootgoblin_jingle_enabled", "1")
-local lootgoblin_speed_mult = CreateConVar("ttt_lootgoblin_speed_mult", "1.2", FCVAR_NONE, "The multiplier to use on the loot goblin's movement speed when they are activated (e.g. 1.2 = 120% normal speed)", 1, 2)
-local lootgoblin_sprint_recovery = CreateConVar("ttt_lootgoblin_sprint_recovery", "0.12", FCVAR_NONE, "The amount of stamina to recover per tick when the loot goblin is activated", 0, 1)
-local lootgoblin_regen_mode = CreateConVar("ttt_lootgoblin_regen_mode", "2", FCVAR_NONE, "Whether the loot goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage", 0, 3)
 local lootgoblin_regen_rate = CreateConVar("ttt_lootgoblin_regen_rate", "3", FCVAR_NONE, "How often (in seconds) a loot goblin should regain health while regenerating", 1, 60)
-local lootgoblin_regen_delay = CreateConVar("ttt_lootgoblin_regen_delay", "0", FCVAR_NONE, "The length of the delay (in seconds) before the loot goblin's health will start to regenerate", 0, 60)
-local lootgoblin_radar_enabled = CreateConVar("ttt_lootgoblin_radar_enabled", "0", FCVAR_NONE, "Whether the radar ping for the loot goblin should be enabled or not", 0, 1)
-local lootgoblin_radar_timer = CreateConVar("ttt_lootgoblin_radar_timer", "15", FCVAR_NONE, "How often (in seconds) the radar ping for the loot goblin should update", 1, 60)
 local lootgoblin_radar_delay = CreateConVar("ttt_lootgoblin_radar_delay", "15", FCVAR_NONE, "How delayed (in seconds) the radar ping for the loot goblin should be", 1, 60)
-local lootgoblin_active_display = CreateConVar("ttt_lootgoblin_active_display", "1", FCVAR_NONE, "Whether to show the loot goblin's information over their head and on the scoreboard once they are activated", 0, 1)
 
-hook.Add("TTTSyncGlobals", "LootGoblin_TTTSyncGlobals", function()
-    SetGlobalFloat("ttt_lootgoblin_speed_mult", lootgoblin_speed_mult:GetFloat())
-    SetGlobalFloat("ttt_lootgoblin_sprint_recovery", lootgoblin_sprint_recovery:GetFloat())
-    SetGlobalInt("ttt_lootgoblin_regen_mode", lootgoblin_regen_mode:GetInt())
-    SetGlobalInt("ttt_lootgoblin_regen_delay", lootgoblin_regen_delay:GetInt())
-    SetGlobalInt("ttt_lootgoblin_radar_timer", lootgoblin_radar_timer:GetInt())
-    SetGlobalBool("ttt_lootgoblin_active_display", lootgoblin_active_display:GetBool())
-    SetGlobalBool("ttt_lootgoblin_radar_enabled", lootgoblin_radar_enabled:GetBool())
-end)
+local lootgoblin_regen_mode = GetConVar("ttt_lootgoblin_regen_mode")
+local lootgoblin_regen_delay = GetConVar("ttt_lootgoblin_regen_delay")
+local lootgoblin_radar_enabled = GetConVar("ttt_lootgoblin_radar_enabled")
+local lootgoblin_announce = GetConVar("ttt_lootgoblin_announce")
+local lootgoblin_cackle_enabled = GetConVar("ttt_lootgoblin_cackle_enabled")
+local lootgoblin_jingle_enabled = GetConVar("ttt_lootgoblin_jingle_enabled")
+local lootgoblin_drop_timer = GetConVar("ttt_lootgoblin_drop_timer")
 
 -----------
 -- KARMA --
@@ -93,7 +81,7 @@ end)
 local function StartRegen(ply)
     local rate = lootgoblin_regen_rate:GetInt()
     timer.Create("LootGoblinRegen_" .. ply:SteamID64(), rate, 0, function()
-        if ply:Alive() and not ply:IsSpec() and ply:IsLootGoblin() then
+        if ply:IsActiveLootGoblin() then
             local hp = ply:Health()
             if hp < ply:GetMaxHealth() then
                 ply:SetHealth(hp + 1)
@@ -144,7 +132,7 @@ hook.Add("PostEntityTakeDamage", "LootGoblin_PostEntityTakeDamage", function(ent
     local dmg = dmginfo:GetDamage()
     if dmg <= 0 then return end
 
-    if not ent:IsLootGoblin() or not ent:Alive() or ent:IsSpec() or not ent:IsRoleActive() then return end
+    if not ent:IsActiveLootGoblin() or not ent:IsRoleActive() then return end
 
     local mode = lootgoblin_regen_mode:GetInt()
     if mode ~= LOOTGOBLIN_REGEN_MODE_AFTER_DAMAGE then return end
@@ -195,6 +183,16 @@ local function ActivateLootGoblin(ply)
     end
 end
 
+local function DropWeapon(wep, source_pos)
+    local pos = source_pos + Vector(0, 0, 25)
+    local ent = CreateEntity(wep)
+    ent:SetPos(pos)
+    ent:Spawn()
+
+    local phys = ent:GetPhysicsObject()
+    if phys:IsValid() then phys:ApplyForceCenter(Vector(math.Rand(-100, 100), math.Rand(-100, 100), 300) * phys:GetMass()) end
+end
+
 local function StartGoblinTimers()
     local goblinTimeMin = lootgoblin_activation_timer:GetInt()
     local goblinTimeMax = lootgoblin_activation_timer_max:GetInt()
@@ -212,14 +210,12 @@ local function StartGoblinTimers()
         lootGoblinActive = true
         local revealMode = lootgoblin_announce:GetInt()
         for _, v in ipairs(GetAllPlayers()) do
-            if v:IsLootGoblin() and v:Alive() and not v:IsSpec() then
+            if v:IsActiveLootGoblin() then
                 ActivateLootGoblin(v)
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or
                     (not v:IsActiveDetectiveLike() and (revealMode == JESTER_NOTIFY_DETECTIVE or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) then
-                local message = string.Capitalize(ROLE_STRINGS_EXT[ROLE_LOOTGOBLIN]) .. " has been spotted!"
-                v:PrintMessage(HUD_PRINTTALK, message)
-                v:PrintMessage(HUD_PRINTCENTER, message)
+                v:QueueMessage(MSG_PRINTBOTH, string.Capitalize(ROLE_STRINGS_EXT[ROLE_LOOTGOBLIN]) .. " has been spotted!")
             end
         end
 
@@ -231,7 +227,7 @@ local function StartGoblinTimers()
             end
             timer.Create("LootGoblinCackle", MathRandom(min, max), 0, function()
                 for _, v in ipairs(GetAllPlayers()) do
-                    if v:IsLootGoblin() and v:Alive() and not v:IsSpec() and not v:GetNWBool("LootGoblinKilled", false) then
+                    if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
                         local idx = MathRandom(1, #cackles)
                         local chosen_sound = cackles[idx]
                         sound.Play(chosen_sound, v:GetPos())
@@ -240,7 +236,52 @@ local function StartGoblinTimers()
                 timer.Adjust("LootGoblinCackle", MathRandom(min, max), 0, nil)
             end)
         end
+
+        local dropTimer = lootgoblin_drop_timer:GetInt()
+        if dropTimer > 0 then
+            timer.Create("LootGoblinDrop", dropTimer, 0, function()
+                local weps = weapons.GetList()
+                for _, ply in ipairs(GetAllPlayers()) do
+                    if ply:IsActiveLootGoblin() then
+                        local wep = nil
+                        -- Loop in here so we get a different weapon for each loot goblin (if there are multiple)
+                        for _, v in RandomPairs(weps) do
+                            if v and not v.AutoSpawnable and v.CanBuy and v.AllowDrop then
+                                wep = WEPS.GetClass(v)
+                                break
+                            end
+                        end
+
+                        -- Sanity check
+                        if not wep then break end
+
+                        local pos = ply:GetPos()
+                        local ang = ply:GetAngles()
+                        -- Drop behind the player
+                        local new_pos = pos - (ang:Forward() * 40)
+                        DropWeapon(wep, new_pos)
+                    end
+                end
+            end)
+        end
     end)
+end
+
+local function PauseTimers()
+    timer.Pause("LootGoblinActivate")
+    timer.Pause("LootGoblinDrop")
+    timer.Pause("LootGoblinCackle")
+    timer.Pause("LootGoblinRadarDelay")
+end
+
+local function UnPauseTimers()
+    timer.UnPause("LootGoblinActivate")
+    timer.UnPause("LootGoblinDrop")
+    timer.UnPause("LootGoblinCackle")
+    timer.UnPause("LootGoblinRadarDelay")
+
+    local remaining = timer.TimeLeft("LootGoblinActivate")
+    SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + remaining)
 end
 
 ----------------
@@ -252,7 +293,7 @@ local function HandleLootGoblinWinChecks(win_type)
 
     local hasLootGoblin = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:IsLootGoblin() and v:Alive() and not v:IsSpec() and not v:GetNWBool("LootGoblinKilled", false) then
+        if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
             hasLootGoblin = true
         end
     end
@@ -264,15 +305,7 @@ local function HandleLootGoblinWinChecks(win_type)
 end
 hook.Add("TTTWinCheckComplete", "LootGoblin_TTTWinCheckComplete", HandleLootGoblinWinChecks)
 
-------------
--- TIMERS --
-------------
-
 hook.Add("TTTBeginRound", "LootGoblin_TTTBeginRound", function()
-    if player.IsRoleLiving(ROLE_LOOTGOBLIN) then
-        StartGoblinTimers()
-    end
-
     net.Start("TTT_ResetLootGoblinWins")
     net.Broadcast()
 end)
@@ -309,7 +342,7 @@ local function PauseIfSingleGoblin()
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not player.IsRoleLiving(ROLE_LOOTGOBLIN) then
-        timer.Pause("LootGoblinActivate")
+        PauseTimers()
     end
 end
 
@@ -332,17 +365,11 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
                 end
 
                 local ragdoll = victim.server_ragdoll or victim:GetRagdollEntity()
-                local pos = ragdoll:GetPos() + Vector(0, 0, 25)
-
                 local idx = MathRandom(1, #lootTable)
                 local wep = lootTable[idx]
                 table.remove(lootTable, idx)
-                local ent = CreateEntity(wep)
-                ent:SetPos(pos)
-                ent:Spawn()
 
-                local phys = ent:GetPhysicsObject()
-                if phys:IsValid() then phys:ApplyForceCenter(Vector(math.Rand(-100, 100), math.Rand(-100, 100), 300) * phys:GetMass()) end
+                DropWeapon(wep, ragdoll:GetPos())
             end)
         end
 
@@ -363,7 +390,7 @@ hook.Add("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", function()
 
     timer.Create("LootGoblinRadarDelay", 1, 0, function()
         for _, v in ipairs(GetAllPlayers()) do
-            if v:IsLootGoblin() and v:Alive() and not v:IsSpec() then
+            if v:IsActiveLootGoblin() then
                 local locations = goblins[v:SteamID64()]
                 if locations == nil then
                     locations = {}
@@ -394,7 +421,7 @@ end
 hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("LootGoblinKilled", false)
-        v:SetNWVector("TTTLootGoblinRadar", Vector(0, 0, 0))
+        v:SetNWVector("TTTLootGoblinRadar", vector_origin)
         ResetPlayer(v)
     end
 
@@ -404,6 +431,8 @@ hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
 
     net.Start("TTT_ResetLootGoblinWins")
     net.Broadcast()
+
+    table.Empty(goblins)
 end)
 
 hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function(ply, deadOnly)
@@ -415,9 +444,7 @@ hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function
                 ActivateLootGoblin(ply)
             end
         elseif timer.Exists("LootGoblinActivate") then
-            timer.UnPause("LootGoblinActivate")
-            local remaining = timer.TimeLeft("LootGoblinActivate")
-            SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + remaining)
+            UnPauseTimers()
         end
     end
 end)
@@ -431,15 +458,14 @@ hook.Add("TTTPlayerRoleChanged", "LootGoblin_TTTPlayerRoleChanged", function(ply
         elseif not timer.Exists("LootGoblinActivate") then
             StartGoblinTimers()
         else
-            timer.UnPause("LootGoblinActivate")
-            local remaining = timer.TimeLeft("LootGoblinActivate")
-            SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + remaining)
+            UnPauseTimers()
         end
     end
 end)
 
 hook.Add("TTTEndRound", "LootGoblin_TTTEndRound", function()
     timer.Remove("LootGoblinActivate")
+    timer.Remove("LootGoblinDrop")
     timer.Remove("LootGoblinCackle")
     timer.Remove("LootGoblinRadarDelay")
     lootGoblinActive = false

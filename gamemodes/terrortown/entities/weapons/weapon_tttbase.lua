@@ -337,7 +337,7 @@ function SWEP:ShootBullet(dmg, recoil, numbul, cone)
     self:GetOwner():FireBullets(bullet)
 
     -- Owner can die after firebullets
-    if (not IsValid(self:GetOwner())) or (not self:GetOwner():Alive()) or self:GetOwner():IsNPC() then return end
+    if (not IsValid(self:GetOwner())) or self:GetOwner():IsNPC() or (not self:GetOwner():Alive()) then return end
 
     if ((game.SinglePlayer() and SERVER) or
             ((not game.SinglePlayer()) and CLIENT and IsFirstTimePredicted())) then
@@ -543,7 +543,7 @@ function SWEP:DyingShot()
             eyeang.yaw = eyeang.yaw - math.Rand(-punch, punch)
             self:GetOwner():SetEyeAngles(eyeang)
 
-            MsgN(self:GetOwner():Nick() .. " fired his DYING SHOT")
+            MsgN(self:GetOwner():Nick() .. " fired their DYING SHOT")
 
             self:GetOwner().dying_wep = self
 

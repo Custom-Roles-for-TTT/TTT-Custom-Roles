@@ -54,20 +54,12 @@ SWEP.AllowDrop = false
 -- Pull out faster than standard guns
 SWEP.DeploySpeed = 2
 
-if SERVER then
-    local killer_knife_damage = CreateConVar("ttt_killer_knife_damage", "65", FCVAR_NONE, "How much damage the killer knife does. Server or round must be restarted for changes to take effect", 1, 100)
-    local killer_knife_delay = CreateConVar("ttt_killer_knife_delay", "0.8", FCVAR_NONE, "The amount of time between knife attacks for a killer. Server or round must be restarted for changes to take effect", 0.1, 3)
-
-    function SWEP:Initialize()
-        SetGlobalInt("ttt_killer_knife_damage", killer_knife_damage:GetInt())
-        SetGlobalFloat("ttt_killer_knife_delay", killer_knife_delay:GetFloat())
-        return self.BaseClass.Initialize(self)
-    end
-end
+local killer_knife_damage = CreateConVar("ttt_killer_knife_damage", "65", FCVAR_REPLICATED, "How much damage the killer knife does. Server or round must be restarted for changes to take effect", 1, 100)
+local killer_knife_delay = CreateConVar("ttt_killer_knife_delay", "0.8", FCVAR_REPLICATED, "The amount of time between knife attacks for a killer. Server or round must be restarted for changes to take effect", 0.1, 3)
 
 function SWEP:Deploy()
-    self.Primary.Damage = GetGlobalInt("ttt_killer_knife_damage", 65)
-    self.Primary.Delay = GetGlobalFloat("ttt_killer_knife_delay", 0.8)
+    self.Primary.Damage = killer_knife_damage:GetInt()
+    self.Primary.Delay = killer_knife_delay:GetFloat()
 end
 
 function SWEP:PrimaryAttack()

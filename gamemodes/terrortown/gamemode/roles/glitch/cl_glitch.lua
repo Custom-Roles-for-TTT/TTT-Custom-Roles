@@ -1,5 +1,12 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local glitch_mode = GetConVar("ttt_glitch_mode")
+local glitch_use_traps = GetConVar("ttt_glitch_use_traps")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -24,12 +31,12 @@ hook.Add("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText", function(role, tit
         html = html .. "<span style='display: block; margin-top: 10px;'>Members of the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>traitor team</span> will believe the " .. ROLE_STRINGS[ROLE_GLITCH] .. " is one of their own, but the " .. ROLE_STRINGS[ROLE_GLITCH] .. " won't know who the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>traitor team members</span> are.</span>"
 
         -- Specific role appearance
-        local glitch_mode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
-        if glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
+        local mode = glitch_mode:GetInt()
+        if mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
             html = html .. "<span style='display: block; margin-top: 10px;'>Also, having " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. " in the round causes special traitor roles to appear to their teammates as the normal " .. ROLE_STRINGS[ROLE_TRAITOR] .. " role.</span>"
         else
             html = html .. "<span style='display: block; margin-top: 10px;'>Specifically, the  " .. ROLE_STRINGS[ROLE_GLITCH] .. " will appear to the traitor team as "
-            if glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
+            if mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
                 html = html .. " either the " .. ROLE_STRINGS[ROLE_TRAITOR] .. " role or a random enabled special traitor role"
             else
                 html = html .. " the " .. ROLE_STRINGS[ROLE_TRAITOR] .. " role"
@@ -38,10 +45,10 @@ hook.Add("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText", function(role, tit
         end
 
         -- Communications block
-        html = html .. "<span style='display: block; margin-top: 10px;'>When there is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. " in the round, team text and voice chat <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>are blocked</span> to make it difficult to communicate and identify the " .. ROLE_STRINGS[ROLE_GLITCH] .. ".</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>When there is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. " in the round, traitor team text and voice chat <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>are blocked</span> to make it difficult to communicate and identify the " .. ROLE_STRINGS[ROLE_GLITCH] .. ".</span>"
 
         -- Traitor traps
-        if GetGlobalBool("ttt_glitch_use_traps", false) then
+        if glitch_use_traps:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>To further the illusion of the " .. ROLE_STRINGS[ROLE_GLITCH] .. " being a member of the traitor team, they can <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>see and use traitor traps</span> throughout the map.</span>"
         end
 

@@ -26,24 +26,16 @@ resource.AddSingleFile("sound/weapons/ttt/vampireeat.wav")
 -- CONVARS --
 -------------
 
-local vampires_are_monsters = CreateConVar("ttt_vampires_are_monsters", "0")
-local vampires_are_independent = CreateConVar("ttt_vampires_are_independent", "0")
-local vampire_show_target_icon = CreateConVar("ttt_vampire_show_target_icon", "0")
-local vampire_damage_reduction = CreateConVar("ttt_vampire_damage_reduction", "0", FCVAR_NONE, "The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire", 0, 1)
-local vampire_prime_death_mode = CreateConVar("ttt_vampire_prime_death_mode", "0", FCVAR_NONE, "What to do when the prime vampire(s) (e.g. players who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role", 0, 2)
-local vampire_vision_enable = CreateConVar("ttt_vampire_vision_enable", "0")
 local vampire_kill_credits = CreateConVar("ttt_vampire_kill_credits", "1")
-local vampire_loot_credits = CreateConVar("ttt_vampire_loot_credits", "1")
 local vampire_prime_friendly_fire = CreateConVar("ttt_vampire_prime_friendly_fire", "0", FCVAR_NONE, "How to handle friendly fire damage to the prime vampire(s) from their thralls. 0 - Do nothing. 1 - Reflect damage back to the attacker (non-prime vampire). 2 - Negate damage to the prime vampire.", 0, 2)
+local vampire_credits_award_pct = CreateConVar("ttt_vampire_credits_award_pct", "0.35")
+local vampire_credits_award_size = CreateConVar("ttt_vampire_credits_award_size", "1")
+local vampire_credits_award_repeat = CreateConVar("ttt_vampire_credits_award_repeat", "1")
 
-hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_vampires_are_monsters", vampires_are_monsters:GetBool())
-    SetGlobalBool("ttt_vampires_are_independent", vampires_are_independent:GetBool())
-    SetGlobalBool("ttt_vampire_show_target_icon", vampire_show_target_icon:GetBool())
-    SetGlobalBool("ttt_vampire_vision_enable", vampire_vision_enable:GetBool())
-    SetGlobalBool("ttt_vampire_loot_credits", vampire_loot_credits:GetBool())
-    SetGlobalInt("ttt_vampire_prime_death_mode", vampire_prime_death_mode:GetInt())
-end)
+local vampire_damage_reduction = GetConVar("ttt_vampire_damage_reduction")
+local vampire_show_target_icon = GetConVar("ttt_vampire_show_target_icon")
+local vampire_vision_enabled = GetConVar("ttt_vampire_vision_enabled")
+local vampire_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode")
 
 -------------
 -- CREDITS --
@@ -66,7 +58,7 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
 
     local valid_attacker = IsPlayer(attacker)
     local kill_credits = vampire_kill_credits:GetBool()
-    if kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    if kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or vampire_credits_award_repeat:GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
 
@@ -92,9 +84,9 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
         end
 
         local pct = ply_dead / ply_total
-        if pct >= GetConVar("ttt_credits_award_pct"):GetFloat() then
+        if pct >= vampire_credits_award_pct:GetFloat() then
             -- Traitors have killed sufficient people to get an award
-            local amt = GetConVar("ttt_credits_award_size"):GetInt()
+            local amt = vampire_credits_award_size:GetInt()
 
             -- If size is 0, awards are off
             if amt > 0 then
@@ -126,7 +118,7 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
         local vampires = {}
         -- Find all the living vampires anmd count the primes
         for _, v in pairs(GetAllPlayers()) do
-            if v:Alive() and v:IsTerror() and v:IsVampire() then
+            if v:IsActiveVampire() then
                 if v:IsVampirePrime() then
                     living_vampire_primes = living_vampire_primes + 1
                 end
@@ -144,8 +136,7 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
             -- Kill them
             if prime_death_mode == VAMPIRE_DEATH_KILL_CONVERTED then
                 for _, vnp in pairs(vampires) do
-                    vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
-                    vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
+                    vnp:QueueMessage(MSG_PRINTBOTH, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
                     vnp:Kill()
                 end
             -- Change them back to their previous roles
@@ -154,8 +145,7 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
                 for _, vnp in pairs(vampires) do
                     local prev_role = vnp:GetVampirePreviousRole()
                     if prev_role ~= ROLE_NONE then
-                        vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
-                        vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
+                        vnp:QueueMessage(MSG_PRINTBOTH, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
                         vnp:SetRoleAndBroadcast(prev_role)
                         vnp:StripWeapon("weapon_vam_fangs")
                         vnp:SelectWeapon("weapon_zm_improvised")
@@ -179,7 +169,7 @@ hook.Add("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", function(ply)
 
     local vampires = {}
     for _, v in pairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() and v:IsVampire() and v ~= ply then
+        if v:IsActiveVampire() and v ~= ply then
             -- If we already have another prime, we're all set
             if v:IsVampirePrime() then
                 return
@@ -195,9 +185,7 @@ hook.Add("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", function(ply)
     local new_prime = vampires[idx]
     new_prime:SetVampirePrime(true)
 
-    local message = "The prime " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " has faded away and you've seized power in their absence!"
-    new_prime:PrintMessage(HUD_PRINTCENTER, message)
-    new_prime:PrintMessage(HUD_PRINTTALK, message)
+    new_prime:QueueMessage(MSG_PRINTBOTH, "The prime " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " has faded away and you've seized power in their absence!")
 end)
 
 function plymeta:SetVampirePrime(p) self:SetNWBool("vampire_prime", p) end
@@ -242,7 +230,7 @@ hook.Add("TTTCheckForWin", "Vampire_TTTCheckForWin", function()
     local vampire_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsVampire() then
                 vampire_alive = true
             elseif not v:ShouldActLikeJester() then
@@ -374,7 +362,7 @@ end)
 hook.Add("SetupPlayerVisibility", "Vampire_SetupPlayerVisibility", function(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveVampire() then return end
-    if not vampire_vision_enable:GetBool() and not vampire_show_target_icon:GetBool() then return end
+    if not vampire_vision_enabled:GetBool() and not vampire_show_target_icon:GetBool() then return end
 
     -- Only use this when the vampire would see the highlighting and icons (when they have their fangs out)
     local hasFangs = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_vam_fangs"

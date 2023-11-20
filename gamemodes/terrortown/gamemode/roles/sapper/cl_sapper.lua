@@ -5,6 +5,16 @@ local MathCos = math.cos
 local MathSin = math.sin
 local GetAllPlayers = player.GetAll
 
+-------------
+-- CONVARS --
+-------------
+
+local sapper_aura_radius = GetConVar("ttt_sapper_aura_radius")
+local sapper_protect_self = GetConVar("ttt_sapper_protect_self")
+local sapper_fire_immune = GetConVar("ttt_sapper_fire_immune")
+local sapper_can_see_c4 = GetConVar("ttt_sapper_can_see_c4")
+local sapper_c4_guaranteed_defuse = GetConVar("ttt_sapper_c4_guaranteed_defuse")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -43,7 +53,7 @@ net.Receive("Sapper_ShowDamageAura", function()
     local pos = sapperPos + Vector(0, 0, 30)
     if client:GetPos():Distance(pos) > 3000 then return end
 
-    local radius = GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS)
+    local radius = sapper_aura_radius:GetInt() * UNITS_PER_METER
     local auraEmitter = ParticleEmitter(sapperPos)
     auraEmitter:SetPos(pos)
 
@@ -64,7 +74,7 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
             ply.SapAuraEmitter:SetPos(pos)
             ply.SapAuraNextPart = CurTime() + 0.02
             ply.SapAuraDir = ply.SapAuraDir + 0.05
-            local radius = GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS)
+            local radius = sapper_aura_radius:GetInt() * UNITS_PER_METER
             CreateParticle(ply.SapAuraDir, ply:GetPos(), radius, ply.SapAuraEmitter)
         end
     elseif ply.SapAuraEmitter then
@@ -86,7 +96,7 @@ hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
 
     local inside = false
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() and p:Alive() and p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS) then
+        if p:IsActive() and p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= (sapper_aura_radius:GetInt() * UNITS_PER_METER) then
             inside = true
             break
         end
@@ -101,10 +111,11 @@ end)
 hook.Add("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SAPPER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
-        local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
+        local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
         local html = "The " .. ROLE_STRINGS[ROLE_SAPPER] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
-        local fire_immune = GetGlobalBool("ttt_sapper_fire_immune", false)
+        -- Fire immunity
+        local fire_immune = sapper_fire_immune:GetBool()
         local andfire = ""
         if fire_immune then
             andfire = "and fire "
@@ -113,23 +124,26 @@ hook.Add("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", function(role, tit
 
         -- Protection Aura
         html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_SAPPER] .. "'s <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>explosion " .. andfire .. "protection</span> "
-        if GetGlobalBool("ttt_sapper_protect_self", false) then
+        if sapper_protect_self:GetBool() then
             html = html .. "applies to them as well"
         else
             html = html .. "does NOT apply to them, however"
         end
         html = html .. ".</span>"
 
-        if GetGlobalBool("ttt_sapper_can_see_c4", false) then
+        -- Can see C4
+        if sapper_can_see_c4:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_SAPPER] .. " can also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>see the location of planted C4</span>.</span>"
         end
 
-        if GetGlobalBool("ttt_sapper_c4_guaranteed_defuse", false) then
+        -- C4 defusal
+        if sapper_c4_guaranteed_defuse:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>When defusing C4, the " .. ROLE_STRINGS[ROLE_SAPPER] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will always succeeed</span>.</span>"
         end
 
+        -- Hide special detectives mode
         html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
-        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then
             html = html .. ", but not what specific type of " .. ROLE_STRINGS[ROLE_DETECTIVE]
             if special_detective_mode == SPECIAL_DETECTIVE_HIDE_FOR_ALL then

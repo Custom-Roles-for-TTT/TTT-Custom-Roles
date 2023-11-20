@@ -26,7 +26,7 @@ if CLIENT then
     SWEP.Slot = 8
 
     SWEP.ViewModelFOV = 68
-    SWEP.DrawCrosshair = true
+    SWEP.DrawCrosshair = false
     SWEP.ViewModelFlip = false
 end
 

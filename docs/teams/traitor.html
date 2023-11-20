@@ -1,21 +1,189 @@
 <!doctype html>
 <html>
 <head>
-    <title>Traitors - Custom Roles for TTT Wiki</title>
+    <title>Custom Roles for TTT - Traitors</title>
     <link type="text/css" rel="stylesheet" href="../fonts/roleicons.css">
-    <link type="text/css" rel="stylesheet" href="../css/style.css"></head>
-    <script type="text/javascript" src="../js/expandable.js" defer></script>
+    <link type="text/css" rel="stylesheet" href="../css/style.css">
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#traitor" width="220" height="278" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel" style="margin-bottom: 15px;">
+        <iframe id="nav" src="../nav.html#traitor" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--traitor); margin-top: 0;">Traitor Roles</h1>
+            <div style="margin: 10px;">
+                <p>The <span style="color:var(--traitor);">traitor team</span> is one of the two primary teams in play in a game of Trouble in Terrorist Town.</p>
+                <p>The main goal of the traitor team is to eliminate all members of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, including any <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span>. In some cases, they also need to take out <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>, <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
+                <p>Members of the traitor team have their roles known to each other, and jesters are also known to traitors. Additionally, traitors have the ability to see players who are dead but have not had their bodies found as "missing in action" on the scoreboard. This gives the traitor team a significant advantage over the innocent team, whose roles are not known to each other, and who cannot see MIA players on the scoreboard. To address this, most games have a higher number of innocent players than traitors.</p>
+                <p>Traitors often have access to weapons or abilities that give them additional advantages against the innocent team, but can give away their allegiance if not used in secret.</p>
+            </div>
+        </div>
+    </div>
+    <div class="contentbody panel">
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+            <div class="content">
+                <p>Each round after detectives are chosen, a percentage of the remaining players will be part of the traitor team. A fraction of those players have a chance to be a <span style="color:var(--special-traitor)">special traitor</span>, and the others will each be a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                <p>The following ConVars can be used to configure the requirements and restrictions on how traitors spawn.</p>
+                <table style="width:100%; margin-bottom: 10px;">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_traitor_pct</td>
+                        <td>0.25</td>
+                        <td>Float (0-1)</td>
+                        <td><b>Vanilla TTT ConVar</b> - Percentage of players, rounded up, that will spawn as a member of the traitor team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_traitor_max</td>
+                        <td>32</td>
+                        <td>Integer</td>
+                        <td><b>Vanilla TTT ConVar</b> - The maximum number of players that can spawn as a member of the traitor team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_special_traitor_pct</td>
+                        <td>0.33</td>
+                        <td>Float (0-1)</td>
+                        <td>Percentage of traitors, rounded up, that have the chance to spawn as a special traitor.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_special_traitor_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a special traitor will spawn in each individual slot made by <code>ttt_special_traitor_pct</code>.</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p><b>Example:</b> There are eight players in the game. <code>ttt_traitor_pct</code> is 0.25, <code>ttt_special_traitor_pct</code> is 0.33, and <code>ttt_special_traitor_chance</code> is 0.5 as per the default values above. 25% of the players in the game (rounded up) will spawn as members of the traitor team as <code>ttt_traitor_pct</code> is set to 0.25. This means there will be two players that are members of the traitor team. At most 33% of the traitor team (rounded up) can be special traitors as <code>ttt_special_traitor_pct</code> is set to 0.33. This means that there will be at most one special traitor. However, that player only has a 50% chance to be a special traitor as <code>ttt_special_traitor_chance</code> is set to 0.5. This means it is possible for the round to have zero or one special traitor. All remaining members of the traitor team will each be a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                <p>If you wanted it to be possible for all members of the traitor team to be special traitors at once, set <code>ttt_special_traitor_pct</code> to 1. Alternately, if you always wanted the same number of special traitors in each round with no variation, set <code>ttt_special_traitor_chance</code> to 1. Setting either <code>ttt_special_traitor_pct</code> or <code>ttt_special_traitor_chance</code> to 0 will make it impossible for special traitors to spawn.</p>
+                <p>Additionally, members of the traitor team are able to earn credits to spend in the shop. The following ConVars can be used to configure how credits are earned.</p>
+                <table style="width:100%; margin-bottom: 10px;">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_credits_award_pct</td>
+                        <td>0.35</td>
+                        <td>Float (0-1)</td>
+                        <td><b>Vanilla TTT ConVar</b> - When this percentage of non-traitor, non-jester players are dead, members of the traitor team are awarded a number of credits equal to <code>ttt_credits_award_size</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_credits_award_size</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td><b>Vanilla TTT ConVar</b> - The number of credits awarded to members of the traitor team when the percentage determined by <code>ttt_credits_award_pct</code> of non-traitor, non-jester players are dead.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_credits_award_repeat</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td><b>Vanilla TTT ConVar</b> - Whether the credit award determined by <code>ttt_credits_award_pct</code> and <code>ttt_credits_award_size</code> is handed out multiple times. <i>(e.g. If <code>ttt_credits_award_pct</code> is 0.25, member of the traitor team will be awarded credits at 25% killed, 50% killed, and 75% killed.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_credits_detectivekill</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td><b>Vanilla TTT ConVar</b> - The number of credits a member of the traitor team will receive if they kill a detective.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_traitors_credits_timer</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>How often in seconds to give members of the traitor team a credit. <i>(Set to 0 to disable.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>Finally the following miscellaneous ConVars can be used to configure options that apply to all members of the traitor team.</p>
+                <table style="width:100%; margin-bottom: 10px;">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_traitors_vision_enabled</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether members of the traitor team can see other members of the traitor team through walls via a highlight effect.</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+            </div>
+        </div>
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Role Guidelines</button>
+            <div class="content">
+                <p>When designing roles it is important to make sure your role is part of the correct team. Each team has a unique identity along with strengths and weaknesses that play better with some roles than others. If you are designing a role for the traitor team, keep the following in mind:</p>
+                <b>Traitors should:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Win by working with other traitors to kill the innocents.</li>
+                    <li>Have a config option to be a part of the monster team instead if the role is a thematic fit.</li>
+                </ul>
+                <b>Traitors should <u>NOT</u>:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Have unique win conditions. If your role requires a unique win condition consider making them a jester or independent.</li>
+                    <li>Have any reason to kill/damage/annoy other traitors. If your role wants to interfere with the traitors' goals consider making them an innocent, detective, jester or independent.</li>
+                </ul>
+                <p>These are just guidelines and in some special circumstances a role might be best fit as a traitor even if it doesn't align with the above suggestions. However, in general following these suggestions will ensure that your role works well within the framework that Custom Roles for TTT provides.</p>
+                <p>A walkthrough for creating your own role can be found on the <a href="../tutorials/create_your_own_role.html">Create Your Own Role</a> tutorial page.</p>
+            </div>
+        </div>
         <div id="traitor" class="collapsible">
             <button class="header" style="background-color:var(--traitor);"><i class="icon-traitor"></i>Traitor</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span> is the base member of the <span style="color:var(--traitor);">traitor team</span> who can buy items to help defeat their enemies.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>The Traitor has access to a shop containing powerful items that can be used to help the defeat other players.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_credits_starting</td>
+                            <td>2</td>
+                            <td>Integer</td>
+                            <td><b>Vanilla TTT ConVar</b> - The number of credits a traitor should start with.</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_traitor_phantom_cure</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether to allow the traitor to buy the phantom exorcism device which can remove a haunting Phantom. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -23,9 +191,101 @@
             <button class="header" style="background-color:var(--special-traitor);"><i class="icon-assassin"></i>Assassin</button>
             <div class="content">
                 <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-assassin"></i><a href="#assassin">Assassin</a></span> deals more damage to their target and less damage to everyone else.</p>
+                <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-assassin"></i><a href="#assassin">Assassin</a></span> is assigned a target at random. They deal more damage to their target and less damage to everyone else.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>At the start of each round a target is chosen randomly from among non-<span style="color:var(--traitor)">traitor</span>, non-<span style="color:var(--jester)"><a href="../teams/jester.html">jester</a></span> players. <span style="color:var(--detective)"><a href="../teams/detective.html.html">Detectives</a></span> will not be chosen as targets unless there are no other valid options.</p>
+                    <p>When the Assassin's target dies, a new target will be selected randomly from the remaining players after a short delay following the same process as before. The delay between the old target dying and the new target being selected can be configured or disabled entirely with <code>ttt_assassin_next_target_delay</code>.</p>
+                    <p>Roles without shops can optionally be given priority over roles with shops during the target selection process. Enabling <code>ttt_assassin_shop_roles_last</code> will make it so non-shop roles are selected as targets first, then once no valid non-shop roles remain shop roles will be selected. Detectives are always left for last regardless of if this feature is enabled or not.</p>
+                    <p>The Assassin can see an icon above their target's head through walls and can optionally also have their target highlighted if <code>ttt_assassin_target_vision_enabled</code> is enabled.</p>
+                    <p>If the Assassin kills a player other than their target, they will fail their contract and gain a damage penalty for the rest of the round. This penalty can be configured or disabled entirely with <code>ttt_assassin_failed_damage_penalty</code>.</p>
+                    <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="../teams/jester.html#loot-goblin">Loot Goblin</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="#vampire">Vampire</a></span>, and <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span> can be killed by the Assassin without causing the Assassin to fail their contract, even if they aren't the Assassin's current target. This can be disabled for each role with <code>ttt_assassin_allow_lootgoblin_kill</code>, <code>ttt_assassin_allow_vampire_kill</code>, and <code>ttt_assassin_allow_zombie_kill</code> respectively.</p>
+                    <p>The Assassin has access to a shop containing a small handful of useful items. However, if the <code>ttt_assassin_shop_sync</code> ConVar is enabled the Assassin will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_assassin_allow_lootgoblin_kill</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Assassin can kill a Loot Goblin without penalty, even if it is not their target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_allow_vampire_kill</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Assassin can kill a Vampire without penalty, even if it is not their target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_allow_zombie_kill</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Assassin can kill a Zombie without penalty, even if it is not their target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits an Assassin should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_failed_damage_penalty</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>Damage penalty that the Assassin has after they have failed their contract by killing the wrong person. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_next_target_delay</td>
+                            <td>5</td>
+                            <td>Integer</td>
+                            <td>The delay in seconds before an Assassin is assigned their next target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_shop_roles_last</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Assassin should target the shop roles right before Detective or not.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_show_target_icon</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Assassins have an icon over their target's heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_target_bonus_bought</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the damage bonus that the Assassin has against their target should apply on weapons bought from the shop.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_target_damage_bonus</td>
+                            <td>1</td>
+                            <td>Float</td>
+                            <td>Damage bonus that the Assassin has against their target. <i>(e.g. 0.5 = 50% extra damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_target_vision_enabled</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Assassins have a visible aura around their target, visible through walls.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_wrong_damage_penalty</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>Damage penalty that the Assassin has when attacking someone who is not their target. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -35,7 +295,72 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-hypnotist"></i><a href="#hypnotist">Hypnotist</a></span> can use their brainwashing device to revive someone as a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>By default, the Hypnotist is given a brainwashing device as part of their loadout but this can be disabled via the <code>ttt_hypnotist_device_loadout</code> ConVar.</p>
+                    <p>When <code>ttt_hypnotist_device_shop</code> is enabled, the Hypnotist can buy a brainwashing device from their shop. They will only be able to buy one brainwashing device each round unless <code>ttt_hypnotist_device_shop_rebuyable</code> is also enabled.</p>
+                    <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> and the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a href="../teams/innocent.html#deputy">Deputy</a></span> can optionally be resurrected as <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="#impersonator">Impersonators</a></span> instead of <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitors</a></span> by enabling <code>ttt_hypnotist_convert_detectives</code>.</p>
+                    <p>The Hypnotist has access to a shop containing a small handful of useful items. However, if the <code>ttt_hypnotist_shop_sync</code> ConVar is enabled the Hypnotist will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_hypnotist_convert_detectives</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether to convert detectives and Deputies to Impersonator instead of just a regular traitor. Target will be automatically promoted to appear as a detective if appropriate. <i>(Requires <code>ttt_deputy_use_detective_icon</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hypnotist_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Hypnotist should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hypnotist_device_loadout</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Hypnotist's defib should be given to them when they spawn. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hypnotist_device_shop</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Hypnotist's defib should be purchasable in the shop. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hypnotist_device_shop_rebuyable</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Hypnotist's defib should be purchaseable multiple times. <i>(Requires <code>ttt_hypnotist_device_shop</code> to be enabled. Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_hypnotist_device_time</td>
+                            <td>8</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the Hypnotist's device takes to use.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_paramedic_hypnotist</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether only a single Paramedic or Hypnotist should spawn in a round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_paramedic_hypnotist_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a Paramedic should have an opportunity to spawn instead of a Hypnotist. <i>(e.g. 0.7 = 70% chance for Paramedic, 30% chance for Hypnotist. Requires <code>ttt_single_paramedic_hypnotist</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -43,9 +368,87 @@
             <button class="header" style="background-color:var(--special-traitor);"><i class="icon-impersonator"></i>Impersonator</button>
             <div class="content">
                 <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="#impersonator">Impersonator</a></span> is promoted to replace the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detective</a></span> in the event of their death, but they are still a member of the <span style="color:var(--traitor);">traitor team</span>.</p>
+                <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="#impersonator">Impersonator</a></span> is promoted to replace the <span style="color:var(--detective);"><a href="../teams/detective.html">detective</a></span> in the event of their death, but they are still a member of the <span style="color:var(--traitor);">traitor team</span>.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>The Impersonator will only be promoted when all other detectives are dead unless <code>ttt_deputy_impersonator_promote_any_death</code> is enabled, in which case they will be promoted as soon as a single detective dies.</p>
+                    <p>Once promoted, they have all the powers of a detective including access to <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detective</a></span> weapons and the ability to search bodies.</p>
+                    <p>By default, there is no downside to being an un-promoted Impersonator for the whole round. However, if the <code>ttt_impersonator_damage_penalty</code> ConVar is changed from its default, they may do less damage until promoted.</p>
+                    <p>The icon shown over the head of a promoted Impersonator depends on the <code>ttt_deputy_use_detective_icon</code> and <code>ttt_impersonator_use_detective_icon</code> settings. <code>ttt_deputy_use_detective_icon</code> will change how their icon appears to non-traitors, and <code>ttt_impersonator_use_detective_icon</code> will change how their icon appears to other traitors. By default, the Detective icon will be used in both cases.</p>
+                    <p>The Impersonator has access to a shop containing a small handful of useful items. Once they are promoted, they will also gain access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detective</a></span>. In addition to this, if the <code>ttt_impersonator_shop_sync</code> ConVar is enabled the Impersonator will also have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_impersonator_activation_credits</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The number of credits to give the Impersonator when they are activated.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_impersonator_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits an Impersonator should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_impersonator_damage_penalty</td>
+                            <td>0</td>
+                            <td>Float (0-1)</td>
+                            <td>Damage penalty that the Impersonator has before being promoted. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_impersonator_detective_chance</td>
+                            <td>0</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a detective will spawn as a promoted Impersonator instead. <i>(e.g. 0.5 = 50% chance.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_impersonator_use_detective_icon</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether a promoted Impersonator should show the detective icon over their head instead of the Impersonator icon. <i>(Only for traitors, non-traitors will use the equivalent Deputy setting.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_impersonator_without_detective</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether an Impersonator can spawn without a detective in the round. Will automatically promote the Impersonator when they spawn.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_deputy_impersonator_promote_any_death</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Deputy/Impersonator should be promoted when any detective dies rather than only after all detectives have died.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_deputy_impersonator_start_promoted</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Deputy/Impersonator should start the round promoted.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_deputy_impersonator</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether only a single Deputy or Impersonator should spawn in a round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_deputy_impersonator_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a Deputy should have an opportunity to spawn instead of an Impersonator. <i>(e.g. 0.7 = 70% chance for Deputy, 30% chance for Impersonator. Requires <code>ttt_single_deputy_impersonator</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -55,7 +458,73 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-informant"></i><a href="#informant">Informant</a></span> can scan other players to learn their role and track their location.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>The Informant scanning starts as soon as they look at another player and finishes if they can maintain line of sight for a length of time determined by <code>ttt_informant_scanner_time</code>. They are allowed to break line of sight for a short window of time determined by <code>ttt_informant_scanner_float_time</code> withing interrupting their scan, but losing line of sight for any longer will abort the scan. The scanner will then go on cooldown and be unusable for an amount of time determined by <code>ttt_informant_scanner_cooldown</code>.</p>
+                    <p>By default this scanning process happens passively, however enabling <code>ttt_informant_requires_scanner</code> forces the Informant to hold their scanner while scanning players. While they are holding the scanner they will appear holstered to other players.</p>
+                    <p>Any information the Informant finds is automatically shared with other <span style="color:var(--traitor);">traitors</span> unless <code>ttt_informant_share_scans</code> is disabled.</p>
+                    <p>The Informant is unable to scan other traitors (to determine if one of them is the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-glitch"></i><a href="../teams/innocent.html#glitch">Glitch</a></span>), or <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> unless <code>ttt_informant_can_scan_glitches</code> or <code>ttt_informant_can_scan_jesters</code> are enabled respectively.</p>
+                    <p>The Informant has access to a shop containing a small handful of useful items. However, if the <code>ttt_informant_shop_sync</code> ConVar is enabled the Informant will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_informant_can_scan_glitches</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Informant should be able to scan Glitches.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_informant_can_scan_jesters</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Informant should be able to scan jesters.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_informant_requires_scanner</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Informant needs to hold the scanner item to be able to scan players.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_informant_scanner_cooldown</td>
+                            <td>3</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the Informant's tracker goes on cooldown for after losing it's target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_informant_scanner_distance</td>
+                            <td>2500</td>
+                            <td>Integer</td>
+                            <td>The maximum distance away the scanner target can be.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_informant_scanner_float_time</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds it takes for the Informant's scanner to lose it's target without line of sight.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_informant_scanner_time</td>
+                            <td>8</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the Informant's scanner takes to use.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_informant_share_scans</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Informant should automatically share their information with fellow traitors or not.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -65,7 +534,134 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-parasite"></i><a href="#parasite">Parasite</a></span> infects players that kill them and retakes control after time.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>Infected players are unaware that they are infected with the Parasite unless <code>ttt_parasite_announce_infection</code> or <code>ttt_parasite_infection_warning_time</code> are enabled. Enabling <code>ttt_parasite_announce_infection</code> will warn players immediately, and players will receive another warning after a length of time determined by <code>ttt_parasite_infection_warning_time</code>.</p>
+                    <p>By default, players can rid themselves of the Parasite's infection in two ways. Either having a <span style="color:var(--detective);"><a href="../teams/detective.html">detective</a></span> buy and use a parasite cure on them, or dying. However configuring <code>ttt_parasite_infection_suicide_mode</code> can allow the Parasite to respawn if the infected player kills themselves, and <code>ttt_parasite_infection_transfer</code> can allow the Parasite's infection to transfer to a new host if they kill the infected player.</p>
+                    <p>When the Parasite takes over their host, the infected player will die and the parasite will respawn in their place with all of their host's old weapons. However this can be configured to instead respawn the Parasite back at their own body, or in a random location with <code>ttt_parasite_respawn_mode</code> as detailed in the ConVars table below.</p>
+                    <p>The Parasite has access to a shop containing a small handful of useful items. However, if the <code>ttt_parasite_shop_sync</code> ConVar is enabled the Parasite will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <p>The Parasite can optionally be part of the <span style="color:var(--monster)"><a href="../teams/monster.html">monster team</a></span> instead of being a traitor by enabling <code>ttt_parasite_is_monster</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_parasite_announce_infection</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether players are notified immediately when they are infected with the Parasite.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Parasite should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_cure_mode</td>
+                            <td>2</td>
+                            <td>Integer (0-2)</td>
+                            <td>How to handle using a parasite cure on someone who is not infected:
+                                <ol start="0">
+                                    <li>Kill nobody, but use up the cure.</li>
+                                    <li>Kill the person who uses the cure.</li>
+                                    <li>Kill the person the cure is used on.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_cure_time</td>
+                            <td>3</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the parasite cure takes to use.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_infection_saves_lover</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Parasite's lover should survive if the Parasite is infecting a player. <i>(Only applies if Cupid has paired the Parasite with another player.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_infection_suicide_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>The way to handle when a player infected by the Parasite kills themselves:
+                                <ol start="0">
+                                    <li>Do nothing.</li>
+                                    <li>Respawn the Parasite.</li>
+                                    <li>Respawn the Parasite only if the infected player killed themselves with a console command like "kill".
+                                    </li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_infection_time</td>
+                            <td>45</td>
+                            <td>Integer</td>
+                            <td>The time it takes in seconds for the Parasite to fully infect someone.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_infection_transfer</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Parasite's infection will transfer if the Parasite's killer is killed by another player.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_infection_transfer_reset</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Parasite's infection progress will reset if their infection is transferred to another player.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_infection_warning_time</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The time in seconds after infection to warn the victim with an ambiguous message. <i>(Set to 0 to disable.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_is_monster</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Parasite should be treated as a member of the monster team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_respawn_health</td>
+                            <td>100</td>
+                            <td>Integer</td>
+                            <td>The health on which the Parasite respawns.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_parasite_respawn_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>The way in which the Parasite respawns:
+                                <ol start="0">
+                                    <li>Take over host.</li>
+                                    <li>Respawn at the Parasite's body.</li>
+                                    <li>Respawn at a random location.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_phantom_parasite</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether only a single Phantom or Parasite should spawn in a round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_phantom_parasite_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a Phantom should have an opportunity to spawn instead of a Parasite. <i>(e.g. 0.7 = 70% chance for Phantom, 30% chance for Parasite. Requires <code>ttt_single_phantom_parasite</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -73,9 +669,149 @@
             <button class="header" style="background-color:var(--special-traitor);"><i class="icon-quack"></i>Quack</button>
             <div class="content">
                 <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-quack"></i><a href="#quack">Quack</a></span> can buy healing items and fake healing items that actually kill players.</p>
+                <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-quack"></i><a href="#quack">Quack</a></span> can buy healing items and fake healing items that kill players instead of healing them.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>The Quack has access to a shop where they can buy real and fake versions of the health station and the parasite cure. However, if the <code>ttt_quack_shop_sync</code> ConVar is enabled the Quack will also have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <p>The fake health station available to the Quack is a bomb that detonates whenever a non-<span style="color:var(--traitor);">traitor</span> tries to use it. If <code>ttt_quack_station_bomb</code> is enabled, the Quack will also be able to buy a station bomb which can convert pre-existing health stations into bombs.</p>
+                    <p>The fake parasite cure will do nothing by default, but can be configured to either killer the player who the cure is used on or the player who used the cure with <code>ttt_quack_fake_cure_mode</code> as detailed in the ConVars table below.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_quack_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Quack should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_quack_fake_cure_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>How to handle using a fake parasite cure on someone who is not infected:
+                                <ol start="0">
+                                    <li>Kill nobody, but use up the cure.</li>
+                                    <li>Kill the person who uses the cure.</li>
+                                    <li>Kill the person the cure is used on.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_quack_fake_cure_time</td>
+                            <td>-1</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the fake parasite cure takes to use. <i>(Set to -1 to use the same time as <code>ttt_parasite_cure_time</code>.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_quack_phantom_cure</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether to allow the Quack to buy the phantom exorcism device which can remove a haunting Phantom. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_quack_station_bomb</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Quack should be able to buy a device which converts a health station to a bomb station.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_quack_station_bomb_time</td>
+                            <td>4</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the station bomb takes to plant.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_doctor_quack</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether only a single Doctor or Quack should spawn in a round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_single_doctor_quack_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a Doctor should have an opportunity to spawn instead of a Quack. <i>(e.g. 0.7 = 70% chance for Doctor, 30% chance for Quack. Requires <code>ttt_single_doctor_quack</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
+            </div>
+        </div>
+        <div id="spy" class="collapsible">
+            <button class="header" style="background-color:var(--special-traitor);"><i class="icon-spy"></i>Spy</button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-spy"></i><a href="#spy">Spy</a></span> steals the name and player model of players they kill.</p>
+                <div class="expansion">
+                    <p>By default, the Spy is given a flare gun as part of their loadout which can be used to burn bodies but this can be disabled via the <code>ttt_spy_flare_gun_loadout</code> ConVar.</p>
+                    <p>When <code>ttt_spy_flare_gun_shop</code> is enabled, the Spy can buy a flare gun from their shop. They will only be able to buy one flare gun each round unless <code>ttt_spy_flare_gun_shop_rebuyable</code> is also enabled.</p>
+                    <p>When killing a player, the Spy will steal both their name and player model, however these can each be individually disabled by disabling <code>ttt_spy_steal_name</code> or <code>ttt_spy_steal_model</code> respectively.</p>
+                    <p>When the Spy steals another player's model their first-person hands will switch to that of the stolen player model and they will receive an alert to remind them that they have switched player model. These can both be disabled individually by disabling <code>ttt_spy_steal_model_hands</code> or <code>ttt_spy_steal_model_alert</code> respectively.</p>
+                    <p>The Spy has access to a shop containing a small handful of useful items. However, if the <code>ttt_spy_shop_sync</code> ConVar is enabled the Spy will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_spy_flare_gun_loadout</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Spy should have a flare gun given to them when they spawn. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_spy_flare_gun_shop</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Spy should have a flare gun be purchasable in the shop. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_spy_flare_gun_shop_rebuyable</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Spy should be able to purchase the flare gun multiple times. <i>(requires <code>ttt_spy_flare_gun_shop</code> to be enabled. Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_spy_steal_model</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Spy should change to the victim's playermodel after killing a player.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_spy_steal_model_alert</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Spy should see an alert message displaying who they are disguised as after killing a player.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_spy_steal_model_hands</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Spy should change to the victim's playermodel's 1st-person hands after killing a player.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_spy_steal_name</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Spy should change to the victim's name after killing a player. <i>(When other players look at the Spy and see their info under the crosshair.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
@@ -83,22 +819,214 @@
             <button class="header" style="background-image:linear-gradient(110deg, var(--special-traitor) 0%, var(--special-traitor) 70%, var(--independent) 70%, var(--independent) 85%, var(--monster) 85%, var(--monster) 100%);"><i class="icon-vampire"></i>Vampire</button>
             <div class="content">
                 <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="#vampire">Vampire</a></span> can drain players and bodies of blood to heal.</p>
+                <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="#vampire">Vampire</a></span> can drain players and bodies of blood to heal, leaving only a pile of bones behind as evidence.</p>
                 <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <p>The Vampire is given fangs as part of their loadout. These can be used to drain players and bodies of blood and also to temporarily turn invisible and gain a speed boost.</p>
+                    <p>By default, Vampires are only able to drain dead bodies but enabling <code>ttt_vampire_drain_enabled</code> will allow living players to be drained as well.</p>
+                    <p>While a living player is being drained they are frozen in place, but will still be able to talk unless <code>ttt_vampire_drain_mute_target</code> is enabled. If the Vampire dies or releases early when draining a target, the target will remain frozen for a short duration determined by <code>ttt_vampire_fang_unfreeze_delay</code>.</p>
+                    <p>Draining players or bodies will not only heal the Vampire, it will also allow the Vampire to go above their maximum health value up to a higher maximum determined by <code>ttt_vampire_fang_overheal</code> and <code>ttt_vampire_fang_overheal_living</code> as detailed in the ConVars table below.</p>
+                    <p>Vampire's can optionally convert other players into Vampire thralls with their fangs if <code>ttt_vampire_convert_enabled</code> is enabled. While draining their target of blood they can release early to convert their target into a Vampire thrall instead of killing them. If <code>ttt_vampire_drain_first</code> is enabled, releasing early will kill the target and the full duration of the drain is needed to covert players into Vampire thralls instead.</p>
+                    <p>Any Vampire that spawns into a round at the beginning is known as a prime Vampire. Prime Vampires are special compared to Vampire thralls (the Vampires created by the prime), in that by default only the Prime vampire can convert other player into Vampire thralls. This behaviour can be disabled via the <code>ttt_vampire_prime_only_convert</code> ConVar. Furthermore, the prime Vampire can have an extra hold over their thralls, preventing or reflecting friendly fire, and killing or releasing their thralls in the event of the prime Vampire's death. Both of these options are disabled by default but can be configured with <code>ttt_vampire_prime_friendly_fire</code> and <code>ttt_vampire_prime_death_mode</code> as detailed in the ConVars table below.</p>
+                    <p>The Vampire has access to a shop containing a small handful of useful items. However, if the <code>ttt_vampire_shop_sync</code> ConVar is enabled the Vampire will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <p>The Vampire can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html.html">independent</a></span> or part of the <span style="color:var(--monster)"><a href="../teams/monster.html">monster team</a></span> instead of being a traitor by enabling <code>ttt_vampire_is_independent</code> or <code>ttt_vampire_is_monster</code> respectively.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_vampire_can_see_jesters</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to Vampires. <i>(Requires <code>ttt_vampire_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_convert_enabled</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Vampires have the ability to convert living targets to a Vampire thrall using their fangs.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_credits_award_pct</td>
+                            <td>0.35</td>
+                            <td>Float (0-1)</td>
+                            <td>When this percentage of non-vampire ally, non-jester players are dead, Vampires are awarded a number of credits equal to <code>ttt_vampire_credits_award_size</code>. <i>(Requires <code>ttt_vampire_is_independent</code> or <code>ttt_vampire_is_monster</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_credits_award_repeat</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the credit award determined by <code>ttt_vampire_credits_award_pct</code> and <code>ttt_vampire_credits_award_size</code> is handed out multiple times. <i>(e.g. If <code>ttt_vampire_credits_award_pct</code> is 0.25, Vampires will be awarded credits at 25% killed, 50% killed, and 75% killed. Requires <code>ttt_vampire_is_independent</code> or <code>ttt_vampire_is_monster</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_credits_award_size</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits awarded to Vampires when the percentage determined by <code>ttt_vampire_credits_award_pct</code> of non-vampire ally, non-jester players are dead. <i>(Requires <code>ttt_vampire_is_independent</code> or <code>ttt_vampire_is_monster</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Vampire should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_damage_reduction</td>
+                            <td>0</td>
+                            <td>Float (0-1)</td>
+                            <td>The fraction an attacker's bullet damage will be reduced by when they are shooting a Vampire. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_drain_credits</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>How many credits a Vampire should get for draining a living target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_drain_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether Vampires have the ability to drain a living target's blood using their fangs.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_drain_first</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Vampires should drain a living target's blood first rather than converting first.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_drain_mute_target</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether players being drained by a Vampire should be muted.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_fang_dead_timer</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The amount of time fangs must be used to fully drain a dead target's blood. <i>(Set to 0 to use the same time as <code>ttt_vampire_fang_timer</code>.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_fang_heal</td>
+                            <td>50</td>
+                            <td>Integer</td>
+                            <td>The amount of health a Vampire will heal by when they fully drain a target's blood.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_fang_overheal</td>
+                            <td>25</td>
+                            <td>Integer</td>
+                            <td>The amount over the Vampire's normal maximum health that the Vampire can heal to by drinking blood.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_fang_overheal_living</td>
+                            <td>-1</td>
+                            <td>Integer</td>
+                            <td>The amount over the Vampire's normal maximum health that the Vampire can heal to by drinking blood from living players. <i>(Set to -1 to use the same amount as <code>ttt_vampire_fang_overheal</code> instead.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_fang_timer</td>
+                            <td>5</td>
+                            <td>Integer</td>
+                            <td>The amount of time fangs must be used to fully drain a target's blood.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_fang_unfreeze_delay</td>
+                            <td>2</td>
+                            <td>Integer</td>
+                            <td>The number of seconds before players who were frozen in place by the fangs should be released if the Vampire stops using the fangs on them.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_is_independent</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Vampires should be treated as members of the independent team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_is_monster</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Vampires should be treated as members of the monster team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_kill_credits</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether Vampires receive credits when they kill other players. <i>(Requires <code>ttt_vampire_is_independent</code> or <code>ttt_vampire_is_monster</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_loot_credits</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Vampire can loot credits from a dead player.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_prime_death_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>What to do when the prime Vampire(s) are killed:
+                                <ol start="0">
+                                    <li>Do nothing.</li>
+                                    <li>Kill all Vampire thralls.</li>
+                                    <li>Revert all Vampire thralls to their original role.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_prime_friendly_fire</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>How to handle friendly fire damage to the prime Vampire(s) from their thralls:
+                                <ol start="0">
+                                    <li>Do nothing.</li>
+                                    <li>Reflect damage back to the attacker.</li>
+                                    <li>Negate damage to the prime Vampire.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_prime_only_convert</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether only prime Vampires are allowed to convert other players.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_show_target_icon</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Vampires have an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_update_scoreboard</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether Vampires show dead players as missing in action <i>(Requires <code>ttt_vampire_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_vision_enabled</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Vampires have their special vision highlights enabled.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
             </div>
         </div>
-        <div class="collapsible">
-            <button class="header" style="background-color:var(--special-traitor);"><i class="icon-team"></i>Configurable Traitors</button>
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:var(--special-traitor);"><i class="icon-team"></i>Configurable Traitors</button>
             <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The following roles can be configured to be part of the <span style="color:var(--special-traitor);">traitor team</span> instead of their default team: <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span>.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
+                <p>The following roles can be configured to be part of the <span style="color:var(--traitor);">traitor team</span> instead of their default team: <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span>.</p>
             </div>
         </div>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 </html>

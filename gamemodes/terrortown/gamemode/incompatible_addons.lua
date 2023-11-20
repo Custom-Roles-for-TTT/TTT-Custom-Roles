@@ -47,6 +47,7 @@ local incompatible = {
     ["367945571"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT: Advanced Body Search
     ["2520210407"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT Weapon Balance by Emzatin.
     ["1848007854"] = { reason = "Overwrites the DNA scanner code which breaks Custom Roles for TTT features."}, -- TTT - DNA Scanner Model Version (BackStabber) by Kobra
+    ["404599106"] = { reason = "Overwrites core functions required for Custom Roles for TTT" }, -- TTT Spectator Deathmatch by P4sca1
 
     -- Damage Logs
     ["663328966"] = { reason = "Damage logs are not compatible with any non-default roles.", alt = "2306802961" }, -- TTT RDM Manager With Damage Logs by Schmatty
@@ -69,7 +70,7 @@ local incompatible = {
     ["305575144"] = { reason = "Death messages are included in Custom Roles for TTT." }, -- TTT Kill reveal / Kill notifier with colors by Thomads
 
     -- Miscellaneous
-    ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook." }, -- Avengers RandoMat Event by Jenssons
+    ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook.", alt = "3052896263" }, -- Avengers RandoMat Event by Jenssons
     ["2209392671"] = { reason = "Breaks the weapon switch HUD (and possibly others)."} -- TTT SimpleHUD by Suphax
 }
 

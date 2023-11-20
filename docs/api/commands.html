@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - Commands</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Commands</h1>
-
-        <h2><a id="client-commands" href="#client-commands"><em>Client Commands</em></a></h2>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="client-commands" href="#client-commands">Client Commands</a></h2>
 
         <h3><a id="ttt_reset_weapons_cache" href="#ttt_reset_weapons_cache">ttt_reset_weapons_cache</a></h3>
         <p>
@@ -18,7 +24,40 @@
             <em>Added in</em>: 1.0.11
         </p>
 
-        <h2 style="margin-top: 43px;"><a id="server-commands" href="#server-commands"><em>Server Commands</em></a></h2>
+        <h3><a id="ttt_roleweapons" href="#ttt_roleweapons">ttt_roleweapons</a></h3>
+        <p>Allows for viewing and editing which weapons are available in each role's shop.<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li>
+                <em>command</em> - Which command should be run <em>(Added in 1.9.4)</em>
+                <ul>
+                    <li><em>open (aka show)</em> - Opens the configuration UI. See <a href="../tutorials/configuring_role_weapons.html#configuration-by-ui" target="_blank">this tutorial</a> for how to use the UI. (This command is the default if no parameter is provided)</li>
+                    <li><em>list (aka print)</em> - Prints the current configuration in the server console, highlighting anything invalid</li>
+                    <li><em>clean</em> - Removes any invalid configurations. WARNING: This CANNOT be undone!</li>
+                    <li><em>reload</em> - Reloads the configurations from the server's filesystem</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2><a id="server-commands" href="#server-commands">Server Commands</a></h2>
+
+        <h3><a id="sv_ttt_roleweapons" href="#sv_ttt_roleweapons">sv_ttt_roleweapons</a></h3>
+        <p>Allows for viewing and editing which weapons are available in each role's shop. Server-side version of <a href="#ttt_roleweapons">ttt_roleweapons</a>.<br>
+            <em>Added in:</em> 1.9.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li>
+                <em>command</em> - Which command should be run
+                <ul>
+                    <li><em>list (aka print)</em> - Prints the current configuration in the console, highlighting anything invalid</li>
+                    <li><em>clean</em> - Removes any invalid configurations. WARNING: This CANNOT be undone!</li>
+                    <li><em>reload</em> - Reloads the configurations from the filesystem</li>
+                </ul>
+            </li>
+        </ul>
 
         <h3><a id="ttt_damage_from_random" href="#ttt_damage_from_random">ttt_damage_from_random</a></h3>
         <p>
@@ -127,5 +166,6 @@
             <li><em>order</em> - The weapon class string or equipment ID number to be ordered</li>
         </ul>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

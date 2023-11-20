@@ -1,6 +1,14 @@
 local hook = hook
 local net = net
 
+-------------
+-- CONVARS --
+-------------
+
+local swapper_killer_health = GetConVar("ttt_swapper_killer_health")
+local swapper_healthstation_reduce_max = GetConVar("ttt_swapper_healthstation_reduce_max")
+
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -72,8 +80,12 @@ hook.Add("TTTTutorialRoleText", "Swapper_TTTTutorialRoleText", function(role, ti
 
         html = html .. "<span style='display: block; margin-top: 10px;'>After <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>swapping</span>, they take over the goal of their new role.</span>"
 
-        if GetGlobalInt("ttt_swapper_killer_health", 100) > 0 then
+        if swapper_killer_health:GetInt() > 0 then
             html = html .. "<span style='display: block; margin-top: 10px;'>Be careful, the player who <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>kills the " .. ROLE_STRINGS[ROLE_SWAPPER] .."</span> then <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>becomes the " .. ROLE_STRINGS[ROLE_SWAPPER] .."</span>. Make sure to not kill them back!</span>"
+        end
+
+        if swapper_healthstation_reduce_max:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_SWAPPER] .. " uses a health station, their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>maximum health is reduced</span> toward their current health instead of them being healed.</span>"
         end
 
         return html

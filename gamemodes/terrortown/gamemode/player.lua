@@ -46,15 +46,10 @@ function GM:PlayerInitialSpawn(ply)
         SendAllLists(ply)
     end
 
-
-    if ply:IsBot() then
-        ply:SetNWString("BotSteamID64", ply:SteamID64())
-
-        -- Handle spec bots
-        if GetConVar("ttt_bots_are_spectators"):GetBool() then
-            ply:SetTeam(TEAM_SPEC)
-            ply:SetForceSpec(true)
-        end
+    -- Handle spec bots
+    if ply:IsBot() and GetConVar("ttt_bots_are_spectators"):GetBool() then
+        ply:SetTeam(TEAM_SPEC)
+        ply:SetForceSpec(true)
     end
 end
 
@@ -80,7 +75,7 @@ function GM:PlayerSpawn(ply)
     -- Clear out stuff like whether we ordered guns or what bomb code we used
     ply:ResetRoundFlags()
 
-    -- latejoiner, send him some info
+    -- latejoiner, send them some info
     if GetRoundState() == ROUND_ACTIVE then
         SendRoundState(GetRoundState(), ply)
     end
@@ -508,9 +503,11 @@ end
 concommand.Add("ttt_spec_use", SpecUseKey)
 
 function GM:PlayerDisconnected(ply)
-    -- Prevent the disconnecter from being in the resends
     if IsValid(ply) then
+        -- Prevent the disconnecter from being in the resends
         ply:SetRole(ROLE_NONE)
+        -- And clear their message queue
+        ply:ResetMessageQueue()
     end
 
     if GetRoundState() ~= ROUND_PREP then
@@ -646,7 +643,7 @@ local function CheckCreditAward(victim, attacker)
                     if CallHook("TTTRewardTraitorInnocentDeath", nil, p, victim, attacker, amt) then
                         return false
                     end
-                    if p:Alive() and not p:IsSpec() and p:IsTraitorTeam() and p:IsShopRole() then
+                    if p:IsActiveTraitorTeam() and p:IsShopRole() then
                         return not p:IsVampire() or vampire_kill_credits
                     end
                     return false
@@ -858,8 +855,8 @@ function GM:SpectatorThink(ply)
 
         -- After first click, go into chase cam, then after another click, to into
         -- roam. If no clicks made, go into chase after X secs, and roam after Y.
-        -- Don't switch for a second in case the player was shooting when he died,
-        -- this would make him accidentally switch out of ragdoll cam.
+        -- Don't switch for a second in case the player was shooting when they died,
+        -- this would make them accidentally switch out of ragdoll cam.
 
         local m = ply:GetObserverMode()
         if (m == OBS_MODE_CHASE and clicked) or elapsed > to_roam then
@@ -1078,7 +1075,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
     elseif ent:IsExplosive() then
         -- When a barrel hits a player, that player damages the barrel because
         -- Source physics. This gives stupid results like a player who gets hit
-        -- with a barrel being blamed for killing himself or even his attacker.
+        -- with a barrel being blamed for killing himself or even their attacker.
         if IsPlayer(att) and
                 dmginfo:IsDamageType(DMG_CRUSH) and
                 IsValid(ent:GetPhysicsAttacker()) then
@@ -1364,7 +1361,7 @@ end
 local function GetTargetPlayerByName(name, allow_dead)
     name = string.lower(name)
     for _, v in RandomPairs(GetAllPlayers()) do
-        if IsValid(v) and (allow_dead or (v:Alive() and not v:IsSpec())) and string.lower(v:Nick()) == name then
+        if IsValid(v) and (allow_dead or v:IsActive()) and string.lower(v:Nick()) == name then
             return v
         end
     end
@@ -1372,7 +1369,7 @@ end
 
 local function GetRandomTargetPlayer(ply, allow_dead)
     for _, v in RandomPairs(GetAllPlayers()) do
-        if IsValid(v) and (allow_dead or (v:Alive() and not v:IsSpec())) and v ~= ply and not v:ShouldActLikeJester() then
+        if IsValid(v) and (allow_dead or v:IsActive()) and v ~= ply and not v:ShouldActLikeJester() then
             return v
         end
     end

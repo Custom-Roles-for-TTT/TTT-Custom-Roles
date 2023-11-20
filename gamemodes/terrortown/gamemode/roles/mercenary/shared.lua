@@ -4,6 +4,8 @@ local hook = hook
 
 -- Initialize role features
 ROLE_STARTING_CREDITS[ROLE_MERCENARY] = 1
+ROLE_HAS_SHOP_MODE[ROLE_MERCENARY] = true
+
 local function InitializeEquipment()
     if EquipmentItems then
         if not EquipmentItems[ROLE_MERCENARY] then
@@ -62,3 +64,10 @@ end)
 hook.Add("TTTPrepareRound", "Mercenary_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
+
+-------------
+-- CONVARS --
+-------------
+
+-- Create this here since it has a different default value
+CreateConVar("ttt_mercenary_shop_mode", "2", FCVAR_REPLICATED)

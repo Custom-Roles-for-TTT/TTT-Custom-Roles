@@ -2,14 +2,12 @@ AddCSLuaFile()
 
 local hook = hook
 local net = net
-local pairs = pairs
 local player = player
 local resource = resource
 local table = table
 local util = util
 
-local GetAllPlayers = player.GetAll
-
+util.AddNetworkString("TTT_ClownTeamChange")
 util.AddNetworkString("TTT_ClownActivate")
 
 resource.AddSingleFile("sound/clown.wav")
@@ -18,19 +16,12 @@ resource.AddSingleFile("sound/clown.wav")
 -- CONVARS --
 -------------
 
-local clown_damage_bonus = CreateConVar("ttt_clown_damage_bonus", "0", FCVAR_NONE, "Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)", 0, 1)
 local clown_activation_credits = CreateConVar("ttt_clown_activation_credits", "0", FCVAR_NONE, "The number of credits to give the clown when they are activated", 0, 10)
-local clown_hide_when_active = CreateConVar("ttt_clown_hide_when_active", "0")
-local clown_use_traps_when_active = CreateConVar("ttt_clown_use_traps_when_active", "0")
-local clown_show_target_icon = CreateConVar("ttt_clown_show_target_icon", "0")
-local clown_heal_on_activate = CreateConVar("ttt_clown_heal_on_activate", "0")
-local clown_heal_bonus = CreateConVar("ttt_clown_heal_bonus", "0", FCVAR_NONE, "The amount of bonus health to give the clown if they are healed when they are activated", 0, 100)
 
-hook.Add("TTTSyncGlobals", "Clown_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_clown_show_target_icon", clown_show_target_icon:GetBool())
-    SetGlobalBool("ttt_clown_hide_when_active", clown_hide_when_active:GetBool())
-    SetGlobalBool("ttt_clown_use_traps_when_active", clown_use_traps_when_active:GetBool())
-end)
+local clown_use_traps_when_active = GetConVar("ttt_clown_use_traps_when_active")
+local clown_heal_on_activate = GetConVar("ttt_clown_heal_on_activate")
+local clown_heal_bonus = GetConVar("ttt_clown_heal_bonus")
+local clown_damage_bonus = GetConVar("ttt_clown_damage_bonus")
 
 ----------------
 -- WIN CHECKS --
@@ -44,9 +35,8 @@ local function HandleClownWinBlock(win_type)
 
     local killer_clown_active = clown:IsRoleActive()
     if not killer_clown_active then
-        clown:SetNWBool("KillerClownActive", true)
-        clown:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
-        clown:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
+        SetClownTeam(true)
+        clown:QueueMessage(MSG_PRINTBOTH, "KILL THEM ALL!")
         clown:AddCredits(clown_activation_credits:GetInt())
         if clown_heal_on_activate:GetBool() then
             local heal_bonus = clown_heal_bonus:GetInt()
@@ -69,14 +59,23 @@ local function HandleClownWinBlock(win_type)
         end
 
         -- Enable traitor buttons for them, if that's enabled
-        TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = GetGlobalBool("ttt_clown_use_traps_when_active", false)
+        TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = clown_use_traps_when_active:GetBool()
 
         return WIN_NONE
     end
 
-    -- Clown wins if they are the only one left
-    local traitor_alive, innocent_alive, indep_alive, monster_alive, _ = player.AreTeamsLiving(true)
-    if not traitor_alive and not innocent_alive and not monster_alive and not indep_alive then
+    local traitor_alive, innocent_alive, indep_alive, monster_alive, _ = player.TeamLivingCount(true)
+    -- If there are independents alive, check if any of them are non-clowns
+    if indep_alive > 0 then
+        player.ExecuteAgainstTeamPlayers(ROLE_TEAM_INDEPENDENT, true, true, function(ply)
+            if ply:IsClown() then
+                indep_alive = indep_alive - 1
+            end
+        end)
+    end
+
+    -- Clown wins if they are the only role left
+    if traitor_alive <= 0 and innocent_alive <= 0 and monster_alive <= 0 and indep_alive <= 0 then
         return WIN_CLOWN
     end
 
@@ -108,17 +107,9 @@ end)
 -- ROLE TRACKING --
 -------------------
 
--- Disable tracking that this player was is the active clown at the start of a new round or if their role changes
+-- Disable tracking that clown was active at the start of a new round
 hook.Add("TTTPrepareRound", "Clown_PrepareRound", function()
-    for _, v in pairs(GetAllPlayers()) do
-        v:SetNWBool("KillerClownActive", false)
-    end
-end)
-
-hook.Add("TTTPlayerRoleChanged", "Clown_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole == ROLE_CLOWN then
-        ply:SetNWBool("KillerClownActive", false)
-    end
+    SetClownTeam(false)
 end)
 
 ------------
@@ -127,13 +118,13 @@ end)
 
 -- Scale a clown's damage
 hook.Add("ScalePlayerDamage", "Clown_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
-    local att = dmginfo:GetAttacker()
     -- Only apply damage scaling after the round starts
-    if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
-        -- Clowns deal extra damage when they are active
-        if att:IsClown() and att:IsRoleActive() then
-            local bonus = clown_damage_bonus:GetFloat()
-            dmginfo:ScaleDamage(1 + bonus)
-        end
-    end
+    if GetRoundState() < ROUND_ACTIVE then return end
+
+    local att = dmginfo:GetAttacker()
+    -- Clowns deal extra damage when they are active
+    if not IsPlayer(att) or not att:IsClown() or not att:IsRoleActive() then return end
+
+    local bonus = clown_damage_bonus:GetFloat()
+    dmginfo:ScaleDamage(1 + bonus)
 end)
