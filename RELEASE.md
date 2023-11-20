@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.0.0
-**Released:**\
+**Released: November 21st, 2023**\
 Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).
 
 ### Changes
@@ -43,7 +43,7 @@ Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).
 ### Fixes
 - Ported "TTT: Prevent error when NPC fires SWEP derived from weapon_tttbase" from base TTT
 - Fixed `ttt_monster_max` greater than 1 not working
-- Fixed infected player that is in the progress of respawning due dying while `ttt_infected_respawn_enabled` is enabled not counting as zombifying for the purposes of delaying the round end
+- Fixed infected player that is in the process of respawning due dying while `ttt_infected_respawn_enabled` is enabled not counting as zombifying for the purposes of delaying the round end
 - Fixed paramedic's defibrillator not changing detective-like roles not on the innocent or traitor teams to be their base role when resurrected
 
 ## 1.9.13 (Beta)
