@@ -8,6 +8,9 @@ Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).
 - Fixed various low-frequency errors by adding sanity checks
 - Fixed edge case errors when a role changes to independent part-way through the round but doesn't have certain independent-only convars created
 
+### Developer
+- Removed bot SteamID64 client-side shims now that the client-side values match the server-side
+
 ## 1.9.14 (Beta)
 **Released: November 11th, 2023**
 
