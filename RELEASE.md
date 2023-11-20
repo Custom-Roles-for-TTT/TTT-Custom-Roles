@@ -4,6 +4,9 @@
 **Released:**\
 Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).
 
+### Changes
+- Changed hive mind to be able to see jesters and that players are missing-in-action on the scoreboard by default
+
 ### Fixes
 - Fixed various low-frequency errors by adding sanity checks
 - Fixed edge case errors when a role changes to independent part-way through the round but doesn't have certain independent-only convars created
