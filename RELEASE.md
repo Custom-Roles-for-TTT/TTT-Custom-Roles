@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.0.0
-**Released:**\
+**Released: November 21st, 2023**\
 Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).
 
 ### Changes
