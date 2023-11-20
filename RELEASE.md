@@ -6,6 +6,7 @@ Includes beta updates [1.8.3](#193-beta) to [1.8.11](#1914-beta).
 
 ### Fixes
 - Fixed various low-frequency errors by adding sanity checks
+- Fixed edge case errors when a role changes to independent part-way through the round but doesn't have certain independent-only convars created
 
 ## 1.9.14 (Beta)
 **Released: November 11th, 2023**

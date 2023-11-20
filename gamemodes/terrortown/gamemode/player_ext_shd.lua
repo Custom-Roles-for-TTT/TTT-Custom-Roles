@@ -183,7 +183,7 @@ function plymeta:ShouldHideJesters()
     elseif self:IsMonsterTeam() then
         return not GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
     elseif self:IsIndependentTeam() then
-        return not GetConVar("ttt_" .. ROLE_STRINGS_RAW[self:GetRole()] .. "_can_see_jesters"):GetBool()
+        return not cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[self:GetRole()] .. "_can_see_jesters", false)
     end
     return true
 end
