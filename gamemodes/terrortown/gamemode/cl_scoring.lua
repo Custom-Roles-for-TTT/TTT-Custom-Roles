@@ -101,23 +101,6 @@ function CLSCORE:AddEvent(e, offset)
     table.insert(customEvents, e)
 end
 
-local function GetPlayerFromSteam64(id)
-    -- The first bot's ID is 90071996842377216 which translates to "STEAM_0:0:0", an 11-character string
-    -- At some point it becomes double digits at the end (e.g. "STEAM_0:0:10") so we check for 12 or fewer characters
-    -- A player's Steam ID cannot be that short, so if it is this must be a bot
-    local isBot = #util.SteamIDFrom64(id) <= 12
-    -- Bots cannot be retrieved by SteamID on the client so search by name instead
-    if isBot then
-        for _, p in pairs(player.GetAll()) do
-            if p:Nick() == CLSCORE.Players[id] then
-                return p
-            end
-        end
-    else
-        return player.GetBySteamID64(id)
-    end
-end
-
 local function FitNicknameLabel(nicklbl, maxwidth, getstring, args)
     local nickw, _ = nicklbl:GetSize()
     while nickw > maxwidth do
@@ -176,7 +159,7 @@ end)
 net.Receive("TTT_RoleChanged", function(len)
     local s64 = net.ReadString()
     local role = net.ReadInt(8)
-    local ply = GetPlayerFromSteam64(s64)
+    local ply = player.GetBySteamID64(s64)
     local name = "UNKNOWN"
     if IsValid(ply) then
         name = ply:Nick()
@@ -545,7 +528,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
             end
 
             if foundPlayer then
-                local ply = GetPlayerFromSteam64(id)
+                local ply = player.GetBySteamID64(id)
 
                 -- Backup in case people disconnect and we cant check their role at the end of the round
                 local startingRole = s.role
@@ -948,7 +931,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
     local playerInfo = {}
     for id, nick in pairs(self.Players) do
         local role = self.Roles[GetRoleId(id)]
-        local ply = GetPlayerFromSteam64(id)
+        local ply = player.GetBySteamID64(id)
         -- If the player disconnected, use their starting role
         if IsValid(ply) then
             role = ply:GetRole()

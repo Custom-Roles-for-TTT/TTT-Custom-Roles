@@ -58,6 +58,9 @@ table.insert(ROLE_CONVARS[ROLE_HIVEMIND], {
 -- ROLE FEATURES --
 -------------------
 
+ROLE_CAN_SEE_JESTERS[ROLE_HIVEMIND] = true
+ROLE_CAN_SEE_MIA[ROLE_HIVEMIND] = true
+
 ROLE_VICTIM_CHANGING_ROLE[ROLE_HIVEMIND] = function(ply, victim)
     return not victim:IsHiveMind()
 end

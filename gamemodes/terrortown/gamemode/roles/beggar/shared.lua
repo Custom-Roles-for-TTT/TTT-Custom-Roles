@@ -44,7 +44,7 @@ function plymeta:ShouldRevealBeggar(tgt)
     local traitorTeam = self:IsTraitorTeam() and (beggarMode == BEGGAR_REVEAL_TRAITORS or beggarMode == BEGGAR_REVEAL_ROLES_THAT_CAN_SEE_JESTER)
     local innocentTeam = self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS
     local monsterTeam = self:IsMonsterTeam() and beggarMode == BEGGAR_REVEAL_ROLES_THAT_CAN_SEE_JESTER
-    local indepTeam = self:IsIndependentTeam() and beggarMode == BEGGAR_REVEAL_ROLES_THAT_CAN_SEE_JESTER and GetConVar("ttt_" .. ROLE_STRINGS_RAW[self:GetRole()] .. "_can_see_jesters"):GetBool()
+    local indepTeam = self:IsIndependentTeam() and beggarMode == BEGGAR_REVEAL_ROLES_THAT_CAN_SEE_JESTER and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[self:GetRole()] .. "_can_see_jesters", false)
 
     -- Check the setting value and whether the client's team matches the reveal mode
     return beggarMode == BEGGAR_REVEAL_ALL or traitorTeam or innocentTeam or monsterTeam or indepTeam

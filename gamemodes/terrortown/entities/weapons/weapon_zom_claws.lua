@@ -82,6 +82,11 @@ end
 function SWEP:SetWeaponHoldType(t)
     self.BaseClass.SetWeaponHoldType(self, t)
 
+    -- Sanity check, this should have been set up by the BaseClass.SetWeaponHoldType call above
+    if not self.ActivityTranslate then
+        self.ActivityTranslate = {}
+    end
+
     self.ActivityTranslate[ACT_MP_STAND_IDLE]                  = ACT_HL2MP_IDLE_ZOMBIE
     self.ActivityTranslate[ACT_MP_WALK]                        = ACT_HL2MP_WALK_ZOMBIE_01
     self.ActivityTranslate[ACT_MP_RUN]                         = ACT_HL2MP_RUN_ZOMBIE
