@@ -2,7 +2,7 @@
 
 ## 2.0.0
 **Released:**\
-Includes beta updates [1.8.3](#193-beta) to [1.8.11](#1914-beta).
+Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).
 
 ### Fixes
 - Fixed various low-frequency errors by adding sanity checks
