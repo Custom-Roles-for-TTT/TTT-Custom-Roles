@@ -3,6 +3,9 @@
 ## 2.0.1 (Beta)
 **Released:**
 
+### Changes
+- Changed zombie claw HUD hint to not mention features that are disabled
+
 ### Developer
 - Added `TTTDetectiveLikePromoted` hook to detect when a detective-like (deputy, impersonator, etc.) player is promoted
 - Fixed `plymeta:HandleDetectiveLikePromotion` existing on the client side when it should not have
