@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.0.1 (Beta)
+**Released:**
+
+### Developer
+- Added `TTTDetectiveLikePromoted` hook to detect when a detective-like (deputy, impersonator, etc.) player is promoted
+- Fixed `plymeta:HandleDetectiveLikePromotion` existing on the client side when it should not have
+
 ## 2.0.0
 **Released: November 21st, 2023**\
 Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).
