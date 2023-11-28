@@ -46,6 +46,8 @@ function resizeIframe(obj) {
 
 var naviframe = document.getElementById("nav");
 window.onresize = function() {
+    if (!naviframe) return;
+
     var innerdoc = naviframe.contentDocument || naviframe.contentWindow.document;
     var navdiv = innerdoc.getElementById("navwrapper");
     naviframe.style.height = navdiv.clientHeight + 'px';
