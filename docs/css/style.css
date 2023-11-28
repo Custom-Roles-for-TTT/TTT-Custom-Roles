@@ -303,3 +303,24 @@ code {
         padding-right: 24px;
     }
 }
+
+#betaswitch {
+    font-size: 0.5em;
+    float: right;
+    top: 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+#betalabel {
+    color: yellow;
+    rotate: -30deg;
+    font-size: 0.75em;
+}
+
+h1 > #betalabel {
+    display: inline-block;
+    font-size: 0.5em;
+    top: -5px;
+    position: relative;
+}
