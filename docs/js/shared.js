@@ -1,5 +1,7 @@
 // COLLAPSABLE SECTIONS
 function expandContent(content, forceExpand = false) {
+    if (!content) return;
+
     var expansion = content.querySelector(".expansion");
     if (expansion) {
         var moreless = content.querySelector(".moreless");
