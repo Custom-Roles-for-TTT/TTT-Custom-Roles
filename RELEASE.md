@@ -6,6 +6,9 @@
 ### Changes
 - Changed zombie claw HUD hint to not mention features that are disabled
 
+### Fixes
+- Fixed players who swap roles with an activated vindicator not having their team set back to innocent
+
 ### Developer
 - Added `TTTDetectiveLikePromoted` hook to detect when a detective-like (deputy, impersonator, etc.) player is promoted
 - Fixed `plymeta:HandleDetectiveLikePromotion` existing on the client side when it should not have
