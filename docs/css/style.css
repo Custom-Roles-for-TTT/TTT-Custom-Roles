@@ -314,11 +314,14 @@ code {
 
 #betalabel {
     color: yellow;
-    rotate: -30deg;
-    font-size: 0.75em;
+    font-size: 0.5em;
+    position: absolute;
+    right: 12px;
+    top: 2px;
 }
 
 h1 > #betalabel {
+    rotate: -30deg;
     display: inline-block;
     font-size: 0.5em;
     top: -5px;
