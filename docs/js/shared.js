@@ -81,7 +81,7 @@ function isOnBeta() {
 var betaswitch = document.getElementById("betaswitch");
 if (betaswitch) {
     betaswitch.addEventListener("click", function(event) {
-        if (isOnBeta()) {
+        if (!isOnBeta()) {
             window.open(window.location.href.replace("TTT-Custom-Roles", "TTT-Custom-Roles-Beta"), "_blank")
         } else {
             window.open(window.location.href.replace("TTT-Custom-Roles-Beta", "TTT-Custom-Roles"), "_blank")
