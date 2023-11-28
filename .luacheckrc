@@ -790,7 +790,6 @@ globals = {
     "CR_BETA",
     "CR_VERSION",
     "CR_WORKSHOP_ID",
-    "DEATHRADAR",
     "DEFAULT_ROLES",
     "DELAYED_SHOP_ROLES",
     "DETECTIVE_LIKE_ROLES",
@@ -1102,7 +1101,8 @@ globals = {
     "UpdateRoleWeaponState",
 
     -- CR Namespaces
-    "CRHUD"
+    "CRHUD",
+    "DEATHRADAR"
 }
 std = {
     globals = {
