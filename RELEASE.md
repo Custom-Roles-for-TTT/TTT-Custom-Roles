@@ -3,6 +3,10 @@
 ## 2.0.1 (Beta)
 **Released:**
 
+### Additions
+- Added ability for the clown to be activated when a certain percentage of players are left alive, `ttt_clown_activation_pct` (disabled by default)
+  - This is in addition to activating when a team would win the round
+
 ### Changes
 - Changed zombie claw HUD hint to not mention features that are disabled
 
