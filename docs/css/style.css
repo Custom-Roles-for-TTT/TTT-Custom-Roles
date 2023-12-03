@@ -327,3 +327,65 @@ h1 > #betalabel {
     top: -5px;
     position: relative;
 }
+
+.betaonly {
+    background-image: url("../img/beta.svg");
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    font-size: 0.75em;
+    font-weight: lighter;
+}
+
+/* Tooltips */
+/* https://blog.logrocket.com/creating-beautiful-tooltips-with-only-css/ */
+
+.tooltip {
+    position: relative; /* making the .tooltip span a container for the tooltip text */
+}
+
+.tooltip:before {
+    content: attr(data-text); /* here's the magic */
+    position: absolute;
+    
+    /* vertically center */
+    top: 50%;
+    transform: translateY(-50%);
+    
+    /* move to right */
+    left: 100%;
+    margin-left: 15px; /* and add a small left margin */
+    
+    /* basic styles */
+    width: 100px;
+    padding: 8px;
+    border-radius: 10px;
+    background :#000;
+    color: #fff;
+    text-align: center;
+  
+    display: none; /* hide by default */
+}
+
+.tooltip:after {
+    content: "";
+    position: absolute;
+    
+    /* position tooltip correctly */
+    left: 100%;
+    margin-left: -1px;
+   
+    /* vertically center */
+    top: 50%;
+    transform: translateY(-50%);
+   
+    /* the arrow */
+    border: 8px solid #000;
+    border-color: transparent black transparent transparent;
+    
+    display: none;
+}
+
+.tooltip:hover:before, .tooltip:hover:after {
+    display: block;
+}

@@ -57,6 +57,8 @@ window.onresize = function() {
 var topbutton = document.getElementById("totop");
 
 window.onscroll = function() {
+    if (!topbutton) return;
+
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
         topbutton.style.display = "block";
     } else {
@@ -105,3 +107,15 @@ if (betalabel) {
         betalabel.style.display = "none";
     }
 }
+
+// Remove the betaonly elements if we're not on beta
+// betaonly looks like this:
+//   <span data-text="Beta Only" class="betaonly tooltip">&nbsp;</span>
+window.addEventListener("DOMContentLoaded", function() {
+    if (isOnBeta()) return;
+
+    var betaOnlyArr = document.getElementsByClassName("betaonly");
+    for (var betaOnly of betaOnlyArr) {
+        betaOnly.style.display = "none";
+    }
+});
