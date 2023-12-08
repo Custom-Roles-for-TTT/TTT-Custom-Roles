@@ -124,6 +124,10 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_radar_beep_sound_override",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_active_display",
     type = ROLE_CONVAR_TYPE_BOOL,
 })
