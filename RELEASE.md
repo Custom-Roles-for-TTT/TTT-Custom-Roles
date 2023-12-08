@@ -14,6 +14,8 @@
 ### Fixes
 - Fixed players who swap roles with an activated vindicator not having their team set back to innocent
 - Fixed an error in the shop if a weapon is somehow set up to be bought by a role that either doesn't exist or hasn't been set up properly
+- Fixed player seeing their own name in the credit transfer dropdown sometimes
+- Fixed all end-of-round awards regarding most used weapons not working
 
 ### Developer
 - Added `TTTDetectiveLikePromoted` hook to detect when a detective-like (deputy, impersonator, etc.) player is promoted
