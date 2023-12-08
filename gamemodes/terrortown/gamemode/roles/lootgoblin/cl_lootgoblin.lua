@@ -9,6 +9,10 @@ local MathMax = math.max
 local GetAllPlayers = player.GetAll
 local TableInsert = table.insert
 
+LOOTGOBLIN_RADAR_BEEP_OVERRIDE_NONE = 0
+LOOTGOBLIN_RADAR_BEEP_OVERRIDE_ON = 1
+LOOTGOBLIN_RADAR_BEEP_OVERRIDE_OFF = 2
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -50,7 +54,7 @@ local lootgoblin_radar_beep_sound_override = GetConVar("ttt_lootgoblin_radar_bee
 hook.Add("TTTSettingsRolesTabSections", "LootGoblin_TTTSettingsRolesTabSections", function(role, parentForm)
     if role ~= ROLE_LOOTGOBLIN then return end
     if not lootgoblin_radar_enabled:GetBool() then return end
-    if lootgoblin_radar_beep_sound_override:GetInt() ~= 0 then return end
+    if lootgoblin_radar_beep_sound_override:GetInt() ~= LOOTGOBLIN_RADAR_BEEP_OVERRIDE_NONE then return end
 
     parentForm:CheckBox(LANG.GetTranslation("lootgoblin_config_radar_sound"), "ttt_lootgoblin_radar_beep_sound")
     return true
@@ -93,7 +97,7 @@ local function SetLootGoblinPosition()
         for k, v in ipairs(GetAllPlayers()) do
             if v:IsActiveLootGoblin() and v:IsRoleActive() then
                 lootgoblins[k] = { pos = v:GetNWVector("TTTLootGoblinRadar", vector_origin) }
-                if cli:IsActive() and beepSoundOverride == 1 or (beepSoundOverride ~= 2 and lootgoblin_radar_beep_sound:GetBool()) then surface.PlaySound(beep_success) end
+                if cli:IsActive() and beepSoundOverride == LOOTGOBLIN_RADAR_BEEP_OVERRIDE_ON or (beepSoundOverride ~= LOOTGOBLIN_RADAR_BEEP_OVERRIDE_OFF and lootgoblin_radar_beep_sound:GetBool()) then surface.PlaySound(beep_success) end
             end
         end
     end
