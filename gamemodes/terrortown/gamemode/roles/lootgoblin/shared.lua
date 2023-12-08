@@ -25,6 +25,7 @@ CreateConVar("ttt_lootgoblin_announce", "4", FCVAR_REPLICATED, "The logic to use
 CreateConVar("ttt_lootgoblin_cackle_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_lootgoblin_jingle_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_lootgoblin_drop_timer", 0, FCVAR_REPLICATED, "How often (in seconds) the loot goblin should drop a piece of loot behind them",  0, 300)
+CreateConVar("ttt_lootgoblin_radar_beep_sound_override", 0, FCVAR_REPLICATED, "Forces all players to have the loot goblin radar sound on/off, 0 - let user decide, 1 - force on, 2 - force off", 0, 2)
 
 ROLE_CONVARS[ROLE_LOOTGOBLIN] = {}
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
@@ -121,6 +122,10 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_radar_delay",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_radar_beep_sound_override",
+    type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_active_display",
