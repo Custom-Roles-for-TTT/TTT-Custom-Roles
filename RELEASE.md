@@ -6,6 +6,7 @@
 ### Additions
 - Added ability for the clown to be activated when a certain percentage of players are left alive, `ttt_clown_activation_pct` (disabled by default)
   - This is in addition to activating when a team would win the round
+- Added ability to override the loot goblin's radar beep sound setting at the server level, `ttt_lootgoblin_radar_beep_sound_override` (disabled by default) (Thanks to The Stig!)
 
 ### Changes
 - Changed zombie claw HUD hint to not mention features that are disabled
