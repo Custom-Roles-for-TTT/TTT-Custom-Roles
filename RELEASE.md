@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.0.1 (Beta)
-**Released:**
+**Released: December 9th, 2023**
 
 ### Additions
 - Added ability for the clown to be activated when a certain percentage of players are left alive, `ttt_clown_activation_pct` (disabled by default)
