@@ -16,6 +16,8 @@
 - Fixed an error in the shop if a weapon is somehow set up to be bought by a role that either doesn't exist or hasn't been set up properly
 - Fixed player seeing their own name in the credit transfer dropdown sometimes
 - Fixed all end-of-round awards regarding most used weapons not working
+- Fixed spy not copying skin and bodygroups of the player they killed when `ttt_spy_steal_model` was enabled
+- Fixed spy not getting their own skin and bodygroups back at the end of the round when `ttt_spy_steal_model` was enabled
 
 ### Developer
 - Added `TTTDetectiveLikePromoted` hook to detect when a detective-like (deputy, impersonator, etc.) player is promoted
