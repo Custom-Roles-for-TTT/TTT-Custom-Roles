@@ -80,6 +80,13 @@ Called before the name and role of a player's killer is shown to the victim. Use
 - *killerName* - The new killerName value to use or the original passed into the hook
 - *role* - The new role value to use or the original passed into the hook. Use `ROLE_NONE` to hide the attacker's role from the victim
 
+### TTTDetectiveLikePromoted(ply)
+Called when a detective-like (deputy, impersonator, etc.) player is promoted.\
+*Realm:* Server\
+*Added in:* 2.0.1\
+*Parameters:*
+- *ply* - The detective-like player who was promoted
+
 ### TTTEventFinishText(e)
 Called before the event text for the "round finished" event is rendered in the end-of-round summary's Events tab.\
 *Realm:* Client\

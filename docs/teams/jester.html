@@ -15,7 +15,7 @@
     </div>
     <div class="contentheader panel" style="margin-bottom: 15px;">
         <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
-            <h1 style="background-color:var(--jester); margin-top: 0;">Jester Roles</h1>
+            <h1 style="background-color:var(--jester); margin-top: 0;">Jester Roles <span id="betaswitch"></span></h1>
             <div style="margin: 10px;">
                 <p><span style="color:var(--jester);">Jesters</span> have unique win conditions for each role, often focused on causing chaos and confusion. Typically, there are very few jesters in each round.</p>
                 <p>Jesters are not part of a team. Even if there are multiple different jesters in the same round, they will often be competing against each other either directly or indirectly.</p>
@@ -504,6 +504,12 @@
                             <td>The number of credits to give the Clown when they are activated.</td>
                         </tr>
                         <tr>
+                            <td>ttt_clown_activation_pct <span data-text="Beta Only" class="betaonly tooltip">&nbsp;</span></td>
+                            <td>0</td>
+                            <td>Float</td>
+                            <td>The percentage of players remaining before the clown is activated (e.g. 0.5 = 50% of players remain). Set to 0 to only activate when a team would win</td>
+                        </tr>
+                        <tr>
                             <td>ttt_clown_can_see_jesters</td>
                             <td>1</td>
                             <td>Boolean</td>
@@ -913,7 +919,7 @@
                             <td>The length of the delay in seconds before the Loot Goblin's health will start to regenerate.</td>
                         </tr>
                         <tr>
-                            <td>ttt_lootgoblin_radar_beep_sound_override</td>
+                            <td>ttt_lootgoblin_radar_beep_sound_override <span data-text="Beta Only" class="betaonly tooltip">&nbsp;</span></td>
                             <td>0</td>
                             <td>Integer</td>
                             <td>Forces all players to have the loot goblin radar sound on/off, 0 - let user decide, 1 - force on, 2 - force off.</td>

@@ -45,14 +45,28 @@ hook.Add("PlayerDeath", "Spy_PlayerDeath", function(victim, inflictor, attacker)
 
         -- Stealing model
         if stealModel then
-            local attackerID = attacker:SteamID64()
+            local attackerSid64 = attacker:SteamID64()
 
             -- If the spy hasn't swapped models yet, we need to store their original model
-            if not playerModels[attackerID] then
-                playerModels[attackerID] = attacker:GetModel()
+            if not playerModels[attackerSid64] then
+                playerModels[attackerSid64] = {
+                    model = attacker:GetModel(),
+                    skin = attacker:GetSkin(),
+                    bodygroups = {},
+                    color = attacker:GetColor()
+                }
+
+                for _, value in pairs(attacker:GetBodyGroups()) do
+                    playerModels[attackerSid64].bodygroups[value.id] = attacker:GetBodygroup(value.id)
+                end
             end
 
             SetMDL(attacker, victim:GetModel())
+            attacker:SetSkin(victim:GetSkin())
+            attacker:SetColor(victim:GetColor())
+            for _, value in pairs(victim:GetBodyGroups()) do
+                attacker:SetBodygroup(value.id, victim:GetBodygroup(value.id))
+            end
 
             -- Stealing 1st-person hands (There is no point in doing this if stealing model is not enabled)
             if stealHands then
@@ -82,10 +96,16 @@ end)
 hook.Add("TTTEndRound", "Spy_TTTEndRound", function()
     for _, ply in ipairs(GetAllPlayers()) do
         if ply:IsSpy() then
-            local plyID = ply:SteamID64()
+            local sid64 = ply:SteamID64()
 
-            if playerModels[plyID] then
-                SetMDL(ply, playerModels[plyID])
+            local playerModel = playerModels[sid64]
+            if playerModel then
+                SetMDL(ply, playerModel.model)
+                ply:SetSkin(playerModel.skin)
+                ply:SetColor(playerModel.color)
+                for id, value in pairs(playerModel.bodygroups) do
+                    ply:SetBodygroup(id, value)
+                end
             end
 
             timer.Simple(0.1, function()

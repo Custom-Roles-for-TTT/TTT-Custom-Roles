@@ -1,5 +1,7 @@
 // COLLAPSABLE SECTIONS
 function expandContent(content, forceExpand = false) {
+    if (!content) return;
+
     var expansion = content.querySelector(".expansion");
     if (expansion) {
         var moreless = content.querySelector(".moreless");
@@ -44,6 +46,8 @@ function resizeIframe(obj) {
 
 var naviframe = document.getElementById("nav");
 window.onresize = function() {
+    if (!naviframe) return;
+
     var innerdoc = naviframe.contentDocument || naviframe.contentWindow.document;
     var navdiv = innerdoc.getElementById("navwrapper");
     naviframe.style.height = navdiv.clientHeight + 'px';
@@ -53,6 +57,8 @@ window.onresize = function() {
 var topbutton = document.getElementById("totop");
 
 window.onscroll = function() {
+    if (!topbutton) return;
+
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
         topbutton.style.display = "block";
     } else {
@@ -64,3 +70,52 @@ function backToTop() {
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
+
+// BETA
+function isOnBeta() {
+    var host = window.location.host.split(".").slice(1).join(".");
+    if (host != "github.io") {
+        return true;
+    }
+
+    var path = window.location.pathname.split("/").find(s => s != "");
+    return path.endsWith("-Beta");
+}
+
+var betaswitch = document.getElementById("betaswitch");
+if (betaswitch) {
+    betaswitch.addEventListener("click", function(event) {
+        if (!isOnBeta()) {
+            window.open(window.location.href.replace("TTT-Custom-Roles", "TTT-Custom-Roles-Beta"), "_blank")
+        } else {
+            window.open(window.location.href.replace("TTT-Custom-Roles-Beta", "TTT-Custom-Roles"), "_blank")
+        }
+    });
+
+    window.addEventListener("DOMContentLoaded", function() {
+        if (isOnBeta()) {
+            betaswitch.innerText = "Switch to Release";
+        } else {
+            betaswitch.innerText = "Switch to Beta";
+        }
+    });
+}
+
+var betalabel = document.getElementById("betalabel");
+if (betalabel) {
+    if (!isOnBeta()) {
+        betalabel.style.display = "none";
+    }
+}
+
+// Remove the betaonly elements if we're not on beta
+// betaonly looks like this:
+//   <span data-text="Beta Only" class="betaonly tooltip">&nbsp;</span>
+window.addEventListener("DOMContentLoaded", function() {
+    if (isOnBeta()) return;
+
+    var betaOnlyArr = document.getElementsByClassName("betaonly");
+    for (var betaOnly of betaOnlyArr) {
+        betaOnly.style.display = "none";
+    }
+});

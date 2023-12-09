@@ -11,7 +11,7 @@ local GetAllPlayers = player.GetAll
 
 KARMA = {}
 
--- ply steamid -> karma table for disconnected players who might reconnect
+-- ply steamid64 -> karma table for disconnected players who might reconnect
 KARMA.RememberedPlayers = {}
 
 -- Convars, more convenient access than GetConVar bla bla

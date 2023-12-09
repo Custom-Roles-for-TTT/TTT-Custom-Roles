@@ -1,5 +1,28 @@
 # Release Notes
 
+## 2.0.1 (Beta)
+**Released:**
+
+### Additions
+- Added ability for the clown to be activated when a certain percentage of players are left alive, `ttt_clown_activation_pct` (disabled by default)
+  - This is in addition to activating when a team would win the round
+- Added ability to override the loot goblin's radar beep sound setting at the server level, `ttt_lootgoblin_radar_beep_sound_override` (disabled by default) (Thanks to The Stig!)
+
+### Changes
+- Changed zombie claw HUD hint to not mention features that are disabled
+
+### Fixes
+- Fixed players who swap roles with an activated vindicator not having their team set back to innocent
+- Fixed an error in the shop if a weapon is somehow set up to be bought by a role that either doesn't exist or hasn't been set up properly
+- Fixed player seeing their own name in the credit transfer dropdown sometimes
+- Fixed all end-of-round awards regarding most used weapons not working
+- Fixed spy not copying skin and bodygroups of the player they killed when `ttt_spy_steal_model` was enabled
+- Fixed spy not getting their own skin and bodygroups back at the end of the round when `ttt_spy_steal_model` was enabled
+
+### Developer
+- Added `TTTDetectiveLikePromoted` hook to detect when a detective-like (deputy, impersonator, etc.) player is promoted
+- Fixed `plymeta:HandleDetectiveLikePromotion` existing on the client side when it should not have
+
 ## 2.0.0
 **Released: November 21st, 2023**\
 Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).

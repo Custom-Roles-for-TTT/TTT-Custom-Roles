@@ -420,9 +420,6 @@ globals = {
     "MOVETYPE_STEP",
     "MOVETYPE_VPHYSICS",
     "MOVETYPE_WALK",
-    "MSG_PRINTBOTH",
-    "MSG_PRINTCENTER",
-    "MSG_PRINTTALK",
     "MUTE_ALL",
     "MUTE_NONE",
     "MUTE_SPEC",
@@ -793,7 +790,6 @@ globals = {
     "CR_BETA",
     "CR_VERSION",
     "CR_WORKSHOP_ID",
-    "DEATHRADAR",
     "DEFAULT_ROLES",
     "DELAYED_SHOP_ROLES",
     "DETECTIVE_LIKE_ROLES",
@@ -872,6 +868,9 @@ globals = {
     "LOOTGOBLIN_RADAR_BEEP_OVERRIDE_ON",
     "LOOTGOBLIN_RADAR_BEEP_OVERRIDE_OFF",
     "MONSTER_ROLES",
+    "MSG_PRINTBOTH",
+    "MSG_PRINTCENTER",
+    "MSG_PRINTTALK",
     "PARASITE_CURE_KILL_NONE",
     "PARASITE_CURE_KILL_OWNER",
     "PARASITE_CURE_KILL_TARGET",
@@ -1105,7 +1104,8 @@ globals = {
     "UpdateRoleWeaponState",
 
     -- CR Namespaces
-    "CRHUD"
+    "CRHUD",
+    "DEATHRADAR"
 }
 std = {
     globals = {

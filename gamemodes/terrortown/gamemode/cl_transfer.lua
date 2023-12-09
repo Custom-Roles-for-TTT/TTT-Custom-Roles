@@ -24,12 +24,12 @@ function CreateTransferMenu(parent)
     dsubmit:SetDisabled(true)
     dsubmit:SetText(GetTranslation("xfer_send"))
 
-    local selected_entry = nil
+    local selected_sid64 = nil
 
     local dpick = vgui.Create("DComboBox", dform)
     dpick.OnSelect = function(s, idx, val, data)
         if data then
-            selected_entry = data
+            selected_sid64 = data
             dsubmit:SetDisabled(false)
         end
     end
@@ -39,10 +39,14 @@ function CreateTransferMenu(parent)
     -- fill combobox
     local r = client:GetRole()
     for _, p in ipairs(GetAllPlayers()) do
-        if (IsValid(p) and p:IsActiveRole(r) and p ~= client) or
+        if (IsValid(p) and p ~= client) and
+                -- Same role
+                (p:IsActiveRole(r) or
+                -- Traitor team or Glitch
                 (client:IsActiveTraitorTeam() and (p:IsActiveTraitorTeam() or p:IsActiveGlitch())) or
-                (client:IsActiveMonsterTeam() and p:IsActiveMonsterTeam()) then
-            dpick:AddChoice(p:Nick(), { ni = p:Nick(), sid = p:SteamID64() or "BOT" })
+                -- Monster team
+                (client:IsActiveMonsterTeam() and p:IsActiveMonsterTeam())) then
+            dpick:AddChoice(p:Nick(), p:SteamID64())
         end
     end
 
@@ -50,13 +54,11 @@ function CreateTransferMenu(parent)
     if dpick:GetOptionText(1) then dpick:ChooseOptionID(1) end
 
     dsubmit.DoClick = function(s)
-        if selected_entry then
-            if selected_entry.sid == "BOT" then
-                RunConsoleCommand("ttt_bot_transfer_credits", selected_entry.ni, "1")
-            elseif player.GetBySteamID64(selected_entry.sid):IsActiveGlitch() then
-                RunConsoleCommand("ttt_fake_transfer_credits", selected_entry.sid, "1")
+        if selected_sid64 then
+            if player.GetBySteamID64(selected_sid64):IsActiveGlitch() then
+                RunConsoleCommand("ttt_fake_transfer_credits", selected_sid64, "1")
             else
-                RunConsoleCommand("ttt_transfer_credits", selected_entry.sid, "1")
+                RunConsoleCommand("ttt_transfer_credits", selected_sid64, "1")
             end
         end
     end

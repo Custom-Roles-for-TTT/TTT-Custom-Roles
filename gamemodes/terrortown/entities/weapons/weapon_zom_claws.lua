@@ -74,7 +74,16 @@ local zombie_thrall_attack_delay = CreateConVar("ttt_zombie_thrall_attack_delay"
 
 function SWEP:Initialize()
     if CLIENT then
-        self:AddHUDHelp("zom_claws_help_pri", "zom_claws_help_sec", true)
+        local secondary = nil
+        if zombie_leap_enabled:GetBool() then
+            secondary = "zom_claws_help_sec"
+            if not zombie_spit_enabled:GetBool() then
+                secondary = secondary .. "_nospit"
+            end
+        elseif zombie_spit_enabled:GetBool() then
+            secondary = "zom_claws_help_sec_noleap"
+        end
+        self:AddHUDHelp("zom_claws_help_pri", secondary, true)
     end
     return self.BaseClass.Initialize(self)
 end

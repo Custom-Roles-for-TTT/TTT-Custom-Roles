@@ -412,7 +412,7 @@ local function GetKillerSample(victim, attacker, dmg)
 
     local sample = {}
     sample.killer = attacker
-    sample.killer_sid = attacker:SteamID()
+    sample.killer_sid = attacker:SteamID() -- backwards compatibility; use sample.killer_sid64 instead
     sample.killer_sid64 = attacker:SteamID64()
     sample.victim = victim
     sample.t = CurTime() + (-1 * (0.019 * dist) ^ 2 + GetConVar("ttt_killer_dna_basetime"):GetInt())
@@ -499,9 +499,9 @@ function CORPSE.Create(ply, attacker, dmginfo)
 
     -- flag this ragdoll as being a player's
     rag.player_ragdoll = true
-    rag.sid = ply:SteamID()
     rag.sid64 = ply:SteamID64()
 
+    rag.sid = ply:SteamID() -- backwards compatibility; use rag.sid64 instead
     rag.uqid = ply:UniqueID() -- backwards compatibility; use rag.sid64 instead
 
     -- network data
