@@ -370,12 +370,12 @@ concommand.Add("ttt_dropammo", DropActiveAmmo)
 -- Give a weapon to a player. If the initial attempt fails due to heisenbugs in
 -- the map, keep trying until the player has moved to a better spot where it
 -- does work.
-local function GiveEquipmentWeapon(sid, cls)
+local function GiveEquipmentWeapon(sid64, cls)
     -- Referring to players by SteamID because a player may disconnect while his
     -- unique timer still runs, in which case we want to be able to stop it. For
-    -- that we need its name, and hence their SteamID.
-    local ply = player.GetBySteamID64(sid)
-    local tmr = "give_equipment" .. sid
+    -- that we need its name, and hence their SteamID64.
+    local ply = player.GetBySteamID64(sid64)
+    local tmr = "give_equipment" .. sid64
 
     if (not IsValid(ply)) or (not ply:IsShopRole(true)) then
         timer.Remove(tmr)
@@ -389,7 +389,7 @@ local function GiveEquipmentWeapon(sid, cls)
     if (not IsValid(w)) or (not ply:HasWeapon(cls)) then
         if not timer.Exists(tmr) then
             retry_timers[tmr] = true
-            timer.Create(tmr, 1, 60, function() GiveEquipmentWeapon(sid, cls) end)
+            timer.Create(tmr, 1, 60, function() GiveEquipmentWeapon(sid64, cls) end)
         end
 
         -- we will be retrying
@@ -668,10 +668,10 @@ local function TransferCredits(ply, cmd, args)
     if (not IsValid(ply)) or (not ply:IsActiveSpecial()) then return end
     if #args ~= 2 then return end
 
-    local sid = tostring(args[1])
+    local sid64 = tostring(args[1])
     local credits = tonumber(args[2])
-    if sid and credits then
-        local target = player.GetBySteamID64(sid)
+    if sid64 and credits then
+        local target = player.GetBySteamID64(sid64)
         if (not IsValid(target)) or (not target:IsActiveSpecial()) or not ply:IsSameTeam(target) or (target == ply) then
             LANG.Msg(ply, "xfer_no_recip")
             return
@@ -721,28 +721,6 @@ local function FakeTransferCredits(ply, cmd, args)
     end
 end
 concommand.Add("ttt_fake_transfer_credits", FakeTransferCredits)
-
-local function BotTransferCredits(ply, cmd, args)
-    if (not IsValid(ply)) or (not ply:IsActiveSpecial()) then return end
-    if #args ~= 2 then return end
-
-    local name = args[1]
-    local credits = tonumber(args[2])
-    if name and credits then
-        if ply:GetCredits() < credits then
-            LANG.Msg(ply, "xfer_no_credits")
-            return
-        end
-
-        credits = math.Clamp(credits, 0, ply:GetCredits())
-        if credits == 0 then return end
-
-        ply:SubtractCredits(credits)
-
-        LANG.Msg(ply, "xfer_success", { player = name })
-    end
-end
-concommand.Add("ttt_bot_transfer_credits", BotTransferCredits)
 
 -- Protect against non-TTT weapons that may break the HUD
 function GM:WeaponEquip(wep, ply)

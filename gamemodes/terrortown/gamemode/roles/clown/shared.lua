@@ -12,6 +12,7 @@ CreateConVar("ttt_clown_show_target_icon", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_clown_heal_on_activate", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_clown_heal_bonus", "0", FCVAR_REPLICATED, "The amount of bonus health to give the clown if they are healed when they are activated", 0, 100)
 CreateConVar("ttt_clown_damage_bonus", "0", FCVAR_REPLICATED, "Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)", 0, 1)
+CreateConVar("ttt_clown_activation_pct", "0", FCVAR_REPLICATED, "The percentage of players remaining before the clown is activated (e.g. 0.5 = 50% of players remain). Set to 0 to only activate when a team would win", 0, 1)
 CreateConVar("ttt_clown_can_see_jesters", 1, FCVAR_REPLICATED)
 CreateConVar("ttt_clown_update_scoreboard", 1, FCVAR_REPLICATED)
 
@@ -46,6 +47,11 @@ table.insert(ROLE_CONVARS[ROLE_CLOWN], {
     cvar = "ttt_clown_heal_bonus",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_CLOWN], {
+    cvar = "ttt_clown_activation_pct",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
 })
 table.insert(ROLE_CONVARS[ROLE_CLOWN], {
     cvar = "ttt_clown_can_see_jesters",
