@@ -48,7 +48,9 @@ end
 -- If detective mode, announce when someone's body is found
 local bodyfound = CreateConVar("ttt_announce_body_found", "1")
 
-local function AnnounceBodyName(p)
+local function AnnounceBodyName(p, round_state)
+    if round_state ~= ROUND_ACTIVE then return true end
+
     -- If only detectives can search, only announce if this player is a detective
     if GetConVar("ttt_detectives_search_only"):GetBool() then return p:IsDetectiveLike() end
     -- If only detectives can see the name, only announce if this player is a detective
@@ -57,7 +59,9 @@ local function AnnounceBodyName(p)
     return true
 end
 
-local function AnnounceBodyRole(p)
+local function AnnounceBodyRole(p, round_state)
+    if round_state ~= ROUND_ACTIVE then return true end
+
     -- If only detectives can search, only announce if this player is a detective
     if GetConVar("ttt_detectives_search_only"):GetBool() then return p:IsDetectiveLike() end
     -- If only detectives can see the role, only announce if this player is a detective
@@ -66,7 +70,9 @@ local function AnnounceBodyRole(p)
     return true
 end
 
-local function AnnounceBodyTeam(p)
+local function AnnounceBodyTeam(p, round_state)
+    if round_state ~= ROUND_ACTIVE then return true end
+
     -- If only detectives can search, only announce if this player is a detective
     if GetConVar("ttt_detectives_search_only"):GetBool() then return p:IsDetectiveLike() end
     -- If only detectives can see the team, only announce if this player is a detective
@@ -84,7 +90,8 @@ local function IdentifyBody(ply, rag)
     if not ply:IsTerror() then return end
 
     -- simplified case for those who die and get found during prep
-    if GetRoundState() == ROUND_PREP then
+    local round_state = GetRoundState()
+    if round_state == ROUND_PREP then
         CORPSE.SetFound(rag, true)
         return
     end
@@ -102,16 +109,16 @@ local function IdentifyBody(ply, rag)
     local deadply = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
 
     -- Announce body
-    local announceName = AnnounceBodyName(ply)
+    local announceName = AnnounceBodyName(ply, round_state)
     if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) and (not IsValid(deadply) or announceName or not deadply:GetNWBool("body_found", false)) then
         local name = "someone"
         if announceName then
             name = nick
         end
         local role_string = "an unknown role"
-        if AnnounceBodyRole(ply) then
+        if AnnounceBodyRole(ply, round_state) then
             role_string = ROLE_STRINGS_EXT[role]
-        elseif AnnounceBodyTeam(ply) then
+        elseif AnnounceBodyTeam(ply, round_state) then
             local roleTeam = player.GetRoleTeam(role)
             local teamName = GetRoleTeamName(roleTeam)
             role_string = "on the " .. teamName .. " team"

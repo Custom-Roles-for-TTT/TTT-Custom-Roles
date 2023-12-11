@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.0.2 (Beta)
+**Released:**
+
+### Fixes
+- Fixed corpse find notifications showing "unknown" for name and role after the round ended
+
 ## 2.0.1 (Beta)
 **Released: December 9th, 2023**
 
