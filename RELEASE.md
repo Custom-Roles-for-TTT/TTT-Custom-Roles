@@ -5,6 +5,8 @@
 
 ### Fixes
 - Fixed corpse find notifications showing "unknown" for name and role after the round ended
+- Fixed player corpses that were searched by a non-detective (when `ttt_detective_search_only` was disabled) not having their information sent to other players
+  - This resulted in the scoreboard not updating except for the player(s) that inspected the corpse
 
 ## 2.0.1 (Beta)
 **Released: December 9th, 2023**

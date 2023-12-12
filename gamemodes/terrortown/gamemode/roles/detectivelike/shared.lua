@@ -23,8 +23,10 @@ local detectives_glow_enabled = CreateConVar("ttt_detectives_glow_enabled", "0",
 
 local plymeta = FindMetaTable("Player")
 
-function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or (DETECTIVE_LIKE_ROLES[self:GetRole()] and self:IsRoleActive()) end
-function plymeta:GetDetectiveLikePromotable() return DETECTIVE_LIKE_ROLES[self:GetRole()] and not self:IsRoleActive() end
+local function IsDetectiveLikeRole(role) return DETECTIVE_LIKE_ROLES[role] or false end
+
+function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or (IsDetectiveLikeRole(self:GetRole()) and self:IsRoleActive()) end
+function plymeta:GetDetectiveLikePromotable() return IsDetectiveLikeRole(self:GetRole()) and not self:IsRoleActive() end
 function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike

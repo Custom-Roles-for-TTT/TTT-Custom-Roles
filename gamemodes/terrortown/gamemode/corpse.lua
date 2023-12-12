@@ -354,13 +354,17 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         lastid = IsValid(rag.lastid.ent) and rag.lastid.ent:EntIndex() or -1
     end
 
+    local round_state = GetRoundState()
+    local sendName = AnnounceBodyName(ply, round_state)
+    local sendRole = AnnounceBodyRole(ply, round_state)
+
     -- Send a message with basic info
     net.Start("TTT_RagdollSearch")
     net.WriteUInt(rag:EntIndex(), 16) -- 16 bits
     net.WriteUInt(owner, 8) -- 128 max players. ( 8 bits )
-    net.WriteString(nick)
+    net.WriteString(sendName and nick or "<Unknown>")
     net.WriteUInt(eq, 32) -- Equipment ( 32 = max. )
-    net.WriteUInt(role, 8) -- ( 8 bits )
+    net.WriteInt(sendRole and role or -1, 8) -- ( 8 bits )
     net.WriteInt(c4, bitsRequired(C4_WIRE_COUNT) + 1) -- -1 -> 2^bits ( default c4: 4 bits )
     net.WriteUInt(dmg, 30) -- DMG_BUCKSHOT is the highest. ( 30 bits )
     net.WriteString(wep)
@@ -384,8 +388,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     -- 133 + string data + #kill_entids * 8
     -- 200
 
-    -- If found by detective, send to all, else just the finder
-    if ply:IsActiveDetectiveLike() then
+    if not covert then
         net.Broadcast()
 
         -- Let detctives know that this body has already been searched
