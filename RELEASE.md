@@ -14,6 +14,7 @@
 - Fixed player corpses that were searched by a non-detective (when `ttt_detectives_search_only` is disabled) not having their information sent to other players
   - This resulted in the scoreboard not updating except for the player(s) that inspected the corpse
 - Fixed spectators seeing the covert search hint text for a player corpse even though they don't have that ability
+- Fixed player information not showing on the scoreboard when their corpse was searched by the local player but it wasn't shared to other players
 
 ## 2.0.1 (Beta)
 **Released: December 9th, 2023**
