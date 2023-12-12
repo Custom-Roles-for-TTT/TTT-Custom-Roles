@@ -58,6 +58,7 @@ L.karma_dmg_other = "Your Karma is {amount}. As a result all damage you deal is 
 
 --- Body identification messages
 L.body_found = "{finder} found the body of {victim}. They were {role}"
+L.body_found_updated = "{finder} has uncovered more information about {victim}. They were {role}"
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 

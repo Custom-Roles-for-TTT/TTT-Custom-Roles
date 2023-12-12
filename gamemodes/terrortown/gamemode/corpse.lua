@@ -163,6 +163,15 @@ local function IdentifyBody(ply, rag)
         net.Start("TTT_ScoreboardUpdate")
         net.WriteBool(true)
         net.Broadcast()
+
+        -- Send message that additional information is found about a corpse
+        if bodyfound:GetBool() then
+            LANG.Msg("body_found_updated", {
+                finder = finder,
+                victim = nick,
+                role = ROLE_STRINGS_EXT[role]
+            })
+        end
     end
 
     if not announceName then return end
