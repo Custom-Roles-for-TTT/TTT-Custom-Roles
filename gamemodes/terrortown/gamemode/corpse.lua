@@ -281,6 +281,9 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         return
     end
 
+    -- Force covert searching for non-Detective-like players when the convar is enabled
+    covert = covert or (not ply:IsActiveDetectiveLike() and GetConVar("ttt_corpse_search_not_shared"):GetBool())
+
     if not hook.Run("TTTCanSearchCorpse", ply, rag, covert, long_range, TRAITOR_ROLES[rag.was_role]) then
         return
     end

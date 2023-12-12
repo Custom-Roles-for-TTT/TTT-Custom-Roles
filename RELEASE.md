@@ -8,6 +8,8 @@
   - This happens if `ttt_detectives_search_only` is disabled but something like `ttt_detectives_search_only_role` is enabled
 - Added corpse hint text for spectators to tell them the key combo for possessing a player corpse (ALT+E, by default)
 - Added convar to control whether spectators can search corpses (`ttt_spectator_corpse_search`), enabled by default to maintain currently functionality
+- Added convar to force non-detective-like players to do covert corpse searching (`ttt_corpse_search_not_shared`), disabled by default
+  - This causes search results to not be shared with other players except when a detective-like player searches a corpse
 
 ### Fixes
 - Fixed corpse find notifications showing "unknown" for name and role after the round ended

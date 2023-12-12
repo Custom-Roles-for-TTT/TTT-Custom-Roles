@@ -1,6 +1,7 @@
 ---- Shared corpsey stuff
 
 CreateConVar("ttt_spectator_corpse_search", "1", FCVAR_REPLICATED, "Whether spectators can search bodies (not shared with other players)", 0, 1)
+CreateConVar("ttt_corpse_search_not_shared", "0", FCVAR_REPLICATED, "Whether corpse searches are not shared with other players (only affects non-detective-like searchers)", 0, 1)
 
 CORPSE = CORPSE or {}
 

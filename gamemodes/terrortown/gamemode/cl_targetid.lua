@@ -21,6 +21,7 @@ local StringUpper = string.upper
 local key_params = { usekey = Key("+use", "USE"), walkkey = Key("+walk", "WALK"), adetective = ROLE_STRINGS_EXT[ROLE_DETECTIVE] }
 
 local spectator_corpse_search = nil
+local corpse_search_not_shared = nil
 
 local ClassHint = {
     prop_ragdoll = {
@@ -46,9 +47,14 @@ local ClassHint = {
                     end
                 -- Only show covert search label if the body can be searched
                 elseif CORPSE.CanBeSearched(ply, ent) then
+                    -- Cache the convar reference
+                    if not corpse_search_not_shared then
+                        corpse_search_not_shared = GetConVar("ttt_corpse_search_not_shared")
+                    end
+
                     local ownerEnt = CORPSE.GetPlayer(ent)
                     -- and has not already
-                    if IsValid(ownerEnt) and not ownerEnt:GetNWBool("body_searched", false) then
+                    if (ply:IsActiveDetectiveLike() or not corpse_search_not_shared:GetBool()) and IsValid(ownerEnt) and not ownerEnt:GetNWBool("body_searched", false) then
                         txt = txt .. "_covert"
                     end
                 -- If the body can't be searched, change the label to say "call a Detective" instead
