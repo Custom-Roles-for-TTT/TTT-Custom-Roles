@@ -388,7 +388,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     -- 133 + string data + #kill_entids * 8
     -- 200
 
-    if not covert then
+    if ply:IsActive() and not covert then
         net.Broadcast()
 
         -- Let detctives know that this body has already been searched
