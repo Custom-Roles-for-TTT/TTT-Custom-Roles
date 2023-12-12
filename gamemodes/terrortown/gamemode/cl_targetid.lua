@@ -20,6 +20,8 @@ local StringUpper = string.upper
 
 local key_params = { usekey = Key("+use", "USE"), walkkey = Key("+walk", "WALK"), adetective = ROLE_STRINGS_EXT[ROLE_DETECTIVE] }
 
+local spectator_corpse_search = nil
+
 local ClassHint = {
     prop_ragdoll = {
         name = "corpse",
@@ -27,8 +29,23 @@ local ClassHint = {
 
         fmt = function(ent, txt)
             if DetectiveMode() then
+                local ply = LocalPlayer()
+                -- Handle special labels for spectators
+                if not ply:IsActive() then
+                    -- Cache the convar reference
+                    if not spectator_corpse_search then
+                        spectator_corpse_search = GetConVar("ttt_spectator_corpse_search")
+                    end
+
+                    -- Only show the search label if the body can be searched by spectators
+                    if CORPSE.CanBeSearched(ply, ent) and spectator_corpse_search:GetBool() then
+                        txt = txt .. "_search_possess"
+                    -- Otherwise just show the possess label
+                    else
+                        txt = txt .. "_possess"
+                    end
                 -- Only show covert search label if the body can be searched
-                if CORPSE.CanBeSearched(LocalPlayer(), ent) then
+                elseif CORPSE.CanBeSearched(ply, ent) then
                     local ownerEnt = CORPSE.GetPlayer(ent)
                     -- and has not already
                     if IsValid(ownerEnt) and not ownerEnt:GetNWBool("body_searched", false) then

@@ -485,11 +485,11 @@ local function SpecUseKey(ply, cmd, arg)
         local tr = util.QuickTrace(ply:GetShootPos(), ply:GetAimVector() * 128, ply)
         if tr.Hit and IsValid(tr.Entity) then
             if tr.Entity.player_ragdoll then
-                if not ply:KeyDown(IN_WALK) then
-                    CORPSE.ShowSearch(ply, tr.Entity)
-                else
+                if ply:KeyDown(IN_WALK) or not GetConVar("ttt_spectator_corpse_search"):GetBool() or not CORPSE.CanBeSearched(ply, tr.Entity) then
                     ply:Spectate(OBS_MODE_IN_EYE)
                     ply:SpectateEntity(tr.Entity)
+                else
+                    CORPSE.ShowSearch(ply, tr.Entity)
                 end
             elseif tr.Entity:IsPlayer() and tr.Entity:IsActive() then
                 ply:Spectate(ply.spec_mode or OBS_MODE_CHASE)

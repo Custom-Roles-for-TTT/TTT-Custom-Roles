@@ -1020,6 +1020,7 @@ ttt_death_notifier_enabled                  1       // Whether the name and role
 ttt_smokegrenade_extinguish                 1       // Whether smoke grenades should extinguish fire
 ttt_player_set_color                        1       // Whether player colors are set each time that player spawns
 ttt_dna_scan_on_dialog                      1       // Whether to show a button to open the DNA scanner on the body search dialog
+ttt_spectator_corpse_search                 1       // Whether spectators can search bodies (not shared with other players)
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for their original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

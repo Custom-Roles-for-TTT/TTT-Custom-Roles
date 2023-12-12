@@ -6,11 +6,14 @@
 ### Additions
 - Added a notification message when a detective re-searches a corpse and discovers more information
   - This happens if `ttt_detectives_search_only` is disabled but something like `ttt_detectives_search_only_role` is enabled
+- Added corpse hint text for spectators to tell them the key combo for possessing a player corpse (ALT+E, by default)
+- Added convar to control whether spectators can search corpses (`ttt_spectator_corpse_search`), enabled by default to maintain currently functionality
 
 ### Fixes
 - Fixed corpse find notifications showing "unknown" for name and role after the round ended
 - Fixed player corpses that were searched by a non-detective (when `ttt_detectives_search_only` is disabled) not having their information sent to other players
   - This resulted in the scoreboard not updating except for the player(s) that inspected the corpse
+- Fixed spectators seeing the covert search hint text for a player corpse even though they don't have that ability
 
 ## 2.0.1 (Beta)
 **Released: December 9th, 2023**
