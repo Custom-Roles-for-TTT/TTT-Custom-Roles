@@ -533,16 +533,20 @@ Once you have defined your ConVar you can add it to the `convars` table to get i
 | Slider | `ROLE_CONVAR_TYPE_NUM` |
 | Checkbox | `ROLE_CONVAR_TYPE_BOOL` |
 | Textbox | `ROLE_CONVAR_TYPE_TEXT` |
+| Dropdown *(Added in 2.0.2)* | `ROLE_CONVAR_TYPE_DROPDOWN` |
 
 If your ConVar is a number using a slider you can optionally add a third property `decimal` which determines how many decimal places of precision you want to give the user. *(Note: Max and min values for sliders are determined by the max and min values you specified when you defined the ConVar)*
 
-The Summoner does not have any extra ConVars but for the sake of example we will add three useless ConVars.
+If your ConVar should have a set of limited options, choose `ROLE_CONVAR_TYPE_DROPDOWN` and add the `choices` property as a list of the valid options.
+
+The Summoner does not have any extra ConVars but for the sake of example we will add four useless ConVars.
 
 ```lua
 if SERVER then
     CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
     CreateConVar("ttt_summoner_checkbox", "0")
     CreateConVar("ttt_summoner_textbox", "0")
+    CreateConVar("ttt_summoner_dropdown", "default")
 end
 ROLE.convars = {}
 table.insert(ROLE.convars, {
@@ -557,6 +561,11 @@ table.insert(ROLE.convars, {
 table.insert(ROLE.convars, {
     cvar = "ttt_summoner_textbox",
     type = ROLE_CONVAR_TYPE_TEXT
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_dropdown",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"default", "another option", "something else"}
 })
 ```
 

@@ -19,6 +19,10 @@
 - Fixed spectators seeing the covert search hint text for a player corpse even though they don't have that ability
 - Fixed player information not showing on the scoreboard when their corpse was searched by the local player but it wasn't shared to other players
 
+### Developer
+- Added new dropdown type for role convars, `ROLE_CONVAR_TYPE_DROPDOWN`
+  - Use the `choices` property to define a table of the dropdown options
+
 ## 2.0.1 (Beta)
 **Released: December 9th, 2023**
 
