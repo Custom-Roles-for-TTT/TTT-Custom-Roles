@@ -339,10 +339,26 @@ local function ModifyColor(color, type)
     return c
 end
 
+local modeCVar = nil
+local overrideModeCVar = nil
+local function GetColorMode()
+    if not modeCVar then
+        modeCVar = GetConVar("ttt_color_mode")
+    end
+
+    if not overrideModeCVar then
+        overrideModeCVar = GetConVar("ttt_color_mode_override")
+    end
+
+    local overrideMode = overrideModeCVar and overrideModeCVar:GetString() or "none"
+    if overrideMode ~= "none" then
+        return overrideMode
+    end
+    return modeCVar and modeCVar:GetString() or "default"
+end
+
 local function FillRoleColors(list, type)
-    local modeCVar = GetConVar("ttt_color_mode")
-    local overrideModeCVar = GetConVar("ttt_color_mode_override")
-    local mode = (overrideModeCVar and overrideModeCVar:GetString() ~= "none" and overrideModeCVar:GetString()) or (modeCVar and modeCVar:GetString()) or "default"
+    local mode = GetColorMode()
 
     for r = ROLE_NONE, ROLE_MAX do
         local c
@@ -397,9 +413,7 @@ end
 
 if CLIENT then
     function GetRoleTeamColor(role_team, type)
-        local modeCVar = GetConVar("ttt_color_mode")
-        local overrideModeCVar = GetConVar("ttt_color_mode_override")
-        local mode = (overrideModeCVar and overrideModeCVar:GetString() ~= "none" and overrideModeCVar:GetString()) or (modeCVar and modeCVar:GetString()) or "default"
+        local mode = GetColorMode()
         local c = nil
         if mode == "custom" then
             if role_team == ROLE_TEAM_DETECTIVE then c = ColorFromCustomConVars("ttt_custom_spec_det_color") or COLOR_SPECIAL_DETECTIVE["default"]
