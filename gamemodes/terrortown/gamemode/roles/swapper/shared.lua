@@ -16,16 +16,16 @@ CreateConVar("ttt_swapper_killer_health", "100", FCVAR_REPLICATED, "The amount o
 
 ROLE_CONVARS[ROLE_SWAPPER] = {}
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_jester_notify_mode",
+    cvar = "ttt_swapper_notify_mode",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_jester_notify_sound",
+    cvar = "ttt_swapper_notify_sound",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_jester_notify_confetti",
+    cvar = "ttt_swapper_notify_confetti",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {

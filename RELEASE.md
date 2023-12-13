@@ -21,6 +21,7 @@
   - This resulted in the scoreboard not updating except for the player(s) that inspected the corpse
 - Fixed spectators seeing the covert search hint text for a player corpse even though they don't have that ability
 - Fixed player information not showing on the scoreboard when their corpse was searched by the local player but it wasn't shared to other players
+- Fixed swapper notify convars not showing in ULX
 
 ### Developer
 - Added new dropdown type for role convars, `ROLE_CONVAR_TYPE_DROPDOWN`
