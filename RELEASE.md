@@ -12,6 +12,9 @@
 - Added convar to force non-detective-like players to do covert corpse searching (`ttt_corpse_search_not_shared`), disabled by default
   - This causes search results to not be shared with other players except when a detective-like player searches a corpse
 
+### Changes
+- Changed the magneto stick to use an updated model which uses custom player model arms
+
 ### Fixes
 - Fixed corpse find notifications showing "unknown" for name and role after the round ended
 - Fixed player corpses that were searched by a non-detective (when `ttt_detectives_search_only` is disabled) not having their information sent to other players
