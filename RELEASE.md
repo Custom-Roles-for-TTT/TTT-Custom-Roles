@@ -4,6 +4,7 @@
 **Released:**
 
 ### Additions
+- Added ability to override player's role color setting at the server level, `ttt_color_mode_override` (disabled by default) (Thanks to The Stig!)
 - Added a notification message when a detective re-searches a corpse and discovers more information
   - This happens if `ttt_detectives_search_only` is disabled but something like `ttt_detectives_search_only_role` is enabled
 - Added corpse hint text for spectators to tell them the key combo for possessing a player corpse (ALT+E, by default)
