@@ -787,7 +787,7 @@ function HELPSCRN:CreateConfig(dsettings)
     end
 
     -- Don't allow color config when the server is overriding the value
-    if overrideModeCVar:GetString() == "none" then
+    if not overrideModeCVar or overrideModeCVar:GetString() == "none" then
         local dcolor = vgui.Create("DForm", dsettings)
         dcolor:Dock(TOP)
         dcolor:DockMargin(0, 0, 5, 10)
