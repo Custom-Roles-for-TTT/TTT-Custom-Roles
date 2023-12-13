@@ -537,9 +537,9 @@ Once you have defined your ConVar you can add it to the `convars` table to get i
 
 If your ConVar is a number using a slider you can optionally add a third property `decimal` which determines how many decimal places of precision you want to give the user. *(Note: Max and min values for sliders are determined by the max and min values you specified when you defined the ConVar)*
 
-If your ConVar should have a set of limited options, choose `ROLE_CONVAR_TYPE_DROPDOWN` and add the `choices` property as a list of the valid options.
+If your ConVar should have a set of limited options, choose `ROLE_CONVAR_TYPE_DROPDOWN` and add the `choices` property as a list of the valid options. Alternatively they can can be used to display labels for a numeric range of values. To do this, set the `isNumeric` property in the role convars table entry. If the value of the convar does not start at `0` (e.g., the convar accepts the range `1`-`4`) then you must configure the offset between the number value and the table index. This is accomplished by setting the `numericOffset` property (which defaults to `1`) in the role convars table entry. Without setting the `numericOffset` value, the first entry in the `choices` table will set the convar to `0`, the second will be `1`, etc.
 
-The Summoner does not have any extra ConVars but for the sake of example we will add four useless ConVars.
+The Summoner does not have any extra ConVars but for the sake of example we will add some useless ConVars.
 
 ```lua
 if SERVER then
@@ -547,6 +547,8 @@ if SERVER then
     CreateConVar("ttt_summoner_checkbox", "0")
     CreateConVar("ttt_summoner_textbox", "0")
     CreateConVar("ttt_summoner_dropdown", "default")
+    CreateConVar("ttt_summoner_dropdown_numeric", "default", FCVAR_NONE, "This is a useless dropdown", 0, 3)
+    CreateConVar("ttt_summoner_dropdown_numeric_offset", "default", FCVAR_NONE, "This is a useless dropdown with an offset", 1, 4)
 end
 ROLE.convars = {}
 table.insert(ROLE.convars, {
@@ -566,6 +568,19 @@ table.insert(ROLE.convars, {
     cvar = "ttt_summoner_dropdown",
     type = ROLE_CONVAR_TYPE_DROPDOWN,
     choices = {"default", "another option", "something else"}
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_dropdown_numeric",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Value of Zero", "Value of One", "Value of Two", "Value of Three"},
+    isNumeric = true
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_dropdown_numeric_offset",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Value of One", "Value of Two", "Value of Three", "Value of Four"},
+    isNumeric = true,
+    numericOffset = 0
 })
 ```
 

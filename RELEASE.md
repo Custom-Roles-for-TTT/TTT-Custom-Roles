@@ -22,6 +22,7 @@
 ### Developer
 - Added new dropdown type for role convars, `ROLE_CONVAR_TYPE_DROPDOWN`
   - Use the `choices` property to define a table of the dropdown options
+  - If the convar represents numeric options, but you want to have a string label then use `choices` to provide the labels and `isNumeric` and `numericOffset` to configure the values
 
 ## 2.0.1 (Beta)
 **Released: December 9th, 2023**
