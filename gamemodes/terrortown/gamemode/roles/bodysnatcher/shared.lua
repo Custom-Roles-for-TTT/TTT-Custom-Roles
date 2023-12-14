@@ -55,8 +55,9 @@ local bodysnatcher_is_independent = CreateConVar("ttt_bodysnatcher_is_independen
 ROLE_CONVARS[ROLE_BODYSNATCHER] = {}
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_notify_sound",
@@ -80,28 +81,33 @@ table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
 })
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_reveal_traitor",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_reveal_innocent",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_reveal_monster",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_reveal_independent",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_reveal_jester",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_respawn",

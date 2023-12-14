@@ -14,6 +14,7 @@
 
 ### Changes
 - Changed the magneto stick to use an updated model which uses custom player model arms
+- Changed convars that have a fixed set of options to use a labeled dropdown in ULX
 
 ### Fixes
 - Fixed corpse find notifications showing "unknown" for name and role after the round ended

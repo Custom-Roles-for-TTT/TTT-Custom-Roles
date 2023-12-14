@@ -12,8 +12,9 @@ CreateConVar("ttt_jester_win_by_traitors", "1", FCVAR_REPLICATED, "Whether the j
 ROLE_CONVARS[ROLE_JESTER] = {}
 table.insert(ROLE_CONVARS[ROLE_JESTER], {
     cvar = "ttt_jester_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_JESTER], {
     cvar = "ttt_jester_notify_sound",

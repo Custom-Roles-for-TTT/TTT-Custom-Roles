@@ -19,8 +19,9 @@ CreateConVar("ttt_guesser_warn_all", "0", FCVAR_REPLICATED)
 ROLE_CONVARS[ROLE_GUESSER] = {}
 table.insert(ROLE_CONVARS[ROLE_GUESSER], {
     cvar = "ttt_guesser_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_GUESSER], {
     cvar = "ttt_guesser_notify_sound",
