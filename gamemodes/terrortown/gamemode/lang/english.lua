@@ -49,7 +49,7 @@ L.limit_left = "{num} round(s) or {time} minutes remaining before the map change
 
 --- Credit awards
 L.credit_all = "{role}, you have been awarded {num} equipment credit(s) for your performance."
-
+L.credit_search = "{role}, you have been awarded {num} equipment credit(s) because {source} searched a body."
 L.credit_kill = "You have received {num} credit(s) for killing {role}."
 
 --- Karma

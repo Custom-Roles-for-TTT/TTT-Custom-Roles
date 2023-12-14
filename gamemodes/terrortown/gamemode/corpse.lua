@@ -11,11 +11,14 @@ local math = math
 local net = net
 local pairs = pairs
 local player = player
+local string = string
 local table = table
 local timer = timer
 local util = util
 
 local CreateEntity = ents.Create
+local GetAllPlayers = player.GetAll
+local StringLower = string.lower
 
 --- networked data abstraction layer
 local dti = CORPSE.dti
@@ -86,6 +89,34 @@ function GM:TTTCanIdentifyCorpse(ply, corpse, was_traitor)
     return true
 end
 
+local function GiveSearchCredits(ply, credits, from_self)
+    ply:AddCredits(credits)
+
+    local source = from_self and "you" or StringLower(ROLE_STRINGS_EXT[ROLE_DETECTIVE])
+    LANG.Msg(ply, "credit_search", {
+        role = ROLE_STRINGS[ply:GetRole()],
+        source = source,
+        num = credits
+    })
+end
+
+local function HandleDetectiveSearchCredits(ply, deadply)
+    local search_credits = GetConVar("ttt_detectives_search_credits"):GetInt()
+    if search_credits <= 0 then return end
+
+    if not GetConVar("ttt_detectives_search_credits_friendly"):GetBool() and ply:IsSameTeam(deadply) then return end
+
+    if GetConVar("ttt_detectives_search_credits_share"):GetBool() then
+        for _, p in ipairs(GetAllPlayers()) do
+            if p:IsActiveDetectiveLike() then
+                GiveSearchCredits(p, search_credits, p == ply)
+            end
+        end
+    else
+        GiveSearchCredits(ply, search_credits, true)
+    end
+end
+
 local function IdentifyBody(ply, rag)
     if not ply:IsTerror() then return end
 
@@ -141,8 +172,9 @@ local function IdentifyBody(ply, rag)
                 deadply:SetNWBool("body_searched", true)
             end
             -- Keep track if this body was searched specifically by a detective
-            if ply:IsDetectiveLike() then
+            if ply:IsDetectiveLike() and not deadply:GetNWBool("body_searched_det", false) then
                 deadply:SetNWBool("body_searched_det", true)
+                HandleDetectiveSearchCredits(ply, deadply)
             end
 
             -- Don't cache this in case the hook wants to change the corpse's role
@@ -160,6 +192,7 @@ local function IdentifyBody(ply, rag)
         deadply:SetNWBool("body_found", true)
         deadply:SetNWBool("body_searched", true)
         deadply:SetNWBool("body_searched_det", true)
+        HandleDetectiveSearchCredits(ply, deadply)
         net.Start("TTT_ScoreboardUpdate")
         net.WriteBool(true)
         net.Broadcast()

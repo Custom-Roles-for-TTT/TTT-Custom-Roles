@@ -11,6 +11,8 @@
 - Added convar to control whether spectators can search corpses (`ttt_spectator_corpse_search`), enabled by default to maintain currently functionality
 - Added convar to force non-detective-like players to do covert corpse searching (`ttt_corpse_search_not_shared`), disabled by default
   - This causes search results to not be shared with other players except when a detective-like player searches a corpse
+- Added ability for detective-like players to be rewarded credits for searching bodies (disabled by default)
+  - See `ttt_detectives_search_credits`, `ttt_detectives_search_credits_friendly`, and `ttt_detectives_search_credits_share` for options
 
 ### Changes
 - Changed the magneto stick to use an updated model which uses custom player model arms

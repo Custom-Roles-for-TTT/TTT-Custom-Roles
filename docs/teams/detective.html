@@ -108,6 +108,24 @@
                         <td>Integer</td>
                         <td>How often in seconds to give detectives a credit. <i>(Set to 0 to disable.)</i></td>
                     </tr>
+                    <tr>
+                        <td>ttt_detectives_search_credits <span data-text="Beta Only" class="betaonly tooltip">&nbsp;</span></td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>How many credits a detective should get for searching a corpse. <i>(Set to 0 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_detectives_search_credits_friendly <span data-text="Beta Only" class="betaonly tooltip">&nbsp;</span></td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether detectives should get credits for searching friendly corpses</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_detectives_search_credits_share <span data-text="Beta Only" class="betaonly tooltip">&nbsp;</span></td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether all detectives should get credits for searching corpses. If disabled, only the searching detective gets credits</td>
+                    </tr>
                     </tbody>
                 </table>
                 <p>Detectives also have the ability to search bodies and uncover information about dead players and how they died. The following ConVars can used to configure what information is available to which players.</p>
@@ -166,7 +184,7 @@
                                 <li><code>wep</code> - The weapon used to kill the dead player.</li>
                                 <li><code>words</code> - The dead player's last words. </li>
                             </ul>
-                            <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i>.
+                            <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i>
                         </td>
                     </tr>
                     </tbody>

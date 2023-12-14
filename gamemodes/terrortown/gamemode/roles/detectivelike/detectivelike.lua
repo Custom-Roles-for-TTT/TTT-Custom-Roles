@@ -16,6 +16,9 @@ util.AddNetworkString("TTT_Promotion")
 -------------
 
 local detectives_credits_timer = CreateConVar("ttt_detectives_credits_timer", "0")
+CreateConVar("ttt_detectives_search_credits", 0, FCVAR_NONE, "How many credits a detective should get for searching a corpse. Set to 0 to disable.", 0, 10)
+CreateConVar("ttt_detectives_search_credits_friendly", 0, FCVAR_NONE, "Whether detectives should get credits for searching friendly corpses", 0, 1)
+CreateConVar("ttt_detectives_search_credits_share", 0, FCVAR_NONE, "Whether all detectives should get credits for searching corpses. If disabled, only the searching detective gets credits", 0, 1)
 
 -- Server-side functions shared by detective-like roles (Deputy, Impersonator)
 
