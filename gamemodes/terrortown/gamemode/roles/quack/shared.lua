@@ -38,8 +38,9 @@ local quack_station_bomb = CreateConVar("ttt_quack_station_bomb", "0", FCVAR_REP
 ROLE_CONVARS[ROLE_QUACK] = {}
 table.insert(ROLE_CONVARS[ROLE_QUACK], {
     cvar = "ttt_quack_fake_cure_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Kill nobody", "Kill owner", "Kill target"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_QUACK], {
     cvar = "ttt_quack_fake_cure_time",

@@ -24,8 +24,9 @@ CreateConVar("ttt_glitch_use_traps", "0", FCVAR_REPLICATED)
 ROLE_CONVARS[ROLE_GLITCH] = {}
 table.insert(ROLE_CONVARS[ROLE_GLITCH], {
     cvar = "ttt_glitch_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Traitor", "Random Special Traitor", "Mask all traitors"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_GLITCH], {
     cvar = "ttt_glitch_use_traps",

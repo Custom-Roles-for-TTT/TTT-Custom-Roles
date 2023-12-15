@@ -49,7 +49,7 @@ L.limit_left = "{num} round(s) or {time} minutes remaining before the map change
 
 --- Credit awards
 L.credit_all = "{role}, you have been awarded {num} equipment credit(s) for your performance."
-
+L.credit_search = "{role}, you have been awarded {num} equipment credit(s) because {source} searched a body."
 L.credit_kill = "You have received {num} credit(s) for killing {role}."
 
 --- Karma
@@ -58,6 +58,7 @@ L.karma_dmg_other = "Your Karma is {amount}. As a result all damage you deal is 
 
 --- Body identification messages
 L.body_found = "{finder} found the body of {victim}. They were {role}"
+L.body_found_updated = "{finder} has uncovered more information about {victim}. They were {role}"
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -625,6 +626,8 @@ L.karma_min = "Liability"
 L.corpse = "Corpse"
 L.corpse_hint = "Press {usekey} to search."
 L.corpse_hint_covert = "Press {usekey} to search. Press {walkkey}+{usekey} to search covertly."
+L.corpse_hint_possess = "Press {usekey} to possess this corpse."
+L.corpse_hint_search_possess = "Press {usekey} to search. Press {walkkey}+{usekey} to possess this corpse."
 L.corpse_hint_call = "Press {usekey} to call {adetective}."
 
 L.target_disg = " (DISGUISED)"

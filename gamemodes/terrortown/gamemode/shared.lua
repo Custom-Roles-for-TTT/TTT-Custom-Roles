@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.0.1"
+CR_VERSION = "2.0.2"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -902,6 +902,7 @@ ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
 ROLE_CONVAR_TYPE_TEXT = 2
+ROLE_CONVAR_TYPE_DROPDOWN = 3
 
 function RegisterRole(tbl)
     -- Unsigned 8-bit max

@@ -23,8 +23,9 @@ table.insert(ROLE_CONVARS[ROLE_SPONGE], {
 })
 table.insert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_notify_sound",

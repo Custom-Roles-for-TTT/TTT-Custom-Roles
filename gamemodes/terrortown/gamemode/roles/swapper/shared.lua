@@ -16,16 +16,17 @@ CreateConVar("ttt_swapper_killer_health", "100", FCVAR_REPLICATED, "The amount o
 
 ROLE_CONVARS[ROLE_SWAPPER] = {}
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_jester_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    cvar = "ttt_swapper_notify_mode",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_jester_notify_sound",
+    cvar = "ttt_swapper_notify_sound",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_jester_notify_confetti",
+    cvar = "ttt_swapper_notify_confetti",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
@@ -45,8 +46,9 @@ table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
 })
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
     cvar = "ttt_swapper_weapon_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Don't swap anything", "Swap role weapons", "Swap all weapons"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
     cvar = "ttt_swapper_healthstation_reduce_max",

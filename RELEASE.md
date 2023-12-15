@@ -5,6 +5,31 @@
 
 ### Additions
 - Added ability to override player's role color setting at the server level, `ttt_color_mode_override` (disabled by default) (Thanks to The Stig!)
+- Added a notification message when a detective re-searches a corpse and discovers more information
+  - This happens if `ttt_detectives_search_only` is disabled but something like `ttt_detectives_search_only_role` is enabled
+- Added corpse hint text for spectators to tell them the key combo for possessing a player corpse (ALT+E, by default)
+- Added convar to control whether spectators can search corpses (`ttt_spectator_corpse_search`), enabled by default to maintain currently functionality
+- Added convar to force non-detective-like players to do covert corpse searching (`ttt_corpse_search_not_shared`), disabled by default
+  - This causes search results to not be shared with other players except when a detective-like player searches a corpse
+- Added ability for detective-like players to be rewarded credits for searching bodies (disabled by default)
+  - See `ttt_detectives_search_credits`, `ttt_detectives_search_credits_friendly`, and `ttt_detectives_search_credits_share` for options
+
+### Changes
+- Changed the magneto stick to use an updated model which uses custom player model arms
+- Changed convars that have a fixed set of options to use a labeled dropdown in ULX
+
+### Fixes
+- Fixed corpse find notifications showing "unknown" for name and role after the round ended
+- Fixed player corpses that were searched by a non-detective (when `ttt_detectives_search_only` is disabled) not having their information sent to other players
+  - This resulted in the scoreboard not updating except for the player(s) that inspected the corpse
+- Fixed spectators seeing the covert search hint text for a player corpse even though they don't have that ability
+- Fixed player information not showing on the scoreboard when their corpse was searched by the local player but it wasn't shared to other players
+- Fixed swapper notify convars not showing in ULX
+
+### Developer
+- Added new dropdown type for role convars, `ROLE_CONVAR_TYPE_DROPDOWN`
+  - Use the `choices` property to define a table of the dropdown options
+  - If the convar represents numeric options, but you want to have a string label then use `choices` to provide the labels and `isNumeric` and `numericOffset` to configure the values
 
 ## 2.0.1 (Beta)
 **Released: December 9th, 2023**

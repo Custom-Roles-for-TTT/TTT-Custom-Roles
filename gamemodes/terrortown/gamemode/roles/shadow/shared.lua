@@ -74,8 +74,9 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_target_buff",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Heal over time", "Single respawn", "Damage bonus", "Team join"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_target_buff_notify",
@@ -140,13 +141,15 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_target_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Don't notify", "Anonymously notify", "Identify the shadow"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_soul_link",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Disable", "Shadow and Target Die Together", "Shadow Dies if Target Killed"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_weaken_health_to",

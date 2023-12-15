@@ -22,8 +22,9 @@ table.insert(ROLE_CONVARS[ROLE_DRUNK], {
 })
 table.insert(ROLE_CONVARS[ROLE_DRUNK], {
     cvar = "ttt_drunk_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Don't notify anyone", "Only notify traitors and detective", "Only notify traitors", "Only notify detective", "Notify everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_DRUNK], {
     cvar = "ttt_drunk_innocent_chance",
