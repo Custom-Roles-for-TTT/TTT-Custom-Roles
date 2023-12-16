@@ -11,11 +11,14 @@ local math = math
 local net = net
 local pairs = pairs
 local player = player
+local string = string
 local table = table
 local timer = timer
 local util = util
 
 local CreateEntity = ents.Create
+local GetAllPlayers = player.GetAll
+local StringLower = string.lower
 
 --- networked data abstraction layer
 local dti = CORPSE.dti
@@ -48,7 +51,9 @@ end
 -- If detective mode, announce when someone's body is found
 local bodyfound = CreateConVar("ttt_announce_body_found", "1")
 
-local function AnnounceBodyName(p)
+local function AnnounceBodyName(p, round_state)
+    if round_state ~= ROUND_ACTIVE then return true end
+
     -- If only detectives can search, only announce if this player is a detective
     if GetConVar("ttt_detectives_search_only"):GetBool() then return p:IsDetectiveLike() end
     -- If only detectives can see the name, only announce if this player is a detective
@@ -57,7 +62,9 @@ local function AnnounceBodyName(p)
     return true
 end
 
-local function AnnounceBodyRole(p)
+local function AnnounceBodyRole(p, round_state)
+    if round_state ~= ROUND_ACTIVE then return true end
+
     -- If only detectives can search, only announce if this player is a detective
     if GetConVar("ttt_detectives_search_only"):GetBool() then return p:IsDetectiveLike() end
     -- If only detectives can see the role, only announce if this player is a detective
@@ -66,7 +73,9 @@ local function AnnounceBodyRole(p)
     return true
 end
 
-local function AnnounceBodyTeam(p)
+local function AnnounceBodyTeam(p, round_state)
+    if round_state ~= ROUND_ACTIVE then return true end
+
     -- If only detectives can search, only announce if this player is a detective
     if GetConVar("ttt_detectives_search_only"):GetBool() then return p:IsDetectiveLike() end
     -- If only detectives can see the team, only announce if this player is a detective
@@ -80,11 +89,40 @@ function GM:TTTCanIdentifyCorpse(ply, corpse, was_traitor)
     return true
 end
 
+local function GiveSearchCredits(ply, credits, from_self)
+    ply:AddCredits(credits)
+
+    local source = from_self and "you" or StringLower(ROLE_STRINGS_EXT[ROLE_DETECTIVE])
+    LANG.Msg(ply, "credit_search", {
+        role = ROLE_STRINGS[ply:GetRole()],
+        source = source,
+        num = credits
+    })
+end
+
+local function HandleDetectiveSearchCredits(ply, deadply)
+    local search_credits = GetConVar("ttt_detectives_search_credits"):GetInt()
+    if search_credits <= 0 then return end
+
+    if not GetConVar("ttt_detectives_search_credits_friendly"):GetBool() and ply:IsSameTeam(deadply) then return end
+
+    if GetConVar("ttt_detectives_search_credits_share"):GetBool() then
+        for _, p in ipairs(GetAllPlayers()) do
+            if p:IsActiveDetectiveLike() then
+                GiveSearchCredits(p, search_credits, p == ply)
+            end
+        end
+    else
+        GiveSearchCredits(ply, search_credits, true)
+    end
+end
+
 local function IdentifyBody(ply, rag)
     if not ply:IsTerror() then return end
 
     -- simplified case for those who die and get found during prep
-    if GetRoundState() == ROUND_PREP then
+    local round_state = GetRoundState()
+    if round_state == ROUND_PREP then
         CORPSE.SetFound(rag, true)
         return
     end
@@ -102,16 +140,16 @@ local function IdentifyBody(ply, rag)
     local deadply = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
 
     -- Announce body
-    local announceName = AnnounceBodyName(ply)
+    local announceName = AnnounceBodyName(ply, round_state)
     if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) and (not IsValid(deadply) or announceName or not deadply:GetNWBool("body_found", false)) then
         local name = "someone"
         if announceName then
             name = nick
         end
         local role_string = "an unknown role"
-        if AnnounceBodyRole(ply) then
+        if AnnounceBodyRole(ply, round_state) then
             role_string = ROLE_STRINGS_EXT[role]
-        elseif AnnounceBodyTeam(ply) then
+        elseif AnnounceBodyTeam(ply, round_state) then
             local roleTeam = player.GetRoleTeam(role)
             local teamName = GetRoleTeamName(roleTeam)
             role_string = "on the " .. teamName .. " team"
@@ -134,8 +172,9 @@ local function IdentifyBody(ply, rag)
                 deadply:SetNWBool("body_searched", true)
             end
             -- Keep track if this body was searched specifically by a detective
-            if ply:IsDetectiveLike() then
+            if ply:IsDetectiveLike() and not deadply:GetNWBool("body_searched_det", false) then
                 deadply:SetNWBool("body_searched_det", true)
+                HandleDetectiveSearchCredits(ply, deadply)
             end
 
             -- Don't cache this in case the hook wants to change the corpse's role
@@ -153,9 +192,19 @@ local function IdentifyBody(ply, rag)
         deadply:SetNWBool("body_found", true)
         deadply:SetNWBool("body_searched", true)
         deadply:SetNWBool("body_searched_det", true)
+        HandleDetectiveSearchCredits(ply, deadply)
         net.Start("TTT_ScoreboardUpdate")
         net.WriteBool(true)
         net.Broadcast()
+
+        -- Send message that additional information is found about a corpse
+        if bodyfound:GetBool() then
+            LANG.Msg("body_found_updated", {
+                finder = finder,
+                victim = nick,
+                role = ROLE_STRINGS_EXT[role]
+            })
+        end
     end
 
     if not announceName then return end
@@ -265,6 +314,9 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         return
     end
 
+    -- Force covert searching for non-Detective-like players when the convar is enabled
+    covert = covert or (not ply:IsActiveDetectiveLike() and GetConVar("ttt_corpse_search_not_shared"):GetBool())
+
     if not hook.Run("TTTCanSearchCorpse", ply, rag, covert, long_range, TRAITOR_ROLES[rag.was_role]) then
         return
     end
@@ -347,13 +399,17 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         lastid = IsValid(rag.lastid.ent) and rag.lastid.ent:EntIndex() or -1
     end
 
+    local round_state = GetRoundState()
+    local sendName = AnnounceBodyName(ply, round_state)
+    local sendRole = AnnounceBodyRole(ply, round_state)
+
     -- Send a message with basic info
     net.Start("TTT_RagdollSearch")
     net.WriteUInt(rag:EntIndex(), 16) -- 16 bits
     net.WriteUInt(owner, 8) -- 128 max players. ( 8 bits )
-    net.WriteString(nick)
+    net.WriteString(sendName and nick or "<Unknown>")
     net.WriteUInt(eq, 32) -- Equipment ( 32 = max. )
-    net.WriteUInt(role, 8) -- ( 8 bits )
+    net.WriteInt(sendRole and role or -1, 8) -- ( 8 bits )
     net.WriteInt(c4, bitsRequired(C4_WIRE_COUNT) + 1) -- -1 -> 2^bits ( default c4: 4 bits )
     net.WriteUInt(dmg, 30) -- DMG_BUCKSHOT is the highest. ( 30 bits )
     net.WriteString(wep)
@@ -377,8 +433,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     -- 133 + string data + #kill_entids * 8
     -- 200
 
-    -- If found by detective, send to all, else just the finder
-    if ply:IsActiveDetectiveLike() then
+    if ply:IsActive() and not covert then
         net.Broadcast()
 
         -- Let detctives know that this body has already been searched

@@ -341,6 +341,7 @@ local styledmessages = {
         "credit_det_all",
         "credit_tr_all",
         "credit_all",
+        "credit_search",
         "credit_kill"
     },
 

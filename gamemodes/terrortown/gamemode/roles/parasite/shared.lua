@@ -62,13 +62,15 @@ table.insert(ROLE_CONVARS[ROLE_PARASITE], {
 })
 table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     cvar = "ttt_parasite_infection_suicide_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Do nothing", "Respawn the parasite", "Respawn if target used 'kill'"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     cvar = "ttt_parasite_respawn_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Take over host", "Respawn at the parasite's body", "Respawn at a random location"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     cvar = "ttt_parasite_respawn_health",
@@ -81,8 +83,9 @@ table.insert(ROLE_CONVARS[ROLE_PARASITE], {
 })
 table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     cvar = "ttt_parasite_cure_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Kill nobody", "Kill owner", "Kill target"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     cvar = "ttt_parasite_cure_time",

@@ -156,8 +156,9 @@ table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
 })
 table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
     cvar = "ttt_zombie_friendly_fire",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Do nothing", "Reflect", "Block"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
     cvar = "ttt_zombie_respawn_block_win",

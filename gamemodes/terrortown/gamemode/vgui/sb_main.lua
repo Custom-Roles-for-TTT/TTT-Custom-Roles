@@ -94,7 +94,7 @@ function ScoreGroup(p)
     if DetectiveMode() and p:GetRole() ~= ROLE_NONE then
         -- Show players who used the Dead Ringer as "Dead"
         if fake_dead or (p:IsSpec() and not p:Alive()) then
-            if p:GetNWBool("body_searched", false) then
+            if p.search_result or p:GetNWBool("body_searched", false) then
                 return GROUP_SEARCHED
             elseif p:GetNWBool("body_found", false) then
                 return GROUP_FOUND

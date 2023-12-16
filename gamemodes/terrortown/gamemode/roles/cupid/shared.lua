@@ -18,8 +18,9 @@ CreateConVar("ttt_cupid_lovers_can_damage_cupid", "0", FCVAR_REPLICATED, "Whethe
 ROLE_CONVARS[ROLE_CUPID] = {}
 table.insert(ROLE_CONVARS[ROLE_CUPID], {
     cvar = "ttt_cupid_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_CUPID], {
     cvar = "ttt_cupid_notify_sound",
@@ -31,8 +32,9 @@ table.insert(ROLE_CONVARS[ROLE_CUPID], {
 })
 table.insert(ROLE_CONVARS[ROLE_CUPID], {
     cvar = "ttt_cupid_lovers_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No one", "Everyone", "Traitors", "Innocents"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_CUPID], {
     cvar = "ttt_cupid_is_independent",

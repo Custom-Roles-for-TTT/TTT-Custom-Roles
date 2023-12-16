@@ -55,8 +55,9 @@ table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
 })
 table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
     cvar = "ttt_vindicator_announcement_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No one", "The vindicator's killer", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
     cvar = "ttt_vindicator_prevent_revival",

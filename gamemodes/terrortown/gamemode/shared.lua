@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.0.1"
+CR_VERSION = "2.0.2"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -339,9 +339,26 @@ local function ModifyColor(color, type)
     return c
 end
 
+local modeCVar = nil
+local overrideModeCVar = nil
+local function GetColorMode()
+    if not modeCVar then
+        modeCVar = GetConVar("ttt_color_mode")
+    end
+
+    if not overrideModeCVar then
+        overrideModeCVar = GetConVar("ttt_color_mode_override")
+    end
+
+    local overrideMode = overrideModeCVar and overrideModeCVar:GetString() or "none"
+    if overrideMode ~= "none" then
+        return overrideMode
+    end
+    return modeCVar and modeCVar:GetString() or "default"
+end
+
 local function FillRoleColors(list, type)
-    local modeCVar = GetConVar("ttt_color_mode")
-    local mode = modeCVar and modeCVar:GetString() or "default"
+    local mode = GetColorMode()
 
     for r = ROLE_NONE, ROLE_MAX do
         local c
@@ -396,8 +413,7 @@ end
 
 if CLIENT then
     function GetRoleTeamColor(role_team, type)
-        local modeCVar = GetConVar("ttt_color_mode")
-        local mode = modeCVar and modeCVar:GetString() or "default"
+        local mode = GetColorMode()
         local c = nil
         if mode == "custom" then
             if role_team == ROLE_TEAM_DETECTIVE then c = ColorFromCustomConVars("ttt_custom_spec_det_color") or COLOR_SPECIAL_DETECTIVE["default"]
@@ -886,6 +902,7 @@ ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
 ROLE_CONVAR_TYPE_TEXT = 2
+ROLE_CONVAR_TYPE_DROPDOWN = 3
 
 function RegisterRole(tbl)
     -- Unsigned 8-bit max
