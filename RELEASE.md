@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.0.2 (Beta)
-**Released:**
+**Released: December 16th, 2023**
 
 ### Additions
 - Added ability to override player's role color setting at the server level, `ttt_color_mode_override` (disabled by default) (Thanks to The Stig!)
