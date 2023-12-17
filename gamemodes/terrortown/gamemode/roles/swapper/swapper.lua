@@ -164,8 +164,8 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
             body:Remove()
         end
 
-        attacker:SetRole(ROLE_SWAPPER)
         attacker:MoveRoleState(victim)
+        attacker:SetRole(ROLE_SWAPPER)
         SendFullStateUpdate()
 
         local health = swapper_killer_health:GetInt()

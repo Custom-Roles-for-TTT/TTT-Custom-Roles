@@ -128,8 +128,8 @@ function SWEP:PrimaryAttack()
                     hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
 
                     owner:SetRole(role)
-                    ply:SetRole(ROLE_GUESSER)
                     ply:MoveRoleState(owner)
+                    ply:SetRole(ROLE_GUESSER)
                     SendFullStateUpdate()
 
                     net.Start("TTT_GuesserGuessed")
