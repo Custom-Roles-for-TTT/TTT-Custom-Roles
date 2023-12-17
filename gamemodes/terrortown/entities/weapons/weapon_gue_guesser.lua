@@ -127,8 +127,8 @@ function SWEP:PrimaryAttack()
                     ply:QueueMessage(MSG_PRINTBOTH, "Your role was guessed by " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and you have taken their place!")
                     hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
 
-                    owner:SetRole(role)
                     ply:MoveRoleState(owner)
+                    owner:SetRole(role)
                     ply:SetRole(ROLE_GUESSER)
                     SendFullStateUpdate()
 

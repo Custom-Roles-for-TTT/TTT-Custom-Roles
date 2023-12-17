@@ -45,8 +45,8 @@ if SERVER then
         net.WriteString(owner:SteamID64())
         net.Broadcast()
 
-        owner:SetRole(role)
         ply:MoveRoleState(owner, true)
+        owner:SetRole(role)
         owner:SelectWeapon("weapon_zm_carry")
         owner:SetNWBool("WasBodysnatcher", true)
 
