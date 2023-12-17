@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.0.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed guesser not copying the role state of the player they guessed
+  - For example, assassin target
+
 ## 2.0.2 (Beta)
 **Released: December 16th, 2023**
 

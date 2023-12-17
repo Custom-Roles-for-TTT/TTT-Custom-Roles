@@ -109,7 +109,7 @@ function SWEP:PrimaryAttack()
             local radius = GetConVar("ttt_guesser_minimum_radius"):GetFloat() * UNITS_PER_METER
             if radius == 0 or ply:GetPos():Distance(owner:GetPos()) <= radius then
                 if ply:GetNWBool("TTTGuesserWasGuesser", false) then
-                    owner:QueueMessage(MSG_PRINTCENTER, "That player was previously ".. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and so cannot be guessed!")
+                    owner:QueueMessage(MSG_PRINTCENTER, "That player was previously " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and so cannot be guessed!")
                     return
                 end
 
@@ -121,18 +121,23 @@ function SWEP:PrimaryAttack()
                     owner:QueueMessage(MSG_PRINTBOTH, "You guessed correctly and have become " .. ROLE_STRINGS_EXT[role] .. "!")
                     owner:SetNWBool("TTTGuesserWasGuesser", true)
                     hook.Call("TTTPlayerRoleChangedByItem", nil, owner, owner, self)
+
                     ply:Give("weapon_gue_guesser")
                     ply:SetNWString("TTTGuesserGuessedBy", owner:Nick())
                     ply:QueueMessage(MSG_PRINTBOTH, "Your role was guessed by " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and you have taken their place!")
                     hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
+
                     owner:SetRole(role)
                     ply:SetRole(ROLE_GUESSER)
+                    ply:MoveRoleState(owner)
                     SendFullStateUpdate()
+
                     net.Start("TTT_GuesserGuessed")
                     net.WriteBool(true)
                     net.WriteString(ply:Nick())
                     net.WriteString(owner:Nick())
                     net.Broadcast()
+
                     self:Remove()
                 else
                     owner:QueueMessage(MSG_PRINTBOTH, "You guessed incorrectly and have died!")

@@ -247,8 +247,8 @@ Called after a player's role has been changed by a weapon or item.\
 *Realm:* Server\
 *Added in:* 1.6.16\
 *Parameters:*
-- *ply* - The player using the resurrection device
-- *tgt* - The target player being resurrected
+- *ply* - The player using the role changing device
+- *tgt* - The target player having their role changed
 - *item* - The weapon or item used to change the target's role
 
 ### TTTPlayerSpawnForRound(ply, deadOnly)
