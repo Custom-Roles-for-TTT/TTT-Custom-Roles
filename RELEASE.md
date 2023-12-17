@@ -3,6 +3,10 @@
 ## 2.0.3 (Beta)
 **Released:**
 
+### Changes
+- Changed shadow to have their target copied to players that steal their role
+  - This affects roles such as the guesser and swapper
+
 ### Fixes
 - Fixed guesser not copying the role state of the player they guessed
   - For example, assassin target

@@ -38,7 +38,24 @@ local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
 -- TARGET ASSIGNMENT --
 -----------------------
 
+local function OnTargetAssigned(ply, tgt)
+    ply:SetNWString("ShadowTarget", tgt:SteamID64())
+    ply:QueueMessage(MSG_PRINTBOTH, "Your target is " .. tgt:Nick() .. ".")
+    ply:SetNWFloat("ShadowTimer", CurTime() + shadow_start_timer:GetInt())
+    local notifyMode = shadow_target_notify_mode:GetInt()
+    if notifyMode == SHADOW_NOTIFY_ANONYMOUS then
+        tgt:QueueMessage(MSG_PRINTBOTH, "You have a " .. ROLE_STRINGS[ROLE_SHADOW] .. " following you!")
+    elseif notifyMode == SHADOW_NOTIFY_IDENTIFY then
+        tgt:QueueMessage(MSG_PRINTBOTH, ply:Nick() .. " is your " .. ROLE_STRINGS[ROLE_SHADOW] .. "!")
+    end
+end
+
 ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
+    -- Keep their existing target, if they have one
+    local targetSid64 = ply:GetNWString("ShadowTarget", "")
+    local target = player.GetBySteamID64(targetSid64)
+    if IsPlayer(target) then return end
+
     local closestTarget = nil
     local closestDistance = -1
     for _, p in pairs(GetAllPlayers()) do
@@ -52,17 +69,26 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
             end
         end
     end
+
     if closestTarget ~= nil then
-        ply:SetNWString("ShadowTarget", closestTarget:SteamID64() or "")
-        ply:QueueMessage(MSG_PRINTBOTH, "Your target is " .. closestTarget:Nick() .. ".")
-        ply:SetNWFloat("ShadowTimer", CurTime() + shadow_start_timer:GetInt())
-        local notifyMode = shadow_target_notify_mode:GetInt()
-        if notifyMode == SHADOW_NOTIFY_ANONYMOUS then
-            closestTarget:QueueMessage(MSG_PRINTBOTH, "You have a " .. ROLE_STRINGS[ROLE_SHADOW] .. " following you!")
-        elseif notifyMode == SHADOW_NOTIFY_IDENTIFY then
-            closestTarget:QueueMessage(MSG_PRINTBOTH, ply:Nick() .. " is your " .. ROLE_STRINGS[ROLE_SHADOW] .. "!")
-        end
+        OnTargetAssigned(ply, closestTarget)
     end
+end
+
+ROLE_MOVE_ROLE_STATE[ROLE_SHADOW] = function(ply, target, keep_on_source)
+    -- Make sure the shadow has a target before we copy it
+    local targetSid64 = ply:GetNWString("ShadowTarget", "")
+    local shadowTarget = player.GetBySteamID64(targetSid64)
+    if not IsPlayer(shadowTarget) then return end
+
+    -- Make sure the shadow's current target isn't the person we're copying state to
+    -- We don't want them to shadow themselves
+    if shadowTarget == target then return end
+
+    -- Copy the target info and run the post-assignment logic
+    if not keep_on_source then ply:SetNWString("ShadowTarget", "") end
+    target:SetNWString("ShadowTarget", targetSid64)
+    OnTargetAssigned(target, shadowTarget)
 end
 
 -------------------
