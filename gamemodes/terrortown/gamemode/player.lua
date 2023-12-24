@@ -375,7 +375,7 @@ function GM:KeyPress(ply, key)
                     local action_time = action.time
                     local action_cost = action.cost
 
-                    -- Don't do the action if it's enabled and they have enough power
+                    -- Do the action if it's enabled and they have enough power
                     if action_cost > 0 and current_power >= action_cost then
                         -- Deduct the cost, run the command, and then run the un-command after the delay
                         ply:SetNWInt(power_property, current_power - action_cost)
