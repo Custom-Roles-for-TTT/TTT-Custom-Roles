@@ -65,6 +65,7 @@
             </li>
             <li><a href="#sprites">Sprites</a>
                 <ol>
+                    <li><a href="#updating-the-sprite-folder-name">Updating the Sprite Folder Name</a></li>
                     <li><a href="#finding-a-role-icon">Finding a Role Icon</a></li>
                     <li><a href="#tab-file">Tab File</a></li>
                     <li><a href="#score-file">Score File</a></li>
@@ -995,45 +996,48 @@ end</pre></code></div>
         <h2><a id="sprites" href="#sprites">Sprites</a></h2>
         <p>There are four different sprites used within CR for TTT and you will need to make a separate image file for each.</p>
 
+        <h3><a id="updating-the-sprite-folder-name" href="#updating-the-sprite-folder-name">Updating the Sprite Folder Name</a></h3>
+        <p>Before we start creating sprites, we'll need to update the name of the folder that will hold these sprites. You can find the folder in the exacted 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt' &gt; 'roles' folder and it will be named '%NAMESHORT%'. Rename '%NAMESHORT%' to the short name you chose for your role above. In our example, that means we will be renaming the folder to 'sum' for the Summoner. All icons from this section of the guide will be saved in this now-renamed folder.</p>
+
         <h3><a id="finding-a-role-icon" href="#finding-a-role-icon">Finding a Role Icon</a></h3>
         <p>Before you start messing with each individual sprite you need to find a good role icon. Your role icon should be solid white and you should avoid too much detail. One of the best places we know to find icons like this is <a href="https://game-icons.net/" target="_blank">https://game-icons.net/</a>.</p>
         <p>For the Summoner we are going to use their "minions" icon with some slight changes. Make sure your icon is white with a transparent background. Here is the final version of the icon we are using for the summoner:</p>
         <p><img src="https://i.imgur.com/vbuDVHP.png" style="max-width: 100%;"/></p>
 
         <h3><a id="tab-file" href="#tab-file">Tab File</a></h3>
-        <p>The tab file is the simplest icon of the bunch. This icon shows up next to players that you know the role of when you are holding tab. There is no template for the tab icon as all you need to do is resize your icon down to 16x16. This icon should be saved as 'tab_%NAMESHORT%.png' where <code>%NAMESHORT%</code> is replaced with whatever you defined <code>nameshort</code> as earlier. All of the icons in this guide should be saved in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
+        <p>The tab file is the simplest icon of the bunch. This icon shows up next to players that you know the role of when you are holding tab. There is no template for the tab icon as all you need to do is resize your icon down to 16x16. This icon should be saved as 'tab_%NAMESHORT%.png' where <code>%NAMESHORT%</code> is replaced with whatever you defined <code>nameshort</code> as earlier. All of the icons in this guide should be saved in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt' &gt; 'roles' &gt; '%NAMESHORT%'.</p>
         <p>Here is what we ended with for 'tab_sum.png':</p>
         <p><img src="https://i.imgur.com/XocV4qu.png" style="max-width: 100%;"/></p>
 
         <h3><a id="score-file" href="#score-file">Score File</a></h3>
-        <p>The score file is what shows up in the round summary at the end of each round. Open up 'Score Template.psd' and you should see a white dashed outline. This is the guide for the size of your icon. Click on the 'Icon' layer and paste in your role icon. You should automatically see a shadow appear behind your icon. Resize this icon until the white is all inside the dashed outline. <em>(Note: It doesn't matter if some shadow spills out of the outline as long as all the white is inside the guide.)</em> Once you are happy with the positioning of the icon you can click the eye symbol next to the 'Icon Guide' layer to hide the dashed outline guide. Save this image as 'score_%NAMESHORT%.png' where <code>%NAMESHORT%</code> is replaced as you did before. Once again this should be saved in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
+        <p>The score file is what shows up in the round summary at the end of each round. Open up 'Score Template.psd' and you should see a white dashed outline. This is the guide for the size of your icon. Click on the 'Icon' layer and paste in your role icon. You should automatically see a shadow appear behind your icon. Resize this icon until the white is all inside the dashed outline. <em>(Note: It doesn't matter if some shadow spills out of the outline as long as all the white is inside the guide.)</em> Once you are happy with the positioning of the icon you can click the eye symbol next to the 'Icon Guide' layer to hide the dashed outline guide. Save this image as 'score_%NAMESHORT%.png' where <code>%NAMESHORT%</code> is replaced as you did before. Once again this should be saved in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt' &gt; 'roles' &gt; '%NAMESHORT%'.</p>
         <p>Here is what we have for 'score_sum.png':</p>
         <p><img src="https://i.imgur.com/zZkU611.png" style="max-width: 100%;"/></p>
 
         <h3><a id="sprite-file" href="#sprite-file">Sprite File</a></h3>
         <p>The sprite file is what shows up above players heads when you know their role. Open up 'Sprite Template.psd' and once again you should see a white dashed outline. Repeat the same process as you did for the score icon. Click on the 'Icon' layer, paste in your role icon, resize to fit the outline and hide the outline guide layer. Save this image as 'sprite_%NAMESHORT%.png'.</p>
         <p>For some icons GMod likes to use a .vtf or Valve Texture Format file. In order to do this we need to first create a .tga or Targa file. Targa files use an alpha layer for transparency so we need to convert our .png into a .tga. While Photoshop and GIMP can do this natively they do not properly create the alpha layer we need. The best method we have found is to use <a href="https://www.aconvert.com/image/png-to-tga/" target="_blank">Aconvert.com</a> so upload your 'sprite_%NAMESHORT%.png' file here and download the converted Targa file.</p>
-        <p>Finally we can turn our .tga into the .vtf file we need. Open VTFEdit, click 'File' &gt; 'Import' and select the converted Targa file. You should see your icon inside of VTFEdit except the shadows should have turned solid black and any transparency is now white. While this may look incredibly strange, this is actually exactly what we want! Save this file as 'sprite_%NAMESHORT%.vtf' in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
+        <p>Finally we can turn our .tga into the .vtf file we need. Open VTFEdit, click 'File' &gt; 'Import' and select the converted Targa file. You should see your icon inside of VTFEdit except the shadows should have turned solid black and any transparency is now white. While this may look incredibly strange, this is actually exactly what we want! Save this file as 'sprite_%NAMESHORT%.vtf' in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt' &gt; 'roles' &gt; '%NAMESHORT%'.</p>
         <p>Here is the final version of 'sprite_sum.vtf':</p>
         <p><img src="https://i.imgur.com/IhFJfmp.png" style="max-width: 100%;"/></p>
 
         <h3><a id="icon-file" href="#icon-file">Icon File</a></h3>
-        <p>The icon file is shown when a body is searched to reveal that players role. Open up 'Icon Template.psd' and yet again you should see a guide outline. Repeat the same process you did for both the score and sprite files. The icon file also needs to have a .vtf format so save your file as a .png, upload it to <a href="https://www.aconvert.com/image/png-to-tga/" target="_blank">Aconvert.com</a>, download your .tga file and import it into VTFEdit. Save this file as 'icon_%NAMESHORT%.vtf' in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
+        <p>The icon file is shown when a body is searched to reveal that players role. Open up 'Icon Template.psd' and yet again you should see a guide outline. Repeat the same process you did for both the score and sprite files. The icon file also needs to have a .vtf format so save your file as a .png, upload it to <a href="https://www.aconvert.com/image/png-to-tga/" target="_blank">Aconvert.com</a>, download your .tga file and import it into VTFEdit. Save this file as 'icon_%NAMESHORT%.vtf' in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt' &gt; 'roles' &gt; '%NAMESHORT%'.</p>
         <p>Here is the final version of 'icon_sum.vtf':</p>
         <p><img src="https://i.imgur.com/Jeh8sHo.png" style="max-width: 100%;"/></p>
 
         <h3><a id="vmt-files" href="#vmt-files">.vmt Files</a></h3>
-        <p>The final step you need to take to finish your role sprites is to update the three .vmt files that were already present in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt' when you started. Rename each of the files to replace <code>%NAMESHORT%</code> with what you defined <code>nameshort</code> as in your earlier coding. Open up each file and you should see one line that looks like this:</p>
-        <div><pre><code>"$basetexture" "vgui/ttt/sprite_%NAMESHORT%"</code></pre></div>
+        <p>The final step you need to take to finish your role sprites is to update the three .vmt files that were already present in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt' &gt; 'roles' &gt; '%NAMESHORT%' when you started. Rename each of the files to replace <code>%NAMESHORT%</code> with what you defined <code>nameshort</code> as in your earlier coding. Open up each file and you should see one line that looks like this:</p>
+        <div><pre><code>"$basetexture" "vgui/ttt/roles/%NAMESHORT%/sprite_%NAMESHORT%"</code></pre></div>
 
         <p>or this:</p>
-        <div><pre><code>"$basetexture" "vgui/ttt/icon_%NAMESHORT%"</code></pre></div>
+        <div><pre><code>"$basetexture" "vgui/ttt/roles/%NAMESHORT%/icon_%NAMESHORT%"</code></pre></div>
 
         <p>Replace <code>%NAMESHORT%</code> with whatever you set <code>nameshort</code> to earlier and save each of those three files.</p>
         <p>For example, here is what 'sprite_sum_noz.vmt' looks like:</p>
         <div><pre><code>"UnlitGeneric"
 {
-    "$basetexture" "vgui/ttt/sprite_sum"
+    "$basetexture" "vgui/ttt/roles/%NAMESHORT%/sprite_sum"
     "$nocull" 1
     "$ignorez" 1
     "$nodecal" 1
