@@ -10,6 +10,7 @@
 ### Fixes
 - Fixed guesser not copying the role state of the player they guessed
   - For example, assassin target
+- Fixed another error in the shop if a weapon is somehow set up to be bought by a role that either doesn't exist or hasn't been set up properly
 
 ## 2.0.2 (Beta)
 **Released: December 16th, 2023**
