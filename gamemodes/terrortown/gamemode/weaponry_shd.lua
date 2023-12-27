@@ -62,6 +62,9 @@ function WEPS.PrepWeaponsLists(role)
     if not WEPS.BypassRandomWeapons[role] then
         WEPS.BypassRandomWeapons[role] = {}
     end
+    if not EquipmentItems[role] then
+        EquipmentItems[role] = {}
+    end
 end
 
 function WEPS.UpdateWeaponLists(role, weapon, includeSelected, excludeSelected, noRandomSelected)
