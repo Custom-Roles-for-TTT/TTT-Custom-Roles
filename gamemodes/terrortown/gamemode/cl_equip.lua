@@ -203,6 +203,10 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
 
                 -- add this buyable weapon to all relevant equipment tables
                 for _, r in pairs(v.CanBuy) do
+                    -- Skip invalid entries
+                    if type(r) ~= "number" then continue end
+                    if not tbl[r] then continue end
+
                     TableInsert(tbl[r], base)
                 end
             end
