@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.0.3 (Beta)
-**Released:**
+**Released: December 28th, 2023**
 
 ### Changes
 - Changed shadow to have their target copied to players that steal their role
