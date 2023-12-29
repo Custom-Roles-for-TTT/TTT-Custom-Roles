@@ -124,6 +124,53 @@ function WEPS.ResetRoleWeaponCache()
     end
 end
 
+local function PlayerOwnsWepOrItem(ply, classOrId)
+    if isstring(classOrId) then
+        for _, wep in ipairs(ply:GetWeapons()) do
+            if wep:GetClass() == classOrId then
+                return true
+            end
+        end
+
+        return false
+    else
+        return ply:HasEquipmentItem(classOrId)
+    end
+end
+
+-- ply should be a valid player ent, wep should be either a valid ent class name or valid item ID
+function WEPS.PlayerOwnsWepReqs(ply, wep)
+    local role = ply:GetRole()
+    local tab = nil
+
+    if isnumber(wep) then
+        tab = GetEquipmentItem(role, wep)
+    elseif istable(wep) then
+        tab = wep
+    else
+        tab = weapons.GetStored(wep)
+    end
+
+    if tab and tab.req then
+        local requisiteItems = tab.req
+
+        if istable(requisiteItems) then
+            for _, classOrId in ipairs(requisiteItems) do
+                if not PlayerOwnsWepOrItem(ply, classOrId) then
+                    return false
+                end
+            end
+
+            return true
+        else
+            return PlayerOwnsWepOrItem(ply, requisiteItems)
+        end
+    end
+
+    -- If no requisite items provided, return true
+    return true
+end
+
 -- Useful for allowing roles to have a shop only if weapons are assigned to them
 function WEPS.DoesRoleHaveWeapon(role, promoted)
     WEPS.PrepWeaponsLists(role)

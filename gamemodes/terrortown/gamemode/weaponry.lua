@@ -543,6 +543,14 @@ local function OrderEquipment(ply, cmd, args)
             end
         end
 
+        -- Check if the item needs another purchased before it can be
+        if allowed then
+            if not WEPS.PlayerOwnsWepReqs(ply, allowed.req) then
+                print(ply, "tried to buy item requiring another item they don't own", id)
+                return 
+            end
+        end
+
         if not allowed then
             print(ply, "tried to buy item not buyable for their role:", id)
             return

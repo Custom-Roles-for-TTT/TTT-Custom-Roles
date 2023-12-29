@@ -91,6 +91,7 @@ L.equip_carry_slot = "You are already carrying a weapon in slot {slot}."
 
 L.equip_help_stock = "Of certain items you can only buy one per round."
 L.equip_stock_deny = "This item is no longer in stock."
+L.equip_req_deny = "Another item must be purchased before this becomes available."
 L.equip_stock_ok = "This item is in stock."
 
 L.equip_custom = "Custom item added by this server."

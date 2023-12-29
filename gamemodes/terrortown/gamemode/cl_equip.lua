@@ -418,6 +418,8 @@ local function PreqLabels(parent, x, y)
     tbl.bought.Check = function(s, sel)
         if sel.limited and LocalPlayer():HasBought(tostring(sel.id)) then
             return false, "X", GetTranslation("equip_stock_deny")
+        elseif sel.req and not WEPS.PlayerOwnsWepReqs(LocalPlayer(), sel) then
+            return false, "X", GetTranslation("equip_req_deny")
         else
             return true, "✔", GetTranslation("equip_stock_ok")
         end
@@ -667,7 +669,8 @@ local function TraitorMenuPopup()
                     -- already carrying a weapon for this slot
                     (ItemIsWeapon(item) and (not CanCarryWeapon(item))) or
                     -- already bought the item before
-                    (item.limited and ply:HasBought(tostring(item.id)))
+                    (item.limited and ply:HasBought(tostring(item.id))) or
+                    not WEPS.PlayerOwnsWepReqs(ply, item)
         end
 
         local function FillEquipmentList(itemlist)
