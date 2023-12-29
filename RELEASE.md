@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.0.4 (Beta)
+**Released:**
+
+### Fixes
+- Fixed status message tooltips not working in the shop window
+
 ## 2.0.3 (Beta)
 **Released: December 28th, 2023**
 

@@ -369,14 +369,19 @@ local function PreqLabels(parent, x, y)
     local tbl = {}
 
     -- coins icon
-    tbl.credits = vgui.Create("DLabel", parent)
-    tbl.credits:SetPos(x, y)
+    tbl.credits = vgui.Create("DPanel", parent)
+    tbl.credits:SetPaintBackground(false)
+    tbl.credits:SetHeight(32)
+    tbl.credits:SetPos(x - 32 - 2, y)
 
     tbl.credits.img = vgui.Create("DImage", parent)
     tbl.credits.img:SetSize(32, 32)
     tbl.credits.img:CopyPos(tbl.credits)
-    tbl.credits.img:MoveLeftOf(tbl.credits)
     tbl.credits.img:SetImage("vgui/ttt/equip/coin.png")
+
+    tbl.credits.lbl = vgui.Create("DLabel", parent)
+    tbl.credits.lbl:CopyPos(tbl.credits)
+    tbl.credits.lbl:MoveRightOf(tbl.credits.img)
 
     tbl.credits.Check = function(s, sel)
         local credits = LocalPlayer():GetCredits()
@@ -384,15 +389,20 @@ local function PreqLabels(parent, x, y)
     end
 
     -- carry icon
-    tbl.owned = vgui.Create("DLabel", parent)
+    tbl.owned = vgui.Create("DPanel", parent)
+    tbl.owned:SetPaintBackground(false)
+    tbl.owned:SetHeight(32)
     tbl.owned:CopyPos(tbl.credits)
     tbl.owned:MoveRightOf(tbl.credits, y * 3)
 
     tbl.owned.img = vgui.Create("DImage", parent)
     tbl.owned.img:SetSize(32, 32)
     tbl.owned.img:CopyPos(tbl.owned)
-    tbl.owned.img:MoveLeftOf(tbl.owned)
     tbl.owned.img:SetImage("vgui/ttt/equip/briefcase.png")
+
+    tbl.owned.lbl = vgui.Create("DLabel", parent)
+    tbl.owned.lbl:CopyPos(tbl.owned)
+    tbl.owned.lbl:MoveRightOf(tbl.owned.img)
 
     tbl.owned.Check = function(s, sel)
         if ItemIsWeapon(sel) and (not CanCarryWeapon(sel)) then
@@ -405,15 +415,20 @@ local function PreqLabels(parent, x, y)
     end
 
     -- stock icon
-    tbl.bought = vgui.Create("DLabel", parent)
+    tbl.bought = vgui.Create("DPanel", parent)
+    tbl.bought:SetPaintBackground(false)
+    tbl.bought:SetHeight(32)
     tbl.bought:CopyPos(tbl.owned)
     tbl.bought:MoveRightOf(tbl.owned, y * 3)
 
     tbl.bought.img = vgui.Create("DImage", parent)
     tbl.bought.img:SetSize(32, 32)
     tbl.bought.img:CopyPos(tbl.bought)
-    tbl.bought.img:MoveLeftOf(tbl.bought)
     tbl.bought.img:SetImage("vgui/ttt/equip/package.png")
+
+    tbl.bought.lbl = vgui.Create("DLabel", parent)
+    tbl.bought.lbl:CopyPos(tbl.bought)
+    tbl.bought.lbl:MoveRightOf(tbl.bought.img)
 
     tbl.bought.Check = function(s, sel)
         if sel.limited and LocalPlayer():HasBought(tostring(sel.id)) then
@@ -424,19 +439,21 @@ local function PreqLabels(parent, x, y)
     end
 
     for k, pnl in pairs(tbl) do
-        pnl:SetFont("DermaLarge")
+        pnl.lbl:SetFont("DermaLarge")
     end
 
     return function(selected)
         local allow = true
         for _, pnl in pairs(tbl) do
             local result, text, tooltip = pnl:Check(selected)
-            pnl:SetTextColor(result and color_good or color_bad)
-            pnl:SetText(text)
-            pnl:SizeToContents()
-            pnl:SetTooltip(tooltip)
+            pnl.lbl:SetTextColor(result and color_good or color_bad)
+            pnl.lbl:SetText(text)
+            pnl.lbl:SizeToContents()
+
             pnl.img:SetImageColor(result and color_good or color_bad)
-            pnl.img:SetTooltip(tooltip)
+
+            pnl:SetTooltip(tooltip)
+
             allow = allow and result
         end
         return allow
