@@ -16,7 +16,9 @@ If you would like to rename one of the existing roles, see below for how to do i
 - [Release](https://custom-roles-for-ttt.github.io/TTT-Custom-Roles/tutorials/renaming_roles.html)
 - [Beta/Development](https://custom-roles-for-ttt.github.io/TTT-Custom-Roles-Beta/tutorials/renaming_roles.html)
 ### *Creating Custom Roles*
-If you would like to create your own role to integrate with Custom Roles for TTT, see, see [here](https://custom-roles-for-ttt.github.io/TTT-Custom-Roles/tutorials/create_your_own_role.html).
+If you would like to create your own role to integrate with Custom Roles for TTT, see [here](https://custom-roles-for-ttt.github.io/TTT-Custom-Roles/tutorials/create_your_own_role.html).
+### *Creating Custom Weapons*
+If you would like to create your own shop weapons, see [here](https://custom-roles-for-ttt.github.io/TTT-Custom-Roles/tutorials/create_custom_weapons.html).
 
 ## Configuration
 This addon has many ConVars available so it can be customized to how you want your server to run. All custom roles are disabled by default.\

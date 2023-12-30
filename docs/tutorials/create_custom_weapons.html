@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Roles for TTT - Tutorials - Creating Custom Weapons</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark-dimmed.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#tutorials" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>Creating Custom Weapons</h1>
+        <p>This tutorial aims to point a developer in the correct direction on how to create a custom weapon and how to use the added optional Custom Roles for TTT features.</p>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
+        <ol>
+            <li><a href="#creating-a-custom-weapon">Creating a Custom Weapon</a></li>
+            <li>
+                <a href="#custom-properties">Custom Properties</a>
+                <ol>
+                    <li><a href="#requireditems">Required Items</a></li>
+                </ol>
+            </li>
+        </ol>
+
+        <h2><a id="creating-a-custom-weapon" href="#creating-a-custom-weapon">Creating a Custom Weapon</a></h2>
+        <p>This tutorial will not go in-depth on how to create custom weapons in general, for that please see the official TTT SWEP tutorial <a href="https://www.troubleinterroristtown.com/development/sweps/" target="_blank">here</a>.</p>
+
+        <h2><a id="custom-properties" href="#custom-properties">Custom Properties</a></h2>
+        <p>While created SWEPs and equipment do not need anything special to be compatible with Custom Roles for TTT, there are properties that we have added that can be used to integrate with or change the behavior of how they interact with Custom Roles for TTT features.</p>
+        <p>The custom and modified default SWEP properties are defined in our API, <a href="../api/sweps.html" target="_blank">here</a>.</p>
+        <p>A majority of the properties do not require more explanation than what's in the API documentation. For the properties that are more in-depth, see below for a tutorial of their usage:</p>
+
+        <h3><a id="requireditems" href="#requireditems">Required Items</a></h3>
+        <p>This added property (<code>SWEP.RequiredItems</code> for SWEPs and <code>req</code> for equipment) allows weapon and equipment developers to set other weapons and equipment as being required. That means this weapon or equipment cannot be purchased if the player does not own the required items first.</p>
+        <p>This value of this property can be a weapon class name, an equipment ID, or a table containing weapon class names and equipment IDs. See below for examples:</p>
+        <div><pre><code class="language-lua">-- Add the Mad Scientist's Death Radar, and make it dependent on the normal Radar
+table.insert(EquipmentItems[ROLE_MADSCIENTIST], {
+    id = EQUIP_MAD_DEATHRADAR,
+    type = "item_active",
+    material = "vgui/ttt/icon_death_radar",
+    name = "item_death_radar",
+    desc = "item_death_radar_desc",
+    req = { EQUIP_RADAR } -- Make the Death Radar dependent on  the normal radar
+})
+
+-- Set up a SWEP requiring binoculars and body armor
+SWEP.RequiredItems = { "weapon_ttt_binoculars", EQUIP_ARMOR }</code></pre></div>
+    <p>We recommend listing the weapon's required items in its description to make it easier for the player to know what they need to buy. When a shop item's requirements are not met, the following will show to let the player know: </p>
+    <p><img src="img/Equip_RequirementNotMet.jpg" style="max-width: 100%;" /></p>
+    </div>
+    <div class="footerpadding panel"></div>
+</body>
+<html>
