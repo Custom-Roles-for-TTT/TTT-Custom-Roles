@@ -670,6 +670,7 @@ local function TraitorMenuPopup()
                     (ItemIsWeapon(item) and (not CanCarryWeapon(item))) or
                     -- already bought the item before
                     (item.limited and ply:HasBought(tostring(item.id))) or
+                    -- doesn't have the required items
                     not WEPS.PlayerOwnsWepReqs(ply, item)
         end
 

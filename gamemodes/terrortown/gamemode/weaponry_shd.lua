@@ -127,7 +127,7 @@ end
 local function PlayerOwnsWepOrItem(ply, classOrId)
     if isstring(classOrId) then
         for _, wep in ipairs(ply:GetWeapons()) do
-            if wep:GetClass() == classOrId then
+            if WEPS.GetClass(wep) == classOrId then
                 return true
             end
         end
