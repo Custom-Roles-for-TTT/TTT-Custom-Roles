@@ -150,8 +150,8 @@ function WEPS.PlayerOwnsWepReqs(ply, wep)
         tab = weapons.GetStored(wep)
     end
 
-    if tab and tab.req then
-        local requisiteItems = tab.req
+    if tab and (tab.req or tab.RequiredItems) then
+        local requisiteItems = tab.req or tab.RequiredItems
 
         if istable(requisiteItems) then
             for _, classOrId in ipairs(requisiteItems) do

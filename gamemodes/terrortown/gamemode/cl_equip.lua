@@ -186,6 +186,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     kind = v.Kind or WEAPON_NONE,
                     slot = (v.Slot or 0) + 1,
                     material = v.Icon or "vgui/ttt/icon_id",
+                    req = v.RequiredItems or {},
                     -- the below should be specified in EquipMenuData, in which case
                     -- these values are overwritten
                     type = "Type not specified",
