@@ -434,7 +434,7 @@ local function PreqLabels(parent, x, y)
         if sel.limited and LocalPlayer():HasBought(tostring(sel.id)) then
             return false, "X", GetTranslation("equip_stock_deny")
         elseif sel.req and not WEPS.PlayerOwnsWepReqs(LocalPlayer(), sel) then
-            return false, "X", GetTranslation("equip_req_deny")
+            return false, "X", GetTranslation("equip_stock_req_deny")
         else
             return true, "✔", GetTranslation("equip_stock_ok")
         end
