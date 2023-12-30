@@ -133,18 +133,17 @@ local function PlayerOwnsWepOrItem(ply, classOrId)
         end
 
         return false
-    else
-        return ply:HasEquipmentItem(classOrId)
     end
+
+    return ply:HasEquipmentItem(classOrId)
 end
 
 -- ply should be a valid player ent, wep should be either a valid ent class name or valid item ID
 function WEPS.PlayerOwnsWepReqs(ply, wep)
-    local role = ply:GetRole()
-    local tab = nil
+    local tab
 
     if isnumber(wep) then
-        tab = GetEquipmentItem(role, wep)
+        tab = GetEquipmentItem(ply:GetRole(), wep)
     elseif istable(wep) then
         tab = wep
     else
@@ -162,9 +161,9 @@ function WEPS.PlayerOwnsWepReqs(ply, wep)
             end
 
             return true
-        else
-            return PlayerOwnsWepOrItem(ply, requisiteItems)
         end
+
+        return PlayerOwnsWepOrItem(ply, requisiteItems)
     end
 
     -- If no requisite items provided, return true
