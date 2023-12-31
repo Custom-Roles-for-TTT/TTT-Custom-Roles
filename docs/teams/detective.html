@@ -15,7 +15,7 @@
     </div>
     <div class="contentheader panel" style="margin-bottom: 15px;">
         <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
-            <h1 style="background-color:var(--detective); margin-top: 0;">Detective Roles</h1>
+            <h1 style="background-color:var(--detective); margin-top: 0;">Detective Roles <span id="betaswitch"></span></h1>
             <div style="margin: 10px;">
                 <p><span style="color:var(--detective);">Detectives</span> are part of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, however they have unique advantages and disadvantages compared to other innocents.</p>
                 <p>The main goal of detectives, and by extension the innocent team, is to identify and eliminate all members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. In some cases, they also need to take out <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>, <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
@@ -108,6 +108,24 @@
                         <td>Integer</td>
                         <td>How often in seconds to give detectives a credit. <i>(Set to 0 to disable.)</i></td>
                     </tr>
+                    <tr>
+                        <td>ttt_detectives_search_credits</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>How many credits a detective should get for searching a corpse. <i>(Set to 0 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_detectives_search_credits_friendly</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether detectives should get credits for searching friendly corpses</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_detectives_search_credits_share</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether all detectives should get credits for searching corpses. If disabled, only the searching detective gets credits</td>
+                    </tr>
                     </tbody>
                 </table>
                 <p>Detectives also have the ability to search bodies and uncover information about dead players and how they died. The following ConVars can used to configure what information is available to which players.</p>
@@ -166,7 +184,7 @@
                                 <li><code>wep</code> - The weapon used to kill the dead player.</li>
                                 <li><code>words</code> - The dead player's last words. </li>
                             </ul>
-                            <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i>.
+                            <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i>
                         </td>
                     </tr>
                     </tbody>

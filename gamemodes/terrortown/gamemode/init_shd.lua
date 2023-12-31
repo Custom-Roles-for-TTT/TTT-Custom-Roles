@@ -19,6 +19,7 @@ end
 
 CreateConVar("ttt_all_search_binoc", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_all_search_postround", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_color_mode_override", "none", FCVAR_REPLICATED)
 
 -- Detective role properties
 CreateConVar("ttt_special_detectives_armor_loadout", "1", FCVAR_REPLICATED)

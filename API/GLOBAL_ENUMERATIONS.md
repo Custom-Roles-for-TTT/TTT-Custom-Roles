@@ -14,6 +14,7 @@ What type the convar for an external role is. Used by the ULX plugin to dynamica
 - ROLE_CONVAR_TYPE_NUM - A number. Will use a slider in the configuration UI.
 - ROLE_CONVAR_TYPE_BOOL - A boolean. Will use a checkbox in the configuration UI.
 - ROLE_CONVAR_TYPE_TEXT - A text value. Will use a text box in the configuration UI.
+- ROLE_CONVAR_TYPE_DROPDOWN - A dropdown value. Will use a dropdown in the configuration UI. *(Added in 2.0.2)*
 
 ### ROLE_TEAM_
 Which role team an external role is registered to. A "role team" is a way of grouping roles by common functionality and mostly maps to the logical team with the exception of the detective role team. The detective role team is part of the innocent logical team.\

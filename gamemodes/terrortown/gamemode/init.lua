@@ -1794,7 +1794,7 @@ function SelectRoles()
             ply:SetDefaultCredits(true)
         end
 
-        -- store a steamid -> role map
+        -- store a steamid64 -> role map
         GAMEMODE.LastRole[ply:SteamID64()] = ply:GetRole()
     end
 end

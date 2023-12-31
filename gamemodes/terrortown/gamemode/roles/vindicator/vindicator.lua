@@ -158,6 +158,31 @@ hook.Add("TTTDeathNotifyOverride", "Vindicator_TTTDeathNotifyOverride", function
     return reason, killerName, ROLE_NONE
 end)
 
+local function HandleVindicatorMidRound(ply)
+    if not IsPlayer(ply) then return end
+
+    local target = player.GetBySteamID64(ply:GetNWString("VindicatorTarget", ""))
+    if not IsPlayer(target) then
+        if not ply:IsIndependentTeam() then return end
+        SetVindicatorTeam(false)
+    elseif not ply:IsIndependentTeam() then
+        SetVindicatorTeam(true)
+    end
+end
+
+hook.Add("TTTPlayerRoleChanged", "Vindicator_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == newRole then return end
+
+    -- Do these checks regardless of the current team of the role in case we swap and swap back,
+    -- we want the original Vindicator to have their same first target
+    if oldRole == ROLE_VINDICATOR then
+        local vindicator = player.GetLivingRole(ROLE_VINDICATOR)
+        HandleVindicatorMidRound(vindicator)
+    elseif newRole == ROLE_VINDICATOR then
+        HandleVindicatorMidRound(ply)
+    end
+end)
+
 ----------------
 -- DEATH LINK --
 ----------------

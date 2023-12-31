@@ -1,5 +1,83 @@
 # Release Notes
 
+## 2.0.4
+**Released: January 1st, 2024**\
+Includes beta updates [2.0.1](#201-beta) to [2.0.3](#203-beta).
+
+### Fixes
+- Fixed status message tooltips not working in the shop window
+
+### Developer
+- Added ability for weapons and equipment to specify other weapons or equipment that must be be owned to make this item available
+  - For equipment, this is used by setting the optional `req` property
+  - For weapons (SWEPs), this is used by setting the optional `RequiredItems` property
+
+## 2.0.3 (Beta)
+**Released: December 28th, 2023**
+
+### Changes
+- Changed shadow to have their target copied to players that steal their role
+  - This affects roles such as the guesser and swapper
+
+### Fixes
+- Fixed guesser not copying the role state of the player they guessed
+  - For example, assassin target
+- Fixed another error in the shop if a weapon is somehow set up to be bought by a role that either doesn't exist or hasn't been set up properly
+
+## 2.0.2 (Beta)
+**Released: December 16th, 2023**
+
+### Additions
+- Added ability to override player's role color setting at the server level, `ttt_color_mode_override` (disabled by default) (Thanks to The Stig!)
+- Added a notification message when a detective re-searches a corpse and discovers more information
+  - This happens if `ttt_detectives_search_only` is disabled but something like `ttt_detectives_search_only_role` is enabled
+- Added corpse hint text for spectators to tell them the key combo for possessing a player corpse (ALT+E, by default)
+- Added convar to control whether spectators can search corpses (`ttt_spectator_corpse_search`), enabled by default to maintain currently functionality
+- Added convar to force non-detective-like players to do covert corpse searching (`ttt_corpse_search_not_shared`), disabled by default
+  - This causes search results to not be shared with other players except when a detective-like player searches a corpse
+- Added ability for detective-like players to be rewarded credits for searching bodies (disabled by default)
+  - See `ttt_detectives_search_credits`, `ttt_detectives_search_credits_friendly`, and `ttt_detectives_search_credits_share` for options
+
+### Changes
+- Changed the magneto stick to use an updated model which uses custom player model arms
+- Changed convars that have a fixed set of options to use a labeled dropdown in ULX
+
+### Fixes
+- Fixed corpse find notifications showing "unknown" for name and role after the round ended
+- Fixed player corpses that were searched by a non-detective (when `ttt_detectives_search_only` is disabled) not having their information sent to other players
+  - This resulted in the scoreboard not updating except for the player(s) that inspected the corpse
+- Fixed spectators seeing the covert search hint text for a player corpse even though they don't have that ability
+- Fixed player information not showing on the scoreboard when their corpse was searched by the local player but it wasn't shared to other players
+- Fixed swapper notify convars not showing in ULX
+
+### Developer
+- Added new dropdown type for role convars, `ROLE_CONVAR_TYPE_DROPDOWN`
+  - Use the `choices` property to define a table of the dropdown options
+  - If the convar represents numeric options, but you want to have a string label then use `choices` to provide the labels and `isNumeric` and `numericOffset` to configure the values
+
+## 2.0.1 (Beta)
+**Released: December 9th, 2023**
+
+### Additions
+- Added ability for the clown to be activated when a certain percentage of players are left alive, `ttt_clown_activation_pct` (disabled by default)
+  - This is in addition to activating when a team would win the round
+- Added ability to override the loot goblin's radar beep sound setting at the server level, `ttt_lootgoblin_radar_beep_sound_override` (disabled by default) (Thanks to The Stig!)
+
+### Changes
+- Changed zombie claw HUD hint to not mention features that are disabled
+
+### Fixes
+- Fixed players who swap roles with an activated vindicator not having their team set back to innocent
+- Fixed an error in the shop if a weapon is somehow set up to be bought by a role that either doesn't exist or hasn't been set up properly
+- Fixed player seeing their own name in the credit transfer dropdown sometimes
+- Fixed all end-of-round awards regarding most used weapons not working
+- Fixed spy not copying skin and bodygroups of the player they killed when `ttt_spy_steal_model` was enabled
+- Fixed spy not getting their own skin and bodygroups back at the end of the round when `ttt_spy_steal_model` was enabled
+
+### Developer
+- Added `TTTDetectiveLikePromoted` hook to detect when a detective-like (deputy, impersonator, etc.) player is promoted
+- Fixed `plymeta:HandleDetectiveLikePromotion` existing on the client side when it should not have
+
 ## 2.0.0
 **Released: November 21st, 2023**\
 Includes beta updates [1.9.3](#193-beta) to [1.9.14](#1914-beta).

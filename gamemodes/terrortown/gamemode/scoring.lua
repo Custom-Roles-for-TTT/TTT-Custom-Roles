@@ -183,8 +183,8 @@ function SCORE:ApplyEventLogScores(wintype)
     -- individual scores, and count those left alive
     local scored_log = ScoreEventLog(self.Events, scores, roles, bonus)
     local ply
-    for sid, s in pairs(scored_log) do
-        ply = player.GetBySteamID64(sid)
+    for sid64, s in pairs(scored_log) do
+        ply = player.GetBySteamID64(sid64)
         if IsValid(ply) and ply:ShouldScore() then
             ply:AddFrags(KillsToPoints(s, ply:IsTraitorTeam(), ply:IsInnocentTeam()))
         end

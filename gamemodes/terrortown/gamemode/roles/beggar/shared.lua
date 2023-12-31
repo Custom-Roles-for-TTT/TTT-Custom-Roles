@@ -70,8 +70,9 @@ CreateConVar("ttt_beggar_update_scoreboard", "0", FCVAR_REPLICATED)
 ROLE_CONVARS[ROLE_BEGGAR] = {}
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_notify_sound",
@@ -87,13 +88,15 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_reveal_traitor",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No one", "Everyone", "Traitors", "Innocents"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_reveal_innocent",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No one", "Everyone", "Traitors", "Innocents"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_respawn",
@@ -115,8 +118,9 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_scan",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Disabled", "Can only scan traitors", "Can scan any role that has a shop"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_scan_time",

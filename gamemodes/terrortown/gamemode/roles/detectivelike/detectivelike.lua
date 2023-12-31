@@ -2,9 +2,11 @@ AddCSLuaFile()
 
 local hook = hook
 local ipairs = ipairs
+local net = net
 local pairs = pairs
 local util = util
 
+local CallHook = hook.Call
 local GetAllPlayers = player.GetAll
 
 util.AddNetworkString("TTT_Promotion")
@@ -14,6 +16,9 @@ util.AddNetworkString("TTT_Promotion")
 -------------
 
 local detectives_credits_timer = CreateConVar("ttt_detectives_credits_timer", "0")
+CreateConVar("ttt_detectives_search_credits", 0, FCVAR_NONE, "How many credits a detective should get for searching a corpse. Set to 0 to disable.", 0, 10)
+CreateConVar("ttt_detectives_search_credits_friendly", 0, FCVAR_NONE, "Whether detectives should get credits for searching friendly corpses", 0, 1)
+CreateConVar("ttt_detectives_search_credits_share", 0, FCVAR_NONE, "Whether all detectives should get credits for searching corpses. If disabled, only the searching detective gets credits", 0, 1)
 
 -- Server-side functions shared by detective-like roles (Deputy, Impersonator)
 
@@ -124,3 +129,38 @@ end)
 hook.Add("TTTEndRound", "DetectiveLike_TTTEndRound", function()
     timer.Remove("DetectiveCreditTimer")
 end)
+
+--------------------
+-- PLAYER METHODS --
+--------------------
+
+local plymeta = FindMetaTable("Player")
+
+function plymeta:HandleDetectiveLikePromotion()
+    self:SetNWBool("HasPromotion", true)
+
+    local role = self:GetRole()
+    local rolestring = ROLE_STRINGS_RAW[role]
+    local convar = "ttt_" .. rolestring .. "_activation_credits"
+    if ConVarExists(convar) then
+        local credits = GetConVar(convar):GetInt()
+        if credits > 0 then
+            self:AddCredits(credits)
+        end
+    end
+
+    -- Give the player their shop items if purchase was delayed
+    if DELAYED_SHOP_ROLES[role] and self.bought and cvars.Bool("ttt_" .. rolestring .. "_shop_delay", false) then
+        self:GiveDelayedShopItems()
+    end
+
+    net.Start("TTT_Promotion")
+    net.WriteString(self:Nick())
+    net.Broadcast()
+
+    -- The player has been promoted so we need to update their shop
+    net.Start("TTT_ResetBuyableWeaponsCache")
+    net.Send(self)
+
+    CallHook("TTTDetectiveLikePromoted", nil, self)
+end

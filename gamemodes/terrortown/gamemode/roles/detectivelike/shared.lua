@@ -1,7 +1,5 @@
 AddCSLuaFile()
 
-local net = net
-
 -- Role features shared by detective-like roles (Deputy, Impersonator)
 local function MoveRoleState(ply, target, keep_on_source)
     if ply:IsRoleActive() then
@@ -25,35 +23,10 @@ local detectives_glow_enabled = CreateConVar("ttt_detectives_glow_enabled", "0",
 
 local plymeta = FindMetaTable("Player")
 
-function plymeta:HandleDetectiveLikePromotion()
-    self:SetNWBool("HasPromotion", true)
+local function IsDetectiveLikeRole(role) return DETECTIVE_LIKE_ROLES[role] or false end
 
-    local role = self:GetRole()
-    local rolestring = ROLE_STRINGS_RAW[role]
-    local convar = "ttt_" .. rolestring .. "_activation_credits"
-    if ConVarExists(convar) then
-        local credits = GetConVar(convar):GetInt()
-        if credits > 0 then
-            self:AddCredits(credits)
-        end
-    end
-
-    -- Give the player their shop items if purchase was delayed
-    if DELAYED_SHOP_ROLES[role] and self.bought and cvars.Bool("ttt_" .. rolestring .. "_shop_delay", false) then
-        self:GiveDelayedShopItems()
-    end
-
-    net.Start("TTT_Promotion")
-    net.WriteString(self:Nick())
-    net.Broadcast()
-
-    -- The player has been promoted so we need to update their shop
-    net.Start("TTT_ResetBuyableWeaponsCache")
-    net.Send(self)
-end
-
-function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or (DETECTIVE_LIKE_ROLES[self:GetRole()] and self:IsRoleActive()) end
-function plymeta:GetDetectiveLikePromotable() return DETECTIVE_LIKE_ROLES[self:GetRole()] and not self:IsRoleActive() end
+function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or (IsDetectiveLikeRole(self:GetRole()) and self:IsRoleActive()) end
+function plymeta:GetDetectiveLikePromotable() return IsDetectiveLikeRole(self:GetRole()) and not self:IsRoleActive() end
 function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike

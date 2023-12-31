@@ -15,7 +15,7 @@
     </div>
     <div class="contentheader panel" style="margin-bottom: 15px;">
         <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
-            <h1 style="background-color:var(--independent); margin-top: 0;">Independent Roles</h1>
+            <h1 style="background-color:var(--independent); margin-top: 0;">Independent Roles <span id="betaswitch"></span></h1>
             <div style="margin: 10px;">
                 <p><span style="color:var(--independent);">Independents</span> have unique win conditions for each role. There is very little in common between different independents, and they can play completely different to each other. Typically, there are very few independents in each round.</p>
                 <p>Most independents do not have their role known to any other players, and are not part of a team. Even if there are multiple different independents in the same round, they will often be competing against each other either directly or indirectly. However, there are exceptions to this as some independents have a goal of converting other players to their team. In these cases those players will be aware of each other's roles and can win together.</p>
@@ -752,8 +752,8 @@
                         <tr>
                             <td>ttt_shadow_soul_link</td>
                             <td>0</td>
-                            <td>Boolean</td>
-                            <td>Whether the Shadow should die when their target dies and vice-versa.</td>
+                            <td>Integer (0-2)</td>
+                            <td>Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.</td>
                         </tr>
                         <tr>
                             <td>ttt_shadow_speed_mult</td>

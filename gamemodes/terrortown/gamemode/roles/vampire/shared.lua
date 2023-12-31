@@ -144,13 +144,15 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_prime_death_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Do nothing", "Kill all thralls", "Revert role of all thralls"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_prime_friendly_fire",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Do nothing", "Reflect", "Block"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_show_target_icon",

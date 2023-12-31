@@ -25,12 +25,14 @@ CreateConVar("ttt_lootgoblin_announce", "4", FCVAR_REPLICATED, "The logic to use
 CreateConVar("ttt_lootgoblin_cackle_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_lootgoblin_jingle_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_lootgoblin_drop_timer", 0, FCVAR_REPLICATED, "How often (in seconds) the loot goblin should drop a piece of loot behind them",  0, 300)
+CreateConVar("ttt_lootgoblin_radar_beep_sound_override", 0, FCVAR_REPLICATED, "Forces all players to have the loot goblin radar sound on/off, 0 - Let user decide, 1 - Force on, 2 - Force off", 0, 2)
 
 ROLE_CONVARS[ROLE_LOOTGOBLIN] = {}
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_notify_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_notify_sound",
@@ -52,8 +54,9 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
 })
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_announce",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_size",
@@ -95,8 +98,9 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
 })
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_regen_mode",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"No regeneration", "Constant regen while active", "Regen while standing still", "Regen after taking damage"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_regen_rate",
@@ -121,6 +125,12 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_radar_delay",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_radar_beep_sound_override",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Let user decide", "Force on", "Force off"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_active_display",

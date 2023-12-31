@@ -33,6 +33,7 @@
    1. [File Separation](#File-Separation)
    1. [Role Modifications](#Role-Modifications)
 1. [Sprites](#Sprites)
+   1. [Updating the Sprite Folder Name](#Updating-the-Sprite-Folder-Name)
    1. [Finding a Role Icon](#Finding-a-Role-Icon)
    1. [Tab File](#Tab-File)
    1. [Score File](#Score-File)
@@ -533,16 +534,22 @@ Once you have defined your ConVar you can add it to the `convars` table to get i
 | Slider | `ROLE_CONVAR_TYPE_NUM` |
 | Checkbox | `ROLE_CONVAR_TYPE_BOOL` |
 | Textbox | `ROLE_CONVAR_TYPE_TEXT` |
+| Dropdown *(Added in 2.0.2)* | `ROLE_CONVAR_TYPE_DROPDOWN` |
 
 If your ConVar is a number using a slider you can optionally add a third property `decimal` which determines how many decimal places of precision you want to give the user. *(Note: Max and min values for sliders are determined by the max and min values you specified when you defined the ConVar)*
 
-The Summoner does not have any extra ConVars but for the sake of example we will add three useless ConVars.
+If your ConVar should have a set of limited options, choose `ROLE_CONVAR_TYPE_DROPDOWN` and add the `choices` property as a list of the valid options. Alternatively they can can be used to display labels for a numeric range of values. To do this, set the `isNumeric` property in the role convars table entry. If the value of the convar does not start at `0` (e.g., the convar accepts the range `1`-`4`) then you must configure the offset between the number value and the table index. This is accomplished by setting the `numericOffset` property (which defaults to `1`) in the role convars table entry. Without setting the `numericOffset` value, the first entry in the `choices` table will set the convar to `0`, the second will be `1`, etc.
+
+The Summoner does not have any extra ConVars but for the sake of example we will add some useless ConVars.
 
 ```lua
 if SERVER then
     CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
     CreateConVar("ttt_summoner_checkbox", "0")
     CreateConVar("ttt_summoner_textbox", "0")
+    CreateConVar("ttt_summoner_dropdown", "default")
+    CreateConVar("ttt_summoner_dropdown_numeric", "default", FCVAR_NONE, "This is a useless dropdown", 0, 3)
+    CreateConVar("ttt_summoner_dropdown_numeric_offset", "default", FCVAR_NONE, "This is a useless dropdown with an offset", 1, 4)
 end
 ROLE.convars = {}
 table.insert(ROLE.convars, {
@@ -557,6 +564,24 @@ table.insert(ROLE.convars, {
 table.insert(ROLE.convars, {
     cvar = "ttt_summoner_textbox",
     type = ROLE_CONVAR_TYPE_TEXT
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_dropdown",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"default", "another option", "something else"}
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_dropdown_numeric",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Value of Zero", "Value of One", "Value of Two", "Value of Three"},
+    isNumeric = true
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_dropdown_numeric_offset",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Value of One", "Value of Two", "Value of Three", "Value of Four"},
+    isNumeric = true,
+    numericOffset = 0
 })
 ```
 
@@ -881,6 +906,9 @@ Modifying pre-existing roles can end up being more confusing than creating one f
 
 There are four different sprites used within CR for TTT and you will need to make a separate image file for each.
 
+### Updating the Sprite Folder Name
+Before we start creating sprites, we'll need to update the name of the folder that will hold these sprites. You can find the folder in the exacted 'Role Addon Template' > 'materials' > 'vgui' > 'ttt' > 'roles' folder and it will be named '%NAMESHORT%'. Rename '%NAMESHORT%' to the short name you chose for your role above. In our example, that means we will be renaming the folder to 'sum' for the Summoner. All icons from this section of the guide will be saved in this now-renamed folder.
+
 ### Finding a Role Icon
 Before you start messing with each individual sprite you need to find a good role icon. Your role icon should be solid white and you should avoid too much detail. One of the best places we know to find icons like this is https://game-icons.net/.
 
@@ -890,7 +918,7 @@ For the Summoner we are going to use their "minions" icon with some slight chang
 
 ### Tab File
 
-The tab file is the simplest icon of the bunch. This icon shows up next to players that you know the role of when you are holding tab. There is no template for the tab icon as all you need to do is resize your icon down to 16x16. This icon should be saved as 'tab_%NAMESHORT%.png' where `%NAMESHORT%` is replaced with whatever you defined `nameshort` as earlier. All of the icons in this guide should be saved in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt'.
+The tab file is the simplest icon of the bunch. This icon shows up next to players that you know the role of when you are holding tab. There is no template for the tab icon as all you need to do is resize your icon down to 16x16. This icon should be saved as 'tab_%NAMESHORT%.png' where `%NAMESHORT%` is replaced with whatever you defined `nameshort` as earlier. All of the icons in this guide should be saved in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt' > 'roles' > '%NAMESHORT%'.
 
 Here is what we ended with for 'tab_sum.png':
 
@@ -898,7 +926,7 @@ Here is what we ended with for 'tab_sum.png':
 
 ### Score File
 
-The score file is what shows up in the round summary at the end of each round. Open up 'Score Template.psd' and you should see a white dashed outline. This is the guide for the size of your icon. Click on the 'Icon' layer and paste in your role icon. You should automatically see a shadow appear behind your icon. Resize this icon until the white is all inside the dashed outline. *(Note: It doesn't matter if some shadow spills out of the outline as long as all the white is inside the guide.)* Once you are happy with the positioning of the icon you can click the eye symbol next to the 'Icon Guide' layer to hide the dashed outline guide. Save this image as 'score_%NAMESHORT%.png' where `%NAMESHORT%` is replaced as you did before. Once again this should be saved in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt'.
+The score file is what shows up in the round summary at the end of each round. Open up 'Score Template.psd' and you should see a white dashed outline. This is the guide for the size of your icon. Click on the 'Icon' layer and paste in your role icon. You should automatically see a shadow appear behind your icon. Resize this icon until the white is all inside the dashed outline. *(Note: It doesn't matter if some shadow spills out of the outline as long as all the white is inside the guide.)* Once you are happy with the positioning of the icon you can click the eye symbol next to the 'Icon Guide' layer to hide the dashed outline guide. Save this image as 'score_%NAMESHORT%.png' where `%NAMESHORT%` is replaced as you did before. Once again this should be saved in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt' > 'roles' > '%NAMESHORT%'.
 
 Here is what we have for 'score_sum.png':
 
@@ -910,7 +938,7 @@ The sprite file is what shows up above players heads when you know their role. O
 
 For some icons GMod likes to use a .vtf or Valve Texture Format file. In order to do this we need to first create a .tga or Targa file. Targa files use an alpha layer for transparency so we need to convert our .png into a .tga. While Photoshop and GIMP can do this natively they do not properly create the alpha layer we need. The best method we have found is to use [Aconvert.com](https://www.aconvert.com/image/png-to-tga/) so upload your 'sprite_%NAMESHORT%.png' file here and download the converted Targa file.
 
-Finally we can turn our .tga into the .vtf file we need. Open VTFEdit, click 'File' > 'Import' and select the converted Targa file. You should see your icon inside of VTFEdit except the shadows should have turned solid black and any transparency is now white. While this may look incredibly strange, this is actually exactly what we want! Save this file as 'sprite_%NAMESHORT%.vtf' in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt'.
+Finally we can turn our .tga into the .vtf file we need. Open VTFEdit, click 'File' > 'Import' and select the converted Targa file. You should see your icon inside of VTFEdit except the shadows should have turned solid black and any transparency is now white. While this may look incredibly strange, this is actually exactly what we want! Save this file as 'sprite_%NAMESHORT%.vtf' in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt' > 'roles' > '%NAMESHORT%'.
 
 Here is the final version of 'sprite_sum.vtf':
 
@@ -918,7 +946,7 @@ Here is the final version of 'sprite_sum.vtf':
 
 ### Icon File
 
-The icon file is shown when a body is searched to reveal that players role. Open up 'Icon Template.psd' and yet again you should see a guide outline. Repeat the same process you did for both the score and sprite files. The icon file also needs to have a .vtf format so save your file as a .png, upload it to [Aconvert.com](https://www.aconvert.com/image/png-to-tga/), download your .tga file and import it into VTFEdit. Save this file as 'icon_%NAMESHORT%.vtf' in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt'.
+The icon file is shown when a body is searched to reveal that players role. Open up 'Icon Template.psd' and yet again you should see a guide outline. Repeat the same process you did for both the score and sprite files. The icon file also needs to have a .vtf format so save your file as a .png, upload it to [Aconvert.com](https://www.aconvert.com/image/png-to-tga/), download your .tga file and import it into VTFEdit. Save this file as 'icon_%NAMESHORT%.vtf' in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt' > 'roles' > '%NAMESHORT%'.
 
 Here is the final version of 'icon_sum.vtf':
 
@@ -926,13 +954,13 @@ Here is the final version of 'icon_sum.vtf':
 
 ### .vmt Files
 
-The final step you need to take to finish your role sprites is to update the three .vmt files that were already present in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt' when you started. Rename each of the files to replace `%NAMESHORT%` with what you defined `nameshort` as in your earlier coding. Open up each file and you should see one line that looks like this:
+The final step you need to take to finish your role sprites is to update the three .vmt files that were already present in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt' > 'roles' > '%NAMESHORT%' when you started. Rename each of the files to replace `%NAMESHORT%` with what you defined `nameshort` as in your earlier coding. Open up each file and you should see one line that looks like this:
 ```
-"$basetexture" "vgui/ttt/sprite_%NAMESHORT%"
+"$basetexture" "vgui/ttt/roles/%NAMESHORT%/sprite_%NAMESHORT%"
 ```
 or this:
 ```
-"$basetexture" "vgui/ttt/icon_%NAMESHORT%"
+"$basetexture" "vgui/ttt/roles/%NAMESHORT%/icon_%NAMESHORT%"
 ```
 Replace `%NAMESHORT%` with whatever you set `nameshort` to earlier and save each of those three files.
 
@@ -940,7 +968,7 @@ For example, here is what 'sprite_sum_noz.vmt' looks like:
 ```
 "UnlitGeneric"
 {
-    "$basetexture" "vgui/ttt/sprite_sum"
+    "$basetexture" "vgui/ttt/roles/%NAMESHORT%/sprite_sum"
     "$nocull" 1
     "$ignorez" 1
     "$nodecal" 1

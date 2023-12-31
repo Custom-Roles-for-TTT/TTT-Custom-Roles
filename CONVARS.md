@@ -394,7 +394,7 @@ ttt_infected_cough_timer_max                60      // The maximum time between 
 // Vindicator
 ttt_vindicator_respawn_delay                5       // Delay between the vindicator dying and respawning in seconds
 ttt_vindicator_respawn_health               100     // The amount of health a vindicator will respawn with
-ttt_vindicator_announcement_mode            1       // Who is notified when the vindicator respawns (0: No one, 1: The vindicator's killer, 2: Everyone)
+ttt_vindicator_announcement_mode            1       // Who is notified when the vindicator respawns. 0 - No one, 1 - The vindicator's killer, 2 - Everyone
 ttt_vindicator_prevent_revival              0       // Whether the vindicator should be killed if they are revived after having died due to failing or succeeding in killing their target
 ttt_vindicator_target_suicide_success       1       // Whether the vindicator's killer killing themselves should count as a win for the vindicator
 ttt_vindicator_kill_on_fail                 1       // Whether the vindicator should be killed if they fail to kill their target
@@ -427,7 +427,10 @@ ttt_detectives_glow_enabled                 0       // Whether members of the de
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
-ttt_detectives_credits_timer                0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
+ttt_detectives_credits_timer                0       // How often in seconds to give members of the detective team a credit. Set to 0 to disable.
+ttt_detectives_search_credits               0       // How many credits a detective should get for searching a corpse. Set to 0 to disable.
+ttt_detectives_search_credits_friendly      0       // Whether detectives should get credits for searching friendly corpses
+ttt_detectives_search_credits_share         0       // Whether all detectives should get credits for searching corpses. If disabled, only the searching detective gets credits
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
@@ -507,6 +510,7 @@ ttt_clown_use_traps_when_active             0       // Whether the clown can see
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_clown_heal_on_activate                  0       // Whether the clown should fully heal when they activate or not
 ttt_clown_heal_bonus                        0       // The amount of bonus health to give the clown if they are healed when they are activated
+ttt_clown_activation_pct                    0       // The percentage of players remaining before the clown is activated (e.g. 0.5 = 50% of players remain). Set to 0 to only activate when a team would win
 ttt_clown_shop_active_only                  1       // Whether the clown's shop should be available only after they activate
 ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
@@ -575,6 +579,7 @@ ttt_lootgoblin_regen_delay                  0       // The length of the delay (
 ttt_lootgoblin_radar_enabled                0       // Whether the radar ping for the loot goblin should be enabled or not
 ttt_lootgoblin_radar_timer                  15      // How often (in seconds) the radar ping for the loot goblin should update
 ttt_lootgoblin_radar_delay                  15      // How delayed (in seconds) the radar ping for the loot goblin should be
+ttt_lootgoblin_radar_beep_sound_override    0       // Forces all players to have the loot goblin radar sound on/off, 0 - Let user decide, 1 - Force on, 2 - Force off
 ttt_lootgoblin_active_display               1       // Whether to show the loot goblin's information over their head and on the scoreboard once they are activated
 ttt_lootgoblin_drop_timer                   0       // How often (in seconds) the loot goblin should drop a piece of loot behind them
 
@@ -752,7 +757,7 @@ ttt_shadow_sprint_recovery_max              0.5     // The maximum amount of sta
 ttt_shadow_target_jester                    1       // Whether the shadow should be able to target a member of the jester team
 ttt_shadow_target_independent               1       // Whether the shadow should be able to target an independent player
 ttt_shadow_target_notify_mode               0       // How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.
-ttt_shadow_soul_link                        0       // Whether the shadow should die when their target dies and vice-versa
+ttt_shadow_soul_link                        0       // Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.
 ttt_shadow_weaken_health_to                 0       // How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. Set to 0 to disable, meaning the shadow will be killed
 ttt_shadow_weaken_timer                     3       // How often (in seconds) to adjust the shadow's health when they are outside of the target circle
 ttt_shadow_can_see_jesters                  0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the shadow
@@ -1018,6 +1023,9 @@ ttt_death_notifier_enabled                  1       // Whether the name and role
 ttt_smokegrenade_extinguish                 1       // Whether smoke grenades should extinguish fire
 ttt_player_set_color                        1       // Whether player colors are set each time that player spawns
 ttt_dna_scan_on_dialog                      1       // Whether to show a button to open the DNA scanner on the body search dialog
+ttt_spectator_corpse_search                 1       // Whether spectators can search bodies (not shared with other players)
+ttt_corpse_search_not_shared                0       // Whether corpse searches are not shared with other players (only affects non-detective-like searchers)
+ttt_color_mode_override                     "none"  // Forces all players to have a certain role color setting. none (let user decide), default, simple, protan, deutan, tritan
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for their original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

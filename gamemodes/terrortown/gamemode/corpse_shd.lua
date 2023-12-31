@@ -1,5 +1,8 @@
 ---- Shared corpsey stuff
 
+CreateConVar("ttt_spectator_corpse_search", "1", FCVAR_REPLICATED, "Whether spectators can search bodies (not shared with other players)", 0, 1)
+CreateConVar("ttt_corpse_search_not_shared", "0", FCVAR_REPLICATED, "Whether corpse searches are not shared with other players (only affects non-detective-like searchers)", 0, 1)
+
 CORPSE = CORPSE or {}
 
 -- Manual datatable indexing
@@ -54,5 +57,5 @@ function CORPSE.CanBeSearched(ply, rag)
     local detectiveSearchOnly = (GetConVar("ttt_detectives_search_only"):GetBool() or IsAllDetectiveOnly()) and
                             not (GetConVar("ttt_all_search_postround"):GetBool() and GetRoundState() ~= ROUND_ACTIVE) and
                             not (GetConVar("ttt_all_search_binoc"):GetBool() and ply:GetActiveWeapon() and WEPS.GetClass(ply:GetActiveWeapon()) == "weapon_ttt_binoculars")
-    return ply:IsDetectiveLike() or not detectiveSearchOnly or (IsValid(ownerEnt) and ownerEnt:GetNWBool("body_searched", false))
+    return ply:IsActiveDetectiveLike() or not detectiveSearchOnly or (IsValid(ownerEnt) and ownerEnt:GetNWBool("body_searched", false))
 end
