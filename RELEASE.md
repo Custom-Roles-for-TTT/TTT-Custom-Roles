@@ -1,7 +1,8 @@
 # Release Notes
 
-## 2.0.4 (Beta)
-**Released:**
+## 2.0.4
+**Released: January 1st, 2024**\
+Includes beta updates [2.0.1](#201-beta) to [2.0.3](#203-beta).
 
 ### Fixes
 - Fixed status message tooltips not working in the shop window
