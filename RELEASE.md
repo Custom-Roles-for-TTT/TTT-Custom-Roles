@@ -1,5 +1,16 @@
 # Release Notes
 
+## 2.0.4 (Beta)
+**Released:**
+
+### Fixes
+- Fixed status message tooltips not working in the shop window
+
+### Developer
+- Added ability for weapons and equipment to specify other weapons or equipment that must be be owned to make this item available
+  - For equipment, this is used by setting the optional `req` property
+  - For weapons (SWEPs), this is used by setting the optional `RequiredItems` property
+
 ## 2.0.3 (Beta)
 **Released: December 28th, 2023**
 

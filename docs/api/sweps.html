@@ -17,25 +17,37 @@
         <p>Changes made to SWEPs (the data structure used when defining new weapons)</p>
     </div>
     <div class="contentbody panel">
-        <h3><a id="user-content-swepblockshoprandomization" href="#user-content-swepblockshoprandomization">SWEP.BlockShopRandomization</a></h3>
+        <h3><a id="swepblockshoprandomization" href="#swepblockshoprandomization">SWEP.BlockShopRandomization</a></h3>
         <p>
             Whether this weapon should block the shop randomization logic. Setting this to <code>true</code> will ensure this SWEP <em>always</em> shows in the applicable role's shop.<br>
             <em>Added in:</em> 1.0.7
         </p>
 
-        <h3><a id="user-content-swepcategory" href="#user-content-swepcategory">SWEP.Category</a></h3>
+        <h3><a id="swepboughtby" href="#swepboughtby">SWEP.BoughtBy</a></h3>
+        <p>
+            Tracks the player that bought this SWEP, if any.<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="swepcategory" href="#swepcategory">SWEP.Category</a></h3>
         <p>
             Updated so role weapons added by Custom Roles for TTT have a fixed global value: <code>WEAPON_CATEGORY_ROLE</code>. This is used to easily identify which weapons belong to specific roles.<br>
             <em>Added in:</em> 1.0.5
         </p>
 
-        <h3><a id="user-content-swepequipmenudata" href="#user-content-swepequipmenudata">SWEP.EquipMenuData</a></h3>
+        <h3><a id="swepequipmenudata" href="#swepequipmenudata">SWEP.EquipMenuData</a></h3>
         <p>
             Updated so <code>name</code>, <code>type</code>, and <code>desc</code> properties can be parameterless functions to allow for parameterized translation.<br>
             <em>Added in:</em> 1.0.8
         </p>
 
-        <h3><a id="user-content-swepshopname" href="#user-content-swepshopname">SWEP.ShopName</a></h3>
+        <h3><a id="sweprequireditems" href="#sweprequireditems">SWEP.RequiredItems</a></h3>
+        <p>
+            Table of weapon class names or equipment IDs that must be purchased before this SWEP is unlocked in the shop.<br>
+            <em>Added in:</em> 2.0.4
+        </p>
+
+        <h3><a id="swepshopname" href="#swepshopname">SWEP.ShopName</a></h3>
         <p>
             The weapon name to use in the shop menu. If not provided, <code>SWEP.PrintName</code> is used instead.<br>
             <em>Added in:</em> 1.1.9
