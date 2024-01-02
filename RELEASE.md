@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.0.5 (Beta)
+**Released:**
+
+### Developer
+- Removed all deprecated methods, hooks, convars, and role features from before 2.0.0
+
 ## 2.0.4
 **Released: January 1st, 2024**\
 Includes beta updates [2.0.1](#201-beta) to [2.0.3](#203-beta).

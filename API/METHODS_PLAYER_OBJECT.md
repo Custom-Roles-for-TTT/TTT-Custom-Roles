@@ -358,12 +358,6 @@ Whether the player should act like a jester (e.g. in what damage they do, what d
 *Realm:* Client and Server\
 *Added in:* 1.2.5
 
-### plymeta:ShouldDelayAnnouncements()  <!-- TODO: Remove after 2.0.0 -->
-**DEPRECATED IN 1.9.4**\
-Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.\
-*Realm:* Client and Server\
-*Added in:* 1.2.7
-
 ### plymeta:ShouldDelayShopPurchase()
 Whether the player's shop purchase deliveries should be delayed.\
 *Realm:* Client and Server\
