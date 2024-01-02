@@ -50,6 +50,7 @@ local incompatible = {
     ["2520210407"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT Weapon Balance by Emzatin.
     ["2553413816"] = { reason = "Overwrites core files required for Custom Roles for TTT" }, -- Emzatins TTT Weapon Balance Mod (Innocents Buffed)
     ["3022749770"] = { reason = "Overwrites core files required for Custom Roles for TTT" }, -- TTT Base Traitor Items Reworked by Emzatin
+    ["693582992"] = { reason = "Overwrites core files required for Custom Roles for TTT", alt = "3025019026"}, -- TTT M9K Weapons Pack (With icon) by LittlEpande
 
     -- Damage Logs
     ["663328966"] = { reason = "Damage logs are not compatible with any non-default roles.", alt = "2306802961" }, -- TTT RDM Manager With Damage Logs by Schmatty
