@@ -74,7 +74,8 @@ local incompatible = {
 
     -- Miscellaneous
     ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook.", alt = "3052896263" }, -- Avengers RandoMat Event by Jenssons
-    ["2209392671"] = { reason = "Breaks the weapon switch HUD (and possibly others)."} -- TTT SimpleHUD by Suphax
+    ["2209392671"] = { reason = "Breaks the weapon switch HUD (and possibly others)."}, -- TTT SimpleHUD by Suphax
+    ["1256344426"] = { reason = "Breaks body searching" } -- TTT Bots 2.0 by immortal man
 }
 
 if CR_BETA then
