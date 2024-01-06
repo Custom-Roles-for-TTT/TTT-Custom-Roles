@@ -3,6 +3,9 @@
 ## 2.0.5 (Beta)
 **Released:**
 
+### Fixes
+- Fixed any player using text chat with a hive mind in the round causing the hive mind to repeat their message
+
 ### Developer
 - Removed all deprecated methods, hooks, convars, and role features from before 2.0.0
 
