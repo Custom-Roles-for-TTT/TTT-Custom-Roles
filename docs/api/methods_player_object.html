@@ -441,6 +441,34 @@
             <li><em>keepOnSource</em> - Whether the source player should also keep the role state data (Defaults to <code>false</code>)</li>
         </ul>
 
+        <h3><a id="plymetaprintmessagequeue" href="#plymetaprintmessagequeue">plymeta:PrintMessageQueue()</a></h3>
+        <p>
+            Begins printing messages from the message queue if it's not already. Automatically called by <code>plymeta:QueueMessage</code>.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.9.4<br>
+        </p>
+        
+        <h3><a id="plymetaqueuemessagemessage_type-message-time-predicate" href="#plymetaqueuemessagemessage_type-message-time-predicate">plymeta:QueueMessage(message_type, message, time, predicate)</a></h3>
+        <p>
+            Queues a message to be shown to the player. Useful in situations where multiple center-screen messages could be shown at the same time and overlapped. This ensures each message is shown in order without overlap.<br>
+            <em>Realm:</em> Server and Client<br>
+            <em>Added in:</em> 1.9.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>message_type</em> - The <a href="global_enumerations.html#msg_print" target="_blank">MSG_PRINT*</a> value representing the display target for this message</li>
+            <li><em>message</em> - The message being shown</li>
+            <li><em>time</em> - The amount of time to display the message in the center of the screen. Only used when <code>message_type</code> is <code>MSG_PRINTBOTH</code> or <code>MSG_PRINTCENTER</code></li>
+            <li><em>predicate</em> - Predicate function called with the player as the sole parameter before the message is sent. Return <code>true</code> to allow the message or <code>false</code> to prevent it (Optional) <em>(Added in 2.0.5)</em> <em>(Only available on the server realm)</em></li>
+        </ul>
+        
+        <h3><a id="plymetaresetmessagequeue" href="#plymetaresetmessagequeue">plymeta:ResetMessageQueue()</a></h3>
+        <p>
+            Clears the message queue for the player.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.9.4<br>
+        </p>
+
         <h3><a id="plymetaresetplayerscale" href="#plymetaresetplayerscale">plymeta:ResetPlayerScale()</a></h3>
         <p>
             Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.<br>

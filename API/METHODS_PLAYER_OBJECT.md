@@ -292,6 +292,26 @@ Moves role state data (such as promotion and monster prime status) to the target
 - *target* - The player to move the role state data to
 - *keepOnSource* - Whether the source player should also keep the role state data (Defaults to `false`)
 
+### plymeta:PrintMessageQueue()
+Begins printing messages from the message queue if it's not already. Automatically called by `plymeta:QueueMessage`.\
+*Realm:* Server\
+*Added in:* 1.9.4
+
+### plymeta:QueueMessage(message_type, message, time, predicate)
+Queues a message to be shown to the player. Useful in situations where multiple center-screen messages could be shown at the same time and overlapped. This ensures each message is shown in order without overlap.\
+*Realm:* Server and Client\
+*Added in:* 1.9.4\
+*Parameters:*
+- *message_type* - The [MSG_PRINT*](GLOBAL_ENUMERATIONS.md#msg_print) value representing the display target for this message
+- *message* - The message being shown
+- *time* - The amount of time to display the message in the center of the screen. Only used when *message_type* is *MSG_PRINTBOTH* or *MSG_PRINTCENTER*
+- *predicate* - Predicate function called with the player as the sole parameter before the message is sent. Return *true* to allow the message or *false* to prevent it (Optional) *(Added in 2.0.5)* *(Only available on the server realm)*
+
+### plymeta:ResetMessageQueue()
+Clears the message queue for the player.\
+*Realm:* Server\
+*Added in:* 1.9.4
+
 ### plymeta:ResetPlayerScale()
 Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.\
 *Realm:* Server\

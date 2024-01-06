@@ -9,6 +9,7 @@
 
 ### Developer
 - Removed all deprecated methods, hooks, convars, and role features from before 2.0.0
+- Added optional `predicate` parameter to server-side `plymeta:QueueMessage`
 
 ## 2.0.4
 **Released: January 1st, 2024**\
