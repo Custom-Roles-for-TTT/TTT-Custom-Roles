@@ -106,7 +106,6 @@ local function AssignAssassinTarget(ply, start, delay)
 
     if ply:Alive() and not ply:IsSpec() then
         if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
-        -- Can't use "Active" here because this happens technically before the round state has updated
         ply:QueueMessage(MSG_PRINTBOTH, targetMessage)
     end
 end
