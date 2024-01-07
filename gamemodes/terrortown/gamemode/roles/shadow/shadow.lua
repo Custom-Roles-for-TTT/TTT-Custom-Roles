@@ -39,6 +39,8 @@ local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
 -----------------------
 
 local function OnTargetAssigned(ply, tgt)
+    if not IsPlayer(ply) or not ply:IsActiveShadow() then return end
+
     ply:SetNWString("ShadowTarget", tgt:SteamID64())
     ply:QueueMessage(MSG_PRINTBOTH, "Your target is " .. tgt:Nick() .. ".")
     ply:SetNWFloat("ShadowTimer", CurTime() + shadow_start_timer:GetInt())
@@ -51,28 +53,34 @@ local function OnTargetAssigned(ply, tgt)
 end
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
-    -- Keep their existing target, if they have one
-    local targetSid64 = ply:GetNWString("ShadowTarget", "")
-    local target = player.GetBySteamID64(targetSid64)
-    if IsPlayer(target) then return end
+    -- Use a slight delay to make sure nothing else is changing this player's role first
+    -- Delay this whole thing to make sure all the validity checks are current
+    timer.Simple(0.25, function()
+        if not IsPlayer(ply) or not ply:IsActiveShadow() then return end
 
-    local closestTarget = nil
-    local closestDistance = -1
-    for _, p in pairs(GetAllPlayers()) do
-        if p:Alive() and not p:IsSpec() and p ~= ply and
-            (shadow_target_jester:GetBool() or not p:IsJesterTeam()) and
-            (shadow_target_independent:GetBool() or not p:IsIndependentTeam()) then
-            local distance = ply:GetPos():Distance(p:GetPos())
-            if closestDistance == -1 or distance < closestDistance then
-                closestTarget = p
-                closestDistance = distance
+        -- Keep their existing target, if they have one
+        local targetSid64 = ply:GetNWString("ShadowTarget", "")
+        local target = player.GetBySteamID64(targetSid64)
+        if IsPlayer(target) then return end
+
+        local closestTarget = nil
+        local closestDistance = -1
+        for _, p in pairs(GetAllPlayers()) do
+            if p:Alive() and not p:IsSpec() and p ~= ply and
+                (shadow_target_jester:GetBool() or not p:IsJesterTeam()) and
+                (shadow_target_independent:GetBool() or not p:IsIndependentTeam()) then
+                local distance = ply:GetPos():Distance(p:GetPos())
+                if closestDistance == -1 or distance < closestDistance then
+                    closestTarget = p
+                    closestDistance = distance
+                end
             end
         end
-    end
 
-    if closestTarget ~= nil then
-        OnTargetAssigned(ply, closestTarget)
-    end
+        if closestTarget ~= nil then
+            OnTargetAssigned(ply, closestTarget)
+        end
+    end)
 end
 
 ROLE_MOVE_ROLE_STATE[ROLE_SHADOW] = function(ply, target, keep_on_source)
@@ -368,6 +376,8 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
             if not v:IsShadow() or not v:Alive() or v:IsSpec() then continue end
 
             local target = player.GetBySteamID64(v:GetNWString("ShadowTarget", ""))
+            if not IsPlayer(target) then continue end
+
             local t = v:GetNWFloat("ShadowTimer", -1)
             if t > 0 and CurTime() > t then
                 local message = "You didn't stay close to your target!"

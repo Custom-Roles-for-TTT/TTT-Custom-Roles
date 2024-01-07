@@ -106,6 +106,7 @@ local function AssignAssassinTarget(ply, start, delay)
 
     if ply:Alive() and not ply:IsSpec() then
         if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
+        -- Can't use "Active" here because this happens technically before the round state has updated
         ply:QueueMessage(MSG_PRINTBOTH, targetMessage)
     end
 end
@@ -160,7 +161,10 @@ ROLE_MOVE_ROLE_STATE[ROLE_ASSASSIN] = function(ply, target, keep_on_source)
     end
 end
 ROLE_ON_ROLE_ASSIGNED[ROLE_ASSASSIN] = function(ply)
-    AssignAssassinTarget(ply, true, false)
+    -- Use a slight delay to make sure nothing else is changing this player's role first
+    timer.Simple(0.25, function()
+        AssignAssassinTarget(ply, true, false)
+    end)
 end
 
 local function ValidTarget(role)

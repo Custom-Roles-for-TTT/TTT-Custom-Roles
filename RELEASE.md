@@ -6,6 +6,7 @@
 ### Fixes
 - Fixed any player using text chat with a hive mind in the round causing the hive mind to repeat their message
 - Fixed player role and name not revealed to non-detectives in the body search dialog after a detective searches body with certain convars enabled
+- Fixed assassin and shadow target messages being shown to players whose roles were changed by something when the round started
 
 ### Developer
 - Removed all deprecated methods, hooks, convars, and role features from before 2.0.0
