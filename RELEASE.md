@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.0.5 (Beta)
-**Released:**
+**Released: January 7th, 2024**
 
 ### Fixes
 - Fixed any player using text chat with a hive mind in the round causing the hive mind to repeat their message
