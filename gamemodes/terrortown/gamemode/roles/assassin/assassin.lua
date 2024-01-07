@@ -160,7 +160,10 @@ ROLE_MOVE_ROLE_STATE[ROLE_ASSASSIN] = function(ply, target, keep_on_source)
     end
 end
 ROLE_ON_ROLE_ASSIGNED[ROLE_ASSASSIN] = function(ply)
-    AssignAssassinTarget(ply, true, false)
+    -- Use a slight delay to make sure nothing else is changing this player's role first
+    timer.Simple(0.25, function()
+        AssignAssassinTarget(ply, true, false)
+    end)
 end
 
 local function ValidTarget(role)

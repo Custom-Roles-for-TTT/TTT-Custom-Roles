@@ -1,5 +1,17 @@
 # Release Notes
 
+## 2.0.5 (Beta)
+**Released: January 7th, 2024**
+
+### Fixes
+- Fixed any player using text chat with a hive mind in the round causing the hive mind to repeat their message
+- Fixed player role and name not revealed to non-detectives in the body search dialog after a detective searches body with certain convars enabled
+- Fixed assassin and shadow target messages being shown to players whose roles were changed by something when the round started
+
+### Developer
+- Removed all deprecated methods, hooks, convars, and role features from before 2.0.0
+- Added optional `predicate` parameter to server-side `plymeta:QueueMessage`
+
 ## 2.0.4
 **Released: January 1st, 2024**\
 Includes beta updates [2.0.1](#201-beta) to [2.0.3](#203-beta).
