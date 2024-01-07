@@ -25,6 +25,8 @@ local hivemind_regen_max_pct = GetConVar("ttt_hivemind_regen_max_pct")
 ----------------------
 
 AddHook("PlayerSay", "HiveMind_PlayerSay", function(ply, text, team_only)
+    if not IsPlayer(ply) then return end
+    if not ply:IsHiveMind() then return end
     if team_only then return end
 
     net.Start("TTT_HiveMindChatDupe")
