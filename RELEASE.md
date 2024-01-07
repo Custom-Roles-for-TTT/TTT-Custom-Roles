@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.0.6 (Beta)
+**Released:**
+
+### Developer
+- Added optional scale parameter to `TTT_PlayerFootstep` net message
+
 ## 2.0.5 (Beta)
 **Released: January 7th, 2024**
 
