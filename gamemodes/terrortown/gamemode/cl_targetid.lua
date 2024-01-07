@@ -272,17 +272,6 @@ function GM:PostDrawTranslucentRenderables()
             if newColorRole then color_role = newColorRole end
 
             local icon, iconNoZ, iconColor, iconType = CallHook("TTTTargetIDPlayerTargetIcon", nil, v, client, showJester)
-
-            if not icon then  -- TODO: Remove after 2.0.0
-                local showKillIcon = CallHook("TTTTargetIDPlayerKillIcon", nil, v, client, false, showJester)
-                if showKillIcon and not client:IsSameTeam(v) then
-                    icon = "kill"
-                    iconNoZ = true
-                    iconColor = ROLE_COLORS_SPRITE[client:GetRole()]
-                    iconType = "down"
-                end
-            end
-
             local offset = role and icon
 
             if role then

@@ -524,6 +524,7 @@ globals = {
     "isentity",
     "isfunction",
     "isnumber",
+    "ispanel",
     "isstring",
     "istable",
     "next",
