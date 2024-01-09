@@ -195,7 +195,7 @@ hook.Add("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText", function(role, tit
         local html =  "The " .. ROLE_STRINGS[ROLE_SPONGE] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player."
 
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
-        html = html .. "<span style='display: block; margin-top: 10px;'>The main way " .. ROLE_STRINGS_PLURAL[ROLE_SPONGE] .. " take damage is by absorbing it from other players who are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>damaged within their aura</span>. Keep other players close to secure the win!</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>The main way " .. ROLE_STRINGS_PLURAL[ROLE_SPONGE] .. " take damage is by absorbing it from other players who are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>damaged within their visible aura</span>. Keep other players close to secure the win!</span>"
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! If all players are within the " .. ROLE_STRINGS[ROLE_SPONGE] .. "'s aura, <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>it will stop working</span>. Watch out for when it changes color to red!</span>"
 
