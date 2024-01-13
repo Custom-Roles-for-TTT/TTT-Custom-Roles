@@ -15,6 +15,8 @@ local TableHasValue = table.HasValue
 local MathMax = math.max
 local MathClamp = math.Clamp
 local MathCeil = math.ceil
+local RunHook = hook.Run
+local CallHook = hook.Call
 
 if CLIENT then
     SWEP.PrintName          = "Role Guesser"
@@ -120,16 +122,22 @@ function SWEP:PrimaryAttack()
                 if ply:IsRole(role) then
                     owner:QueueMessage(MSG_PRINTBOTH, "You guessed correctly and have become " .. ROLE_STRINGS_EXT[role] .. "!")
                     owner:SetNWBool("TTTGuesserWasGuesser", true)
-                    hook.Call("TTTPlayerRoleChangedByItem", nil, owner, owner, self)
+                    CallHook("TTTPlayerRoleChangedByItem", nil, owner, owner, self)
 
-                    ply:Give("weapon_gue_guesser")
                     ply:SetNWString("TTTGuesserGuessedBy", owner:Nick())
                     ply:QueueMessage(MSG_PRINTBOTH, "Your role was guessed by " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and you have taken their place!")
-                    hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
+                    CallHook("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
 
                     ply:MoveRoleState(owner)
+
                     owner:SetRole(role)
+                    owner:StripRoleWeapons()
+                    RunHook("PlayerLoadout", owner)
+
                     ply:SetRole(ROLE_GUESSER)
+                    ply:StripRoleWeapons()
+                    RunHook("PlayerLoadout", ply)
+
                     SendFullStateUpdate()
 
                     net.Start("TTT_GuesserGuessed")
