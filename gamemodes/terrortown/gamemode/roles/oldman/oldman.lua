@@ -152,19 +152,20 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
                 ent:SelectWeapon("weapon_old_dbshotgun")
             end
 
+            local inflictor = dmginfo:GetInflictor()
+            local damagetype = dmginfo:GetDamageType()
             timer.Create(ent:Nick() .. "AdrenalineRush", adrenalineTime, 1, function()
                 ent:SetNWBool("AdrenalineRush", false)
                 ent:SetNWBool("AdrenalineRushed", true)
                 -- Only kill them if they are still the old man
                 if ent:IsActiveOldMan() then
-                    local inflictor = dmginfo:GetInflictor()
                     if not IsValid(inflictor) then
                         inflictor = att
                     end
 
                     -- Use TakeDamage instead of Kill so it properly applies karma
                     local dmg = DamageInfo()
-                    dmg:SetDamageType(dmginfo:GetDamageType())
+                    dmg:SetDamageType(damagetype)
                     dmg:SetAttacker(att)
                     dmg:SetInflictor(inflictor)
                     -- Use 10 so damage scaling doesn't mess with it. The worse damage factor (0.1) will still deal 1 damage after scaling a 10 down
