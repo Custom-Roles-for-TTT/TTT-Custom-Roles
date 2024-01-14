@@ -1,5 +1,16 @@
 # Release Notes
 
+## 2.0.6 (Beta)
+**Released:**
+
+### Fixes
+- Fixed guesser not removing or receiving role weapons when swapping with a role that has them (e.g. the mad scientist)
+- Fixed radar timer label still showing on the UI when it was disabled
+- Fixed old man erroring and not dying when their adrenaline rush ended
+
+### Developer
+- Added optional scale parameter to `TTT_PlayerFootstep` net message
+
 ## 2.0.5 (Beta)
 **Released: January 7th, 2024**
 

@@ -552,7 +552,7 @@ local function InfoPaint(client)
 
     local label_top = 140
     local label_left = 36
-    if client:HasEquipmentItem(EQUIP_RADAR) then
+    if client:HasEquipmentItem(EQUIP_RADAR) and RADAR.enable then
         label_top = label_top + 20
     end
     if client:HasEquipmentItem(EQUIP_DISGUISE) and client:GetNWBool("disguised", false) then
