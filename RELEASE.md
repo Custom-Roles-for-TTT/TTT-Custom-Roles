@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.0.6 (Beta)
-**Released:**
+**Released: January 14th, 2024**
 
 ### Fixes
 - Fixed guesser not removing or receiving role weapons when swapping with a role that has them (e.g. the mad scientist)
