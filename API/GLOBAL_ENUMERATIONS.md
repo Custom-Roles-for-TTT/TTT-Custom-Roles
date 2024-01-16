@@ -36,3 +36,14 @@ Which role team an external role is registered to. A "role team" is a way of gro
 - ROLE_TEAM_INDEPENDENT
 - ROLE_TEAM_MONSTER *(Added in 1.1.7)*
 - ROLE_TEAM_DETECTIVE *(Added in 1.1.3)*
+
+### SHOP_SYNC_MODE_
+What mode to use when synchronizing shop weapons and equipment between the traitor and/or detective shop and a target role.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0\
+*Values:*
+- SHOP_SYNC_MODE_NONE - No additional weapons or equipment will be added to the target role's shop
+- SHOP_SYNC_MODE_UNION - All weapons available to EITHER the traitor or the detective
+- SHOP_SYNC_MODE_INTERSECT - Only weapons available to BOTH the traitor and the detective
+- SHOP_SYNC_MODE_DETECTIVE - All weapons available to the detective
+- SHOP_SYNC_MODE_TRAITOR - All weapons available to the traitor
