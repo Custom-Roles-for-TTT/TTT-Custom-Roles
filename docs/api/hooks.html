@@ -13,7 +13,7 @@
         <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
     </div>
     <div class="contentheader panel">
-        <h1>Hooks</h1>
+        <h1>Hooks <span id="betaswitch"></span></h1>
         <p>Custom and modified event hooks available within the defined realm. A list of default TTT hooks is available <a href="https://www.troubleinterroristtown.com/development/hooks/" target="_blank">here</a> but note that they may have been modified (see below).</p>
         <p><em><strong>NOTE:</strong></em> When using a hook with multiple return values, you <em>must</em> return a non-<code>nil</code> value for all properties up to the one(s) you are modifying or the hook results will be ignored entirely.</p>
         <p>For example, if there is a hook that returns three parameters: <code>first</code>, <code>second</code>, and <code>third</code> and you want to modify the <code>second</code> parameter you must return the <code>first</code> parameter as non-<code>nil</code> as well, like this: <code>return first, newSecond</code>. Any return parameters after <code>second</code> can be omitted and the default value will be used.</p>
