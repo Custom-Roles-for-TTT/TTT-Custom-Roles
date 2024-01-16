@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Roles for TTT - API - WEPS</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>SWEPS</h1>
+        <p>Properties of the WEPS namespace used to store important weapon information</p>
+    </div>
+    <div class="contentbody panel">
+        <h3><a id="wepsbuyableweapons" href="#wepsbuyableweapons">WEPS.BuyableWeapons</a></h3>
+        <p>
+            A table whose keys are role IDs and whose values are the list of weapon classes or equipment names that the role can purchase that they normally would not be able to.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="wepsbypassrandomweapons" href="#wepsbypassrandomweapons">WEPS.BypassRandomWeapons</a></h3>
+        <p>
+            A table whose keys are role IDs and whose values are the list of weapon classes or equipment names that will not be removed from the role's shop by the shop randomization system.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+        
+        <h3><a id="wepsexcludeweapons" href="#wepsexcludeweapons">WEPS.ExcludeWeapons</a></h3>
+        <p>
+            A table whose keys are role IDs and whose values are the list of weapon classes or equipment names that the role cannot purchase that they normally would be able to.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+    </div>
+    <div class="footerpadding panel"></div>
+</body>
+<html>

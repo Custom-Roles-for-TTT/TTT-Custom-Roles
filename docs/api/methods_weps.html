@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Roles for TTT - API - WEPS Methods</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>WEPS Methods</h1>
+        <p>Methods used to manage and manipulate weapons</p>
+    </div>
+    <div class="contentbody panel">
+        <h3><a id="wepsclearretrytimers" href="#wepsclearretrytimers">WEPS.ClearRetryTimers</a></h3>
+        <p>
+            Clears the outstanding weapon purchase and loadout failure retry timers.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.8.2<br>
+        </p>
+
+        <h3><a id="wepsclearweaponslists" href="#wepsclearweaponslists">WEPS.ClearWeaponsLists</a></h3>
+        <p>
+            Clears the weapon lists used by the roleweapons system.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.9.4<br>
+        </p>
+
+        <h3><a id="wepsdisguisetoggleply" href="#wepsdisguisetoggleply">WEPS.DisguiseToggle(ply)</a></h3>
+        <p>
+            Toggle's the player's disguise, if they have one.<br>
+            <em>NOTE:</em> This method was not added by Custom Roles for TTT, but was modified to allow any player with the disguise equipment to use this functionality. In unmodified TTT, this method is restricted to traitors only.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose disguise is being toggled</li>
+        </ul>
+
+        <h3><a id="wepsdoesrolehaveweaponrole-promoted" href="#wepsdoesrolehaveweaponrole-promoted">WEPS.DoesRoleHaveWeapon(role, promoted)</a></h3>
+        <p>
+            Checks whether the role has weapons or equipment available in their shop.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The role being checked for shop weapons and equipment</li>
+            <li><em>promoted</em> - Whether the role has been promoted. Determines whether <code>ROLE_DETECTIVE</code> weapons and equipment should also be checked <em>(Added in 1.3.6)</em></li>
+        </ul>
+
+        <h3><a id="wepshandlecanbuyoverrideswep-role-block_randomization-sync_traitor_weapons-sync_detective_weapons-block_exclusion-sync_roles" href="#wepshandlecanbuyoverrideswep-role-block_randomization-sync_traitor_weapons-sync_detective_weapons-block_exclusion-sync_roles">WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles)</a></h3>
+        <p>
+            Updates the <code>CanBuy</code> property of the given weapon to only include weapons that the provided role is allowed to purchase based on all of the parameters.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>wep</em> - The weapon whose <code>CanBuy</code> property is being updated</li>
+            <li><em>role</em> - The role who purchase ability is being determined</li>
+            <li><em>block_randomization</em> - Whether to block shop randomization for this weapon</li>
+            <li><em>sync_traitor_weapons</em> - Whether the given role should also be able to buy all items that the traitor role can buy</li>
+            <li><em>sync_detective_weapons</em> - Whether the given role should also be able to buy all items that the detective role can buy</li>
+            <li><em>block_exclusion</em> - Whether to ignore the fact that this weapon would normally be excluded for this role <em>(Added in 1.2.7)</em></li>
+            <li><em>sync_roles</em> - The list of roles that should also be checked when determining if this role can purchase this weapon <em>(Added in 1.9.5)</em></li>
+        </ul>
+
+        <h3><a id="wepshandleroleequipment" href="#wepshandleroleequipment">WEPS.HandleRoleEquipment</a></h3>
+        <p>
+            Handles loading the roleweapons configuration from the server data files.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.8.8<br>
+        </p>
+
+        <h3><a id="wepsplayerownswepreqsply-wep" href="#wepsplayerownswepreqsply-wep">WEPS.PlayerOwnsWepReqs(ply, wep)</a></h3>
+        <p>
+            Checks whether the player has the required weapons or equipment for <em>wep</em>.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.0.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose weapon requirements are being checked</li>
+            <li><em>wep</em> - The weapon or equipment whose requirements are being checked</li>
+        </ul>
+
+        <h3><a id="wepsprepweaponslistsrole" href="#wepsprepweaponslistsrole">WEPS.PrepWeaponsLists(role)</a></h3>
+        <p>
+            Prepares the roleweapons lists for the provided role.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The role whose roleweapons lists are being prepared</li>
+        </ul>
+
+        <h3><a id="wepsresetroleweaponcache" href="#wepsresetroleweaponcache">WEPS.ResetRoleWeaponCache</a></h3>
+        <p>
+            Resets the cache of the role weapon overrides.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+        </p>
+
+        <h3><a id="wepsresetweaponscache" href="#wepsresetweaponscache">WEPS.ResetWeaponsCache</a></h3>
+        <p>
+            Resets the cache of the role weapon overrides and resets all changed weapon <em>CanBuy</em> properties back to their defaults.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+        </p>
+
+        <h3><a id="wepsupdateweaponlistsrole-weapon-includeSelected-excludeSelected-noRandomSelected" href="#wepsupdateweaponlistsrole-weapon-includeSelected-excludeSelected-noRandomSelected">WEPS.UpdateWeaponLists(role, weapon, includeSelected, excludeSelected, noRandomSelected)</a></h3>
+        <p>
+            Updates the roleweapons lists for the provided role and weapon.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.9.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The role whole roleweapons lists are being updated</li>
+            <li><em>weapon</em> - The weapon being added or removed from the various lists</li>
+            <li><em>includeSelected</em> - Whether the "include" option is selected. Determines whether the given <code>weapon</code> should be in the <a href="weps.html#wepsbuyableweapons" target="_blank">WEPS.BuyableWeapons</a> list</li>
+            <li><em>excludeSelected</em> - Whether the "include" option is selected. Determines whether the given <code>weapon</code> should be in the <a href="weps.html#wepsexcludeweapons" target="_blank">WEPS.ExcludeWeapons</a> list</li>
+            <li><em>noRandomSelected</em> - Whether the "include" option is selected. Determines whether the given <code>weapon</code> should be in the <a href="weps.html#wepsbypassrandomweapons" target="_blank">WEPS.BypassRandomWeapons</a> list</li>
+        </ul>
+    </div>
+    <div class="footerpadding panel"></div>
+</body>
+<html>
