@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.0.7 (Beta)
+
+### Changes
+- Changed quartermaster to block Randomat events that prevent their role feature from working
+
 ## 2.0.6 (Beta)
 **Released: January 14th, 2024**
 
