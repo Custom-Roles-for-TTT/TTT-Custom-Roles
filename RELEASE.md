@@ -5,6 +5,9 @@
 ### Changes
 - Changed quartermaster to block Randomat events that prevent their role feature from working
 
+### Fixes
+- Fixed loot goblin dropping buyable weapons that are not available in any role's shop
+
 ## 2.0.6 (Beta)
 **Released: January 14th, 2024**
 

@@ -246,7 +246,7 @@ local function StartGoblinTimers()
                         local wep = nil
                         -- Loop in here so we get a different weapon for each loot goblin (if there are multiple)
                         for _, v in RandomPairs(weps) do
-                            if v and not v.AutoSpawnable and v.CanBuy and v.AllowDrop then
+                            if v and not v.AutoSpawnable and v.CanBuy and #v.CanBuy > 0 and v.AllowDrop then
                                 wep = WEPS.GetClass(v)
                                 break
                             end
@@ -358,7 +358,7 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
             timer.Create("LootGoblinWeaponDrop", 0.05, lootgoblin_weapons_dropped:GetInt(), function()
                 if #lootTable == 0 then -- Rebuild the loot table if we run out
                     for _, v in ipairs(weapons.GetList()) do
-                        if v and not v.AutoSpawnable and v.CanBuy and v.AllowDrop then
+                        if v and not v.AutoSpawnable and v.CanBuy and #v.CanBuy > 0 and v.AllowDrop then
                             table.insert(lootTable, WEPS.GetClass(v))
                         end
                     end
