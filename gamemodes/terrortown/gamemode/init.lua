@@ -1291,6 +1291,13 @@ function SelectRoles()
 
     CallHook("TTTSelectRoles", nil, choices_copy, prev_roles_copy)
 
+    for _, v in ipairs(choices) do
+        if v.forcedRole and v.forcedRole ~= ROLE_NONE then
+            v:SetRole(v.forcedRole)
+            v:ClearForcedRole()
+        end
+    end
+
     local forcedTraitorCount = 0
     local forcedSpecialTraitorCount = 0
     local forcedDetectiveCount = 0
