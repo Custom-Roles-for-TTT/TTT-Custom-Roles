@@ -58,7 +58,7 @@ Sets the drunk's role and runs required checks for that role.\
 ### plymeta:ForceRoleNextRound(role)
 Forces a player to spawn as the specified role next round. Returns `true` if successful, `false` if that player has already been forced to be another role.\
 *Realm:* Server\
-*Added in:* 2.0.7
+*Added in:* 2.0.7\
 *Parameters:*
 - *role* - Which role to force the player to be next round
 
