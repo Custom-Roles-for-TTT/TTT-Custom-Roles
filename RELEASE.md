@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.0.7 (Beta)
+**Released: **
+
+### Developer
+- Added `plymeta:ForceRoleNextRound`, `plymeta:GetForcedRole`, and `plymeta:ClearForcedRole` methods to allow forcing player's roles in the next round
+
 ## 2.0.6 (Beta)
 **Released: January 14th, 2024**
 
