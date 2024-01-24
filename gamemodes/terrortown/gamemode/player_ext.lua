@@ -618,18 +618,16 @@ end)
 function plymeta:ForceRoleNextRound(role)
     if self.forcedRole and self.forcedRole ~= ROLE_NONE then
         return false
-    else
-        self.forcedRole = role
-        return true
     end
+    self.forcedRole = role
+    return true
 end
 
 function plymeta:GetForcedRole()
     if self.forcedRole and self.forcedRole ~= ROLE_NONE then
         return self.forcedRole
-    else
-        return false
     end
+    return false
 end
 
 function plymeta:ClearForcedRole()
