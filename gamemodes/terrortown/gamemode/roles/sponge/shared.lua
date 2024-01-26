@@ -41,7 +41,9 @@ table.insert(ROLE_CONVARS[ROLE_SPONGE], {
     decimal = 0
 })
 
-for _, r in ipairs(GetTeamRoles(JESTER_ROLES, {ROLE_SPONGE})) do
+for _, r in ipairs(GetTeamRoles(JESTER_ROLES)) do
+    if r == ROLE_SPONGE then continue end
+
     local rolestring = ROLE_STRINGS_RAW[r]
     local convarname = "ttt_sponge_device_for_" .. rolestring
     CreateConVar(convarname, "0", FCVAR_REPLICATED, "Whether the " .. rolestring .. " should get the spongifier", 0, 1)
@@ -61,7 +63,9 @@ hook.Add("TTTUpdateRoleState", "Sponge_Shared_TTTUpdateRoleState", function()
 
     table.Empty(spongifier.InLoadoutFor)
 
-    for _, r in ipairs(GetTeamRoles(JESTER_ROLES, {ROLE_SPONGE})) do
+    for _, r in ipairs(GetTeamRoles(JESTER_ROLES)) do
+        if r == ROLE_SPONGE then continue end
+
         if cvars.Bool("ttt_sponge_device_for_" .. ROLE_STRINGS_RAW[r], false) then
             table.insert(spongifier.InLoadoutFor, r)
         end
