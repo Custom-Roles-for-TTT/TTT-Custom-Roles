@@ -464,6 +464,7 @@ ttt_marshal_independent_deputy_chance       0.5     // The chance that a indepen
 ttt_marshal_jester_deputy_chance            0.5     // The chance that a jester will become a deputy. -1 to disable
 ttt_marshal_monster_deputy_chance           0.5     // The chance that a monster will become a deputy. -1 to disable
 ttt_marshal_announce_deputy                 1       // Whether a player being deputized will be announced to everyone
+ttt_marshal_prevent_deputy                  1       // Whether to only spawn the marshal when there isn't already a deputy or impersonator in the round
 ttt_marshal_badge_time                      8       // The amount of time (in seconds) the marshal's badge takes to use
 ttt_marshal_credits_starting                1       // The number of credits a marshal should start with
 
