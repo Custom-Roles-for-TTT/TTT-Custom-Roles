@@ -66,6 +66,11 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_delay_timer",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_alive_radius",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 1

@@ -752,6 +752,7 @@ ttt_madscientist_update_scoreboard          1       // Whether the mad scientist
 ttt_shadow_is_jester                        0       // Whether shadows should be treated as members of the jester team
 ttt_shadow_start_timer                      30      // How much time (in seconds) the shadow has to find their target at the start of the round
 ttt_shadow_buffer_timer                     7       // How much time (in seconds) the shadow can stay out of their target's radius without dying
+ttt_shadow_delay_timer                      0       // How much time (in seconds) before the shadow is assigned a target at the start of the round
 ttt_shadow_alive_radius                     8       // The radius (in meters) from the living target that the shadow has to stay within
 ttt_shadow_dead_radius                      3       // The radius (in meters) from the death target that the shadow has to stay within
 ttt_shadow_target_buff                      4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join.
