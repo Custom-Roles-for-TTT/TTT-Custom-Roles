@@ -501,7 +501,7 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
             html = html .. "If the shadow dies, their target dies and vice-versa. "
         elseif soul_link == SHADOW_SOUL_LINK_TARGET then
             html = html .. "If the shadow's target dies, the shadow dies instantly. "
-        else
+        elseif roleTeam ~= ROLE_TEAM_JESTER then
             html = html .. "If the shadow kills their target, they die instantly. "
         end
         html = html .. "If the shadow survives until the end of the round they win."
