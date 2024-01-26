@@ -14,7 +14,8 @@ SWEP.Base = "weapon_cr_defibbase"
 SWEP.Category = WEAPON_CATEGORY_ROLE
 SWEP.InLoadoutFor = {}
 SWEP.InLoadoutForDefault = {}
-SWEP.Kind = WEAPON_ROLE
+-- Make this its own kind so it doesn't conflict with all the other role weapons
+SWEP.Kind = WEAPON_ROLE + 1
 
 SWEP.FindRespawnLocation = false
 SWEP.DeadTarget = false
@@ -40,7 +41,18 @@ if SERVER then
         owner:SetRole(ROLE_SPONGE)
         owner:StripRoleWeapons()
         owner:QueueMessage(MSG_PRINTCENTER, "You have converted yourself to be " .. ROLE_STRINGS_EXT[ROLE_SPONGE])
+
+        local maxhealth = owner:GetMaxHealth()
+        local health = owner:Health()
+        local healthscale = health / maxhealth
         SetRoleMaxHealth(owner)
+
+        -- Scale the player's health to match their new max
+        -- If they were at 100/100 before, they'll be at 150/150 now
+        local newmaxhealth = owner:GetMaxHealth()
+        local newhealth = math.min(newmaxhealth, math.Round(newmaxhealth * healthscale, 0))
+        owner:SetHealth(newhealth)
+
         SendFullStateUpdate()
     end
 
