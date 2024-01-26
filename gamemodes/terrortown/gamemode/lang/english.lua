@@ -1202,3 +1202,7 @@ L.rolepacks_convar_tabtitle_tooltip = "Configure which ConVars are changed in ea
 L.rolepacks_add = "Add"
 L.rolepacks_rename = "Rename"
 L.rolepacks_delete = "Delete"
+L.rolepacks_add_role = "Add role"
+L.rolepacks_delete_role = "Delete role"
+L.rolepacks_add_slot = "Add slot"
+L.rolepacks_delete_slot = "Delete slot"
