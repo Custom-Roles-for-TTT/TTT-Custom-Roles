@@ -703,7 +703,7 @@
             </div>
         </div>
         <div id="shadow" class="collapsible">
-            <button class="header" style="background-color:var(--independent);"><i class="icon-shadow"></i>Shadow</button>
+            <button class="header" style="background-image:linear-gradient(110deg, var(--independent) 0%, var(--independent) 70%, var(--jester) 70%, var(--jester) 100%);"><i class="icon-shadow"></i>Shadow</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-shadow"></i><a href="#shadow">Shadow</a></span> needs to stay close to their target or they will die. If they stay can close to their target for long enough they join their team. They win if they can survive until the end of the round.</p>
@@ -714,6 +714,7 @@
                     <p><code>ttt_shadow_weaken_health_to</code> can be set to have the Shadow have their health temporarily drain while away from their target instead, if that is desired.</p>
                     <p>The Shadow is configured to have a movement speed and sprint stamina regeneration buff that increases the further away from their target they are. This makes it easier for the Shadow to get to their target, even on larger maps. The bonuses can be changed via the <code>ttt_shadow_speed_mult</code>, <code>ttt_shadow_speed_mult_max</code>, <code>ttt_shadow_sprint_recovery</code>, and <code>ttt_shadow_sprint_recovery_max</code> ConVars.</p>
                     <p>When the Shadow has spent enough time with their target, they will join their team and help fight as their ally. This behavior can be changed or adjusted via the ConVars that start with <code>ttt_shadow_target_buff</code>.</p>
+                    <p>The Shadow can optionally be part of the <span style="color:var(--jester)"><a href="../teams/jester.html">jester team</a></span> instead of being an independent by enabling <code>ttt_shadow_is_jester</code>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>

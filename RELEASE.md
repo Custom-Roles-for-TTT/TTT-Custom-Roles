@@ -7,6 +7,7 @@
 - Added ability for jester roles to have a device that converts them to be a sponge
   - Global announcement is made when a player starts using the device
   - Disabled by default but can be individually enabled for each jester role by the new `ttt_sponge_device_for_*` convars
+- Added ability for the shadow to be on the jester team (disabled by default)
 
 ### Changes
 - Changed quartermaster to block Randomat events that prevent their role feature from working
