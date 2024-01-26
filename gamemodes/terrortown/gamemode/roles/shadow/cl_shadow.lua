@@ -492,8 +492,9 @@ end)
 
 AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SHADOW then
-        local roleColor = ROLE_COLORS[ROLE_SHADOW]
-        local html = "The " .. ROLE_STRINGS[ROLE_SHADOW] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role that wins by staying close to their target without dying. "
+        local roleTeam = player.GetRoleTeam(ROLE_SHADOW, true)
+        local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
+        local html = "The " .. ROLE_STRINGS[ROLE_SHADOW] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role that wins by staying close to their target without dying. "
 
         local soul_link = shadow_soul_link:GetInt()
         if soul_link == SHADOW_SOUL_LINK_BOTH then
