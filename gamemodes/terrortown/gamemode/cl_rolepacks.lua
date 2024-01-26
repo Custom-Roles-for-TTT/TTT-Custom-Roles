@@ -6,9 +6,21 @@ local math = math
 local GetTranslation = LANG.GetTranslation
 local TableInsert = table.insert
 local TableRemove = table.remove
+local TableRemoveByValue = table.RemoveByValue
 local MathCeil = math.ceil
 
 local rolePackConfig = {}
+
+local function PrintSlotTable(slottable)
+    print("--SLOT TABLE--")
+    for _, slot in pairs(slottable) do
+        local message = "Slot: "
+        for _, role in pairs(slot) do
+            message = message .. ROLE_STRINGS[role.role] .. " (" .. role.weight .. ") "
+        end
+        print(message)
+    end
+end
 
 local function BuildRoleConfig(dsheet)
     UpdateRoleColours()
@@ -20,6 +32,8 @@ local function BuildRoleConfig(dsheet)
     local dslotlist = vgui.Create("DScrollPanel", droles)
     dslotlist:SetPaintBackground(false)
     dslotlist:StretchToParent(0, 0, 16, 64)
+
+    local slotList = {}
 
     local function CreateSlot(label, roleTable)
         local iconHeight = 88
@@ -42,11 +56,14 @@ local function BuildRoleConfig(dsheet)
         dlist:EnableHorizontal(true)
 
         local roleList = {}
+        TableInsert(slotList, roleList)
 
         local function CreateRole(role)
             local drole = vgui.Create("DPanel", dlist)
             drole:SetSize(64, 84)
-            dslot:SetPaintBackground(false)
+            drole:SetPaintBackground(false)
+            drole.role = role
+            drole.weight = 1
 
             local dicon = vgui.Create("SimpleIcon", drole)
 
@@ -72,6 +89,8 @@ local function BuildRoleConfig(dsheet)
                         dicon:SetIcon(material)
                         dicon:SetBackgroundColor(ROLE_COLORS[r] or Color(0, 0, 0, 0))
                         dicon:SetTooltip(s)
+                        drole.role = r
+                        PrintSlotTable(slotList)
                     end)
                 end
                 dmenu:Open()
@@ -82,6 +101,10 @@ local function BuildRoleConfig(dsheet)
             dweight:SetPos(0, 64)
             dweight:SetMin(1)
             dweight:SetValue(1)
+            dweight.OnValueChanged = function(_, value)
+                drole.weight = value
+                PrintSlotTable(slotList)
+            end
 
             TableInsert(roleList, drole)
 
@@ -110,6 +133,7 @@ local function BuildRoleConfig(dsheet)
             TableRemove(dlist.Items)
             CreateRole(ROLE_INNOCENT)
             dlist:AddPanel(dbuttons)
+            PrintSlotTable(slotList)
         end
 
         local ddeleterolebutton = vgui.Create("DButton", dbuttons)
@@ -127,6 +151,7 @@ local function BuildRoleConfig(dsheet)
             local iconRows = MathCeil((#dlist.Items) / 8)
             dslot:SetSize(dslotlist:GetSize(), 16 + iconRows * iconHeight)
             dlist:SetHeight(iconRows * iconHeight)
+            PrintSlotTable(slotList)
         end
 
         local ddeleteslotbutton = vgui.Create("DButton", dbuttons)
@@ -136,7 +161,9 @@ local function BuildRoleConfig(dsheet)
         ddeleteslotbutton:SetIcon("icon16/bin.png")
         ddeleteslotbutton:SetTooltip(GetTranslation("rolepacks_delete_slot"))
         ddeleteslotbutton.DoClick = function()
+            TableRemoveByValue(slotList, roleList)
             dslot:Remove()
+            PrintSlotTable(slotList)
         end
 
         dlist:AddPanel(dbuttons)
@@ -145,10 +172,11 @@ local function BuildRoleConfig(dsheet)
     end
 
     local daddslotbutton = vgui.Create("DButton", droles)
-    daddslotbutton:SetText("Add Slot")
+    daddslotbutton:SetText(GetTranslation("rolepacks_add_slot"))
     daddslotbutton:Dock(BOTTOM)
     daddslotbutton.DoClick = function()
         CreateSlot("Role Slot:", {})
+        PrintSlotTable(slotList)
     end
 
     return droles
