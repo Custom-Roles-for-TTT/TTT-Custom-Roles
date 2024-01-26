@@ -38,6 +38,7 @@ end
 
 CreateConVar("ttt_shadow_start_timer", "30", FCVAR_REPLICATED, "How much time (in seconds) the shadow has to find their target at the start of the round", 1, 90)
 CreateConVar("ttt_shadow_buffer_timer", "7", FCVAR_REPLICATED, "How much time (in seconds) the shadow can stay out of their target's radius", 1, 30)
+CreateConVar("ttt_shadow_delay_timer", "0", FCVAR_REPLICATED, "How much time (in seconds) before the shadow is assigned a target at the start of the round", 0, 180)
 CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_REPLICATED, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
 CreateConVar("ttt_shadow_target_buff", "4", FCVAR_REPLICATED, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join.", 0, 4)
 CreateConVar("ttt_shadow_target_buff_delay", "90", FCVAR_REPLICATED, "How long (in seconds) the shadow needs to be near their target before the buff takes effect", 1, 120)

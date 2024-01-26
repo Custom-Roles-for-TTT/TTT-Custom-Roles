@@ -26,6 +26,7 @@ local shadow_weaken_timer = CreateConVar("ttt_shadow_weaken_timer", "3", FCVAR_N
 
 local shadow_start_timer = GetConVar("ttt_shadow_start_timer")
 local shadow_buffer_timer = GetConVar("ttt_shadow_buffer_timer")
+local shadow_delay_timer = GetConVar("ttt_shadow_delay_timer")
 local shadow_alive_radius = GetConVar("ttt_shadow_alive_radius")
 local shadow_dead_radius = GetConVar("ttt_shadow_dead_radius")
 local shadow_target_buff = GetConVar("ttt_shadow_target_buff")
@@ -53,9 +54,16 @@ local function OnTargetAssigned(ply, tgt)
 end
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
-    -- Use a slight delay to make sure nothing else is changing this player's role first
+    local delay = shadow_delay_timer:GetInt()
+    if delay > 0 then
+        ply:SetNWFloat("ShadowTimer", CurTime() + delay)
+    -- Use a slight delay at the very minimum to make sure nothing else is changing this player's role first
+    else
+        delay = 0.25
+    end
+
     -- Delay this whole thing to make sure all the validity checks are current
-    timer.Simple(0.25, function()
+    timer.Simple(delay, function()
         if not IsPlayer(ply) or not ply:IsActiveShadow() then return end
 
         -- Keep their existing target, if they have one
