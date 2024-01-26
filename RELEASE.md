@@ -4,9 +4,9 @@
 
 ### Additions
 - Added convar, `ttt_marshal_prevent_deputy`, to control whether to only spawn the marshal when there isn't already a deputy or impersonator in the round (defaults to enabled to match prior behavior).
-- Added ability for jester and swapper to have a device that converts them to be a sponge
+- Added ability for jester roles to have a device that converts them to be a sponge
   - Global announcement is made when a player starts using the device
-  - Disabled by default but can be individually enabled for jester and swapper by the new `ttt_sponge_device_for_jester` and `ttt_sponge_device_for_swapper` convars
+  - Disabled by default but can be individually enabled for each jester role by the new `ttt_sponge_device_for_*` convars
 
 ### Changes
 - Changed quartermaster to block Randomat events that prevent their role feature from working

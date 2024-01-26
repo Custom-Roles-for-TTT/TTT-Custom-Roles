@@ -603,7 +603,13 @@ ttt_sponge_notify_mode                      0       // The logic to use when not
 ttt_sponge_notify_sound                     0       // Whether to play a cheering sound when a sponge is killed
 ttt_sponge_notify_confetti                  0       // Whether to throw confetti when a sponge is a killed
 ttt_sponge_device_time                      8       // The amount of time (in seconds) the spongifier takes to use
+ttt_sponge_device_for_beggar                0       // Whether the beggar should get the spongifier
+ttt_sponge_device_for_bodysnatcher          0       // Whether the bodysnatcher should get the spongifier
+ttt_sponge_device_for_clown                 0       // Whether the clown should get the spongifier
+ttt_sponge_device_for_cupid                 0       // Whether the cupid should get the spongifier
+ttt_sponge_device_for_guesser               0       // Whether the guesser should get the spongifier
 ttt_sponge_device_for_jester                0       // Whether the jester should get the spongifier
+ttt_sponge_device_for_lootgoblin            0       // Whether the lootgoblin should get the spongifier
 ttt_sponge_device_for_swapper               0       // Whether the swapper should get the spongifier
 
 // Guesser
