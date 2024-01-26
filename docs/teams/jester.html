@@ -921,13 +921,13 @@
                         <tr>
                             <td>ttt_lootgoblin_radar_beep_sound_override</td>
                             <td>0</td>
-                            <td>Integer</td>
-                            <td>Forces all players to have the loot goblin radar sound on/off, 0 - let user decide, 1 - force on, 2 - force off.</td>
+                            <td>Integer (0-2)</td>
+                            <td>Forces all players to have the loot goblin radar sound on/off, 0 - Let user decide. 1 - Force on. 2 - Force off.</td>
                         </tr>
                         <tr>
                             <td>ttt_lootgoblin_regen_mode</td>
                             <td>2</td>
-                            <td>Boolean</td>
+                            <td>Integer (0-3)</td>
                             <td>Whether the Loot Goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage.</td>
                         </tr>
                         <tr>
@@ -989,6 +989,24 @@
                             <td>5</td>
                             <td>Float</td>
                             <td>The radius of the Sponge's aura in meters.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sponge_device_time</td>
+                            <td>8</td>
+                            <td>Integer</td>
+                            <td>The amount of time (in seconds) the spongifier takes to use.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sponge_device_for_jester</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the jester should get the spongifier.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sponge_device_for_swapper</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the swapper should get the spongifier.</td>
                         </tr>
                         </tbody>
                     </table>

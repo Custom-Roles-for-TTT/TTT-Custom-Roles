@@ -602,6 +602,9 @@ ttt_sponge_aura_radius                      5       // The radius of the sponge'
 ttt_sponge_notify_mode                      0       // The logic to use when notifying players that the sponge is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_sponge_notify_sound                     0       // Whether to play a cheering sound when a sponge is killed
 ttt_sponge_notify_confetti                  0       // Whether to throw confetti when a sponge is a killed
+ttt_sponge_device_time                      8       // The amount of time (in seconds) the spongifier takes to use
+ttt_sponge_device_for_jester                0       // Whether the jester should get the spongifier
+ttt_sponge_device_for_swapper               0       // Whether the swapper should get the spongifier
 
 // Guesser
 ttt_guesser_can_guess_detectives            0       // Whether the guesser is allowed to guess detectives
