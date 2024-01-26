@@ -15,7 +15,9 @@ ROLE_MAX_HEALTH[ROLE_SPONGE] = 150
 
 CreateConVar("ttt_sponge_aura_radius", "5", FCVAR_REPLICATED, "The radius of the sponge's aura in meters", 1, 30)
 
-ROLE_CONVARS[ROLE_SPONGE] = {}
+if not ROLE_CONVARS[ROLE_SPONGE] then
+    ROLE_CONVARS[ROLE_SPONGE] = {}
+end
 table.insert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_aura_radius",
     type = ROLE_CONVAR_TYPE_NUM,

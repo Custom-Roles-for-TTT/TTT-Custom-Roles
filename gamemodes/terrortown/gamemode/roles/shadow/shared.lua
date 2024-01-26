@@ -177,6 +177,9 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
 })
 
 -- Add this convar to the Sponge's table so it's with the others
+if not ROLE_CONVARS[ROLE_SPONGE] then
+    ROLE_CONVARS[ROLE_SPONGE] = {}
+end
 table.insert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_device_for_shadow",
     type = ROLE_CONVAR_TYPE_BOOL
