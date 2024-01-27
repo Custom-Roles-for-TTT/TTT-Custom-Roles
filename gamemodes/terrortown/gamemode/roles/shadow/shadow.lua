@@ -63,17 +63,17 @@ local function FindNewTarget(shadow)
     local targetSid64 = shadow:GetNWString("ShadowTarget", "")
     if targetSid64 and #targetSid64 > 0 then return end
 
+    -- Use a slight delay at the very minimum to make sure nothing else is changing this player's role first
+    local delay = 0.25
     local delayMin = shadow_delay_timer_min:GetInt()
     local delayMax = shadow_delay_timer_max:GetInt()
+    -- If we're configured to have a larger delay, though, use that instead
     if delayMin > 0 and delayMax > 0 then
         if delayMax < delayMin then
             delayMax = delayMin
         end
         delay = MathRandom(delayMin, delayMax)
         shadow:SetNWFloat("ShadowTimer", CurTime() + delay)
-    -- Use a slight delay at the very minimum to make sure nothing else is changing this player's role first
-    else
-        delay = 0.25
     end
 
     -- Delay this whole thing to make sure all the validity checks are current
