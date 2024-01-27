@@ -20,7 +20,8 @@ local StringUpper = string.upper
 
 local shadow_start_timer = GetConVar("ttt_shadow_start_timer")
 local shadow_buffer_timer = GetConVar("ttt_shadow_buffer_timer")
-local shadow_delay_timer = GetConVar("ttt_shadow_delay_timer")
+local shadow_delay_timer_min = GetConVar("ttt_shadow_delay_timer_min")
+local shadow_delay_timer_max = GetConVar("ttt_shadow_delay_timer_max")
 local shadow_alive_radius = GetConVar("ttt_shadow_alive_radius")
 local shadow_dead_radius = GetConVar("ttt_shadow_dead_radius")
 local shadow_target_buff = GetConVar("ttt_shadow_target_buff")
@@ -545,10 +546,11 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
 
         local start_timer = shadow_start_timer:GetInt()
         local buffer_timer = shadow_buffer_timer:GetInt()
-        local delay_timer = shadow_delay_timer:GetInt()
+        local delay_min = shadow_delay_timer_min:GetInt()
+        local delay_max = shadow_delay_timer_max:GetInt()
         local delay = ""
-        if delay_timer > 0 then
-            delay = " after a " .. delay .. " second delay"
+        if delay_min > 0 and delay_max > 0 then
+            delay = " after a delay between " .. delay_min .. " and " .. delay_max .. " seconds"
         end
         html = html .. "<span style='display: block; margin-top: 10px;'>They can see their target through walls and are given <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. start_timer .. " seconds</span> to find them at the start of the round" .. delay .. ". Once the shadow has found their target, they are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " second</span> warning if they start to get too far away. If either of these timers run out before the shadow can find their target, the shadow "
 

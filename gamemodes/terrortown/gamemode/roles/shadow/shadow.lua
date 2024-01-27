@@ -5,7 +5,10 @@ local math = math
 local timer = timer
 
 local GetAllPlayers = player.GetAll
+local MathMax = math.max
 local MathMin = math.min
+local MathRandom = math.random
+local MathRound = math.Round
 
 util.AddNetworkString("TTT_UpdateShadowWins")
 util.AddNetworkString("TTT_ResetShadowWins")
@@ -26,7 +29,8 @@ local shadow_weaken_timer = CreateConVar("ttt_shadow_weaken_timer", "3", FCVAR_N
 
 local shadow_start_timer = GetConVar("ttt_shadow_start_timer")
 local shadow_buffer_timer = GetConVar("ttt_shadow_buffer_timer")
-local shadow_delay_timer = GetConVar("ttt_shadow_delay_timer")
+local shadow_delay_timer_min = GetConVar("ttt_shadow_delay_timer_min")
+local shadow_delay_timer_max = GetConVar("ttt_shadow_delay_timer_max")
 local shadow_alive_radius = GetConVar("ttt_shadow_alive_radius")
 local shadow_dead_radius = GetConVar("ttt_shadow_dead_radius")
 local shadow_target_buff = GetConVar("ttt_shadow_target_buff")
@@ -59,8 +63,13 @@ local function FindNewTarget(shadow)
     local targetSid64 = shadow:GetNWString("ShadowTarget", "")
     if targetSid64 and #targetSid64 > 0 then return end
 
-    local delay = shadow_delay_timer:GetInt()
-    if delay > 0 then
+    local delayMin = shadow_delay_timer_min:GetInt()
+    local delayMax = shadow_delay_timer_max:GetInt()
+    if delayMin > 0 and delayMax > 0 then
+        if delayMax < delayMin then
+            delayMax = delayMin
+        end
+        delay = MathRandom(delayMin, delayMax)
         shadow:SetNWFloat("ShadowTimer", CurTime() + delay)
     -- Use a slight delay at the very minimum to make sure nothing else is changing this player's role first
     else
@@ -246,7 +255,7 @@ local function CreateBuffTimer(shadow, target)
             -- Scale the player's health to match their new max
             -- If they were at 100/100 before, they'll be at 150/150 now
             local newmaxhealth = shadow:GetMaxHealth()
-            local newhealth = math.max(math.min(newmaxhealth, math.Round(newmaxhealth * healthscale, 0)), 1)
+            local newhealth = MathMax(MathMin(newmaxhealth, MathRound(newmaxhealth * healthscale, 0)), 1)
             shadow:SetHealth(newhealth)
 
             SendFullStateUpdate()
@@ -452,7 +461,7 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                         -- Scale the player's health to match their new max
                         -- If they were at 100/100 before, they'll be at 150/150 now
                         local newmaxhealth = v:GetMaxHealth()
-                        local newhealth = math.max(math.min(newmaxhealth, math.Round(newmaxhealth * healthscale, 0)), 1)
+                        local newhealth = MathMax(MathMin(newmaxhealth, MathRound(newmaxhealth * healthscale, 0)), 1)
                         v:SetHealth(newhealth)
 
                         SendFullStateUpdate()
