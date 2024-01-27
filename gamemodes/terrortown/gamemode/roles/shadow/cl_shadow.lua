@@ -53,6 +53,7 @@ Survive until the end of the round to win.]])
     LANG.AddToLanguage("english", "shadow_buff_2", "respawn")
     LANG.AddToLanguage("english", "shadow_buff_3", "damage bonus")
     LANG.AddToLanguage("english", "shadow_buff_4", "team join")
+    LANG.AddToLanguage("english", "shadow_buff_5", "role steal")
 
     -- Target ID
     LANG.AddToLanguage("english", "shadow_target", "YOUR TARGET")
