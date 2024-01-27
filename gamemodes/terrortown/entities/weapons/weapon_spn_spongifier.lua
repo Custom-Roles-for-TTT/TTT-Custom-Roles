@@ -50,7 +50,7 @@ if SERVER then
         -- Scale the player's health to match their new max
         -- If they were at 100/100 before, they'll be at 150/150 now
         local newmaxhealth = owner:GetMaxHealth()
-        local newhealth = math.min(newmaxhealth, math.Round(newmaxhealth * healthscale, 0))
+        local newhealth = math.max(math.min(newmaxhealth, math.Round(newmaxhealth * healthscale, 0)), 1)
         owner:SetHealth(newhealth)
 
         SendFullStateUpdate()
