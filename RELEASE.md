@@ -17,6 +17,8 @@
 
 ### Fixes
 - Fixed loot goblin dropping buyable weapons that are not available in any role's shop
+- Fixed player assigned the role of shadow after the round started not having a target assigned
+- Fixed shadow that was killed but not because they killed their target not being allowed to resurrect
 
 ## 2.0.6 (Beta)
 **Released: January 14th, 2024**
