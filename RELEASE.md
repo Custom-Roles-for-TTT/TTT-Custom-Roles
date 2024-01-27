@@ -9,6 +9,7 @@
   - Disabled by default but can be individually enabled for each jester role by the new `ttt_sponge_device_for_*` convars
 - Added ability for the shadow to be on the jester team (disabled by default)
 - Added ability to have the shadow's target only be assigned after a configurable delay (disabled by default)
+- Added ability to have the shadow become a jester or a swapper when they fail to stay near their target for enough time (disabled by default)
 
 ### Changes
 - Changed quartermaster to block Randomat events that prevent their role feature from working

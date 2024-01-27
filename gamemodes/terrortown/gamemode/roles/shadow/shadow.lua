@@ -34,6 +34,7 @@ local shadow_target_buff_delay = GetConVar("ttt_shadow_target_buff_delay")
 local shadow_soul_link = GetConVar("ttt_shadow_soul_link")
 local shadow_weaken_health_to = GetConVar("ttt_shadow_weaken_health_to")
 local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
+local shadow_failure_mode = GetConVar("ttt_shadow_failure_mode")
 
 -----------------------
 -- TARGET ASSIGNMENT --
@@ -394,7 +395,33 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                     CreateWeakenTimer(v, weakenTo, weakenTimer)
                     v:SetNWFloat("ShadowTimer", SHADOW_FORCED_PROGRESS_BAR)
                 else
-                    v:Kill()
+                    local failure_mode = shadow_failure_mode:GetInt()
+                    if failure_mode == SHADOW_FAILURE_JESTER or failure_mode == SHADOW_FAILURE_SWAPPER then
+                        if failure_mode == SHADOW_FAILURE_JESTER then
+                            target_role = ROLE_JESTER
+                        elseif failure_mode == SHADOW_FAILURE_SWAPPER then
+                            target_role = ROLE_SWAPPER
+                        end
+
+                        message = message .. " As punishment, you have become " .. ROLE_STRINGS_EXT[target_role]
+                        v:SetRole(target_role)
+                        v:StripRoleWeapons()
+
+                        local maxhealth = v:GetMaxHealth()
+                        local health = v:Health()
+                        local healthscale = health / maxhealth
+                        SetRoleMaxHealth(v)
+
+                        -- Scale the player's health to match their new max
+                        -- If they were at 100/100 before, they'll be at 150/150 now
+                        local newmaxhealth = v:GetMaxHealth()
+                        local newhealth = math.min(newmaxhealth, math.Round(newmaxhealth * healthscale, 0))
+                        v:SetHealth(newhealth)
+
+                        SendFullStateUpdate()
+                    else
+                        v:Kill()
+                    end
                     v:SetNWBool("ShadowActive", false)
                     v:SetNWFloat("ShadowTimer", -1)
                 end

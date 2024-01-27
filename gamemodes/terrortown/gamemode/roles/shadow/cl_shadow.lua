@@ -30,6 +30,7 @@ local shadow_weaken_health_to = GetConVar("ttt_shadow_weaken_health_to")
 local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
 local shadow_speed_mult = GetConVar("ttt_shadow_speed_mult")
 local shadow_sprint_recovery = GetConVar("ttt_shadow_sprint_recovery")
+local shadow_failure_mode = GetConVar("ttt_shadow_failure_mode")
 
 ------------------
 -- TRANSLATIONS --
@@ -553,7 +554,14 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
         if shadow_weaken_health_to:GetInt() > 0 then
             html = html .. "has their health temporarily reduced over time. Once they get close to their target again, though, they will start to recover their max health back to normal"
         else
-            html = html .. "dies"
+            local failure_mode = shadow_failure_mode:GetInt()
+            if failure_mode == SHADOW_FAILURE_JESTER then
+                html = html .. "becomes a " .. ROLE_STRINGS[ROLE_JESTER]
+            elseif failure_mode == SHADOW_FAILURE_SWAPPER then
+                html = html .. "becomes a " .. ROLE_STRINGS[ROLE_SWAPPER]
+            else
+                html = html .. "dies"
+            end
         end
         html = html .. ".</span>"
 

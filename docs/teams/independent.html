@@ -754,13 +754,31 @@
                             <td>ttt_shadow_delay_timer</td>
                             <td>0</td>
                             <td>Integer</td>
-                            <td>How much time in seconds before the shadow is assigned a target at the start of the round.</td>
+                            <td>How much time in seconds before the Shadow is assigned a target at the start of the round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_failure_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>How to handle the Shadow failing to stay near their target:
+                                <ol start="0">
+                                    <li>Kill them.</li>
+                                    <li>Change them to be a Jester.</li>
+                                    <li>Change them to be a Swapper.</li>
+                                </ol>
+                            </td>
                         </tr>
                         <tr>
                             <td>ttt_shadow_soul_link</td>
                             <td>0</td>
                             <td>Integer (0-2)</td>
-                            <td>Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.</td>
+                            <td>Whether the Shadow's soul should be linked to their target.
+                                <ol start="0">
+                                    <li>Disable.</li>
+                                    <li>Both Shadow and target die if either is killed.</li>
+                                    <li>The Shadow dies if their target is killed.</li>
+                                </ol>
+                            </td>
                         </tr>
                         <tr>
                             <td>ttt_shadow_speed_mult</td>
@@ -796,7 +814,7 @@
                             <td>ttt_shadow_target_buff</td>
                             <td>4</td>
                             <td>Integer (0-4)</td>
-                            <td>The type of buff to Shadow's target should get:
+                            <td>The type of buff the Shadow should get while near their target for enough time:
                                 <ol start="0">
                                     <li>None.</li>
                                     <li>Heal over time.</li>
@@ -882,7 +900,7 @@
                             <td>ttt_shadow_weaken_health_to</td>
                             <td>0</td>
                             <td>Integer</td>
-                            <td>How low to reduce the Shadow's health to when they are outside of the target circle instead of killing them. <i>(Setting to 0 will kill them.)</i></td>
+                            <td>How low to reduce the Shadow's health to when they are outside of the target circle instead of their normal punishment. <i>(Setting to 0 will use <code>ttt_shadow_failure_mode</code> instead.)</i></td>
                         </tr>
                         <tr>
                             <td>ttt_shadow_weaken_timer</td>
