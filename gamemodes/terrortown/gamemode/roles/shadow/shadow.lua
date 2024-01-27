@@ -397,9 +397,8 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                 else
                     local failure_mode = shadow_failure_mode:GetInt()
                     if failure_mode == SHADOW_FAILURE_JESTER or failure_mode == SHADOW_FAILURE_SWAPPER then
-                        if failure_mode == SHADOW_FAILURE_JESTER then
-                            target_role = ROLE_JESTER
-                        elseif failure_mode == SHADOW_FAILURE_SWAPPER then
+                        local target_role = ROLE_JESTER
+                        if failure_mode == SHADOW_FAILURE_SWAPPER then
                             target_role = ROLE_SWAPPER
                         end
 
