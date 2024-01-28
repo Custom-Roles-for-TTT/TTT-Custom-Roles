@@ -40,7 +40,7 @@ local shadow_failure_mode = GetConVar("ttt_shadow_failure_mode")
 AddHook("Initialize", "Shadow_Translations_Initialize", function()
     -- Popup
     LANG.AddToLanguage("english", "info_popup_shadow", [[You are {role}! Find your target quickly
-and stay close to them. If you don't you die.
+and stay close to them. If you don't, you will be punished.
 
 Survive until the end of the round to win.]])
 
