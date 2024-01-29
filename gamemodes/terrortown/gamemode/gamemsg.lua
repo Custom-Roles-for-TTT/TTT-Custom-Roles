@@ -60,19 +60,54 @@ local function ShouldHideTraitorBodysnatcher()
 end
 
 -- Traitorchat
+local function GetRoleChatTargets(sender, msg)
+    local targets = {}
+    if sender:IsTraitorTeam() then
+        targets = GetTraitorTeamFilterWithExcludes()
+    elseif sender:IsDetectiveLike() then
+        targets = GetDetectiveTeamFilter()
+    elseif sender:IsMonsterTeam() then
+        targets = GetMonsterTeamFilter()
+    end
+
+    local result = hook.Call("TTTBeforeTeamChat", nil, sender, msg, targets)
+    if type(result) == "boolean" and not result then return nil end
+
+    return targets
+end
+
 local function RoleChatMsg(sender, msg)
+    local targets = GetRoleChatTargets(sender, msg)
+    if not targets then return end
+
     net.Start("TTT_RoleChat")
     net.WriteInt(sender:GetRole(), 8)
     net.WriteEntity(sender)
     net.WriteString(msg)
-    if sender:IsTraitorTeam() then
-        net.Send(GetTraitorTeamFilterWithExcludes())
-    elseif sender:IsDetectiveLike() then
-        net.Send(GetDetectiveTeamFilter())
-    elseif sender:IsMonsterTeam() then
-        net.Send(GetMonsterTeamFilter())
-    end
+    net.Send(targets)
 end
+concommand.Add("ttt_team_chat_as_player", function(ply, cmd, args)
+    if #args < 2 then return end
+
+    local target_name = args[1]
+    local text = args[2]
+    local target = nil
+    for _, p in ipairs(GetAllPlayers()) do
+        if p:Nick() == target_name then
+            target = p
+            break
+        end
+    end
+
+    -- Make sure the player exists
+    if not target then return end
+
+    -- Don't send a message as a player who cannot send role messages
+    local targets = GetRoleChatTargets(target, text)
+    if not targets then return end
+
+    RoleChatMsg(target, text)
+end, nil, "Sends a chat message as another player", FCVAR_CHEAT)
 
 -- Round start info popup
 function ShowRoundStartPopup()
