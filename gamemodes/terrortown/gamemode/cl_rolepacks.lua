@@ -93,6 +93,8 @@ end
 local function BuildRoleConfig(dframe, packName)
     UpdateRoleColours()
 
+    local slotList = {}
+
     local droles = vgui.Create("DPanel", dframe)
     droles:SetPaintBackground(false)
     droles:StretchToParent(0, 0, 0, 0)
@@ -106,12 +108,13 @@ local function BuildRoleConfig(dframe, packName)
     dallowduplicates:SetText("Allow Duplicate Roles")
     dallowduplicates:Dock(LEFT)
     dallowduplicates:DockMargin(0, 0, 12, 0)
+    dallowduplicates.OnChange = function()
+        WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+    end
 
     local dslotlist = vgui.Create("DScrollPanel", droles)
     dslotlist:SetPaintBackground(false)
     dslotlist:StretchToParent(0, 20, 13, 88)
-
-    local slotList = {}
 
     local function CreateSlot(roleTable)
         local iconHeight = 88
