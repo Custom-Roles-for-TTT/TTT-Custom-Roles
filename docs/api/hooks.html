@@ -20,22 +20,6 @@
         <p><em><strong>NOTE:</strong></em> Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the <em>remaining hook instances to be completely skipped</em>. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.</p>
     </div>
     <div class="contentbody panel">
-        <h3><a id="tttbeforeteamchatsender-msg-targets" href="#tttbeforeteamchatsender-msg-targets">TTTBeforeTeamChat(sender, msg, targets)</a></h3>
-        <p>
-            Calls before a role chat message is sent. Used to modify the targets of the role message.<br>
-            <em>Realm:</em> Server<br>
-            <em>Added in:</em> 2.0.7<br>
-            <em>Parameters:</em>
-        </p>
-        <ul>
-            <li><em>sender</em> - The player sending the chat message</li>
-            <li><em>msg</em> - The message being sent</li>
-            <li><em>targets</em> - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients</li>
-        </ul>
-        <p>
-            <em>Return:</em> Whether or not this role chat message should be sent (Defaults to <code>true</code>).
-        </p>
-
         <h3><a id="tttbodysearchbuttonsply-rag-buttons-searchraw-detectivesearchonly" href="#tttbodysearchbuttonsply-rag-buttons-searchraw-detectivesearchonly">TTTBodySearchButtons(ply, rag, buttons, searchRaw, detectiveSearchOnly)</a></h3>
         <p>
             Called when a player opens the body search dialog. Used to add new buttons to the dialog.<br>
@@ -1411,6 +1395,23 @@
             <li><em>text</em> - The new text value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
             <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
         </ul>
+
+        <h3><a id="tttteamchattargetssender-msg-targets-from_chat" href="#tttteamchattargetssender-msg-targets-from_chat">TTTTeamChatTargets(sender, msg, targets, from_chat)</a></h3>
+        <p>
+            Calls before a role chat message is sent. Used to modify the targets of the role message.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.0.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>sender</em> - The player sending the chat message</li>
+            <li><em>msg</em> - The message being sent</li>
+            <li><em>targets</em> - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients</li>
+            <li><em>from_chat</em> - Whether this hook is being called from the actual chat send method</li>
+        </ul>
+        <p>
+            <em>Return:</em> Whether or not this role chat message should be sent (Defaults to <code>true</code>).
+        </p>
 
         <h3><a id="tttturncoatteamchangedply-traitor" href="#tttturncoatteamchangedply-traitor">TTTTurncoatTeamChanged(ply, traitor)</a></h3>
         <p>

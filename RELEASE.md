@@ -21,7 +21,7 @@
 - Fixed shadow that was killed but not because they killed their target not being allowed to resurrect
 
 ### Developer
-- Added `TTTBeforeTeamChat` which allows role chat messages to be blocked or have their recipients changed
+- Added `TTTTeamChatTargets` which allows role chat messages to be blocked or have their recipients changed
 - Added cheat-only `ttt_team_chat_as_player` command for sending role chat messages as another player
 
 ## 2.0.6 (Beta)

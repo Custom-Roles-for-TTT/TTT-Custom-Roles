@@ -60,7 +60,7 @@ local function ShouldHideTraitorBodysnatcher()
 end
 
 -- Traitorchat
-local function GetRoleChatTargets(sender, msg)
+local function GetRoleChatTargets(sender, msg, from_chat)
     local targets = {}
     if sender:IsTraitorTeam() then
         targets = GetTraitorTeamFilterWithExcludes()
@@ -70,14 +70,14 @@ local function GetRoleChatTargets(sender, msg)
         targets = GetMonsterTeamFilter()
     end
 
-    local result = hook.Call("TTTBeforeTeamChat", nil, sender, msg, targets)
+    local result = hook.Call("TTTTeamChatTargets", nil, sender, msg, targets, from_chat)
     if type(result) == "boolean" and not result then return nil end
 
     return targets
 end
 
 local function RoleChatMsg(sender, msg)
-    local targets = GetRoleChatTargets(sender, msg)
+    local targets = GetRoleChatTargets(sender, msg, true)
     if not targets then return end
 
     net.Start("TTT_RoleChat")
@@ -103,7 +103,7 @@ concommand.Add("ttt_team_chat_as_player", function(ply, cmd, args)
     if not target then return end
 
     -- Don't send a message as a player who cannot send role messages
-    local targets = GetRoleChatTargets(target, text)
+    local targets = GetRoleChatTargets(target, text, false)
     if not targets then return end
 
     RoleChatMsg(target, text)

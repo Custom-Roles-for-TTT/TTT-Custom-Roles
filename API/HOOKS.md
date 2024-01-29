@@ -7,17 +7,6 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 ***NOTE:*** Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the *remaining hook instances to be completely skipped*. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.
 
-### TTTBeforeTeamChat(sender, msg, targets)
-Calls before a role chat message is sent. Used to modify the targets of the role message.\
-*Realm:* Server\
-*Added in:* 2.0.7\
-*Parameters:*
-- *sender*: - The player sending the chat message
-- *msg*: - The message being sent
-- *targets*: - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients
-
-*Return:* Whether or not this role chat message should be sent (Defaults to `true`)
-
 ### TTTBodySearchButtons(ply, rag, buttons, searchRaw, detectiveSearchOnly)
 Called when a player opens the body search dialog. Used to add new buttons to the dialog.\
 *Realm:* Client\
@@ -943,6 +932,18 @@ Called before a ragdoll's name (shown when you look at a ragdoll) is rendered.\
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
+
+### TTTTeamChatTargets(sender, msg, targets, from_chat)
+Calls before a role chat message is sent. Used to modify the targets of the role message.\
+*Realm:* Server\
+*Added in:* 2.0.7\
+*Parameters:*
+- *sender* - The player sending the chat message
+- *msg* - The message being sent
+- *targets* - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients
+- *from_chat* - Whether this hook is being called from the actual chat send method
+
+*Return:* Whether or not this role chat message should be sent (Defaults to `true`)
 
 ### TTTTurncoatTeamChanged(ply, traitor)
 Called when a turncoat's team is changed
