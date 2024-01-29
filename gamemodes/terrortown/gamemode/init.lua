@@ -68,6 +68,7 @@ include("hitmarkers.lua")
 include("deathnotify.lua")
 include("roleweapons.lua")
 include("sprint_shd.lua")
+include("rolepacks.lua")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local concommand = concommand

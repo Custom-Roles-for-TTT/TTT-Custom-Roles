@@ -1,41 +1,119 @@
 local concommand = concommand
 local vgui = vgui
+local util = util
+local net = net
 local table = table
 local math = math
+local string = string
 
 local GetTranslation = LANG.GetTranslation
 local TableInsert = table.insert
 local TableRemove = table.remove
 local TableRemoveByValue = table.RemoveByValue
 local MathCeil = math.ceil
+local StringSub = string.sub
+local StringLower = string.lower
 
-local rolePackConfig = {}
+-- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (terminanting byte)
+local maxStreamLength = 65529
 
-local function PrintSlotTable(slottable)
-    print("--SLOT TABLE--")
-    for _, slot in pairs(slottable) do
-        local message = "Slot: "
-        for _, role in pairs(slot) do
-            message = message .. ROLE_STRINGS[role.role] .. " (" .. role.weight .. ") "
-        end
-        print(message)
+local function SendStreamToServer(table, networkString)
+    local jsonTable = util.TableToJSON(table)
+    if jsonTable == nil then
+        ErrorNoHalt("Table encoding failed!\n")
+        return
+    end
+
+    jsonTable = util.Compress(jsonTable)
+    if jsonTable == "" then
+        ErrorNoHalt("Table compression failed!\n")
+        return
+    end
+
+    local len = #jsonTable
+
+    if len <= maxStreamLength then
+        net.Start(networkString)
+        net.WriteUInt(len, 16)
+        net.WriteData(jsonTable, len)
+        net.SendToServer()
+    else
+        local curpos = 0
+
+        repeat
+            net.Start(networkString .. "_Part")
+            net.WriteData(StringSub(jsonTable, curpos + 1, curpos + maxStreamLength + 1), maxStreamLength)
+            net.SendToServer()
+
+            curpos = curpos + maxStreamLength + 1
+        until (len - curpos <= maxStreamLength)
+
+        net.Start(networkString)
+        net.WriteUInt(len, 16)
+        net.WriteData(StringSub(jsonTable, curpos + 1, len), len - curpos)
+        net.SendToServer()
     end
 end
 
-local function BuildRoleConfig(dsheet)
+local function ReceiveStreamFromServer(networkString, callback)
+    local buff = ""
+    net.Receive(networkString .. "_Part", function()
+        buff = buff .. net.ReadData(maxStreamLength)
+    end)
+
+    net.Receive(networkString, function()
+        local json = util.Decompress(buff .. net.ReadData(net.ReadUInt(16)))
+        buff = ""
+
+        if json == "" then
+            ErrorNoHalt("Table decompression failed!\n")
+        end
+
+        local jsonTable = util.JSONToTable(json)
+        if jsonTable == nil then
+            ErrorNoHalt("Table decoding failed!\n")
+        end
+
+        callback(jsonTable)
+    end)
+end
+
+local function WriteRolePackTable(slots, name, config)
+    local slotTable = {name = name, config = config, slots = {}}
+    for _, slot in pairs(slots) do
+        local roleTable = {}
+        for _, role in pairs(slot) do
+            TableInsert(roleTable, {role = ROLE_STRINGS_RAW[role.role], weight = role.weight})
+        end
+        TableInsert(slotTable.slots, roleTable)
+    end
+    SendStreamToServer(slotTable, "TTT_WriteRolePackTable")
+end
+
+local function BuildRoleConfig(dframe, packName)
     UpdateRoleColours()
 
-    local droles = vgui.Create("DPanel", dsheet)
+    local droles = vgui.Create("DPanel", dframe)
     droles:SetPaintBackground(false)
     droles:StretchToParent(0, 0, 0, 0)
 
+    local dconfig = vgui.Create("DPanel", droles)
+    dconfig:SetPaintBackground(false)
+    dconfig:StretchToParent(0, 0, 0, nil)
+    dconfig:SetHeight(16)
+
+    local dallowduplicates = vgui.Create("DCheckBoxLabel", dconfig)
+    dallowduplicates:SetText("Allow Duplicate Roles")
+    dallowduplicates:Dock(LEFT)
+    dallowduplicates:DockMargin(0, 0, 12, 0)
+
     local dslotlist = vgui.Create("DScrollPanel", droles)
     dslotlist:SetPaintBackground(false)
-    dslotlist:StretchToParent(0, 0, 16, 64)
+    dslotlist:StretchToParent(0, 20, 13, 88)
 
     local slotList = {}
 
-    local function CreateSlot(label, roleTable)
+    local function CreateSlot(roleTable)
         local iconHeight = 88
 
         local dslot = vgui.Create("DPanel", dslotlist)
@@ -45,7 +123,7 @@ local function BuildRoleConfig(dsheet)
 
         local dlabel = vgui.Create("DLabel", dslot)
         dlabel:SetFont("TabLarge")
-        dlabel:SetText(label)
+        dlabel:SetText("Role Slot:")
         dlabel:SetContentAlignment(7)
         dlabel:SetPos(3, 0) -- For some reason the text isn't inline with the icons so we shift it 3px to the right
 
@@ -58,7 +136,15 @@ local function BuildRoleConfig(dsheet)
         local roleList = {}
         TableInsert(slotList, roleList)
 
-        local function CreateRole(role)
+        local function CreateRole(rolestr, weight)
+            local role = ROLE_NONE
+            for r = ROLE_INNOCENT, ROLE_MAX do
+                if ROLE_STRINGS_RAW[r] == rolestr then
+                    role = r
+                    break
+                end
+            end
+
             local drole = vgui.Create("DPanel", dlist)
             drole:SetSize(64, 84)
             drole:SetPaintBackground(false)
@@ -90,7 +176,7 @@ local function BuildRoleConfig(dsheet)
                         dicon:SetBackgroundColor(ROLE_COLORS[r] or Color(0, 0, 0, 0))
                         dicon:SetTooltip(s)
                         drole.role = r
-                        PrintSlotTable(slotList)
+                        WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
                     end)
                 end
                 dmenu:Open()
@@ -100,10 +186,10 @@ local function BuildRoleConfig(dsheet)
             dweight:SetWidth(64)
             dweight:SetPos(0, 64)
             dweight:SetMin(1)
-            dweight:SetValue(1)
+            dweight:SetValue(weight)
             dweight.OnValueChanged = function(_, value)
                 drole.weight = value
-                PrintSlotTable(slotList)
+                WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
             end
 
             TableInsert(roleList, drole)
@@ -116,7 +202,7 @@ local function BuildRoleConfig(dsheet)
         end
 
         for _, role in pairs(roleTable) do
-            CreateRole(role)
+            CreateRole(role.role, role.weight)
         end
 
         local dbuttons = vgui.Create("DPanel", dlist)
@@ -131,9 +217,9 @@ local function BuildRoleConfig(dsheet)
         daddrolebutton:SetTooltip(GetTranslation("rolepacks_add_role"))
         daddrolebutton.DoClick = function()
             TableRemove(dlist.Items)
-            CreateRole(ROLE_INNOCENT)
+            CreateRole(ROLE_INNOCENT, 1)
             dlist:AddPanel(dbuttons)
-            PrintSlotTable(slotList)
+            WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
         end
 
         local ddeleterolebutton = vgui.Create("DButton", dbuttons)
@@ -151,7 +237,7 @@ local function BuildRoleConfig(dsheet)
             local iconRows = MathCeil((#dlist.Items) / 8)
             dslot:SetSize(dslotlist:GetSize(), 16 + iconRows * iconHeight)
             dlist:SetHeight(iconRows * iconHeight)
-            PrintSlotTable(slotList)
+            WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
         end
 
         local ddeleteslotbutton = vgui.Create("DButton", dbuttons)
@@ -163,7 +249,7 @@ local function BuildRoleConfig(dsheet)
         ddeleteslotbutton.DoClick = function()
             TableRemoveByValue(slotList, roleList)
             dslot:Remove()
-            PrintSlotTable(slotList)
+            WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
         end
 
         dlist:AddPanel(dbuttons)
@@ -171,35 +257,59 @@ local function BuildRoleConfig(dsheet)
         dslotlist:AddItem(dslot)
     end
 
+    local function ReadRolePackTable(name)
+        net.Start("TTT_RequestRolePackTable")
+        net.WriteString(name)
+        net.SendToServer()
+    end
+
+    local function UpdateRolePackUI(jsonTable)
+        dslotlist:Clear()
+        dallowduplicates:SetChecked(jsonTable.config.allowduplicates)
+        for _, slot in pairs(jsonTable.slots) do
+            CreateSlot(slot)
+        end
+    end
+    ReceiveStreamFromServer("TTT_ReadRolePackTable", UpdateRolePackUI)
+
     local daddslotbutton = vgui.Create("DButton", droles)
     daddslotbutton:SetText(GetTranslation("rolepacks_add_slot"))
     daddslotbutton:Dock(BOTTOM)
     daddslotbutton.DoClick = function()
-        CreateSlot("Role Slot:", {})
-        PrintSlotTable(slotList)
+        CreateSlot({})
+        WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+    end
+
+    if not packName or packName == "" then
+        daddslotbutton:SetDisabled(true)
+        dallowduplicates:SetDisabled(true)
+    else
+        ReadRolePackTable(packName)
     end
 
     return droles
 end
 
-local function BuildWeaponConfig(dsheet)
-    local dweapons = vgui.Create("DScrollPanel", dsheet)
-    dweapons:SetPaintBackground(false)
-    dweapons:StretchToParent(0, 0, 0, 0)
-
-    return dweapons
-end
-
-local function BuildConVarConfig(dsheet)
-    local dconvars = vgui.Create("DScrollPanel", dsheet)
-    dconvars:SetPaintBackground(false)
-    dconvars:StretchToParent(0, 0, 0, 0)
-
-    return dconvars
+local function IsNameValid(name, dpack)
+    if string.find(name, '[\\/:%*%?"<>|]') then
+        LocalPlayer():PrintMessage(HUD_PRINTTALK, 'Name cannot contain the following characters: \\/:*?"<>|')
+        return false
+    elseif #name > 20 then
+        LocalPlayer():PrintMessage(HUD_PRINTTALK, 'Name cannot be longer than 20 characters')
+        return false
+    else
+        for _, v in pairs(dpack.Choices) do
+            if name == v then
+                LocalPlayer():PrintMessage(HUD_PRINTTALK, 'Name cannot be a duplicate of another role pack')
+                return false
+            end
+        end
+    end
+    return true
 end
 
 local function OpenDialog()
-    local numCols = 4
+    local numCols = 8
     local numRows = 5
     local itemSize = 64
     -- margin
@@ -207,10 +317,8 @@ local function OpenDialog()
     -- item list width
     local dlistw = ((itemSize + 2) * numCols) - 2 + 15
     local dlisth = ((itemSize + 2) * numRows) - 2 + 15
-    -- right column width
-    local diw = 270
     -- frame size
-    local w = dlistw + diw + (m * 4)
+    local w = dlistw + (m * 4)
     local h = dlisth + 75 + m + 22
 
     local dframe = vgui.Create("DFrame")
@@ -222,10 +330,29 @@ local function OpenDialog()
     dframe:SetMouseInputEnabled(true)
     dframe:SetDeleteOnClose(true)
 
+    local droles = BuildRoleConfig(dframe, "")
+    droles:SetPos(0, 0)
+    droles:StretchToParent(m, 2 * m + 47, m, m)
+
     local dpack = vgui.Create("DComboBox", dframe)
     dpack:SetPos(m, m + 25)
     dpack:StretchToParent(m, nil, 4 * m + 66, nil)
-    -- TODO: Populate dropdown with available role packs
+    dpack.OnSelect = function(_, _, name)
+        droles:Remove()
+        droles = BuildRoleConfig(dframe, name)
+        droles:SetPos(0, 0)
+        droles:StretchToParent(m, 2 * m + 47, m, m)
+    end
+
+    net.Start("TTT_RequestRolePackList")
+    net.SendToServer()
+
+    net.Receive("TTT_SendRolePackList", function()
+        local length = net.ReadUInt(8)
+        for _ = 1, length do
+            dpack:AddChoice(net.ReadString())
+        end
+    end)
 
     local ddeletebutton = vgui.Create("DButton", dframe)
     ddeletebutton:SetSize(22, 22)
@@ -258,8 +385,14 @@ local function OpenDialog()
             TableRemove(dpack.Choices, index)
             dpack:SetText("")
             dpack.selected = nil
-            -- TODO: Delete role pack JSON and clear currently open panel
+            net.Start("TTT_DeleteRolePack")
+            net.WriteString(pack)
+            net.SendToServer()
+            droles:Remove()
             dconfirmdialog:Close()
+            droles = BuildRoleConfig(dframe, "")
+            droles:SetPos(0, 0)
+            droles:StretchToParent(m, 2 * m + 47, m, m)
         end
 
         local dno = vgui.Create("DButton", dconfirmdialog)
@@ -305,13 +438,17 @@ local function OpenDialog()
         drename:SetText("Rename")
         drename:SetPos(300 - m - 64, 25 + m)
         drename.DoClick = function()
-            local newpack = drenameentry:GetValue()
+            local newpack = StringLower(drenameentry:GetValue())
             if not newpack or newpack == "" then return end
-            -- TODO: Check that new name is valid
+            if not IsNameValid(newpack, dpack) then return end
             TableRemove(dpack.Choices, index)
             local newindex = dpack:AddChoice(newpack)
-            dpack:ChooseOption(newpack, newindex)
-            -- TODO: Update role pack JSON and currently open panel
+            dpack:SetText(newpack)
+            dpack.selected = newindex
+            net.Start("TTT_RenameRolePack")
+            net.WriteString(pack)
+            net.WriteString(newpack)
+            net.SendToServer()
             drenamedialog:Close()
         end
 
@@ -347,30 +484,23 @@ local function OpenDialog()
         dconfirm:SetText("Confirm")
         dconfirm:SetPos(300 - m - 64, 25 + m)
         dconfirm.DoClick = function()
-            local pack = dnewentry:GetValue()
+            local pack = StringLower(dnewentry:GetValue())
             if not pack or pack == "" then return end
-            -- TODO: Check that new name is valid
+            if not IsNameValid(pack, dpack) then return end
             local index = dpack:AddChoice(pack)
             dpack:ChooseOption(pack, index)
-            -- TODO: Create role pack JSON and clear currently open panel
+            net.Start("TTT_CreateRolePack")
+            net.WriteString(pack)
+            net.SendToServer()
+            droles:Remove()
             dnewdialog:Close()
+            droles = BuildRoleConfig(dframe, pack)
+            droles:SetPos(0, 0)
+            droles:StretchToParent(m, 2 * m + 47, m, m)
         end
 
         dnewdialog:MakePopup()
     end
-
-    local dsheet = vgui.Create("DPropertySheet", dframe)
-    dsheet:SetPos(0, 0)
-    dsheet:StretchToParent(m, 2 * m + 47, m, m)
-
-    local droleweapons = BuildRoleConfig(dsheet)
-    dsheet:AddSheet(GetTranslation("rolepacks_role_tabtitle"), droleweapons, "icon16/user.png", false, false, GetTranslation("rolepacks_role_tabtitle_tooltip"))
-
-    local droleweapons = BuildWeaponConfig(dsheet)
-    dsheet:AddSheet(GetTranslation("rolepacks_weapon_tabtitle"), droleweapons, "icon16/bomb.png", false, false, GetTranslation("rolepacks_weapon_tabtitle_tooltip"))
-
-    local droleweapons = BuildConVarConfig(dsheet)
-    dsheet:AddSheet(GetTranslation("rolepacks_convar_tabtitle"), droleweapons, "icon16/application_xp_terminal.png", false, false, GetTranslation("rolepacks_convar_tabtitle_tooltip"))
 
     dframe:MakePopup()
 end
