@@ -313,7 +313,7 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
         end
 
         if speaker.traitor_gvoice then
-            return true, loc_voice:GetBool()
+            return true, loc_voice:GetBool() and GetRoundState() ~= ROUND_POST
         elseif listener:IsActiveTraitorTeam() then
             -- Don't send voice to listener if either one of them was a beggar and the role change is not revealed
             if ((speaker:IsTraitor() and speaker:GetNWBool("WasBeggar", false)) or
