@@ -17,8 +17,8 @@ local StringLower = string.lower
 -- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (terminanting byte)
 local maxStreamLength = 65529
 
-local function SendStreamToServer(table, networkString)
-    local jsonTable = util.TableToJSON(table)
+local function SendStreamToServer(tbl, networkString)
+    local jsonTable = util.TableToJSON(tbl)
     if jsonTable == nil then
         ErrorNoHalt("Table encoding failed!\n")
         return
