@@ -866,35 +866,34 @@ ROLE_DATA_EXTERNAL = {}
 ROLE_TRANSLATIONS = {}
 
 -- Role features
-ROLE_SHOP_ITEMS = {}
+ROLE_CONVARS = {}
 ROLE_LOADOUT_ITEMS = {}
-ROLE_STARTING_CREDITS = {}
-ROLE_STARTING_HEALTH = {}
 ROLE_MAX_HEALTH = {}
 ROLE_SELECTION_PREDICATE = {}
-
-ROLE_CONVARS = {}
+ROLE_SHOP_ITEMS = {}
+ROLE_STARTING_CREDITS = {}
+ROLE_STARTING_HEALTH = {}
 
 -- Optional features
-ROLE_HAS_PASSIVE_WIN = {}
-ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
 ROLE_CAN_SEE_JESTERS = {}
 ROLE_CAN_SEE_MIA = {}
+ROLE_HAS_PASSIVE_WIN = {}
 ROLE_HAS_SHOP_MODE = {}
 ROLE_HAS_SHOP_SYNC = {}
 ROLE_SHOP_SYNC_ROLES = {}
+ROLE_SHOULD_NOT_DROWN = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
-ROLE_SHOULD_ACT_LIKE_JESTER = {}
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
+ROLE_IS_TARGETID_OVERRIDDEN = {}
+ROLE_IS_TARGET_HIGHLIGHTED = {}
 ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
-ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
-ROLE_IS_TARGETID_OVERRIDDEN = {}
-ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
-ROLE_IS_TARGET_HIGHLIGHTED = {}
+ROLE_SHOULD_ACT_LIKE_JESTER = {}
 ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE = {}
+ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 ROLE_VICTIM_CHANGING_ROLE = {}
 ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 
@@ -987,22 +986,6 @@ function RegisterRole(tbl)
         CAN_LOOT_CREDITS_ROLES[roleID] = tbl.canlootcredits
     end
 
-    if type(tbl.canusetraitorbuttons) == "boolean" then
-        TRAITOR_BUTTON_ROLES[roleID] = tbl.canusetraitorbuttons
-    end
-
-    if type(tbl.shoulddelayshop) == "boolean" then
-        DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
-    end
-
-    if type(tbl.haspassivewin) == "boolean" then
-        ROLE_HAS_PASSIVE_WIN[roleID] = tbl.haspassivewin
-    end
-
-    if type(tbl.shouldnotdrown) == "boolean" then
-        ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
-    end
-
     if type(tbl.canseec4) == "boolean" then
         ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
     end
@@ -1015,6 +998,14 @@ function RegisterRole(tbl)
         ROLE_CAN_SEE_MIA[roleID] = tbl.canseemia
     end
 
+    if type(tbl.canusetraitorbuttons) == "boolean" then
+        TRAITOR_BUTTON_ROLES[roleID] = tbl.canusetraitorbuttons
+    end
+
+    if type(tbl.haspassivewin) == "boolean" then
+        ROLE_HAS_PASSIVE_WIN[roleID] = tbl.haspassivewin
+    end
+
     if type(tbl.hasshopmode) == "boolean" then
         ROLE_HAS_SHOP_MODE[roleID] = tbl.hasshopmode
     end
@@ -1023,20 +1014,20 @@ function RegisterRole(tbl)
         ROLE_HAS_SHOP_SYNC[roleID] = tbl.hasshopsync
     end
 
-    if type(tbl.shopsyncroles) == "table" then
-        ROLE_SHOP_SYNC_ROLES[roleID] = tbl.shopsyncroles
-    end
-
     if type(tbl.isdetectivelike) == "boolean" then
         DETECTIVE_LIKE_ROLES[roleID] = tbl.isdetectivelike
     end
 
-    if type(tbl.shouldrevealrolewhenactive) == "function" then
-        ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[roleID] = tbl.shouldrevealrolewhenactive
+    if type(tbl.shopsyncroles) == "table" then
+        ROLE_SHOP_SYNC_ROLES[roleID] = tbl.shopsyncroles
     end
 
-    if type(tbl.victimchangingrole) == "function" then
-        ROLE_VICTIM_CHANGING_ROLE[roleID] = tbl.victimchangingrole
+    if type(tbl.shoulddelayshop) == "boolean" then
+        DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
+    end
+
+    if type(tbl.shouldnotdrown) == "boolean" then
+        ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
     end
 
     -- Equipment
@@ -1056,8 +1047,16 @@ function RegisterRole(tbl)
         ROLE_IS_ACTIVE[roleID] = tbl.isactive
     end
 
-    if type(tbl.shouldactlikejester) == "function" then
-        ROLE_SHOULD_ACT_LIKE_JESTER[roleID] = tbl.shouldactlikejester
+    if type(tbl.isscoreboardinfooverridden) == "function" then
+        ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[roleID] = tbl.isscoreboardinfooverridden
+    end
+
+    if type(tbl.istargetidoverridden) == "function" then
+        ROLE_IS_TARGETID_OVERRIDDEN[roleID] = tbl.istargetidoverridden
+    end
+
+    if type(tbl.istargethighlighted) == "function" then
+        ROLE_IS_TARGET_HIGHLIGHTED[roleID] = tbl.istargethighlighted
     end
 
     if type(tbl.moverolestate) == "function" then
@@ -1068,20 +1067,20 @@ function RegisterRole(tbl)
         ROLE_ON_ROLE_ASSIGNED[roleID] = tbl.onroleassigned
     end
 
+    if type(tbl.shouldactlikejester) == "function" then
+        ROLE_SHOULD_ACT_LIKE_JESTER[roleID] = tbl.shouldactlikejester
+    end
+
+    if type(tbl.shouldrevealrolewhenactive) == "function" then
+        ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[roleID] = tbl.shouldrevealrolewhenactive
+    end
+
     if type(tbl.shouldshowspectatorhud) == "function" then
         ROLE_SHOULD_SHOW_SPECTATOR_HUD[roleID] = tbl.shouldshowspectatorhud
     end
 
-    if type(tbl.istargetidoverridden) == "function" then
-        ROLE_IS_TARGETID_OVERRIDDEN[roleID] = tbl.istargetidoverridden
-    end
-
-    if type(tbl.isscoreboardinfooverridden) == "function" then
-        ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[roleID] = tbl.isscoreboardinfooverridden
-    end
-
-    if type(tbl.istargethighlighted) == "function" then
-        ROLE_IS_TARGET_HIGHLIGHTED[roleID] = tbl.istargethighlighted
+    if type(tbl.victimchangingrole) == "function" then
+        ROLE_VICTIM_CHANGING_ROLE[roleID] = tbl.victimchangingrole
     end
 
     -- List of objects that describe convars for ULX support, in the following format:
