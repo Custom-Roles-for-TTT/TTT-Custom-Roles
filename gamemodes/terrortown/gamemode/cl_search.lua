@@ -1,6 +1,5 @@
 -- Body search popup
 
-local file = file
 local hook = hook
 local net = net
 local pairs = pairs

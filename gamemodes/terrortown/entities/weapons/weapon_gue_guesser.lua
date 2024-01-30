@@ -1,6 +1,5 @@
 AddCSLuaFile()
 
-local file = file
 local vgui = vgui
 local net = net
 local util = util
@@ -276,6 +275,8 @@ function SWEP:SecondaryAttack()
 
             for _, role in pairs(roleTable) do
                 local ic = vgui.Create("SimpleIcon", dlist)
+
+                local roleStringShort = ROLE_STRINGS_SHORT[role]
                 local material = util.GetRoleIconPath(roleStringShort, "icon", "vtf")
 
                 ic:SetIconSize(itemSize)

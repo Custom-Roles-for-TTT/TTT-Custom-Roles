@@ -3,6 +3,7 @@
 if not util then return end
 
 local cvars = cvars
+local file = file
 local input = input
 local ipairs = ipairs
 local IsValid = IsValid
@@ -15,6 +16,7 @@ local timer = timer
 local weapons = weapons
 local hook = hook
 
+local FileExists = file.Exists
 local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringFormat = string.format
@@ -512,7 +514,7 @@ function util.GetRoleIconPath(role_str, typ, ext, file_name_override)
         file_name_override = role_str
     end
     -- Strip the dot off the start of the extension, if there is one
-    if string.StartsWith(ext, ".") then
+    if StringStartsWith(ext, ".") then
         ext = string.sub(ext, 2)
     end
     local file_path = StringFormat("vgui/ttt/roles/%s/%s_%s.%s", role_str, typ, file_name_override, ext)

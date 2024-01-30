@@ -8,7 +8,7 @@ local pairs = pairs
 local string = string
 local table = table
 
-local FileExists = file.Exists
+local FileFind = file.Find
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
@@ -1100,13 +1100,13 @@ function RegisterRole(tbl)
 end
 
 local function AddRoleFiles(root)
-    local rootfiles, dirs = file.Find(root .. "*", "LUA")
+    local rootfiles, dirs = FileFind(root .. "*", "LUA")
     for _, dir in ipairs(dirs) do
         local clientFiles = {}
         local sharedFiles = {}
         local serverFiles = {}
         -- Partition the files by location so we can load shared first
-        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
+        local files, _ = FileFind(root .. dir .. "/*.lua", "LUA")
         for _, fil in ipairs(files) do
             if StringFind(fil, "cl_") then
                 table.insert(clientFiles, fil)
