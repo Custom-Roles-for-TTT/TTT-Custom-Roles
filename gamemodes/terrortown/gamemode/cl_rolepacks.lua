@@ -67,11 +67,13 @@ local function ReceiveStreamFromServer(networkString, callback)
 
         if json == "" then
             ErrorNoHalt("Table decompression failed!\n")
+            return
         end
 
         local jsonTable = util.JSONToTable(json)
         if jsonTable == nil then
             ErrorNoHalt("Table decoding failed!\n")
+            return
         end
 
         callback(jsonTable)

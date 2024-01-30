@@ -72,6 +72,7 @@ if SERVER then
 
             if jsonTable == "" then
                 ErrorNoHalt("Table decompression failed!\n")
+                return
             end
 
             callback(jsonTable)
