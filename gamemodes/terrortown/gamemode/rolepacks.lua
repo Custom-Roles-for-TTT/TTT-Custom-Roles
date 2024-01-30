@@ -122,9 +122,15 @@ if SERVER then
     net.Receive("TTT_RenameRolePack", function()
         local oldName = net.ReadString()
         local newName = net.ReadString()
+        local newPath = "rolepacks/" .. newName .. ".json"
+        if file.Exists(newPath, "DATA") then
+            ErrorNoHalt("Role pack named '" .. newName .. "' already exists!\n")
+            return
+        end
+
         local oldPath = "rolepacks/" .. oldName .. ".json"
         if file.Exists(oldPath, "DATA") then
-            file.Rename(oldPath, "rolepacks/" .. newName .. ".json")
+            file.Rename(oldPath, newPath)
         end
     end)
 
