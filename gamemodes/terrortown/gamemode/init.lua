@@ -1320,7 +1320,7 @@ function SelectRoles()
                     ply:SetRole(role)
                     table.insert(chosenRoles, role)
                 end
-                SendRolePackRoleList()
+                ROLEPACKS.SendRolePackRoleList()
             end
         end
     end
