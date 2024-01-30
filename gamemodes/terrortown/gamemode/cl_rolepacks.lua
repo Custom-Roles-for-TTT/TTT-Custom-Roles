@@ -530,7 +530,7 @@ end)
 
 net.Receive("TTT_SendRolePackRoleList", function()
     ROLE_PACK_ROLES = {}
-    
+
     local count = net.ReadUInt(8)
     if count <= 0 then return end
     for _ = 1, count do

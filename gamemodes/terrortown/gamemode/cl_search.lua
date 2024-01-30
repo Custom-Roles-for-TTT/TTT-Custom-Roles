@@ -1,6 +1,5 @@
 -- Body search popup
 
-local file = file
 local hook = hook
 local net = net
 local pairs = pairs
@@ -99,7 +98,7 @@ local function IconForInfoType(t, data)
     -- ugly special casing for weapons, because they are more likely to be
     -- customized and hence need more freedom in their icon filename
     if t == "role" then
-        return ROLE_ICON_ICON_MATERIALS[ROLE_STRINGS_SHORT[role]]
+        return ROLE_ICON_ICON_MATERIALS[mat]
     elseif t ~= "wep" then
         return base .. mat
     else
