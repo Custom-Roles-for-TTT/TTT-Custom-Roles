@@ -1,6 +1,7 @@
 # Release Notes
 
 ## 2.0.7 (Beta)
+**Released:**
 
 ### Additions
 - Added convar, `ttt_marshal_prevent_deputy`, to control whether to only spawn the marshal when there isn't already a deputy or impersonator in the round (defaults to enabled to match prior behavior).
