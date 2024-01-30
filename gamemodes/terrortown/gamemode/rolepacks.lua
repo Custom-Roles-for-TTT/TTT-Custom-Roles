@@ -10,7 +10,7 @@ local StringSub = string.sub
 local TableInsert = table.insert
 local TableHasValue = table.HasValue
 
-local ROLEPACKS = {}
+ROLEPACKS = {}
 
 util.AddNetworkString("TTT_WriteRolePackTable")
 util.AddNetworkString("TTT_WriteRolePackTable_Part")
