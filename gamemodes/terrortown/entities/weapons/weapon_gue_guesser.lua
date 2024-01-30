@@ -1,6 +1,5 @@
 AddCSLuaFile()
 
-local file = file
 local vgui = vgui
 local net = net
 local util = util
