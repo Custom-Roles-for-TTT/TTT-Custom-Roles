@@ -90,6 +90,20 @@
             <em>Return:</em> Whether or not the given player should be able to identify the given corpse (Defaults to <code>false</code>).
         </p>
 
+        <h3><a id="tttcanusetraitorvoiceply" href="#tttcanusetraitorvoiceply"></a>TTTCanUseTraitorVoice(ply)</a></h3>
+        <p>
+            Called when a player is attempting to use traitor chat, both speaking and listening. Used to change the default behavior.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.0.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is trying to use traitor voice. This is called for both speaking and listening</li>
+        </ul>
+        <p>
+            <em>Return:</em> Whether to allow this player to use traitor voice chat. (Defaults to checking whether the player is on the traitor team)
+        </p>
+
         <h3><a id="tttcupidshouldloversurviveply-lover" href="#tttcupidshouldloversurviveply-lover">TTTCupidShouldLoverSurvive(ply, lover)</a></h3>
         <p>
             Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.<br>
@@ -1398,7 +1412,7 @@
 
         <h3><a id="tttteamchattargetssender-msg-targets-from_chat" href="#tttteamchattargetssender-msg-targets-from_chat">TTTTeamChatTargets(sender, msg, targets, from_chat)</a></h3>
         <p>
-            Calls before a role chat message is sent. Used to modify the targets of the role message.<br>
+            Called before a team chat message is sent. Used to modify the targets of the team message.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 2.0.7<br>
             <em>Parameters:</em>
@@ -1410,7 +1424,22 @@
             <li><em>from_chat</em> - Whether this hook is being called from the actual chat send method</li>
         </ul>
         <p>
-            <em>Return:</em> Whether or not this role chat message should be sent (Defaults to <code>true</code>).
+            <em>Return:</em> Whether or not this team chat message should be sent (Defaults to <code>true</code>).
+        </p>
+
+        <h3><a id="tttteamvoicechattargetsspeaker-targetsfrom_chat" href="#tttteamvoicechattargetsspeaker-targetsfrom_chat">TTTTeamVoiceChatTargets(speaker, targets)</a></h3>
+        <p>
+            Called before a team voice state message is sent. Used to modify the targets of the team voice state message.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.0.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>speaker</em> - The player trying to send their team voice state message</li>
+            <li><em>targets</em> - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients</li>
+        </ul>
+        <p>
+            <em>Return:</em> Whether or not this team voice state message should be sent (Defaults to <code>true</code>).
         </p>
 
         <h3><a id="tttturncoatteamchangedply-traitor" href="#tttturncoatteamchangedply-traitor">TTTTurncoatTeamChanged(ply, traitor)</a></h3>
