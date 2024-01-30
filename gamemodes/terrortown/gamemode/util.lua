@@ -506,6 +506,22 @@ function util.CanRoleSpawn(role)
     return util.CanRoleSpawnNaturally(role) or util.CanRoleSpawnArtificially(role)
 end
 
+function util.GetRoleIconPath(role_str, typ, ext, file_name_override)
+    -- Use the role string as the base of the file name if a name is not provided
+    if not file_name_override then
+        file_name_override = role_str
+    end
+    -- Strip the dot off the start of the extension, if there is one
+    if string.StartsWith(ext, ".") then
+        ext = string.sub(ext, 2)
+    end
+    local file_path = StringFormat("vgui/ttt/roles/%s/%s_%s.%s", role_str, typ, file_name_override, ext)
+    if not FileExists(StringFormat("materials/%s", file_path), "GAME") then
+        file_path = StringFormat("vgui/ttt/%s_%s.%s", typ, file_name_override, ext)
+    end
+    return file_path
+end
+
 ----------------------------
 -- ADAPTED FROM FLARE GUN --
 ----------------------------

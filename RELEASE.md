@@ -31,6 +31,7 @@
 - Added cheat-only `ttt_team_chat_as_player` command for sending role chat messages as another player
 - Added `plymeta:ForceRoleNextRound`, `plymeta:GetForcedRole`, and `plymeta:ClearForcedRole` methods to allow forcing player's roles in the next round
 - Added `util.CanRoleSpawnNaturally` method to check if a role can spawn in the round naturally (i.e. because it is enabled via ConVars or role packs)
+- Added `util.GetRoleIconPath` to get the path to a role's icon file
 
 ## 2.0.6 (Beta)
 **Released: January 14th, 2024**

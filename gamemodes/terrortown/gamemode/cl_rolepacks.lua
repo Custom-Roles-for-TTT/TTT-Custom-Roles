@@ -159,10 +159,7 @@ local function BuildRoleConfig(dframe, packName)
             local dicon = vgui.Create("SimpleIcon", drole)
 
             local roleStringShort = ROLE_STRINGS_SHORT[role]
-            local material = "vgui/ttt/icon_" .. roleStringShort
-            if file.Exists("materials/vgui/ttt/roles/" .. roleStringShort .. "/icon_" .. roleStringShort .. ".vtf", "GAME") then
-                material = "vgui/ttt/roles/" .. roleStringShort .. "/icon_" .. roleStringShort
-            end
+            local material = util.GetRoleIconPath(roleStringShort, "icon", "vtf")
 
             dicon:SetIconSize(64)
             dicon:SetIcon(material)
@@ -173,10 +170,7 @@ local function BuildRoleConfig(dframe, packName)
                 for r, s in SortedPairsByValue(ROLE_STRINGS) do
                     dmenu:AddOption(s, function()
                         roleStringShort = ROLE_STRINGS_SHORT[r]
-                        material = "vgui/ttt/icon_" .. roleStringShort
-                        if file.Exists("materials/vgui/ttt/roles/" .. roleStringShort .. "/icon_" .. roleStringShort .. ".vtf", "GAME") then
-                            material = "vgui/ttt/roles/" .. roleStringShort .. "/icon_" .. roleStringShort
-                        end
+                        material = util.GetRoleIconPath(roleStringShort, "icon", "vtf")
                         dicon:SetIcon(material)
                         dicon:SetBackgroundColor(ROLE_COLORS[r] or Color(0, 0, 0, 0))
                         dicon:SetTooltip(s)

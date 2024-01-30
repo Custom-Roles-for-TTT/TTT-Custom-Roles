@@ -38,3 +38,13 @@ Executes a file at the given path, relative to the root game location.\
 *Parameters:*
 - *filePath* - The path to the file to be executed, relative to the root game location
 - *errorIfMissing* - Whether to throw an error if the file is missing (Defaults to `false`)
+
+### util.GetRoleIconPath(role_str, typ, ext, file_name_override)
+Gets the path to a role's icon of the given type.\
+*Realm:* Client and Server\
+*Added in:* 2.0.7\
+*Parameters:*
+- *role_str* - The role string used in the icon path and name
+- *typ* - The type of icon whose path is being found
+- *ext* - The file extension to use in the role icon path
+- *file_name_override* - The file name to use, appended to `{typ}_` when the path is built (Optional, defaults to the `{role_str}` value)

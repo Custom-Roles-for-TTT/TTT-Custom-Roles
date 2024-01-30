@@ -831,14 +831,7 @@ AddRoleAssociations(ROLE_TEAMS_WITH_SHOP, {ROLE_TEAM_TRAITOR, ROLE_TEAM_INDEPEND
 
 -- Role icon caching
 local function CacheRoleIcon(tbl, role_str, typ, ext, cache_key)
-    -- Use the role string as the cache key and file name if a specific cache key is not provided
-    if not cache_key then
-        cache_key = role_str
-    end
-    local file_path = StringFormat("vgui/ttt/roles/%s/%s_%s.%s", role_str, typ, cache_key, ext)
-    if not FileExists(StringFormat("materials/%s", file_path), "GAME") then
-        file_path = StringFormat("vgui/ttt/%s_%s.%s", typ, cache_key, ext)
-    end
+    local file_path = util.GetRoleIconPath(role_str, typ, ext, cache_key)
     tbl[cache_key] = Material(file_path)
 end
 

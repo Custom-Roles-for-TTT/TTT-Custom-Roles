@@ -744,11 +744,7 @@ local function GetRoleIconElement(roleFileName, roleColor, startingRole, finalRo
 
     local roleIcon = vgui.Create("DImage", roleBackground)
     roleIcon:SetSize(32, 32)
-    if file.Exists("materials/vgui/ttt/roles/" .. roleFileName .. "/score_" .. roleFileName .. ".png", "GAME") then
-        roleIcon:SetImage("vgui/ttt/roles/" .. roleFileName .. "/score_" .. roleFileName .. ".png")
-    else
-        roleIcon:SetImage("vgui/ttt/score_" .. roleFileName .. ".png")
-    end
+    roleIcon:SetImage(util.GetRoleIconPath(roleFileName, "score", "png"))
     return roleBackground
 end
 

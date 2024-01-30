@@ -150,42 +150,17 @@ for role = 0, ROLE_MAX do
     CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health)
 
     -- Body icon
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/icon_" .. shortstring .. ".vmt", "GAME") then
-        resource.AddFile("materials/vgui/ttt/roles/" .. shortstring .. "/icon_" .. shortstring .. ".vmt")
-    elseif file.Exists("materials/vgui/ttt/icon_" .. shortstring .. ".vmt", "GAME") then
-        resource.AddFile("materials/vgui/ttt/icon_" .. shortstring .. ".vmt")
-    end
+    resource.AddFile(util.GetRoleIconPath(shortstring, "icon", "vmt"))
 
     -- Round summary icon
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/score_" .. shortstring .. ".png", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/score_" .. shortstring .. ".png")
-    elseif file.Exists("materials/vgui/ttt/score_" .. shortstring .. ".png", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/score_" .. shortstring .. ".png")
-    end
+    resource.AddSingleFile(util.GetRoleIconPath(shortstring, "score", "png"))
 
     -- Scoreboard icon
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/tab_" .. shortstring .. ".png", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/tab_" .. shortstring .. ".png")
-    elseif file.Exists("materials/vgui/ttt/tab_" .. shortstring .. ".png", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/tab_" .. shortstring .. ".png")
-    end
+    resource.AddSingleFile(util.GetRoleIconPath(shortstring, "tab", "png"))
 
     -- Target ID icons
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vmt", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vmt")
-    elseif file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vmt", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. ".vmt")
-    end
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. "_noz.vmt", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. "_noz.vmt")
-    elseif file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. "_noz.vmt", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. "_noz.vmt")
-    end
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vtf", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vtf")
-    elseif file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vtf", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. ".vtf")
-    end
+    resource.AddFile(util.GetRoleIconPath(shortstring, "sprite", "vmt"))
+    resource.AddSingleFile(util.GetRoleIconPath(shortstring, "sprite", "vtf", StringFormat("%s_noz", role_str))
 end
 
 -- Jester role properties
