@@ -17,6 +17,7 @@ local weapons = weapons
 local hook = hook
 
 local FileExists = file.Exists
+local FileRead = file.Read
 local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringFormat = string.format
@@ -441,12 +442,12 @@ if CLIENT then
         end
     end
 
-    function util.IncludeClientFile(file)
-        include(file)
+    function util.IncludeClientFile(fil)
+        include(fil)
     end
 else
-    function util.IncludeClientFile(file)
-        AddCSLuaFile(file)
+    function util.IncludeClientFile(fil)
+        AddCSLuaFile(fil)
     end
 end
 
@@ -466,14 +467,14 @@ end
 
 if SERVER then
     function util.ExecFile(filePath, errorIfMissing)
-        if not file.Exists(filePath, "GAME") then
+        if not FileExists(filePath, "GAME") then
             if errorIfMissing then
                 ErrorNoHalt(StringFormat("File not found when trying to execute: %s\n", filePath))
             end
             return
         end
 
-        local fileContent = file.Read(filePath, "GAME")
+        local fileContent = FileRead(filePath, "GAME")
         local lines = string.Explode("\n", fileContent)
         for _, line in ipairs(lines) do
             line = StringTrim(line)
