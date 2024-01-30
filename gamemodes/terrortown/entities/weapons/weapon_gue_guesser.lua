@@ -276,12 +276,7 @@ function SWEP:SecondaryAttack()
 
             for _, role in pairs(roleTable) do
                 local ic = vgui.Create("SimpleIcon", dlist)
-
-                local roleStringShort = ROLE_STRINGS_SHORT[role]
-                local material = "vgui/ttt/icon_" .. roleStringShort
-                if file.Exists("materials/vgui/ttt/roles/" .. roleStringShort .. "/icon_" .. roleStringShort .. ".vtf", "GAME") then
-                    material = "vgui/ttt/roles/" .. roleStringShort .. "/icon_" .. roleStringShort
-                end
+                local material = ROLE_ICON_ICON_MATERIALS[ROLE_STRINGS_SHORT[role]]
 
                 ic:SetIconSize(itemSize)
                 ic:SetIcon(material)
