@@ -20,6 +20,8 @@ local StringUpper = string.upper
 
 local shadow_start_timer = GetConVar("ttt_shadow_start_timer")
 local shadow_buffer_timer = GetConVar("ttt_shadow_buffer_timer")
+local shadow_delay_timer_min = GetConVar("ttt_shadow_delay_timer_min")
+local shadow_delay_timer_max = GetConVar("ttt_shadow_delay_timer_max")
 local shadow_alive_radius = GetConVar("ttt_shadow_alive_radius")
 local shadow_dead_radius = GetConVar("ttt_shadow_dead_radius")
 local shadow_target_buff = GetConVar("ttt_shadow_target_buff")
@@ -29,6 +31,7 @@ local shadow_weaken_health_to = GetConVar("ttt_shadow_weaken_health_to")
 local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
 local shadow_speed_mult = GetConVar("ttt_shadow_speed_mult")
 local shadow_sprint_recovery = GetConVar("ttt_shadow_sprint_recovery")
+local shadow_failure_mode = GetConVar("ttt_shadow_failure_mode")
 
 ------------------
 -- TRANSLATIONS --
@@ -37,11 +40,12 @@ local shadow_sprint_recovery = GetConVar("ttt_shadow_sprint_recovery")
 AddHook("Initialize", "Shadow_Translations_Initialize", function()
     -- Popup
     LANG.AddToLanguage("english", "info_popup_shadow", [[You are {role}! Find your target quickly
-and stay close to them. If you don't you die.
+and stay close to them. If you don't, you will be punished.
 
 Survive until the end of the round to win.]])
 
     -- HUD
+    LANG.AddToLanguage("english", "shadow_delay_target", "Target identified in: {time}")
     LANG.AddToLanguage("english", "shadow_find_target", "FIND YOUR TARGET - {time}")
     LANG.AddToLanguage("english", "shadow_return_target", "RETURN TO YOUR TARGET - {time}")
     LANG.AddToLanguage("english", "shadow_buff_hud_active", "Target {buff} active")
@@ -50,6 +54,7 @@ Survive until the end of the round to win.]])
     LANG.AddToLanguage("english", "shadow_buff_2", "respawn")
     LANG.AddToLanguage("english", "shadow_buff_3", "damage bonus")
     LANG.AddToLanguage("english", "shadow_buff_4", "team join")
+    LANG.AddToLanguage("english", "shadow_buff_5", "role steal")
 
     -- Target ID
     LANG.AddToLanguage("english", "shadow_target", "YOUR TARGET")
@@ -406,6 +411,36 @@ end)
 -- HUD --
 ---------
 
+AddHook("TTTHUDInfoPaint", "Shadow_Delay_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if hide_role then return end
+
+    if cli:IsActiveShadow() and not cli:IsRoleActive() then
+        local target = cli:GetNWString("ShadowTarget", "")
+        if target and #target > 0 then return end
+
+        surface.SetFont("TabLarge")
+        surface.SetTextColor(255, 255, 255, 230)
+
+        local remaining = MathMax(0, cli:GetNWFloat("ShadowTimer", -1) - CurTime())
+        local text = LANG.GetParamTranslation("shadow_delay_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
+        local _, h = surface.GetTextSize(text)
+
+        -- Move this up based on how many other labels here are
+        label_top = label_top + (20 * #active_labels)
+
+        surface.SetTextPos(label_left, ScrH() - label_top - h)
+        surface.DrawText(text)
+
+        -- Track that the label was added so others can position accurately
+        table.insert(active_labels, "shadow")
+    end
+end)
+
 AddHook("HUDPaint", "Shadow_HUDPaint", function()
     if not IsPlayer(client) then
         client = LocalPlayer()
@@ -416,6 +451,9 @@ AddHook("HUDPaint", "Shadow_HUDPaint", function()
     local t = client:GetNWFloat("ShadowTimer", -1)
 
     if client:IsActiveShadow() and (t > 0 or t == SHADOW_FORCED_PROGRESS_BAR) then
+        local target = client:GetNWString("ShadowTarget", "")
+        if not target or #target == 0 then return end
+
         local remaining = MathMax(0, t - CurTime())
 
         local PT = LANG.GetParamTranslation
@@ -442,7 +480,7 @@ AddHook("HUDPaint", "Shadow_HUDPaint", function()
     end
 end)
 
-AddHook("TTTHUDInfoPaint", "Shadow_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
+AddHook("TTTHUDInfoPaint", "Shadow_Buff_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
     if not cli:IsShadow() then return end
 
     local hide_role = false
@@ -492,27 +530,41 @@ end)
 
 AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SHADOW then
-        local roleColor = ROLE_COLORS[ROLE_SHADOW]
-        local html = "The " .. ROLE_STRINGS[ROLE_SHADOW] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role that wins by staying close to their target without dying. "
+        local roleTeam = player.GetRoleTeam(ROLE_SHADOW, true)
+        local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
+        local html = "The " .. ROLE_STRINGS[ROLE_SHADOW] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role that wins by staying close to their target without dying. "
 
         local soul_link = shadow_soul_link:GetInt()
         if soul_link == SHADOW_SOUL_LINK_BOTH then
             html = html .. "If the shadow dies, their target dies and vice-versa. "
         elseif soul_link == SHADOW_SOUL_LINK_TARGET then
             html = html .. "If the shadow's target dies, the shadow dies instantly. "
-        else
+        elseif roleTeam ~= ROLE_TEAM_JESTER then
             html = html .. "If the shadow kills their target, they die instantly. "
         end
         html = html .. "If the shadow survives until the end of the round they win."
 
         local start_timer = shadow_start_timer:GetInt()
         local buffer_timer = shadow_buffer_timer:GetInt()
-        html = html .. "<span style='display: block; margin-top: 10px;'>They can see their target through walls and are given <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. start_timer .. " seconds</span> to find them at the start of the round. Once the shadow has found their target, they are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " second</span> warning if they start to get too far away. If either of these timers run out before the shadow can find their target, the shadow "
+        local delay_min = shadow_delay_timer_min:GetInt()
+        local delay_max = shadow_delay_timer_max:GetInt()
+        local delay = ""
+        if delay_min > 0 and delay_max > 0 then
+            delay = " after a delay between " .. delay_min .. " and " .. delay_max .. " seconds"
+        end
+        html = html .. "<span style='display: block; margin-top: 10px;'>They can see their target through walls and are given <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. start_timer .. " seconds</span> to find them at the start of the round" .. delay .. ". Once the shadow has found their target, they are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " second</span> warning if they start to get too far away. If either of these timers run out before the shadow can find their target, the shadow "
 
         if shadow_weaken_health_to:GetInt() > 0 then
             html = html .. "has their health temporarily reduced over time. Once they get close to their target again, though, they will start to recover their max health back to normal"
         else
-            html = html .. "dies"
+            local failure_mode = shadow_failure_mode:GetInt()
+            if failure_mode == SHADOW_FAILURE_JESTER then
+                html = html .. "becomes a " .. ROLE_STRINGS[ROLE_JESTER]
+            elseif failure_mode == SHADOW_FAILURE_SWAPPER then
+                html = html .. "becomes a " .. ROLE_STRINGS[ROLE_SWAPPER]
+            else
+                html = html .. "dies"
+            end
         end
         html = html .. ".</span>"
 

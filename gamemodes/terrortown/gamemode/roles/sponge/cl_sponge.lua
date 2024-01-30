@@ -15,6 +15,10 @@ hook.Add("Initialize", "Sponge_Translations_Initialize", function()
     LANG.AddToLanguage("english", "win_sponge", "The {role} has absorbed themselves to death!")
     LANG.AddToLanguage("english", "ev_win_sponge", "The absorbant {role} won the round!")
 
+    -- Spongifier
+    LANG.AddToLanguage("english", "spongifier_help_pri", "{primaryfire} to turn yourself into a sponge.")
+    LANG.AddToLanguage("english", "spongifier_help_sec", "Starting to use the device will trigger a global announcement.")
+
     -- Scoring
     LANG.AddToLanguage("english", "score_sponge_killedby", "Killed by")
     LANG.AddToLanguage("english", "score_sponge_damaging", "{attacker} damaging")

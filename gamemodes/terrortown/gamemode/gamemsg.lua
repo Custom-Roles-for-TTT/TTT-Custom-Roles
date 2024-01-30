@@ -60,19 +60,54 @@ local function ShouldHideTraitorBodysnatcher()
 end
 
 -- Traitorchat
+local function GetRoleChatTargets(sender, msg, from_chat)
+    local targets = {}
+    if sender:IsTraitorTeam() then
+        targets = GetTraitorTeamFilterWithExcludes()
+    elseif sender:IsDetectiveLike() then
+        targets = GetDetectiveTeamFilter()
+    elseif sender:IsMonsterTeam() then
+        targets = GetMonsterTeamFilter()
+    end
+
+    local result = hook.Call("TTTTeamChatTargets", nil, sender, msg, targets, from_chat)
+    if type(result) == "boolean" and not result then return nil end
+
+    return targets
+end
+
 local function RoleChatMsg(sender, msg)
+    local targets = GetRoleChatTargets(sender, msg, true)
+    if not targets then return end
+
     net.Start("TTT_RoleChat")
     net.WriteInt(sender:GetRole(), 8)
     net.WriteEntity(sender)
     net.WriteString(msg)
-    if sender:IsTraitorTeam() then
-        net.Send(GetTraitorTeamFilterWithExcludes())
-    elseif sender:IsDetectiveLike() then
-        net.Send(GetDetectiveTeamFilter())
-    elseif sender:IsMonsterTeam() then
-        net.Send(GetMonsterTeamFilter())
-    end
+    net.Send(targets)
 end
+concommand.Add("ttt_team_chat_as_player", function(ply, cmd, args)
+    if #args < 2 then return end
+
+    local target_name = args[1]
+    local text = args[2]
+    local target = nil
+    for _, p in ipairs(GetAllPlayers()) do
+        if p:Nick() == target_name then
+            target = p
+            break
+        end
+    end
+
+    -- Make sure the player exists
+    if not target then return end
+
+    -- Don't send a message as a player who cannot send role messages
+    local targets = GetRoleChatTargets(target, text, false)
+    if not targets then return end
+
+    RoleChatMsg(target, text)
+end, nil, "Sends a chat message as another player", FCVAR_CHEAT)
 
 -- Round start info popup
 function ShowRoundStartPopup()
@@ -270,16 +305,24 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
         return true, false
     end
 
+    local listenerCanUseTraitorVoice = hook.Call("TTTCanUseTraitorVoice", nil, listener)
+    if type(listenerCanUseTraitorVoice) ~= "boolean" then
+        listenerCanUseTraitorVoice = listener:IsActiveTraitorTeam()
+    end
+
+    local speakerCanUseTraitorVoice = hook.Call("TTTCanUseTraitorVoice", nil, speaker)
+    if type(speakerCanUseTraitorVoice) ~= "boolean" then
+        speakerCanUseTraitorVoice = speaker:IsActiveTraitorTeam()
+    end
+
     -- Traitors "team" chat by default, non-locationally
-    if speaker:IsActiveTraitorTeam() then
+    if speakerCanUseTraitorVoice and not speaker.traitor_gvoice then
         local hasGlitch = false
         for _, v in pairs(GetAllPlayers()) do
             if v:IsGlitch() then hasGlitch = true end
         end
 
-        if speaker.traitor_gvoice then
-            return true, loc_voice:GetBool()
-        elseif listener:IsActiveTraitorTeam() then
+        if listenerCanUseTraitorVoice then
             -- Don't send voice to listener if either one of them was a beggar and the role change is not revealed
             if ((speaker:IsTraitor() and speaker:GetNWBool("WasBeggar", false)) or
                 (listener:IsTraitor() and listener:GetNWBool("WasBeggar", false))) and
@@ -293,16 +336,31 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
                 return false, false
             end
             return not hasGlitch, false
-        else
-            -- unless traitor_gvoice is true, normal innos can't hear speaker
-            return false, false
         end
+
+        -- unless traitor_gvoice is true, normal innos can't hear speaker
+        return false, false
     end
 
     return true, loc_voice:GetBool() and GetRoundState() ~= ROUND_POST
 end
 
+local function GetVoiceChatTargets(speaker)
+    local targets = {}
+    if speaker:IsActiveTraitorTeam() then
+        targets = GetTraitorTeamFilterWithExcludes(true)
+    end
+
+    local result = hook.Call("TTTTeamVoiceChatTargets", nil, speaker, targets)
+    if type(result) == "boolean" and not result then return nil end
+
+    return targets
+end
+
 local function SendTraitorVoiceState(speaker, state)
+    local targets = GetVoiceChatTargets(speaker)
+    if not targets then return end
+
     -- make it as small as possible, to get there as fast as possible
     -- we can fit it into a mere byte by being cheeky.
     net.Start("TTT_TraitorVoiceState")
@@ -310,14 +368,21 @@ local function SendTraitorVoiceState(speaker, state)
     net.WriteBit(state)
 
     -- send umsg to living traitors that this is traitor-only talk
-    net.Send(GetTraitorTeamFilterWithExcludes(true))
+    net.Send(targets)
 end
 
 local function TraitorGlobalVoice(ply, cmd, args)
-    if not IsValid(ply) or not ply:IsActiveTraitorTeam() then return end
+    if not IsValid(ply) then return end
     if #args ~= 1 then return end
-    local state = tonumber(args[1])
 
+    local canUseTraitorVoice = hook.Call("TTTCanUseTraitorVoice", nil, ply)
+    if type(canUseTraitorVoice) ~= "boolean" then
+        canUseTraitorVoice = ply:IsActiveTraitorTeam()
+    end
+
+    if not canUseTraitorVoice then return end
+
+    local state = tonumber(args[1])
     ply.traitor_gvoice = (state == 1)
 
     local hasGlitch = false
