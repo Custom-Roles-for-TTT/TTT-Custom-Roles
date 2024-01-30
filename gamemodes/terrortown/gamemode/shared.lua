@@ -8,6 +8,7 @@ local pairs = pairs
 local string = string
 local table = table
 
+local FileExists = file.Exists
 local FileFind = file.Find
 local CallHook = hook.Call
 local RunHook = hook.Run
@@ -829,6 +830,39 @@ ROLE_TEAM_DETECTIVE = 5
 ROLE_TEAMS_WITH_SHOP = {}
 AddRoleAssociations(ROLE_TEAMS_WITH_SHOP, {ROLE_TEAM_TRAITOR, ROLE_TEAM_INDEPENDENT, ROLE_TEAM_MONSTER, ROLE_TEAM_DETECTIVE})
 
+-- Role icon caching
+local function CacheRoleIcon(tbl, role_str, typ, ext, cache_key)
+    -- Use the role string as the cache key and file name if a specific cache key is not provided
+    if not cache_key then
+        cache_key = role_str
+    end
+    local file_path = StringFormat("vgui/ttt/roles/%s/%s_%s.%s", role_str, typ, cache_key, ext)
+    if not FileExists(StringFormat("materials/%s", file_path), "GAME") then
+        file_path = StringFormat("vgui/ttt/%s_%s.%s", typ, cache_key, ext)
+    end
+    tbl[cache_key] = Material(file_path)
+end
+
+ROLE_TAB_ICON_MATERIALS = {}
+local function CacheRoleTabIcon(role_str)
+    CacheRoleIcon(ROLE_TAB_ICON_MATERIALS, role_str, "tab", "png")
+end
+
+ROLE_SPRITE_ICON_MATERIALS = {}
+local function CacheRoleSpriteIcon(role_str)
+    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "vmt")
+    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "vmt", StringFormat("%s_noz", role_str))
+end
+
+local function CacheRoleIcons(role_str)
+    CacheRoleTabIcon(role_str)
+    CacheRoleSpriteIcon(role_str)
+end
+
+for _, v in pairs(ROLE_STRINGS_SHORT) do
+    CacheRoleIcons(v)
+end
+
 ROLE_DATA_EXTERNAL = {}
 
 -- Role strings
@@ -1401,33 +1435,6 @@ COLOR_OLIVE = Color(100, 100, 0, 255)
 include("util.lua")
 include("lang_shd.lua") -- uses some of util
 include("equip_items_shd.lua")
-
--- Role icon caching
--- This requires util so it has to be after the include
-local function CacheRoleIcon(tbl, role_str, typ, ext, cache_key)
-    local file_path = util.GetRoleIconPath(role_str, typ, ext, cache_key)
-    tbl[cache_key] = Material(file_path)
-end
-
-ROLE_TAB_ICON_MATERIALS = {}
-local function CacheRoleTabIcon(role_str)
-    CacheRoleIcon(ROLE_TAB_ICON_MATERIALS, role_str, "tab", "png")
-end
-
-ROLE_SPRITE_ICON_MATERIALS = {}
-local function CacheRoleSpriteIcon(role_str)
-    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "vmt")
-    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "vmt", StringFormat("%s_noz", role_str))
-end
-
-local function CacheRoleIcons(role_str)
-    CacheRoleTabIcon(role_str)
-    CacheRoleSpriteIcon(role_str)
-end
-
-for _, v in pairs(ROLE_STRINGS_SHORT) do
-    CacheRoleIcons(v)
-end
 
 function DetectiveMode() return GetGlobalBool("ttt_detective", false) end
 function HasteMode() return GetGlobalBool("ttt_haste", false) end
