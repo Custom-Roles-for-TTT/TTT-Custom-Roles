@@ -8,6 +8,7 @@
        1. [Explanation](#Explanation)
        1. [Example](#Example)
    1. [Configuration by Files](#Configuration-by-Files)
+       1. [Preparing a Role for Configuration](#preparing-a-role-for-configuration)
        1. [Weapons](#Weapons)
           1. [Adding Weapons](#Adding-Weapons)
           1. [Removing Weapons](#Removing-Weapons)
