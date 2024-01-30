@@ -191,3 +191,75 @@ function ROLEPACKS.SendRolePackRoleList()
     end
     net.Broadcast()
 end
+
+function ROLEPACKS.AssignRoles(choices)
+    local rolePackName = GetConVar("ttt_role_pack"):GetString()
+    if #rolePackName == 0 then return end
+
+    local json = file.Read("rolepacks/" .. rolePackName .. ".json", "DATA")
+    if not json then
+        ErrorNoHalt("No role pack named '" .. rolePackName .. "' found!\n")
+        return
+    end
+
+    local jsonTable = util.JSONToTable(json)
+    if not jsonTable then
+        ErrorNoHalt("Table decoding failed!\n")
+        return
+    end
+
+    local rolePackChoices = table.Copy(choices)
+    local forcedRoles = {}
+    for k, v in ipairs(rolePackChoices) do
+        if v.forcedRole and v.forcedRole ~= ROLE_NONE then
+            table.insert(forcedRoles, v.forcedRole)
+            table.remove(rolePackChoices, k)
+        end
+    end
+
+    local allowDuplicates = jsonTable.config.allowduplicates
+
+    local chosenRoles = {}
+    for _, slot in ipairs(jsonTable.slots) do
+        if #rolePackChoices <= 0 then break end
+
+        local possibleRoles = {}
+        local skipSlot = false
+        for _, roleslot in ipairs(slot) do
+            local role = ROLE_NONE
+            for r = ROLE_INNOCENT, ROLE_MAX do
+                if ROLE_STRINGS_RAW[r] == roleslot.role then
+                    role = r
+                    break
+                end
+            end
+
+            if role == ROLE_NONE then continue end
+
+            if table.HasValue(forcedRoles, role) then
+                table.RemoveByValue(forcedRoles, role)
+                table.insert(chosenRoles, role)
+                skipSlot = true
+                break
+            end
+
+            if not allowDuplicates and table.HasValue(chosenRoles, role) then continue end
+
+            for _ = 1, roleslot.weight do
+                table.insert(possibleRoles, role)
+            end
+        end
+
+        if skipSlot then continue end
+
+        local ply = table.remove(rolePackChoices)
+        if #possibleRoles <= 0 then continue end
+
+        table.Shuffle(possibleRoles)
+        local role = table.remove(possibleRoles)
+        ply:SetRole(role)
+        table.insert(chosenRoles, role)
+    end
+
+    ROLEPACKS.SendRolePackRoleList()
+end
