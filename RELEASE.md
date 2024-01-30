@@ -5,6 +5,7 @@
 
 ### Developer
 - Added `plymeta:ForceRoleNextRound`, `plymeta:GetForcedRole`, and `plymeta:ClearForcedRole` methods to allow forcing player's roles in the next round
+- Added `util.CanRoleSpawnNaturally` method to check if a role can spawn in the round naturally (i.e. because it is enabled via ConVars or role packs)
 
 ## 2.0.6 (Beta)
 **Released: January 14th, 2024**

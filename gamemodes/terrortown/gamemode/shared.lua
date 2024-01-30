@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.0.5"
+CR_VERSION = "2.0.7"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -222,6 +222,8 @@ AddRoleAssociations(DETECTIVE_LIKE_ROLES, {ROLE_DEPUTY, ROLE_IMPERSONATOR})
 
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
+
+ROLE_PACK_ROLES = {}
 
 -- Traitors get this ability by default
 TRAITOR_BUTTON_ROLES = {}

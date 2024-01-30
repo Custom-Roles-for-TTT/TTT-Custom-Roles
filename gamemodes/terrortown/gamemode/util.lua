@@ -495,12 +495,15 @@ function util.CanRoleSpawnArtificially(role)
     return false
 end
 
-function util.CanRoleSpawn(role)
-    if DEFAULT_ROLES[role] then return true end
-    if GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() then
+function util.CanRoleSpawnNaturally(role)
+    if DEFAULT_ROLES[role] or ROLE_PACK_ROLES[role] or GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() then
         return true
     end
-    return util.CanRoleSpawnArtificially(role)
+    return false
+end
+
+function util.CanRoleSpawn(role)
+    return util.CanRoleSpawnNaturally(role) or util.CanRoleSpawnArtificially(role)
 end
 
 ----------------------------

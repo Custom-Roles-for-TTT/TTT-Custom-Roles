@@ -1,3 +1,5 @@
+include("shared.lua")
+
 local net = net
 local util = util
 local file = file
@@ -6,6 +8,7 @@ local string = string
 
 local StringSub = string.sub
 local TableInsert = table.insert
+local TableHasValue = table.HasValue
 
 if SERVER then
     util.AddNetworkString("TTT_WriteRolePackTable")
@@ -18,6 +21,8 @@ if SERVER then
     util.AddNetworkString("TTT_CreateRolePack")
     util.AddNetworkString("TTT_RenameRolePack")
     util.AddNetworkString("TTT_DeleteRolePack")
+    util.AddNetworkString("TTT_ApplyRolePack")
+    util.AddNetworkString("TTT_SendRolePackRoleList")
 
     -- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (terminanting byte)
     local maxStreamLength = 65529
@@ -129,4 +134,53 @@ if SERVER then
             file.Delete(path)
         end
     end)
+
+    net.Receive("TTT_ApplyRolePack", function()
+        local name = net.ReadString()
+        GetConVar("ttt_role_pack"):SetString(name)
+    end)
+
+    function SendRolePackRoleList()
+        ROLE_PACK_ROLES = {}
+
+        net.Start("TTT_SendRolePackRoleList")
+        local name = GetConVar("ttt_role_pack"):GetString()
+        local json = file.Read("rolepacks/" .. name .. ".json", "DATA")
+        if not json then
+            net.WriteUInt(0, 8)
+            net.Broadcast()
+            return
+        end
+
+        local jsonTable = util.JSONToTable(json)
+        if jsonTable == nil then
+            ErrorNoHalt("Table decoding failed!\n")
+            net.WriteUInt(0, 8)
+            net.Broadcast()
+            return
+        end
+
+        local roles = {}
+        for _, slot in pairs(jsonTable.slots) do
+            for _, roleslot in pairs(slot) do
+                local role = ROLE_NONE
+                for r = ROLE_INNOCENT, ROLE_MAX do
+                    if ROLE_STRINGS_RAW[r] == roleslot.role then
+                        role = r
+                        break
+                    end
+                end
+                if role ~= ROLE_NONE and not TableHasValue(roles, role) then
+                    TableInsert(roles, role)
+                end
+            end
+        end
+
+        net.WriteUInt(#roles, 8)
+        for _, role in pairs(roles) do
+            net.WriteUInt(role, 8)
+            ROLE_PACK_ROLES[role] = true
+        end
+        net.Broadcast()
+    end
 end

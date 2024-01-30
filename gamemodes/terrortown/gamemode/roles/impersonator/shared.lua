@@ -44,7 +44,7 @@ hook.Add("TTTPrepareRound", "Impersonator_Shared_TTTPrepareRound", function()
 end)
 
 hook.Add("TTTRoleSpawnsArtificially", "Impersonator_TTTRoleSpawnsArtificially", function(role)
-    if role == ROLE_IMPERSONATOR and GetConVar("ttt_marshal_enabled"):GetBool() then
+    if role == ROLE_IMPERSONATOR and util.CanRoleSpawn(ROLE_MARSHAL) then
         return true
     end
 end)

@@ -1293,6 +1293,13 @@ function SelectRoles()
 
     CallHook("TTTSelectRoles", nil, choices_copy, prev_roles_copy)
 
+
+    local rolePackName = GetConVar("ttt_role_pack"):GetString()
+    if rolePackName ~= "" then
+        -- TODO: Role pack spawning
+        SendRolePackRoleList()
+    end
+
     for _, v in ipairs(choices) do
         if v.forcedRole and v.forcedRole ~= ROLE_NONE then
             v:SetRole(v.forcedRole)

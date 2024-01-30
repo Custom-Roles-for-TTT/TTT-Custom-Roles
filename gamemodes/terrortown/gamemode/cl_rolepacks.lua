@@ -339,7 +339,7 @@ local function OpenDialog()
 
     local dpack = vgui.Create("DComboBox", dframe)
     dpack:SetPos(m, m + 25)
-    dpack:StretchToParent(m, nil, 4 * m + 66, nil)
+    dpack:StretchToParent(m, nil, 5 * m + 88, nil)
     dpack.OnSelect = function(_, _, name)
         droles:Remove()
         droles = BuildRoleConfig(dframe, name)
@@ -351,15 +351,34 @@ local function OpenDialog()
     net.SendToServer()
 
     net.Receive("TTT_SendRolePackList", function()
+        local currentPack = GetConVar("ttt_role_pack"):GetString()
         local length = net.ReadUInt(8)
         for _ = 1, length do
-            dpack:AddChoice(net.ReadString())
+            local packName = net.ReadString()
+            local index = dpack:AddChoice(packName)
+            if packName == currentPack then
+                dpack:ChooseOption(packName, index)
+            end
         end
     end)
 
+    local dapplybutton = vgui.Create("DButton", dframe)
+    dapplybutton:SetSize(22, 22)
+    dapplybutton:SetPos(w - (m + 22), m + 25)
+    dapplybutton:SetText("")
+    dapplybutton:SetIcon("icon16/server_go.png")
+    dapplybutton:SetTooltip(GetTranslation("rolepacks_apply"))
+    dapplybutton.DoClick = function()
+        local pack, _ = dpack:GetSelected()
+        if not pack or pack == "" then return end
+        net.Start("TTT_ApplyRolePack")
+        net.WriteString(pack)
+        net.SendToServer()
+    end
+
     local ddeletebutton = vgui.Create("DButton", dframe)
     ddeletebutton:SetSize(22, 22)
-    ddeletebutton:SetPos(w - m - 22, m + 25)
+    ddeletebutton:SetPos(w - 2 * (m + 22), m + 25)
     ddeletebutton:SetText("")
     ddeletebutton:SetIcon("icon16/delete.png")
     ddeletebutton:SetTooltip(GetTranslation("rolepacks_delete"))
@@ -410,7 +429,7 @@ local function OpenDialog()
 
     local drenamebutton = vgui.Create("DButton", dframe)
     drenamebutton:SetSize(22, 22)
-    drenamebutton:SetPos(w - 2 * m - 44, m + 25)
+    drenamebutton:SetPos(w - 3 * (m + 22), m + 25)
     drenamebutton:SetText("")
     drenamebutton:SetIcon("icon16/page_edit.png")
     drenamebutton:SetTooltip(GetTranslation("rolepacks_rename"))
@@ -460,7 +479,7 @@ local function OpenDialog()
 
     local dnewbutton = vgui.Create("DButton", dframe)
     dnewbutton:SetSize(22, 22)
-    dnewbutton:SetPos(w - 3 * m - 66, m + 25)
+    dnewbutton:SetPos(w - 4 * (m + 22), m + 25)
     dnewbutton:SetText("")
     dnewbutton:SetIcon("icon16/add.png")
     dnewbutton:SetTooltip(GetTranslation("rolepacks_add"))
@@ -514,4 +533,15 @@ concommand.Add("ttt_rolepacks", function(ply, cmd, args)
         return
     end
     OpenDialog()
+end)
+
+net.Receive("TTT_SendRolePackRoleList", function()
+    ROLE_PACK_ROLES = {}
+    
+    local count = net.ReadUInt(8)
+    if count <= 0 then return end
+    for _ = 1, count do
+        local role = net.ReadUInt(8)
+        ROLE_PACK_ROLES[role] = true
+    end
 end)
