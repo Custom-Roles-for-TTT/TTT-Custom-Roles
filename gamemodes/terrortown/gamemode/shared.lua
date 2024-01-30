@@ -842,11 +842,6 @@ local function CacheRoleIcon(tbl, role_str, typ, ext, cache_key)
     tbl[cache_key] = Material(file_path)
 end
 
-ROLE_ICON_ICON_MATERIALS = {}
-local function CacheRoleIconIcon(role_str)
-    CacheRoleIcon(ROLE_ICON_ICON_MATERIALS, role_str, "icon", "vmt")
-end
-
 ROLE_TAB_ICON_MATERIALS = {}
 local function CacheRoleTabIcon(role_str)
     CacheRoleIcon(ROLE_TAB_ICON_MATERIALS, role_str, "tab", "png")
@@ -858,16 +853,9 @@ local function CacheRoleSpriteIcon(role_str)
     CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "vmt", StringFormat("%s_noz", role_str))
 end
 
-ROLE_SCORE_ICON_MATERIALS = {}
-local function CacheRoleScoreIcon(role_str)
-    CacheRoleIcon(ROLE_SCORE_ICON_MATERIALS, role_str, "score", "png")
-end
-
 local function CacheRoleIcons(role_str)
-    CacheRoleIconIcon(role_str)
     CacheRoleTabIcon(role_str)
     CacheRoleSpriteIcon(role_str)
-    CacheRoleScoreIcon(role_str)
 end
 
 for _, v in pairs(ROLE_STRINGS_SHORT) do

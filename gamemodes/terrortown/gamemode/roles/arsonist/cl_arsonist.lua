@@ -125,9 +125,14 @@ hook.Add("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate", function(sea
     local time = util.SimpleTime(CurTime() - douseTime, "%02i:%02i")
     local message = LANG.GetParamTranslation("arsonist_body_doused", {time = time, anarsonist = ROLE_STRINGS_EXT[ROLE_ARSONIST]})
 
+    local roleString = ROLE_STRINGS_SHORT[ROLE_ARSONIST]
+    local img = "vgui/ttt/icon_" .. roleString
+    if file.Exists("materials/vgui/ttt/roles/" .. roleString .. "/icon_" .. roleString .. ".vtf", "GAME") then
+        img = "vgui/ttt/roles/" .. roleString .. "/icon_" .. roleString
+    end
     search["arsonistdouse"] = {
         text = message,
-        img = ROLE_ICON_ICON_MATERIALS[ROLE_STRINGS_SHORT[ROLE_ARSONIST]],
+        img = img,
         color = ROLE_COLORS[ROLE_ARSONIST],
         p = 3
     }

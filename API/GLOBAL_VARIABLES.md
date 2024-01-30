@@ -106,11 +106,6 @@ The role number where the externally-loaded roles start.\
 *Realm:* Client and Server\
 *Added in:* 1.0.10
 
-### ROLE_ICON_ICON_MATERIALS
-Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `icon` icons for each role by their role short string.\
-*Realm:* Client and Server\
-*Added in:* 2.0.7
-
 ### ROLE_NONE
 Updated to be -1 so players who have not been given a role can be identified.\
 *Realm:* Client and Server\
@@ -125,11 +120,6 @@ The maximum role number.\
 Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `score` icons for each role by their role short string.\
 *Realm:* Client and Server\
 *Added in:* 1.6.3
-
-### ROLE_SPRITE_ICON_MATERIALS
-Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `sprite` (32x32) icons for each role by their role short string.\
-*Realm:* Client and Server\
-*Added in:* 2.0.7
 
 ### ROLE_STRINGS
 Table of title-case names for each role.\

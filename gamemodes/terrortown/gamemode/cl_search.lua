@@ -1,5 +1,6 @@
 -- Body search popup
 
+local file = file
 local hook = hook
 local net = net
 local pairs = pairs
@@ -98,7 +99,11 @@ local function IconForInfoType(t, data)
     -- ugly special casing for weapons, because they are more likely to be
     -- customized and hence need more freedom in their icon filename
     if t == "role" then
-        return ROLE_ICON_ICON_MATERIALS[mat]
+        if file.Exists("materials/vgui/ttt/roles/" .. mat .. "/icon_" .. mat .. ".vtf", "GAME") then
+            return "vgui/ttt/roles/" .. mat .. "/icon_" .. mat
+        else
+            return "vgui/ttt/icon_" .. mat
+        end
     elseif t ~= "wep" then
         return base .. mat
     else
