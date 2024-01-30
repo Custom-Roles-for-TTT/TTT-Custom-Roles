@@ -516,9 +516,19 @@ function GM:PlayerStartVoice(ply)
 
     if not IsValid(ply) then return end
 
+    local clientCanUseTraitorVoice = hook.Call("TTTCanUseTraitorVoice", nil, client)
+    if type(clientCanUseTraitorVoice) ~= "boolean" then
+        clientCanUseTraitorVoice = client:IsActiveTraitorTeam()
+    end
+
+    local plyCanUseTraitorVoice = hook.Call("TTTCanUseTraitorVoice", nil, ply)
+    if type(plyCanUseTraitorVoice) ~= "boolean" then
+        plyCanUseTraitorVoice = ply:IsActiveTraitorTeam()
+    end
+
     -- Tell server this is global
     if client == ply then
-        if client:IsActiveTraitorTeam() then
+        if clientCanUseTraitorVoice then
             if (not client:KeyDown(IN_ZOOM)) and (not client:KeyDownLast(IN_ZOOM)) then
                 client.traitor_gvoice = true
                 RunConsoleCommand("tvog", "1")
@@ -564,20 +574,20 @@ function GM:PlayerStartVoice(ply)
         draw.RoundedBox(4, 1, 1, w - 2, h - 2, shade)
     end
 
-    if client:IsActiveTraitorTeam() then
+    if clientCanUseTraitorVoice then
         if ply == client then
             if not client.traitor_gvoice then
-                pnl.Color = Color(200, 20, 20, 255)
+                pnl.Color = ROLE_COLORS[ROLE_TRAITOR]
             end
-        elseif ply:IsActiveTraitorTeam() then
+        elseif plyCanUseTraitorVoice then
             if not ply.traitor_gvoice then
-                pnl.Color = Color(200, 20, 20, 255)
+                pnl.Color = ROLE_COLORS[ROLE_TRAITOR]
             end
         end
     end
 
     if ply:IsActiveDetectiveTeam() then
-        pnl.Color = Color(20, 20, 200, 255)
+        pnl.Color = ROLE_COLORS[ROLE_DETECTIVE]
     end
 
     PlayerVoicePanels[ply] = pnl
@@ -592,14 +602,23 @@ local function ReceiveVoiceState()
 
     -- prevent glitching due to chat starting/ending across round boundary
     if GAMEMODE.round_state ~= ROUND_ACTIVE then return end
-    if (not IsValid(LocalPlayer())) or (not LocalPlayer():IsActiveTraitorTeam()) then return end
+
+    local cli = LocalPlayer()
+    if not IsValid(cli) then return end
+
+    local canUseTraitorVoice = hook.Call("TTTCanUseTraitorVoice", nil, cli)
+    if type(canUseTraitorVoice) ~= "boolean" then
+        canUseTraitorVoice = cli:IsActiveTraitorTeam()
+    end
+
+    if not canUseTraitorVoice then return end
 
     local ply = player.GetByID(idx)
     if IsValid(ply) then
         ply.traitor_gvoice = state
 
         if IsValid(PlayerVoicePanels[ply]) then
-            PlayerVoicePanels[ply].Color = state and Color(0, 200, 0) or Color(200, 0, 0)
+            PlayerVoicePanels[ply].Color = state and ROLE_COLORS[ROLE_INNOCENT] or ROLE_COLORS[ROLE_TRAITOR]
         end
     end
 end

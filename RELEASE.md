@@ -3,7 +3,32 @@
 ## 2.0.7 (Beta)
 **Released: **
 
+### Additions
+- Added convar, `ttt_marshal_prevent_deputy`, to control whether to only spawn the marshal when there isn't already a deputy or impersonator in the round (defaults to enabled to match prior behavior).
+- Added ability for jester roles to have a device that converts them to be a sponge
+  - Global announcement is made when a player starts using the device
+  - Disabled by default but can be individually enabled for each jester role by the new `ttt_sponge_device_for_*` convars
+- Added ability for the shadow to be on the jester team (disabled by default)
+- Added ability to have the shadow's target only be assigned after a configurable delay (disabled by default)
+- Added ability to have the shadow become a jester or a swapper when they fail to stay near their target for enough time (disabled by default)
+- Added ability for the shadow to steal their target's role and kill them if they stay together for enough time (disabled by default)
+
+### Changes
+- Changed quartermaster to block Randomat events that prevent their role feature from working
+- Changed roleweapons system to use one JSON file per role instead of a folder per role and a text file per weapon
+  - Legacy text files will be automatically converted to new format on first server load
+  - Roleweapons UI (`ttt_roleweapons`) and commands (`sv_ttt_roleweapons`) have been updated to support new format as well
+
+### Fixes
+- Fixed loot goblin dropping buyable weapons that are not available in any role's shop
+- Fixed player assigned the role of shadow after the round started not having a target assigned
+- Fixed shadow that was killed but not because they killed their target not being allowed to resurrect
+
 ### Developer
+- Added `TTTTeamChatTargets` hook which allows role chat messages to be blocked or have their recipients changed
+- Added `TTTCanUseTraitorVoice` hook which allows overriding who can use traitor voice, both speaking and listening
+- Added `TTTTeamVoiceChatTargets` hook which allows team voice state messages to be blocked or have their recipients changed
+- Added cheat-only `ttt_team_chat_as_player` command for sending role chat messages as another player
 - Added `plymeta:ForceRoleNextRound`, `plymeta:GetForcedRole`, and `plymeta:ClearForcedRole` methods to allow forcing player's roles in the next round
 - Added `util.CanRoleSpawnNaturally` method to check if a role can spawn in the round naturally (i.e. because it is enabled via ConVars or role packs)
 

@@ -762,56 +762,94 @@ function WEPS.HandleRoleEquipment()
     local handled = false
     for id, name in pairs(ROLE_STRINGS_RAW) do
         WEPS.PrepWeaponsLists(id)
-        local rolefiles, _ = file.Find("roleweapons/" .. name .. "/*.txt", "DATA")
-        local roleexcludes = { }
-        local roleenorandoms = { }
-        local roleweapons = { }
-        for _, v in pairs(rolefiles) do
-            local exclude = false
-            local norandom = false
-            -- Extract the weapon name from the file name
-            local lastdotpos = v:find("%.")
-            local weaponname = StringSub(v, 0, lastdotpos - 1)
 
-            -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
-            local extension = StringSub(v, lastdotpos + 1, #v)
-            lastdotpos = extension:find("%.")
+        local roleBuyables = {}
+        local roleExcludes = {}
+        local roleNoRandoms = {}
+        -- Check for the JSON file first and use that if it exists
+        if file.Exists("roleweapons/" .. name .. ".json", "DATA") then
+            local roleJson = file.Read("roleweapons/" .. name .. ".json", "DATA")
+            if roleJson then
+                local roleData = util.JSONToTable(roleJson)
+                if roleData then
+                    roleBuyables = roleData.Buyables or {}
+                    roleExcludes = roleData.Excludes or {}
+                    roleNoRandoms = roleData.NoRandoms or {}
+                end
+            end
+        -- Otherwise use the old text files and also convert them to a JSON file
+        else
+            local roleTextFiles, _ = file.Find("roleweapons/" .. name .. "/*.txt", "DATA")
+            for _, v in pairs(roleTextFiles) do
+                local exclude = false
+                local norandom = false
+                -- Extract the weapon name from the file name
+                local lastdotpos = v:find("%.")
+                local weaponname = StringSub(v, 0, lastdotpos - 1)
 
-            -- If there is, check if it equals one of our expected types
-            if lastdotpos ~= nil then
-                extension = StringLower(StringSub(extension, 0, lastdotpos - 1))
-                if extension == "exclude" then
-                    exclude = true
-                elseif extension == "norandom" then
-                    norandom = true
+                -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
+                local extension = StringSub(v, lastdotpos + 1, #v)
+                lastdotpos = extension:find("%.")
+
+                -- If there is, check if it equals one of our expected types
+                if lastdotpos ~= nil then
+                    extension = StringLower(StringSub(extension, 0, lastdotpos - 1))
+                    if extension == "exclude" then
+                        exclude = true
+                    elseif extension == "norandom" then
+                        norandom = true
+                    end
+                end
+
+                if exclude then
+                    table.insert(roleExcludes, weaponname)
+                elseif norandom then
+                    table.insert(roleNoRandoms, weaponname)
+                else
+                    table.insert(roleBuyables, weaponname)
                 end
             end
 
-            if exclude then
-                table.insert(WEPS.ExcludeWeapons[id], weaponname)
-                table.insert(roleexcludes, weaponname)
-            elseif norandom then
-                table.insert(WEPS.BypassRandomWeapons[id], weaponname)
-                table.insert(roleenorandoms, weaponname)
-            else
-                table.insert(WEPS.BuyableWeapons[id], weaponname)
-                table.insert(roleweapons, weaponname)
+            -- Create JSON file if we have anything in the tables
+            if #roleBuyables > 0 or #roleExcludes > 0 or #roleNoRandoms > 0 then
+                local roleData = {
+                    Buyables = roleBuyables,
+                    Excludes = roleExcludes,
+                    NoRandoms = roleNoRandoms
+                }
+                local roleJson = util.TableToJSON(roleData)
+                file.Write("roleweapons/" .. name .. ".json", roleJson)
+                print("[ROLEWEAPONS] Converting legacy text files to new JSON format for " .. name)
+            end
+
+            -- If this role has a directory, get rid of it now that we've converted to JSON
+            if file.IsDir("roleweapons/" .. name, "DATA") then
+                print("[ROLEWEAPONS] Removing legacy text file structure for " .. name)
+                for _, v in pairs(roleTextFiles) do
+                    file.Delete("roleweapons/" .. name .. "/" .. v, "DATA")
+                end
+                file.Delete("roleweapons/" .. name, "DATA")
             end
         end
+
+        -- Copy the loaded table into the global table for this role
+        WEPS.BuyableWeapons[id] = roleBuyables
+        WEPS.ExcludeWeapons[id] = roleExcludes
+        WEPS.BypassRandomWeapons[id] = roleNoRandoms
 
         if id >= ROLE_EXTERNAL_START and ROLE_SHOP_ITEMS[id] then
             for _, v in pairs(ROLE_SHOP_ITEMS[id]) do
                 table.insert(WEPS.BuyableWeapons[id], v)
-                table.insert(roleweapons, v)
+                table.insert(roleBuyables, v)
             end
         end
 
-        if #roleweapons > 0 or #roleexcludes > 0 or #roleenorandoms > 0 then
+        if #roleBuyables > 0 or #roleExcludes > 0 or #roleNoRandoms > 0 then
             net.Start("TTT_BuyableWeapons")
             net.WriteInt(id, 16)
-            net.WriteTable(roleweapons)
-            net.WriteTable(roleexcludes)
-            net.WriteTable(roleenorandoms)
+            net.WriteTable(roleBuyables)
+            net.WriteTable(roleExcludes)
+            net.WriteTable(roleNoRandoms)
             net.Broadcast()
             handled = true
         end
@@ -853,49 +891,72 @@ net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
         file.CreateDir("roleweapons")
     end
 
-    local rolePath = "roleweapons/" .. roleName
-    if not file.IsDir(rolePath, "DATA") then
-        if file.Exists(rolePath, "DATA") then
-            ErrorNoHalt("Item named '" .. rolePath .. "' already exists in garrysmod/data but it is not a directory\n")
-            return
+    local roleData = nil
+    local rolePath = "roleweapons/" .. roleName .. ".json"
+    if file.Exists(rolePath, "DATA") then
+        local roleJson = file.Read(rolePath, "DATA")
+        if roleJson then
+            local loadedData = util.JSONToTable(roleJson)
+            if loadedData then
+                roleData = loadedData
+            end
         end
-
-        file.CreateDir(rolePath)
     end
 
-    -- Update files
-    local filePath = rolePath .. "/" .. id
-    local includePath = filePath .. ".txt"
+    -- If we didn't load any role data, set up the default tables
+    if not roleData then
+        roleData = {
+            Buyables = {},
+            Excludes = {},
+            NoRandoms = {}
+        }
+    end
+
+    -- Update tables
+    local included = table.HasValue(roleData.Buyables, id)
     if not includeSelected then
-        if file.Exists(includePath, "DATA") then
-            file.Delete(includePath)
+        if included then
+            -- Remove the entry from the table
+            table.RemoveByValue(roleData.Buyables, id)
+            -- Make the table have sequential keys again
+            roleData.Buyables = table.ClearKeys(roleData.Buyables)
         end
-    elseif not file.Exists(includePath, "DATA") then
-        file.Write(includePath, "")
+    elseif not included then
+        table.insert(roleData.Buyables, id)
     end
 
-    local excludePath = filePath .. ".exclude.txt"
+    local excluded = table.HasValue(roleData.Excludes, id)
     if not excludeSelected then
-        if file.Exists(excludePath, "DATA") then
-            file.Delete(excludePath)
+        if excluded then
+            -- Remove the entry from the table
+            table.RemoveByValue(roleData.Excludes, id)
+            -- Make the table have sequential keys again
+            roleData.Excludes = table.ClearKeys(roleData.Excludes)
         end
-    elseif not file.Exists(excludePath, "DATA") then
-        file.Write(excludePath, "")
+    elseif not excluded then
+        table.insert(roleData.Excludes, id)
     end
 
-    local noRandomPath = filePath .. ".norandom.txt"
+    local noRandom = table.HasValue(roleData.NoRandoms, id)
     if not noRandomSelected then
-        if file.Exists(noRandomPath, "DATA") then
-            file.Delete(noRandomPath)
+        if noRandom then
+            -- Remove the entry from the table
+            table.RemoveByValue(roleData.NoRandoms, id)
+            -- Make the table have sequential keys again
+            roleData.NoRandoms = table.ClearKeys(roleData.NoRandoms)
         end
-    elseif not file.Exists(noRandomPath, "DATA") then
-        file.Write(noRandomPath, "")
+    elseif not noRandom then
+        table.insert(roleData.NoRandoms, id)
     end
+
+    -- Save the updated file to the disk
+    local roleJson = util.TableToJSON(roleData)
+    file.Write(rolePath, roleJson)
 
     -- Update tables
     WEPS.UpdateWeaponLists(role, id, includeSelected, excludeSelected, noRandomSelected)
 
-    -- Send updated lists to client
+    -- Send list update to client
     net.Start("TTT_UpdateBuyableWeapons")
     net.WriteString(id)
     net.WriteInt(role, 8)
