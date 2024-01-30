@@ -160,7 +160,7 @@ for role = 0, ROLE_MAX do
 
     -- Target ID icons
     resource.AddFile(util.GetRoleIconPath(shortstring, "sprite", "vmt"))
-    resource.AddSingleFile(util.GetRoleIconPath(shortstring, "sprite", "vtf", StringFormat("%s_noz", role_str)))
+    resource.AddSingleFile(util.GetRoleIconPath(shortstring, "sprite", "vtf", StringFormat("%s_noz", shortstring)))
 end
 
 -- Jester role properties
