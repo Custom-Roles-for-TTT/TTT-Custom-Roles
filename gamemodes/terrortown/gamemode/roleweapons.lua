@@ -6,8 +6,9 @@ local pairs = pairs
 local table = table
 local string = string
 
-local StringLower = string.lower
-local StringSub = string.sub
+local StringStripExtension = string.StripExtension
+local TableHasValue = table.HasValue
+local TableInsert = table.insert
 
 if SERVER then
     util.AddNetworkString("TTT_RoleWeaponsList")
@@ -15,72 +16,78 @@ if SERVER then
     util.AddNetworkString("TTT_RoleWeaponsReload")
 end
 
+local function FindAndRemoveInvalidWeapons(tbl, invalidWeapons, printRemoval)
+    local cleanTbl = {}
+    for _, weaponName in ipairs(tbl) do
+        if weapons.GetStored(weaponName) == nil and GetEquipmentItemByName(weaponName) == nil then
+            TableInsert(invalidWeapons, weaponName)
+            if printRemoval then
+                print("[ROLEWEAPONS] Removing entry representing invalid weapon/equipment: " .. weaponName)
+            end
+        else
+            TableInsert(cleanTbl, weaponName)
+        end
+    end
+    return cleanTbl
+end
+
 local function ShowList()
-    local _, roledirs = file.Find("roleweapons/*", "DATA")
-    local invalidroles = {}
-    for _, name in pairs(roledirs) do
-        if not table.HasValue(ROLE_STRINGS_RAW, name) then
-            table.insert(invalidroles, name)
+    local roleFiles, _ = file.Find("roleweapons/*.json", "DATA")
+    local invalidRoles = {}
+    for _, fileName in pairs(roleFiles) do
+        local name = StringStripExtension(fileName)
+        if not TableHasValue(ROLE_STRINGS_RAW, name) then
+            TableInsert(invalidRoles, name)
             continue
         end
 
-        local rolefiles, _ = file.Find("roleweapons/" .. name .. "/*.txt", "DATA")
-        local roleexcludes = {}
-        local roleenorandoms = {}
-        local roleweapons = {}
-        local invalidweapons = {}
-        for _, v in pairs(rolefiles) do
-            -- Extract the weapon name from the file name
-            local lastdotpos = v:find("%.")
-            local weaponname = StringSub(v, 0, lastdotpos - 1)
-            if weapons.GetStored(weaponname) == nil and GetEquipmentItemByName(weaponname) == nil then
-                table.insert(invalidweapons, v)
-                continue
-            end
-
-            -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
-            local extension = StringSub(v, lastdotpos + 1, #v)
-            lastdotpos = extension:find("%.")
-
-            -- If there is, check if it equals one of our expected types
-            if lastdotpos ~= nil then
-                extension = StringLower(StringSub(extension, 0, lastdotpos - 1))
-                if extension == "exclude" then
-                    table.insert(roleexcludes, weaponname)
-                elseif extension == "norandom" then
-                    table.insert(roleenorandoms, weaponname)
+        local roleBuyables = {}
+        local roleExcludes = {}
+        local roleNoRandoms = {}
+        local invalidWeapons = {}
+        -- Load the lists from the JSON file for this role
+        if file.Exists("roleweapons/" .. name .. ".json", "DATA") then
+            local roleJson = file.Read("roleweapons/" .. name .. ".json", "DATA")
+            if roleJson then
+                local roleData = util.JSONToTable(roleJson)
+                if roleData then
+                    roleBuyables = roleData.Buyables or {}
+                    roleExcludes = roleData.Excludes or {}
+                    roleNoRandoms = roleData.NoRandoms or {}
                 end
-            else
-                table.insert(roleweapons, weaponname)
             end
         end
+
+        roleBuyables = FindAndRemoveInvalidWeapons(roleBuyables, invalidWeapons)
+        roleExcludes = FindAndRemoveInvalidWeapons(roleExcludes, invalidWeapons)
+        roleNoRandoms = FindAndRemoveInvalidWeapons(roleNoRandoms, invalidWeapons)
 
         -- Print this role's information
         print("[ROLEWEAPONS] Configuration information for '" .. name .. "'")
         print("\tInclude:")
-        for _, weaponname in ipairs(roleweapons) do
-            print("\t\t" .. weaponname)
+        for _, weaponName in ipairs(roleBuyables) do
+            print("\t\t" .. weaponName)
         end
 
         print("\n\tExclude:")
-        for _, weaponname in ipairs(roleexcludes) do
-            print("\t\t" .. weaponname)
+        for _, weaponName in ipairs(roleExcludes) do
+            print("\t\t" .. weaponName)
         end
 
         print("\n\tNo-Random:")
-        for _, weaponname in ipairs(roleenorandoms) do
-            print("\t\t" .. weaponname)
+        for _, weaponName in ipairs(roleNoRandoms) do
+            print("\t\t" .. weaponName)
         end
 
         print("\n\tInvalid Weapons (files that don't match any installed weapon or equipment):")
-        for _, weaponname in ipairs(invalidweapons) do
-            print("\t\t" .. weaponname)
+        for _, weaponName in ipairs(invalidWeapons) do
+            print("\t\t" .. weaponName)
         end
     end
 
-    if #invalidroles > 0 then
-        print("\n[ROLEWEAPONS] Found " .. #invalidroles .. " role folders that don't match any known role:")
-        for _, role in ipairs(invalidroles) do
+    if #invalidRoles > 0 then
+        print("\n[ROLEWEAPONS] Found " .. #invalidRoles .. " role folders that don't match any known role:")
+        for _, role in ipairs(invalidRoles) do
             print("\t" .. role)
         end
     end
@@ -88,32 +95,44 @@ end
 net.Receive("TTT_RoleWeaponsList", ShowList)
 
 local function Clean()
-    local _, roledirs = file.Find("roleweapons/*", "DATA")
-    for _, name in pairs(roledirs) do
-        if not table.HasValue(ROLE_STRINGS_RAW, name) then
-            print("[ROLEWEAPONS] Removing folder representing invalid role: " .. name)
-            file.Delete("roleweapons/" .. name, "DATA")
+    local roleFiles, _ = file.Find("roleweapons/*.json", "DATA")
+    for _, fileName in pairs(roleFiles) do
+        local name = StringStripExtension(fileName)
+        if not TableHasValue(ROLE_STRINGS_RAW, name) then
+            print("[ROLEWEAPONS] Removing file representing invalid role: " .. fileName)
+            file.Delete("roleweapons/" .. fileName, "DATA")
             continue
         end
 
-        local rolefiles, _ = file.Find("roleweapons/" .. name .. "/*.txt", "DATA")
-        local validfiles = 0
-        for _, v in pairs(rolefiles) do
-            -- Extract the weapon name from the file name
-            local lastdotpos = v:find("%.")
-            local weaponname = StringSub(v, 0, lastdotpos - 1)
-            if weapons.GetStored(weaponname) == nil and GetEquipmentItemByName(weaponname) == nil then
-                print("[ROLEWEAPONS] Removing file representing invalid weapon/equipment: " .. v)
-                file.Delete("roleweapons/" .. name .. "/" .. v, "DATA")
-                continue
+        -- Load the lists from the JSON file for this role
+        if file.Exists("roleweapons/" .. name .. ".json", "DATA") then
+            local roleJson = file.Read("roleweapons/" .. name .. ".json", "DATA")
+            local valid = true
+            if roleJson then
+                local roleData = util.JSONToTable(roleJson)
+                if roleData then
+                    roleData.Buyables = FindAndRemoveInvalidWeapons(roleData.Buyables or {}, {}, true)
+                    roleData.Excludes = FindAndRemoveInvalidWeapons(roleData.Excludes or {}, {}, true)
+                    roleData.NoRandoms = FindAndRemoveInvalidWeapons(roleData.NoRandoms or {}, {}, true)
+
+                    -- Update the file with the cleaned tables
+                    if #roleData.Buyables > 0 or #roleData.Excludes > 0 or #roleData.NoRandoms > 0 then
+                        roleJson = util.TableToJSON(roleData)
+                        file.Write("roleweapons/" .. name .. ".json", roleJson)
+                    else
+                        valid = false
+                    end
+                else
+                    valid = false
+                end
+            else
+                valid = false
             end
 
-            validfiles = validfiles + 1
-        end
-
-        if validfiles == 0 then
-            print("[ROLEWEAPONS] Removing empty folder: " .. name)
-            file.Delete("roleweapons/" .. name, "DATA")
+            if not valid then
+                print("[ROLEWEAPONS] Removing empty file: " .. fileName)
+                file.Delete("roleweapons/" .. fileName, "DATA")
+            end
         end
     end
 end

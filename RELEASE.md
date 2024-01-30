@@ -14,6 +14,9 @@
 
 ### Changes
 - Changed quartermaster to block Randomat events that prevent their role feature from working
+- Changed roleweapons system to use one JSON file per role instead of a folder per role and a text file per weapon
+  - Legacy text files will be automatically converted to new format on first server load
+  - Roleweapons UI (`ttt_roleweapons`) and commands (`sv_ttt_roleweapons`) have been updated to support new format as well
 
 ### Fixes
 - Fixed loot goblin dropping buyable weapons that are not available in any role's shop
