@@ -92,12 +92,12 @@ local function WriteRolePackTable(slots, name, config)
     SendStreamToServer(slotTable, "TTT_WriteRolePackTable")
 end
 
-local function BuildRoleConfig(dframe, packName)
+local function BuildRoleConfig(dsheet, packName, tab)
     UpdateRoleColours()
 
     local slotList = {}
 
-    local droles = vgui.Create("DPanel", dframe)
+    local droles = vgui.Create("DPanel", dsheet)
     droles:SetPaintBackground(false)
     droles:StretchToParent(0, 0, 0, 0)
 
@@ -116,7 +116,7 @@ local function BuildRoleConfig(dframe, packName)
 
     local dslotlist = vgui.Create("DScrollPanel", droles)
     dslotlist:SetPaintBackground(false)
-    dslotlist:StretchToParent(0, 20, 13, 88)
+    dslotlist:StretchToParent(0, 20, 16, 62)
 
     local function CreateSlot(roleTable)
         local iconHeight = 88
@@ -286,7 +286,46 @@ local function BuildRoleConfig(dframe, packName)
         ReadRolePackTable(packName)
     end
 
-    return droles
+    if tab then
+        tab:SetPanel(droles)
+        local properySheetPadding = tab:GetPropertySheet():GetPadding()
+        droles:SetPos(properySheetPadding, 20 + properySheetPadding)
+    else
+        local tabTable = dsheet:AddSheet(GetTranslation("rolepacks_role_tabtitle"), droles, "icon16/user.png", false, false, GetTranslation("rolepacks_role_tabtitle_tooltip"))
+        tab = tabTable.Tab
+    end
+
+    return droles, tab
+end
+
+local function BuildWeaponConfig(dsheet, packName, tab)
+    local dweapons = vgui.Create("DScrollPanel", dsheet)
+    dweapons:SetPaintBackground(false)
+    dweapons:StretchToParent(0, 0, 0, 0)
+
+    if tab then
+        tab:SetPanel(dweapons)
+    else
+        local tabTable = dsheet:AddSheet(GetTranslation("rolepacks_weapon_tabtitle"), dweapons, "icon16/bomb.png", false, false, GetTranslation("rolepacks_weapon_tabtitle_tooltip"))
+        tab = tabTable.Tab
+    end
+
+    return dweapons, tab
+end
+
+local function BuildConVarConfig(dsheet, packName, tab)
+    local dconvars = vgui.Create("DScrollPanel", dsheet)
+    dconvars:SetPaintBackground(false)
+    dconvars:StretchToParent(0, 0, 0, 0)
+
+    if tab then
+        tab:SetPanel(dconvars)
+    else
+        local tabTable = dsheet:AddSheet(GetTranslation("rolepacks_convar_tabtitle"), dconvars, "icon16/application_xp_terminal.png", false, false, GetTranslation("rolepacks_convar_tabtitle_tooltip"))
+        tab = tabTable.Tab
+    end
+
+    return dconvars, tab
 end
 
 local function IsNameValid(name, dpack)
@@ -308,7 +347,7 @@ local function IsNameValid(name, dpack)
 end
 
 local function OpenDialog()
-    local numCols = 8
+    local numCols = 4
     local numRows = 5
     local itemSize = 64
     -- margin
@@ -316,8 +355,10 @@ local function OpenDialog()
     -- item list width
     local dlistw = ((itemSize + 2) * numCols) - 2 + 15
     local dlisth = ((itemSize + 2) * numRows) - 2 + 15
+    -- right column width
+    local diw = 270
     -- frame size
-    local w = dlistw + (m * 4)
+    local w = dlistw + diw + (m * 4)
     local h = dlisth + 75 + m + 22
 
     local dframe = vgui.Create("DFrame")
@@ -329,18 +370,22 @@ local function OpenDialog()
     dframe:SetMouseInputEnabled(true)
     dframe:SetDeleteOnClose(true)
 
-    local droles = BuildRoleConfig(dframe, "")
-    droles:SetPos(0, 0)
-    droles:StretchToParent(m, 2 * m + 47, m, m)
+    local dsheet = vgui.Create("DPropertySheet", dframe)
+    dsheet:SetPos(0, 0)
+    dsheet:StretchToParent(m, 2 * m + 47, m, m)
+    
+    local droles, drolestab = BuildRoleConfig(dsheet, "")
+
+    local dweapons, dweaponstab = BuildWeaponConfig(dsheet, "")
+
+    local dconvars, dconvarstab = BuildConVarConfig(dsheet, "")
 
     local dpack = vgui.Create("DComboBox", dframe)
     dpack:SetPos(m, m + 25)
     dpack:StretchToParent(m, nil, 5 * m + 88, nil)
     dpack.OnSelect = function(_, _, name)
         droles:Remove()
-        droles = BuildRoleConfig(dframe, name)
-        droles:SetPos(0, 0)
-        droles:StretchToParent(m, 2 * m + 47, m, m)
+        droles = BuildRoleConfig(dsheet, name, drolestab)
     end
 
     net.Start("TTT_RequestRolePackList")
@@ -408,9 +453,7 @@ local function OpenDialog()
             net.SendToServer()
             droles:Remove()
             dconfirmdialog:Close()
-            droles = BuildRoleConfig(dframe, "")
-            droles:SetPos(0, 0)
-            droles:StretchToParent(m, 2 * m + 47, m, m)
+            droles = BuildRoleConfig(dsheet, "", drolestab)
         end
 
         local dno = vgui.Create("DButton", dconfirmdialog)
@@ -512,9 +555,7 @@ local function OpenDialog()
             net.SendToServer()
             droles:Remove()
             dnewdialog:Close()
-            droles = BuildRoleConfig(dframe, pack)
-            droles:SetPos(0, 0)
-            droles:StretchToParent(m, 2 * m + 47, m, m)
+            droles = BuildRoleConfig(dsheet, pack, drolestab)
         end
 
         dnewdialog:MakePopup()
