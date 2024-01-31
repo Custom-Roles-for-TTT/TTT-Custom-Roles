@@ -110,6 +110,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
         dfields[k]:SetTooltip(GetTranslation("equip_spec_" .. k))
         dfields[k]:SetPos(m * 3, m * 2)
         dfields[k]:SetWidth(diw - m * 6)
+        dfields[k]:SetText("")
     end
 
     dfields.name:SetFont("TabLarge")
