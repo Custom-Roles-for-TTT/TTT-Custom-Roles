@@ -548,31 +548,18 @@ local function BuildWeaponConfig(dsheet, packName, tab)
 
     local dsaverole = vgui.Create("DComboBox", dweapons)
     dsaverole:SetPos(dlistw + m, dih)
-    dsaverole:SetSize(bw, dsearchheight)
+    dsaverole:SetSize(dinfow - dsearchpadding * 2, dsearchheight)
     dsaverole:AddChoice(GetTranslation("roleweapons_select_saverole"), ROLE_NONE, true)
     dsaverole:SetTooltip(GetTranslation("roleweapons_select_saverole_tooltip"))
     for r = ROLE_INNOCENT, ROLE_MAX do
         dsaverole:AddChoice(ROLE_STRINGS[r], r)
     end
 
-    local dconfirm = vgui.Create("DButton", dweapons)
-    dconfirm:SetPos(w - 30 - bw, dih + dsearchheight + 3)
-    dconfirm:SetSize(bw, bh)
-    dconfirm:SetDisabled(true)
-    dconfirm:SetText(GetTranslation("roleweapons_confirm"))
-
-    local dcancel = vgui.Create("DButton", dweapons)
-    dcancel:SetPos(w - 30 - bw, dih + dsearchheight + bh + 6)
-    dcancel:SetSize(bw, bh)
-    dcancel:SetDisabled(false)
-    dcancel:SetText(GetTranslation("close"))
-    dcancel.DoClick = function() dframe:Close() end
-
     local dradiopadding = 3
 
     local dradionone = vgui.Create("DCheckBoxLabel", dweapons)
     dradionone:SetPos(dlistw + m, dih + dsearchheight + dradiopadding)
-    dradionone:SetText(GetTranslation("roleweapons_option_none"))
+    dradionone:SetText(GetTranslation("rolepacks_use_default"))
     dradionone:SetTooltip(GetTranslation("roleweapons_option_none_tooltip"))
     dradionone:SizeToContents()
     dradionone:SetValue(true)
@@ -599,7 +586,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dradioexclude:SetDisabled(true)
 
     local dradionorandom = vgui.Create("DCheckBoxLabel", dweapons)
-    dradionorandom:SetPos(w - 30 - bw, dih + (dradiopadding * 2))
+    dradionorandom:SetPos(w - 30 - bw, dih + dsearchheight + dradiopadding)
     dradionorandom:SetText(GetTranslation("roleweapons_option_norandom"))
     dradionorandom:SetTooltip(GetTranslation("roleweapons_option_norandom_tooltip"))
     dradionorandom:SizeToContents()
@@ -612,7 +599,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             valid = false
         end
 
-        dconfirm:SetDisabled(not valid)
         dradionone:SetDisabled(not valid)
         dradioinclude:SetDisabled(not valid)
         dradioexclude:SetDisabled(not valid)
@@ -651,8 +637,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             dradioinclude:SetValue(false)
             dradioexclude:SetValue(false)
             UpdateButtonState()
-        else
-            dconfirm:SetDisabled(true)
         end
     end
     dradioinclude.OnChange = function(pnl, val)
@@ -660,8 +644,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             dradionone:SetValue(false)
             dradioexclude:SetValue(false)
             UpdateButtonState()
-        else
-            dconfirm:SetDisabled(true)
         end
     end
     dradioexclude.OnChange = function(pnl, val)
@@ -671,8 +653,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             -- You can't have "no random" a weapon that is excluded
             dradionorandom:SetValue(false)
             UpdateButtonState()
-        else
-            dconfirm:SetDisabled(true)
         end
     end
     dradionorandom.OnChange = function(pnl, val)
@@ -739,41 +719,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         UpdateRadioButtonState(new.item)
     end
 
-    dconfirm.DoClick = function()
-        local pnl = dlist.SelectedPanel
-        if not pnl or not pnl.item then return end
-        local choice = pnl.item
-
-        -- Gather selected information
-        local includeSelected = dradioinclude:GetChecked()
-        local excludeSelected = dradioexclude:GetChecked()
-        local noRandomSelected = dradionorandom:GetChecked()
-
-        local id
-        if ItemIsWeapon(choice) then
-            id = choice.id
-        else
-            id = choice.name
-        end
-
-        -- Send message to server to update tables and files
-        net.Start("TTT_ConfigureRolePackWeapons")
-        net.WriteString(id)
-        net.WriteInt(save_role, 8)
-        net.WriteBool(includeSelected)
-        net.WriteBool(excludeSelected)
-        net.WriteBool(noRandomSelected)
-        net.SendToServer()
-
-        -- Update the list if we just updated the role we're already looking at
-        if role == save_role then
-            LocalPlayer():ConCommand("ttt_reset_weapons_cache")
-            timer.Simple(0.25, function()
-                dsearch.OnValueChange(dsearch, dsearch:GetText())
-            end)
-        end
-    end
-
     if role > ROLE_NONE then
         FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
     end
@@ -782,8 +727,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         dsearch:SetDisabled(true)
         dsearchrole:SetDisabled(true)
         dsaverole:SetDisabled(true)
-        dconfirm:SetDisabled(true)
-        dcancel:SetDisabled(true)
     end
 
     dweapons.Save = function()
