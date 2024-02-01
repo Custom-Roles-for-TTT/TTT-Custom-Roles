@@ -902,6 +902,9 @@ local function OpenDialog()
             droles.Save()
             dweapons.Save()
             dconvars.Save()
+            droles.unsavedChanges = false
+            dweapons.unsavedChanges = false
+            dconvars.unsavedChanges = false
             dsavedialog:Close()
             oldChooseOption(self, value, index)
         end
@@ -910,6 +913,9 @@ local function OpenDialog()
         dno:SetText("No")
         dno:SetPos(150 + m, 25 + m)
         dno.DoClick = function()
+            droles.unsavedChanges = false
+            dweapons.unsavedChanges = false
+            dconvars.unsavedChanges = false
             dsavedialog:Close()
             oldChooseOption(self, value, index)
         end
