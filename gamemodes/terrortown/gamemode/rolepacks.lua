@@ -146,6 +146,7 @@ end)
 net.Receive("TTT_ApplyRolePack", function()
     local name = net.ReadString()
     GetConVar("ttt_role_pack"):SetString(name)
+    ROLEPACKS.SendRolePackRoleList()
 end)
 
 function ROLEPACKS.SendRolePackRoleList()

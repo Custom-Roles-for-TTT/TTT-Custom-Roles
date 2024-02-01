@@ -149,6 +149,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
     local droles = vgui.Create("DPanel", dsheet)
     droles:SetPaintBackground(false)
     droles:StretchToParent(0, 0, 0, 0)
+    droles.unsavedChanges = false
 
     local dconfig = vgui.Create("DPanel", droles)
     dconfig:SetPaintBackground(false)
@@ -160,7 +161,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
     dallowduplicates:Dock(LEFT)
     dallowduplicates:DockMargin(0, 0, 12, 0)
     dallowduplicates.OnChange = function()
-        WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+        droles.unsavedChanges = true
     end
 
     local dslotlist = vgui.Create("DScrollPanel", droles)
@@ -224,7 +225,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
                         dicon:SetBackgroundColor(ROLE_COLORS[r] or Color(0, 0, 0, 0))
                         dicon:SetTooltip(s)
                         drole.role = r
-                        WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+                        droles.unsavedChanges = true
                     end)
                 end
                 dmenu:Open()
@@ -237,7 +238,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
             dweight:SetValue(weight)
             dweight.OnValueChanged = function(_, value)
                 drole.weight = value
-                WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+                droles.unsavedChanges = true
             end
 
             TableInsert(roleList, drole)
@@ -267,7 +268,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
             TableRemove(dlist.Items)
             CreateRole(ROLE_INNOCENT, 1)
             dlist:AddPanel(dbuttons)
-            WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+            droles.unsavedChanges = true
         end
 
         local ddeleterolebutton = vgui.Create("DButton", dbuttons)
@@ -285,7 +286,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
             local iconRows = MathCeil((#dlist.Items) / 8)
             dslot:SetSize(dslotlist:GetSize(), 16 + iconRows * iconHeight)
             dlist:SetHeight(iconRows * iconHeight)
-            WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+            droles.unsavedChanges = true
         end
 
         local ddeleteslotbutton = vgui.Create("DButton", dbuttons)
@@ -297,7 +298,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
         ddeleteslotbutton.DoClick = function()
             TableRemoveByValue(slotList, roleList)
             dslot:Remove()
-            WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+            droles.unsavedChanges = true
         end
 
         dlist:AddPanel(dbuttons)
@@ -325,7 +326,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
     daddslotbutton:Dock(BOTTOM)
     daddslotbutton.DoClick = function()
         CreateSlot({})
-        WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+        droles.unsavedChanges = true
     end
 
     if not packName or packName == "" then
@@ -333,6 +334,10 @@ local function BuildRoleConfig(dsheet, packName, tab)
         dallowduplicates:SetDisabled(true)
     else
         ReadRolePackTable(packName)
+    end
+
+    droles.Save = function()
+        WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
     end
 
     if tab then
@@ -351,6 +356,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     local dweapons = vgui.Create("DPanel", dsheet)
     dweapons:SetPaintBackground(false)
     dweapons:StretchToParent(0, 0, 0, 0)
+    dweapons.unsavedChanges = false
 
     local role = ROLE_NONE
     local save_role = ROLE_NONE
@@ -782,6 +788,9 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         dcancel:SetDisabled(true)
     end
 
+    dweapons.Save = function()
+    end
+
     if tab then
         tab:SetPanel(dweapons)
         local properySheetPadding = tab:GetPropertySheet():GetPadding()
@@ -798,6 +807,7 @@ local function BuildConVarConfig(dsheet, packName, tab)
     local dconvars = vgui.Create("DScrollPanel", dsheet)
     dconvars:SetPaintBackground(false)
     dconvars:StretchToParent(0, 0, 0, 0)
+    dconvars.unsavedChanges = false
 
     local dtextentry = vgui.Create("DTextEntry", dconvars)
     dtextentry:SetMultiline(true)
@@ -814,6 +824,9 @@ local function BuildConVarConfig(dsheet, packName, tab)
     if not packName or packName == "" then
         dtextentry:SetDisabled(true)
         dconfirm:SetDisabled(true)
+    end
+
+    dconvars.Save = function()
     end
 
     if tab then
@@ -850,7 +863,7 @@ local function OpenDialog()
 
     local dpack = vgui.Create("DComboBox", dframe)
     dpack:SetPos(m, m + 25)
-    dpack:StretchToParent(m, nil, 5 * m + 88, nil)
+    dpack:StretchToParent(m, nil, m + 5 * (m + 22), nil)
     dpack.OnSelect = function(_, _, name)
         droles:Remove()
         dweapons:Remove()
@@ -858,6 +871,50 @@ local function OpenDialog()
         droles = BuildRoleConfig(dsheet, name, drolestab)
         dweapons = BuildWeaponConfig(dsheet, name, dweaponstab)
         dconvars = BuildConVarConfig(dsheet, name, dconvarstab)
+    end
+
+    local oldClose = dframe.Close
+    dframe.Close = function(self)
+        local pack, _ = dpack:GetSelected()
+        if not pack or pack == "" or (not droles.unsavedChanges and not dweapons.unsavedChanges and not dconvars.unsavedChanges) then
+            oldClose(self)
+            return
+        end
+
+        dframe:SetMouseInputEnabled(false)
+
+        local dsavedialog = vgui.Create("DFrame")
+        dsavedialog:SetSize(300, 60)
+        dsavedialog:Center()
+        dsavedialog:SetTitle("Would you like to save your changes?")
+        dsavedialog:SetVisible(true)
+        dsavedialog:ShowCloseButton(false)
+        dsavedialog:SetMouseInputEnabled(true)
+        dsavedialog:SetDeleteOnClose(true)
+        dsavedialog.OnClose = function()
+            dframe:SetMouseInputEnabled(true)
+        end
+
+        local dyes = vgui.Create("DButton", dsavedialog)
+        dyes:SetText("Yes")
+        dyes:SetPos(150 - 64 - m, 25 + m)
+        dyes.DoClick = function()
+            droles.Save()
+            dweapons.Save()
+            dconvars.Save()
+            dsavedialog:Close()
+            oldClose(self)
+        end
+
+        local dno = vgui.Create("DButton", dsavedialog)
+        dno:SetText("No")
+        dno:SetPos(150 + m, 25 + m)
+        dno.DoClick = function()
+            dsavedialog:Close()
+            oldClose(self)
+        end
+
+        dsavedialog:MakePopup()
     end
 
     net.Start("TTT_RequestRolePackList")
@@ -889,9 +946,26 @@ local function OpenDialog()
         net.SendToServer()
     end
 
+    local dsavebutton = vgui.Create("DButton", dframe)
+    dsavebutton:SetSize(22, 22)
+    dsavebutton:SetPos(w - 2 * (m + 22), m + 25)
+    dsavebutton:SetText("")
+    dsavebutton:SetIcon("icon16/disk.png")
+    dsavebutton:SetTooltip(GetTranslation("rolepacks_save"))
+    dsavebutton.DoClick = function()
+        local pack, _ = dpack:GetSelected()
+        if not pack or pack == "" then return end
+        droles.Save()
+        dweapons.Save()
+        dconvars.Save()
+        droles.unsavedChanges = false
+        dweapons.unsavedChanges = false
+        dconvars.unsavedChanges = false
+    end
+
     local ddeletebutton = vgui.Create("DButton", dframe)
     ddeletebutton:SetSize(22, 22)
-    ddeletebutton:SetPos(w - 2 * (m + 22), m + 25)
+    ddeletebutton:SetPos(w - 3 * (m + 22), m + 25)
     ddeletebutton:SetText("")
     ddeletebutton:SetIcon("icon16/delete.png")
     ddeletebutton:SetTooltip(GetTranslation("rolepacks_delete"))
@@ -944,7 +1018,7 @@ local function OpenDialog()
 
     local drenamebutton = vgui.Create("DButton", dframe)
     drenamebutton:SetSize(22, 22)
-    drenamebutton:SetPos(w - 3 * (m + 22), m + 25)
+    drenamebutton:SetPos(w - 4 * (m + 22), m + 25)
     drenamebutton:SetText("")
     drenamebutton:SetIcon("icon16/page_edit.png")
     drenamebutton:SetTooltip(GetTranslation("rolepacks_rename"))
@@ -994,7 +1068,7 @@ local function OpenDialog()
 
     local dnewbutton = vgui.Create("DButton", dframe)
     dnewbutton:SetSize(22, 22)
-    dnewbutton:SetPos(w - 4 * (m + 22), m + 25)
+    dnewbutton:SetPos(w - 5 * (m + 22), m + 25)
     dnewbutton:SetText("")
     dnewbutton:SetIcon("icon16/add.png")
     dnewbutton:SetTooltip(GetTranslation("rolepacks_add"))
