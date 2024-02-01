@@ -99,18 +99,6 @@ local function ReceiveStreamFromServer(networkString, callback)
     end)
 end
 
-local function WriteRolePackTable(slots, name, config)
-    local slotTable = {name = name, config = config, slots = {}}
-    for _, slot in pairs(slots) do
-        local roleTable = {}
-        for _, role in pairs(slot) do
-            TableInsert(roleTable, {role = ROLE_STRINGS_RAW[role.role], weight = role.weight})
-        end
-        TableInsert(slotTable.slots, roleTable)
-    end
-    SendStreamToServer(slotTable, "TTT_WriteRolePackTable")
-end
-
 local function ItemIsWeapon(item) return not tonumber(item.id) end
 
 local function DoesValueMatch(item, data, value)
@@ -306,21 +294,6 @@ local function BuildRoleConfig(dsheet, packName, tab)
         dslotlist:AddItem(dslot)
     end
 
-    local function ReadRolePackTable(name)
-        net.Start("TTT_RequestRolePackTable")
-        net.WriteString(name)
-        net.SendToServer()
-    end
-
-    local function UpdateRolePackUI(jsonTable)
-        dslotlist:Clear()
-        dallowduplicates:SetChecked(jsonTable.config.allowduplicates)
-        for _, slot in pairs(jsonTable.slots) do
-            CreateSlot(slot)
-        end
-    end
-    ReceiveStreamFromServer("TTT_ReadRolePackTable", UpdateRolePackUI)
-
     local daddslotbutton = vgui.Create("DButton", droles)
     daddslotbutton:SetText(GetTranslation("rolepacks_add_slot"))
     daddslotbutton:Dock(BOTTOM)
@@ -329,15 +302,40 @@ local function BuildRoleConfig(dsheet, packName, tab)
         droles.unsavedChanges = true
     end
 
+    local function ReadRolePackRoleTable(name)
+        net.Start("TTT_RequestRolePackRoles")
+        net.WriteString(name)
+        net.SendToServer()
+    end
+
+    local function UpdateRolePackRoleUI(jsonTable)
+        dslotlist:Clear()
+        dallowduplicates:SetChecked(jsonTable.config.allowduplicates)
+        for _, slot in pairs(jsonTable.slots) do
+            CreateSlot(slot)
+        end
+    end
+    ReceiveStreamFromServer("TTT_ReadRolePackRoles", UpdateRolePackRoleUI)
+
     if not packName or packName == "" then
         daddslotbutton:SetDisabled(true)
         dallowduplicates:SetDisabled(true)
     else
-        ReadRolePackTable(packName)
+        ReadRolePackRoleTable(packName)
     end
 
     droles.Save = function()
-        WriteRolePackTable(slotList, packName, {allowduplicates = dallowduplicates:GetChecked()})
+        if droles.unsavedChanges then
+            local slotTable = {name = packName, config = {allowduplicates = dallowduplicates:GetChecked()}, slots = {}}
+            for _, slot in pairs(slotList) do
+                local roleTable = {}
+                for _, role in pairs(slot) do
+                    TableInsert(roleTable, {role = ROLE_STRINGS_RAW[role.role], weight = role.weight})
+                end
+                TableInsert(slotTable.slots, roleTable)
+            end
+            SendStreamToServer(slotTable, "TTT_WriteRolePackRoles")
+        end
     end
 
     if tab then
@@ -789,6 +787,9 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     end
 
     dweapons.Save = function()
+        if dweapons.unsavedChanges then
+
+        end
     end
 
     if tab then
@@ -814,19 +815,63 @@ local function BuildConVarConfig(dsheet, packName, tab)
     local _, texth = dconvars:GetSize()
     dtextentry:Dock(FILL)
     dtextentry:SetHeight(texth - 36)
+    dtextentry:SetPlaceholderText("Add ConVars here. One ConVar per line!")
+    dtextentry.OnTextChanged = function()
+        dconvars.unsavedChanges = true
+    end
 
-    local dconfirm = vgui.Create("DButton", dconvars)
-    dconfirm:SetText("Confirm")
-    dconfirm:Dock(BOTTOM)
-    dconfirm:DockMargin(0, 4, 0, 0)
+    local function ReadRolePackConvarTable(name)
+        net.Start("TTT_RequestRolePackConvars")
+        net.WriteString(name)
+        net.SendToServer()
+    end
 
+    local function UpdateRolePackConvarUI(jsonTable)
+        local text = ""
+        if jsonTable.convars then
+            for _, line in pairs(jsonTable.convars) do
+                if text ~= "" then
+                    text = text .. '\n'
+                end
+                if line.cvar then
+                    text = text .. line.cvar .. " " .. line.value
+                else
+                    text = text .. line.comment
+                end
+            end
+        end
+        dtextentry:SetValue(text)
+    end
+    ReceiveStreamFromServer("TTT_ReadRolePackConvars", UpdateRolePackConvarUI)
 
     if not packName or packName == "" then
         dtextentry:SetDisabled(true)
-        dconfirm:SetDisabled(true)
+    else
+        ReadRolePackConvarTable(packName)
     end
 
     dconvars.Save = function()
+        if dconvars.unsavedChanges then
+            local text = dtextentry:GetValue()
+            local lines = string.Split(text, '\n')
+            if #lines <= 0 then return end
+            local convarTable = {name = packName, convars = {}}
+            for _, line in ipairs(lines) do
+                if string.sub(line, 1, 2) == "//" then
+                    TableInsert(convarTable.convars, {cvar = false, comment = line})
+                else
+                    local spacePos = string.find(line, ' ')
+                    if not spacePos then continue end
+
+                    local cvar = string.sub(line, 1, spacePos - 1)
+                    local value = string.sub(line, spacePos + 1)
+                    value = string.gsub(value, '"', '')
+                    value = string.Trim(value)
+                    TableInsert(convarTable.convars, {cvar = cvar, value = value})
+                end
+            end
+            SendStreamToServer(convarTable, "TTT_WriteRolePackConvars")
+        end
     end
 
     if tab then

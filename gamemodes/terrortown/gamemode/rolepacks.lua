@@ -12,11 +12,16 @@ local TableHasValue = table.HasValue
 
 ROLEPACKS = {}
 
-util.AddNetworkString("TTT_WriteRolePackTable")
-util.AddNetworkString("TTT_WriteRolePackTable_Part")
-util.AddNetworkString("TTT_RequestRolePackTable")
-util.AddNetworkString("TTT_ReadRolePackTable")
-util.AddNetworkString("TTT_ReadRolePackTable_Part")
+util.AddNetworkString("TTT_WriteRolePackRoles")
+util.AddNetworkString("TTT_WriteRolePackRoles_Part")
+util.AddNetworkString("TTT_RequestRolePackRoles")
+util.AddNetworkString("TTT_ReadRolePackRoles")
+util.AddNetworkString("TTT_ReadRolePackRoles_Part")
+util.AddNetworkString("TTT_WriteRolePackConvars")
+util.AddNetworkString("TTT_WriteRolePackConvars_Part")
+util.AddNetworkString("TTT_RequestRolePackConvars")
+util.AddNetworkString("TTT_ReadRolePackConvars")
+util.AddNetworkString("TTT_ReadRolePackConvars_Part")
 util.AddNetworkString("TTT_RequestRolePackList")
 util.AddNetworkString("TTT_SendRolePackList")
 util.AddNetworkString("TTT_CreateRolePack")
@@ -83,26 +88,37 @@ end
 local function WriteRolePackTable(json)
     local jsonTable = util.JSONToTable(json)
     local name = jsonTable.name
-    file.Write("rolepacks/" .. name .. ".json", json)
+    file.Write("rolepacks/" .. name .. "/roles.json", json)
 end
-ReceiveStreamFromClient("TTT_WriteRolePackTable", WriteRolePackTable)
+ReceiveStreamFromClient("TTT_WriteRolePackRoles", WriteRolePackTable)
 
-net.Receive("TTT_RequestRolePackTable", function(len, ply)
+net.Receive("TTT_RequestRolePackRoles", function(len, ply)
     local name = net.ReadString()
-    local json = file.Read("rolepacks/" .. name .. ".json", "DATA")
+    local json = file.Read("rolepacks/" .. name .. "/roles.json", "DATA")
     if not json then return end
-    SendStreamToClient(ply, json, "TTT_ReadRolePackTable")
+    SendStreamToClient(ply, json, "TTT_ReadRolePackRoles")
+end)
+
+local function WriteRolePackConvars(json)
+    local jsonTable = util.JSONToTable(json)
+    local name = jsonTable.name
+    file.Write("rolepacks/" .. name .. "/convars.json", json)
+end
+ReceiveStreamFromClient("TTT_WriteRolePackConvars", WriteRolePackConvars)
+
+net.Receive("TTT_RequestRolePackConvars", function(len, ply)
+    local name = net.ReadString()
+    local json = file.Read("rolepacks/" .. name .. "/convars.json", "DATA")
+    if not json then return end
+    SendStreamToClient(ply, json, "TTT_ReadRolePackConvars")
 end)
 
 net.Receive("TTT_RequestRolePackList", function(len, ply)
     net.Start("TTT_SendRolePackList")
-    local packNames = {}
-    for _, v in pairs(file.Find("rolepacks/*.json", "DATA")) do
-        TableInsert(packNames, StringSub(v,1, -6))
-    end
-    net.WriteUInt(#packNames, 8)
-    for _, name in pairs(packNames) do
-        net.WriteString(name)
+    local _, directories = file.Find("rolepacks/*", "DATA")
+    net.WriteUInt(#directories, 8)
+    for _, v in pairs(directories) do
+        net.WriteString(v)
     end
     net.Send(ply)
 end)
@@ -117,19 +133,22 @@ net.Receive("TTT_CreateRolePack", function()
 
         file.CreateDir("rolepacks")
     end
-    file.Write("rolepacks/" .. name .. ".json", "")
+    file.CreateDir("rolepacks/" .. name)
+    file.Write("rolepacks/" .. name .. "/roles.json", "")
+    file.CreateDir("rolepacks/" .. name .. "/weapons")
+    file.Write("rolepacks/" .. name .. "/convars.json", "")
 end)
 
 net.Receive("TTT_RenameRolePack", function()
     local oldName = net.ReadString()
     local newName = net.ReadString()
-    local newPath = "rolepacks/" .. newName .. ".json"
+    local newPath = "rolepacks/" .. newName
     if file.Exists(newPath, "DATA") then
         ErrorNoHalt("Role pack named '" .. newName .. "' already exists!\n")
         return
     end
 
-    local oldPath = "rolepacks/" .. oldName .. ".json"
+    local oldPath = "rolepacks/" .. oldName
     if file.Exists(oldPath, "DATA") then
         file.Rename(oldPath, newPath)
     end
@@ -137,8 +156,14 @@ end)
 
 net.Receive("TTT_DeleteRolePack", function()
     local name = net.ReadString()
-    local path = "rolepacks/" .. name .. ".json"
+    local path = "rolepacks/" .. name
     if file.Exists(path, "DATA") then
+        file.Delete(path .. "/roles.json")
+        file.Delete(path .. "/convars.json")
+        for _, v in pairs(file.Find(path .. "/weapons/*.json", "DATA")) do
+            file.Delete(path .. "/weapons/" .. v)
+        end
+        file.Delete(path .. "/weapons")
         file.Delete(path)
     end
 end)
@@ -154,7 +179,7 @@ function ROLEPACKS.SendRolePackRoleList()
 
     net.Start("TTT_SendRolePackRoleList")
     local name = GetConVar("ttt_role_pack"):GetString()
-    local json = file.Read("rolepacks/" .. name .. ".json", "DATA")
+    local json = file.Read("rolepacks/" .. name .. "/roles.json", "DATA")
     if not json then
         net.WriteUInt(0, 8)
         net.Broadcast()
@@ -197,7 +222,7 @@ function ROLEPACKS.AssignRoles(choices)
     local rolePackName = GetConVar("ttt_role_pack"):GetString()
     if #rolePackName == 0 then return end
 
-    local json = file.Read("rolepacks/" .. rolePackName .. ".json", "DATA")
+    local json = file.Read("rolepacks/" .. rolePackName .. "/roles.json", "DATA")
     if not json then
         ErrorNoHalt("No role pack named '" .. rolePackName .. "' found!\n")
         return
