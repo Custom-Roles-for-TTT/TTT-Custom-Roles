@@ -872,6 +872,50 @@ local function OpenDialog()
         dweapons = BuildWeaponConfig(dsheet, name, dweaponstab)
         dconvars = BuildConVarConfig(dsheet, name, dconvarstab)
     end
+    local oldChooseOption = dpack.ChooseOption
+    dpack.ChooseOption = function(self, value, index)
+        local pack, _ = dpack:GetSelected()
+        if pack == value then return end
+        if not pack or pack == "" or (not droles.unsavedChanges and not dweapons.unsavedChanges and not dconvars.unsavedChanges) then
+            oldChooseOption(self, value, index)
+            return
+        end
+
+        dframe:SetMouseInputEnabled(false)
+
+        local dsavedialog = vgui.Create("DFrame")
+        dsavedialog:SetSize(300, 60)
+        dsavedialog:Center()
+        dsavedialog:SetTitle("Would you like to save your changes?")
+        dsavedialog:SetVisible(true)
+        dsavedialog:ShowCloseButton(false)
+        dsavedialog:SetMouseInputEnabled(true)
+        dsavedialog:SetDeleteOnClose(true)
+        dsavedialog.OnClose = function()
+            dframe:SetMouseInputEnabled(true)
+        end
+
+        local dyes = vgui.Create("DButton", dsavedialog)
+        dyes:SetText("Yes")
+        dyes:SetPos(150 - 64 - m, 25 + m)
+        dyes.DoClick = function()
+            droles.Save()
+            dweapons.Save()
+            dconvars.Save()
+            dsavedialog:Close()
+            oldChooseOption(self, value, index)
+        end
+
+        local dno = vgui.Create("DButton", dsavedialog)
+        dno:SetText("No")
+        dno:SetPos(150 + m, 25 + m)
+        dno.DoClick = function()
+            dsavedialog:Close()
+            oldChooseOption(self, value, index)
+        end
+
+        dsavedialog:MakePopup()
+    end
 
     local oldClose = dframe.Close
     dframe.Close = function(self)
