@@ -60,7 +60,8 @@ end
 -- return one of the OPEN_ values
 local function OpenableEnt(ent)
     local cls = ent:GetClass()
-    if #(ent:GetName()) == 0 then
+    local name = ent:GetName()
+    if #name == 0 then
         return OPEN_NO
     elseif cls == "prop_door_rotating" then
         return OPEN_ROT
