@@ -156,6 +156,13 @@ local function BuildRoleConfig(dsheet, packName, tab)
     dslotlist:SetPaintBackground(false)
     dslotlist:StretchToParent(0, 20, 16, 62)
 
+    local slotLabels = {}
+    local function UpdateSlotLabels()
+        for index, label in ipairs(slotLabels) do
+            label:SetText("Slot " .. index .. ":")
+        end
+    end
+
     local function CreateSlot(roleTable)
         local iconHeight = 88
 
@@ -166,9 +173,9 @@ local function BuildRoleConfig(dsheet, packName, tab)
 
         local dlabel = vgui.Create("DLabel", dslot)
         dlabel:SetFont("TabLarge")
-        dlabel:SetText("Role Slot:")
         dlabel:SetContentAlignment(7)
         dlabel:SetPos(3, 0) -- For some reason the text isn't inline with the icons so we shift it 3px to the right
+        TableInsert(slotLabels, dlabel)
 
         local dlist = vgui.Create("EquipSelect", dslot)
         dlist:SetPos(0, 14)
@@ -285,6 +292,8 @@ local function BuildRoleConfig(dsheet, packName, tab)
         ddeleteslotbutton:SetTooltip(GetTranslation("rolepacks_delete_slot"))
         ddeleteslotbutton.DoClick = function()
             TableRemoveByValue(slotList, roleList)
+            TableRemoveByValue(slotLabels, dlabel)
+            UpdateSlotLabels()
             dslot:Remove()
             droles.unsavedChanges = true
         end
@@ -299,6 +308,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
     daddslotbutton:Dock(BOTTOM)
     daddslotbutton.DoClick = function()
         CreateSlot({})
+        UpdateSlotLabels()
         droles.unsavedChanges = true
     end
 
@@ -314,6 +324,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
         for _, slot in pairs(jsonTable.slots) do
             CreateSlot(slot)
         end
+        UpdateSlotLabels()
     end
     ReceiveStreamFromServer("TTT_ReadRolePackRoles", UpdateRolePackRoleUI)
 
