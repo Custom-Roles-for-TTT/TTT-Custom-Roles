@@ -79,12 +79,6 @@ end)
 
 local Equipment = { }
 
-local function UpdateWeaponList(role, lst, weapon)
-    if not TableHasValue(lst[role], weapon) then
-        TableInsert(lst[role], weapon)
-    end
-end
-
 local function ResetWeaponsCache()
     -- Clear the weapon cache for each role
     for role, _ in pairs(ROLE_STRINGS_RAW) do
@@ -103,40 +97,18 @@ end)
 
 net.Receive("TTT_BuyableWeapons", function()
     local role = net.ReadInt(16)
-    WEPS.PrepWeaponsLists(role)
+    WEPS.BuyableWeapons[role] = net.ReadTable()
+    WEPS.ExcludeWeapons[role] = net.ReadTable()
+    WEPS.BypassRandomWeapons[role] = net.ReadTable()
     ResetWeaponsCache()
-
-    local roleweapons = net.ReadTable()
-    for _, v in pairs(roleweapons) do
-        UpdateWeaponList(role, WEPS.BuyableWeapons, v)
-    end
-    local excludeweapons = net.ReadTable()
-    for _, v in pairs(excludeweapons) do
-        UpdateWeaponList(role, WEPS.ExcludeWeapons, v)
-    end
-    local norandomweapons = net.ReadTable()
-    for _, v in pairs(norandomweapons) do
-        UpdateWeaponList(role, WEPS.BypassRandomWeapons, v)
-    end
 end)
 
 net.Receive("TTT_RolePackBuyableWeapons", function()
     local role = net.ReadInt(16)
-    WEPS.PrepWeaponsLists(role)
+    WEPS.RolePackBuyableWeapons[role] = net.ReadTable()
+    WEPS.RolePackExcludeWeapons[role] = net.ReadTable()
+    WEPS.RolePackBypassRandomWeapons[role] = net.ReadTable()
     ResetWeaponsCache()
-
-    local roleweapons = net.ReadTable()
-    for _, v in pairs(roleweapons) do
-        UpdateWeaponList(role, WEPS.RolePackBuyableWeapons, v)
-    end
-    local excludeweapons = net.ReadTable()
-    for _, v in pairs(excludeweapons) do
-        UpdateWeaponList(role, WEPS.RolePackExcludeWeapons, v)
-    end
-    local norandomweapons = net.ReadTable()
-    for _, v in pairs(norandomweapons) do
-        UpdateWeaponList(role, WEPS.RolePackBypassRandomWeapons, v)
-    end
 end)
 
 net.Receive("TTT_RoleWeaponsLoaded", function()
