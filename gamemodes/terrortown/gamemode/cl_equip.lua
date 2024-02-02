@@ -1101,7 +1101,7 @@ local function ReceiveBought()
     local num = net.ReadUInt(8)
     for _ = 1, num do
         local s = net.ReadString()
-        if s ~= "" then
+        if #s > 0 then
             TableInsert(ply.bought, s)
         end
     end

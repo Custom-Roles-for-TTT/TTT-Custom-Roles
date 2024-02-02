@@ -329,7 +329,7 @@ function SWEP:SecondaryAttack()
         dsearch.OnValueChange = function(_, value)
             local query = StringLower(value:gsub("[%p%c%s]", ""))
             for _, panel in pairs(panelList) do
-                if StringFind(ROLE_STRINGS_RAW[panel.role], query, 1, true) or value == "" then
+                if StringFind(ROLE_STRINGS_RAW[panel.role], query, 1, true) or (value and #value == 0) then
                     panel:SetIconColor(COLOR_WHITE)
                     panel:SetBackgroundColor(ROLE_COLORS[panel.role])
                     panel.enabled = true

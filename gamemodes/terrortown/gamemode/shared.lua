@@ -788,11 +788,11 @@ end
 function UpdateRoleStrings()
     for role = 0, ROLE_MAX do
         local name = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name"):GetString()
-        if name ~= "" then
+        if #name > 0 then
             ROLE_STRINGS[role] = name
 
             local plural = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural"):GetString()
-            if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
+            if #plural == 0 then -- Fallback if no plural is given. Does NOT handle all cases properly
                 local lastChar = StringLower(StringSub(name, #name, #name))
                 if lastChar == "s" then
                     ROLE_STRINGS_PLURAL[role] = name .. "es"
@@ -806,7 +806,7 @@ function UpdateRoleStrings()
             end
 
             local article = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article"):GetString()
-            if article == "" then -- Fallback if no article is given. Does NOT handle all cases properly
+            if #article == 0 then -- Fallback if no article is given. Does NOT handle all cases properly
                 if StartsWithVowel(name) then
                     ROLE_STRINGS_EXT[role] = "an " .. name
                 else

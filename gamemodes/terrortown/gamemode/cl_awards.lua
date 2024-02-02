@@ -69,7 +69,7 @@ local function FirstSuicide(events, scores, players)
     end
 
     if fs then
-        if not fs.att.ni or fs.att.ni == "" then return nil end
+        if not fs.att.ni or #(fs.att.ni) == 0 then return nil end
 
         local award = {nick=fs.att.ni}
         if fnum > 1 then
@@ -132,7 +132,7 @@ end
 local function FirstBlood(events, scores, players)
     for _, e in pairs(events) do
         if e.id == EVENT_KILL and e.att.sid64 ~= e.vic.sid64 and e.att.sid64 ~= -1 then
-            if not e.att.ni or e.att.ni == "" then return nil end
+            if not e.att.ni or #(e.att.ni) == 0 then return nil end
 
             local award = {nick=e.att.ni}
             local attackerrole = GetRoleName(e.att)
@@ -306,7 +306,7 @@ end
 local function FallDeath(events, scores, players)
     for _, e in pairs(events) do
         if e.id == EVENT_KILL and is_dmg(e.dmg.t, DMG_FALL) then
-            if e.att.ni ~= "" then
+            if #(e.att.ni) > 0 then
                 return {title=T("aw_fal1_title"), nick=e.att.ni, text=T("aw_fal1_text"), priority=math.random(7, 15)}
             else
                 return {title=T("aw_fal2_title"), nick=e.vic.ni, text=T("aw_fal2_text"), priority=math.random(1, 5)}
@@ -320,7 +320,7 @@ end
 local function FallKill(events, scores, players)
     for _, e in pairs(events) do
         if e.id == EVENT_KILL and is_dmg(e.dmg.t, DMG_CRUSH) and is_dmg(e.dmg.t, DMG_PHYSGUN) then
-            if e.att.ni ~= "" then
+            if #(e.att.ni) > 0 then
                 return {title=T("aw_fal3_title"), nick=e.att.ni, text=T("aw_fal3_text"), priority=math.random(10, 15)}
             end
         end

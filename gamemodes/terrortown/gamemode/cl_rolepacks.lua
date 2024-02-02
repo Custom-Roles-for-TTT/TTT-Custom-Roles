@@ -44,7 +44,7 @@ local function SendStreamToServer(tbl, networkString)
     end
 
     jsonTable = util.Compress(jsonTable)
-    if jsonTable == "" then
+    if #jsonTable == 0 then
         ErrorNoHalt("Table compression failed!\n")
         return
     end
@@ -84,7 +84,7 @@ local function ReceiveStreamFromServer(networkString, callback)
         local json = util.Decompress(buff .. net.ReadData(net.ReadUInt(16)))
         buff = ""
 
-        if json == "" then
+        if #json == 0 then
             ErrorNoHalt("Table decompression failed!\n")
             return
         end
@@ -328,7 +328,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
     end
     ReceiveStreamFromServer("TTT_ReadRolePackRoles", UpdateRolePackRoleUI)
 
-    if not packName or packName == "" then
+    if not packName or #packName == 0 then
         daddslotbutton:SetDisabled(true)
         dallowduplicates:SetDisabled(true)
     else
@@ -734,7 +734,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
     end
 
-    if not packName or packName == "" then
+    if not packName or #packName == 0 then
         dsearch:SetDisabled(true)
         dsearchrole:SetDisabled(true)
         dsaverole:SetDisabled(true)
@@ -784,7 +784,7 @@ local function BuildConVarConfig(dsheet, packName, tab)
         local text = ""
         if jsonTable.convars then
             for _, line in pairs(jsonTable.convars) do
-                if text ~= "" then
+                if #text > 0 then
                     text = text .. '\n'
                 end
                 if line.cvar then
@@ -804,7 +804,7 @@ local function BuildConVarConfig(dsheet, packName, tab)
     end
     ReceiveStreamFromServer("TTT_ReadRolePackConvars", UpdateRolePackConvarUI)
 
-    if not packName or packName == "" then
+    if not packName or #packName == 0 then
         dtextentry:SetDisabled(true)
     else
         ReadRolePackConvarTable(packName)
@@ -817,7 +817,7 @@ local function BuildConVarConfig(dsheet, packName, tab)
             if #lines <= 0 then return end
             local convarTable = {name = packName, convars = {}}
             for _, line in ipairs(lines) do
-                if line == "" then
+                if #line == 0 then
                     TableInsert(convarTable.convars, {cvar = false, newline = true})
                 else
                     line = string.gsub(line, "#INVALID# ", "")
@@ -903,7 +903,7 @@ local function OpenDialog()
     dpack.ChooseOption = function(self, value, index)
         local pack, _ = dpack:GetSelected()
         if pack == value then return end
-        if not pack or pack == "" or (not droles.unsavedChanges and not dweapons.unsavedChanges and not dconvars.unsavedChanges) then
+        if not pack or #pack == 0 or (not droles.unsavedChanges and not dweapons.unsavedChanges and not dconvars.unsavedChanges) then
             oldChooseOption(self, value, index)
             return
         end
@@ -948,7 +948,7 @@ local function OpenDialog()
     local oldClose = dframe.Close
     dframe.Close = function(self)
         local pack, _ = dpack:GetSelected()
-        if not pack or pack == "" or (not droles.unsavedChanges and not dweapons.unsavedChanges and not dconvars.unsavedChanges) then
+        if not pack or #pack == 0 or (not droles.unsavedChanges and not dweapons.unsavedChanges and not dconvars.unsavedChanges) then
             oldClose(self)
             return
         end
@@ -1022,7 +1022,7 @@ local function OpenDialog()
     dapplybutton:SetTooltip(GetTranslation("rolepacks_apply"))
     dapplybutton.DoClick = function()
         local pack, _ = dpack:GetSelected()
-        if not pack or pack == "" then return end
+        if not pack or #pack == 0 then return end
         net.Start("TTT_ApplyRolePack")
         net.WriteString(pack)
         net.SendToServer()
@@ -1037,7 +1037,7 @@ local function OpenDialog()
     dsavebutton:SetTooltip(GetTranslation("rolepacks_save"))
     dsavebutton.DoClick = function()
         local pack, _ = dpack:GetSelected()
-        if not pack or pack == "" then return end
+        if not pack or #pack == 0 then return end
         Save()
     end
 
@@ -1049,7 +1049,7 @@ local function OpenDialog()
     ddeletebutton:SetTooltip(GetTranslation("rolepacks_delete"))
     ddeletebutton.DoClick = function()
         local pack, index = dpack:GetSelected()
-        if not pack or pack == "" then return end
+        if not pack or #pack == 0 then return end
 
         dframe:SetMouseInputEnabled(false)
 
@@ -1102,7 +1102,7 @@ local function OpenDialog()
     drenamebutton:SetTooltip(GetTranslation("rolepacks_rename"))
     drenamebutton.DoClick = function()
         local pack, index = dpack:GetSelected()
-        if not pack or pack == "" then return end
+        if not pack or #pack == 0 then return end
 
         dframe:SetMouseInputEnabled(false)
 
@@ -1128,7 +1128,7 @@ local function OpenDialog()
         drename:SetPos(300 - m - 64, 25 + m)
         drename.DoClick = function()
             local newpack = StringLower(drenameentry:GetValue())
-            if not newpack or newpack == "" then return end
+            if not newpack or #newpack == 0 then return end
             if not IsNameValid(newpack, dpack) then return end
             TableRemove(dpack.Choices, index)
             local newindex = dpack:AddChoice(newpack)
@@ -1174,7 +1174,7 @@ local function OpenDialog()
         dconfirm:SetPos(300 - m - 64, 25 + m)
         dconfirm.DoClick = function()
             local pack = StringLower(dnewentry:GetValue())
-            if not pack or pack == "" then return end
+            if not pack or #pack == 0 then return end
             if not IsNameValid(pack, dpack) then return end
             local index = dpack:AddChoice(pack)
             dpack:ChooseOption(pack, index)

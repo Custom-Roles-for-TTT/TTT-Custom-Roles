@@ -111,14 +111,14 @@ local function CopyLoverNWVars(copyTo, copyFrom, cupidSID, loverSID)
             cupid:SetNWString("TTTCupidTarget2", copyTo:SteamID64())
         end
         local message = copyTo:Nick() .. " has swapped with " .. copyFrom:Nick() .. " and is now "
-        if loverSID == "" then
+        if #loverSID == 0 then
             message = message .. "waiting to be paired with a lover."
         else
             message = message .. "in love with " .. lover:Nick() .. "."
         end
         cupid:QueueMessage(MSG_PRINTBOTH, message)
 
-        if loverSID == "" then
+        if #loverSID == 0 then
             message = copyFrom:Nick() .. " had been hit by cupid's arrow so you are now waiting to be paired with a lover."
         else
             message = copyFrom:Nick() .. " was in love so you are now in love with " .. lover:Nick() .. "."
@@ -172,12 +172,12 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
         local attCupidSID = attacker:GetNWString("TTTCupidShooter", "")
         local vicCupidSID = victim:GetNWString("TTTCupidShooter", "")
         if health == 0 then
-            if swapper_swap_lovers:GetBool() and attCupidSID ~= "" and vicCupidSID == "" then -- If the attacker is going to die, only swap lovers if the swap doesn't cause a lover to die elsewhere
+            if swapper_swap_lovers:GetBool() and #attCupidSID > 0 and #vicCupidSID == 0 then -- If the attacker is going to die, only swap lovers if the swap doesn't cause a lover to die elsewhere
                 SwapCupidLovers(attacker, victim)
             end
             attacker:Kill()
         else
-            if swapper_swap_lovers:GetBool() and (attCupidSID ~= "" or vicCupidSID ~= "") and attCupidSID ~= vicCupidSID then -- If the attacker is going to live, only swap lovers if the attacker and the swapper arent in love with each other
+            if swapper_swap_lovers:GetBool() and (#attCupidSID > 0 or #vicCupidSID > 0) and attCupidSID ~= vicCupidSID then -- If the attacker is going to live, only swap lovers if the attacker and the swapper arent in love with each other
                 SwapCupidLovers(attacker, victim)
             end
             attacker:SetHealth(health)

@@ -231,7 +231,7 @@ function GM:PlayerSay(ply, text, team_only)
                 -- grab word characters and whitelisted interpunction
                 -- necessary or leetspeek will be used (by trolls especially)
                 local word, interp = string.match(v, "(%a*)([%.,;!%?]*)")
-                if word ~= "" then
+                if #word > 0 then
                     table.insert(filtered, mumbles[math.random(1, #mumbles)] .. interp)
                 end
             end

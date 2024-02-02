@@ -141,7 +141,7 @@ AddHook("TTTScoringSummaryRender", "Shadow_TTTScoringSummaryRender", function(pl
 
     if ply:IsShadow() then
         local targetSID = ply:GetNWString("ShadowTarget", "")
-        if targetSID == "" then return end
+        if #targetSID == 0 then return end
 
         local target = player.GetBySteamID64(targetSID)
         if not IsPlayer(target) then return end
@@ -220,7 +220,7 @@ local client = nil
 local function EnableShadowTargetHighlights()
     AddHook("PreDrawHalos", "Shadow_Highlight_PreDrawHalos", function()
         local sid64 = client:GetNWString("ShadowTarget", "")
-        if sid64 == "" then return end
+        if #sid64 == 0 then return end
 
         local target = player.GetBySteamID64(sid64)
         if not IsValid(target) then return end

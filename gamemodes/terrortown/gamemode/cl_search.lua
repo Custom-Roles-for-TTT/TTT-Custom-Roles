@@ -151,7 +151,7 @@ function PreprocSearch(raw)
                 search[t].p = 2
             end
         elseif t == "words" then
-            if d ~= "" then
+            if #d > 0 then
                 -- only append "--" if there's no ending interpunction
                 local final = string.match(d, "[\\.\\!\\?]$") ~= nil
                 search[t].text = PT("search_words", { lastwords = d .. (final and "" or "--.") })
@@ -257,7 +257,7 @@ function PreprocSearch(raw)
         end
 
         -- anything matching a type but not given a text should be removed
-        if search[t] and search[t].text == "" then
+        if search[t] and #(search[t].text) == 0 then
             search[t] = nil
         end
 
@@ -625,7 +625,7 @@ local function ReceiveRagdollSearch()
     -- last words
     --
     local words = net.ReadString()
-    search.words = (words ~= "") and words or nil
+    search.words = (#words > 0) and words or nil
 
     hook.Call("TTTBodySearchEquipment", nil, search, eq)
 

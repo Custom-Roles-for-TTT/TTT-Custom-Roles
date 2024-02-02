@@ -364,7 +364,7 @@ function CLSCORE:BuildScorePanel(dpanel)
             name = name[1]
         end
         local col
-        if name == "" then
+        if #name == 0 then
             -- skull icon column
             col = dlist:AddColumn("")
         else
@@ -1171,7 +1171,7 @@ net.Receive("TTT_ReportStream", function()
     local events = util.Decompress(buff .. net.ReadData(net.ReadUInt(16)))
     buff = ""
 
-    if events == "" then
+    if #events == 0 then
         ErrorNoHalt("Round report decompression failed!\n")
     end
 

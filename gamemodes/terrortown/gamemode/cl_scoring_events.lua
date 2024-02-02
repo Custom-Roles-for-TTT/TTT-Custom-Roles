@@ -223,7 +223,7 @@ local function KillText(e)
    local dmg = e.dmg
 
    local trap = dmg.n
-   if trap == "" then trap = nil end
+   if #trap == 0 then trap = nil end
 
    local weapon = GetWeaponName(dmg.g)
    if weapon then
@@ -262,7 +262,7 @@ local function KillText(e)
 
    -- if we are dealing with an accidental trap death for example, we want to
    -- use the trap name as "attacker"
-   if e.att.ni == "" then
+   if #(e.att.ni) == 0 then
       ply_attacker = false
 
       params.attacker = trap or T("something")

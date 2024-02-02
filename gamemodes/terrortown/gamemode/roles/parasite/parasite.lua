@@ -228,7 +228,7 @@ hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
 
         if parasite_infection_saves_lover:GetBool() then
             local loverSID = victim:GetNWString("TTTCupidLover", "")
-            if loverSID ~= "" then
+            if #loverSID > 0 then
                 local lover = player.GetBySteamID64(loverSID)
                 lover:QueueMessage(MSG_PRINTCENTER, "Your lover has died... but they are infecting someone!")
             end
@@ -286,7 +286,7 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
 
                         if parasite_infection_saves_lover:GetBool() then
                             local loverSID = deadParasite:GetNWString("TTTCupidLover", "")
-                            if loverSID ~= "" then
+                            if #loverSID > 0 then
                                 local lover = player.GetBySteamID64(loverSID)
                                 lover:PrintMessage(HUD_PRINTTALK, "Your lover's host has died!")
                             end
@@ -316,7 +316,7 @@ end)
 
 hook.Add("PostPlayerDeath", "Parasite_Lovers_PostPlayerDeath", function(ply)
     local loverSID = ply:GetNWString("TTTCupidLover", "")
-    if loverSID == "" then return end
+    if #loverSID == 0 then return end
 
     local lover = player.GetBySteamID64(loverSID)
     if not IsPlayer(lover) then return end

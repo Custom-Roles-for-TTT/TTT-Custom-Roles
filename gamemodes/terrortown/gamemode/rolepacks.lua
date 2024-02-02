@@ -36,9 +36,9 @@ util.AddNetworkString("TTT_SendRolePackRoleList")
 local maxStreamLength = 65529
 
 local function SendStreamToClient(ply, json, networkString)
-    if not json or json == "" then return end
+    if not json or #json == 0 then return end
     local jsonTable = util.Compress(json)
-    if jsonTable == "" then
+    if #jsonTable == 0 then
         ErrorNoHalt("Table compression failed!\n")
         return
     end
@@ -78,7 +78,7 @@ local function ReceiveStreamFromClient(networkString, callback)
         local jsonTable = util.Decompress(buff .. net.ReadData(net.ReadUInt(16)))
         buff = ""
 
-        if jsonTable == "" then
+        if #jsonTable == 0 then
             ErrorNoHalt("Table decompression failed!\n")
             return
         end

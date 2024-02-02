@@ -63,7 +63,7 @@ hook.Add("TTTScoringSummaryRender", "Swapper_TTTScoringSummaryRender", function(
 
     if ply:IsSwapper() then
         local swappedWith = ply:GetNWString("SwappedWith", "")
-        if swappedWith ~= "" then
+        if #swappedWith > 0 then
             return roleFileName, groupingRole, roleColor, name, swappedWith, LANG.GetTranslation("score_swapper_killed")
         end
     end
