@@ -51,6 +51,8 @@ function GM:PlayerInitialSpawn(ply)
         ply:SetTeam(TEAM_SPEC)
         ply:SetForceSpec(true)
     end
+
+    ROLEPACKS.SendRolePackRoleList(ply)
 end
 
 function GM:NetworkIDValidated(name, steamid)

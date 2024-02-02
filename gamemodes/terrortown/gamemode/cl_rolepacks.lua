@@ -758,7 +758,7 @@ local function BuildConVarConfig(dsheet, packName, tab)
     local _, texth = dconvars:GetSize()
     dtextentry:Dock(FILL)
     dtextentry:SetHeight(texth - 36)
-    dtextentry:SetPlaceholderText("Add ConVars here. One ConVar per line!")
+    dtextentry:SetPlaceholderText("One ConVar per line")
     dtextentry.OnTextChanged = function()
         dconvars.unsavedChanges = true
     end
@@ -777,8 +777,14 @@ local function BuildConVarConfig(dsheet, packName, tab)
                     text = text .. '\n'
                 end
                 if line.cvar then
-                    text = text .. line.cvar .. " " .. line.value
-                else
+                    if line.invalid then
+                        text = text .. "#INVALID# "
+                    end
+                    text = text .. line.cvar
+                    if line.value then
+                        text = text .. " \"" .. line.value .. "\""
+                    end
+                elseif line.comment then
                     text = text .. line.comment
                 end
             end
@@ -800,17 +806,25 @@ local function BuildConVarConfig(dsheet, packName, tab)
             if #lines <= 0 then return end
             local convarTable = {name = packName, convars = {}}
             for _, line in ipairs(lines) do
-                if string.sub(line, 1, 2) == "//" then
-                    TableInsert(convarTable.convars, {cvar = false, comment = line})
+                if line == "" then
+                    TableInsert(convarTable.convars, {cvar = false, newline = true})
                 else
-                    local spacePos = string.find(line, ' ')
-                    if not spacePos then continue end
-
-                    local cvar = string.sub(line, 1, spacePos - 1)
-                    local value = string.sub(line, spacePos + 1)
-                    value = string.gsub(value, '"', '')
-                    value = string.Trim(value)
-                    TableInsert(convarTable.convars, {cvar = cvar, value = value})
+                    line = string.gsub(line, "#INVALID# ", "")
+                    line = string.TrimLeft(line)
+                    if string.sub(line, 1, 2) == "//" then
+                        TableInsert(convarTable.convars, {cvar = false, comment = line})
+                    else
+                        local spacePos = string.find(line, ' ')
+                        if spacePos then
+                            local cvar = string.sub(line, 1, spacePos - 1)
+                            local value = string.sub(line, spacePos + 1)
+                            value = string.gsub(value, '"', '')
+                            value = string.Trim(value)
+                            TableInsert(convarTable.convars, {cvar = cvar, value = value, invalid = false})
+                        else
+                            TableInsert(convarTable.convars, {cvar = line, value = false, invalid = true})
+                        end
+                    end
                 end
             end
             SendStreamToServer(convarTable, "TTT_WriteRolePackConvars")
@@ -860,6 +874,20 @@ local function OpenDialog()
         dweapons = BuildWeaponConfig(dsheet, name, dweaponstab)
         dconvars = BuildConVarConfig(dsheet, name, dconvarstab)
     end
+
+    local function Save()
+        droles.Save()
+        dweapons.Save()
+        dconvars.Save()
+        droles.unsavedChanges = false
+        dweapons.unsavedChanges = false
+        dconvars.unsavedChanges = false
+        net.Start("TTT_SaveRolePack")
+        local pack, _ = dpack:GetSelected()
+        net.WriteString(pack)
+        net.SendToServer()
+    end
+
     local oldChooseOption = dpack.ChooseOption
     dpack.ChooseOption = function(self, value, index)
         local pack, _ = dpack:GetSelected()
@@ -887,12 +915,7 @@ local function OpenDialog()
         dyes:SetText("Yes")
         dyes:SetPos(150 - 64 - m, 25 + m)
         dyes.DoClick = function()
-            droles.Save()
-            dweapons.Save()
-            dconvars.Save()
-            droles.unsavedChanges = false
-            dweapons.unsavedChanges = false
-            dconvars.unsavedChanges = false
+            Save()
             dsavedialog:Close()
             oldChooseOption(self, value, index)
         end
@@ -937,9 +960,7 @@ local function OpenDialog()
         dyes:SetText("Yes")
         dyes:SetPos(150 - 64 - m, 25 + m)
         dyes.DoClick = function()
-            droles.Save()
-            dweapons.Save()
-            dconvars.Save()
+            Save()
             dsavedialog:Close()
             oldClose(self)
         end
@@ -993,12 +1014,7 @@ local function OpenDialog()
     dsavebutton.DoClick = function()
         local pack, _ = dpack:GetSelected()
         if not pack or pack == "" then return end
-        droles.Save()
-        dweapons.Save()
-        dconvars.Save()
-        droles.unsavedChanges = false
-        dweapons.unsavedChanges = false
-        dconvars.unsavedChanges = false
+        Save()
     end
 
     local ddeletebutton = vgui.Create("DButton", dframe)

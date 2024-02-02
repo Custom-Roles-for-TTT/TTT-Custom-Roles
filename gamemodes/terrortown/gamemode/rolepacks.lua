@@ -27,6 +27,7 @@ util.AddNetworkString("TTT_SendRolePackList")
 util.AddNetworkString("TTT_CreateRolePack")
 util.AddNetworkString("TTT_RenameRolePack")
 util.AddNetworkString("TTT_DeleteRolePack")
+util.AddNetworkString("TTT_SaveRolePack")
 util.AddNetworkString("TTT_ApplyRolePack")
 util.AddNetworkString("TTT_SendRolePackRoleList")
 
@@ -168,13 +169,23 @@ net.Receive("TTT_DeleteRolePack", function()
     end
 end)
 
+net.Receive("TTT_SaveRolePack", function()
+    local savedPack = net.ReadString()
+    local currentPack = GetConVar("ttt_role_pack"):GetString()
+    if savedPack == currentPack then
+        ROLEPACKS.SendRolePackRoleList()
+        ROLEPACKS.ApplyRolePackConVars()
+    end
+end)
+
 net.Receive("TTT_ApplyRolePack", function()
     local name = net.ReadString()
     GetConVar("ttt_role_pack"):SetString(name)
     ROLEPACKS.SendRolePackRoleList()
+    ROLEPACKS.ApplyRolePackConVars()
 end)
 
-function ROLEPACKS.SendRolePackRoleList()
+function ROLEPACKS.SendRolePackRoleList(ply)
     ROLE_PACK_ROLES = {}
 
     net.Start("TTT_SendRolePackRoleList")
@@ -215,7 +226,11 @@ function ROLEPACKS.SendRolePackRoleList()
         net.WriteUInt(role, 8)
         ROLE_PACK_ROLES[role] = true
     end
-    net.Broadcast()
+    if ply then
+        net.Send(ply)
+    else
+        net.Broadcast()
+    end
 end
 
 function ROLEPACKS.AssignRoles(choices)
@@ -289,3 +304,61 @@ function ROLEPACKS.AssignRoles(choices)
 
     ROLEPACKS.SendRolePackRoleList()
 end
+
+ROLEPACKS.OldConVars = {}
+
+function ROLEPACKS.ApplyRolePackConVars()
+    for cvar, value in pairs(ROLEPACKS.OldConVars) do
+        GetConVar(cvar):SetString(value)
+        ROLEPACKS.OldConVars[cvar] = nil
+    end
+
+    local rolePackName = GetConVar("ttt_role_pack"):GetString()
+    if #rolePackName == 0 then return end
+
+    local json = file.Read("rolepacks/" .. rolePackName .. "/convars.json", "DATA")
+    if not json then
+        ErrorNoHalt("No role pack named '" .. rolePackName .. "' found!\n")
+        return
+    end
+
+    local jsonTable = util.JSONToTable(json)
+    if not jsonTable then
+        ErrorNoHalt("Table decoding failed!\n")
+        return
+    end
+
+    local cvarsToChange = {}
+    for _, v in ipairs(jsonTable.convars) do
+        if not v.cvar or not v.value then continue end
+        local cvar = GetConVar(v.cvar)
+        if cvar == nil then
+            v.invalid = true
+            continue
+        else
+            v.invalid = false
+            local oldValue = cvar:GetString()
+            local newValue = v.value
+            if oldValue ~= newValue then
+                cvarsToChange[v.cvar] = {oldValue = oldValue, newValue = newValue}
+            end
+        end
+    end
+
+    json = util.TableToJSON(jsonTable)
+    if not json then
+        ErrorNoHalt("Table encoding failed!\n")
+        return
+    end
+    file.Write("rolepacks/" .. rolePackName .. "/convars.json", json)
+
+    for cvar, value in pairs(cvarsToChange) do
+        GetConVar(cvar):SetString(value.newValue)
+        ROLEPACKS.OldConVars[cvar] = value.oldValue
+    end
+end
+
+cvars.AddChangeCallback("ttt_role_pack", function(cvar, old, new)
+    ROLEPACKS.SendRolePackRoleList()
+    ROLEPACKS.ApplyRolePackConVars()
+end)
