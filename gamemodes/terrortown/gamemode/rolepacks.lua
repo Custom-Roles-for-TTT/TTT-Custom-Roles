@@ -330,7 +330,7 @@ function ROLEPACKS.ApplyRolePackConVars()
 
     local cvarsToChange = {}
     for _, v in ipairs(jsonTable.convars) do
-        if not v.cvar or not v.value then continue end
+        if not v.cvar or not v.value or v.cvar == "ttt_role_pack" then continue end
         local cvar = GetConVar(v.cvar)
         if cvar == nil then
             v.invalid = true
