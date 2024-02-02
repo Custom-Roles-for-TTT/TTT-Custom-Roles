@@ -25,7 +25,7 @@ local function GetRandomWeightedEvent()
             table.insert(weighted_events, id)
         end
     end
-    
+
     if #weighted_events == 0 then return nil end
 
     -- Randomize the weighted list

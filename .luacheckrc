@@ -1131,7 +1131,10 @@ globals = {
 
     -- CR Namespaces
     "CRHUD",
-    "DEATHRADAR"
+    "DEATHRADAR",
+
+    -- Randomat Namespaces
+    "Randomat"
 }
 std = {
     globals = {
