@@ -112,16 +112,16 @@ local function DoesValueMatch(item, data, value)
 end
 
 local function IsNameValid(name, dpack)
-    if string.find(name, '[\\/:%*%?"<>|]') then
-        LocalPlayer():PrintMessage(HUD_PRINTTALK, 'Name cannot contain the following characters: \\/:*?"<>|')
+    if string.find(name, "[\\/:%*%?\"<>|]") then
+        LocalPlayer():PrintMessage(HUD_PRINTTALK, "Name cannot contain the following characters: \\/:*?\"<>|")
         return false
     elseif #name > 30 then
-        LocalPlayer():PrintMessage(HUD_PRINTTALK, 'Name cannot be longer than 30 characters')
+        LocalPlayer():PrintMessage(HUD_PRINTTALK, "Name cannot be longer than 30 characters")
         return false
     else
         for _, v in pairs(dpack.Choices) do
             if name == v then
-                LocalPlayer():PrintMessage(HUD_PRINTTALK, 'Name cannot be a duplicate of another role pack')
+                LocalPlayer():PrintMessage(HUD_PRINTTALK, "Name cannot be a duplicate of another role pack")
                 return false
             end
         end
@@ -625,26 +625,26 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         -- Update checkbox state based on tables
         if ItemIsWeapon(item) then
             local weap_class = StringLower(item.id)
-            if weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].Buyables, weap_class) then
+            if weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].Buyables, weap_class) then
                 dradioinclude:SetValue(true)
-            elseif weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].Excludes, weap_class) then
+            elseif weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].Excludes, weap_class) then
                 dradioexclude:SetValue(true)
             else
                 dradionone:SetValue(true)
             end
 
-            dradionorandom:SetValue(weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].NoRandoms, weap_class))
+            dradionorandom:SetValue(weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].NoRandoms, weap_class))
         else
             local name = StringLower(item.name)
-            if weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].Buyables, name) then
+            if weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].Buyables, name) then
                 dradioinclude:SetValue(true)
-            elseif weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].Excludes, name) then
+            elseif weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].Excludes, name) then
                 dradioexclude:SetValue(true)
             else
                 dradionone:SetValue(true)
             end
 
-            dradionorandom:SetValue(weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].NoRandoms, name))
+            dradionorandom:SetValue(weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].NoRandoms, name))
         end
     end
 
@@ -931,7 +931,7 @@ local function BuildConVarConfig(dsheet, packName, tab)
 end
 
 local function OpenDialog()
-        local dframe = vgui.Create("DFrame")
+    local dframe = vgui.Create("DFrame")
     dframe:SetSize(w, h)
     dframe:Center()
     dframe:SetTitle(GetTranslation("rolepacks_title"))
