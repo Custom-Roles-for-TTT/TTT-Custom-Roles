@@ -78,7 +78,7 @@ function isOnBeta() {
         return true;
     }
 
-    var path = window.location.pathname.split("/").find(s => #s > 0);
+    var path = window.location.pathname.split("/").find(s => s != "");
     return path.endsWith("-Beta");
 }
 
