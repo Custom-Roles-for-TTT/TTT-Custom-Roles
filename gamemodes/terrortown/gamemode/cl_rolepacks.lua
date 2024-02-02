@@ -2,7 +2,6 @@ local concommand = concommand
 local vgui = vgui
 local util = util
 local net = net
-local timer = timer
 local pairs = pairs
 local table = table
 local math = math
@@ -742,7 +741,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
 
     dweapons.Save = function()
         if dweapons.unsavedChanges then
-
+            -- TODO
         end
     end
 
@@ -867,7 +866,7 @@ local function OpenDialog()
     local dsheet = vgui.Create("DPropertySheet", dframe)
     dsheet:SetPos(0, 0)
     dsheet:StretchToParent(m, 2 * m + 47, m, m)
-    
+
     local droles, drolestab = BuildRoleConfig(dsheet, "")
 
     local dweapons, dweaponstab = BuildWeaponConfig(dsheet, "")

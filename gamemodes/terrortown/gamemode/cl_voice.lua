@@ -313,7 +313,7 @@ function RADIO:GetTargetType()
         else
             return ent, false
         end
-    elseif ent:GetClass() == "prop_ragdoll" and #(CORPSE.GetPlayerNick(ent, "")) > 0 then
+    elseif ent:GetClass() == "prop_ragdoll" and #CORPSE.GetPlayerNick(ent, "") > 0 then
         if DetectiveMode() and not CORPSE.GetFound(ent, false) then
             return "quick_corpse", true
         else

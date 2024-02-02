@@ -659,7 +659,7 @@ function PrepareRound()
     WEPS.ClearRetryTimers()
 
     -- New look. Random if no forced model set.
-    GAMEMODE.playermodel = #(GAMEMODE.force_plymodel) == 0 and GetRandomPlayerModel() or GAMEMODE.force_plymodel
+    GAMEMODE.playermodel = #GAMEMODE.force_plymodel == 0 and GetRandomPlayerModel() or GAMEMODE.force_plymodel
     GAMEMODE.playercolor = RunHook("TTTPlayerColor", GAMEMODE.playermodel)
 
     if CheckForAbort() then return end

@@ -262,7 +262,8 @@ local function KillText(e)
 
    -- if we are dealing with an accidental trap death for example, we want to
    -- use the trap name as "attacker"
-   if #(e.att.ni) == 0 then
+   local attNick = e.att.ni
+   if #attNick == 0 then
       ply_attacker = false
 
       params.attacker = trap or T("something")

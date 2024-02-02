@@ -257,7 +257,7 @@ function PreprocSearch(raw)
         end
 
         -- anything matching a type but not given a text should be removed
-        if search[t] and #(search[t].text) == 0 then
+        if search[t] and #search[t].text == 0 then
             search[t] = nil
         end
 
