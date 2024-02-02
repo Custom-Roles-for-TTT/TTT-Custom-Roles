@@ -78,11 +78,21 @@ end
 
 local function ReceiveStreamFromClient(networkString, callback)
     local buff = ""
-    net.Receive(networkString .. "_Part", function()
+    net.Receive(networkString .. "_Part", function(len, ply)
+        if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+            ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+            return
+        end
+
         buff = buff .. net.ReadData(maxStreamLength)
     end)
 
-    net.Receive(networkString, function()
+    net.Receive(networkString, function(len, ply)
+        if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+            ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+            return
+        end
+
         local jsonTable = util.Decompress(buff .. net.ReadData(net.ReadUInt(16)))
         buff = ""
 
@@ -103,6 +113,11 @@ end
 ReceiveStreamFromClient("TTT_WriteRolePackRoles", WriteRolePackRoles)
 
 net.Receive("TTT_RequestRolePackRoles", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     local name = net.ReadString()
     local json = file.Read("rolepacks/" .. name .. "/roles.json", "DATA")
     if not json then return end
@@ -131,6 +146,11 @@ end
 ReceiveStreamFromClient("TTT_WriteRolePackWeapons", WriteRolePackWeapons)
 
 net.Receive("TTT_RequestRolePackWeapons", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     local name = net.ReadString()
     local role = net.ReadUInt(8)
     local json = file.Read("rolepacks/" .. name .. "/weapons/" .. ROLE_STRINGS_RAW[role] .. ".json", "DATA")
@@ -146,6 +166,11 @@ end
 ReceiveStreamFromClient("TTT_WriteRolePackConvars", WriteRolePackConvars)
 
 net.Receive("TTT_RequestRolePackConvars", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     local name = net.ReadString()
     local json = file.Read("rolepacks/" .. name .. "/convars.json", "DATA")
     if not json then return end
@@ -153,6 +178,11 @@ net.Receive("TTT_RequestRolePackConvars", function(len, ply)
 end)
 
 net.Receive("TTT_RequestRolePackList", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     net.Start("TTT_SendRolePackList")
     local _, directories = file.Find("rolepacks/*", "DATA")
     net.WriteUInt(#directories, 8)
@@ -162,7 +192,12 @@ net.Receive("TTT_RequestRolePackList", function(len, ply)
     net.Send(ply)
 end)
 
-net.Receive("TTT_CreateRolePack", function()
+net.Receive("TTT_CreateRolePack", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     local name = net.ReadString()
     if not file.IsDir("rolepacks", "DATA") then
         if file.Exists("rolepacks", "DATA") then
@@ -178,7 +213,12 @@ net.Receive("TTT_CreateRolePack", function()
     file.Write("rolepacks/" .. name .. "/convars.json", "{}")
 end)
 
-net.Receive("TTT_RenameRolePack", function()
+net.Receive("TTT_RenameRolePack", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     local oldName = net.ReadString()
     local newName = net.ReadString()
     local newPath = "rolepacks/" .. newName
@@ -193,7 +233,12 @@ net.Receive("TTT_RenameRolePack", function()
     end
 end)
 
-net.Receive("TTT_DeleteRolePack", function()
+net.Receive("TTT_DeleteRolePack", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     local name = net.ReadString()
     local path = "rolepacks/" .. name
     if file.Exists(path, "DATA") then
@@ -207,7 +252,12 @@ net.Receive("TTT_DeleteRolePack", function()
     end
 end)
 
-net.Receive("TTT_SaveRolePack", function()
+net.Receive("TTT_SaveRolePack", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     local savedPack = net.ReadString()
     local currentPack = GetConVar("ttt_role_pack"):GetString()
     if savedPack == currentPack then
@@ -217,19 +267,23 @@ net.Receive("TTT_SaveRolePack", function()
     end
 end)
 
-net.Receive("TTT_ApplyRolePack", function()
+net.Receive("TTT_ApplyRolePack", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     local name = net.ReadString()
     GetConVar("ttt_role_pack"):SetString(name)
-    ROLEPACKS.SendRolePackRoleList()
-    ROLEPACKS.ApplyRolePackConVars()
-    ROLEPACKS.FillRolePackWeaponTables()
 end)
 
-net.Receive("TTT_ClearRolePack", function()
+net.Receive("TTT_ClearRolePack", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
     GetConVar("ttt_role_pack"):SetString("")
-    ROLEPACKS.SendRolePackRoleList()
-    ROLEPACKS.ApplyRolePackConVars()
-    ROLEPACKS.FillRolePackWeaponTables()
 end)
 
 function ROLEPACKS.SendRolePackRoleList(ply)
