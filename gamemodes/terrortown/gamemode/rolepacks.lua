@@ -17,6 +17,11 @@ util.AddNetworkString("TTT_WriteRolePackRoles_Part")
 util.AddNetworkString("TTT_RequestRolePackRoles")
 util.AddNetworkString("TTT_ReadRolePackRoles")
 util.AddNetworkString("TTT_ReadRolePackRoles_Part")
+util.AddNetworkString("TTT_WriteRolePackWeapons")
+util.AddNetworkString("TTT_WriteRolePackWeapons_Part")
+util.AddNetworkString("TTT_RequestRolePackWeapons")
+util.AddNetworkString("TTT_ReadRolePackWeapons")
+util.AddNetworkString("TTT_ReadRolePackWeapons_Part")
 util.AddNetworkString("TTT_WriteRolePackConvars")
 util.AddNetworkString("TTT_WriteRolePackConvars_Part")
 util.AddNetworkString("TTT_RequestRolePackConvars")
@@ -32,10 +37,10 @@ util.AddNetworkString("TTT_ApplyRolePack")
 util.AddNetworkString("TTT_ClearRolePack")
 util.AddNetworkString("TTT_SendRolePackRoleList")
 
--- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (terminanting byte)
-local maxStreamLength = 65529
+-- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte) - 1 (terminanting byte)
+local maxStreamLength = 65528
 
-local function SendStreamToClient(ply, json, networkString)
+local function SendStreamToClient(ply, json, networkString, byte)
     if not json or #json == 0 then return end
     local jsonTable = util.Compress(json)
     if #jsonTable == 0 then
@@ -47,6 +52,7 @@ local function SendStreamToClient(ply, json, networkString)
 
     if len <= maxStreamLength then
         net.Start(networkString)
+        net.WriteUInt(byte or 0, 8)
         net.WriteUInt(len, 16)
         net.WriteData(jsonTable, len)
         net.Send(ply)
@@ -62,6 +68,7 @@ local function SendStreamToClient(ply, json, networkString)
         until (len - curpos <= maxStreamLength)
 
         net.Start(networkString)
+        net.WriteUInt(byte or 0, 8)
         net.WriteUInt(len, 16)
         net.WriteData(StringSub(jsonTable, curpos + 1, len), len - curpos)
         net.Send(ply)
@@ -87,18 +94,91 @@ local function ReceiveStreamFromClient(networkString, callback)
     end)
 end
 
-local function WriteRolePackTable(json)
+local function WriteRolePackRoles(json)
     local jsonTable = util.JSONToTable(json)
     local name = jsonTable.name
     file.Write("rolepacks/" .. name .. "/roles.json", json)
 end
-ReceiveStreamFromClient("TTT_WriteRolePackRoles", WriteRolePackTable)
+ReceiveStreamFromClient("TTT_WriteRolePackRoles", WriteRolePackRoles)
 
 net.Receive("TTT_RequestRolePackRoles", function(len, ply)
     local name = net.ReadString()
     local json = file.Read("rolepacks/" .. name .. "/roles.json", "DATA")
     if not json then return end
     SendStreamToClient(ply, json, "TTT_ReadRolePackRoles")
+end)
+
+local function WriteRolePackWeapons(json)
+        local jsonTable = util.JSONToTable(json)
+    local name = jsonTable.name
+
+    for role, tbl in pairs(jsonTable.weapons) do
+        local roleJsonTable = {
+            Buyables = {},
+            Excludes = {},
+            NoRandoms = {}
+        }
+
+        for id, options in pairs(tbl) do
+            local includeSelected = options.include
+            local excludeSelected = options.exclude
+            local noRandomSelected = options.noRandom
+
+            -- Update tables
+            local included = table.HasValue(roleJsonTable.Buyables, id)
+            if not includeSelected then
+                if included then
+                    -- Remove the entry from the table
+                    table.RemoveByValue(roleJsonTable.Buyables, id)
+                    -- Make the table have sequential keys again
+                    roleJsonTable.Buyables = table.ClearKeys(roleJsonTable.Buyables)
+                end
+            elseif not included then
+                table.insert(roleJsonTable.Buyables, id)
+            end
+
+            local excluded = table.HasValue(roleJsonTable.Excludes, id)
+            if not excludeSelected then
+                if excluded then
+                    -- Remove the entry from the table
+                    table.RemoveByValue(roleJsonTable.Excludes, id)
+                    -- Make the table have sequential keys again
+                    roleJsonTable.Excludes = table.ClearKeys(roleJsonTable.Excludes)
+                end
+            elseif not excluded then
+                table.insert(roleJsonTable.Excludes, id)
+            end
+
+            local noRandom = table.HasValue(roleJsonTable.NoRandoms, id)
+            if not noRandomSelected then
+                if noRandom then
+                    -- Remove the entry from the table
+                    table.RemoveByValue(roleJsonTable.NoRandoms, id)
+                    -- Make the table have sequential keys again
+                    roleJsonTable.NoRandoms = table.ClearKeys(roleJsonTable.NoRandoms)
+                end
+            elseif not noRandom then
+                table.insert(roleJsonTable.NoRandoms, id)
+            end
+        end
+
+        local roleJson = util.TableToJSON(roleJsonTable)
+        if not roleJson then
+            ErrorNoHalt("Table encoding failed!\n")
+            return
+        end
+
+        file.Write("rolepacks/" .. name .. "/weapons/" .. ROLE_STRINGS_RAW[role] .. ".json", roleJson)
+    end
+end
+ReceiveStreamFromClient("TTT_WriteRolePackWeapons", WriteRolePackWeapons)
+
+net.Receive("TTT_RequestRolePackWeapons", function(len, ply)
+    local name = net.ReadString()
+    local role = net.ReadUInt(8)
+    local json = file.Read("rolepacks/" .. name .. "/weapons/" .. ROLE_STRINGS_RAW[role] .. ".json", "DATA")
+    if not json then return end
+    SendStreamToClient(ply, json, "TTT_ReadRolePackWeapons", role)
 end)
 
 local function WriteRolePackConvars(json)
@@ -369,3 +449,5 @@ cvars.AddChangeCallback("ttt_role_pack", function(cvar, old, new)
     ROLEPACKS.SendRolePackRoleList()
     ROLEPACKS.ApplyRolePackConVars()
 end)
+
+-- TODO: Update GetEquipmentForRole, HandleCanBuyOverrides and UpdateWeaponLists to handle rolepack weapons

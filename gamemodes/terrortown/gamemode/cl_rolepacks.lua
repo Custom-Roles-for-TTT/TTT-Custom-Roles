@@ -32,8 +32,8 @@ local diw = 270
 local w = dlistw + diw + (m * 4)
 local h = dlisth + 75 + m + 22
 
--- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (terminanting byte)
-local maxStreamLength = 65529
+-- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte)  - 1 (terminanting byte)
+local maxStreamLength = 65528
 
 local function SendStreamToServer(tbl, networkString)
     local jsonTable = util.TableToJSON(tbl)
@@ -80,6 +80,7 @@ local function ReceiveStreamFromServer(networkString, callback)
     end)
 
     net.Receive(networkString, function()
+        local byte = net.ReadUInt(8)
         local json = util.Decompress(buff .. net.ReadData(net.ReadUInt(16)))
         buff = ""
 
@@ -94,7 +95,7 @@ local function ReceiveStreamFromServer(networkString, callback)
             return
         end
 
-        callback(jsonTable)
+        callback(jsonTable, byte)
     end)
 end
 
@@ -642,11 +643,43 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         end
     end
 
+    local weaponChanges = {name = "", weapons = {}}
+    local function CacheWeaponChange()
+        if save_role < 0 or save_role > ROLE_MAX then return end
+        local pnl = dlist.SelectedPanel
+        if not pnl or not pnl.item then return end
+        local choice = pnl.item
+
+        local includeSelected = dradioinclude:GetChecked()
+        local excludeSelected = dradioexclude:GetChecked()
+        local noRandomSelected = dradionorandom:GetChecked()
+
+        local id
+        if ItemIsWeapon(choice) then
+            id = choice.id
+        else
+            id = choice.name
+        end
+
+        if not weaponChanges.weapons[save_role] then
+            weaponChanges.weapons[save_role] = {}
+        end
+
+        if not includeSelected and not excludeSelected and not noRandomSelected then
+            weaponChanges.weapons[save_role][id] = nil
+        else
+            weaponChanges.weapons[save_role][id] = {include = includeSelected, exclude = excludeSelected, noRandom = noRandomSelected}
+        end
+
+        dweapons.unsavedChanges = true
+    end
+
     dradionone.OnChange = function(pnl, val)
         if val then
             dradioinclude:SetValue(false)
             dradioexclude:SetValue(false)
             UpdateButtonState()
+            CacheWeaponChange()
         end
     end
     dradioinclude.OnChange = function(pnl, val)
@@ -654,6 +687,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             dradionone:SetValue(false)
             dradioexclude:SetValue(false)
             UpdateButtonState()
+            CacheWeaponChange()
         end
     end
     dradioexclude.OnChange = function(pnl, val)
@@ -663,11 +697,13 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             -- You can't have "no random" a weapon that is excluded
             dradionorandom:SetValue(false)
             UpdateButtonState()
+            CacheWeaponChange()
         end
     end
     dradionorandom.OnChange = function(pnl, val)
         if val then
             UpdateButtonState()
+            CacheWeaponChange()
         end
     end
 
@@ -691,7 +727,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             -- the right size is a giant pain, so just
             -- force a good size.
             dfields.desc:SetTall(70)
-            UpdateRadioButtonState(new.item)
+            timer.Simple(0, function() UpdateRadioButtonState(new.item) end) -- Thanks to The Stig for this trick. 0 second timer forces this to happen after everything else
         else
             for _, v in pairs(dfields) do
                 if v then
@@ -733,15 +769,61 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
     end
 
+    local function ReadRolePackWeaponTables(name)
+        for r = ROLE_INNOCENT, ROLE_MAX do
+            net.Start("TTT_RequestRolePackWeapons")
+            net.WriteString(name)
+            net.WriteUInt(r, 8)
+            net.SendToServer()
+        end
+    end
+
+    local function UpdateRolePackWeaponUI(jsonTable, roleByte)
+        local roleTable = {}
+        for _, wep in ipairs(jsonTable.Buyables) do
+            if not roleTable[wep] then
+                roleTable[wep] = {include = true, exclude = false, noRandom = false}
+            else
+                roleTable[wep].include = true
+            end
+        end
+        for _, wep in ipairs(jsonTable.Excludes) do
+            if not roleTable[wep] then
+                roleTable[wep] = {include = false, exclude = true, noRandom = false}
+            else
+                roleTable[wep].exclude = true
+            end
+        end
+        for _, wep in ipairs(jsonTable.NoRandoms) do
+            if not roleTable[wep] then
+                roleTable[wep] = {include = false, exclude = false, noRandom = true}
+            else
+                roleTable[wep].noRandom = true
+            end
+        end
+        weaponChanges.weapons[roleByte] = roleTable
+        -- TODO: Show role pack weapon changes in rolepack UI
+    end
+    ReceiveStreamFromServer("TTT_ReadRolePackWeapons", UpdateRolePackWeaponUI)
+
     if not packName or #packName == 0 then
         dsearch:SetDisabled(true)
         dsearchrole:SetDisabled(true)
         dsaverole:SetDisabled(true)
+    else
+        weaponChanges.name = packName
+        ReadRolePackWeaponTables(packName)
     end
 
     dweapons.Save = function()
         if dweapons.unsavedChanges then
-            -- TODO
+            SendStreamToServer(weaponChanges, "TTT_WriteRolePackWeapons")
+            if role == save_role then
+                LocalPlayer():ConCommand("ttt_reset_weapons_cache")
+                timer.Simple(0.25, function()
+                    dsearch.OnValueChange(dsearch, dsearch:GetText())
+                end)
+            end
         end
     end
 
