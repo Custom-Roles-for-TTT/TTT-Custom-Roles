@@ -237,7 +237,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
     dsearch.OnValueChange = function(box, value)
         if role <= ROLE_NONE then return end
 
-        local roleitems = GetEquipmentForRole(role, false, true, true, true)
+        local roleitems = GetEquipmentForRole(role, false, true, true, true, false)
         local filtered = {}
         for _, v in pairs(roleitems) do
             if v and (DoesValueMatch(v, "name", value) or DoesValueMatch(v, "desc", value)) then
@@ -426,7 +426,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
             if #searchText then
                 dsearch.OnValueChange(dsearch, searchText)
             else
-                FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
+                FillEquipmentList(GetEquipmentForRole(role, false, true, true, true, false))
             end
         end
     end
@@ -476,7 +476,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
     end
 
     if role > ROLE_NONE then
-        FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
+        FillEquipmentList(GetEquipmentForRole(role, false, true, true, true, false))
     end
     return droleweapons
 end

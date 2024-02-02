@@ -10,6 +10,9 @@ local util = util
 
 local CallHook = hook.Call
 local GetWeapons = weapons.GetList
+local TableCopy = table.Copy
+local TableHasValue = table.HasValue
+local TableInsert = table.insert
 
 function WEPS.TypeForWeapon(class)
     local tbl = util.WeaponForClass(class)
@@ -44,6 +47,10 @@ WEPS.BuyableWeapons = { }
 WEPS.ExcludeWeapons = { }
 WEPS.BypassRandomWeapons = { }
 
+WEPS.RolePackBuyableWeapons = { }
+WEPS.RolePackExcludeWeapons = { }
+WEPS.RolePackBypassRandomWeapons = { }
+
 function WEPS.ClearWeaponsLists()
     table.Empty(WEPS.BuyableWeapons)
     table.Empty(WEPS.ExcludeWeapons)
@@ -61,6 +68,15 @@ function WEPS.PrepWeaponsLists(role)
     end
     if not WEPS.BypassRandomWeapons[role] then
         WEPS.BypassRandomWeapons[role] = {}
+    end
+    if not WEPS.RolePackBuyableWeapons[role] then
+        WEPS.RolePackBuyableWeapons[role] = {}
+    end
+    if not WEPS.RolePackExcludeWeapons[role] then
+        WEPS.RolePackExcludeWeapons[role] = {}
+    end
+    if not WEPS.RolePackBypassRandomWeapons[role] then
+        WEPS.RolePackBypassRandomWeapons[role] = {}
     end
     if not EquipmentItems[role] then
         EquipmentItems[role] = {}
@@ -240,9 +256,16 @@ SHOP_SYNC_MODE_INTERSECT = 2
 SHOP_SYNC_MODE_DETECTIVE = 3
 SHOP_SYNC_MODE_TRAITOR = 4
 
-function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles)
+function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles, rolepack_weps)
     if wep == nil then return end
     if not wep.CanBuy then return end
+
+    local packName = GetConVar("ttt_role_pack"):GetString()
+    if rolepack_weps == nil and #packName > 0 then
+        rolepack_weps = {Buyables = WEPS.RolePackBuyableWeapons[role], Excludes = WEPS.RolePackExcludeWeapons[role], NoRandoms = WEPS.RolePackBypassRandomWeapons[role]}
+    elseif rolepack_weps == false or #packName == 0 then
+        rolepack_weps = {Buyables = {}, Excludes = {}, NoRandoms = {}}
+    end
 
     local id = WEPS.GetClass(wep)
     local rolemode = GetRoleMode(role)
@@ -254,9 +277,14 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
         wep.CanBuy = table.ClearKeys(wep.CanBuy)
     end
 
-    local roletable = WEPS.BuyableWeapons[role] or {}
+    local MergedBuyableWeapons = TableCopy(WEPS.BuyableWeapons[role] or {})
+    for _, v in pairs(rolepack_weps.Buyables) do
+        if not TableHasValue(MergedBuyableWeapons, v) then
+            TableInsert(MergedBuyableWeapons, v)
+        end
+    end
     -- Make sure each of the buyable weapons is in the role's equipment list
-    if not table.HasValue(wep.CanBuy, role) and table.HasValue(roletable, id) then
+    if not table.HasValue(wep.CanBuy, role) and table.HasValue(MergedBuyableWeapons, id) then
         table.insert(wep.CanBuy, role)
     end
 
@@ -327,14 +355,24 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
     -- If the player can still buy this weapon, check the various excludes
     if table.HasValue(wep.CanBuy, role) then
         -- Make sure each of the excluded weapons is NOT in the role's equipment list
-        local excludetable = WEPS.ExcludeWeapons[role]
-        if not block_exclusion and excludetable and table.HasValue(excludetable, id) then
+        local MergedExcludeWeapons = TableCopy(WEPS.ExcludeWeapons[role] or {})
+        for _, v in pairs(rolepack_weps.Excludes) do
+            if not TableHasValue(MergedExcludeWeapons, v) then
+                TableInsert(MergedExcludeWeapons, v)
+            end
+        end
+        if not block_exclusion and table.HasValue(MergedExcludeWeapons, id) then
             table.RemoveByValue(wep.CanBuy, role)
         -- Remove some weapons based on a random chance if it isn't blocked or bypassed
         -- Only run this on the client because there is no easy way to sync randomization between client and server
         elseif CLIENT and not wep.BlockShopRandomization then
-            local norandomtable = WEPS.BypassRandomWeapons[role]
-            if not block_randomization and (not norandomtable or not table.HasValue(norandomtable, id)) then
+            local MergedNoRandomWeapons = TableCopy(WEPS.BypassRandomWeapons[role] or {})
+            for _, v in pairs(rolepack_weps.NoRandoms) do
+                if not TableHasValue(MergedNoRandomWeapons, v) then
+                    TableInsert(MergedNoRandomWeapons, v)
+                end
+            end
+            if not block_randomization and not table.HasValue(MergedNoRandomWeapons, id) then
                 local random_cvar_enabled = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_enabled", false)
                 if random_cvar_enabled then
                     local random_cvar_percent_global = GetConVar("ttt_shop_random_percent"):GetInt()

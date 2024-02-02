@@ -22,6 +22,7 @@ local StringLower = string.lower
 local TableHasValue = table.HasValue
 local TableInsert = table.insert
 local TableSort = table.sort
+local TableCopy = table.Copy
 
 -- BEM client convars and config menu
 local numColsVar = CreateClientConVar("ttt_bem_cols", 4, true, false, "Sets the number of columns in the Traitor/Detective menu's item list.")
@@ -119,6 +120,25 @@ net.Receive("TTT_BuyableWeapons", function()
     end
 end)
 
+net.Receive("TTT_RolePackBuyableWeapons", function()
+    local role = net.ReadInt(16)
+    WEPS.PrepWeaponsLists(role)
+    ResetWeaponsCache()
+
+    local roleweapons = net.ReadTable()
+    for _, v in pairs(roleweapons) do
+        UpdateWeaponList(role, WEPS.RolePackBuyableWeapons, v)
+    end
+    local excludeweapons = net.ReadTable()
+    for _, v in pairs(excludeweapons) do
+        UpdateWeaponList(role, WEPS.RolePackExcludeWeapons, v)
+    end
+    local norandomweapons = net.ReadTable()
+    for _, v in pairs(norandomweapons) do
+        UpdateWeaponList(role, WEPS.RolePackBypassRandomWeapons, v)
+    end
+end)
+
 net.Receive("TTT_RoleWeaponsLoaded", function()
     CallHook("TTTRoleWeaponsLoaded")
 end)
@@ -138,7 +158,14 @@ end)
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end
 
-function GetEquipmentForRole(role, promoted, block_randomization, block_exclusion, ignore_cache)
+function GetEquipmentForRole(role, promoted, block_randomization, block_exclusion, ignore_cache, rolepack_weps)
+    local packName = GetConVar("ttt_role_pack"):GetString()
+    if rolepack_weps == nil and #packName > 0 then
+        rolepack_weps = {Buyables = WEPS.RolePackBuyableWeapons[role], Excludes = WEPS.RolePackExcludeWeapons[role], NoRandoms = WEPS.RolePackBypassRandomWeapons[role]}
+    elseif rolepack_weps == false or #packName == 0 then
+        rolepack_weps = {Buyables = {}, Excludes = {}, NoRandoms = {}}
+    end
+
     WEPS.PrepWeaponsLists(role)
 
     -- Determine which role sync variable to use, if any
@@ -148,7 +175,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
 
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
-        GetEquipmentForRole(ROLE_TRAITOR, false, true, block_exclusion, ignore_cache)
+        GetEquipmentForRole(ROLE_TRAITOR, false, true, block_exclusion, ignore_cache, rolepack_weps)
     end
 
     local detectivesync = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
@@ -156,7 +183,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
-        GetEquipmentForRole(ROLE_DETECTIVE, false, true, block_exclusion, ignore_cache)
+        GetEquipmentForRole(ROLE_DETECTIVE, false, true, block_exclusion, ignore_cache, rolepack_weps)
     end
 
     -- Pre-load all role weapons for all the sync roles (if there are any)
@@ -164,7 +191,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
     if sync_roles and #sync_roles > 0 then
         for _, r in pairs(sync_roles) do
             if not Equipment[r] then
-                GetEquipmentForRole(r, false, true, block_exclusion, ignore_cache)
+                GetEquipmentForRole(r, false, true, block_exclusion, ignore_cache, rolepack_weps)
             end
         end
     end
@@ -176,7 +203,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
 
         -- find buyable weapons to load info from
         for _, v in pairs(weapons.GetList()) do
-            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles)
+            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles, rolepack_weps)
             if v and v.CanBuy then
                 local data = v.EquipMenuData or {}
                 local base = {
@@ -293,7 +320,13 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
         end
 
         -- Also check the extra buyable equipment
-        for _, v in ipairs(WEPS.BuyableWeapons[role]) do
+        local MergedBuyableWeapons = TableCopy(WEPS.BuyableWeapons[role])
+        for _, v in pairs(rolepack_weps.Buyables) do
+            if not TableHasValue(MergedBuyableWeapons, v) then
+                TableInsert(MergedBuyableWeapons, v)
+            end
+        end
+        for _, v in ipairs(MergedBuyableWeapons) do
             -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
             if not weapons.GetStored(v) then
                 local equip = GetEquipmentItemByName(v)
@@ -307,7 +340,13 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
 
         -- Lastly, go through the excludes to make sure things are removed that should be, if it's not blocked
         if not block_exclusion then
-            for _, v in ipairs(WEPS.ExcludeWeapons[role]) do
+            local MergedExcludeWeapons = TableCopy(WEPS.ExcludeWeapons[role])
+            for _, v in pairs(rolepack_weps.Excludes) do
+                if not TableHasValue(MergedExcludeWeapons, v) then
+                    TableInsert(MergedExcludeWeapons, v)
+                end
+            end
+            for _, v in ipairs(MergedExcludeWeapons) do
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)

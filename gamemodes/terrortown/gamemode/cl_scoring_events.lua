@@ -223,7 +223,7 @@ local function KillText(e)
    local dmg = e.dmg
 
    local trap = dmg.n
-   if #trap == 0 then trap = nil end
+   if trap and #trap == 0 then trap = nil end
 
    local weapon = GetWeaponName(dmg.g)
    if weapon then

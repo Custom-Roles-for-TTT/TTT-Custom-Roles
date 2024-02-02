@@ -36,6 +36,7 @@ util.AddNetworkString("TTT_SaveRolePack")
 util.AddNetworkString("TTT_ApplyRolePack")
 util.AddNetworkString("TTT_ClearRolePack")
 util.AddNetworkString("TTT_SendRolePackRoleList")
+util.AddNetworkString("TTT_RolePackBuyableWeapons")
 
 -- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte) - 1 (terminanting byte)
 local maxStreamLength = 65528
@@ -110,6 +111,11 @@ end)
 
 local function WriteRolePackWeapons(json)
     local jsonTable = util.JSONToTable(json)
+    if not jsonTable then
+        ErrorNoHalt("Table decoding failed!\n")
+        return
+    end
+
     local name = jsonTable.name
 
     for role, tbl in pairs(jsonTable.weapons) do
@@ -167,9 +173,9 @@ net.Receive("TTT_CreateRolePack", function()
         file.CreateDir("rolepacks")
     end
     file.CreateDir("rolepacks/" .. name)
-    file.Write("rolepacks/" .. name .. "/roles.json", "")
+    file.Write("rolepacks/" .. name .. "/roles.json", "{}")
     file.CreateDir("rolepacks/" .. name .. "/weapons")
-    file.Write("rolepacks/" .. name .. "/convars.json", "")
+    file.Write("rolepacks/" .. name .. "/convars.json", "{}")
 end)
 
 net.Receive("TTT_RenameRolePack", function()
@@ -207,6 +213,7 @@ net.Receive("TTT_SaveRolePack", function()
     if savedPack == currentPack then
         ROLEPACKS.SendRolePackRoleList()
         ROLEPACKS.ApplyRolePackConVars()
+        ROLEPACKS.FillRolePackWeaponTables()
     end
 end)
 
@@ -215,12 +222,14 @@ net.Receive("TTT_ApplyRolePack", function()
     GetConVar("ttt_role_pack"):SetString(name)
     ROLEPACKS.SendRolePackRoleList()
     ROLEPACKS.ApplyRolePackConVars()
+    ROLEPACKS.FillRolePackWeaponTables()
 end)
 
 net.Receive("TTT_ClearRolePack", function()
     GetConVar("ttt_role_pack"):SetString("")
     ROLEPACKS.SendRolePackRoleList()
     ROLEPACKS.ApplyRolePackConVars()
+    ROLEPACKS.FillRolePackWeaponTables()
 end)
 
 function ROLEPACKS.SendRolePackRoleList(ply)
@@ -244,17 +253,19 @@ function ROLEPACKS.SendRolePackRoleList(ply)
     end
 
     local roles = {}
-    for _, slot in pairs(jsonTable.slots) do
-        for _, roleslot in pairs(slot) do
-            local role = ROLE_NONE
-            for r = ROLE_INNOCENT, ROLE_MAX do
-                if ROLE_STRINGS_RAW[r] == roleslot.role then
-                    role = r
-                    break
+    if jsonTable.slots then
+        for _, slot in pairs(jsonTable.slots) do
+            for _, roleslot in pairs(slot) do
+                local role = ROLE_NONE
+                for r = ROLE_INNOCENT, ROLE_MAX do
+                    if ROLE_STRINGS_RAW[r] == roleslot.role then
+                        role = r
+                        break
+                    end
                 end
-            end
-            if role ~= ROLE_NONE and not TableHasValue(roles, role) then
-                TableInsert(roles, role)
+                if role ~= ROLE_NONE and not TableHasValue(roles, role) then
+                    TableInsert(roles, role)
+                end
             end
         end
     end
@@ -296,48 +307,50 @@ function ROLEPACKS.AssignRoles(choices)
         end
     end
 
-    local allowDuplicates = jsonTable.config.allowduplicates
+    if jsonTable.config then
+        local allowDuplicates = jsonTable.config.allowduplicates
 
-    local chosenRoles = {}
-    for _, slot in ipairs(jsonTable.slots) do
-        if #rolePackChoices <= 0 then break end
+        local chosenRoles = {}
+        for _, slot in ipairs(jsonTable.slots) do
+            if #rolePackChoices <= 0 then break end
 
-        local possibleRoles = {}
-        local skipSlot = false
-        for _, roleslot in ipairs(slot) do
-            local role = ROLE_NONE
-            for r = ROLE_INNOCENT, ROLE_MAX do
-                if ROLE_STRINGS_RAW[r] == roleslot.role then
-                    role = r
+            local possibleRoles = {}
+            local skipSlot = false
+            for _, roleslot in ipairs(slot) do
+                local role = ROLE_NONE
+                for r = ROLE_INNOCENT, ROLE_MAX do
+                    if ROLE_STRINGS_RAW[r] == roleslot.role then
+                        role = r
+                        break
+                    end
+                end
+
+                if role == ROLE_NONE then continue end
+
+                if table.HasValue(forcedRoles, role) then
+                    table.RemoveByValue(forcedRoles, role)
+                    table.insert(chosenRoles, role)
+                    skipSlot = true
                     break
+                end
+
+                if not allowDuplicates and table.HasValue(chosenRoles, role) then continue end
+
+                for _ = 1, roleslot.weight do
+                    table.insert(possibleRoles, role)
                 end
             end
 
-            if role == ROLE_NONE then continue end
+            if skipSlot then continue end
 
-            if table.HasValue(forcedRoles, role) then
-                table.RemoveByValue(forcedRoles, role)
-                table.insert(chosenRoles, role)
-                skipSlot = true
-                break
-            end
+            local ply = table.remove(rolePackChoices)
+            if #possibleRoles <= 0 then continue end
 
-            if not allowDuplicates and table.HasValue(chosenRoles, role) then continue end
-
-            for _ = 1, roleslot.weight do
-                table.insert(possibleRoles, role)
-            end
+            table.Shuffle(possibleRoles)
+            local role = table.remove(possibleRoles)
+            ply:SetRole(role)
+            table.insert(chosenRoles, role)
         end
-
-        if skipSlot then continue end
-
-        local ply = table.remove(rolePackChoices)
-        if #possibleRoles <= 0 then continue end
-
-        table.Shuffle(possibleRoles)
-        local role = table.remove(possibleRoles)
-        ply:SetRole(role)
-        table.insert(chosenRoles, role)
     end
 
     ROLEPACKS.SendRolePackRoleList()
@@ -367,18 +380,20 @@ function ROLEPACKS.ApplyRolePackConVars()
     end
 
     local cvarsToChange = {}
-    for _, v in ipairs(jsonTable.convars) do
-        if not v.cvar or not v.value or v.cvar == "ttt_role_pack" then continue end
-        local cvar = GetConVar(v.cvar)
-        if cvar == nil then
-            v.invalid = true
-            continue
-        else
-            v.invalid = false
-            local oldValue = cvar:GetString()
-            local newValue = v.value
-            if oldValue ~= newValue then
-                cvarsToChange[v.cvar] = {oldValue = oldValue, newValue = newValue}
+    if jsonTable.convars then
+        for _, v in ipairs(jsonTable.convars) do
+            if not v.cvar or not v.value or v.cvar == "ttt_role_pack" then continue end
+            local cvar = GetConVar(v.cvar)
+            if cvar == nil then
+                v.invalid = true
+                continue
+            else
+                v.invalid = false
+                local oldValue = cvar:GetString()
+                local newValue = v.value
+                if oldValue ~= newValue then
+                    cvarsToChange[v.cvar] = {oldValue = oldValue, newValue = newValue}
+                end
             end
         end
     end
@@ -396,9 +411,53 @@ function ROLEPACKS.ApplyRolePackConVars()
     end
 end
 
+function ROLEPACKS.FillRolePackWeaponTables()
+    local rolePackName = GetConVar("ttt_role_pack"):GetString()
+    if #rolePackName == 0 then return end
+
+    local handled = false
+    for id, name in pairs(ROLE_STRINGS_RAW) do
+        WEPS.PrepWeaponsLists(id)
+
+        local roleBuyables = {}
+        local roleExcludes = {}
+        local roleNoRandoms = {}
+
+        local roleJson = file.Read("rolepacks/" .. rolePackName .. "/weapons/" .. name .. ".json", "DATA")
+        if roleJson then
+            local roleData = util.JSONToTable(roleJson)
+            if roleData then
+                roleBuyables = roleData.Buyables or {}
+                roleExcludes = roleData.Excludes or {}
+                roleNoRandoms = roleData.NoRandoms or {}
+            end
+        end
+
+        -- Copy the loaded table into the global table for this role
+        WEPS.RolePackBuyableWeapons[id] = roleBuyables
+        WEPS.RolePackExcludeWeapons[id] = roleExcludes
+        WEPS.RolePackBypassRandomWeapons[id] = roleNoRandoms
+
+        if #roleBuyables > 0 or #roleExcludes > 0 or #roleNoRandoms > 0 then
+            net.Start("TTT_RolePackBuyableWeapons")
+            net.WriteInt(id, 16)
+            net.WriteTable(roleBuyables)
+            net.WriteTable(roleExcludes)
+            net.WriteTable(roleNoRandoms)
+            net.Broadcast()
+            handled = true
+        end
+    end
+
+    -- Send this once if the rolepack weapons feature wasn't used (which resets the cache on its own)
+    if not handled then
+        net.Start("TTT_ResetBuyableWeaponsCache")
+        net.Broadcast()
+    end
+end
+
 cvars.AddChangeCallback("ttt_role_pack", function(cvar, old, new)
     ROLEPACKS.SendRolePackRoleList()
     ROLEPACKS.ApplyRolePackConVars()
+    ROLEPACKS.FillRolePackWeaponTables()
 end)
-
--- TODO: Update GetEquipmentForRole, HandleCanBuyOverrides and UpdateWeaponLists to handle rolepack weapons

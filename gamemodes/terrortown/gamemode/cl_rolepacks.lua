@@ -320,9 +320,12 @@ local function BuildRoleConfig(dsheet, packName, tab)
 
     local function UpdateRolePackRoleUI(jsonTable)
         dslotlist:Clear()
-        dallowduplicates:SetChecked(jsonTable.config.allowduplicates)
-        for _, slot in pairs(jsonTable.slots) do
-            CreateSlot(slot)
+        if jsonTable.config then
+            dallowduplicates:SetChecked(jsonTable.config.allowduplicates)
+
+            for _, slot in pairs(jsonTable.slots) do
+                CreateSlot(slot)
+            end
         end
         UpdateSlotLabels()
     end
@@ -431,6 +434,8 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dfields.desc:SetFont("DermaDefaultBold")
     dfields.desc:SetContentAlignment(7)
     dfields.desc:MoveBelow(dfields.type, 1)
+
+    local weaponChanges = {name = "", weapons = {}}
 
     local function FillEquipmentList(itemlist)
         dlist:Clear()
@@ -547,7 +552,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dsearch.OnValueChange = function(box, value)
         if role <= ROLE_NONE then return end
 
-        local roleitems = GetEquipmentForRole(role, false, true, true, true)
+        local roleitems = GetEquipmentForRole(role, false, true, true, true, weaponChanges.weapons[role] or false)
         local filtered = {}
         for _, v in pairs(roleitems) do
             if v and (DoesValueMatch(v, "name", value) or DoesValueMatch(v, "desc", value)) then
@@ -620,30 +625,29 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         -- Update checkbox state based on tables
         if ItemIsWeapon(item) then
             local weap_class = StringLower(item.id)
-            if WEPS.BuyableWeapons[save_role] and table.HasValue(WEPS.BuyableWeapons[save_role], weap_class) then
+            if weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].Buyables, weap_class) then
                 dradioinclude:SetValue(true)
-            elseif WEPS.ExcludeWeapons[save_role] and table.HasValue(WEPS.ExcludeWeapons[save_role], weap_class) then
+            elseif weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].Excludes, weap_class) then
                 dradioexclude:SetValue(true)
             else
                 dradionone:SetValue(true)
             end
 
-            dradionorandom:SetValue(WEPS.BypassRandomWeapons[save_role] and table.HasValue(WEPS.BypassRandomWeapons[save_role], weap_class))
+            dradionorandom:SetValue(weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].NoRandoms, weap_class))
         else
             local name = StringLower(item.name)
-            if WEPS.BuyableWeapons[save_role] and table.HasValue(WEPS.BuyableWeapons[save_role], name) then
+            if weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].Buyables, name) then
                 dradioinclude:SetValue(true)
-            elseif WEPS.ExcludeWeapons[save_role] and table.HasValue(WEPS.ExcludeWeapons[save_role], name) then
+            elseif weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].Excludes, name) then
                 dradioexclude:SetValue(true)
             else
                 dradionone:SetValue(true)
             end
 
-            dradionorandom:SetValue(WEPS.BypassRandomWeapons[save_role] and table.HasValue(WEPS.BypassRandomWeapons[save_role], name))
+            dradionorandom:SetValue(weaponChanges[save_role] and table.HasValue(weaponChanges[save_role].NoRandoms, name))
         end
     end
 
-    local weaponChanges = {name = "", weapons = {}}
     local function CacheWeaponChange()
         if save_role < 0 or save_role > ROLE_MAX then return end
         local pnl = dlist.SelectedPanel
@@ -759,7 +763,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             if #searchText then
                 dsearch.OnValueChange(dsearch, searchText)
             else
-                FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
+                FillEquipmentList(GetEquipmentForRole(role, false, true, true, true, weaponChanges.weapons[role] or false))
             end
         end
     end
@@ -774,7 +778,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     end
 
     if role > ROLE_NONE then
-        FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
+        FillEquipmentList(GetEquipmentForRole(role, false, true, true, true, weaponChanges.weapons[role] or false))
     end
 
     local function ReadRolePackWeaponTables(name)
@@ -788,7 +792,12 @@ local function BuildWeaponConfig(dsheet, packName, tab)
 
     local function UpdateRolePackWeaponUI(jsonTable, roleByte)
         weaponChanges.weapons[roleByte] = jsonTable
-        -- TODO: Show role pack weapon changes in rolepack UI
+        if roleByte == role then
+            LocalPlayer():ConCommand("ttt_reset_weapons_cache")
+            timer.Simple(0.25, function()
+                dsearch.OnValueChange(dsearch, dsearch:GetText())
+            end)
+        end
     end
     ReceiveStreamFromServer("TTT_ReadRolePackWeapons", UpdateRolePackWeaponUI)
 
