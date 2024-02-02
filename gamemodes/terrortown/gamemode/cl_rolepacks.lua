@@ -650,10 +650,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         if not pnl or not pnl.item then return end
         local choice = pnl.item
 
-        local includeSelected = dradioinclude:GetChecked()
-        local excludeSelected = dradioexclude:GetChecked()
-        local noRandomSelected = dradionorandom:GetChecked()
-
         local id
         if ItemIsWeapon(choice) then
             id = choice.id
@@ -662,13 +658,25 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         end
 
         if not weaponChanges.weapons[save_role] then
-            weaponChanges.weapons[save_role] = {}
+            weaponChanges.weapons[save_role] = {Buyables = {}, Excludes = {}, NoRandoms = {}}
         end
 
-        if not includeSelected and not excludeSelected and not noRandomSelected then
-            weaponChanges.weapons[save_role][id] = nil
+        if dradioinclude:GetChecked() then
+            TableInsert(weaponChanges.weapons[save_role].Buyables, id)
         else
-            weaponChanges.weapons[save_role][id] = {include = includeSelected, exclude = excludeSelected, noRandom = noRandomSelected}
+            TableRemoveByValue(weaponChanges.weapons[save_role].Buyables, id)
+        end
+
+        if dradioexclude:GetChecked() then
+            TableInsert(weaponChanges.weapons[save_role].Excludes, id)
+        else
+            TableRemoveByValue(weaponChanges.weapons[save_role].Excludes, id)
+        end
+
+        if dradionorandom:GetChecked() then
+            TableInsert(weaponChanges.weapons[save_role].NoRandoms, id)
+        else
+            TableRemoveByValue(weaponChanges.weapons[save_role].NoRandoms, id)
         end
 
         dweapons.unsavedChanges = true
@@ -779,29 +787,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     end
 
     local function UpdateRolePackWeaponUI(jsonTable, roleByte)
-        local roleTable = {}
-        for _, wep in ipairs(jsonTable.Buyables) do
-            if not roleTable[wep] then
-                roleTable[wep] = {include = true, exclude = false, noRandom = false}
-            else
-                roleTable[wep].include = true
-            end
-        end
-        for _, wep in ipairs(jsonTable.Excludes) do
-            if not roleTable[wep] then
-                roleTable[wep] = {include = false, exclude = true, noRandom = false}
-            else
-                roleTable[wep].exclude = true
-            end
-        end
-        for _, wep in ipairs(jsonTable.NoRandoms) do
-            if not roleTable[wep] then
-                roleTable[wep] = {include = false, exclude = false, noRandom = true}
-            else
-                roleTable[wep].noRandom = true
-            end
-        end
-        weaponChanges.weapons[roleByte] = roleTable
+        weaponChanges.weapons[roleByte] = jsonTable
         -- TODO: Show role pack weapon changes in rolepack UI
     end
     ReceiveStreamFromServer("TTT_ReadRolePackWeapons", UpdateRolePackWeaponUI)

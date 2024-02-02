@@ -109,60 +109,11 @@ net.Receive("TTT_RequestRolePackRoles", function(len, ply)
 end)
 
 local function WriteRolePackWeapons(json)
-        local jsonTable = util.JSONToTable(json)
+    local jsonTable = util.JSONToTable(json)
     local name = jsonTable.name
 
     for role, tbl in pairs(jsonTable.weapons) do
-        local roleJsonTable = {
-            Buyables = {},
-            Excludes = {},
-            NoRandoms = {}
-        }
-
-        for id, options in pairs(tbl) do
-            local includeSelected = options.include
-            local excludeSelected = options.exclude
-            local noRandomSelected = options.noRandom
-
-            -- Update tables
-            local included = table.HasValue(roleJsonTable.Buyables, id)
-            if not includeSelected then
-                if included then
-                    -- Remove the entry from the table
-                    table.RemoveByValue(roleJsonTable.Buyables, id)
-                    -- Make the table have sequential keys again
-                    roleJsonTable.Buyables = table.ClearKeys(roleJsonTable.Buyables)
-                end
-            elseif not included then
-                table.insert(roleJsonTable.Buyables, id)
-            end
-
-            local excluded = table.HasValue(roleJsonTable.Excludes, id)
-            if not excludeSelected then
-                if excluded then
-                    -- Remove the entry from the table
-                    table.RemoveByValue(roleJsonTable.Excludes, id)
-                    -- Make the table have sequential keys again
-                    roleJsonTable.Excludes = table.ClearKeys(roleJsonTable.Excludes)
-                end
-            elseif not excluded then
-                table.insert(roleJsonTable.Excludes, id)
-            end
-
-            local noRandom = table.HasValue(roleJsonTable.NoRandoms, id)
-            if not noRandomSelected then
-                if noRandom then
-                    -- Remove the entry from the table
-                    table.RemoveByValue(roleJsonTable.NoRandoms, id)
-                    -- Make the table have sequential keys again
-                    roleJsonTable.NoRandoms = table.ClearKeys(roleJsonTable.NoRandoms)
-                end
-            elseif not noRandom then
-                table.insert(roleJsonTable.NoRandoms, id)
-            end
-        end
-
-        local roleJson = util.TableToJSON(roleJsonTable)
+        local roleJson = util.TableToJSON(tbl)
         if not roleJson then
             ErrorNoHalt("Table encoding failed!\n")
             return
