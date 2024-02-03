@@ -180,8 +180,8 @@ hook.Add("TTTScoringSummaryRender", "Sponge_TTTScoringSummaryRender", function(p
     if ply:IsSponge() then
         local spongeKiller = ply:GetNWString("SpongeKiller", "")
         local spongeProtecting = ply:GetNWString("SpongeProtecting", "")
-        if spongeKiller ~= "" then
-            if spongeProtecting ~= "" then
+        if #spongeKiller > 0 then
+            if #spongeProtecting > 0 then
                 return roleFileName, groupingRole, roleColor, name, spongeProtecting, LANG.GetParamTranslation("score_sponge_damaging", {attacker = spongeKiller})
             end
             return roleFileName, groupingRole, roleColor, name, spongeKiller, LANG.GetTranslation("score_sponge_killedby")

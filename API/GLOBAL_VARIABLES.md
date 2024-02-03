@@ -96,15 +96,15 @@ Lookup table for whether a role is on the monster team.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-### ROLE_EXTERNAL_START
-The role number where the externally-loaded roles start.\
-*Realm:* Client and Server\
-*Added in:* 1.0.10
-
 ### ROLE_DATA_EXTERNAL
 Table of definition data for each external role.\
 *Realm:* Client and Server\
 *Added in:* 1.4.9
+
+### ROLE_EXTERNAL_START
+The role number where the externally-loaded roles start.\
+*Realm:* Client and Server\
+*Added in:* 1.0.10
 
 ### ROLE_NONE
 Updated to be -1 so players who have not been given a role can be identified.\
@@ -116,8 +116,8 @@ The maximum role number.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-### ROLE_SPRITE_ICON_MATERIALS
-Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `sprite` (32x32) icons for each role by their role short string.\
+### ROLE_SCORE_ICON_MATERIALS
+Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `score` icons for each role by their role short string.\
 *Realm:* Client and Server\
 *Added in:* 1.6.3
 

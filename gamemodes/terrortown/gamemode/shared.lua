@@ -9,6 +9,7 @@ local string = string
 local table = table
 
 local FileExists = file.Exists
+local FileFind = file.Find
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
@@ -222,6 +223,8 @@ AddRoleAssociations(DETECTIVE_LIKE_ROLES, {ROLE_DEPUTY, ROLE_IMPERSONATOR})
 
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
+
+ROLE_PACK_ROLES = {}
 
 -- Traitors get this ability by default
 TRAITOR_BUTTON_ROLES = {}
@@ -785,11 +788,11 @@ end
 function UpdateRoleStrings()
     for role = 0, ROLE_MAX do
         local name = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name"):GetString()
-        if name ~= "" then
+        if #name > 0 then
             ROLE_STRINGS[role] = name
 
             local plural = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural"):GetString()
-            if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
+            if #plural == 0 then -- Fallback if no plural is given. Does NOT handle all cases properly
                 local lastChar = StringLower(StringSub(name, #name, #name))
                 if lastChar == "s" then
                     ROLE_STRINGS_PLURAL[role] = name .. "es"
@@ -803,7 +806,7 @@ function UpdateRoleStrings()
             end
 
             local article = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article"):GetString()
-            if article == "" then -- Fallback if no article is given. Does NOT handle all cases properly
+            if #article == 0 then -- Fallback if no article is given. Does NOT handle all cases properly
                 if StartsWithVowel(name) then
                     ROLE_STRINGS_EXT[role] = "an " .. name
                 else
@@ -1105,13 +1108,13 @@ function RegisterRole(tbl)
 end
 
 local function AddRoleFiles(root)
-    local rootfiles, dirs = file.Find(root .. "*", "LUA")
+    local rootfiles, dirs = FileFind(root .. "*", "LUA")
     for _, dir in ipairs(dirs) do
         local clientFiles = {}
         local sharedFiles = {}
         local serverFiles = {}
         -- Partition the files by location so we can load shared first
-        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
+        local files, _ = FileFind(root .. dir .. "/*.lua", "LUA")
         for _, fil in ipairs(files) do
             if StringFind(fil, "cl_") then
                 table.insert(clientFiles, fil)

@@ -4,6 +4,9 @@
 **Released:**
 
 ### Additions
+- Added `ttt_rolepacks` command which opens the new role pack UI
+  - Role packs allow for greater control over how roles spawn, as well as what weapons are available in role shops and any addition ConVar configuration
+  - Multiple role packs can be configured independently but only one role pack can apply at a time
 - Added convar, `ttt_marshal_prevent_deputy`, to control whether to only spawn the marshal when there isn't already a deputy or impersonator in the round (defaults to enabled to match prior behavior).
 - Added ability for jester roles to have a device that converts them to be a sponge
   - Global announcement is made when a player starts using the device
@@ -29,6 +32,11 @@
 - Added `TTTCanUseTraitorVoice` hook which allows overriding who can use traitor voice, both speaking and listening
 - Added `TTTTeamVoiceChatTargets` hook which allows team voice state messages to be blocked or have their recipients changed
 - Added cheat-only `ttt_team_chat_as_player` command for sending role chat messages as another player
+- Added `plymeta:ForceRoleNextRound`, `plymeta:GetForcedRole`, and `plymeta:ClearForcedRole` methods to allow forcing player's roles in the next round
+- Added `util.CanRoleSpawnNaturally` method to check if a role can spawn in the round naturally (i.e. because it is enabled via ConVars or role packs)
+- Added `util.GetRoleIconPath` to get the path to a role's icon file
+- Added optional `ply` parameter to `WEPS.HandleRoleEquipment` to allow sending roleweapons data to specific players
+- Added optional `rolepack_weps` parameter to `WEPS.HandleCanBuyOverrides` to allow changing behavior of the CanBuy overrides with regards to configured rolepack weapons
 
 ## 2.0.6 (Beta)
 **Released: January 14th, 2024**

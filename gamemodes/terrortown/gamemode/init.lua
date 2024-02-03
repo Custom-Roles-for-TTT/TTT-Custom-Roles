@@ -31,6 +31,7 @@ AddCSLuaFile("cl_disguise.lua")
 AddCSLuaFile("cl_transfer.lua")
 AddCSLuaFile("cl_search.lua")
 AddCSLuaFile("cl_targetid.lua")
+AddCSLuaFile("cl_rolepacks.lua")
 AddCSLuaFile("cl_roleweapons.lua")
 AddCSLuaFile("vgui/ColoredBox.lua")
 AddCSLuaFile("vgui/SimpleIcon.lua")
@@ -67,6 +68,7 @@ include("hitmarkers.lua")
 include("deathnotify.lua")
 include("roleweapons.lua")
 include("sprint_shd.lua")
+include("rolepacks.lua")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local concommand = concommand
@@ -148,42 +150,17 @@ for role = 0, ROLE_MAX do
     CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health)
 
     -- Body icon
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/icon_" .. shortstring .. ".vmt", "GAME") then
-        resource.AddFile("materials/vgui/ttt/roles/" .. shortstring .. "/icon_" .. shortstring .. ".vmt")
-    elseif file.Exists("materials/vgui/ttt/icon_" .. shortstring .. ".vmt", "GAME") then
-        resource.AddFile("materials/vgui/ttt/icon_" .. shortstring .. ".vmt")
-    end
+    resource.AddFile(util.GetRoleIconPath(shortstring, "icon", "vmt"))
 
     -- Round summary icon
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/score_" .. shortstring .. ".png", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/score_" .. shortstring .. ".png")
-    elseif file.Exists("materials/vgui/ttt/score_" .. shortstring .. ".png", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/score_" .. shortstring .. ".png")
-    end
+    resource.AddSingleFile(util.GetRoleIconPath(shortstring, "score", "png"))
 
     -- Scoreboard icon
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/tab_" .. shortstring .. ".png", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/tab_" .. shortstring .. ".png")
-    elseif file.Exists("materials/vgui/ttt/tab_" .. shortstring .. ".png", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/tab_" .. shortstring .. ".png")
-    end
+    resource.AddSingleFile(util.GetRoleIconPath(shortstring, "tab", "png"))
 
     -- Target ID icons
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vmt", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vmt")
-    elseif file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vmt", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. ".vmt")
-    end
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. "_noz.vmt", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. "_noz.vmt")
-    elseif file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. "_noz.vmt", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. "_noz.vmt")
-    end
-    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vtf", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vtf")
-    elseif file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vtf", "GAME") then
-        resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. ".vtf")
-    end
+    resource.AddFile(util.GetRoleIconPath(shortstring, "sprite", "vmt"))
+    resource.AddSingleFile(util.GetRoleIconPath(shortstring, "sprite", "vtf", StringFormat("%s_noz", shortstring)))
 end
 
 -- Jester role properties
@@ -682,7 +659,7 @@ function PrepareRound()
     WEPS.ClearRetryTimers()
 
     -- New look. Random if no forced model set.
-    GAMEMODE.playermodel = GAMEMODE.force_plymodel == "" and GetRandomPlayerModel() or GAMEMODE.force_plymodel
+    GAMEMODE.playermodel = #GAMEMODE.force_plymodel == 0 and GetRandomPlayerModel() or GAMEMODE.force_plymodel
     GAMEMODE.playercolor = RunHook("TTTPlayerColor", GAMEMODE.playermodel)
 
     if CheckForAbort() then return end
@@ -1290,6 +1267,15 @@ function SelectRoles()
     local prev_roles_copy = table.Copy(prev_roles)
 
     CallHook("TTTSelectRoles", nil, choices_copy, prev_roles_copy)
+
+    ROLEPACKS.AssignRoles(choices)
+
+    for _, v in ipairs(choices) do
+        if v.forcedRole and v.forcedRole ~= ROLE_NONE then
+            v:SetRole(v.forcedRole)
+            v:ClearForcedRole()
+        end
+    end
 
     local forcedTraitorCount = 0
     local forcedSpecialTraitorCount = 0

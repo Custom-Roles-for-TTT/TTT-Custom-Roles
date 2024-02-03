@@ -20,10 +20,10 @@ end
 
 hook.Add("TTTRoleSpawnsArtificially", "Zombie_TTTRoleSpawnsArtificially", function(role)
     if role == ROLE_ZOMBIE then
-        local madScientistEnabled = GetConVar("ttt_madscientist_enabled"):GetBool() and
+        local madScientistEnabled = util.CanRoleSpawn(ROLE_MADSCIENTIST) and
             ((INDEPENDENT_ROLES[ROLE_ZOMBIE] and INDEPENDENT_ROLES[ROLE_MADSCIENTIST])
             or (MONSTER_ROLES[ROLE_ZOMBIE] and MONSTER_ROLES[ROLE_MADSCIENTIST]))
-        if GetConVar("ttt_infected_enabled"):GetBool() or madScientistEnabled then
+        if util.CanRoleSpawn(ROLE_INFECTED) or madScientistEnabled then
             return true
         end
     end

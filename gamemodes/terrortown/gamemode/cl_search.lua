@@ -1,6 +1,5 @@
 -- Body search popup
 
-local file = file
 local hook = hook
 local net = net
 local pairs = pairs
@@ -99,11 +98,7 @@ local function IconForInfoType(t, data)
     -- ugly special casing for weapons, because they are more likely to be
     -- customized and hence need more freedom in their icon filename
     if t == "role" then
-        if file.Exists("materials/vgui/ttt/roles/" .. mat .. "/icon_" .. mat .. ".vtf", "GAME") then
-            return "vgui/ttt/roles/" .. mat .. "/icon_" .. mat
-        else
-            return "vgui/ttt/icon_" .. mat
-        end
+        return util.GetRoleIconPath(mat, "icon", "vtf")
     elseif t ~= "wep" then
         return base .. mat
     else
@@ -156,7 +151,7 @@ function PreprocSearch(raw)
                 search[t].p = 2
             end
         elseif t == "words" then
-            if d ~= "" then
+            if #d > 0 then
                 -- only append "--" if there's no ending interpunction
                 local final = string.match(d, "[\\.\\!\\?]$") ~= nil
                 search[t].text = PT("search_words", { lastwords = d .. (final and "" or "--.") })
@@ -262,7 +257,7 @@ function PreprocSearch(raw)
         end
 
         -- anything matching a type but not given a text should be removed
-        if search[t] and search[t].text == "" then
+        if search[t] and #search[t].text == 0 then
             search[t] = nil
         end
 
@@ -630,7 +625,7 @@ local function ReceiveRagdollSearch()
     -- last words
     --
     local words = net.ReadString()
-    search.words = (words ~= "") and words or nil
+    search.words = (#words > 0) and words or nil
 
     hook.Call("TTTBodySearchEquipment", nil, search, eq)
 

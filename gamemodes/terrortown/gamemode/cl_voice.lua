@@ -154,7 +154,7 @@ function ChatInterrupt()
     local last_seen = IsValid(client.last_id) and client.last_id:EntIndex() or 0
 
     local last_words = "."
-    if last_chat == "" then
+    if #last_chat == 0 then
         if RADIO.LastRadio.t > CurTime() - 2 then
             last_words = RADIO.LastRadio.msg
         end
@@ -313,7 +313,7 @@ function RADIO:GetTargetType()
         else
             return ent, false
         end
-    elseif ent:GetClass() == "prop_ragdoll" and CORPSE.GetPlayerNick(ent, "") ~= "" then
+    elseif ent:GetClass() == "prop_ragdoll" and #CORPSE.GetPlayerNick(ent, "") > 0 then
         if DetectiveMode() and not CORPSE.GetFound(ent, false) then
             return "quick_corpse", true
         else

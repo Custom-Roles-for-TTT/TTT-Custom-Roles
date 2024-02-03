@@ -73,6 +73,7 @@ include("cl_scoring_events.lua")
 include("cl_popups.lua")
 include("cl_equip.lua")
 include("cl_voice.lua")
+include("cl_rolepacks.lua")
 include("cl_roleweapons.lua")
 include("cl_hitmarkers.lua")
 include("cl_deathnotify.lua")
@@ -323,7 +324,7 @@ function GM:CleanUpMap()
     -- Ragdolls sometimes stay around on clients. Deleting them can create issues
     -- so all we can do is try to hide them.
     for _, ent in ipairs(ents.FindByClass("prop_ragdoll")) do
-        if IsValid(ent) and CORPSE.GetPlayerNick(ent, "") ~= "" then
+        if IsValid(ent) and #CORPSE.GetPlayerNick(ent, "") > 0 then
             ent:SetNoDraw(true)
             ent:SetSolid(SOLID_NONE)
             ent:SetColor(Color(0, 0, 0, 0))

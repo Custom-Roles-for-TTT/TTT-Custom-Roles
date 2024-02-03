@@ -72,6 +72,13 @@
             <li><em>activeOnly</em> - Whether the player must also be active (Defaults to <code>false</code>)</li>
         </ul>
 
+        <h3><a id="plymetaclearforcedrole" href="#plymetaclearforcedrole">plymeta:ClearForcedRole()</a></h3>
+        <p>
+            Clears the player's forced role if one was set with <code>plymeta:ForceRoleNextRound(role)</code>.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.0.7
+        </p>
+
         <h3><a id="plymetadrunkjoinlosingteam" href="#plymetadrunkjoinlosingteam">plymeta:DrunkJoinLosingTeam()</a></h3>
         <p>
             Attempts to find the losing team and calls <code>self:SoberDrunk(team)</code> using the losing team as the <em>team</em> parameter.<br>
@@ -88,6 +95,17 @@
         </p>
         <ul>
             <li><em>role</em> - Which role to set the Drunk to (see ROLE_* global enumeration)</li>
+        </ul>
+
+        <h3><a id="plymetaforcerolenextroundrole" href="#plymetaforcerolenextroundrole">plymeta:ForceRoleNextRound(role)</a></h3>
+        <p>
+            Forces a player to spawn as the specified role next round. Returns <code>true</code> if successful, <code>false</code> if that player has already been forced to be another role.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.0.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - Which role to force the player to be next round</li>
         </ul>
 
         <h3><a id="plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162" href="#plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162">plymeta:GetAvoidDetective()/plymeta:ShouldAvoidDetective() (Added in 1.6.2)</a></h3>
@@ -117,6 +135,13 @@
             <li><em>display_role</em> - The role that should be displayed for the player.</li>
             <li><em>changed</em> - Whether the return value was changed and should be hidden</li>
         </ul>
+
+        <h3><a id="plymetagetforcedrole" href="#plymetagetforcedrole">plymeta:GetForcedRole()</a></h3>
+        <p>
+            Gets the player's forced role if one was set with <code>plymeta:ForceRoleNextRound(role)</code>. Returns <code>false</code> otherwise.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.0.7
+        </p>
 
         <h3><a id="plymetagetheight" href="#plymetagetheight">plymeta:GetHeight()</a></h3>
         <p>

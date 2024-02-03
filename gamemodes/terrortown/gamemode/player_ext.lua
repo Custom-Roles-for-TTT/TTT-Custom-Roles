@@ -615,6 +615,25 @@ net.Receive("TTT_QueueMessage", function(len, ply)
     ply:QueueMessage(message_type, message, time)
 end)
 
+function plymeta:ForceRoleNextRound(role)
+    if self.forcedRole and self.forcedRole ~= ROLE_NONE then
+        return false
+    end
+    self.forcedRole = role
+    return true
+end
+
+function plymeta:GetForcedRole()
+    if self.forcedRole and self.forcedRole ~= ROLE_NONE then
+        return self.forcedRole
+    end
+    return false
+end
+
+function plymeta:ClearForcedRole()
+    self.forcedRole = ROLE_NONE
+end
+
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
 hook.Add("TTTPrepareRound", "PostLoadOverride", function()
     -- Compatibility with Dead Ringer (810154456)

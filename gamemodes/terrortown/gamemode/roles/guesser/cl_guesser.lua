@@ -86,7 +86,7 @@ hook.Add("TTTScoringSummaryRender", "Guesser_TTTScoringSummaryRender", function(
 
     if ply:IsGuesser() then
         local guessedBy = ply:GetNWString("TTTGuesserGuessedBy", "")
-        if guessedBy ~= "" then
+        if #guessedBy > 0 then
             return roleFileName, groupingRole, roleColor, name, guessedBy, LANG.GetTranslation("score_guesser_guessed_by")
         end
     end

@@ -73,7 +73,7 @@ if SERVER then
 
                     if GetConVar("ttt_phantom_haunt_saves_lover"):GetBool() then
                         local loverSID = v:GetNWString("TTTCupidLover", "")
-                        if loverSID ~= "" then
+                        if #loverSID > 0 then
                             local lover = player.GetBySteamID64(loverSID)
                             lover:PrintMessage(HUD_PRINTTALK, "Your lover was exorcised from their host!")
                         end
