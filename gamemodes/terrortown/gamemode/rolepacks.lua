@@ -512,7 +512,7 @@ function ROLEPACKS.FillRolePackWeaponTables()
         WEPS.RolePackExcludeWeapons[id] = roleExcludes
         WEPS.RolePackBypassRandomWeapons[id] = roleNoRandoms
 
-        if #roleBuyables > 0 or #roleExcludes > 0 or #roleNoRandoms > 0 then     
+        if #roleBuyables > 0 or #roleExcludes > 0 or #roleNoRandoms > 0 then
             net.Start("TTT_RolePackBuyableWeapons")
             net.WriteInt(id, 16)
             net.WriteTable(roleBuyables)
