@@ -292,13 +292,13 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
         end
 
         -- Also check the extra buyable equipment
-        local MergedBuyableWeapons = TableCopy(WEPS.BuyableWeapons[role])
+        local mergedBuyableWeapons = TableCopy(WEPS.BuyableWeapons[role])
         for _, v in pairs(rolepack_weps.Buyables) do
-            if not TableHasValue(MergedBuyableWeapons, v) then
-                TableInsert(MergedBuyableWeapons, v)
+            if not TableHasValue(mergedBuyableWeapons, v) then
+                TableInsert(mergedBuyableWeapons, v)
             end
         end
-        for _, v in ipairs(MergedBuyableWeapons) do
+        for _, v in ipairs(mergedBuyableWeapons) do
             -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
             if not weapons.GetStored(v) then
                 local equip = GetEquipmentItemByName(v)
@@ -312,13 +312,13 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
 
         -- Lastly, go through the excludes to make sure things are removed that should be, if it's not blocked
         if not block_exclusion then
-            local MergedExcludeWeapons = TableCopy(WEPS.ExcludeWeapons[role])
+            local mergedExcludeWeapons = TableCopy(WEPS.ExcludeWeapons[role])
             for _, v in pairs(rolepack_weps.Excludes) do
-                if not TableHasValue(MergedExcludeWeapons, v) then
-                    TableInsert(MergedExcludeWeapons, v)
+                if not TableHasValue(mergedExcludeWeapons, v) then
+                    TableInsert(mergedExcludeWeapons, v)
                 end
             end
-            for _, v in ipairs(MergedExcludeWeapons) do
+            for _, v in ipairs(mergedExcludeWeapons) do
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)
