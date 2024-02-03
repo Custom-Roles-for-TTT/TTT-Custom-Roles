@@ -53,6 +53,7 @@ function GM:PlayerInitialSpawn(ply)
     end
 
     ROLEPACKS.SendRolePackRoleList(ply)
+    ROLEPACKS.SendRolePackWeapons(ply)
 end
 
 function GM:NetworkIDValidated(name, steamid)

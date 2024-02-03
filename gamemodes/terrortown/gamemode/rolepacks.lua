@@ -336,6 +336,26 @@ function ROLEPACKS.SendRolePackRoleList(ply)
     end
 end
 
+function ROLEPACKS.SendRolePackWeapons(ply)
+    local rolePackName = GetConVar("ttt_role_pack"):GetString()
+    if #rolePackName == 0 then return end
+
+    for id, _ in pairs(ROLE_STRINGS_RAW) do
+        local roleBuyables = WEPS.RolePackBuyableWeapons[id]
+        local roleExcludes = WEPS.RolePackExcludeWeapons[id]
+        local roleNoRandoms = WEPS.RolePackBypassRandomWeapons[id]
+
+        if #roleBuyables > 0 or #roleExcludes > 0 or #roleNoRandoms > 0 then
+            net.Start("TTT_RolePackBuyableWeapons")
+            net.WriteInt(id, 16)
+            net.WriteTable(roleBuyables)
+            net.WriteTable(roleExcludes)
+            net.WriteTable(roleNoRandoms)
+            net.Send(ply)
+        end
+    end
+end
+
 function ROLEPACKS.AssignRoles(choices)
     local rolePackName = GetConVar("ttt_role_pack"):GetString()
     if #rolePackName == 0 then return end
@@ -492,7 +512,7 @@ function ROLEPACKS.FillRolePackWeaponTables()
         WEPS.RolePackExcludeWeapons[id] = roleExcludes
         WEPS.RolePackBypassRandomWeapons[id] = roleNoRandoms
 
-        if #roleBuyables > 0 or #roleExcludes > 0 or #roleNoRandoms > 0 then
+        if #roleBuyables > 0 or #roleExcludes > 0 or #roleNoRandoms > 0 then     
             net.Start("TTT_RolePackBuyableWeapons")
             net.WriteInt(id, 16)
             net.WriteTable(roleBuyables)
