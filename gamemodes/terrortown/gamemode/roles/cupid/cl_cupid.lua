@@ -312,7 +312,7 @@ end)
 AddHook("Think", "Cupid_Highlight_Think", function()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
-    local lover = client:GetNWString("TTTCupidLover")
+    local lover = client:GetNWString("TTTCupidLover", "")
     if lover_vision and #lover > 0 then
         if not vision_enabled then
             EnableLoverHighlights()
