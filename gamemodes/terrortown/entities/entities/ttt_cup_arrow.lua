@@ -123,12 +123,13 @@ function ENT:Touch(ent)
                 owner:QueueMessage(MSG_PRINTCENTER, "You cannot make yourself fall in love with someone.")
             else
                 local target1 = owner:GetNWString("TTTCupidTarget1", "")
-                if target1 == "" then
+                local target2 = owner:GetNWString("TTTCupidTarget2", "")
+                if #target1 == 0 then
                     ent:SetNWString("TTTCupidShooter", owner:SteamID64())
                     owner:SetNWString("TTTCupidTarget1", ent:SteamID64())
                     owner:QueueMessage(MSG_PRINTBOTH, ent:Nick() .. " has been hit with your first arrow.")
                     ent:QueueMessage(MSG_PRINTBOTH, "You have been hit by cupid's arrow!")
-                elseif owner:GetNWString("TTTCupidTarget2", "") == "" then
+                elseif #target2 == 0 then
                     if ent:SteamID64() == target1 then
                         owner:QueueMessage(MSG_PRINTCENTER, "You cannot make someone fall in love with themselves.")
                     else

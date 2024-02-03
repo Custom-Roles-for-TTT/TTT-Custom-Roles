@@ -75,7 +75,7 @@ AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(win
 
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:Alive() and not p:IsSpec() and lover ~= "" then
+        if p:Alive() and not p:IsSpec() and #lover > 0 then
             local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
             if IsPlayer(loverPly) and loverPly:Alive() and not loverPly:IsSpec() then
@@ -109,7 +109,7 @@ end)
 AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:IsActive() and lover ~= "" then
+        if p:IsActive() and #lover > 0 then
             local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
             if IsPlayer(loverPly) and loverPly:IsActive() then
@@ -163,7 +163,7 @@ AddHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender", function(ply
     if ply:IsCupid() then
         local lover1_sid64 = ply:GetNWString("TTTCupidTarget1", "")
         local lover2_sid64 = ply:GetNWString("TTTCupidTarget2", "")
-        if lover1_sid64 == "" or lover2_sid64 == "" then return end
+        if #lover1_sid64 == 0 or #lover2_sid64 == 0 then return end
 
         local lover1 = player.GetBySteamID64(lover1_sid64)
         if not IsPlayer(lover1) then return end
@@ -312,7 +312,8 @@ end)
 AddHook("Think", "Cupid_Highlight_Think", function()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
-    if lover_vision and client:GetNWString("TTTCupidLover") ~= "" then
+    local lover = client:GetNWString("TTTCupidLover", "")
+    if lover_vision and #lover > 0 then
         if not vision_enabled then
             EnableLoverHighlights()
             vision_enabled = true

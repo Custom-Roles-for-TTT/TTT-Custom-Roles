@@ -364,7 +364,7 @@ function CLSCORE:BuildScorePanel(dpanel)
             name = name[1]
         end
         local col
-        if name == "" then
+        if #name == 0 then
             -- skull icon column
             col = dlist:AddColumn("")
         else
@@ -744,11 +744,7 @@ local function GetRoleIconElement(roleFileName, roleColor, startingRole, finalRo
 
     local roleIcon = vgui.Create("DImage", roleBackground)
     roleIcon:SetSize(32, 32)
-    if file.Exists("materials/vgui/ttt/roles/" .. roleFileName .. "/score_" .. roleFileName .. ".png", "GAME") then
-        roleIcon:SetImage("vgui/ttt/roles/" .. roleFileName .. "/score_" .. roleFileName .. ".png")
-    else
-        roleIcon:SetImage("vgui/ttt/score_" .. roleFileName .. ".png")
-    end
+    roleIcon:SetImage(util.GetRoleIconPath(roleFileName, "score", "png"))
     return roleBackground
 end
 
@@ -1175,7 +1171,7 @@ net.Receive("TTT_ReportStream", function()
     local events = util.Decompress(buff .. net.ReadData(net.ReadUInt(16)))
     buff = ""
 
-    if events == "" then
+    if #events == 0 then
         ErrorNoHalt("Round report decompression failed!\n")
     end
 

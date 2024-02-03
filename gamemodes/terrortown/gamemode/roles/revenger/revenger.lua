@@ -145,7 +145,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
         timer.Create("revengerhealthdrain", drain_health_rate, 0, function()
             for _, p in pairs(GetAllPlayers()) do
                 local lover_sid = p:GetNWString("RevengerLover", "")
-                if p:IsActiveRevenger() and lover_sid ~= "" then
+                if p:IsActiveRevenger() and #lover_sid > 0 then
                     local lover = player.GetBySteamID64(lover_sid)
                     if IsValid(lover) and (not lover:Alive() or lover:IsSpec()) then
                         local hp = p:Health()

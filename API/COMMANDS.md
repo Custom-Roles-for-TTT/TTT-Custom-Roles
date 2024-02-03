@@ -97,3 +97,10 @@ Orders a shop item on behalf of a another player with the given name. *NOTE*: Ch
 *Parameters:*
 - *target_name* - The name of the player who will be killed
 - *order* - The weapon class string or equipment ID number to be ordered
+
+### ttt_team_chat_as_player
+Sends a team chat message on behalf of another player with the given name. If the player's role cannot send team chat messages, nothing will happen. *NOTE*: Cheats must be enabled to use this command.\
+*Added in:* 2.0.7\
+*Parameters:*
+- *sender_name* - The name of the player who is sending the message
+- *text* - The message to send

@@ -5,7 +5,10 @@ local math = math
 local timer = timer
 
 local GetAllPlayers = player.GetAll
+local MathMax = math.max
 local MathMin = math.min
+local MathRandom = math.random
+local MathRound = math.Round
 
 util.AddNetworkString("TTT_UpdateShadowWins")
 util.AddNetworkString("TTT_ResetShadowWins")
@@ -26,6 +29,8 @@ local shadow_weaken_timer = CreateConVar("ttt_shadow_weaken_timer", "3", FCVAR_N
 
 local shadow_start_timer = GetConVar("ttt_shadow_start_timer")
 local shadow_buffer_timer = GetConVar("ttt_shadow_buffer_timer")
+local shadow_delay_timer_min = GetConVar("ttt_shadow_delay_timer_min")
+local shadow_delay_timer_max = GetConVar("ttt_shadow_delay_timer_max")
 local shadow_alive_radius = GetConVar("ttt_shadow_alive_radius")
 local shadow_dead_radius = GetConVar("ttt_shadow_dead_radius")
 local shadow_target_buff = GetConVar("ttt_shadow_target_buff")
@@ -33,6 +38,7 @@ local shadow_target_buff_delay = GetConVar("ttt_shadow_target_buff_delay")
 local shadow_soul_link = GetConVar("ttt_shadow_soul_link")
 local shadow_weaken_health_to = GetConVar("ttt_shadow_weaken_health_to")
 local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
+local shadow_failure_mode = GetConVar("ttt_shadow_failure_mode")
 
 -----------------------
 -- TARGET ASSIGNMENT --
@@ -52,24 +58,40 @@ local function OnTargetAssigned(ply, tgt)
     end
 end
 
-ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
-    -- Use a slight delay to make sure nothing else is changing this player's role first
+local function FindNewTarget(shadow)
+    -- Don't find a target if they already have one
+    local targetSid64 = shadow:GetNWString("ShadowTarget", "")
+    if targetSid64 and #targetSid64 > 0 then return end
+
+    -- Use a slight delay at the very minimum to make sure nothing else is changing this player's role first
+    local delay = 0.25
+    local delayMin = shadow_delay_timer_min:GetInt()
+    local delayMax = shadow_delay_timer_max:GetInt()
+    -- If we're configured to have a larger delay, though, use that instead
+    if delayMin > 0 and delayMax > 0 then
+        if delayMax < delayMin then
+            delayMax = delayMin
+        end
+        delay = MathRandom(delayMin, delayMax)
+        shadow:SetNWFloat("ShadowTimer", CurTime() + delay)
+    end
+
     -- Delay this whole thing to make sure all the validity checks are current
-    timer.Simple(0.25, function()
-        if not IsPlayer(ply) or not ply:IsActiveShadow() then return end
+    timer.Simple(delay, function()
+        if not IsPlayer(shadow) or not shadow:IsActiveShadow() then return end
 
         -- Keep their existing target, if they have one
-        local targetSid64 = ply:GetNWString("ShadowTarget", "")
+        targetSid64 = shadow:GetNWString("ShadowTarget", "")
         local target = player.GetBySteamID64(targetSid64)
         if IsPlayer(target) then return end
 
         local closestTarget = nil
         local closestDistance = -1
         for _, p in pairs(GetAllPlayers()) do
-            if p:Alive() and not p:IsSpec() and p ~= ply and
+            if p:Alive() and not p:IsSpec() and p ~= shadow and
                 (shadow_target_jester:GetBool() or not p:IsJesterTeam()) and
                 (shadow_target_independent:GetBool() or not p:IsIndependentTeam()) then
-                local distance = ply:GetPos():Distance(p:GetPos())
+                local distance = shadow:GetPos():Distance(p:GetPos())
                 if closestDistance == -1 or distance < closestDistance then
                     closestTarget = p
                     closestDistance = distance
@@ -78,9 +100,13 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
         end
 
         if closestTarget ~= nil then
-            OnTargetAssigned(ply, closestTarget)
+            OnTargetAssigned(shadow, closestTarget)
         end
     end)
+end
+
+ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
+    FindNewTarget(ply)
 end
 
 ROLE_MOVE_ROLE_STATE[ROLE_SHADOW] = function(ply, target, keep_on_source)
@@ -106,6 +132,7 @@ end
 local function ClearShadowState(ply)
     ply.TTTShadowMaxHealth = nil
     ply.TTTShadowLastMaxHealth = nil
+    ply.TTTShadowKilledTarget = false
     ply:SetNWBool("ShadowActive", false)
     ply:SetNWString("ShadowTarget", "")
     ply:SetNWFloat("ShadowTimer", -1)
@@ -203,6 +230,35 @@ local function CreateBuffTimer(shadow, target)
                 shadow:SetHealth(shadow:GetMaxHealth())
             end
 
+            return
+        elseif buff == SHADOW_BUFF_STEAL_ROLE then
+            local role = target:GetRole()
+            shadow:QueueMessage(MSG_PRINTBOTH, "You've stayed with your target long enough to steal their role! You are now " .. ROLE_STRINGS_EXT[role])
+
+            if shadow_target_buff_notify:GetBool() then
+                target:QueueMessage(MSG_PRINTBOTH, "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " has stayed with you long enough to steal your role!")
+            end
+
+            shadow:SetRole(role)
+            target:MoveRoleState(shadow)
+            target:SetRole(ROLE_SHADOW)
+            target:StripRoleWeapons()
+            shadow:StripRoleWeapons()
+
+            target:Kill()
+
+            local maxhealth = shadow:GetMaxHealth()
+            local health = shadow:Health()
+            local healthscale = health / maxhealth
+            SetRoleMaxHealth(shadow)
+
+            -- Scale the player's health to match their new max
+            -- If they were at 100/100 before, they'll be at 150/150 now
+            local newmaxhealth = shadow:GetMaxHealth()
+            local newhealth = MathMax(MathMin(newmaxhealth, MathRound(newmaxhealth * healthscale, 0)), 1)
+            shadow:SetHealth(newhealth)
+
+            SendFullStateUpdate()
             return
         end
 
@@ -386,7 +442,32 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                     CreateWeakenTimer(v, weakenTo, weakenTimer)
                     v:SetNWFloat("ShadowTimer", SHADOW_FORCED_PROGRESS_BAR)
                 else
-                    v:Kill()
+                    local failure_mode = shadow_failure_mode:GetInt()
+                    if failure_mode == SHADOW_FAILURE_JESTER or failure_mode == SHADOW_FAILURE_SWAPPER then
+                        local target_role = ROLE_JESTER
+                        if failure_mode == SHADOW_FAILURE_SWAPPER then
+                            target_role = ROLE_SWAPPER
+                        end
+
+                        message = message .. " As punishment, you have become " .. ROLE_STRINGS_EXT[target_role]
+                        v:SetRole(target_role)
+                        v:StripRoleWeapons()
+
+                        local maxhealth = v:GetMaxHealth()
+                        local health = v:Health()
+                        local healthscale = health / maxhealth
+                        SetRoleMaxHealth(v)
+
+                        -- Scale the player's health to match their new max
+                        -- If they were at 100/100 before, they'll be at 150/150 now
+                        local newmaxhealth = v:GetMaxHealth()
+                        local newhealth = MathMax(MathMin(newmaxhealth, MathRound(newmaxhealth * healthscale, 0)), 1)
+                        v:SetHealth(newhealth)
+
+                        SendFullStateUpdate()
+                    else
+                        v:Kill()
+                    end
                     v:SetNWBool("ShadowActive", false)
                     v:SetNWFloat("ShadowTimer", -1)
                 end
@@ -438,10 +519,11 @@ hook.Add("PlayerSpawn", "Shadow_PlayerSpawn", function(ply, transition)
 
     if ply:IsShadow() then
         -- If you killed your target, you stay dead!
-        if ply:GetNWString("ShadowTarget", "") then
+        if ply.TTTShadowKilledTarget then
             ply:Kill()
+            return
         end
-        ply:SetNWFloat("ShadowTimer", CurTime() + shadow_start_timer:GetInt())
+        FindNewTarget(ply)
     end
 end)
 
@@ -454,6 +536,7 @@ hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, a
     if victim:SteamID64() == attacker:GetNWString("ShadowTarget", "") then
         attacker:Kill()
         attacker:QueueMessage(MSG_PRINTBOTH, "You killed your target!")
+        attacker.TTTShadowKilledTarget = true
         ClearBuffTimer(attacker, victim)
         ClearShadowState(attacker)
     end

@@ -28,6 +28,7 @@
             </li>
             <li><a href="#configuration-by-files">Configuration by Files</a>
                 <ol>
+                    <li><a href="#preparing-a-role-for-configuration">Preparing a Role for Configuration</a></li>
                     <li><a href="#weapons">Weapons</a>
                         <ol>
                             <li><a href="#adding-weapons">Adding Weapons</a></li>
@@ -84,25 +85,36 @@
         <p>If you cannot or do not want to use the in-game UI to set up the role shop, it is also doable by manual file manipulation. This may be useful for server operators using Docker who want to have the configurations embedded in their server image.</p>
         <p><em>NOTE</em>: Using the configuration UI still creates and deletes files in the backend. Given that, you can use the UI on your local game and then copy the files to a server or Docker image build as needed.</p>
 
+        <h3><a id="preparing-a-role-for-configuration" href="#preparing-a-role-for-configuration"><strong>Preparing a Role for Configuration</strong></a></h3>
+
+        <p>
+            Before a role's shop can be modified, the initial folder and file structure will need to be created. Follow the steps below to accomplish this:
+            <ol>
+                <li>If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.</li>
+                <li>If the there is no .json file for the role you want to modify, create an empty text file and rename it to be {rolename}.json. For example: <em>detective.json</em>
+                    <ol type="a">
+                        <li>Make sure the file extension is <em>.json</em> and not <em>.json.txt</em>. By default, Windows hides known file extensions like .txt so be careful.</li>
+                        <li>Once the .json file is created, open it in a text editor (like Notepad++) and copy the following empty data structure into it: <code>{"Excludes":[],"Buyables":[],"NoRandoms":[]}</code></li>
+                    </ol>
+                </li>
+            </ol>
+            
+            <strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective.json
+        </p>
+
         <h3><a id="weapons" href="#weapons"><strong>Weapons</strong></a></h3>
 
         <h4><a id="adding-weapons" href="#adding-weapons"><em>Adding Weapons</em></a></h4>
-        <p>To add weapons to a role (that already has a shop), create an empty .txt file with the weapon class (e.g. weapon_ttt_somethingcool.txt) in the garrysmod/data/roleweapons/{rolename} folder.<br>
-        <strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
-        <strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.txt</p>
+        <p>To add weapons to a role (that already has a shop), modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the class name of the weapon wrapped in double quotes (e.g. "weapon_ttt_somethingcool") to the <code>Buyables</code> array. For example, <code>{"Excludes":[],"Buyables":["weapon_ttt_somethingcool"],"NoRandoms":[]}</code></p>
         <p>Also note the ttt_shop_* ConVars that are available above which can help control some of the role weapon shop lists.</p>
 
         <h4><a id="removing-weapons" href="#removing-weapons"><em>Removing Weapons</em></a></h4>
         <p>At the same time, there are some workshop weapons that are given to multiple roles that maybe you don't want to be available to certain roles. In order to handle that case, the ability to exclude weapons from a role's weapon shop has been added.</p>
-        <p>To remove weapons from a role's shop, create an empty .exclude.txt file with the weapon class (e.g. weapon_ttt_somethingcool.exclude.txt) in the garrysmod/data/roleweapons/{rolename} folder.<br>
-        <strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
-        <strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.exclude.txt</p>
+        <p>To remove weapons from a role's shop, modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the class name of the weapon wrapped in double quotes (e.g. "weapon_ttt_somethingcool") to the <code>Excludes</code> array. For example, <code>{"Excludes":["weapon_ttt_somethingcool"],"Buyables":[],"NoRandoms":[]}</code></p>
 
         <h4><a id="bypassing-weapon-randomization" href="#bypassing-weapon-randomization"><em>Bypassing Weapon Randomization</em></a></h4>
         <p>With the addition of the Shop Randomization feature (and the ttt_shop_random_* ConVars), weapons may not always appear in the shop (which is the point). If, however, you want certain weapons to <em>always</em> be in the shop while other weapons are randomized, the ability to bypass shop randomization for a weapon in a role's weapon shop has been added.</p>
-        <p>To stop a weapon from being removed from a role's shop via randomization, create an empty .norandom.txt file with the weapon class (e.g. weapon_ttt_somethingcool.norandom.txt) in the garrysmod/data/roleweapons/{rolename} folder.<br>
-        <strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
-        <strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.norandom.txt</p>
+        <p>To stop a weapon from being removed from a role's shop via randomization, modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the class name of the weapon wrapped in double quotes (e.g. "weapon_ttt_somethingcool") to the <code>NoRandoms</code> array. For example, <code>{"Excludes":[],"Buyables":[],"NoRandoms":["weapon_ttt_somethingcool"]}</code></p>
 
         <h4><a id="finding-a-weapons-class" href="#finding-a-weapons-class"><em>Finding a Weapon's Class</em></a></h4>
         <p>To find the class name of a weapon to use above, follow the steps below</p>
@@ -114,17 +126,14 @@
         </ol>
 
         <h3><a id="equipment" href="#equipment"><strong>Equipment</strong></a></h3>
+        <p>Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar.</p>
 
         <h4><a id="adding-equipment" href="#adding-equipment"><em>Adding Equipment</em></a></h4>
-        <p>Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create an empty .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.<br>
-        <strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
-        <strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.txt</p>
+        <p>To add equipment items to a role (that already has a shop), modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the name of the equipment item wrapped in double quotes (e.g. "bruh bunker") to the <code>Buyables</code> array. For example, <code>{"Excludes":[],"Buyables":["bruh bunker"],"NoRandoms":[]}</code></p>
 
         <h4><a id="removing-equipment" href="#removing-equipment"><em>Removing Equipment</em></a></h4>
         <p>Similarly there are some equipment items that you want to prevent a specific role from buying. To handle that case, the addon has the ability to exclude specific equipment items from the shop in a similar way.</p>
-        <p>To remove equipment from a role's shop, create an empty .exclude.txt file with the item's name (e.g. "bruh bunker.exclude.txt") in the garrysmod/data/roleweapons/{rolename} folder.<br>
-        <strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
-        <strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.exclude.txt</p>
+        <p>To remove equipment from a role's shop, modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the name of the equipment item wrapped in double quotes (e.g. "bruh bunker") to the <code>Excludes</code> array. For example, <code>{"Excludes":["bruh bunker"],"Buyables":[],"NoRandoms":[]}</code></p>
 
         <h4><a id="finding-an-equipment-items-name" href="#finding-an-equipment-items-name"><em>Finding an Equipment Item's Name</em></a></h4>
         <p>To find the name of an equipment item to use above, follow the steps below</p>

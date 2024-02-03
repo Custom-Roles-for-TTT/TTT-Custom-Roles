@@ -1,6 +1,5 @@
 AddCSLuaFile()
 
-local file = file
 local vgui = vgui
 local net = net
 local util = util
@@ -278,10 +277,7 @@ function SWEP:SecondaryAttack()
                 local ic = vgui.Create("SimpleIcon", dlist)
 
                 local roleStringShort = ROLE_STRINGS_SHORT[role]
-                local material = "vgui/ttt/icon_" .. roleStringShort
-                if file.Exists("materials/vgui/ttt/roles/" .. roleStringShort .. "/icon_" .. roleStringShort .. ".vtf", "GAME") then
-                    material = "vgui/ttt/roles/" .. roleStringShort .. "/icon_" .. roleStringShort
-                end
+                local material = util.GetRoleIconPath(roleStringShort, "icon", "vtf")
 
                 ic:SetIconSize(itemSize)
                 ic:SetIcon(material)
@@ -333,7 +329,7 @@ function SWEP:SecondaryAttack()
         dsearch.OnValueChange = function(_, value)
             local query = StringLower(value:gsub("[%p%c%s]", ""))
             for _, panel in pairs(panelList) do
-                if StringFind(ROLE_STRINGS_RAW[panel.role], query, 1, true) or value == "" then
+                if StringFind(ROLE_STRINGS_RAW[panel.role], query, 1, true) or (value and #value == 0) then
                     panel:SetIconColor(COLOR_WHITE)
                     panel:SetBackgroundColor(ROLE_COLORS[panel.role])
                     panel.enabled = true

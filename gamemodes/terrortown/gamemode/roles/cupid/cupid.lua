@@ -32,7 +32,7 @@ hook.Add("TTTBeginRound", "Cupid_TTTBeginRound", function()
             if not v:IsActive() then continue end
 
             local lover_sid64 = v:GetNWString("TTTCupidLover", "")
-            if lover_sid64 == "" then continue end
+            if #lover_sid64 == 0 then continue end
 
             local lover = player.GetBySteamID64(lover_sid64)
             if not IsPlayer(lover) or lover:IsActive() then continue end
@@ -90,7 +90,7 @@ hook.Add("PlayerDisconnected", "Cupid_PlayerDisconnected", function(ply)
         elseif p:GetNWString("TTTCupidTarget1", "") == sid64 then
             p:QueueMessage(MSG_PRINTBOTH, "A player hit by your arrow has disconnected")
             local target2 = p:GetNWString("TTTCupidTarget2", "")
-            if target2 == "" then
+            if #target2 == 0 then
                 p:SetNWString("TTTCupidTarget1", "")
             else
                 p:SetNWString("TTTCupidTarget1", target2)
@@ -113,7 +113,8 @@ hook.Add("PlayerDeath", "Cupid_PlayerDeath", function(ply)
     local sid64 = ply:SteamID64()
 
     for _, p in pairs(GetAllPlayers()) do
-        if p:GetNWString("TTTCupidTarget1", "") == sid64 and p:GetNWString("TTTCupidTarget2", "") == "" then
+        local target2 = p:GetNWString("TTTCupidTarget2", "")
+        if p:GetNWString("TTTCupidTarget1", "") == sid64 and #target2 == 0 then
             p:QueueMessage(MSG_PRINTBOTH, "The player hit by your arrow has died")
             p:SetNWString("TTTCupidTarget1", "")
             ply:SetNWString("TTTCupidShooter", "")
@@ -134,7 +135,7 @@ hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
         end
 
         local lover = v:GetNWString("TTTCupidLover", "")
-        if lover ~= "" then
+        if #lover > 0 then
             local loverPly = player.GetBySteamID64(lover)
             if not IsPlayer(loverPly) or not loverPly:IsActive() then
                 cupidWin = false

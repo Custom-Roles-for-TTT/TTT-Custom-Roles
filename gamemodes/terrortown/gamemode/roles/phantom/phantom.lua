@@ -149,7 +149,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
 
                         victim:QueueMessage(MSG_PRINTBOTH, "Your body has been destroyed, removing your tether to the world.")
 
-                        if phantom_haunt_saves_lover:GetBool() and loverSID ~= "" then
+                        if phantom_haunt_saves_lover:GetBool() and #loverSID > 0 then
                             local lover = player.GetBySteamID64(loverSID)
                             lover:PrintMessage(HUD_PRINTTALK, "Your lover's body was destroyed!")
                         end
@@ -180,7 +180,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
         attacker:QueueMessage(MSG_PRINTCENTER, "You have been haunted.")
         victim:QueueMessage(MSG_PRINTCENTER, "Your attacker has been haunted.")
 
-        if loverSID ~= "" then
+        if #loverSID > 0 then
             local lover = player.GetBySteamID64(loverSID)
             lover:QueueMessage(MSG_PRINTCENTER, "Your lover has died... but they are haunting someone!")
         end
@@ -348,7 +348,7 @@ end)
 
 hook.Add("PostPlayerDeath", "Phantom_Lovers_PostPlayerDeath", function(ply)
     local loverSID = ply:GetNWString("TTTCupidLover", "")
-    if loverSID == "" then return end
+    if #loverSID == 0 then return end
 
     local lover = player.GetBySteamID64(loverSID)
     if not IsPlayer(lover) then return end

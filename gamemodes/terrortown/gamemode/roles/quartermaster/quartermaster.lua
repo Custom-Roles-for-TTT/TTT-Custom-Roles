@@ -6,6 +6,10 @@ local player = player
 local AddHook = hook.Add
 local GetAllPlayers = player.GetAll
 
+-------------------
+-- ROLE FEATURES --
+-------------------
+
 AddHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment", function(ply, id, is_item)
     if ply:IsQuartermaster() then
         -- Create crate
@@ -24,6 +28,20 @@ AddHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment", function(p
         crate:Spawn()
 
         return false
+    end
+end)
+
+local blockedEvents = {
+    ["blackmarket"] = "makes their role unusable",
+    ["future"] = "can't consistently work with the dynamic shop events"
+}
+AddHook("TTTRandomatCanEventRun", "Quartermaster_TTTRandomatCanEventRun", function(event)
+    if not blockedEvents[event.Id] then return end
+
+    for _, ply in ipairs(player.GetAll()) do
+        if ply:IsQuartermaster() then
+            return false, "There is " .. ROLE_STRINGS_EXT[ROLE_QUARTERMASTER] .. " in the round and this event " .. blockedEvents[event.Id]
+        end
     end
 end)
 

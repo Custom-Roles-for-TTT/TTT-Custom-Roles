@@ -3,6 +3,7 @@
 if not util then return end
 
 local cvars = cvars
+local file = file
 local input = input
 local ipairs = ipairs
 local IsValid = IsValid
@@ -15,6 +16,8 @@ local timer = timer
 local weapons = weapons
 local hook = hook
 
+local FileExists = file.Exists
+local FileRead = file.Read
 local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringFormat = string.format
@@ -439,12 +442,12 @@ if CLIENT then
         end
     end
 
-    function util.IncludeClientFile(file)
-        include(file)
+    function util.IncludeClientFile(fil)
+        include(fil)
     end
 else
-    function util.IncludeClientFile(file)
-        AddCSLuaFile(file)
+    function util.IncludeClientFile(fil)
+        AddCSLuaFile(fil)
     end
 end
 
@@ -464,14 +467,14 @@ end
 
 if SERVER then
     function util.ExecFile(filePath, errorIfMissing)
-        if not file.Exists(filePath, "GAME") then
+        if not FileExists(filePath, "GAME") then
             if errorIfMissing then
                 ErrorNoHalt(StringFormat("File not found when trying to execute: %s\n", filePath))
             end
             return
         end
 
-        local fileContent = file.Read(filePath, "GAME")
+        local fileContent = FileRead(filePath, "GAME")
         local lines = string.Explode("\n", fileContent)
         for _, line in ipairs(lines) do
             line = StringTrim(line)
@@ -495,12 +498,31 @@ function util.CanRoleSpawnArtificially(role)
     return false
 end
 
-function util.CanRoleSpawn(role)
-    if DEFAULT_ROLES[role] then return true end
-    if GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() then
+function util.CanRoleSpawnNaturally(role)
+    if DEFAULT_ROLES[role] or ROLE_PACK_ROLES[role] or GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() then
         return true
     end
-    return util.CanRoleSpawnArtificially(role)
+    return false
+end
+
+function util.CanRoleSpawn(role)
+    return util.CanRoleSpawnNaturally(role) or util.CanRoleSpawnArtificially(role)
+end
+
+function util.GetRoleIconPath(role_str, typ, ext, file_name_override)
+    -- Use the role string as the base of the file name if a name is not provided
+    if not file_name_override then
+        file_name_override = role_str
+    end
+    -- Strip the dot off the start of the extension, if there is one
+    if StringStartsWith(ext, ".") then
+        ext = string.sub(ext, 2)
+    end
+    local file_path = StringFormat("vgui/ttt/roles/%s/%s_%s.%s", role_str, typ, file_name_override, ext)
+    if not FileExists(StringFormat("materials/%s", file_path), "GAME") then
+        file_path = StringFormat("vgui/ttt/%s_%s.%s", typ, file_name_override, ext)
+    end
+    return file_path
 end
 
 ----------------------------

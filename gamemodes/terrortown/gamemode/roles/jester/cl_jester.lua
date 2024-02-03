@@ -61,7 +61,7 @@ hook.Add("TTTScoringSummaryRender", "Jester_TTTScoringSummaryRender", function(p
 
     if ply:IsJester() then
         local jesterKiller = ply:GetNWString("JesterKiller", "")
-        if jesterKiller ~= "" then
+        if #jesterKiller > 0 then
             return roleFileName, groupingRole, roleColor, name, jesterKiller, LANG.GetTranslation("score_jester_killedby")
         end
     end
