@@ -32,6 +32,8 @@
 - Added `plymeta:ForceRoleNextRound`, `plymeta:GetForcedRole`, and `plymeta:ClearForcedRole` methods to allow forcing player's roles in the next round
 - Added `util.CanRoleSpawnNaturally` method to check if a role can spawn in the round naturally (i.e. because it is enabled via ConVars or role packs)
 - Added `util.GetRoleIconPath` to get the path to a role's icon file
+- Added optional `ply` parameter to `WEPS.HandleRoleEquipment` to allow sending roleweapons data to specific players
+- Added optional `rolepack_weps` parameter to `WEPS.HandleCanBuyOverrides` to allow changing behavior of the CanBuy overrides with regards to configured rolepack weapons
 
 ## 2.0.6 (Beta)
 **Released: January 14th, 2024**
