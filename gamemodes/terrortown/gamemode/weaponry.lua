@@ -758,7 +758,7 @@ end
 
 -- If this logic or the list of roles who can buy is changed, it must also be updated in OrderEquipment above and cl_equip.lua
 -- This also sends a cache reset request to every client so that things like shop randomization happen every round
-function WEPS.HandleRoleEquipment()
+function WEPS.HandleRoleEquipment(ply)
     local handled = false
     for id, name in pairs(ROLE_STRINGS_RAW) do
         WEPS.PrepWeaponsLists(id)
@@ -850,7 +850,11 @@ function WEPS.HandleRoleEquipment()
             net.WriteTable(roleBuyables)
             net.WriteTable(roleExcludes)
             net.WriteTable(roleNoRandoms)
-            net.Broadcast()
+            if ply then
+                net.Send(ply)
+            else
+                net.Broadcast()
+            end
             handled = true
         end
     end
@@ -858,11 +862,19 @@ function WEPS.HandleRoleEquipment()
     -- Send this once if the roleweapons feature wasn't used (which resets the cache on its own)
     if not handled then
         net.Start("TTT_ResetBuyableWeaponsCache")
-        net.Broadcast()
+        if ply then
+            net.Send(ply)
+        else
+            net.Broadcast()
+        end
     end
 
     net.Start("TTT_RoleWeaponsLoaded")
-    net.Broadcast()
+    if ply then
+        net.Send(ply)
+    else
+        net.Broadcast()
+    end
     CallHook("TTTRoleWeaponsLoaded")
 end
 
