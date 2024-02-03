@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.1.0
+**Released:**
+
+### Fixes
+- Fixed players joining the hive mind not having their role weapons removed
+- Fixed players joining the hive mind when they were zombifying
+
 ## 2.0.7 (Beta)
 **Released: February 3rd, 2024**
 
