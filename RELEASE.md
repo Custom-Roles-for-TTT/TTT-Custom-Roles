@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.0.7 (Beta)
-**Released:**
+**Released: February 3rd, 2024**
 
 ### Additions
 - Added `ttt_rolepacks` command which opens the new role pack UI
