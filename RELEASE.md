@@ -4,6 +4,9 @@
 **Released:**
 
 ### Additions
+- Added `ttt_rolepacks` command which opens the new role pack UI
+  - Role packs allow for greater control over how roles spawn, as well as what weapons are available in role shops and any addition ConVar configuration
+  - Multiple role packs can be configured independently but only one role pack can apply at a time
 - Added convar, `ttt_marshal_prevent_deputy`, to control whether to only spawn the marshal when there isn't already a deputy or impersonator in the round (defaults to enabled to match prior behavior).
 - Added ability for jester roles to have a device that converts them to be a sponge
   - Global announcement is made when a player starts using the device
