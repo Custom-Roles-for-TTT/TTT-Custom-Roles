@@ -232,7 +232,7 @@ function SCORE:StreamToClients()
     end
 
     events = util.Compress(events)
-    if #events == 0 then
+    if events == nil or #events == 0 then
         ErrorNoHalt("Round report event compression failed!\n")
         return
     end
