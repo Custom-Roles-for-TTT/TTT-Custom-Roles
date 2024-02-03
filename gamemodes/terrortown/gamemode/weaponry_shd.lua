@@ -286,7 +286,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
     local rolemode = GetRoleMode(role)
 
     -- If the last key in the table does not match how many keys there are, this is a non-sequential table
-    -- TableRemoveByValue does not work with non-sequential tables and there is not an easy way
+    -- table.RemoveByValue does not work with non-sequential tables and there is not an easy way
     -- of removing items from a non-sequential table by key or value
     if #wep.CanBuy ~= TableCount(wep.CanBuy) then
         wep.CanBuy = TableClearKeys(wep.CanBuy)
