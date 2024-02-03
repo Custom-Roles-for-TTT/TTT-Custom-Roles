@@ -32,7 +32,7 @@ util.AddNetworkString("TTT_SendRolePackList")
 util.AddNetworkString("TTT_CreateRolePack")
 util.AddNetworkString("TTT_RenameRolePack")
 util.AddNetworkString("TTT_DeleteRolePack")
-util.AddNetworkString("TTT_SaveRolePack")
+util.AddNetworkString("TTT_SavedRolePack")
 util.AddNetworkString("TTT_ApplyRolePack")
 util.AddNetworkString("TTT_ClearRolePack")
 util.AddNetworkString("TTT_SendRolePackRoleList")
@@ -252,7 +252,7 @@ net.Receive("TTT_DeleteRolePack", function(len, ply)
     end
 end)
 
-net.Receive("TTT_SaveRolePack", function(len, ply)
+net.Receive("TTT_SavedRolePack", function(len, ply)
     if not ply:IsAdmin() and not ply:IsSuperAdmin() then
         ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
         return

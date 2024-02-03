@@ -980,7 +980,7 @@ local function OpenDialog()
         droles.unsavedChanges = false
         dweapons.unsavedChanges = false
         dconvars.unsavedChanges = false
-        net.Start("TTT_SaveRolePack")
+        net.Start("TTT_SavedRolePack")
         local pack, _ = dpack:GetSelected()
         net.WriteString(pack)
         net.SendToServer()
