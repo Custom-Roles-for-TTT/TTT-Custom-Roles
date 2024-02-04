@@ -27,7 +27,7 @@ Checks whether the role has weapons or equipment available in their shop.\
 - *role* - The role being checked for shop weapons and equipment
 - *promoted* - Whether the role has been promoted. Determines whether `ROLE_DETECTIVE` weapons and equipment should also be checked *(Added in 1.3.6)*
 
-### WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles)
+### WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles, rolepack_weps)
 Updates the `CanBuy` property of the given weapon to only include weapons that the provided role is allowed to purchase based on all of the parameters.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0\
@@ -39,11 +39,14 @@ Updates the `CanBuy` property of the given weapon to only include weapons that t
 - *sync_detective_weapons* - Whether the given role should also be able to buy all items that the detective role can buy
 - *block_exclusion* - Whether to ignore the fact that this weapon would normally be excluded for this role *(Added in 1.2.7)*
 - *sync_roles* - The list of roles that should also be checked when determining if this role can purchase this weapon *(Added in 1.9.5)*
+- *rolepack_weps* - The rolepack weapons config to use. An object with three table properties containing weapon class names or equipment item names: `Buyables`, `Excludes`, and `NoRandoms`. Pass `false` to explicitly ignore the currently applied role pack, if there is one. (Optional, if not provided then the currently applied role pack weapons will be used automatically if there are any) *(Added in 2.0.7)*
 
-### WEPS.HandleRoleEquipment()
+### WEPS.HandleRoleEquipment(ply)
 Handles loading the roleweapons configuration from the server data files.\
 *Realm:* Server\
-*Added in:* 1.8.8
+*Added in:* 1.8.8\
+*Parameters:*
+- *ply* - The player the role weapon config is being sent to. (Optional, if not provided then config sent to all players). *(Added in 2.0.7)*
 
 ### WEPS.PlayerOwnsWepReqs(ply, wep)
 Checks whether the player has the required weapons or equipment for `wep`.\
