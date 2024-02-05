@@ -1219,6 +1219,10 @@ One a slot has been added, you will be presented with three buttons:
 
 When a new role entry has been added to a lot it defaults to the "NONE" or "?" role. When this placeholder role is along in a slot, behaves the same as if the slot was empty: The player in this slot will have their role randomly assigned by the normal role selection logic.
 
+Two other things to note about the role slot usage:
+1. If there are more slots than players (e.g., 8 configured slots but only 7 players) than the extra slot(s) will not be used.
+1. If there are fewer slots than players (e.g., 6 configured slots but 7 players) than the extra player(s) will have their role randomly assigned by the normal role selection logic.
+
 ![Role Packs New Role](docs/tutorials/img/RolePacks_NewRole.png)
 
 To change the role that the slot belongs to, click the role icon and select the new role from the dropdown.
