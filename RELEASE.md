@@ -1,12 +1,13 @@
 # Release Notes
 
 ## 2.1.0
-**Released:**
+**Released: February 5th, 2024**
 
 ### Fixes
 - Fixed players joining the hive mind not having their role weapons removed
 - Fixed players joining the hive mind when they were zombifying
 - Fixed potential client error when using zombie claws and leaping
+- Fixed rolepack role assignment so that it correctly accounts for `ttt_detective_karma_min` and players with 'Avoid Detective' enabled
 
 ## 2.0.7 (Beta)
 **Released: February 3rd, 2024**

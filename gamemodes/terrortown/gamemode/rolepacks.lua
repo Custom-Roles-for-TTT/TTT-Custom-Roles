@@ -8,7 +8,10 @@ local string = string
 
 local StringSub = string.sub
 local TableInsert = table.insert
+local TableRemove = table.remove
+local TableRemoveByValue = table.RemoveByValue
 local TableHasValue = table.HasValue
+local TableShuffle = table.Shuffle
 
 ROLEPACKS = {}
 
@@ -376,8 +379,8 @@ function ROLEPACKS.AssignRoles(choices)
     local forcedRoles = {}
     for k, v in ipairs(rolePackChoices) do
         if v.forcedRole and v.forcedRole ~= ROLE_NONE then
-            table.insert(forcedRoles, v.forcedRole)
-            table.remove(rolePackChoices, k)
+            TableInsert(forcedRoles, v.forcedRole)
+            TableRemove(rolePackChoices, k)
         end
     end
 
@@ -401,27 +404,57 @@ function ROLEPACKS.AssignRoles(choices)
 
                 if role == ROLE_NONE then continue end
 
-                if table.HasValue(forcedRoles, role) then
-                    table.RemoveByValue(forcedRoles, role)
-                    table.insert(chosenRoles, role)
+                if TableHasValue(forcedRoles, role) then
+                    TableRemoveByValue(forcedRoles, role)
+                    TableInsert(chosenRoles, role)
                     skipSlot = true
                     break
                 end
 
-                if not allowDuplicates and table.HasValue(chosenRoles, role) then continue end
+                if not allowDuplicates and TableHasValue(chosenRoles, role) then continue end
 
                 for _ = 1, roleslot.weight do
-                    table.insert(possibleRoles, role)
+                    TableInsert(possibleRoles, role)
                 end
             end
 
             if skipSlot then continue end
 
-            local ply = table.remove(rolePackChoices)
-            if #possibleRoles <= 0 then continue end
+            if #possibleRoles <= 0 then
+                TableRemove(rolePackChoices) -- We still need to remove a player in the case of an empty slot
+                continue
+            end
 
-            table.Shuffle(possibleRoles)
-            local role = table.remove(possibleRoles)
+            TableShuffle(possibleRoles)
+            local role = TableRemove(possibleRoles)
+
+            local ply
+            if DETECTIVE_ROLES[role] then
+                local minKarma = GetConVar("ttt_detective_karma_min"):GetInt()
+                local willingDetectiveChoices = {}
+                local goodKarmaChoices = {}
+                for _, p in ipairs(rolePackChoices) do
+                    if not KARMA.IsEnabled() or p:GetBaseKarma() >= minKarma then
+                        if not p:ShouldAvoidDetective() then
+                            TableInsert(willingDetectiveChoices, p)
+                        end
+                        TableInsert(goodKarmaChoices, p)
+                    end
+                end
+
+                if #willingDetectiveChoices > 0 then
+                    ply = TableRemove(willingDetectiveChoices)
+                    TableRemoveByValue(rolePackChoices, ply)
+                elseif #goodKarmaChoices > 0 then
+                    ply = TableRemove(goodKarmaChoices)
+                    TableRemoveByValue(rolePackChoices, ply)
+                else
+                    ply = TableRemove(rolePackChoices)
+                end
+            else
+                ply = TableRemove(rolePackChoices)
+            end
+
             ply:SetRole(role)
             table.insert(chosenRoles, role)
         end
