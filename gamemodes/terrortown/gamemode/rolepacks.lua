@@ -428,7 +428,7 @@ function ROLEPACKS.AssignRoles(choices)
             TableShuffle(possibleRoles)
             local role = TableRemove(possibleRoles)
 
-            local ply = nil
+            local ply
             if DETECTIVE_ROLES[role] then
                 local minKarma = GetConVar("ttt_detective_karma_min"):GetInt()
                 local willingDetectiveChoices = {}
