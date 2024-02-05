@@ -337,7 +337,7 @@ if CLIENT then
         hook.Run("DoAnimationEvent", ply, PLAYERANIMEVENT_JUMP)
 
         local wep = ply:GetActiveWeapon()
-        if IsValid(wep) and WEPS.GetClass(wep) == "weapon_zom_claws" then
+        if IsValid(wep) and WEPS.GetClass(wep) == "weapon_zom_claws" and wep.ActivityTranslate then
             wep.ActivityTranslate[ACT_MP_JUMP] = ACT_ZOMBIE_LEAPING
         end
     end)
@@ -347,7 +347,7 @@ if CLIENT then
         if not IsPlayer(ply) then return end
 
         local wep = ply:GetActiveWeapon()
-        if IsValid(wep) and WEPS.GetClass(wep) == "weapon_zom_claws" then
+        if IsValid(wep) and WEPS.GetClass(wep) == "weapon_zom_claws" and wep.ActivityTranslate then
             wep.ActivityTranslate[ACT_MP_JUMP] = nil
         end
     end)
