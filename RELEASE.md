@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.0
+**Released: **
+
+### Fixes
+- Fixed rolepack role assignment so that it correctly accounts for `ttt_detective_karma_min` and players with 'Avoid Detective' enabled
+
 ## 2.0.7 (Beta)
 **Released: February 3rd, 2024**
 
