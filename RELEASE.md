@@ -1,7 +1,8 @@
 # Release Notes
 
 ## 2.1.0
-**Released: February 5th, 2024**
+**Released: February 5th, 2024**\
+Includes beta updates [2.0.5](#205-beta) to [2.0.7](#207-beta).
 
 ### Fixes
 - Fixed players joining the hive mind not having their role weapons removed
