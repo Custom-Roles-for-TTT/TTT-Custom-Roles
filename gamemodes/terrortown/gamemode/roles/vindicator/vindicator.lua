@@ -194,7 +194,7 @@ hook.Add("TTTBeginRound", "Vindicator_TTTBeginRound", function()
                 if not v:IsActiveVindicator() then continue end
 
                 local target_sid64 = v:GetNWString("VindicatorTarget", "")
-                if target_sid64 == "" then continue end
+                if #target_sid64 == 0 then continue end
 
                 local target = player.GetBySteamID64(target_sid64)
                 if not IsPlayer(target) or target:IsActive() then continue end

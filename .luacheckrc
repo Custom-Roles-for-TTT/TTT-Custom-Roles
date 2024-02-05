@@ -78,6 +78,7 @@ globals = {
     "AMMO_STUN",
     "AMMO_TELEPORT",
     "AMMO_WTESTER",
+    "BOTTOM",
     "C4_MAXIMUM_TIME",
     "C4_MINIMUM_TIME",
     "C4_WIRE_COUNT",
@@ -375,6 +376,7 @@ globals = {
     "LANG",
     "LAST_SHARED_COLLISION_GROUP",
     "LAST_VISIBLE_CONTENTS",
+    "LEFT",
     "MASK_ALL",
     "MASK_BLOCKLOS",
     "MASK_BLOCKLOS_AND_NPCS",
@@ -484,6 +486,22 @@ globals = {
     "SOLID_OBB",
     "SOLID_OBB_YAW",
     "SOLID_VPHYSICS",
+    "STENCIL_ALWAYS",
+    "STENCIL_DECR",
+    "STENCIL_DECRSAT",
+    "STENCIL_EQUAL",
+    "STENCIL_GREATER",
+    "STENCIL_GREATEREQUAL",
+    "STENCIL_INCR",
+    "STENCIL_INCRSAT",
+    "STENCIL_INVERT",
+    "STENCIL_KEEP",
+    "STENCIL_LESS",
+    "STENCIL_LESSEQUAL",
+    "STENCIL_NEVER",
+    "STENCIL_NOTEQUAL",
+    "STENCIL_REPLACE",
+    "STENCIL_ZERO",
     "SWEP",
     "TEAM_SPEC",
     "TEAM_SPECTATOR",
@@ -524,6 +542,7 @@ globals = {
     "isentity",
     "isfunction",
     "isnumber",
+    "ispanel",
     "isstring",
     "istable",
     "next",
@@ -945,11 +964,17 @@ globals = {
     "ROLE_TEAM_TRAITOR",
     "ROLE_TRANSLATIONS",
     "ROLE_VICTIM_CHANGING_ROLE",
+    "ROLE_PACK_ROLES",
+    "ROLEPACKS",
     "SHADOW_BUFF_DAMAGE",
     "SHADOW_BUFF_HEAL",
     "SHADOW_BUFF_NONE",
     "SHADOW_BUFF_RESPAWN",
+    "SHADOW_BUFF_STEAL_ROLE",
     "SHADOW_BUFF_TEAM_JOIN",
+    "SHADOW_FAILURE_JESTER",
+    "SHADOW_FAILURE_KILL",
+    "SHADOW_FAILURE_SWAPPER",
     "SHADOW_FORCED_PROGRESS_BAR",
     "SHADOW_NOTIFY_NONE",
     "SHADOW_NOTIFY_ANONYMOUS",
@@ -1106,7 +1131,10 @@ globals = {
 
     -- CR Namespaces
     "CRHUD",
-    "DEATHRADAR"
+    "DEATHRADAR",
+
+    -- Randomat Namespaces
+    "Randomat"
 }
 std = {
     globals = {

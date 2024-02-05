@@ -53,6 +53,15 @@ Changed `was_traitor` parameter to be `true` for any member of the traitor team,
 
 *Return:* Whether or not the given player should be able to identify the given corpse (Defaults to `false`).
 
+### TTTCanUseTraitorVoice(ply)
+Called when a player is attempting to use traitor chat, both speaking and listening. Used to change the default behavior.\
+*Realm:* Client and Server\
+*Added in:* 2.0.7\
+*Parameters:*
+- *ply* - The player who is trying to use traitor voice. This is called for both speaking and listening
+
+*Return:* Whether to allow this player to use traitor voice chat. (Defaults to checking whether the player is on the traitor team)
+
 ### TTTCupidShouldLoverSurvive(ply, lover)
 Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.\
 *Realm:* Server\
@@ -842,19 +851,6 @@ Called before a player's karma status text (shown when you look at a player) is 
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 
-### TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)  <!-- TODO: Remove after 2.0.0 -->
-**DEPRECATED IN 1.9.4**\
-Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.\
-*Realm:* Client\
-*Added in:* 1.1.9\
-*Parameters:*
-- *ply* - The target player being rendered
-- *client* - The local player
-- *showKillIcon* - Whether the kill icon would normally be shown for this player
-- *showJester* - Whether the target is a jester and the local player would normally know that
-
-*Return:* `true` if the kill icon should be shown or `false` if not. Returning nothing or a non-boolean value will default to the given *showKillIcon* value.
-
 ### TTTTargetIDPlayerName(ply, client, text, clr)
 Called before a player's name (shown when you look at a player) is rendered.\
 *Realm:* Client\
@@ -945,6 +941,28 @@ Called before a ragdoll's name (shown when you look at a ragdoll) is rendered.\
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
+
+### TTTTeamChatTargets(sender, msg, targets, from_chat)
+Called before a team chat message is sent. Used to modify the targets of the team message.\
+*Realm:* Server\
+*Added in:* 2.0.7\
+*Parameters:*
+- *sender* - The player sending the chat message
+- *msg* - The message being sent
+- *targets* - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients
+- *from_chat* - Whether this hook is being called from the actual chat send method
+
+*Return:* Whether or not this team chat message should be sent (Defaults to `true`)
+
+### TTTTeamVoiceChatTargets(speaker, targets)
+Called before a team voice state message is sent. Used to modify the targets of the team voice state message.\
+*Realm:* Server\
+*Added in:* 2.0.7\
+*Parameters:*
+- *speaker* - The player trying to send their team voice state message
+- *targets* - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients
+
+*Return:* Whether or not this team voice state message should be sent (Defaults to `true`)
 
 ### TTTTurncoatTeamChanged(ply, traitor)
 Called when a turncoat's team is changed

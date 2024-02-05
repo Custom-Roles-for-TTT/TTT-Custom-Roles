@@ -73,6 +73,7 @@ include("cl_scoring_events.lua")
 include("cl_popups.lua")
 include("cl_equip.lua")
 include("cl_voice.lua")
+include("cl_rolepacks.lua")
 include("cl_roleweapons.lua")
 include("cl_hitmarkers.lua")
 include("cl_deathnotify.lua")
@@ -323,7 +324,7 @@ function GM:CleanUpMap()
     -- Ragdolls sometimes stay around on clients. Deleting them can create issues
     -- so all we can do is try to hide them.
     for _, ent in ipairs(ents.FindByClass("prop_ragdoll")) do
-        if IsValid(ent) and CORPSE.GetPlayerNick(ent, "") ~= "" then
+        if IsValid(ent) and #CORPSE.GetPlayerNick(ent, "") > 0 then
             ent:SetNoDraw(true)
             ent:SetSolid(SOLID_NONE)
             ent:SetColor(Color(0, 0, 0, 0))
@@ -628,13 +629,13 @@ local function DrawFootprints()
                 -- Fade the footprints into invisibility based on how long they've been around
                 local faderatio = timediff / footstep.fadetime
                 local col = Color(footstep.col.r, footstep.col.g, footstep.col.b, faderatio * 255)
-
+                local scale = footstep.scale or 1
                 local hitpos = footstep.pos
                 -- If this player is spectating through the target's eyes, move the prints down so they don't appear to float
                 if client:IsSpec() and client:GetObserverMode() == OBS_MODE_IN_EYE then
                     hitpos = hitpos + Vector(0, 0, -50)
                 end
-                render.DrawQuadEasy(hitpos + footstep.normal * 0.01, footstep.normal, 10, 20, col, footstep.angle)
+                render.DrawQuadEasy(hitpos + footstep.normal * 0.01, footstep.normal, 10 * scale, 20 * scale, col, footstep.angle)
             end
         else
             footSteps[k] = nil
@@ -643,7 +644,7 @@ local function DrawFootprints()
     cam.End3D()
 end
 
-function AddFootstep(ply, pos, ang, foot, col, fade_time)
+function AddFootstep(ply, pos, ang, foot, col, fade_time, scale)
     ang.p = 0
     ang.r = 0
     local fpos = pos
@@ -666,7 +667,8 @@ function AddFootstep(ply, pos, ang, foot, col, fade_time)
             fadetime = fade_time,
             angle = ang.y,
             normal = tr.HitNormal,
-            col = col
+            col = col,
+            scale = scale or 1
         }
         TableInsert(footSteps, tbl)
     end
@@ -679,8 +681,14 @@ net.Receive("TTT_PlayerFootstep", function()
     local foot = net.ReadBit()
     local color = net.ReadTable()
     local fade_time = net.ReadUInt(8)
+    local scale = net.ReadFloat()
 
-    AddFootstep(ply, pos, ang, foot, color, fade_time)
+    -- If this isn't provided, default to 1
+    if scale <= 0 then
+        scale = 1
+    end
+
+    AddFootstep(ply, pos, ang, foot, color, fade_time, scale)
 end)
 
 net.Receive("TTT_ClearPlayerFootsteps", function()

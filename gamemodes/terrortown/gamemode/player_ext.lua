@@ -562,9 +562,12 @@ local messageQueue = {}
 function plymeta:PrintMessageQueue()
     local sid = self:SteamID64()
     local message = messageQueue[sid][1]
-    self:PrintMessage(HUD_PRINTCENTER, message["message"])
-    if message["time"] <= 5 then
-        timer.Create("MessageQueue" .. sid, message["time"], 0, function()
+    -- Send this message as long as there is no predicate or it says this player is valid
+    if not message.predicate or message.predicate(self) then
+        self:PrintMessage(HUD_PRINTCENTER, message.message)
+    end
+    if message.time <= 5 then
+        timer.Create("MessageQueue" .. sid, message.time, 0, function()
             table.remove(messageQueue[sid], 1)
             if #messageQueue[sid] >= 1 then
                 self:PrintMessageQueue()
@@ -574,7 +577,7 @@ function plymeta:PrintMessageQueue()
         end)
     else
         timer.Create("MessageQueue" .. sid, 5, 0, function()
-            messageQueue[sid][1]["time"] = messageQueue[sid][1]["time"] - 5
+            messageQueue[sid][1].time = messageQueue[sid][1].time - 5
             self:PrintMessageQueue()
         end)
     end
@@ -587,17 +590,18 @@ function plymeta:ResetMessageQueue()
     self:PrintMessage(HUD_PRINTCENTER, "")
 end
 
-function plymeta:QueueMessage(message_type, message, time)
+function plymeta:QueueMessage(message_type, message, time, predicate)
     time = time or 5
     local sid = self:SteamID64()
     if not messageQueue[sid] then
         messageQueue[sid] = {}
     end
-    if message_type == MSG_PRINTBOTH or message_type == MSG_PRINTTALK then
+    -- Send this message as long as its a chat-based message and there is no predicate or it says this player is valid
+    if (message_type == MSG_PRINTBOTH or message_type == MSG_PRINTTALK) and (not predicate or predicate(self)) then
         self:PrintMessage(HUD_PRINTTALK, message)
     end
     if message_type == MSG_PRINTBOTH or message_type == MSG_PRINTCENTER then
-        table.insert(messageQueue[sid], {message=message, time=time})
+        table.insert(messageQueue[sid], {message=message, time=time, predicate=predicate})
         if #messageQueue[sid] == 1 then
             self:PrintMessageQueue()
         end
@@ -610,6 +614,25 @@ net.Receive("TTT_QueueMessage", function(len, ply)
     local time = net.ReadFloat()
     ply:QueueMessage(message_type, message, time)
 end)
+
+function plymeta:ForceRoleNextRound(role)
+    if self.forcedRole and self.forcedRole ~= ROLE_NONE then
+        return false
+    end
+    self.forcedRole = role
+    return true
+end
+
+function plymeta:GetForcedRole()
+    if self.forcedRole and self.forcedRole ~= ROLE_NONE then
+        return self.forcedRole
+    end
+    return false
+end
+
+function plymeta:ClearForcedRole()
+    self.forcedRole = ROLE_NONE
+end
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
 hook.Add("TTTPrepareRound", "PostLoadOverride", function()

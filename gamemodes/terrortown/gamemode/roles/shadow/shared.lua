@@ -13,6 +13,7 @@ SHADOW_BUFF_HEAL = 1
 SHADOW_BUFF_RESPAWN = 2
 SHADOW_BUFF_DAMAGE = 3
 SHADOW_BUFF_TEAM_JOIN = 4
+SHADOW_BUFF_STEAL_ROLE = 5
 
 -- Shadow notification modes
 SHADOW_NOTIFY_NONE = 0
@@ -23,6 +24,11 @@ SHADOW_NOTIFY_IDENTIFY = 2
 SHADOW_SOUL_LINK_NONE = 0
 SHADOW_SOUL_LINK_BOTH = 1
 SHADOW_SOUL_LINK_TARGET = 2
+
+-- Shadow failure modes
+SHADOW_FAILURE_KILL = 0
+SHADOW_FAILURE_JESTER = 1
+SHADOW_FAILURE_SWAPPER = 2
 
 SHADOW_FORCED_PROGRESS_BAR = -2
 
@@ -38,18 +44,24 @@ end
 
 CreateConVar("ttt_shadow_start_timer", "30", FCVAR_REPLICATED, "How much time (in seconds) the shadow has to find their target at the start of the round", 1, 90)
 CreateConVar("ttt_shadow_buffer_timer", "7", FCVAR_REPLICATED, "How much time (in seconds) the shadow can stay out of their target's radius", 1, 30)
+CreateConVar("ttt_shadow_delay_timer_min", "0", FCVAR_REPLICATED, "Minimum time (in seconds) before the shadow is assigned a target at the start of the round", 0, 180)
+CreateConVar("ttt_shadow_delay_timer_max", "0", FCVAR_REPLICATED, "Maximum time (in seconds) before the shadow is assigned a target at the start of the round", 0, 180)
 CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_REPLICATED, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
-CreateConVar("ttt_shadow_target_buff", "4", FCVAR_REPLICATED, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join.", 0, 4)
+CreateConVar("ttt_shadow_target_buff", "4", FCVAR_REPLICATED, "The type of buff the shadow should get while near their target for enough time. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join. 5 - Kill target and steal their role.", 0, 5)
 CreateConVar("ttt_shadow_target_buff_delay", "90", FCVAR_REPLICATED, "How long (in seconds) the shadow needs to be near their target before the buff takes effect", 1, 120)
 CreateConVar("ttt_shadow_soul_link", "0", FCVAR_REPLICATED, "Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.", 0, 2)
 CreateConVar("ttt_shadow_weaken_health_to", "0", FCVAR_REPLICATED, "How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. Set to 0 to disable, meaning the shadow will be killed", 0, 100)
 CreateConVar("ttt_shadow_target_notify_mode", "0", FCVAR_REPLICATED, "How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.", 0, 2)
+CreateConVar("ttt_shadow_failure_mode", "0", FCVAR_REPLICATED, "How to handle the shadow failing to stay near their target. 0 - Kill them. 1 - Change them to be a jester. 2 - Change them to be a swapper. Not used when \"ttt_shadow_weaken_health_to\" is enabled", 0, 2)
+
+CreateConVar("ttt_sponge_device_for_shadow", "0", FCVAR_REPLICATED, "Whether the shadow should get the spongifier", 0, 1)
 
 local shadow_alive_radius = CreateConVar("ttt_shadow_alive_radius", "8", FCVAR_REPLICATED, "The radius (in meters) from the living target that the shadow has to stay within", 1, 15)
 local shadow_speed_mult = CreateConVar("ttt_shadow_speed_mult", "1.1", FCVAR_REPLICATED, "The minimum multiplier to use on the shadow's sprint speed when they are outside of their target radius (e.g. 1.1 = 110% normal speed)", 1, 2)
 local shadow_speed_mult_max = CreateConVar("ttt_shadow_speed_mult_max", "1.5", FCVAR_REPLICATED, "The maximum multiplier to use on the shadow's sprint speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)", 1, 2)
 local shadow_sprint_recovery = CreateConVar("ttt_shadow_sprint_recovery", "0.1", FCVAR_REPLICATED, "The minimum amount of stamina to recover per tick when the shadow is outside of their target radius", 0, 1)
 local shadow_sprint_recovery_max = CreateConVar("ttt_shadow_sprint_recovery_max", "0.5", FCVAR_REPLICATED, "The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius", 0, 1)
+local shadow_is_jester = CreateConVar("ttt_shadow_is_jester", "0", FCVAR_REPLICATED, "Whether shadows should be treated as members of the jester team", 0, 1)
 
 ROLE_CONVARS[ROLE_SHADOW] = {}
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
@@ -59,6 +71,16 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_buffer_timer",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_delay_timer_min",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_delay_timer_max",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
@@ -75,7 +97,7 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_target_buff",
     type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Heal over time", "Single respawn", "Damage bonus", "Team join"},
+    choices = {"None", "Heal over time", "Single respawn", "Damage bonus", "Team join", "Kill and role steal"},
     isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
@@ -169,6 +191,25 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_update_scoreboard",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_is_jester",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_failure_mode",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Kill", "Become Jester", "Become Swapper"},
+    isNumeric = true
+})
+
+-- Add this convar to the Sponge's table so it's with the others
+if not ROLE_CONVARS[ROLE_SPONGE] then
+    ROLE_CONVARS[ROLE_SPONGE] = {}
+end
+table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+    cvar = "ttt_sponge_device_for_shadow",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
 
 -------------------
 -- ROLE FEATURES --
@@ -252,4 +293,14 @@ hook.Add("TTTSpeedMultiplier", "Shadow_TTTSpeedMultiplier", function(ply, mults)
         local scaled_speed = ScaleSprintValue(speed_value, 1, max_speed, distance, min_distance)
         TableInsert(mults, scaled_speed)
     end
+end)
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTUpdateRoleState", "Shadow_TTTUpdateRoleState", function()
+    local is_jester = shadow_is_jester:GetBool()
+    JESTER_ROLES[ROLE_SHADOW] = is_jester
+    INDEPENDENT_ROLES[ROLE_SHADOW] = not is_jester
 end)

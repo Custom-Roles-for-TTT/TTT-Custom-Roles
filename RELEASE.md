@@ -1,5 +1,75 @@
 # Release Notes
 
+## 2.1.0
+**Released: February 5th, 2024**
+
+### Fixes
+- Fixed players joining the hive mind not having their role weapons removed
+- Fixed players joining the hive mind when they were zombifying
+- Fixed potential client error when using zombie claws and leaping
+- Fixed rolepack role assignment so that it correctly accounts for `ttt_detective_karma_min` and players with 'Avoid Detective' enabled
+
+## 2.0.7 (Beta)
+**Released: February 3rd, 2024**
+
+### Additions
+- Added `ttt_rolepacks` command which opens the new role pack UI
+  - Role packs allow for greater control over how roles spawn, as well as what weapons are available in role shops and any addition ConVar configuration
+  - Multiple role packs can be configured independently but only one role pack can apply at a time
+- Added convar, `ttt_marshal_prevent_deputy`, to control whether to only spawn the marshal when there isn't already a deputy or impersonator in the round (defaults to enabled to match prior behavior).
+- Added ability for jester roles to have a device that converts them to be a sponge
+  - Global announcement is made when a player starts using the device
+  - Disabled by default but can be individually enabled for each jester role by the new `ttt_sponge_device_for_*` convars
+- Added ability for the shadow to be on the jester team (disabled by default)
+- Added ability to have the shadow's target only be assigned after a configurable delay (disabled by default)
+- Added ability to have the shadow become a jester or a swapper when they fail to stay near their target for enough time (disabled by default)
+- Added ability for the shadow to steal their target's role and kill them if they stay together for enough time (disabled by default)
+
+### Changes
+- Changed quartermaster to block Randomat events that prevent their role feature from working
+- Changed roleweapons system to use one JSON file per role instead of a folder per role and a text file per weapon
+  - Legacy text files will be automatically converted to new format on first server load
+  - Roleweapons UI (`ttt_roleweapons`) and commands (`sv_ttt_roleweapons`) have been updated to support new format as well
+
+### Fixes
+- Fixed loot goblin dropping buyable weapons that are not available in any role's shop
+- Fixed player assigned the role of shadow after the round started not having a target assigned
+- Fixed shadow that was killed but not because they killed their target not being allowed to resurrect
+
+### Developer
+- Added `TTTTeamChatTargets` hook which allows role chat messages to be blocked or have their recipients changed
+- Added `TTTCanUseTraitorVoice` hook which allows overriding who can use traitor voice, both speaking and listening
+- Added `TTTTeamVoiceChatTargets` hook which allows team voice state messages to be blocked or have their recipients changed
+- Added cheat-only `ttt_team_chat_as_player` command for sending role chat messages as another player
+- Added `plymeta:ForceRoleNextRound`, `plymeta:GetForcedRole`, and `plymeta:ClearForcedRole` methods to allow forcing player's roles in the next round
+- Added `util.CanRoleSpawnNaturally` method to check if a role can spawn in the round naturally (i.e. because it is enabled via ConVars or role packs)
+- Added `util.GetRoleIconPath` to get the path to a role's icon file
+- Added optional `ply` parameter to `WEPS.HandleRoleEquipment` to allow sending roleweapons data to specific players
+- Added optional `rolepack_weps` parameter to `WEPS.HandleCanBuyOverrides` to allow changing behavior of the CanBuy overrides with regards to configured rolepack weapons
+
+## 2.0.6 (Beta)
+**Released: January 14th, 2024**
+
+### Fixes
+- Fixed guesser not removing or receiving role weapons when swapping with a role that has them (e.g. the mad scientist)
+- Fixed radar timer label still showing on the UI when it was disabled
+- Fixed old man erroring and not dying when their adrenaline rush ended
+
+### Developer
+- Added optional scale parameter to `TTT_PlayerFootstep` net message
+
+## 2.0.5 (Beta)
+**Released: January 7th, 2024**
+
+### Fixes
+- Fixed any player using text chat with a hive mind in the round causing the hive mind to repeat their message
+- Fixed player role and name not revealed to non-detectives in the body search dialog after a detective searches body with certain convars enabled
+- Fixed assassin and shadow target messages being shown to players whose roles were changed by something when the round started
+
+### Developer
+- Removed all deprecated methods, hooks, convars, and role features from before 2.0.0
+- Added optional `predicate` parameter to server-side `plymeta:QueueMessage`
+
 ## 2.0.4
 **Released: January 1st, 2024**\
 Includes beta updates [2.0.1](#201-beta) to [2.0.3](#203-beta).

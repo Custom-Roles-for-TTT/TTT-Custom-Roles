@@ -52,6 +52,17 @@
             <li><em>role</em> - The role ID in question</li>
         </ul>
 
+        <h3><a id="utilcanrolespawnnaturallyrole" href="#utilcanrolespawnnaturallyrole">util.CanRoleSpawnNaturally(role)</a></h3>
+        <p>
+            Returns whether a role can be spawned naturally. (i.e. Spawned in at the start of the round if they are enabled or used in a role pack.)<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.0.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The role ID in question</li>
+        </ul>
+
         <h3><a id="utilexecfilefilepath-errorifmissing" href="#utilexecfilefilepath-errorifmissing">util.ExecFile(filePath, errorIfMissing)</a></h3>
         <p>
             Executes a file at the given path, relative to the root game location.<br>
@@ -62,6 +73,20 @@
         <ul>
             <li><em>filePath</em> - The path to the file to be executed, relative to the root game location</li>
             <li><em>errorIfMissing</em> - Whether to throw an error if the file is missing (Defaults to <code>false</code>)</li>
+        </ul>
+
+        <h3><a id="utilgetroleiconpathrole_str-typ-ext-file_name_override" href="#utilgetroleiconpathrole_str-typ-ext-file_name_override">util.GetRoleIconPath(role_str, typ, ext, file_name_override)</a></h3>
+        <p>
+            Gets the path to a role's icon of the given type.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.0.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role_str</em> - The role string used in the icon path and name</li>
+            <li><em>typ</em> - The type of icon whose path is being found</li>
+            <li><em>ext</em> - The file extension to use in the role icon path</li>
+            <li><em>file_name_override</em> - The file name to use, appended to <code>{typ}_</code> when the path is built (Optional, defaults to the <code>{role_str}</code> value)</li>
         </ul>
     </div>
     <div class="footerpadding panel"></div>

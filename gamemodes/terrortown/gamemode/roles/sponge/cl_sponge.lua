@@ -15,6 +15,10 @@ hook.Add("Initialize", "Sponge_Translations_Initialize", function()
     LANG.AddToLanguage("english", "win_sponge", "The {role} has absorbed themselves to death!")
     LANG.AddToLanguage("english", "ev_win_sponge", "The absorbant {role} won the round!")
 
+    -- Spongifier
+    LANG.AddToLanguage("english", "spongifier_help_pri", "{primaryfire} to turn yourself into a sponge.")
+    LANG.AddToLanguage("english", "spongifier_help_sec", "Starting to use the device will trigger a global announcement.")
+
     -- Scoring
     LANG.AddToLanguage("english", "score_sponge_killedby", "Killed by")
     LANG.AddToLanguage("english", "score_sponge_damaging", "{attacker} damaging")
@@ -176,8 +180,8 @@ hook.Add("TTTScoringSummaryRender", "Sponge_TTTScoringSummaryRender", function(p
     if ply:IsSponge() then
         local spongeKiller = ply:GetNWString("SpongeKiller", "")
         local spongeProtecting = ply:GetNWString("SpongeProtecting", "")
-        if spongeKiller ~= "" then
-            if spongeProtecting ~= "" then
+        if #spongeKiller > 0 then
+            if #spongeProtecting > 0 then
                 return roleFileName, groupingRole, roleColor, name, spongeProtecting, LANG.GetParamTranslation("score_sponge_damaging", {attacker = spongeKiller})
             end
             return roleFileName, groupingRole, roleColor, name, spongeKiller, LANG.GetTranslation("score_sponge_killedby")
@@ -195,7 +199,7 @@ hook.Add("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText", function(role, tit
         local html =  "The " .. ROLE_STRINGS[ROLE_SPONGE] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player."
 
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
-        html = html .. "<span style='display: block; margin-top: 10px;'>The main way " .. ROLE_STRINGS_PLURAL[ROLE_SPONGE] .. " take damage is by absorbing it from other players who are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>damaged within their aura</span>. Keep other players close to secure the win!</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>The main way " .. ROLE_STRINGS_PLURAL[ROLE_SPONGE] .. " take damage is by absorbing it from other players who are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>damaged within their visible aura</span>. Keep other players close to secure the win!</span>"
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! If all players are within the " .. ROLE_STRINGS[ROLE_SPONGE] .. "'s aura, <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>it will stop working</span>. Watch out for when it changes color to red!</span>"
 

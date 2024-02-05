@@ -8,6 +8,7 @@
        1. [Explanation](#Explanation)
        1. [Example](#Example)
    1. [Configuration by Files](#Configuration-by-Files)
+       1. [Preparing a Role for Configuration](#preparing-a-role-for-configuration)
        1. [Weapons](#Weapons)
           1. [Adding Weapons](#Adding-Weapons)
           1. [Removing Weapons](#Removing-Weapons)
@@ -17,6 +18,13 @@
           1. [Adding Equipment](#Adding-Equipment)
           1. [Removing Equipment](#Removing-Equipment)
           1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
+1. [Role Packs](#Role-Packs)
+   1. [Overall](#role-pack-overall)
+   1. [Roles](#role-pack-roles)
+       1. [Adding a new Role Slot](#adding-a-new-role-slot)
+       1. [Configuring a Role Slot Role](#configuring-a-role-slot-role)
+   1. [Weapons](#role-pack-weapons)
+   1. [ConVars](#role-pack-convars)
 1. [Renaming Roles](#Renaming-Roles)
 
 ## Server Configurations
@@ -464,6 +472,7 @@ ttt_marshal_independent_deputy_chance       0.5     // The chance that a indepen
 ttt_marshal_jester_deputy_chance            0.5     // The chance that a jester will become a deputy. -1 to disable
 ttt_marshal_monster_deputy_chance           0.5     // The chance that a monster will become a deputy. -1 to disable
 ttt_marshal_announce_deputy                 1       // Whether a player being deputized will be announced to everyone
+ttt_marshal_prevent_deputy                  1       // Whether to only spawn the marshal when there isn't already a deputy or impersonator in the round
 ttt_marshal_badge_time                      8       // The amount of time (in seconds) the marshal's badge takes to use
 ttt_marshal_credits_starting                1       // The number of credits a marshal should start with
 
@@ -601,6 +610,16 @@ ttt_sponge_aura_radius                      5       // The radius of the sponge'
 ttt_sponge_notify_mode                      0       // The logic to use when notifying players that the sponge is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_sponge_notify_sound                     0       // Whether to play a cheering sound when a sponge is killed
 ttt_sponge_notify_confetti                  0       // Whether to throw confetti when a sponge is a killed
+ttt_sponge_device_time                      8       // The amount of time (in seconds) the spongifier takes to use
+ttt_sponge_device_for_beggar                0       // Whether the beggar should get the spongifier
+ttt_sponge_device_for_bodysnatcher          0       // Whether the bodysnatcher should get the spongifier
+ttt_sponge_device_for_clown                 0       // Whether the clown should get the spongifier
+ttt_sponge_device_for_cupid                 0       // Whether the cupid should get the spongifier
+ttt_sponge_device_for_guesser               0       // Whether the guesser should get the spongifier
+ttt_sponge_device_for_jester                0       // Whether the jester should get the spongifier
+ttt_sponge_device_for_lootgoblin            0       // Whether the lootgoblin should get the spongifier
+ttt_sponge_device_for_shadow                0       // Whether the shadow should get the spongifier
+ttt_sponge_device_for_swapper               0       // Whether the swapper should get the spongifier
 
 // Guesser
 ttt_guesser_can_guess_detectives            0       // Whether the guesser is allowed to guess detectives
@@ -738,11 +757,14 @@ ttt_madscientist_can_see_jesters            1       // Whether jesters are revea
 ttt_madscientist_update_scoreboard          1       // Whether the mad scientist shows dead players as missing in action (Only applies if ttt_madscientist_is_monster is not enabled)
 
 // Shadow
+ttt_shadow_is_jester                        0       // Whether shadows should be treated as members of the jester team
 ttt_shadow_start_timer                      30      // How much time (in seconds) the shadow has to find their target at the start of the round
 ttt_shadow_buffer_timer                     7       // How much time (in seconds) the shadow can stay out of their target's radius without dying
+ttt_shadow_delay_timer_min                  0       // Minimum time (in seconds) before the shadow is assigned a target at the start of the round
+ttt_shadow_delay_timer_max                  0       // Maximum time (in seconds) before the shadow is assigned a target at the start of the round
 ttt_shadow_alive_radius                     8       // The radius (in meters) from the living target that the shadow has to stay within
 ttt_shadow_dead_radius                      3       // The radius (in meters) from the death target that the shadow has to stay within
-ttt_shadow_target_buff                      4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join.
+ttt_shadow_target_buff                      4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join. 5 - Kill target and steal their role.
 ttt_shadow_target_buff_notify               0       // Whether the shadow's target should be notified when they are buffed
 ttt_shadow_target_buff_delay                90      // How long (in seconds) the shadow needs to be near their target before the buff takes effect
 ttt_shadow_target_buff_heal_amount          5       // The amount of health the shadow's target should be healed per-interval
@@ -758,8 +780,9 @@ ttt_shadow_target_jester                    1       // Whether the shadow should
 ttt_shadow_target_independent               1       // Whether the shadow should be able to target an independent player
 ttt_shadow_target_notify_mode               0       // How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.
 ttt_shadow_soul_link                        0       // Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.
-ttt_shadow_weaken_health_to                 0       // How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. Set to 0 to disable, meaning the shadow will be killed
+ttt_shadow_weaken_health_to                 0       // How low to reduce the Shadow's health to when they are outside of the target circle instead of their normal punishment. (Setting to 0 will use "ttt_shadow_failure_mode" instead.)
 ttt_shadow_weaken_timer                     3       // How often (in seconds) to adjust the shadow's health when they are outside of the target circle
+ttt_shadow_failure_mode                     0       // How to handle the shadow failing to stay near their target. 0 - Kill them. 1 - Change them to be a jester. 2 - Change them to be a swapper. Not used when "ttt_shadow_weaken_health_to" is enabled.
 ttt_shadow_can_see_jesters                  0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the shadow
 ttt_shadow_update_scoreboard                0       // Whether the shadow shows dead players as missing in action
 
@@ -1059,7 +1082,7 @@ In TTT some roles have shops where they are allowed to purchase weapons. Given t
 
 The easiest way to configure the role shops is via a user interface usable by administrators directly from a running game. To open the interface, run the `ttt_roleweapons` command from your console. The window that opens should look something like this:
 
-![Blank Role Weapons Window](images/RoleWeapons_Blank.png)
+![Blank Role Weapons Window](docs/tutorials/img/RoleWeapons_Blank.png)
 
 #### **Explanation**
 
@@ -1083,7 +1106,7 @@ To help understand the functionality of this window it might be easier to walk t
 
 First things first: we open the window and select "Detective" from the "Search Roles" dropdown. From there we can either scroll through the list of weapons or use the search text box to search for "health". We then choose "Veteran" from the "Save Role" dropdown and click the "Include" checkbox. With all that done the window should look like this:
 
-![Role Weapons Window for Detective -> Veteran](images/RoleWeapons_DetVet.png)
+![Role Weapons Window for Detective -> Veteran](docs/tutorials/img/RoleWeapons_DetVet.png)
 
 From here, the last step is to click the "Update" button and we're done -- The Veteran now has the ability to buy a Health Station.
 
@@ -1093,13 +1116,21 @@ If you cannot or do not want to use the in-game UI to set up the role shop, it i
 
 *NOTE*: Using the configuration UI still creates and deletes files in the backend. Given that, you can use the UI on your local game and then copy the files to a server or Docker image build as needed.
 
+#### **Preparing a Role for Configuration**
+
+Before a role's shop can be modified, the initial folder and file structure will need to be created. Follow the steps below to accomplish this:
+1. If the _roleweapons_ folder does not already exist in garrysmod/data, create it.
+1. If the there is no .json file for the role you want to modify, create an empty text file and rename it to be {rolename}.json. For example: _detective.json_
+    1. Make sure the file extension is _.json_ and not _.json.txt_. By default, Windows hides known file extensions like .txt so be careful.
+    1. Once the .json file is created, open it in a text editor (like Notepad++) and copy the following empty data structure into it: `{"Excludes":[],"Buyables":[],"NoRandoms":[]}`
+
+**NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective.json
+
 #### **Weapons**
 
 #### *Adding Weapons*
 
-To add weapons to a role (that already has a shop), create an empty .txt file with the weapon class (e.g. weapon_ttt_somethingcool.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
-**NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
-**NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.txt
+To add weapons to a role (that already has a shop), modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the class name of the weapon wrapped in double quotes (e.g. "weapon_ttt_somethingcool") to the `Buyables` array. For example, `{"Excludes":[],"Buyables":["weapon_ttt_somethingcool"],"NoRandoms":[]}`
 
 Also note the ttt_shop_* ConVars that are available above which can help control some of the role weapon shop lists.
 
@@ -1107,17 +1138,13 @@ Also note the ttt_shop_* ConVars that are available above which can help control
 
 At the same time, there are some workshop weapons that are given to multiple roles that maybe you don't want to be available to certain roles. In order to handle that case, the ability to exclude weapons from a role's weapon shop has been added.
 
-To remove weapons from a role's shop, create an empty .exclude.txt file with the weapon class (e.g. weapon_ttt_somethingcool.exclude.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
-**NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
-**NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.exclude.txt
+To remove weapons from a role's shop, modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the class name of the weapon wrapped in double quotes (e.g. "weapon_ttt_somethingcool") to the `Excludes` array. For example, `{"Excludes":["weapon_ttt_somethingcool"],"Buyables":[],"NoRandoms":[]}`
 
 #### *Bypassing Weapon Randomization*
 
 With the addition of the Shop Randomization feature (and the ttt_shop_random_* ConVars), weapons may not always appear in the shop (which is the point). If, however, you want certain weapons to _always_ be in the shop while other weapons are randomized, the ability to bypass shop randomization for a weapon in a role's weapon shop has been added.
 
-To stop a weapon from being removed from a role's shop via randomization, create an empty .norandom.txt file with the weapon class (e.g. weapon_ttt_somethingcool.norandom.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
-**NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
-**NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.norandom.txt
+To stop a weapon from being removed from a role's shop via randomization, modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the class name of the weapon wrapped in double quotes (e.g. "weapon_ttt_somethingcool") to the `NoRandoms` array. For example, `{"Excludes":[],"Buyables":[],"NoRandoms":["weapon_ttt_somethingcool"]}`.
 
 #### *Finding a Weapon's Class*
 
@@ -1128,19 +1155,18 @@ To find the class name of a weapon to use above, follow the steps below
 4. Run the following command in console to get a list of all of your weapon classes: `lua_run PrintTable(player.GetHumans()[1]:GetWeapons())`
 
 #### **Equipment**
+
+Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar.
+
 #### *Adding Equipment*
 
-Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create an empty .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
-**NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
-**NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.txt
+To add equipment items to a role (that already has a shop), modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the name of the equipment item wrapped in double quotes (e.g. "bruh bunker") to the `Buyables` array. For example, `{"Excludes":[],"Buyables":["bruh bunker"],"NoRandoms":[]}`
 
 #### *Removing Equipment*
 
 Similarly there are some equipment items that you want to prevent a specific role from buying. To handle that case, the addon has the ability to exclude specific equipment items from the shop in a similar way.
 
-To remove equipment from a role's shop, create an empty .exclude.txt file with the item's name (e.g. "bruh bunker.exclude.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
-**NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
-**NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.exclude.txt
+To remove equipment from a role's shop, modify the garrysmod/data/roleweapons/{rolename}.json file (using a text editor like Notepad++) and add the name of the equipment item wrapped in double quotes (e.g. "bruh bunker") to the `Excludes` array. For example, `{"Excludes":["bruh bunker"],"Buyables":[],"NoRandoms":[]}`
 
 #### *Finding an Equipment Item's Name*
 
@@ -1149,6 +1175,73 @@ To find the name of an equipment item to use above, follow the steps below
 2. Spawn 1 bot by using the _bot_ command in console
 3. Obtain the equipment item whose name you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
 4. Run the following command in console to get a full list of your equipment item names: `lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end`
+
+## Role Packs
+
+Role packs are a new way of configuring roles, weapons, and additional ConVars all in one place. First and foremost, role packs give you much more control over how you want specific roles to spawn that our current system just can't handle. Want to always have a certain role spawn each round? Want multiple copies of some roles? Want to enable two different roles but never have them spawn together? Role packs will let you do all of this and way more!
+
+On top of all this, role packs allow you to configure which weapons are available to specific roles in the shop, and any additional ConVars you might only want enabled in certain situations. These roles, weapons, and ConVars are bundled up into a role pack that you can enable or disable at any time, however only one role pack can be enabled at a time. Role packs are entirely optional, so if you don't enable any role packs you can still continue to play as you always have.
+
+Role packs are created using the new UI, accessible by admins using the `ttt_rolepacks` command. Once a role pack has been created in the UI, it is saved as a folder of .json files in the *data/rolepacks* folder. Role packs can then be backed up or copied from server-to-server just by transferring those folders.
+
+To enable a role pack, set the `ttt_role_pack` ConVar to the name role pack you want to use.
+
+![Blank Role Packs Window](docs/tutorials/img/RolePacks_Blank.png)
+
+### Role Pack Overall
+
+At the top of the role packs window are the overall controls that are available regardless of the selected tab. The components of this section of the window are:
+1. **Role packs dropdown** - List of current role packs available on the server. Select an entry from the list to edit it.
+1. **Add button** - Creates a new role pack when clicked, first prompting for the name of the role pack being created.
+1. **Rename button** - Renames the currently selected role pack, prompting for the new name.
+1. **Delete button** - Deletes the currently selected role pack, prompting for confirmation.
+1. **Save button** - Saves the changes made to the currently selected role pack.
+1. **Apply to Server button** - Activates the currently selected role pack on the server.
+1. **Disable Active Role Pack button** - Disables the current active role pack on the server.
+
+![Role Packs Overall Controls](docs/tutorials/img/RolePacks_Overall.png)
+
+### Role Pack Roles
+
+The roles tab is where most configuration of the role pack will occur. On this tab, you can create role "slots" which represent a single player in the round. Within each slot you can configure a pool of 0 or more roles for that player to be randomly assigned from. If a slot has 0 roles assigned to it, the normal (e.g. non-role pack) random role selection logic will be used for that slot instead. Each role within a slot can also have a weight assigned to it, making that role more likely than the others to be selected.
+
+#### Adding a new Role Slot
+
+To add a new role slot, click the "Add Slot" button on the bottom of the tab.
+One a slot has been added, you will be presented with three buttons:
+1. **Add role button** - Adds a new role entry to the role slot
+1. **Delete role button** - Deletes the last role entry in the role slot
+2. **Delete slot button** - Deletes the entire role slot
+
+![Role Packs Empty Slot](docs/tutorials/img/RolePacks_EmptySlot.png)
+
+#### Configuring a Role Slot Role
+
+When a new role entry has been added to a lot it defaults to the "NONE" or "?" role. When this placeholder role is along in a slot, behaves the same as if the slot was empty: The player in this slot will have their role randomly assigned by the normal role selection logic.
+
+Two other things to note about the role slot usage:
+1. If there are more slots than players (e.g., 8 configured slots but only 7 players) than the extra slot(s) will not be used.
+1. If there are fewer slots than players (e.g., 6 configured slots but 7 players) than the extra player(s) will have their role randomly assigned by the normal role selection logic.
+
+![Role Packs New Role](docs/tutorials/img/RolePacks_NewRole.png)
+
+To change the role that the slot belongs to, click the role icon and select the new role from the dropdown.
+
+![Role Packs New Role](docs/tutorials/img/RolePacks_NewRoleSelection.png)
+
+To change the weight of a role (how often this role should be selected relative to the other roles in this slot), change the number in the box below the role icon by typing or using the adjustment arrows.
+
+![Role Packs New Role](docs/tutorials/img/RolePacks_RoleWeights.png)
+
+### Role Pack Weapons
+
+This tab is nearly identical to the [Role Weapons UI](#configuration-by-ui) described above. The only differences are the removal of the "Update" and "Close" buttons (which are not needed in this UI), and the rename of the "None" checkbox to "Use Default". All of the functionality in this tab is identical to that in the role weapons UI, except it only takes effect when the specific role pack is enabled
+
+### Role Pack ConVars
+
+The ConVars tab allows you to specify configuration values to set only when the specified role pack is enabled. Add each ConVar on their own line along with the value you would like to set.
+
+![Role Packs ConVars Tab](docs/tutorials/img/RolePacks_ConVars.png)
 
 ## Renaming Roles
 

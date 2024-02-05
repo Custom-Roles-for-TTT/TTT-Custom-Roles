@@ -1,6 +1,15 @@
 # Global Enumerations
 Enumerations available globally (within the defined realm). There are additional enumerations used internally for configuration and event reporting that are not included here. If you need them, for whatever reason, you will need to find them or ask one of the developers in Discord.
 
+### MSG_PRINT*
+Message destination constants used in the player message queueing system.\
+*Realm:* Client and Server\
+*Added in:* 1.9.4\
+*Values:*
+- MSG_PRINTBOTH - Print to both the chat window and the center of the screen
+- MSG_PRINTTALK - Print to the chat window
+- MSG_PRINTCENTER - Print to the center of the screen
+
 ### ROLE_{ROLENAME}
 Every role that is added has its role number available as a global enum value. In addition, `ROLE_MAX` is defined as the highest role number assigned, `ROLE_NONE` is the role number a player is given before another role is assigned, and `ROLE_EXTERNAL_START` is the first role number assigned to roles defined outside of the code Custom Roles for TTT addon.\
 *Realm:* Client and Server\

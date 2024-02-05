@@ -160,7 +160,10 @@ ROLE_MOVE_ROLE_STATE[ROLE_ASSASSIN] = function(ply, target, keep_on_source)
     end
 end
 ROLE_ON_ROLE_ASSIGNED[ROLE_ASSASSIN] = function(ply)
-    AssignAssassinTarget(ply, true, false)
+    -- Use a slight delay to make sure nothing else is changing this player's role first
+    timer.Simple(0.25, function()
+        AssignAssassinTarget(ply, true, false)
+    end)
 end
 
 local function ValidTarget(role)
@@ -200,7 +203,7 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
 
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
     if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker then
-        local wasNotTarget = ply:SteamID64() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget"))
+        local wasNotTarget = ply:SteamID64() ~= attackertarget and (#attackertarget > 0 or timer.Exists(attacker:Nick() .. "AssassinTarget"))
         local convar = "ttt_assassin_allow_" .. ROLE_STRINGS_RAW[ply:GetRole()] .. "_kill"
         local skipPenalty = ConVarExists(convar) and GetConVar(convar):GetBool() and ply:IsRoleActive()
         if wasNotTarget and not skipPenalty then

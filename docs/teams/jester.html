@@ -921,14 +921,27 @@
                         <tr>
                             <td>ttt_lootgoblin_radar_beep_sound_override</td>
                             <td>0</td>
-                            <td>Integer</td>
-                            <td>Forces all players to have the loot goblin radar sound on/off, 0 - let user decide, 1 - force on, 2 - force off.</td>
+                            <td>Integer (0-2)</td>
+                            <td>Forces all players to have the loot goblin radar sound on/off
+                                <ol start="0">
+                                    <li>Let user decide.</li>
+                                    <li>Force on.</li>
+                                    <li>Force off.</li>
+                                </ol>
+                            </td>
                         </tr>
                         <tr>
                             <td>ttt_lootgoblin_regen_mode</td>
                             <td>2</td>
-                            <td>Boolean</td>
-                            <td>Whether the Loot Goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage.</td>
+                            <td>Integer (0-3)</td>
+                            <td>Whether the Loot Goblin should regenerate health and using what logic
+                                <ol start="0">
+                                    <li>No regeneration.</li>
+                                    <li>Constant regen while active.</li>
+                                    <li>Regen while standing still.</li>
+                                    <li>Regen after taking damage.</li>
+                                </ol>
+                            </td>
                         </tr>
                         <tr>
                             <td>ttt_lootgoblin_regen_rate</td>
@@ -970,9 +983,9 @@
             <button class="header" style="background-color:var(--jester);"><i class="icon-sponge"></i>Sponge</button>
             <div class="content">
                 <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-sponge"></i><a href="#sponge">Sponge</a></span> has an aura that absorbs damage that would be dealt to nearby players and wins the round if they die.</p>
+                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-sponge"></i><a href="#sponge">Sponge</a></span> has a visible aura that absorbs damage that would be dealt to nearby players and wins the round if they die.</p>
                 <div class="expansion">
-                    <p>If all players are inside the Sponge's aura, it will stop working and players will be able to damage each other as normal.</p>
+                    <p>If all players are inside the Sponge's aura, it will turn red and stop working, allowing players to damage each other as normal.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -989,6 +1002,18 @@
                             <td>5</td>
                             <td>Float</td>
                             <td>The radius of the Sponge's aura in meters.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sponge_device_time</td>
+                            <td>8</td>
+                            <td>Integer</td>
+                            <td>The amount of time (in seconds) the spongifier takes to use.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sponge_device_for_*</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether a specific jester role should get the spongifier. Replace * with the name of the jester role you want to configure without spaces or capital letters.</td>
                         </tr>
                         </tbody>
                     </table>
@@ -1082,6 +1107,12 @@
                     </table>
                     <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
                 </div>
+            </div>
+        </div>
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:var(--jester);"><i class="icon-team"></i>Configurable Jesters</button>
+            <div class="content">
+                <p>The following roles can be configured to be an <span style="color:var(--jester);">jester</span> instead of their default team: <span class="inline-icon" style="color:var(--independent);"><i class="icon-shadow"></i><a href="../teams/independent.html#shadow">Shadow</a></span>.</p>
             </div>
         </div>
     </div>

@@ -38,6 +38,11 @@ Whether the player can see and use traitor buttons.\
 *Parameters:*
 - *activeOnly* - Whether the player must also be active (Defaults to `false`)
 
+### plymeta:ClearForcedRole()
+Clears the player's forced role if one was set with `plymeta:ForceRoleNextRound(role)`.\
+*Realm:* Server\
+*Added in:* 2.0.7
+
 ### plymeta:DrunkJoinLosingTeam()
 Attempts to find the losing team and calls `self:SoberDrunk(team)` using the losing team as the *team* parameter.\
 *Realm:* Server\
@@ -49,6 +54,14 @@ Sets the drunk's role and runs required checks for that role.\
 *Added in:* 1.1.9\
 *Parameters:*
 - *role* - Which role to set the drunk to (see ROLE_* global enumeration)
+
+### plymeta:ForceRoleNextRound(role)
+Forces a player to spawn as the specified role next round. Returns `true` if successful, `false` if that player has already been forced to be another role.\
+*Realm:* Server\
+*Added in:* 2.0.7\
+*Parameters:*
+- *role* - Which role to force the player to be next round
+
 
 ### plymeta:GetAvoidDetective()/plymeta:ShouldAvoidDetective() (Added in 1.6.2)
 Whether this player wants to avoid being a detective role.\
@@ -68,6 +81,11 @@ Gets the role that should be displayed for the player.\
 *Returns:*
 - *display_role* - The role that should be displayed for the player.
 - *changed* - Whether the return value was changed and should be hidden
+
+### plymeta:GetForcedRole(role)
+Gets the player's forced role if one was set with `plymeta:ForceRoleNextRound(role)`. Returns `false` otherwise.\
+*Realm:* Server\
+*Added in:* 2.0.7
 
 ### plymeta:GetHeight()
 Gets the *estimated* height of the player based on their player model.\
@@ -292,6 +310,26 @@ Moves role state data (such as promotion and monster prime status) to the target
 - *target* - The player to move the role state data to
 - *keepOnSource* - Whether the source player should also keep the role state data (Defaults to `false`)
 
+### plymeta:PrintMessageQueue()
+Begins printing messages from the message queue if it's not already. Automatically called by `plymeta:QueueMessage`.\
+*Realm:* Server\
+*Added in:* 1.9.4
+
+### plymeta:QueueMessage(message_type, message, time, predicate)
+Queues a message to be shown to the player. Useful in situations where multiple center-screen messages could be shown at the same time and overlapped. This ensures each message is shown in order without overlap.\
+*Realm:* Server and Client\
+*Added in:* 1.9.4\
+*Parameters:*
+- *message_type* - The [MSG_PRINT*](GLOBAL_ENUMERATIONS.md#msg_print) value representing the display target for this message
+- *message* - The message being shown
+- *time* - The amount of time to display the message in the center of the screen. Only used when *message_type* is *MSG_PRINTBOTH* or *MSG_PRINTCENTER*
+- *predicate* - Predicate function called with the player as the sole parameter before the message is sent. Return *true* to allow the message or *false* to prevent it (Optional) *(Added in 2.0.5)* *(Only available on the server realm)*
+
+### plymeta:ResetMessageQueue()
+Clears the message queue for the player.\
+*Realm:* Server\
+*Added in:* 1.9.4
+
 ### plymeta:ResetPlayerScale()
 Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.\
 *Realm:* Server\
@@ -357,12 +395,6 @@ Sets whether the player is a prime (e.g. first-spawned) zombie.\
 Whether the player should act like a jester (e.g. in what damage they do, what damage they take, how they appear to other players, etc.).\
 *Realm:* Client and Server\
 *Added in:* 1.2.5
-
-### plymeta:ShouldDelayAnnouncements()  <!-- TODO: Remove after 2.0.0 -->
-**DEPRECATED IN 1.9.4**\
-Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.\
-*Realm:* Client and Server\
-*Added in:* 1.2.7
 
 ### plymeta:ShouldDelayShopPurchase()
 Whether the player's shop purchase deliveries should be delayed.\

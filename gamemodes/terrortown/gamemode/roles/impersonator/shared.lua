@@ -9,6 +9,8 @@ local GetAllPlayers = player.GetAll
 -- Initialize role features
 
 ROLE_SELECTION_PREDICATE[ROLE_IMPERSONATOR] = function()
+    if not GetConVar("ttt_marshal_prevent_deputy"):GetBool() then return true end
+
     -- Don't allow the impersonator to spawn if there's already a marshal
     for _, p in ipairs(GetAllPlayers()) do
         if p:IsMarshal() then
@@ -44,7 +46,7 @@ hook.Add("TTTPrepareRound", "Impersonator_Shared_TTTPrepareRound", function()
 end)
 
 hook.Add("TTTRoleSpawnsArtificially", "Impersonator_TTTRoleSpawnsArtificially", function(role)
-    if role == ROLE_IMPERSONATOR and GetConVar("ttt_marshal_enabled"):GetBool() then
+    if role == ROLE_IMPERSONATOR and util.CanRoleSpawn(ROLE_MARSHAL) then
         return true
     end
 end)

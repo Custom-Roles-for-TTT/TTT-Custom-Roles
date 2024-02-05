@@ -9,6 +9,8 @@ local GetAllPlayers = player.GetAll
 -- Initialize role features
 
 ROLE_SELECTION_PREDICATE[ROLE_DEPUTY] = function()
+    if not GetConVar("ttt_marshal_prevent_deputy"):GetBool() then return true end
+
     -- Don't allow the deputy to spawn if there's already a marshal
     for _, p in ipairs(GetAllPlayers()) do
         if p:IsMarshal() then
@@ -71,7 +73,7 @@ hook.Add("TTTPrepareRound", "Deputy_Shared_TTTPrepareRound", function()
 end)
 
 hook.Add("TTTRoleSpawnsArtificially", "Deputy_TTTRoleSpawnsArtificially", function(role)
-    if role == ROLE_DEPUTY and GetConVar("ttt_marshal_enabled"):GetBool() then
+    if role == ROLE_DEPUTY and util.CanRoleSpawn(ROLE_MARSHAL) then
         return true
     end
 end)

@@ -9,6 +9,7 @@ local string = string
 local table = table
 
 local FileExists = file.Exists
+local FileFind = file.Find
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
@@ -22,8 +23,8 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.0.4"
-CR_BETA = false
+CR_VERSION = "2.1.0"
+CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
 function CRVersion(version)
@@ -222,6 +223,8 @@ AddRoleAssociations(DETECTIVE_LIKE_ROLES, {ROLE_DEPUTY, ROLE_IMPERSONATOR})
 
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
+
+ROLE_PACK_ROLES = {}
 
 -- Traitors get this ability by default
 TRAITOR_BUTTON_ROLES = {}
@@ -785,11 +788,11 @@ end
 function UpdateRoleStrings()
     for role = 0, ROLE_MAX do
         local name = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name"):GetString()
-        if name ~= "" then
+        if #name > 0 then
             ROLE_STRINGS[role] = name
 
             local plural = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural"):GetString()
-            if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
+            if #plural == 0 then -- Fallback if no plural is given. Does NOT handle all cases properly
                 local lastChar = StringLower(StringSub(name, #name, #name))
                 if lastChar == "s" then
                     ROLE_STRINGS_PLURAL[role] = name .. "es"
@@ -803,7 +806,7 @@ function UpdateRoleStrings()
             end
 
             local article = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article"):GetString()
-            if article == "" then -- Fallback if no article is given. Does NOT handle all cases properly
+            if #article == 0 then -- Fallback if no article is given. Does NOT handle all cases properly
                 if StartsWithVowel(name) then
                     ROLE_STRINGS_EXT[role] = "an " .. name
                 else
@@ -866,36 +869,34 @@ ROLE_DATA_EXTERNAL = {}
 ROLE_TRANSLATIONS = {}
 
 -- Role features
-ROLE_SHOP_ITEMS = {}
+ROLE_CONVARS = {}
 ROLE_LOADOUT_ITEMS = {}
-ROLE_STARTING_CREDITS = {}
-ROLE_STARTING_HEALTH = {}
 ROLE_MAX_HEALTH = {}
 ROLE_SELECTION_PREDICATE = {}
-
-ROLE_CONVARS = {}
+ROLE_SHOP_ITEMS = {}
+ROLE_STARTING_CREDITS = {}
+ROLE_STARTING_HEALTH = {}
 
 -- Optional features
-ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {} -- TODO: Remove after 2.0.0
-ROLE_HAS_PASSIVE_WIN = {}
-ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
 ROLE_CAN_SEE_JESTERS = {}
 ROLE_CAN_SEE_MIA = {}
+ROLE_HAS_PASSIVE_WIN = {}
 ROLE_HAS_SHOP_MODE = {}
 ROLE_HAS_SHOP_SYNC = {}
 ROLE_SHOP_SYNC_ROLES = {}
+ROLE_SHOULD_NOT_DROWN = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
-ROLE_SHOULD_ACT_LIKE_JESTER = {}
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
+ROLE_IS_TARGETID_OVERRIDDEN = {}
+ROLE_IS_TARGET_HIGHLIGHTED = {}
 ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
-ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
-ROLE_IS_TARGETID_OVERRIDDEN = {}
-ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
-ROLE_IS_TARGET_HIGHLIGHTED = {}
+ROLE_SHOULD_ACT_LIKE_JESTER = {}
 ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE = {}
+ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 ROLE_VICTIM_CHANGING_ROLE = {}
 ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 
@@ -988,26 +989,6 @@ function RegisterRole(tbl)
         CAN_LOOT_CREDITS_ROLES[roleID] = tbl.canlootcredits
     end
 
-    if type(tbl.canusetraitorbuttons) == "boolean" then
-        TRAITOR_BUTTON_ROLES[roleID] = tbl.canusetraitorbuttons
-    end
-
-    if type(tbl.shoulddelayshop) == "boolean" then
-        DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
-    end
-
-    if type(tbl.shoulddelayannouncements) == "boolean" then -- TODO: Remove after 2.0.0
-        ROLE_SHOULD_DELAY_ANNOUNCEMENTS[roleID] = tbl.shoulddelayannouncements
-    end
-
-    if type(tbl.haspassivewin) == "boolean" then
-        ROLE_HAS_PASSIVE_WIN[roleID] = tbl.haspassivewin
-    end
-
-    if type(tbl.shouldnotdrown) == "boolean" then
-        ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
-    end
-
     if type(tbl.canseec4) == "boolean" then
         ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
     end
@@ -1020,6 +1001,14 @@ function RegisterRole(tbl)
         ROLE_CAN_SEE_MIA[roleID] = tbl.canseemia
     end
 
+    if type(tbl.canusetraitorbuttons) == "boolean" then
+        TRAITOR_BUTTON_ROLES[roleID] = tbl.canusetraitorbuttons
+    end
+
+    if type(tbl.haspassivewin) == "boolean" then
+        ROLE_HAS_PASSIVE_WIN[roleID] = tbl.haspassivewin
+    end
+
     if type(tbl.hasshopmode) == "boolean" then
         ROLE_HAS_SHOP_MODE[roleID] = tbl.hasshopmode
     end
@@ -1028,20 +1017,20 @@ function RegisterRole(tbl)
         ROLE_HAS_SHOP_SYNC[roleID] = tbl.hasshopsync
     end
 
-    if type(tbl.shopsyncroles) == "table" then
-        ROLE_SHOP_SYNC_ROLES[roleID] = tbl.shopsyncroles
-    end
-
     if type(tbl.isdetectivelike) == "boolean" then
         DETECTIVE_LIKE_ROLES[roleID] = tbl.isdetectivelike
     end
 
-    if type(tbl.shouldrevealrolewhenactive) == "function" then
-        ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[roleID] = tbl.shouldrevealrolewhenactive
+    if type(tbl.shopsyncroles) == "table" then
+        ROLE_SHOP_SYNC_ROLES[roleID] = tbl.shopsyncroles
     end
 
-    if type(tbl.victimchangingrole) == "function" then
-        ROLE_VICTIM_CHANGING_ROLE[roleID] = tbl.victimchangingrole
+    if type(tbl.shoulddelayshop) == "boolean" then
+        DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
+    end
+
+    if type(tbl.shouldnotdrown) == "boolean" then
+        ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
     end
 
     -- Equipment
@@ -1061,8 +1050,16 @@ function RegisterRole(tbl)
         ROLE_IS_ACTIVE[roleID] = tbl.isactive
     end
 
-    if type(tbl.shouldactlikejester) == "function" then
-        ROLE_SHOULD_ACT_LIKE_JESTER[roleID] = tbl.shouldactlikejester
+    if type(tbl.isscoreboardinfooverridden) == "function" then
+        ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[roleID] = tbl.isscoreboardinfooverridden
+    end
+
+    if type(tbl.istargetidoverridden) == "function" then
+        ROLE_IS_TARGETID_OVERRIDDEN[roleID] = tbl.istargetidoverridden
+    end
+
+    if type(tbl.istargethighlighted) == "function" then
+        ROLE_IS_TARGET_HIGHLIGHTED[roleID] = tbl.istargethighlighted
     end
 
     if type(tbl.moverolestate) == "function" then
@@ -1073,20 +1070,20 @@ function RegisterRole(tbl)
         ROLE_ON_ROLE_ASSIGNED[roleID] = tbl.onroleassigned
     end
 
+    if type(tbl.shouldactlikejester) == "function" then
+        ROLE_SHOULD_ACT_LIKE_JESTER[roleID] = tbl.shouldactlikejester
+    end
+
+    if type(tbl.shouldrevealrolewhenactive) == "function" then
+        ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[roleID] = tbl.shouldrevealrolewhenactive
+    end
+
     if type(tbl.shouldshowspectatorhud) == "function" then
         ROLE_SHOULD_SHOW_SPECTATOR_HUD[roleID] = tbl.shouldshowspectatorhud
     end
 
-    if type(tbl.istargetidoverridden) == "function" then
-        ROLE_IS_TARGETID_OVERRIDDEN[roleID] = tbl.istargetidoverridden
-    end
-
-    if type(tbl.isscoreboardinfooverridden) == "function" then
-        ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[roleID] = tbl.isscoreboardinfooverridden
-    end
-
-    if type(tbl.istargethighlighted) == "function" then
-        ROLE_IS_TARGET_HIGHLIGHTED[roleID] = tbl.istargethighlighted
+    if type(tbl.victimchangingrole) == "function" then
+        ROLE_VICTIM_CHANGING_ROLE[roleID] = tbl.victimchangingrole
     end
 
     -- List of objects that describe convars for ULX support, in the following format:
@@ -1111,13 +1108,13 @@ function RegisterRole(tbl)
 end
 
 local function AddRoleFiles(root)
-    local rootfiles, dirs = file.Find(root .. "*", "LUA")
+    local rootfiles, dirs = FileFind(root .. "*", "LUA")
     for _, dir in ipairs(dirs) do
         local clientFiles = {}
         local sharedFiles = {}
         local serverFiles = {}
         -- Partition the files by location so we can load shared first
-        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
+        local files, _ = FileFind(root .. dir .. "/*.lua", "LUA")
         for _, fil in ipairs(files) do
             if StringFind(fil, "cl_") then
                 table.insert(clientFiles, fil)
@@ -1723,119 +1720,9 @@ DefaultEquipment = {
 -- Old ConVars --
 -----------------
 
-local function OldCVarWarning(oldName, newName)
-    cvars.AddChangeCallback(oldName, function(convar, oldValue, newValue)
-        RunConsoleCommand(newName, newValue)
-        ErrorNoHalt("WARNING: ConVar \'" .. oldName .. "\' deprecated. Use \'" .. newName .. "\' instead!\n")
-    end)
-end
-
--- init_shd
-CreateConVar("ttt_detective_disable_looting", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_detective_disable_looting", "ttt_detectives_disable_looting")
-
-CreateConVar("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE, FCVAR_REPLICATED, "How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)", SPECIAL_DETECTIVE_HIDE_NONE, SPECIAL_DETECTIVE_HIDE_FOR_OTHERS)
-OldCVarWarning("ttt_detective_hide_special_mode", "ttt_detectives_hide_special_mode")
-
-CreateConVar("ttt_detective_search_only", "1", FCVAR_REPLICATED)
-OldCVarWarning("ttt_detective_search_only", "ttt_detectives_search_only")
-
-for _, dataType in ipairs(CORPSE_ICON_TYPES) do
-    CreateConVar("ttt_detective_search_only_" .. dataType, "0", FCVAR_REPLICATED)
-    OldCVarWarning("ttt_detective_search_only_" .. dataType, "ttt_detectives_search_only_" .. dataType)
-end
-
-CreateConVar("ttt_traitor_vision_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_traitor_vision_enable", "ttt_traitors_vision_enabled")
-
--- Assassin
-CreateConVar("ttt_assassin_target_vision_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_assassin_target_vision_enable", "ttt_assassin_target_vision_enabled")
-
--- Arsonist
-CreateConVar("ttt_detective_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_detective_search_only_arsonistdouse", "ttt_detectives_search_only_arsonistdouse")
-
--- Beggar
-CreateConVar("ttt_beggars_are_independent", "0", FCVAR_REPLICATED, "Whether beggars should be treated as members of the independent team", 0, 1)
-OldCVarWarning("ttt_beggars_are_independent", "ttt_beggar_is_independent")
-
--- Bodysnatcher
-CreateConVar("ttt_bodysnatchers_are_independent", "0", FCVAR_REPLICATED, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
-OldCVarWarning("ttt_bodysnatchers_are_independent", "ttt_bodysnatcher_is_independent")
-
--- Cupid
-CreateConVar("ttt_cupids_are_independent", "0", FCVAR_REPLICATED, "Whether cupids should be treated as members of the independent team", 0, 1)
-OldCVarWarning("ttt_cupids_are_independent", "ttt_cupid_is_independent")
-
-CreateConVar("ttt_cupid_lover_vision_enable", "1", FCVAR_REPLICATED, "Whether the lovers can see outlines of each other through walls", 0, 1)
-OldCVarWarning("ttt_cupid_lover_vision_enable", "ttt_cupid_lover_vision_enabled")
-
--- Detective-Like
-CreateConVar("ttt_detective_glow_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_detective_glow_enable", "ttt_detectives_glow_enabled")
-
-if SERVER then
-    CreateConVar("ttt_detective_credits_timer", "0")
-    OldCVarWarning("ttt_detective_credits_timer", "ttt_detectives_credits_timer")
-end
-
--- Hive Mind
-CreateConVar("ttt_hivemind_vision_enable", "1", FCVAR_REPLICATED)
-OldCVarWarning("ttt_hivemind_vision_enable", "ttt_hivemind_vision_enabled")
-
--- Infected
-CreateConVar("ttt_infected_respawn_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_infected_respawn_enable", "ttt_infected_respawn_enabled")
-
--- Killer
-CreateConVar("ttt_killer_vision_enable", "1", FCVAR_REPLICATED)
-OldCVarWarning("ttt_killer_vision_enable", "ttt_killer_vision_enabled")
-
--- Mad Scientist
-CreateConVar("ttt_madscientist_respawn_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_madscientist_respawn_enable", "ttt_madscientist_respawn_enabled")
-
--- Traitor
-if SERVER then
-    CreateConVar("ttt_traitor_credits_timer", "0")
-    OldCVarWarning("ttt_traitor_credits_timer", "ttt_traitors_credits_timer")
-end
-
--- Vampire
-CreateConVar("ttt_vampires_are_monsters", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_vampires_are_monsters", "ttt_vampire_is_monster")
-
-CreateConVar("ttt_vampires_are_independent", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_vampires_are_independent", "ttt_vampire_is_independent")
-
-CreateConVar("ttt_vampire_convert_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_vampire_convert_enable", "ttt_vampire_convert_enabled")
-
-CreateConVar("ttt_vampire_drain_enable", "1", FCVAR_REPLICATED)
-OldCVarWarning("ttt_vampire_drain_enable", "ttt_vampire_drain_enabled")
-
-CreateConVar("ttt_vampire_vision_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_vampire_vision_enable", "ttt_vampire_vision_enabled")
-
--- Zombie
-CreateConVar("ttt_zombies_are_monsters", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_zombies_are_monsters", "ttt_zombie_is_monster")
-
-CreateConVar("ttt_zombies_are_traitors", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_zombies_are_traitors", "ttt_zombie_is_traitor")
-
-CreateConVar("ttt_zombie_leap_enable", "1", FCVAR_REPLICATED)
-OldCVarWarning("ttt_zombie_leap_enable", "ttt_zombie_leap_enabled")
-
-CreateConVar("ttt_zombie_spit_enable", "1", FCVAR_REPLICATED)
-OldCVarWarning("ttt_zombie_spit_enable", "ttt_zombie_spit_enabled")
-
-CreateConVar("ttt_zombie_vision_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_zombie_vision_enable", "ttt_zombie_vision_enabled")
-
--- Death Notifier
-if SERVER then
-    CreateConVar("ttt_death_notifier_enable", "1")
-    OldCVarWarning("ttt_death_notifier_enable", "ttt_death_notifier_enabled")
-end
+--local function OldCVarWarning(oldName, newName)
+--    cvars.AddChangeCallback(oldName, function(convar, oldValue, newValue)
+--        RunConsoleCommand(newName, newValue)
+--        ErrorNoHalt("WARNING: ConVar \'" .. oldName .. "\' deprecated. Use \'" .. newName .. "\' instead!\n")
+--    end)
+--end

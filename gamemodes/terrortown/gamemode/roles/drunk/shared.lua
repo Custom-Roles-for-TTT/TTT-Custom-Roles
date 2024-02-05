@@ -89,8 +89,7 @@ end)
 hook.Add("TTTRoleSpawnsArtificially", "Drunk_TTTRoleSpawnsArtificially", function(role)
     if not drunk_any_role:GetBool() or not drunk_any_role_include_disabled:GetBool() then return end
 
-    local rolestring = ROLE_STRINGS_RAW[role]
-    if DEFAULT_ROLES[role] or GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool() then return end
+    if util.CanRoleSpawnNaturally(role) then return end
 
     for _, v in ipairs(GetAllPlayers()) do
         if v:IsRole(role) then

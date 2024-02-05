@@ -47,6 +47,7 @@ CreateConVar("ttt_scoreboard_score", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
 
+CreateConVar("ttt_role_pack", "", FCVAR_REPLICATED)
 -- Shop parameters
 CreateConVar("ttt_shop_for_all", 0, FCVAR_REPLICATED)
 -- Add any convars that are missing once shop-for-all is enabled

@@ -703,17 +703,18 @@
             </div>
         </div>
         <div id="shadow" class="collapsible">
-            <button class="header" style="background-color:var(--independent);"><i class="icon-shadow"></i>Shadow</button>
+            <button class="header" style="background-image:linear-gradient(110deg, var(--independent) 0%, var(--independent) 70%, var(--jester) 70%, var(--jester) 100%);"><i class="icon-shadow"></i>Shadow</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-shadow"></i><a href="#shadow">Shadow</a></span> needs to stay close to their target or they will die. If they stay can close to their target for long enough they join their team. They win if they can survive until the end of the round.</p>
                 <div class="expansion">
                     <p>By default, the Shadow is automatically killed if they kill their target, but this behavior can be adjusted by changing the <code>ttt_shadow_soul_link</code> ConVar.</p>
                     <p>Shadows can see their target highlighted through walls and are given limited time to find and stay with their target. If they fail to find their target or spend too much time away from them once they are found, the Shadow is killed.</p>
-                    <p>If their target dies, the Shadow still need to stay close to their body. Staying too far away from their body for too long will kill the Shadow.</p>
+                    <p>If their target dies, the Shadow still need to stay close to their body. Staying too far away from their body for too long will cause the Shadow to be punished as configured by the <code>ttt_shadow_failure_mode</code> ConVar. By default, they are killed.</p>
                     <p><code>ttt_shadow_weaken_health_to</code> can be set to have the Shadow have their health temporarily drain while away from their target instead, if that is desired.</p>
                     <p>The Shadow is configured to have a movement speed and sprint stamina regeneration buff that increases the further away from their target they are. This makes it easier for the Shadow to get to their target, even on larger maps. The bonuses can be changed via the <code>ttt_shadow_speed_mult</code>, <code>ttt_shadow_speed_mult_max</code>, <code>ttt_shadow_sprint_recovery</code>, and <code>ttt_shadow_sprint_recovery_max</code> ConVars.</p>
                     <p>When the Shadow has spent enough time with their target, they will join their team and help fight as their ally. This behavior can be changed or adjusted via the ConVars that start with <code>ttt_shadow_target_buff</code>.</p>
+                    <p>The Shadow can optionally be part of the <span style="color:var(--jester)"><a href="../teams/jester.html">jester team</a></span> instead of being an independent by enabling <code>ttt_shadow_is_jester</code>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -750,10 +751,40 @@
                             <td>The radius in meters from the death target that the Shadow has to stay within.</td>
                         </tr>
                         <tr>
+                            <td>ttt_shadow_delay_timer_max</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>Maximum time in seconds before the Shadow is assigned a target at the start of the round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_delay_timer_min</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>Minimum time in seconds before the Shadow is assigned a target at the start of the round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_shadow_failure_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>How to handle the Shadow failing to stay near their target:
+                                <ol start="0">
+                                    <li>Kill them.</li>
+                                    <li>Change them to be a Jester.</li>
+                                    <li>Change them to be a Swapper.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>ttt_shadow_soul_link</td>
                             <td>0</td>
                             <td>Integer (0-2)</td>
-                            <td>Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.</td>
+                            <td>Whether the Shadow's soul should be linked to their target.
+                                <ol start="0">
+                                    <li>Disable.</li>
+                                    <li>Both Shadow and target die if either is killed.</li>
+                                    <li>The Shadow dies if their target is killed.</li>
+                                </ol>
+                            </td>
                         </tr>
                         <tr>
                             <td>ttt_shadow_speed_mult</td>
@@ -789,13 +820,14 @@
                             <td>ttt_shadow_target_buff</td>
                             <td>4</td>
                             <td>Integer (0-4)</td>
-                            <td>The type of buff to Shadow's target should get:
+                            <td>The type of buff the Shadow should get while near their target for enough time:
                                 <ol start="0">
                                     <li>None.</li>
                                     <li>Heal over time.</li>
                                     <li>Single respawn.</li>
                                     <li>Damage bonus.</li>
                                     <li>Team join.</li>
+                                    <li>Kill target and steal their role.</li>
                                 </ol>
                             </td>
                         </tr>
@@ -875,7 +907,7 @@
                             <td>ttt_shadow_weaken_health_to</td>
                             <td>0</td>
                             <td>Integer</td>
-                            <td>How low to reduce the Shadow's health to when they are outside of the target circle instead of killing them. <i>(Setting to 0 will kill them.)</i></td>
+                            <td>How low to reduce the Shadow's health to when they are outside of the target circle instead of their normal punishment. <i>(Setting to 0 will use <code>ttt_shadow_failure_mode</code> instead.)</i></td>
                         </tr>
                         <tr>
                             <td>ttt_shadow_weaken_timer</td>

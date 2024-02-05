@@ -4,8 +4,6 @@ local hook = hook
 local table = table
 
 -- Initialize role features
-ROLE_SHOULD_DELAY_ANNOUNCEMENTS[ROLE_ASSASSIN] = true -- TODO: Remove after 2.0.0
-
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_ASSASSIN] = {

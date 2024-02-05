@@ -72,6 +72,13 @@
             <li><em>activeOnly</em> - Whether the player must also be active (Defaults to <code>false</code>)</li>
         </ul>
 
+        <h3><a id="plymetaclearforcedrole" href="#plymetaclearforcedrole">plymeta:ClearForcedRole()</a></h3>
+        <p>
+            Clears the player's forced role if one was set with <code>plymeta:ForceRoleNextRound(role)</code>.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.0.7
+        </p>
+
         <h3><a id="plymetadrunkjoinlosingteam" href="#plymetadrunkjoinlosingteam">plymeta:DrunkJoinLosingTeam()</a></h3>
         <p>
             Attempts to find the losing team and calls <code>self:SoberDrunk(team)</code> using the losing team as the <em>team</em> parameter.<br>
@@ -88,6 +95,17 @@
         </p>
         <ul>
             <li><em>role</em> - Which role to set the Drunk to (see ROLE_* global enumeration)</li>
+        </ul>
+
+        <h3><a id="plymetaforcerolenextroundrole" href="#plymetaforcerolenextroundrole">plymeta:ForceRoleNextRound(role)</a></h3>
+        <p>
+            Forces a player to spawn as the specified role next round. Returns <code>true</code> if successful, <code>false</code> if that player has already been forced to be another role.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.0.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - Which role to force the player to be next round</li>
         </ul>
 
         <h3><a id="plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162" href="#plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162">plymeta:GetAvoidDetective()/plymeta:ShouldAvoidDetective() (Added in 1.6.2)</a></h3>
@@ -117,6 +135,13 @@
             <li><em>display_role</em> - The role that should be displayed for the player.</li>
             <li><em>changed</em> - Whether the return value was changed and should be hidden</li>
         </ul>
+
+        <h3><a id="plymetagetforcedrole" href="#plymetagetforcedrole">plymeta:GetForcedRole()</a></h3>
+        <p>
+            Gets the player's forced role if one was set with <code>plymeta:ForceRoleNextRound(role)</code>. Returns <code>false</code> otherwise.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.0.7
+        </p>
 
         <h3><a id="plymetagetheight" href="#plymetagetheight">plymeta:GetHeight()</a></h3>
         <p>
@@ -441,6 +466,34 @@
             <li><em>keepOnSource</em> - Whether the source player should also keep the role state data (Defaults to <code>false</code>)</li>
         </ul>
 
+        <h3><a id="plymetaprintmessagequeue" href="#plymetaprintmessagequeue">plymeta:PrintMessageQueue()</a></h3>
+        <p>
+            Begins printing messages from the message queue if it's not already. Automatically called by <code>plymeta:QueueMessage</code>.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.9.4<br>
+        </p>
+        
+        <h3><a id="plymetaqueuemessagemessage_type-message-time-predicate" href="#plymetaqueuemessagemessage_type-message-time-predicate">plymeta:QueueMessage(message_type, message, time, predicate)</a></h3>
+        <p>
+            Queues a message to be shown to the player. Useful in situations where multiple center-screen messages could be shown at the same time and overlapped. This ensures each message is shown in order without overlap.<br>
+            <em>Realm:</em> Server and Client<br>
+            <em>Added in:</em> 1.9.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>message_type</em> - The <a href="global_enumerations.html#msg_print" target="_blank">MSG_PRINT*</a> value representing the display target for this message</li>
+            <li><em>message</em> - The message being shown</li>
+            <li><em>time</em> - The amount of time to display the message in the center of the screen. Only used when <code>message_type</code> is <code>MSG_PRINTBOTH</code> or <code>MSG_PRINTCENTER</code></li>
+            <li><em>predicate</em> - Predicate function called with the player as the sole parameter before the message is sent. Return <code>true</code> to allow the message or <code>false</code> to prevent it (Optional) <em>(Added in 2.0.5)</em> <em>(Only available on the server realm)</em></li>
+        </ul>
+        
+        <h3><a id="plymetaresetmessagequeue" href="#plymetaresetmessagequeue">plymeta:ResetMessageQueue()</a></h3>
+        <p>
+            Clears the message queue for the player.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.9.4<br>
+        </p>
+
         <h3><a id="plymetaresetplayerscale" href="#plymetaresetplayerscale">plymeta:ResetPlayerScale()</a></h3>
         <p>
             Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.<br>
@@ -541,14 +594,6 @@
             Whether the player should act like a jester (e.g. in what damage they do, what damage they take, how they appear to other players, etc.).<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.2.5
-        </p>
-
-        <h3><a id="plymetashoulddelayannouncements" href="#plymetashoulddelayannouncements">plymeta:ShouldDelayAnnouncements()</a></h3>  <!-- TODO: Remove after 2.0.0 -->
-        <p>
-            <b>DEPRECATED IN 1.9.4</b><br>
-            Whether this role should delay announcements when they kill a player that shows a message (like Phantom and Parasite). Used for things like preventing the Assassin's target update message from getting overlapped.<br>
-            <em>Realm:</em> Client and Server<br>
-            <em>Added in:</em> 1.2.7
         </p>
 
         <h3><a id="plymetashoulddelayshoppurchase" href="#plymetashoulddelayshoppurchase">plymeta:ShouldDelayShopPurchase()</a></h3>
