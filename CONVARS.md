@@ -1082,7 +1082,7 @@ In TTT some roles have shops where they are allowed to purchase weapons. Given t
 
 The easiest way to configure the role shops is via a user interface usable by administrators directly from a running game. To open the interface, run the `ttt_roleweapons` command from your console. The window that opens should look something like this:
 
-![Blank Role Weapons Window](images/RoleWeapons_Blank.png)
+![Blank Role Weapons Window](docs/tutorials/img/RoleWeapons_Blank.png)
 
 #### **Explanation**
 
@@ -1106,7 +1106,7 @@ To help understand the functionality of this window it might be easier to walk t
 
 First things first: we open the window and select "Detective" from the "Search Roles" dropdown. From there we can either scroll through the list of weapons or use the search text box to search for "health". We then choose "Veteran" from the "Save Role" dropdown and click the "Include" checkbox. With all that done the window should look like this:
 
-![Role Weapons Window for Detective -> Veteran](images/RoleWeapons_DetVet.png)
+![Role Weapons Window for Detective -> Veteran](docs/tutorials/img/RoleWeapons_DetVet.png)
 
 From here, the last step is to click the "Update" button and we're done -- The Veteran now has the ability to buy a Health Station.
 
@@ -1182,11 +1182,11 @@ Role packs are a new way of configuring roles, weapons, and additional ConVars a
 
 On top of all this, role packs allow you to configure which weapons are available to specific roles in the shop, and any additional ConVars you might only want enabled in certain situations. These roles, weapons, and ConVars are bundled up into a role pack that you can enable or disable at any time, however only one role pack can be enabled at a time. Role packs are entirely optional, so if you don't enable any role packs you can still continue to play as you always have.
 
-Role packs are created using the new UI, accessible by admins using the `ttt_rolepacks` command. Once a role pack has been created in the UI, it is saved as a folder of .json files in the `data/rolepacks` folder. Role packs can then be backed up or copied from server-to-server just by transferring those folders.
+Role packs are created using the new UI, accessible by admins using the `ttt_rolepacks` command. Once a role pack has been created in the UI, it is saved as a folder of .json files in the *data/rolepacks* folder. Role packs can then be backed up or copied from server-to-server just by transferring those folders.
 
 To enable a role pack, set the `ttt_role_pack` ConVar to the name role pack you want to use.
 
-![Blank Role Packs Window](images/RolePacks_Blank.png)
+![Blank Role Packs Window](docs/tutorials/img/RolePacks_Blank.png)
 
 ### Role Pack Overall
 
@@ -1199,7 +1199,7 @@ At the top of the role packs window are the overall controls that are available 
 1. **Apply to Server button** - Activates the currently selected role pack on the server.
 1. **Disable Active Role Pack button** - Disables the current active role pack on the server.
 
-![Role Packs Overall Controls](images/RolePacks_Overall.png)
+![Role Packs Overall Controls](docs/tutorials/img/RolePacks_Overall.png)
 
 ### Role Pack Roles
 
@@ -1213,21 +1213,21 @@ One a slot has been added, you will be presented with three buttons:
 1. **Delete role button** - Deletes the last role entry in the role slot
 2. **Delete slot button** - Deletes the entire role slot
 
-![Role Packs Empty Slot](images/RolePacks_EmptySlot.png)
+![Role Packs Empty Slot](docs/tutorials/img/RolePacks_EmptySlot.png)
 
 #### Configuring a Role Slot Role
 
 When a new role entry has been added to a lot it defaults to the "NONE" or "?" role. When this placeholder role is along in a slot, behaves the same as if the slot was empty: The player in this slot will have their role randomly assigned by the normal role selection logic.
 
-![Role Packs New Role](images/RolePacks_NewRole.png)
+![Role Packs New Role](docs/tutorials/img/RolePacks_NewRole.png)
 
 To change the role that the slot belongs to, click the role icon and select the new role from the dropdown.
 
-![Role Packs New Role](images/RolePacks_NewRoleSelection.png)
+![Role Packs New Role](docs/tutorials/img/RolePacks_NewRoleSelection.png)
 
 To change the weight of a role (how often this role should be selected relative to the other roles in this slot), change the number in the box below the role icon by typing or using the adjustment arrows.
 
-![Role Packs New Role](images/RolePacks_RoleWeights.png)
+![Role Packs New Role](docs/tutorials/img/RolePacks_RoleWeights.png)
 
 ### Role Pack Weapons
 
@@ -1237,7 +1237,7 @@ This tab is nearly identical to the [Role Weapons UI](#configuration-by-ui) desc
 
 The ConVars tab allows you to specify configuration values to set only when the specified role pack is enabled. Add each ConVar on their own line along with the value you would like to set.
 
-![Role Packs ConVars Tab](images/RolePacks_ConVars.png)
+![Role Packs ConVars Tab](docs/tutorials/img/RolePacks_ConVars.png)
 
 ## Renaming Roles
 
