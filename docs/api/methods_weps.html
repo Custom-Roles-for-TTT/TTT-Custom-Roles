@@ -55,7 +55,7 @@
             <li><em>promoted</em> - Whether the role has been promoted. Determines whether <code>ROLE_DETECTIVE</code> weapons and equipment should also be checked <em>(Added in 1.3.6)</em></li>
         </ul>
 
-        <h3><a id="wepshandlecanbuyoverrideswep-role-block_randomization-sync_traitor_weapons-sync_detective_weapons-block_exclusion-sync_roles" href="#wepshandlecanbuyoverrideswep-role-block_randomization-sync_traitor_weapons-sync_detective_weapons-block_exclusion-sync_roles">WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles)</a></h3>
+        <h3><a id="wepshandlecanbuyoverrideswep-role-block_randomization-sync_traitor_weapons-sync_detective_weapons-block_exclusion-sync_roles-rolepack_weps" href="#wepshandlecanbuyoverrideswep-role-block_randomization-sync_traitor_weapons-sync_detective_weapons-block_exclusion-sync_roles-rolepack_weps">WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles, rolepack_weps)</a></h3>
         <p>
             Updates the <code>CanBuy</code> property of the given weapon to only include weapons that the provided role is allowed to purchase based on all of the parameters.<br>
             <em>Realm:</em> Client and Server<br>
@@ -70,14 +70,19 @@
             <li><em>sync_detective_weapons</em> - Whether the given role should also be able to buy all items that the detective role can buy</li>
             <li><em>block_exclusion</em> - Whether to ignore the fact that this weapon would normally be excluded for this role <em>(Added in 1.2.7)</em></li>
             <li><em>sync_roles</em> - The list of roles that should also be checked when determining if this role can purchase this weapon <em>(Added in 1.9.5)</em></li>
+            <li><em>rolepack_weps</em> - The rolepack weapons config to use. An object with three table properties containing weapon class names or equipment item names: <code>Buyables</code>, <code>Excludes</code>, and <code>NoRandoms</code>. Pass `false` to explicitly ignore the currently applied role pack, if there is one. (Optional, if not provided then the currently applied role pack weapons will be used automatically if there are any) <em>(Added in 2.0.7)</em></li>
         </ul>
 
-        <h3><a id="wepshandleroleequipment" href="#wepshandleroleequipment">WEPS.HandleRoleEquipment</a></h3>
+        <h3><a id="wepshandleroleequipmentply" href="#wepshandleroleequipmentply">WEPS.HandleRoleEquipment(ply)</a></h3>
         <p>
             Handles loading the roleweapons configuration from the server data files.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.8.8<br>
+            <em>Parameters:</em>
         </p>
+        <ul>
+            <li><em>ply</em> - The player the role weapon config is being sent to. (Optional, if not provided then config sent to all players). <em>(Added in 2.0.7)</em></li>
+        </ul>
 
         <h3><a id="wepsplayerownswepreqsply-wep" href="#wepsplayerownswepreqsply-wep">WEPS.PlayerOwnsWepReqs(ply, wep)</a></h3>
         <p>
