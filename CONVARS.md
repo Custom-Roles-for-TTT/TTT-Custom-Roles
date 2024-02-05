@@ -18,6 +18,13 @@
           1. [Adding Equipment](#Adding-Equipment)
           1. [Removing Equipment](#Removing-Equipment)
           1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
+1. [Role Packs](#Role-Packs)
+   1. [Overall](#role-pack-overall)
+   1. [Roles](#role-pack-roles)
+       1. [Adding a new Role Slot](#adding-a-new-role-slot)
+       1. [Configuring a Role Slot Role](#configuring-a-role-slot-role)
+   1. [Weapons](#role-pack-weapons)
+   1. [ConVars](#role-pack-convars)
 1. [Renaming Roles](#Renaming-Roles)
 
 ## Server Configurations
@@ -1168,6 +1175,69 @@ To find the name of an equipment item to use above, follow the steps below
 2. Spawn 1 bot by using the _bot_ command in console
 3. Obtain the equipment item whose name you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
 4. Run the following command in console to get a full list of your equipment item names: `lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end`
+
+## Role Packs
+
+Role packs are a new way of configuring roles, weapons, and additional ConVars all in one place. First and foremost, role packs give you much more control over how you want specific roles to spawn that our current system just can't handle. Want to always have a certain role spawn each round? Want multiple copies of some roles? Want to enable two different roles but never have them spawn together? Role packs will let you do all of this and way more!
+
+On top of all this, role packs allow you to configure which weapons are available to specific roles in the shop, and any additional ConVars you might only want enabled in certain situations. These roles, weapons, and ConVars are bundled up into a role pack that you can enable or disable at any time, however only one role pack can be enabled at a time. Role packs are entirely optional, so if you don't enable any role packs you can still continue to play as you always have.
+
+Role packs are created using the new UI, accessible by admins using the `ttt_rolepacks` command. Once a role pack has been created in the UI, it is saved as a folder of .json files in the `data/rolepacks` folder. Role packs can then be backed up or copied from server-to-server just by transferring those folders.
+
+To enable a role pack, set the `ttt_role_pack` ConVar to the name role pack you want to use.
+
+![Blank Role Packs Window](images/RolePacks_Blank.png)
+
+### Role Pack Overall
+
+At the top of the role packs window are the overall controls that are available regardless of the selected tab. The components of this section of the window are:
+1. **Role packs dropdown** - List of current role packs available on the server. Select an entry from the list to edit it.
+1. **Add button** - Creates a new role pack when clicked, first prompting for the name of the role pack being created.
+1. **Rename button** - Renames the currently selected role pack, prompting for the new name.
+1. **Delete button** - Deletes the currently selected role pack, prompting for confirmation.
+1. **Save button** - Saves the changes made to the currently selected role pack.
+1. **Apply to Server button** - Activates the currently selected role pack on the server.
+1. **Disable Active Role Pack button** - Disables the current active role pack on the server.
+
+![Role Packs Overall Controls](images/RolePacks_Overall.png)
+
+### Role Pack Roles
+
+The roles tab is where most configuration of the role pack will occur. On this tab, you can create role "slots" which represent a single player in the round. Within each slot you can configure a pool of 0 or more roles for that player to be randomly assigned from. If a slot has 0 roles assigned to it, the normal (e.g. non-role pack) random role selection logic will be used for that slot instead. Each role within a slot can also have a weight assigned to it, making that role more likely than the others to be selected.
+
+#### Adding a new Role Slot
+
+To add a new role slot, click the "Add Slot" button on the bottom of the tab.
+One a slot has been added, you will be presented with three buttons:
+1. **Add role button** - Adds a new role entry to the role slot
+1. **Delete role button** - Deletes the last role entry in the role slot
+2. **Delete slot button** - Deletes the entire role slot
+
+![Role Packs Empty Slot](images/RolePacks_EmptySlot.png)
+
+#### Configuring a Role Slot Role
+
+When a new role entry has been added to a lot it defaults to the "NONE" or "?" role. When this placeholder role is along in a slot, behaves the same as if the slot was empty: The player in this slot will have their role randomly assigned by the normal role selection logic.
+
+![Role Packs New Role](images/RolePacks_NewRole.png)
+
+To change the role that the slot belongs to, click the role icon and select the new role from the dropdown.
+
+![Role Packs New Role](images/RolePacks_NewRoleSelection.png)
+
+To change the weight of a role (how often this role should be selected relative to the other roles in this slot), change the number in the box below the role icon by typing or using the adjustment arrows.
+
+![Role Packs New Role](images/RolePacks_RoleWeights.png)
+
+### Role Pack Weapons
+
+This tab is nearly identical to the [Role Weapons UI](#configuration-by-ui) described above. The only differences are the removal of the "Update" and "Close" buttons (which are not needed in this UI), and the rename of the "None" checkbox to "Use Default". All of the functionality in this tab is identical to that in the role weapons UI, except it only takes effect when the specific role pack is enabled
+
+### Role Pack ConVars
+
+The ConVars tab allows you to specify configuration values to set only when the specified role pack is enabled. Add each ConVar on their own line along with the value you would like to set.
+
+![Role Packs ConVars Tab](images/RolePacks_ConVars.png)
 
 ## Renaming Roles
 
