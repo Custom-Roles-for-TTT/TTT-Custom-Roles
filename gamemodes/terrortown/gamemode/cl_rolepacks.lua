@@ -821,6 +821,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             if role == save_role then
                 LocalPlayer():ConCommand("ttt_reset_weapons_cache")
                 timer.Simple(0.25, function()
+                    if not IsValid(dsearch) then return end
                     dsearch.OnValueChange(dsearch, dsearch:GetText())
                 end)
             end
