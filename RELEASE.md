@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.1 (Beta)
+**Released:**
+
+### Changes
+- Changed guesser team info messages to lowercase the team names for consistency and to help differentiate from role names
+
 ## 2.1.0
 **Released: February 5th, 2024**\
 Includes beta updates [2.0.5](#205-beta) to [2.0.7](#207-beta).
