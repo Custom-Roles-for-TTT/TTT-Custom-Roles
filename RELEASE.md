@@ -9,6 +9,13 @@
 ### Fixes
 - Fixed potential errors and weird behavior due to type mismatch when sending purchased equipment back to the client
 
+### Developer
+- Added `plymeta:RemoveEquipmentItem` to allow removal of a player's equipment
+- **BREAKING CHANGE** - Changed equipment system to use sequential equipment IDs and store in a table instead of as a bit mask
+  - This was deemed necessary to allow more than 32 equipment IDs to be generated and used
+  - `ply.equipment_items` is now a table and the `plymeta:GetEquipmentItems` method now returns that table
+  - The `TTT_Equipment` net method has been updated to transmit the equipment items table instead of the bit mask
+
 ## 2.1.0
 **Released: February 5th, 2024**\
 Includes beta updates [2.0.5](#205-beta) to [2.0.7](#207-beta).

@@ -1091,7 +1091,11 @@ local function ReceiveEquipment()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
 
-    ply.equipment_items = net.ReadUInt(32)
+    ply.equipment_items = {}
+    local count = net.ReadUInt(8)
+    for i=1,count do
+        TableInsert(ply.equipment_items, net.ReadUInt(8))
+    end
 end
 net.Receive("TTT_Equipment", ReceiveEquipment)
 

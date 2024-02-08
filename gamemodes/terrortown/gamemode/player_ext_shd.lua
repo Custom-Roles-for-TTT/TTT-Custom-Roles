@@ -306,15 +306,15 @@ end
 
 function plymeta:GetCredits() return self.equipment_credits or 0 end
 
-function plymeta:GetEquipmentItems() return self.equipment_items or EQUIP_NONE end
+function plymeta:GetEquipmentItems() return self.equipment_items end
 
 -- Given an equipment id, returns if player owns this. Given nil, returns if
 -- player has any equipment item.
 function plymeta:HasEquipmentItem(id)
     if not id then
-        return self:GetEquipmentItems() ~= EQUIP_NONE
+        return #self:GetEquipmentItems() > 0
     else
-        return util.BitSet(self:GetEquipmentItems(), id)
+        return table.HasValue(self.equipment_items, id)
     end
 end
 
