@@ -434,7 +434,7 @@ function plymeta:GiveDelayedShopItems()
         net.Start("TTT_BoughtItem")
         net.WriteBit(isequip)
         if id_num then
-            net.WriteInt(id_num, 32)
+            net.WriteUInt(id_num, 32)
         else
             net.WriteString(item_id)
         end

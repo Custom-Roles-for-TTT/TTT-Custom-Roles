@@ -6,6 +6,9 @@
 ### Changes
 - Changed guesser team info messages to lowercase the team names for consistency and to help differentiate from role names
 
+### Fixes
+- Fixed potential errors and weird behavior due to type mismatch when sending purchased equipment back to the client
+
 ## 2.1.0
 **Released: February 5th, 2024**\
 Includes beta updates [2.0.5](#205-beta) to [2.0.7](#207-beta).
