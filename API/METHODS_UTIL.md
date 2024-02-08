@@ -23,7 +23,7 @@ Returns whether a role can be spawned artificially. (i.e. Spawned in a way other
 *Added in:* 1.9.5\
 *Parameters:*
 - *role* - The role ID in question
-- 
+
 ### util.CanRoleSpawnNaturally(role)
 Returns whether a role can be spawned naturally. (i.e. Spawned in at the start of the round if they are enabled or used in a role pack.)\
 *Realm:* Client and Server\
