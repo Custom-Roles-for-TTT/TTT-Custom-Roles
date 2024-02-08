@@ -15,6 +15,7 @@
   - This was deemed necessary to allow more than 32 equipment IDs to be generated and used
   - `ply.equipment_items` is now a table and the `plymeta:GetEquipmentItems` method now returns that table
   - The `TTT_Equipment` net method has been updated to transmit the equipment items table instead of the bit mask
+  - The `TTT_RagdollSearch` net method has been updated to transmit the equipment items table instead of the bit mask
 
 ## 2.1.0
 **Released: February 5th, 2024**\
