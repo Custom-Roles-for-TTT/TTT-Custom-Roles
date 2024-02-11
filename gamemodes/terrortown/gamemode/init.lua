@@ -1359,10 +1359,12 @@ function SelectRoles()
     PrintRoleText("-----RANDOMLY PICKING REMAINING ROLES-----")
 
     -- determine how many of each role we want
-    local detective_count = GetDetectiveCount(choice_count) - forcedDetectiveCount - forcedSpecialDetectiveCount
-    local max_special_detective_count = GetSpecialDetectiveCount(detective_count) - forcedSpecialDetectiveCount
-    local traitor_count = GetTraitorCount(choice_count) - forcedTraitorCount - forcedSpecialTraitorCount
-    local max_special_traitor_count = GetSpecialTraitorCount(traitor_count) - forcedSpecialTraitorCount
+    local unmodified_detective_count = GetDetectiveCount(choice_count)
+    local detective_count = unmodified_detective_count - forcedDetectiveCount - forcedSpecialDetectiveCount
+    local max_special_detective_count = math.min(GetSpecialDetectiveCount(unmodified_detective_count) - forcedSpecialDetectiveCount, detective_count)
+    local unmodified_traitor_count = GetTraitorCount(choice_count)
+    local traitor_count = unmodified_traitor_count - forcedTraitorCount - forcedSpecialTraitorCount
+    local max_special_traitor_count = math.min(GetSpecialTraitorCount(unmodified_traitor_count) - forcedSpecialTraitorCount, traitor_count)
     local independent_count = ((math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0) - forcedIndependentCount
     local jester_count = ((math.random() <= GetConVar("ttt_jester_chance"):GetFloat()) and 1 or 0) - forcedJesterCount
     local jester_independent_count = GetJesterIndependentCount(choice_count) - forcedIndependentCount - forcedJesterCount
