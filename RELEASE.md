@@ -1,5 +1,15 @@
 # Release Notes
 
+## 2.1.1
+**Released: February 13th, 2024**
+
+### Fixes
+- Fixed an issue where enabling a role pack with less slots than players could cause the incorrect number of special traitors and detectives to spawn
+
+### Developer
+- Changed `Get{ROLE}`, `Is{ROLE}` and `IsActive{ROLE}` functions to not be dynamically assigned for a role if the resulting function shares a name with a pre-existing method
+
+
 ## 2.1.0
 **Released: February 5th, 2024**\
 Includes beta updates [2.0.5](#205-beta) to [2.0.7](#207-beta).
