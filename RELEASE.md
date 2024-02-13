@@ -17,6 +17,7 @@
   - `ply.equipment_items` is now a table and the `plymeta:GetEquipmentItems` method now returns that table
   - The `TTT_Equipment` net method has been updated to transmit the equipment items table instead of the bit mask
   - The `TTT_RagdollSearch` net method has been updated to transmit the equipment items table instead of the bit mask
+- Added ability for `ttt_kill_from_player` and `ttt_kill_target_from_player` to use "world" as the killer parameter
 
 ## 2.1.1
 **Released: February 13th, 2024**
