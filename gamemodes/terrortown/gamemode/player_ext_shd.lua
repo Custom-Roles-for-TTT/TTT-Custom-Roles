@@ -69,9 +69,15 @@ function plymeta:IsActiveRole(role) return self:IsRole(role) and self:IsActive()
 -- Role access
 for role = 0, ROLE_MAX do
     local name = string.gsub(ROLE_STRINGS[role], "%s+", "")
-    plymeta["Get" .. name] = function(self) return self:IsRole(role) end
-    plymeta["Is" .. name] = plymeta["Get" .. name]
-    plymeta["IsActive" .. name] = function(self) return self:IsActiveRole(role) end
+    if not plymeta["Get" .. name] then
+        plymeta["Get" .. name] = function(self) return self:IsRole(role) end
+        if not plymeta["Is" .. name] then
+            plymeta["Is" .. name] = plymeta["Get" .. name]
+        end
+    end
+    if not plymeta["IsActive" .. name] then
+        plymeta["IsActive" .. name] = function(self) return self:IsActiveRole(role) end
+    end
 end
 
 -- functions to group individual roles into teams

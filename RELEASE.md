@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.1.1 (Beta)
+## 2.1.2 (Beta)
 **Released:**
 
 ### Changes
@@ -16,6 +16,15 @@
   - `ply.equipment_items` is now a table and the `plymeta:GetEquipmentItems` method now returns that table
   - The `TTT_Equipment` net method has been updated to transmit the equipment items table instead of the bit mask
   - The `TTT_RagdollSearch` net method has been updated to transmit the equipment items table instead of the bit mask
+
+## 2.1.1
+**Released: February 13th, 2024**
+
+### Fixes
+- Fixed an issue where enabling a role pack with less slots than players could cause the incorrect number of special traitors and detectives to spawn
+
+### Developer
+- Changed `Get{ROLE}`, `Is{ROLE}` and `IsActive{ROLE}` functions to not be dynamically assigned for a role if the resulting function shares a name with a pre-existing method
 
 ## 2.1.0
 **Released: February 5th, 2024**\
