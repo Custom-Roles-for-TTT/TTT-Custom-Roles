@@ -552,6 +552,8 @@ end)
 
 hook.Add("TTTWinCheckComplete", "Shadow_TTTWinCheckComplete", function(win_type)
     if win_type == WIN_NONE then return end
+    -- If the shadow is stealing their target's role, they don't win just by surviving
+    if shadow_target_buff:GetInt() == SHADOW_BUFF_STEAL_ROLE then return end
     if not player.IsRoleLiving(ROLE_SHADOW) then return end
 
     net.Start("TTT_UpdateShadowWins")

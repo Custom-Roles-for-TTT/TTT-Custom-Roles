@@ -532,17 +532,22 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
     if role == ROLE_SHADOW then
         local roleTeam = player.GetRoleTeam(ROLE_SHADOW, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
-        local html = "The " .. ROLE_STRINGS[ROLE_SHADOW] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role that wins by staying close to their target without dying. "
+        local html = "The " .. ROLE_STRINGS[ROLE_SHADOW] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role that needs to stay close to their target without dying."
 
         local soul_link = shadow_soul_link:GetInt()
         if soul_link == SHADOW_SOUL_LINK_BOTH then
-            html = html .. "If the shadow dies, their target dies and vice-versa. "
+            html = html .. " If the shadow dies, their target dies and vice-versa."
         elseif soul_link == SHADOW_SOUL_LINK_TARGET then
-            html = html .. "If the shadow's target dies, the shadow dies instantly. "
+            html = html .. " If the shadow's target dies, the shadow dies instantly."
         elseif roleTeam ~= ROLE_TEAM_JESTER then
-            html = html .. "If the shadow kills their target, they die instantly. "
+            html = html .. " If the shadow kills their target, they die instantly."
         end
-        html = html .. "If the shadow survives until the end of the round they win."
+
+        local buff = shadow_target_buff:GetInt()
+        -- If the shadow is stealing their target's role, they don't win just by surviving
+        if buff ~= SHADOW_BUFF_STEAL_ROLE then
+            html = html .. " If the shadow survives until the end of the round they win."
+        end
 
         local start_timer = shadow_start_timer:GetInt()
         local buffer_timer = shadow_buffer_timer:GetInt()
@@ -570,7 +575,6 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
 
         html = html .. "<span style='display: block; margin-top: 10px;'>If your target dies you still need to stay close to their body. Staying too far away from their body for more than <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " seconds</span> will kill you.</span>"
 
-        local buff = shadow_target_buff:GetInt()
         if buff ~= SHADOW_BUFF_NONE then
             local buffDelay = shadow_target_buff_delay:GetInt()
             local buffType = LANG.GetTranslation("shadow_buff_" .. buff)

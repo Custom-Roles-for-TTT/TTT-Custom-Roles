@@ -5,6 +5,7 @@
 
 ### Changes
 - Changed guesser team info messages to lowercase the team names for consistency and to help differentiate from role names
+- Changed shadow to no longer have a win condition when the "steal role" buff is configured
 
 ### Fixes
 - Fixed potential errors and weird behavior due to type mismatch when sending purchased equipment back to the client
