@@ -9,6 +9,7 @@ local MathMax = math.max
 local MathMin = math.min
 local MathRandom = math.random
 local MathRound = math.Round
+local RunHook = hook.Run
 
 util.AddNetworkString("TTT_UpdateShadowWins")
 util.AddNetworkString("TTT_ResetShadowWins")
@@ -240,10 +241,13 @@ local function CreateBuffTimer(shadow, target)
             end
 
             shadow:SetRole(role)
+            shadow:StripRoleWeapons()
+            RunHook("PlayerLoadout", shadow)
+
             target:MoveRoleState(shadow)
             target:SetRole(ROLE_SHADOW)
             target:StripRoleWeapons()
-            shadow:StripRoleWeapons()
+            RunHook("PlayerLoadout", target)
 
             target:Kill()
 

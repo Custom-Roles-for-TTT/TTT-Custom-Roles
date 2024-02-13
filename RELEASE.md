@@ -8,6 +8,7 @@
 
 ### Fixes
 - Fixed potential errors and weird behavior due to type mismatch when sending purchased equipment back to the client
+- Fixed shadow not getting new role weapons when they swap to their target's role when the "steal role" buff is applied
 
 ### Developer
 - Added `plymeta:RemoveEquipmentItem` to allow removal of a player's equipment
