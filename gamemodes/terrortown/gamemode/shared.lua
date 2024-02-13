@@ -24,7 +24,7 @@ include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
 CR_VERSION = "2.1.1"
-CR_BETA = true
+CR_BETA = false
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
 function CRVersion(version)
