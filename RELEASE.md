@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.2
+**Released:**
+
+### Fixes
+- Fixed role pack weapon config not taking priority over role weapons config
+
 ## 2.1.1
 **Released: February 13th, 2024**
 
