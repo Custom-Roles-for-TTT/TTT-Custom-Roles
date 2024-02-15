@@ -1136,7 +1136,7 @@ local function OpenDialog()
     ddeletebutton:SetIcon("icon16/delete.png")
     ddeletebutton:SetTooltip(GetTranslation("rolepacks_delete"))
     ddeletebutton.DoClick = function()
-        local pack, index = dpack:GetSelected()
+        local pack, _ = dpack:GetSelected()
         if not pack or #pack == 0 then return end
 
         dframe:SetMouseInputEnabled(false)
@@ -1157,9 +1157,7 @@ local function OpenDialog()
         dyes:SetText("Yes")
         dyes:SetPos(popupWidth / 2 - buttonWidth - m, titleBarHeight + m)
         dyes.DoClick = function()
-            TableRemove(dpack.Choices, index)
-            dpack:SetText("")
-            dpack.selected = nil
+            dpack:Clear()
             net.Start("TTT_DeleteRolePack")
             net.WriteString(pack)
             net.SendToServer()
@@ -1189,7 +1187,7 @@ local function OpenDialog()
     drenamebutton:SetIcon("icon16/page_edit.png")
     drenamebutton:SetTooltip(GetTranslation("rolepacks_rename"))
     drenamebutton.DoClick = function()
-        local pack, index = dpack:GetSelected()
+        local pack, _ = dpack:GetSelected()
         if not pack or #pack == 0 then return end
 
         dframe:SetMouseInputEnabled(false)
@@ -1218,15 +1216,18 @@ local function OpenDialog()
             local newpack = StringLower(drenameentry:GetValue())
             if not newpack or #newpack == 0 then return end
             if not IsNameValid(newpack, dpack) then return end
-            TableRemove(dpack.Choices, index)
-            local newindex = dpack:AddChoice(newpack)
-            dpack:SetText(newpack)
-            dpack.selected = newindex
+            dpack:Clear()
             net.Start("TTT_RenameRolePack")
             net.WriteString(pack)
             net.WriteString(newpack)
             net.SendToServer()
+            droles:Remove()
+            dweapons:Remove()
+            dconvars:Remove()
             drenamedialog:Close()
+            droles = BuildRoleConfig(dsheet, "", drolestab)
+            dweapons = BuildWeaponConfig(dsheet, "", dweaponstab)
+            dconvars = BuildConVarConfig(dsheet, "", dconvarstab)
         end
 
         drenamedialog:MakePopup()

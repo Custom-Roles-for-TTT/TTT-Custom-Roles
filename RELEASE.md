@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed role pack weapon config not taking priority over role weapons config
+- Fixed renaming or deleting a role pack causing the list of role packs to display incorrectly
 
 ## 2.1.1
 **Released: February 13th, 2024**
