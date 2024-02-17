@@ -319,6 +319,9 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                 end
             end
             for _, v in ipairs(mergedExcludeWeapons) do
+                -- If this is enabled via role pack but but disabled via role weapons, the role pack should take priority
+                if TableHasValue(rolepack_weps.Buyables, v) then continue end
+
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)
