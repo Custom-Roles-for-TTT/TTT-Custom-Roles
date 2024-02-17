@@ -192,7 +192,7 @@ end)
 
 hook.Add("TTTEventFinishText", "Vindicator_TTTEventFinishText", function(e)
     if e.win == WIN_VINDICATOR then
-        return LANG.GetTranslation("ev_win_vindicator")
+        return LANG.GetParamTranslation("ev_win_vindicator", { role = string.lower(ROLE_STRINGS[ROLE_VINDICATOR]) })
     end
 end)
 

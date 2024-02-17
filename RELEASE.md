@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed minor typo in vindicator event log entry
+
 ## 2.1.2 (Beta)
 **Released: February 17th, 2024**
 
