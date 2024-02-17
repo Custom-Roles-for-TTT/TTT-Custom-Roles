@@ -92,6 +92,7 @@ end
 
 hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and GetRoundState() == ROUND_ACTIVE
+    local handled = false
     if valid_kill then
         if victim:IsVindicator() and not victim:IsRoleActive() and attacker ~= victim then
             if attacker:IsVictimChangingRole(victim) then return end
@@ -105,6 +106,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
                     ActivateVindicator(victim, attacker)
                 end)
             end
+            handled = true
         elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") then
             attacker:SetNWBool("VindicatorSuccess", true)
             attacker:QueueMessage(MSG_PRINTBOTH, "You have successfully killed your target.")
@@ -116,31 +118,37 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
                 attacker:Kill()
                 attacker:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
             end
-        else
-            for _, ply in pairs(GetAllPlayers()) do
-                if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") then
-                    if attacker == victim and vindicator_target_suicide_success:GetBool() then
-                        ply:SetNWBool("VindicatorSuccess", true)
-                        ply:QueueMessage(MSG_PRINTBOTH, "Your target finished the job for you and has killed themselves.")
-                        net.Start("TTT_VindicatorSuccess")
-                        net.WriteString(ply:Nick())
-                        net.WriteString(victim:Nick())
-                        net.Broadcast()
-                        if not vindicator_prevent_revival:GetBool() and vindicator_kill_on_success:GetBool() then
-                            ply:Kill()
-                            ply:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
-                        end
-                    else
-                        ply:QueueMessage(MSG_PRINTBOTH, "Your target was killed by someone else and you have failed.")
-                        net.Start("TTT_VindicatorFail")
-                        net.WriteString(ply:Nick())
-                        net.WriteString(victim:Nick())
-                        net.Broadcast()
-                        if not vindicator_prevent_revival:GetBool() and vindicator_kill_on_fail:GetBool() then
-                            ply:Kill()
-                            ply:QueueMessage(MSG_PRINTBOTH, "Having failed to take revenge, you must return to death.")
-                        end
-                    end
+            handled = true
+        end
+    end
+
+    -- Either the attacker or the victim was a vindicator and we have handled the logic above
+    if handled then return end
+
+    -- If we have already checked the attacker v. victim options, we know neither are a vindicator
+    -- Check if the victim is a vindicator's target
+    for _, ply in pairs(GetAllPlayers()) do
+        if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") then
+            if attacker == victim and vindicator_target_suicide_success:GetBool() then
+                ply:SetNWBool("VindicatorSuccess", true)
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target finished the job for you and has killed themselves.")
+                net.Start("TTT_VindicatorSuccess")
+                net.WriteString(ply:Nick())
+                net.WriteString(victim:Nick())
+                net.Broadcast()
+                if not vindicator_prevent_revival:GetBool() and vindicator_kill_on_success:GetBool() then
+                    ply:Kill()
+                    ply:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
+                end
+            else
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target was killed by someone else and you have failed.")
+                net.Start("TTT_VindicatorFail")
+                net.WriteString(ply:Nick())
+                net.WriteString(victim:Nick())
+                net.Broadcast()
+                if not vindicator_prevent_revival:GetBool() and vindicator_kill_on_fail:GetBool() then
+                    ply:Kill()
+                    ply:QueueMessage(MSG_PRINTBOTH, "Having failed to take revenge, you must return to death.")
                 end
             end
         end

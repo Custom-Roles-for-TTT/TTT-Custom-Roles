@@ -114,7 +114,17 @@ end
 function plymeta:AddEquipmentItem(id)
     id = tonumber(id)
     if id then
-        self.equipment_items = bit.bor(self.equipment_items, id)
+        table.insert(self.equipment_items, id)
+        self:SendEquipment()
+    end
+end
+
+function plymeta:RemoveEquipmentItem(id)
+    id = tonumber(id)
+    if id then
+        table.RemoveByValue(self.equipment_items, id)
+        -- Reset the indexes of the table
+        self.equipment_items = table.ClearKeys(self.equipment_items)
         self:SendEquipment()
     end
 end
@@ -122,12 +132,15 @@ end
 -- We do this instead of an NW var in order to limit the info to just this ply
 function plymeta:SendEquipment()
     net.Start("TTT_Equipment")
-    net.WriteUInt(self.equipment_items, 32)
+    net.WriteUInt(#self.equipment_items, 8)
+    for _, v in ipairs(self.equipment_items) do
+        net.WriteUInt(v, 8)
+    end
     net.Send(self)
 end
 
 function plymeta:ResetEquipment()
-    self.equipment_items = EQUIP_NONE
+    self.equipment_items = {}
     self:SendEquipment()
 end
 
@@ -434,7 +447,7 @@ function plymeta:GiveDelayedShopItems()
         net.Start("TTT_BoughtItem")
         net.WriteBit(isequip)
         if id_num then
-            net.WriteInt(id_num, 32)
+            net.WriteUInt(id_num, 32)
         else
             net.WriteString(item_id)
         end

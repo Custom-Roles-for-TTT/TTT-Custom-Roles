@@ -62,7 +62,6 @@ Forces a player to spawn as the specified role next round. Returns `true` if suc
 *Parameters:*
 - *role* - Which role to force the player to be next round
 
-
 ### plymeta:GetAvoidDetective()/plymeta:ShouldAvoidDetective() (Added in 1.6.2)
 Whether this player wants to avoid being a detective role.\
 *Realm:* Server\
@@ -324,6 +323,13 @@ Queues a message to be shown to the player. Useful in situations where multiple 
 - *message* - The message being shown
 - *time* - The amount of time to display the message in the center of the screen. Only used when *message_type* is *MSG_PRINTBOTH* or *MSG_PRINTCENTER*
 - *predicate* - Predicate function called with the player as the sole parameter before the message is sent. Return *true* to allow the message or *false* to prevent it (Optional) *(Added in 2.0.5)* *(Only available on the server realm)*
+
+### plymeta:RemoveEquipmentItem(item_id)
+Removes the equipment item with given ID from this player.\
+*Realm:* Server\
+*Added in:* 2.1.1\
+*Parameters:*
+- *item_id* - The ID of the item being removed from this player
 
 ### plymeta:ResetMessageQueue()
 Clears the message queue for the player.\

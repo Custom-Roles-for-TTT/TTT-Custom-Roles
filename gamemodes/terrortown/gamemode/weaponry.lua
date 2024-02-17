@@ -153,7 +153,7 @@ local function GiveLoadoutItems(ply)
 
         net.Start("TTT_BoughtItem")
         net.WriteBit(true)
-        net.WriteInt(id, 32)
+        net.WriteUInt(id, 32)
         net.Send(ply)
     end
 end

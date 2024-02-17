@@ -582,14 +582,18 @@ local function ReceiveRagdollSearch()
     search.nick = net.ReadString()
 
     -- Equipment
-    local eq = net.ReadUInt(32)
+    local eq = {}
+    local eq_count = net.ReadUInt(8)
+    for i=1,eq_count do
+        table.insert(eq, net.ReadUInt(8))
+    end
 
     -- All equipment pieces get their own icon
-    search.eq_armor = util.BitSet(eq, EQUIP_ARMOR)
-    search.eq_radar = util.BitSet(eq, EQUIP_RADAR)
-    search.eq_disg = util.BitSet(eq, EQUIP_DISGUISE)
-    search.eq_speed = util.BitSet(eq, EQUIP_SPEED)
-    search.eq_regen = util.BitSet(eq, EQUIP_REGEN)
+    search.eq_armor = table.HasValue(eq, EQUIP_ARMOR)
+    search.eq_radar = table.HasValue(eq, EQUIP_RADAR)
+    search.eq_disg = table.HasValue(eq, EQUIP_DISGUISE)
+    search.eq_speed = table.HasValue(eq, EQUIP_SPEED)
+    search.eq_regen = table.HasValue(eq, EQUIP_REGEN)
 
     -- Traitor things
     search.role = net.ReadInt(8)
