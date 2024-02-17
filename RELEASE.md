@@ -1,5 +1,31 @@
 # Release Notes
 
+## 2.1.2 (Beta)
+**Released: February 17th, 2024**
+
+### Changes
+- Changed guesser team info messages to lowercase the team names for consistency and to help differentiate from role names
+- Changed shadow to no longer have a win condition when the "steal role" buff is configured
+
+### Fixes
+- Fixed role pack weapon config not taking priority over role weapons config
+- Fixed role pack weapon config unselecting some equipment items when re-opening the role pack UI
+- Fixed role pack weapon config prompting to save when no changes had been made
+- Fixed role pack weapon config sometimes adding duplicate weapons to saved .json files
+- Fixed renaming or deleting a role pack causing the list of role packs to display incorrectly
+- Fixed potential errors and weird behavior due to type mismatch when sending purchased equipment back to the client
+- Fixed shadow not getting new role weapons when they swap to their target's role when the "steal role" buff is applied
+- Fixed vindicator not dying when their target was killed by a non-player
+
+### Developer
+- Added `plymeta:RemoveEquipmentItem` to allow removal of a player's equipment
+- **BREAKING CHANGE** - Changed equipment system to use sequential equipment IDs and store in a table instead of as a bit mask
+  - This was deemed necessary to allow more than 32 equipment IDs to be generated and used
+  - `ply.equipment_items` is now a table and the `plymeta:GetEquipmentItems` method now returns that table
+  - The `TTT_Equipment` net method has been updated to transmit the equipment items table instead of the bit mask
+  - The `TTT_RagdollSearch` net method has been updated to transmit the equipment items table instead of the bit mask
+- Added ability for `ttt_kill_from_player` and `ttt_kill_target_from_player` to use "world" as the killer parameter
+
 ## 2.1.1
 **Released: February 13th, 2024**
 
@@ -8,7 +34,6 @@
 
 ### Developer
 - Changed `Get{ROLE}`, `Is{ROLE}` and `IsActive{ROLE}` functions to not be dynamically assigned for a role if the resulting function shares a name with a pre-existing method
-
 
 ## 2.1.0
 **Released: February 5th, 2024**\

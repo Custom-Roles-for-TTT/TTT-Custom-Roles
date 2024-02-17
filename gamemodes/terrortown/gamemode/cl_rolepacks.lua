@@ -13,6 +13,8 @@ local TableInsert = table.insert
 local TableRemove = table.remove
 local TableSort = table.sort
 local TableRemoveByValue = table.RemoveByValue
+local TableHasValue = table.HasValue
+local TableCopy = table.Copy
 local MathCeil = math.ceil
 local StringSub = string.sub
 local StringLower = string.lower
@@ -343,8 +345,12 @@ local function BuildRoleConfig(dsheet, packName, tab)
         ReadRolePackRoleTable(packName)
     end
 
+    droles.HasUnsavedChanges = function()
+        return droles.unsavedChanges
+    end
+
     droles.Save = function()
-        if droles.unsavedChanges then
+        if droles.HasUnsavedChanges() then
             local slotTable = {name = packName, config = {allowduplicates = dallowduplicates:GetChecked()}, slots = {}}
             for _, slot in pairs(slotList) do
                 local roleTable = {}
@@ -373,7 +379,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     local dweapons = vgui.Create("DPanel", dsheet)
     dweapons:SetPaintBackground(false)
     dweapons:StretchToParent(0, 0, 0, 0)
-    dweapons.unsavedChanges = false
 
     local role = ROLE_NONE
     local save_role = ROLE_NONE
@@ -441,6 +446,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dfields.desc:MoveBelow(dfields.type, 1)
 
     local weaponChanges = {name = "", weapons = {}}
+    local oldWeaponChanges = TableCopy(weaponChanges)
 
     local function FillEquipmentList(itemlist)
         dlist:Clear()
@@ -515,7 +521,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             ic:SetTooltip(tip)
 
             -- Don't show equipment items that you already own that are listed as "loadout" because you were given it for free
-            local externalLoadout = ROLE_LOADOUT_ITEMS[role] and table.HasValue(ROLE_LOADOUT_ITEMS[role], item.name)
+            local externalLoadout = ROLE_LOADOUT_ITEMS[role] and TableHasValue(ROLE_LOADOUT_ITEMS[role], item.name)
             if not ItemIsWeapon(item) and (item.loadout or externalLoadout) then
                 ic:Remove()
             else
@@ -628,29 +634,22 @@ local function BuildWeaponConfig(dsheet, packName, tab)
 
     local function UpdateRadioButtonState(item)
         -- Update checkbox state based on tables
+        local id
         if ItemIsWeapon(item) then
-            local weap_class = StringLower(item.id)
-            if weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].Buyables, weap_class) then
-                dradioinclude:SetValue(true)
-            elseif weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].Excludes, weap_class) then
-                dradioexclude:SetValue(true)
-            else
-                dradionone:SetValue(true)
-            end
-
-            dradionorandom:SetValue(weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].NoRandoms, weap_class))
+            id = item.id
         else
-            local name = StringLower(item.name)
-            if weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].Buyables, name) then
-                dradioinclude:SetValue(true)
-            elseif weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].Excludes, name) then
-                dradioexclude:SetValue(true)
-            else
-                dradionone:SetValue(true)
-            end
-
-            dradionorandom:SetValue(weaponChanges.weapons[save_role] and table.HasValue(weaponChanges.weapons[save_role].NoRandoms, name))
+            id = item.name
         end
+
+        if weaponChanges.weapons[save_role] and TableHasValue(weaponChanges.weapons[save_role].Buyables, id) then
+            dradioinclude:SetValue(true)
+        elseif weaponChanges.weapons[save_role] and TableHasValue(weaponChanges.weapons[save_role].Excludes, id) then
+            dradioexclude:SetValue(true)
+        else
+            dradionone:SetValue(true)
+        end
+
+        dradionorandom:SetValue(weaponChanges.weapons[save_role] and TableHasValue(weaponChanges.weapons[save_role].NoRandoms, id))
     end
 
     local function CacheWeaponChange()
@@ -671,24 +670,28 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         end
 
         if dradioinclude:GetChecked() then
-            TableInsert(weaponChanges.weapons[save_role].Buyables, id)
+            if not TableHasValue(weaponChanges.weapons[save_role].Buyables, id) then
+                TableInsert(weaponChanges.weapons[save_role].Buyables, id)
+            end
         else
             TableRemoveByValue(weaponChanges.weapons[save_role].Buyables, id)
         end
 
         if dradioexclude:GetChecked() then
-            TableInsert(weaponChanges.weapons[save_role].Excludes, id)
+            if not TableHasValue(weaponChanges.weapons[save_role].Excludes, id) then
+                TableInsert(weaponChanges.weapons[save_role].Excludes, id)
+            end
         else
             TableRemoveByValue(weaponChanges.weapons[save_role].Excludes, id)
         end
 
         if dradionorandom:GetChecked() then
-            TableInsert(weaponChanges.weapons[save_role].NoRandoms, id)
+            if not TableHasValue(weaponChanges.weapons[save_role].NoRandoms, id) then
+                TableInsert(weaponChanges.weapons[save_role].NoRandoms, id)
+            end
         else
             TableRemoveByValue(weaponChanges.weapons[save_role].NoRandoms, id)
         end
-
-        dweapons.unsavedChanges = true
     end
 
     dradionone.OnChange = function(pnl, val)
@@ -797,6 +800,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
 
     local function UpdateRolePackWeaponUI(jsonTable, roleByte)
         weaponChanges.weapons[roleByte] = jsonTable
+        oldWeaponChanges = TableCopy(weaponChanges)
         if roleByte == role then
             LocalPlayer():ConCommand("ttt_reset_weapons_cache")
             timer.Simple(0.25, function()
@@ -815,8 +819,36 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         ReadRolePackWeaponTables(packName)
     end
 
+    local function WeaponTablesMatch(tbl1, tbl2)
+        if #tbl1 ~= #tbl2 then return false end
+
+        local t1 = TableCopy(tbl1)
+        local t2 = TableCopy(tbl2)
+        TableSort(t1)
+        TableSort(t2)
+
+        for k, v1 in pairs(t1) do
+            local v2 = t2[k]
+            if v1 ~= v2 then return false end
+        end
+
+        return true
+    end
+
+    dweapons.HasUnsavedChanges = function()
+        for r = 0, ROLE_MAX do
+            if weaponChanges.weapons[r] then
+                if not oldWeaponChanges.weapons[r] then return true end
+                if not WeaponTablesMatch(weaponChanges.weapons[r].Buyables, oldWeaponChanges.weapons[r].Buyables) then return true end
+                if not WeaponTablesMatch(weaponChanges.weapons[r].Excludes, oldWeaponChanges.weapons[r].Excludes) then return true end
+                if not WeaponTablesMatch(weaponChanges.weapons[r].NoRandoms, oldWeaponChanges.weapons[r].NoRandoms) then return true end
+            end
+        end
+        return false
+    end
+
     dweapons.Save = function()
-        if dweapons.unsavedChanges then
+        if dweapons.HasUnsavedChanges() then
             SendStreamToServer(weaponChanges, "TTT_WriteRolePackWeapons")
             if role == save_role then
                 LocalPlayer():ConCommand("ttt_reset_weapons_cache")
@@ -825,6 +857,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
                     dsearch.OnValueChange(dsearch, dsearch:GetText())
                 end)
             end
+            oldWeaponChanges = TableCopy(weaponChanges)
         end
     end
 
@@ -892,8 +925,12 @@ local function BuildConVarConfig(dsheet, packName, tab)
         ReadRolePackConvarTable(packName)
     end
 
+    dconvars.HasUnsavedChanges = function()
+        return dconvars.unsavedChanges
+    end
+
     dconvars.Save = function()
-        if dconvars.unsavedChanges then
+        if dconvars.HasUnsavedChanges() then
             local text = dtextentry:GetValue()
             local lines = string.Split(text, '\n')
             if #lines <= 0 then return end
@@ -978,9 +1015,6 @@ local function OpenDialog()
         droles.Save()
         dweapons.Save()
         dconvars.Save()
-        droles.unsavedChanges = false
-        dweapons.unsavedChanges = false
-        dconvars.unsavedChanges = false
         net.Start("TTT_SavedRolePack")
         local pack, _ = dpack:GetSelected()
         net.WriteString(pack)
@@ -991,7 +1025,7 @@ local function OpenDialog()
     dpack.ChooseOption = function(self, value, index)
         local pack, _ = dpack:GetSelected()
         if pack == value then return end
-        if not pack or #pack == 0 or (not droles.unsavedChanges and not dweapons.unsavedChanges and not dconvars.unsavedChanges) then
+        if not pack or #pack == 0 or (not droles.HasUnsavedChanges() and not dweapons.HasUnsavedChanges() and not dconvars.HasUnsavedChanges()) then
             oldChooseOption(self, value, index)
             return
         end
@@ -1023,9 +1057,6 @@ local function OpenDialog()
         dno:SetText("No")
         dno:SetPos(popupWidth / 2 + m, titleBarHeight + m)
         dno.DoClick = function()
-            droles.unsavedChanges = false
-            dweapons.unsavedChanges = false
-            dconvars.unsavedChanges = false
             dsavedialog:Close()
             oldChooseOption(self, value, index)
         end
@@ -1036,7 +1067,7 @@ local function OpenDialog()
     local oldClose = dframe.Close
     dframe.Close = function(self)
         local pack, _ = dpack:GetSelected()
-        if not pack or #pack == 0 or (not droles.unsavedChanges and not dweapons.unsavedChanges and not dconvars.unsavedChanges) then
+        if not pack or #pack == 0 or (not droles.HasUnsavedChanges() and not dweapons.HasUnsavedChanges() and not dconvars.HasUnsavedChanges()) then
             oldClose(self)
             return
         end
@@ -1136,7 +1167,7 @@ local function OpenDialog()
     ddeletebutton:SetIcon("icon16/delete.png")
     ddeletebutton:SetTooltip(GetTranslation("rolepacks_delete"))
     ddeletebutton.DoClick = function()
-        local pack, index = dpack:GetSelected()
+        local pack, _ = dpack:GetSelected()
         if not pack or #pack == 0 then return end
 
         dframe:SetMouseInputEnabled(false)
@@ -1157,9 +1188,7 @@ local function OpenDialog()
         dyes:SetText("Yes")
         dyes:SetPos(popupWidth / 2 - buttonWidth - m, titleBarHeight + m)
         dyes.DoClick = function()
-            TableRemove(dpack.Choices, index)
-            dpack:SetText("")
-            dpack.selected = nil
+            dpack:Clear()
             net.Start("TTT_DeleteRolePack")
             net.WriteString(pack)
             net.SendToServer()
@@ -1189,7 +1218,7 @@ local function OpenDialog()
     drenamebutton:SetIcon("icon16/page_edit.png")
     drenamebutton:SetTooltip(GetTranslation("rolepacks_rename"))
     drenamebutton.DoClick = function()
-        local pack, index = dpack:GetSelected()
+        local pack, _ = dpack:GetSelected()
         if not pack or #pack == 0 then return end
 
         dframe:SetMouseInputEnabled(false)
@@ -1218,15 +1247,18 @@ local function OpenDialog()
             local newpack = StringLower(drenameentry:GetValue())
             if not newpack or #newpack == 0 then return end
             if not IsNameValid(newpack, dpack) then return end
-            TableRemove(dpack.Choices, index)
-            local newindex = dpack:AddChoice(newpack)
-            dpack:SetText(newpack)
-            dpack.selected = newindex
+            dpack:Clear()
             net.Start("TTT_RenameRolePack")
             net.WriteString(pack)
             net.WriteString(newpack)
             net.SendToServer()
+            droles:Remove()
+            dweapons:Remove()
+            dconvars:Remove()
             drenamedialog:Close()
+            droles = BuildRoleConfig(dsheet, "", drolestab)
+            dweapons = BuildWeaponConfig(dsheet, "", dweaponstab)
+            dconvars = BuildConVarConfig(dsheet, "", dconvarstab)
         end
 
         drenamedialog:MakePopup()

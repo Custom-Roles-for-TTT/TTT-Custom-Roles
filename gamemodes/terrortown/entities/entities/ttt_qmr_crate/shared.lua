@@ -71,7 +71,7 @@ if SERVER then
                 bits = 32
             end
 
-            net.WriteInt(id, bits)
+            net.WriteUInt(id, bits)
         else
             net.WriteString(id)
         end

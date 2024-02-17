@@ -65,11 +65,11 @@ AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
 
     if oldDamage < team_threshold and newDamage >= team_threshold and not DETECTIVE_ROLES[role] then
         local message = att:Nick() .. " has damaged you enough for you to learn they are "
-        if TRAITOR_ROLES[role] then message = message .. "a Traitor role"
-        elseif MONSTER_ROLES[role] then message = message .. "a Monster role"
-        elseif JESTER_ROLES[role] then message = message .. "a Jester role"
-        elseif INDEPENDENT_ROLES[role] then message = message .. "an Independent role"
-        else message = message .. "an Innocent role" end
+        if TRAITOR_ROLES[role] then message = message .. "a traitor role"
+        elseif MONSTER_ROLES[role] then message = message .. "a monster role"
+        elseif JESTER_ROLES[role] then message = message .. "a jester role"
+        elseif INDEPENDENT_ROLES[role] then message = message .. "an independent role"
+        else message = message .. "an innocent role" end
         ent:QueueMessage(MSG_PRINTBOTH, message)
     end
     if oldDamage < role_threshold and newDamage >= role_threshold then
