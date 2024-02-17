@@ -20,6 +20,20 @@
         <p><em><strong>NOTE:</strong></em> Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the <em>remaining hook instances to be completely skipped</em>. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.</p>
     </div>
     <div class="contentbody panel">
+        <h3><a id="tttbodycreditslootedply-deadPly-rag-credits" href="#tttbodycreditslootedply-deadPly-rag-credits">TTTBodyCreditsLooted(ply, deadPly, rag, credits)</a></h3>
+        <p>
+            Called when a player loots credits off of a dead player's body.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.1.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is looting credits</li>
+            <li><em>deadPly</em> - The dead player whose corpse was looted</li>
+            <li><em>rag</em> - The corpse that was looted</li>
+            <li><em>credits</em> - The number of credits looted</li>
+        </ul>
+
         <h3><a id="tttbodysearchbuttonsply-rag-buttons-searchraw-detectivesearchonly" href="#tttbodysearchbuttonsply-rag-buttons-searchraw-detectivesearchonly">TTTBodySearchButtons(ply, rag, buttons, searchRaw, detectiveSearchOnly)</a></h3>
         <p>
             Called when a player opens the body search dialog. Used to add new buttons to the dialog.<br>
@@ -31,12 +45,12 @@
             <li><em>ply</em> - The player who is opening the body search dialog</li>
             <li><em>rag</em> - The <code>prop_ragdoll</code> representing a player's body being searched</li>
             <li><em>buttons</em> - The table of buttons being rendered on the body search dialog. Insert a new descriptive object into this table to add a button to the window. The possible descriptive object properties are:
-        <ul>
-            <li><em>text</em> - The text to show on the button</li>
-            <li><em>onclick</em> - The function to call when the button is clicked. The only parameter passed to this function is the <a href="https://wiki.facepunch.com/gmod/DButton" target="_blank">DButton</a> instance.</li>
-            <li><em>disabled</em> - A boolean or function which returns a boolean used to determine whether this button should be clickable. Defaults to <code>true</code> if not provided.</li>
-        </ul>
-        </li>
+            <ul>
+                <li><em>text</em> - The text to show on the button</li>
+                <li><em>onclick</em> - The function to call when the button is clicked. The only parameter passed to this function is the <a href="https://wiki.facepunch.com/gmod/DButton" target="_blank">DButton</a> instance.</li>
+                <li><em>disabled</em> - A boolean or function which returns a boolean used to determine whether this button should be clickable. Defaults to <code>true</code> if not provided.</li>
+            </ul>
+            </li>
             <li><em>searchRaw</em> - The raw search data</li>
             <li><em>detectiveSearchOnly</em> - Whether only detectives should be able to search bodies</li>
         </ul>

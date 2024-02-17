@@ -7,6 +7,16 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 ***NOTE:*** Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the *remaining hook instances to be completely skipped*. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.
 
+### TTTBodyCreditsLooted(ply, deadPly, rag, credits)
+Called when a player loots credits off of a dead player's body.\
+*Realm:* Server\
+*Added in:* 2.1.3\
+*Parameters:*
+- *ply* - The player who is looting credits
+- *deadPly* - The dead player whose corpse was looted
+- *rag* - The corpse that was looted
+- *credits* - The number of credits looted
+
 ### TTTBodySearchButtons(ply, rag, buttons, searchRaw, detectiveSearchOnly)
 Called when a player opens the body search dialog. Used to add new buttons to the dialog.\
 *Realm:* Client\
