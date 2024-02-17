@@ -634,7 +634,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
 
     local function UpdateRadioButtonState(item)
         -- Update checkbox state based on tables
-        local id = ""
+        local id
         if ItemIsWeapon(item) then
             id = item.id
         else
