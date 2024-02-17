@@ -5,6 +5,9 @@
 
 ### Fixes
 - Fixed role pack weapon config not taking priority over role weapons config
+- Fixed role pack weapon config unselecting some equipment items when re-opening the role pack UI
+- Fixed role pack weapon config prompting to save when no changes had been made
+- Fixed role pack weapon config sometimes adding duplicate weapons to saved .json files
 - Fixed renaming or deleting a role pack causing the list of role packs to display incorrectly
 
 ## 2.1.1
