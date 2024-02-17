@@ -32,8 +32,9 @@
 
         <h2><a id="configuration-by-ui" href="#configuration-by-ui">Configuration by UI</a></h2>
         <p>Role packs are created using the new UI, accessible by admins using the <code>ttt_rolepacks</code> command. Once a role pack has been created in the UI, it is saved as a folder of .json files in the <em>data/rolepacks</em> folder. Role packs can then be backed up or copied from server-to-server just by transferring those folders.</p>
-        <p>To enable a role pack, set the <code>ttt_role_pack</code> ConVar to the name role pack you want to use.</p>
         <p><img src="img/RolePacks_Blank.png" alt="Blank Role Packs Window" style="max-width: 100%;"></p>
+        <p id="role-pack-convar-note">To enable a role pack, set the <code>ttt_role_pack</code> ConVar to the name of the role pack you want to use.</p>
+        <p><em>NOTE</em>: If you do this in either 'server.cfg' or 'listenserver.cfg' as detailed on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, make sure to put the <code>ttt_role_pack</code> ConVar at the bottom of the file. ConVars are read from top to bottom and so any ConVars placed under <code>ttt_role_pack</code> will override ConVars configured through role packs.</p>
 
         <h3><a id="overall" href="#overall"><strong>Overall</strong></a></h3>
         <p>At the top of the role packs window are the overall controls that are available regardless of the selected tab. The components of this section of the window are:</p>
@@ -44,7 +45,7 @@
             <li><strong>Rename button</strong> - Renames the currently selected role pack, prompting for the new name.</li>
             <li><strong>Delete button</strong> - Deletes the currently selected role pack, prompting for confirmation.</li>
             <li><strong>Save button</strong> - Saves the changes made to the currently selected role pack.</li>
-            <li><strong>Apply to Server button</strong> - Activates the currently selected role pack on the server.</li>
+            <li><strong>Apply to Server button</strong> - Activates the currently selected role pack on the server. Resets on server restart or map change.</li>
             <li><strong>Disable Active Role Pack button</strong> - Disables the current active role pack on the server.</li>
         </ul>
         <p><img src="img/RolePacks_Overall.png" alt="Role Packs Overall Controls" style="max-width: 100%;"></p>
@@ -77,11 +78,12 @@
         <p><img src="img/RolePacks_RoleWeights.png" alt="Role Packs New Role" style="max-width: 100%;"></p>
 
         <h3><a id="weapons" href="#weapons"><strong>Weapons</strong></a></h3>
-        <p>This tab is nearly identical to the Role Weapons UI described in the <a href="configuring_role_weapons.html#configuration-by-ui" target="_blank">Configuring Role Weapons</a> tutorial. The only differences are the removal of the "Update" and "Close" buttons (which are not needed in this UI), and the rename of the "None" checkbox to "Use Default". All of the functionality in this tab is identical to that in the role weapons UI, except it only takes effect when the specific role pack is enabled</p>
+        <p>This tab is nearly identical to the Role Weapons UI described in the <a href="configuring_role_weapons.html#configuration-by-ui" target="_blank">Configuring Role Weapons</a> tutorial. The only differences are the removal of the "Update" and "Close" buttons (which are not needed in this UI), and the rename of the "None" checkbox to "Use Default". All of the functionality in this tab is identical to that in the role weapons UI, except it only takes effect when the specific role pack is enabled. Weapons configured through role packs take priority over role weapons configuration. (e.g. If a weapon is disabled/excluded in role weapons but enabled/included in the active role pack, the role pack will take priority and the weapon will be enabled/included.)</p>
 
         <h3><a id="convars" href="#convars"><strong>ConVars</strong></a></h3>
-        <p>The ConVars tab allows you to specify configuration values to set only when the specified role pack is enabled. Add each ConVar on their own line along with the value you would like to set.</p>
+        <p>The ConVars tab allows you to specify configuration values to set only when the specified role pack is enabled. Add each ConVar on their own line along with the value you would like to set. You can also add comments by starting a line with '//', but you cannot use inline comments.</p>
         <p><img src="img/RolePacks_ConVars.png" alt="Role Packs ConVars Tab" style="max-width: 100%;"></p>
+        <p><em>NOTE</em>: Some ConVars only take effect after a server restart or map change. In this case you must configure the <code>ttt_role_pack</code> ConVar to load your role pack automatically as described <a href="#role-pack-convar-note">here</a>.</p>
     </div>
     <div class="footerpadding panel"></div>
 </body>
