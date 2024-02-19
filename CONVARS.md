@@ -1049,6 +1049,7 @@ ttt_dna_scan_on_dialog                      1       // Whether to show a button 
 ttt_spectator_corpse_search                 1       // Whether spectators can search bodies (not shared with other players)
 ttt_corpse_search_not_shared                0       // Whether corpse searches are not shared with other players (only affects non-detective-like searchers)
 ttt_color_mode_override                     "none"  // Forces all players to have a certain role color setting. none (let user decide), default, simple, protan, deutan, tritan
+ttt_spectators_see_roles                    0       // Whether spectators (not dead players) should be able to see the roles of all players
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for their original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.3 (Beta)
+**Released:**
+
+## Additions
+- Added option for spectators (not dead players) to be able to see the roles of all players
+
 ## 2.1.2 (Beta)
 **Released: February 17th, 2024**
 
