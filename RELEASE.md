@@ -8,7 +8,7 @@
 - Fixed hive mind all having the same number of credits on their body, allowing their killer to loot many times the credits they should have gotten
 
 ### Developer
-- Added `TTTBodyCreditsLooted` hook that is called when a player looks credits from a body
+- Added `TTTBodyCreditsLooted` hook that is called when a player loots credits from a body
 
 ## 2.1.2 (Beta)
 **Released: February 17th, 2024**
