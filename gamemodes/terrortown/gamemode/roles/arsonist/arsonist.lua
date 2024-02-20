@@ -14,6 +14,9 @@ local MathRandom = math.random
 -- CONVARS --
 -------------
 
+local arsonist_douse_float_time = CreateConVar("ttt_arsonist_douse_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the arsonist to lose their target without after getting out of range", 0, 60)
+local arsonist_douse_cooldown = CreateConVar("ttt_arsonist_douse_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the arsonist's douse goes on cooldown for after they lose their target", 0, 60)
+local arsonist_douse_require_los = CreateConVar("ttt_arsonist_douse_require_los", "1")
 local arsonist_douse_distance = CreateConVar("ttt_arsonist_douse_distance", "250", FCVAR_NONE, "The maximum distance away the dousing target can be", 50, 1000)
 local arsonist_damage_penalty = CreateConVar("ttt_arsonist_damage_penalty", "0.2", FCVAR_NONE, "Damage penalty that the arsonist has when attacking before igniting everyone (e.g. 0.2 = 20% less damage)", 0, 1)
 local arsonist_burn_damage = CreateConVar("ttt_arsonist_burn_damage", "2", FCVAR_NONE, "Damage done per fire tick to players ignited by the arsonist", 1, 10)
@@ -21,6 +24,7 @@ local arsonist_burn_damage = CreateConVar("ttt_arsonist_burn_damage", "2", FCVAR
 local arsonist_douse_time = GetConVar("ttt_arsonist_douse_time")
 local arsonist_douse_notify_delay_min = GetConVar("ttt_arsonist_douse_notify_delay_min")
 local arsonist_douse_notify_delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max")
+local arsonist_douse_corpses = GetConVar("ttt_arsonist_douse_corpses")
 
 --------------------
 -- PLAYER DOUSING --
@@ -31,6 +35,7 @@ local function FindArsonistTarget(arsonist, douse_distance)
     local closest_ply_dist = -1
     local doused_count = 0
     local alive_count = 0
+    local douse_require_lost = arsonist_douse_require_los:GetBool()
     for _, p in ipairs(GetAllPlayers()) do
         if p == arsonist then continue end
         if not p:Alive() or p:IsSpec() then continue end
@@ -44,13 +49,14 @@ local function FindArsonistTarget(arsonist, douse_distance)
 
         local distance = p:GetPos():Distance(arsonist:GetPos())
         if distance < douse_distance and (closest_ply_dist == -1 or distance < closest_ply_dist) then
+            if douse_require_lost and not arsonist:IsLineOfSightClear(p) then continue end
             closest_ply_dist = distance
             closest_ply = p
         end
     end
 
     -- If we didn't find a player, find the closest ragdoll belonging to a dead player instead
-    if not IsPlayer(closest_ply) then
+    if not IsPlayer(closest_ply) and arsonist_douse_corpses:GetBool() then
         for _, rag in ipairs(FindEntsByClass("prop_ragdoll")) do
             if rag:GetNWBool("TTTArsonistDoused", false) then continue end
 
@@ -63,6 +69,7 @@ local function FindArsonistTarget(arsonist, douse_distance)
 
             local distance = rag:GetPos():Distance(arsonist:GetPos())
             if distance < douse_distance and (closest_ply_dist == -1 or distance < closest_ply_dist) then
+                if douse_require_lost and not arsonist:IsLineOfSightClear(rag) then continue end
                 closest_ply_dist = distance
                 closest_ply = p
             end
@@ -88,12 +95,13 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
     local douse_distance = arsonist_douse_distance:GetFloat()
     local douse_notify_delay_min = arsonist_douse_notify_delay_min:GetInt()
     local douse_notify_delay_max = arsonist_douse_notify_delay_max:GetInt()
+    local douse_float_time = arsonist_douse_float_time:GetInt()
+    local douse_cooldown = arsonist_douse_cooldown:GetInt()
+    local douse_require_los = arsonist_douse_require_los:GetBool()
     if douse_notify_delay_min > douse_notify_delay_max then
         douse_notify_delay_min = douse_notify_delay_max
     end
 
-    -- If the target's distance is 75% of the max distance they should be in the "LOSING" stage
-    local losing_distance = douse_distance * 0.75
     for _, p in ipairs(GetAllPlayers()) do
         if not p:IsActiveArsonist() then continue end
         if p:GetNWBool("TTTArsonistDouseComplete", false) then continue end
@@ -114,44 +122,71 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             continue
         end
 
+        local stage = target:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+        local start_time = p:GetNWFloat("TTTArsonistDouseStartTime", -1)
+
         local target_pos = target:GetPos()
         local target_dead = not target:Alive() or target:IsSpec()
         local target_rag = nil
+        local los_ent = target
         -- If the target is dead, use their ragdoll instead
         if target_dead then
-            target_rag = target.server_ragdoll or target:GetRagdollEntity()
-            if not IsValid(target_rag) then continue end
+            if arsonist_douse_corpses:GetBool() then
+                target_rag = target.server_ragdoll or target:GetRagdollEntity()
+                if not IsValid(target_rag) then continue end
 
-            target_pos = target_rag:GetPos()
-        end
-
-        local distance = target_pos:Distance(p:GetPos())
-        local stage = target:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
-        local start_time = p:GetNWFloat("TTTArsonistDouseStartTime", -1)
-        if distance > douse_distance then
-            if stage ~= ARSONIST_DOUSING_LOST then
-                target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING_LOST)
-                -- Wait for 1 second after losing before resetting
-                p:SetNWFloat("TTTArsonistDouseStartTime", CurTime() + 1)
+                target_pos = target_rag:GetPos()
+                los_ent = target_rag
             else
-                -- After the buffer time has passed, reset the variables for both the target and the arsonist
-                if CurTime() > start_time then
+                if stage ~= ARSONIST_DOUSING_LOST and douse_cooldown > 0 then
+                    target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING_LOST)
+                    -- Wait for the cooldown after losing before resetting
+                    p:SetNWFloat("TTTArsonistDouseStartTime", CurTime() + douse_cooldown)
+                elseif CurTime() > start_time or douse_cooldown == 0 then
+                    -- After the buffer time has passed, reset the variables for both the target and the arsonist
                     p:SetNWString("TTTArsonistDouseTarget", "")
                     p:SetNWFloat("TTTArsonistDouseStartTime", -1)
                     target:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
                 end
+                continue
             end
-        elseif stage == ARSONIST_DOUSING or stage == ARSONIST_DOUSING_LOSING then
-            -- If they are getting too far away, change to "LOSING" stage
-            if distance > losing_distance then
-                if stage ~= ARSONIST_DOUSING_LOSING then
-                    target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING_LOSING)
-                end
-            -- Otherwise change them back to "DOUSING"
-            elseif stage ~= ARSONIST_DOUSING then
-                target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING)
-            end
+        end
 
+        local distance = target_pos:Distance(p:GetPos())
+        if stage == ARSONIST_UNDOUSED then
+            p:SetNWFloat("TTTArsonistDouseStartTime", CurTime())
+            target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING)
+        elseif stage == ARSONIST_DOUSING then
+            if distance > douse_distance or (douse_require_los and not p:IsLineOfSightClear(los_ent)) then
+                target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING_LOSING)
+                p:SetNWFloat("TTTArsonistDouseLostTime", CurTime() + douse_float_time)
+            end
+        elseif stage == ARSONIST_DOUSING_LOSING then
+            if CurTime() > p:GetNWFloat("TTTArsonistDouseLostTime", -1) then
+                if douse_cooldown > 0 then
+                    target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING_LOST)
+                    -- Wait for the cooldown after losing before resetting
+                    p:SetNWFloat("TTTArsonistDouseStartTime", CurTime() + douse_cooldown)
+                else
+                    p:SetNWString("TTTArsonistDouseTarget", "")
+                    p:SetNWFloat("TTTArsonistDouseStartTime", -1)
+                    target:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+                end
+            else
+                if distance <= douse_distance and (not douse_require_los or p:IsLineOfSightClear(los_ent)) then
+                    target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING)
+                    p:SetNWFloat("TTTArsonistDouseLostTime", -1)
+                end
+            end
+        elseif stage == ARSONIST_DOUSING_LOST then
+            if CurTime() > start_time then
+                p:SetNWString("TTTArsonistDouseTarget", "")
+                p:SetNWFloat("TTTArsonistDouseStartTime", -1)
+                target:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+            end
+        end
+
+        if stage == ARSONIST_DOUSING or stage == ARSONIST_DOUSING_LOSING then
             -- If we're done dousing, mark the target and reset the arsonist state
             if CurTime() - start_time > douse_time then
                 target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSED)
@@ -180,10 +215,6 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                     end)
                 end
             end
-        -- Otherwise mark them as "dousing" and the start time so the progress bar can show
-        elseif stage ~= ARSONIST_DOUSING then
-            p:SetNWFloat("TTTArsonistDouseStartTime", CurTime())
-            target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING)
         end
     end
 end)
@@ -206,6 +237,7 @@ hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
         v:SetNWInt("TTTArsonistDouseTime", -1)
         v:SetNWString("TTTArsonistDouseTarget", "")
         v:SetNWFloat("TTTArsonistDouseStartTime", -1)
+        v:SetNWFloat("TTTArsonistDouseLostTime", -1)
         v:SetNWBool("TTTArsonistDouseComplete", false)
         timer.Remove("TTTArsonistNotifyDelay_" .. v:SteamID64())
     end
