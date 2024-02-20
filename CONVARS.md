@@ -795,7 +795,7 @@ ttt_arsonist_early_ignite                   0       // Whether to allow the arso
 ttt_arsonist_corpse_ignite_time             10      // The amount of time (in seconds) to ignite doused dead player corpses for before destroying them
 ttt_arsonist_douse_float_time               1       // The amount of time (in seconds) it takes for the Arsonist to lose their target without after getting out of range
 ttt_arsonist_douse_cooldown                 3       // The amount of time (in seconds) the Arsonist's douse goes on cooldown for after they lose their target
-ttt_arsonist_douse_corpses                  1       // Whether the Arsonist can douse corpses of dead player's to destroy their bodies
+ttt_arsonist_douse_corpses                  1       // Whether the Arsonist can douse corpses of dead players to destroy their bodies
 ttt_arsonist_douse_require_los              1       // Whether the Arsonist requires line of sight with their target in order to douse them
 ttt_arsonist_can_see_jesters                1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the arsonist
 ttt_arsonist_update_scoreboard              1       // Whether the arsonist shows dead players as missing in action
