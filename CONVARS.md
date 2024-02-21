@@ -793,7 +793,7 @@ ttt_arsonist_douse_notify_delay_min         10      // The minimum delay before 
 ttt_arsonist_douse_notify_delay_max         30      // The maximum delay before a player is notified they've been doused
 ttt_arsonist_early_ignite                   0       // Whether to allow the arsonist to use their igniter without dousing everyone first
 ttt_arsonist_corpse_ignite_time             10      // The amount of time (in seconds) to ignite doused dead player corpses for before destroying them
-ttt_arsonist_douse_float_time               1       // The amount of time (in seconds) it takes for the Arsonist to lose their target without after getting out of range
+ttt_arsonist_douse_float_time               1       // The amount of time (in seconds) it takes for the Arsonist to lose their target after getting out of range
 ttt_arsonist_douse_cooldown                 3       // The amount of time (in seconds) the Arsonist's douse goes on cooldown for after they lose their target
 ttt_arsonist_douse_corpses                  1       // Whether the Arsonist can douse corpses of dead players to destroy their bodies
 ttt_arsonist_douse_require_los              1       // Whether the Arsonist requires line of sight with their target in order to douse them
