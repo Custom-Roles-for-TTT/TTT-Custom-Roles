@@ -109,8 +109,8 @@ if (betalabel) {
 }
 
 // Remove the betaonly elements if we're not on beta
-// betaonly looks like this:
-//   <span data-text="Beta Only" class="betaonly tooltip">&nbsp;</span>
+// beta only icons looks like this:
+//   <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span>
 window.addEventListener("DOMContentLoaded", function() {
     if (isOnBeta()) return;
 

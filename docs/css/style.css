@@ -328,7 +328,7 @@ h1 > #betalabel {
     position: relative;
 }
 
-.betaonly {
+.betaicon {
     background-image: url("../img/beta.svg");
     width: 16px;
     height: 16px;
