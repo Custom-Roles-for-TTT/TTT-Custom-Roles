@@ -181,10 +181,13 @@ local function CreateBuffTimer(shadow, target)
     local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. target:SteamID64()
     if buffTimers[timerId] then return end
 
+    local buffType = shadow_target_buff:GetInt()
     local buffDelay = shadow_target_buff_delay:GetInt()
     local message = "Stay with your target for " .. buffDelay .. " seconds to "
-    if shadow_target_buff:GetInt() == SHADOW_BUFF_TEAM_JOIN then
+    if buffType == SHADOW_BUFF_TEAM_JOIN then
         message = message .. "join their team!"
+    elseif buffType == SHADOW_BUFF_STEAL_ROLE then
+        message = message .. "steal their role!"
     else
         message = message .. "give them a buff!"
     end
