@@ -31,6 +31,10 @@ hook.Add("Initialize", "Medium_Translations_Initialize", function()
     LANG.AddToLanguage("english", "mdmseance_team", "TEAM")
     LANG.AddToLanguage("english", "mdmseance_role", "ROLE")
 
+    -- Notifications
+    LANG.AddToLanguage("english", "medium_reveal_name", "{medium} has performed a seance and discovered the spirit of {spirit}.")
+    LANG.AddToLanguage("english", "medium_reveal_role", "{medium} has performed a seance and discovered that {spirit} was {role}.")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_medium", [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
 You can see the spirits of the dead. Follow the spirits
@@ -82,10 +86,13 @@ local function ShouldSeeSpirits(ply)
     return false
 end
 
+local client
 hook.Add("Think", "Medium_RoleFeature_Think", function()
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
-    local client = LocalPlayer()
+    if not client then
+        client = LocalPlayer()
+    end
     if not ShouldSeeSpirits(client) then return end
 
     for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
@@ -130,7 +137,9 @@ local rolefront = surface.GetTextureID("vgui/ttt/sprite_rolefront")
 hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderables", function()
     if medium_seance_max_info:GetInt() == MEDIUM_SCANNED_NONE then return end
 
-    local client = LocalPlayer()
+    if not client then
+        client = LocalPlayer()
+    end
     if not IsPlayer(client) or not client:IsActiveMedium() then return end
 
     for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
@@ -241,7 +250,6 @@ end)
 -- SEANCE HUD --
 ----------------
 
-local client
 hook.Add("HUDPaint", "Medium_HUDPaint", function()
     if not client then
         client = LocalPlayer()
@@ -254,9 +262,7 @@ hook.Add("HUDPaint", "Medium_HUDPaint", function()
 
     local state = client:GetNWInt("TTTMediumSeanceState", MEDIUM_SEANCE_IDLE)
 
-    if state == MEDIUM_SEANCE_IDLE then
-        return
-    end
+    if state == MEDIUM_SEANCE_IDLE then return end
 
     local scan = medium_seance_time:GetInt()
     local time = client:GetNWFloat("TTTMediumSeanceStartTime", -1) + scan

@@ -199,18 +199,34 @@ local function Scan(ply, target)
                 elseif TeamKnown(target) then
                     stage = MEDIUM_SCANNED_TEAM
                     ply:QueueMessage(MSG_PRINTBOTH, "Their body has already been searched by someone else so you know their team.")
+                else
+                    -- This message is only relevant if they haven't already been searched
+                    LANG.Msg("medium_reveal_name", {
+                        medium = ply:Nick(),
+                        spirit = target:Nick()
+                    })
                 end
             elseif stage == MEDIUM_SCANNED_TEAM then
                 local teamMsg = ""
-                if ply:IsTraitorTeam() then teamMsg = "a traitor"
-                elseif ply:IsDetectiveTeam() then teamMsg = "a detective"
-                elseif ply:IsInnocentTeam() then teamMsg = "an innocent"
-                elseif ply:IsIndependentTeam() then teamMsg = "an independet"
-                elseif ply:IsJesterTeam() then teamMsg = "a jester"
-                elseif ply:IsMonsterTeam() then teamMsg = "a monster" end
-                ply:QueueMessage(MSG_PRINTBOTH, "You have learned that " .. target:Nick() .. " is " .. teamMsg .. " role.")
+                if target:IsTraitorTeam() then teamMsg = "a traitor"
+                elseif target:IsDetectiveTeam() then teamMsg = "a detective"
+                elseif target:IsInnocentTeam() then teamMsg = "an innocent"
+                elseif target:IsIndependentTeam() then teamMsg = "an independent"
+                elseif target:IsJesterTeam() then teamMsg = "a jester"
+                elseif target:IsMonsterTeam() then teamMsg = "a monster" end
+                ply:QueueMessage(MSG_PRINTBOTH, "You have learned that " .. target:Nick() .. " was " .. teamMsg .. " role.")
+                LANG.Msg("medium_reveal_role", {
+                    medium = ply:Nick(),
+                    spirit = target:Nick(),
+                    role = teamMsg .. " role"
+                })
             elseif stage == MEDIUM_SCANNED_ROLE then
-                ply:QueueMessage(MSG_PRINTBOTH, "You have learned that " .. target:Nick() .. " is " .. ROLE_STRINGS_EXT[target:GetRole()] .. ".")
+                ply:QueueMessage(MSG_PRINTBOTH, "You have learned that " .. target:Nick() .. " was " .. ROLE_STRINGS_EXT[target:GetRole()] .. ".")
+                LANG.Msg("medium_reveal_role", {
+                    medium = ply:Nick(),
+                    spirit = target:Nick(),
+                    role = ROLE_STRINGS_EXT[target:GetRole()]
+                })
             end
 
             if stage >= seance_max_info then

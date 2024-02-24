@@ -3,13 +3,16 @@
 ## 2.1.3 (Beta)
 **Released:**
 
-## Additions
+### Additions
 - Added an option to require the Arsonist to have line of sight with their target to douse them (enabled by default)
 - Added an option to prevent the Arsonist from being able to douse corpses (disabled by default)
 - Added an option for the Arsonist to have a brief window of time after leaving range or losing line of sight of their target before dousing is cancelled (1 second by default)
 - Added an option to change the amount of time after an Arsonist fails to douse a target before they can start dousing again (3 seconds by default)
 - Added an option for the Medium to be able to scan spirits to learn their name, team and role (disabled by default)
 - Added option for spectators (not dead players) to be able to see the roles of all players (disabled by default)
+
+### Fixes
+- Fixed some players who switched roles to become a Medium not being able to see spirits of players that died prior to the Medium switching roles
 
 ## 2.1.2 (Beta)
 **Released: February 17th, 2024**
