@@ -152,6 +152,10 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
     if not IsValid(ply) or GetRoundState() == ROUND_WAIT or GetRoundState() == ROUND_PREP then return defaultcolor end
 
     local client = LocalPlayer()
+    if client:GetRole() == ROLE_NONE and client:IsSpec() and GetConVar("ttt_spectators_see_roles"):GetBool() then
+        return ply:GetRole()
+    end
+
     if (ply.search_result and ply.search_result.role > ROLE_NONE) or ply == client then
         return ply:GetRole()
     end

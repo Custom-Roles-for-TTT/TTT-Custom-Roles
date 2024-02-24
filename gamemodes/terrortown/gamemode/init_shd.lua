@@ -48,6 +48,9 @@ CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent cha
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
 
 CreateConVar("ttt_role_pack", "", FCVAR_REPLICATED)
+
+CreateConVar("ttt_spectators_see_roles", "0", FCVAR_REPLICATED)
+
 -- Shop parameters
 CreateConVar("ttt_shop_for_all", 0, FCVAR_REPLICATED)
 -- Add any convars that are missing once shop-for-all is enabled

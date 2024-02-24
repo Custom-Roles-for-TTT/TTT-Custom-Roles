@@ -56,7 +56,7 @@ SWEP.Secondary.Sound        = ""
 SWEP.InLoadoutFor           = {ROLE_ARSONIST}
 SWEP.InLoadoutForDefault    = {ROLE_ARSONIST}
 
-local arsonist_early_ignite = CreateConVar("ttt_arsonist_early_ignite", "0", FCVAR_NONE, "Whether to allow the arsonist to use their igniter without dousing everyone first", 0, 1)
+local arsonist_early_ignite = CreateConVar("ttt_arsonist_early_ignite", "0", FCVAR_REPLICATED, "Whether to allow the arsonist to use their igniter without dousing everyone first", 0, 1)
 if SERVER then
     CreateConVar("ttt_arsonist_corpse_ignite_time", "10", FCVAR_NONE, "The amount of time (in seconds) to ignite doused dead player corpses for before destroying them", 1, 30)
 end
