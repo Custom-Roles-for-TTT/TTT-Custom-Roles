@@ -457,6 +457,11 @@ ttt_tracker_credits_starting                1       // The number of credits a t
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
 ttt_medium_spirit_vision                    1       // Whether players' spirits should be able to see each other
 ttt_medium_dead_notify                      1       // Whether player should be notified that there is a medium when they die
+ttt_medium_seance_time                      8       // The amount of time (in seconds) it takes for the Medium to finish a seance
+ttt_medium_seance_float_time                1       // The amount of time (in seconds) it takes for the Medium's seance to lose it's target after getting out of range
+ttt_medium_seance_cooldown                  3       // The amount of time (in seconds) the Medium's seance goes on cooldown for after losing it's target
+ttt_medium_seance_distance                  150     // The maximum distance away the seance target can be
+ttt_medium_seance_max_info                  0       // The maximum amount of information the Medium can learn from performing a seance. 0 - None, 1 - Name, 2 - Team, 3 - Role
 ttt_medium_credits_starting                 1       // The number of credits a medium should start with
 
 // Sapper
