@@ -9,6 +9,8 @@ local client
 local arsonist_douse_time = GetConVar("ttt_arsonist_douse_time")
 local arsonist_douse_notify_delay_min = GetConVar("ttt_arsonist_douse_notify_delay_min")
 local arsonist_douse_notify_delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max")
+local arsonist_douse_corpses = GetConVar("ttt_arsonist_douse_corpses")
+local arsonist_early_ignite = GetConVar("ttt_arsonist_early_ignite")
 
 ------------------
 -- TRANSLATIONS --
@@ -250,7 +252,7 @@ hook.Add("TTTHUDInfoPaint", "Arsonist_TTTHUDInfoPaint", function(cli, label_left
 
     if hide_role then return end
 
-    if cli:IsArsonist() and cli:GetNWBool("TTTArsonistDouseComplete", false) then
+    if cli:IsArsonist() and cli:GetNWBool("TTTArsonistDouseComplete", false) and not arsonist_early_ignite:GetBool() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
@@ -299,11 +301,13 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
             html = html .. "<span style='display: block; margin-top: 10px;'>Be careful though! Players <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>are notified when they are doused</span> after a short delay. Be sure to be sneaky or blend in with other players to disguise that you are the " .. ROLE_STRINGS[ROLE_ARSONIST] .. ".</span>"
         end
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>You can also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>douse player corpses</span>"
-        if not early_ignite then
-            html = html .. ", but they are not required to activate your igniter"
+        if arsonist_douse_corpses:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>You can also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>douse player corpses</span>"
+            if not early_ignite then
+                html = html .. ", but they are not required to activate your igniter"
+            end
+            html = html .. ".</span>"
         end
-        html = html .. ".</span>"
 
         return html
     end

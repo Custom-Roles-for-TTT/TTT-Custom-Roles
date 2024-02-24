@@ -1,5 +1,28 @@
 # Release Notes
 
+## 2.1.3 (Beta)
+**Released: February 24th, 2024**
+
+### Additions
+- Added an option to require the Arsonist to have line of sight with their target to douse them (enabled by default)
+- Added an option to prevent the Arsonist from being able to douse corpses (disabled by default)
+- Added an option for the Arsonist to have a brief window of time after leaving range or losing line of sight of their target before dousing is cancelled (1 second by default)
+- Added an option to change the amount of time after an Arsonist fails to douse a target before they can start dousing again (3 seconds by default)
+- Added an option for the Medium to be able to scan spirits to learn their name, team and role (disabled by default)
+- Added option for spectators (not dead players) to be able to see the roles of all players (disabled by default)
+- Added an option for whether to show a progress bar for the when the shadow's buff will be activated (enabled by default)
+
+### Changes
+- Changed shadow buff message for stealing role to state that explicitly instead of just say they will "give [their] target a buff"
+
+### Fixes
+- Fixed minor typo in vindicator event log entry
+- Fixed hive mind all having the same number of credits on their body, allowing their killer to loot many times the credits they should have gotten
+- Fixed some players who switched roles to become a Medium not being able to see spirits of players that died prior to the Medium switching roles
+
+### Developer
+- Added `TTTBodyCreditsLooted` hook that is called when a player loots credits from a body
+
 ## 2.1.2 (Beta)
 **Released: February 17th, 2024**
 

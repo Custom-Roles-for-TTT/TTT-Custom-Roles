@@ -1,11 +1,16 @@
 local hook = hook
 local math = math
 local pairs = pairs
+local table = table
+local string = string
+local ents = ents
 
+local StringUpper = string.upper
 local GetAllPlayers = player.GetAll
-local GetAllEnts = ents.GetAll
 local MathRand = math.Rand
 local MathRandom = math.random
+local TableInsert = table.insert
+local FindEntsByClass = ents.FindByClass
 
 -------------
 -- CONVARS --
@@ -13,12 +18,23 @@ local MathRandom = math.random
 
 local medium_spirit_color = GetConVar("ttt_medium_spirit_color")
 local medium_spirit_vision = GetConVar("ttt_medium_spirit_vision")
+local medium_seance_time = GetConVar("ttt_medium_seance_time")
+local medium_seance_max_info = GetConVar("ttt_medium_seance_max_info")
 
 ------------------
 -- TRANSLATIONS --
 ------------------
 
 hook.Add("Initialize", "Medium_Translations_Initialize", function()
+    -- Seance
+    LANG.AddToLanguage("english", "mdmseance_name", "NAME")
+    LANG.AddToLanguage("english", "mdmseance_team", "TEAM")
+    LANG.AddToLanguage("english", "mdmseance_role", "ROLE")
+
+    -- Notifications
+    LANG.AddToLanguage("english", "medium_reveal_name", "{medium} has performed a seance and discovered the spirit of {spirit}.")
+    LANG.AddToLanguage("english", "medium_reveal_role", "{medium} has performed a seance and discovered that {spirit} was {role}.")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_medium", [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
 You can see the spirits of the dead. Follow the spirits
@@ -70,13 +86,16 @@ local function ShouldSeeSpirits(ply)
     return false
 end
 
+local client
 hook.Add("Think", "Medium_RoleFeature_Think", function()
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
-    local client = LocalPlayer()
+    if not client then
+        client = LocalPlayer()
+    end
     if not ShouldSeeSpirits(client) then return end
 
-    for _, ent in pairs(GetAllEnts()) do
+    for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
         if ent:GetNWBool("MediumSpirit", false) then
             ent:SetNoDraw(true)
             ent:SetRenderMode(RENDERMODE_NONE)
@@ -108,6 +127,183 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
     end
 end)
 
+---------------
+-- SPIRIT ID --
+---------------
+
+local roleback = surface.GetTextureID("vgui/ttt/sprite_roleback")
+local rolefront = surface.GetTextureID("vgui/ttt/sprite_rolefront")
+
+hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderables", function()
+    if medium_seance_max_info:GetInt() == MEDIUM_SCANNED_NONE then return end
+
+    if not client then
+        client = LocalPlayer()
+    end
+    if not IsPlayer(client) or not client:IsActiveMedium() then return end
+
+    for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
+        if ent:GetNWBool("MediumSpirit", false) then
+            local sid64 = ent:GetNWString("SpiritOwner", "")
+            local ply = player.GetBySteamID64(sid64)
+            if IsPlayer(ply) then
+                local stage = ply:GetNWInt("TTTMediumSeanceStage")
+                if stage >= MEDIUM_SCANNED_NAME then
+                    local pos = ent:GetPos() + Vector(0, 0, 64)
+                    local ang = EyeAngles()
+                    local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
+                    cam.Start3D2D(pos, Angle(0, ang.y - 90, 90 - ang.x), .25)
+                    draw.SimpleText(ply:Nick(), "TargetID", 0, 30, Color(col.x * 255, col.y * 255, col.z * 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                    if stage >= MEDIUM_SCANNED_TEAM then
+                        local role = ply:GetRole()
+                        local roleFileName = ROLE_STRINGS_SHORT[role]
+                        local roleText = StringUpper(ROLE_STRINGS[ply:GetRole()])
+                        if stage == MEDIUM_SCANNED_TEAM then
+                            role = ROLE_NONE
+                            if ply:IsTraitorTeam() then role = ROLE_TRAITOR
+                            elseif ply:IsDetectiveTeam() then role = ROLE_DETECTIVE
+                            elseif ply:IsInnocentTeam() then role = ROLE_INNOCENT
+                            elseif ply:IsIndependentTeam() then role = ROLE_DRUNK
+                            elseif ply:IsJesterTeam() then role = ROLE_JESTER
+                            elseif ply:IsMonsterTeam() then role = ply:GetRole() end
+
+                            roleFileName = "nil"
+
+                            local T = LANG.GetTranslation
+                            local PT = LANG.GetParamTranslation
+                            local labelParam
+
+                            if TRAITOR_ROLES[role] then labelParam = T("traitor")
+                            elseif DETECTIVE_ROLES[role] then labelParam = T("detective")
+                            elseif INNOCENT_ROLES[role] then labelParam = T("innocent")
+                            elseif INDEPENDENT_ROLES[role] then labelParam = T("independent")
+                            elseif JESTER_ROLES[role] then labelParam = T("jester")
+                            elseif MONSTER_ROLES[role] then labelParam = T("monster") end
+
+                            roleText = PT("target_unknown_team", {targettype = StringUpper(labelParam)})
+                        end
+                        local roleCol = ROLE_COLORS_RADAR[role]
+                        draw.SimpleText(roleText, "TargetIDSmall", 0, 50, roleCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+                        local filePath = util.GetRoleIconPath(roleFileName, "sprite", "vtf")
+
+                        draw.TexturedQuad({texture = roleback, color = ROLE_COLORS_SPRITE[role], x = -24, y = -80, w = 48, h = 48})
+                        draw.TexturedQuad({texture = surface.GetTextureID(filePath), color = COLOR_WHITE, x = -24, y = -80, w = 48, h = 48})
+                        draw.TexturedQuad({texture = rolefront, color = COLOR_WHITE, x = -24, y = -80, w = 48, h = 48})
+                    end
+                    cam.End3D2D()
+                end
+            end
+        end
+    end
+end)
+
+----------------
+-- SCOREBOARD --
+----------------
+
+hook.Add("TTTScoreboardPlayerRole", "Medium_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+    if GetRoundState() < ROUND_ACTIVE then return end
+    if not IsPlayer(ply) then return end
+    if ply:IsActive() then return end
+    if cli:IsScoreboardInfoOverridden(ply) then return end
+
+    local state = ply:GetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE)
+    if state <= MEDIUM_SCANNED_NAME then return end
+
+    local newColor = c
+    local newRoleStr = roleStr
+
+    if state == MEDIUM_SCANNED_TEAM then
+        local role = ROLE_NONE
+        if ply:IsTraitorTeam() then role = ROLE_TRAITOR
+        elseif ply:IsDetectiveTeam() then role = ROLE_DETECTIVE
+        elseif ply:IsInnocentTeam() then role = ROLE_INNOCENT
+        elseif ply:IsIndependentTeam() then role = ROLE_DRUNK
+        elseif ply:IsJesterTeam() then role = ROLE_JESTER
+        elseif ply:IsMonsterTeam() then role = ply:GetRole() end
+
+        newColor = ROLE_COLORS_SCOREBOARD[role]
+        newRoleStr = "nil"
+    elseif state == MEDIUM_SCANNED_ROLE then
+        newColor = ROLE_COLORS_SCOREBOARD[ply:GetRole()]
+        newRoleStr = ROLE_STRINGS_SHORT[ply:GetRole()]
+    end
+
+    return newColor, newRoleStr
+end)
+
+hook.Add("TTTScoreGroup", "Medium_TTTScoreGroup", function(ply)
+    if GetRoundState() < ROUND_ACTIVE then return end
+    if not IsPlayer(ply) then return end
+    if ply:IsActive() then return end
+
+    local state = ply:GetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE)
+    if state <= MEDIUM_SCANNED_NONE then return end
+
+    if not ply.search_result and not ply:GetNWBool("body_searched", false) and not ply:GetNWBool("body_found", false) then
+        return GROUP_NOTFOUND
+    end
+end)
+
+----------------
+-- SEANCE HUD --
+----------------
+
+hook.Add("HUDPaint", "Medium_HUDPaint", function()
+    if not client then
+        client = LocalPlayer()
+    end
+
+    if not client:IsActiveMedium() then return end
+
+    local seance_max_info = medium_seance_max_info:GetInt()
+    if seance_max_info == MEDIUM_SCANNED_NONE then return end
+
+    local state = client:GetNWInt("TTTMediumSeanceState", MEDIUM_SEANCE_IDLE)
+
+    if state == MEDIUM_SEANCE_IDLE then return end
+
+    local scan = medium_seance_time:GetInt()
+    local time = client:GetNWFloat("TTTMediumSeanceStartTime", -1) + scan
+
+    local x = ScrW() / 2.0
+    local y = ScrH() / 2.0
+
+    y = y + (y / 3)
+
+    local w = 300
+
+    local T = LANG.GetTranslation
+    local titles = {T("mdmseance_name")}
+    if seance_max_info >= MEDIUM_SCANNED_TEAM then
+        TableInsert(titles, T("mdmseance_team"))
+        if seance_max_info == MEDIUM_SCANNED_ROLE then
+            TableInsert(titles, T("mdmseance_role"))
+        end
+    end
+
+    if state == MEDIUM_SEANCE_LOCKED or state == MEDIUM_SEANCE_SEARCHING then
+        if time < 0 then return end
+
+        local color = Color(255, 255, 0, 155)
+        if state == MEDIUM_SEANCE_LOCKED then
+            color = Color(0, 255, 0, 155)
+        end
+
+        local target = player.GetBySteamID64(client:GetNWString("TTTMediumSeanceTarget", ""))
+        local targetState = target:GetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE)
+
+        local cc = math.min(1, 1 - ((time - CurTime()) / scan))
+        local progress = (cc + targetState) / #titles
+
+        CRHUD:PaintProgressBar(x, y, w, color, client:GetNWString("TTTMediumSeanceMessage", ""), progress, #titles, titles)
+    elseif state == MEDIUM_SEANCE_LOST then
+        local color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
+        CRHUD:PaintProgressBar(x, y, w, color, client:GetNWString("TTTMediumSeanceMessage", ""), 1, #titles, titles)
+    end
+end)
+
 --------------
 -- TUTORIAL --
 --------------
@@ -123,6 +319,18 @@ hook.Add("TTTTutorialRoleText", "Medium_TTTTutorialRoleText", function(role, tit
         -- Spirits
         if medium_spirit_color:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Each player will have a randomly assigned <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>spirit color</span> allowing the " .. ROLE_STRINGS[ROLE_MEDIUM] .. " to keep track of track specific spirits.</span>"
+        end
+
+        -- Seances
+        local seance_max_info = medium_seance_max_info:GetInt()
+        if seance_max_info >= MEDIUM_SCANNED_NAME then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The ".. ROLE_STRINGS[ROLE_MEDIUM] .. " can <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>perform a seance</span> by staying close to a spirit. Performing a seance will reveal a spirit's name"
+            if seance_max_info == MEDIUM_SCANNED_TEAM then
+                html = html .. " and then their team"
+            elseif seance_max_info == MEDIUM_SCANNED_ROLE then
+                html = html .. ", then their team, and finally their role"
+            end
+            html = html .. ".</span>"
         end
 
         -- Spirit vision

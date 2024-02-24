@@ -886,6 +886,14 @@ globals = {
     "LOOTGOBLIN_RADAR_BEEP_OVERRIDE_NONE",
     "LOOTGOBLIN_RADAR_BEEP_OVERRIDE_ON",
     "LOOTGOBLIN_RADAR_BEEP_OVERRIDE_OFF",
+    "MEDIUM_SCANNED_NONE",
+    "MEDIUM_SCANNED_NAME",
+    "MEDIUM_SCANNED_TEAM",
+    "MEDIUM_SCANNED_ROLE",
+    "MEDIUM_SEANCE_IDLE",
+    "MEDIUM_SEANCE_LOCKED",
+    "MEDIUM_SEANCE_SEARCHING",
+    "MEDIUM_SEANCE_LOST",
     "MONSTER_ROLES",
     "MSG_PRINTBOTH",
     "MSG_PRINTCENTER",
@@ -1134,7 +1142,14 @@ globals = {
     "DEATHRADAR",
 
     -- Randomat Namespaces
-    "Randomat"
+    "Randomat",
+
+    -- Scripts
+    "EQUIP_DOUBLETAP",
+    "EQUIP_JUGGERNOG",
+    "EQUIP_PHD",
+    "EQUIP_SPEEDCOLA",
+    "EQUIP_STAMINUP"
 }
 std = {
     globals = {

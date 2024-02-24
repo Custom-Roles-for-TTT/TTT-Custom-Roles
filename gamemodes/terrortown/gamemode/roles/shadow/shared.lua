@@ -49,6 +49,7 @@ CreateConVar("ttt_shadow_delay_timer_max", "0", FCVAR_REPLICATED, "Maximum time 
 CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_REPLICATED, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
 CreateConVar("ttt_shadow_target_buff", "4", FCVAR_REPLICATED, "The type of buff the shadow should get while near their target for enough time. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join. 5 - Kill target and steal their role.", 0, 5)
 CreateConVar("ttt_shadow_target_buff_delay", "90", FCVAR_REPLICATED, "How long (in seconds) the shadow needs to be near their target before the buff takes effect", 1, 120)
+CreateConVar("ttt_shadow_target_buff_show_progress", "1", FCVAR_REPLICATED, "Whether to show a progress bar for the when the shadow's buff will be activated", 0, 1)
 CreateConVar("ttt_shadow_soul_link", "0", FCVAR_REPLICATED, "Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.", 0, 2)
 CreateConVar("ttt_shadow_weaken_health_to", "0", FCVAR_REPLICATED, "How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. Set to 0 to disable, meaning the shadow will be killed", 0, 100)
 CreateConVar("ttt_shadow_target_notify_mode", "0", FCVAR_REPLICATED, "How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.", 0, 2)
@@ -108,6 +109,10 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_target_buff_delay",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_buff_show_progress",
+    type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_target_buff_heal_amount",

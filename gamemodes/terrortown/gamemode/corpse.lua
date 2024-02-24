@@ -349,6 +349,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         CORPSE.SetCredits(rag, 0)
         ServerLog(ply:Nick() .. " took " .. credits .. " credits from the body of " .. nick .. "\n")
         SCORE:HandleCreditFound(ply, nick, credits)
+        hook.Call("TTTBodyCreditsLooted", GAMEMODE, ply, ownerEnt, rag, credits)
         return
     elseif DetectiveMode() then
         if CORPSE.CanBeSearched(ply, rag) then

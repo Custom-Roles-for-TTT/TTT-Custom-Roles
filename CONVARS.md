@@ -457,6 +457,11 @@ ttt_tracker_credits_starting                1       // The number of credits a t
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
 ttt_medium_spirit_vision                    1       // Whether players' spirits should be able to see each other
 ttt_medium_dead_notify                      1       // Whether player should be notified that there is a medium when they die
+ttt_medium_seance_time                      8       // The amount of time (in seconds) it takes for the Medium to finish a seance
+ttt_medium_seance_float_time                1       // The amount of time (in seconds) it takes for the Medium's seance to lose it's target after getting out of range
+ttt_medium_seance_cooldown                  3       // The amount of time (in seconds) the Medium's seance goes on cooldown for after losing it's target
+ttt_medium_seance_distance                  150     // The maximum distance away the seance target can be
+ttt_medium_seance_max_info                  0       // The maximum amount of information the Medium can learn from performing a seance. 0 - None, 1 - Name, 2 - Team, 3 - Role
 ttt_medium_credits_starting                 1       // The number of credits a medium should start with
 
 // Sapper
@@ -765,6 +770,7 @@ ttt_shadow_delay_timer_max                  0       // Maximum time (in seconds)
 ttt_shadow_alive_radius                     8       // The radius (in meters) from the living target that the shadow has to stay within
 ttt_shadow_dead_radius                      3       // The radius (in meters) from the death target that the shadow has to stay within
 ttt_shadow_target_buff                      4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join. 5 - Kill target and steal their role.
+ttt_shadow_target_buff_show_progress        1       // Whether to show a progress bar for the when the shadow's buff will be activated
 ttt_shadow_target_buff_notify               0       // Whether the shadow's target should be notified when they are buffed
 ttt_shadow_target_buff_delay                90      // How long (in seconds) the shadow needs to be near their target before the buff takes effect
 ttt_shadow_target_buff_heal_amount          5       // The amount of health the shadow's target should be healed per-interval
@@ -793,6 +799,10 @@ ttt_arsonist_douse_notify_delay_min         10      // The minimum delay before 
 ttt_arsonist_douse_notify_delay_max         30      // The maximum delay before a player is notified they've been doused
 ttt_arsonist_early_ignite                   0       // Whether to allow the arsonist to use their igniter without dousing everyone first
 ttt_arsonist_corpse_ignite_time             10      // The amount of time (in seconds) to ignite doused dead player corpses for before destroying them
+ttt_arsonist_douse_float_time               1       // The amount of time (in seconds) it takes for the Arsonist to lose their target after getting out of range
+ttt_arsonist_douse_cooldown                 3       // The amount of time (in seconds) the Arsonist's douse goes on cooldown for after they lose their target
+ttt_arsonist_douse_corpses                  1       // Whether the Arsonist can douse corpses of dead players to destroy their bodies
+ttt_arsonist_douse_require_los              1       // Whether the Arsonist requires line of sight with their target in order to douse them
 ttt_arsonist_can_see_jesters                1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the arsonist
 ttt_arsonist_update_scoreboard              1       // Whether the arsonist shows dead players as missing in action
 ttt_detectives_search_only_arsonistdouse    0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
@@ -1049,6 +1059,7 @@ ttt_dna_scan_on_dialog                      1       // Whether to show a button 
 ttt_spectator_corpse_search                 1       // Whether spectators can search bodies (not shared with other players)
 ttt_corpse_search_not_shared                0       // Whether corpse searches are not shared with other players (only affects non-detective-like searchers)
 ttt_color_mode_override                     "none"  // Forces all players to have a certain role color setting. none (let user decide), default, simple, protan, deutan, tritan
+ttt_spectators_see_roles                    0       // Whether spectators (not dead players) should be able to see the roles of all players
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for their original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

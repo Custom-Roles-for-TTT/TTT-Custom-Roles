@@ -151,17 +151,35 @@
                             <td>Boolean</td>
                             <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Arsonist.</td>
                         </tr>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_arsonist_douse_cooldown</td>
+                            <td>3</td>
+                            <td>Integer</td>
+                            <td>The amount of time (in seconds) the Arsonist's douse goes on cooldown for after they lose their target.</td>
+                        </tr>
                         <tr>
                             <td>ttt_arsonist_corpse_ignite_time</td>
                             <td>10</td>
                             <td>Integer</td>
                             <td>The amount of time in seconds to ignite doused dead player corpses for before destroying them.</td>
                         </tr>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_arsonist_douse_corpses</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Arsonist can douse corpses of dead players to destroy their bodies.</td>
+                        </tr>
                         <tr>
                             <td>ttt_arsonist_douse_distance</td>
                             <td>250</td>
                             <td>Integer</td>
                             <td>The maximum distance away the dousing target can be.</td>
+                        </tr>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_arsonist_douse_float_time</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The amount of time (in seconds) it takes for the Arsonist to lose their target after getting out of range.</td>
                         </tr>
                         <tr>
                             <td>ttt_arsonist_douse_notify_delay_max</td>
@@ -174,6 +192,12 @@
                             <td>10</td>
                             <td>Integer</td>
                             <td>The minimum delay before a player is notified they've been doused.</td>
+                        </tr>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_arsonist_douse_require_los</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Arsonist requires line of sight with their target in order to douse them.</td>
                         </tr>
                         <tr>
                             <td>ttt_arsonist_douse_time</td>
@@ -830,6 +854,12 @@
                                     <li>Kill target and steal their role. <i>NOTE:</i> When using this setting, the Shadow no longer has a win condition</li>
                                 </ol>
                             </td>
+                        </tr>
+                        <tr class="betaonly"> 
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_shadow_target_buff_show_progress</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether to show a progress bar for the when the shadow's buff will be activated</i></td>
                         </tr>
                         <tr>
                             <td>ttt_shadow_target_buff_damage_bonus</td>
