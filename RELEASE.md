@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.1.3 (Beta)
-**Released:**
+**Released: February 24th, 2024**
 
 ### Additions
 - Added an option to require the Arsonist to have line of sight with their target to douse them (enabled by default)
