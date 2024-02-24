@@ -9,6 +9,7 @@
 - Added an option for the Arsonist to have a brief window of time after leaving range or losing line of sight of their target before dousing is cancelled (1 second by default)
 - Added an option to change the amount of time after an Arsonist fails to douse a target before they can start dousing again (3 seconds by default)
 - Added option for spectators (not dead players) to be able to see the roles of all players (disabled by default)
+- Added an option for whether to show a progress bar for the when the shadow's buff will be activated (enabled by default)
 
 ### Changes
 - Changed shadow buff message for stealing role to state that explicitly instead of just say they will "give [their] target a buff"

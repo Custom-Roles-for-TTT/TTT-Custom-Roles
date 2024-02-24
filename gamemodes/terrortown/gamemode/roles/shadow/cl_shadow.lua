@@ -32,6 +32,7 @@ local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
 local shadow_speed_mult = GetConVar("ttt_shadow_speed_mult")
 local shadow_sprint_recovery = GetConVar("ttt_shadow_sprint_recovery")
 local shadow_failure_mode = GetConVar("ttt_shadow_failure_mode")
+local shadow_target_buff_show_progress = GetConVar("ttt_shadow_target_buff_show_progress")
 
 ------------------
 -- TRANSLATIONS --
@@ -48,6 +49,7 @@ Survive until the end of the round to win.]])
     LANG.AddToLanguage("english", "shadow_delay_target", "Target identified in: {time}")
     LANG.AddToLanguage("english", "shadow_find_target", "FIND YOUR TARGET - {time}")
     LANG.AddToLanguage("english", "shadow_return_target", "RETURN TO YOUR TARGET - {time}")
+    LANG.AddToLanguage("english", "shadow_buff_progress", "BUFF ACTIVATION - {time}")
     LANG.AddToLanguage("english", "shadow_buff_hud_active", "Target {buff} active")
     LANG.AddToLanguage("english", "shadow_buff_hud_time", "Time until target {buff} active: {time}")
     LANG.AddToLanguage("english", "shadow_buff_1", "health regen")
@@ -448,33 +450,52 @@ AddHook("HUDPaint", "Shadow_HUDPaint", function()
 
     if not IsValid(client) or client:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
-    local t = client:GetNWFloat("ShadowTimer", -1)
+    if client:IsActiveShadow() then
+        local targetSid64 = client:GetNWString("ShadowTarget", "")
+        if not targetSid64 or #targetSid64 == 0 then return end
 
-    if client:IsActiveShadow() and (t > 0 or t == SHADOW_FORCED_PROGRESS_BAR) then
-        local target = client:GetNWString("ShadowTarget", "")
-        if not target or #target == 0 then return end
-
-        local remaining = MathMax(0, t - CurTime())
+        local t = client:GetNWFloat("ShadowTimer", -1)
+        local bt = client:GetNWFloat("ShadowBuffTimer", -1)
 
         local PT = LANG.GetParamTranslation
-        local message
-        local total
-        if client:IsRoleActive() then
-            message = PT("shadow_return_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
-            total = shadow_buffer_timer:GetInt()
-        else
-            message = PT("shadow_find_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
-            total = shadow_start_timer:GetInt()
+        local remaining = nil
+        local message = nil
+        local total = nil
+        local color = nil
+
+        if t > 0 or t == SHADOW_FORCED_PROGRESS_BAR then
+            remaining = MathMax(0, t - CurTime())
+            if client:IsRoleActive() then
+                message = PT("shadow_return_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
+                total = shadow_buffer_timer:GetInt()
+            else
+                message = PT("shadow_find_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
+                total = shadow_start_timer:GetInt()
+            end
+            color = Color(200 + MathSin(CurTime() * 32) * 50, 0, 0, 155)
+        elseif shadow_target_buff_show_progress:GetBool() and bt > 0 then
+            local target = player.GetBySteamID64(targetSid64)
+            if not IsPlayer(target) then return end
+            -- If their target player has already had their buff and can't get it again, don't bother showing the HUD info
+            if target:GetNWBool("ShadowBuffDepleted", false) then return end
+
+            remaining = MathMax(0, bt - CurTime())
+            if remaining <= 0 then return end
+
+            message = PT("shadow_buff_progress", { time = util.SimpleTime(remaining, "%02i:%02i") })
+            total = shadow_target_buff_delay:GetInt()
+            color = Color(25, 200, 25, 155)
         end
+
+        -- If we didn't get everything set, forget it
+        if remaining == nil or message == nil or total == nil or color == nil then return end
 
         local x = ScrW() / 2.0
         local y = ScrH() / 2.0
-
         y = y + (y / 3)
 
         local w = 300
         local progress = 1 - (remaining / total)
-        local color = Color(200 + MathSin(CurTime() * 32) * 50, 0, 0, 155)
 
         CRHUD:PaintProgressBar(x, y, w, color, message, progress)
     end
@@ -510,6 +531,9 @@ AddHook("TTTHUDInfoPaint", "Shadow_Buff_TTTHUDInfoPaint", function(cli, label_le
     if remaining == 0 then
         text = LANG.GetParamTranslation("shadow_buff_hud_active", { buff = buff })
     else
+        -- If we're showing a progress bar, don't bother with the label
+        if shadow_target_buff_show_progress:GetBool() then return end
+
         text = LANG.GetParamTranslation("shadow_buff_hud_time", { buff = buff, time = util.SimpleTime(remaining, "%02i:%02i") })
     end
     local _, h = surface.GetTextSize(text)
