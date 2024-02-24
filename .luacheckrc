@@ -1142,7 +1142,14 @@ globals = {
     "DEATHRADAR",
 
     -- Randomat Namespaces
-    "Randomat"
+    "Randomat",
+
+    -- Scripts
+    "EQUIP_DOUBLETAP",
+    "EQUIP_JUGGERNOG",
+    "EQUIP_PHD",
+    "EQUIP_SPEEDCOLA",
+    "EQUIP_STAMINUP"
 }
 std = {
     globals = {
