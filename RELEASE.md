@@ -10,6 +10,13 @@
 - Added an option to change the amount of time after an Arsonist fails to douse a target before they can start dousing again (3 seconds by default)
 - Added option for spectators (not dead players) to be able to see the roles of all players (disabled by default)
 
+### Fixes
+- Fixed minor typo in vindicator event log entry
+- Fixed hive mind all having the same number of credits on their body, allowing their killer to loot many times the credits they should have gotten
+
+### Developer
+- Added `TTTBodyCreditsLooted` hook that is called when a player loots credits from a body
+
 ## 2.1.2 (Beta)
 **Released: February 17th, 2024**
 
