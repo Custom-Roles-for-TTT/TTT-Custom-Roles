@@ -6,7 +6,6 @@ local string = string
 local ents = ents
 
 local StringUpper = string.upper
-local StringLower = string.lower
 local GetAllPlayers = player.GetAll
 local MathRand = math.Rand
 local MathRandom = math.random
@@ -238,21 +237,11 @@ hook.Add("TTTScoreGroup", "Medium_TTTScoreGroup", function(ply)
     end
 end)
 
-ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_MEDIUM] = function(ply, target)
-    if not IsPlayer(target) then return end
-    if not ply:IsGuesser() then return end
-
-    local state = GetScanState(target)
-    if state <= GUESSER_UNSCANNED then return end
-
-    ------ name,  role
-    return false, true
-end
-
 ----------------
 -- SEANCE HUD --
 ----------------
 
+local client
 hook.Add("HUDPaint", "Medium_HUDPaint", function()
     if not client then
         client = LocalPlayer()
