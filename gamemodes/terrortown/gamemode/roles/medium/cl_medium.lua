@@ -127,11 +127,11 @@ end)
 local roleback = surface.GetTextureID("vgui/ttt/sprite_roleback")
 local rolefront = surface.GetTextureID("vgui/ttt/sprite_rolefront")
 
-hook.Add( "PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderables", function()
+hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderables", function()
     if medium_seance_max_info:GetInt() == MEDIUM_SCANNED_NONE then return end
 
     local client = LocalPlayer()
-    if not client:IsActiveMedium() then return end
+    if not IsPlayer(client) or not client:IsActiveMedium() then return end
 
     for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
         if ent:GetNWBool("MediumSpirit", false) then
