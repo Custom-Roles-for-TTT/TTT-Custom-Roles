@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.4 (Beta)
+**Released:**
+
+### Fixes
+- Fixed bodysnatcher not removing or receiving role weapons when swapping to a role that has them (e.g. the mad scientist)
+
 ## 2.1.3 (Beta)
 **Released: February 24th, 2024**
 

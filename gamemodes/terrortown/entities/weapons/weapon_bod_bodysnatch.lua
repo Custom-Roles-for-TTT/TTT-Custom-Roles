@@ -1,9 +1,13 @@
 AddCSLuaFile()
 
+local hook = hook
 local net = net
 local surface = surface
 local string = string
 local util = util
+
+local CallHook = hook.Call
+local RunHook = hook.Run
 
 if CLIENT then
     SWEP.PrintName = "Bodysnatching Device"
@@ -32,7 +36,7 @@ if SERVER then
 
     function SWEP:OnSuccess(ply, body)
         local owner = self:GetOwner()
-        hook.Call("TTTPlayerRoleChangedByItem", nil, owner, owner, self)
+        CallHook("TTTPlayerRoleChangedByItem", nil, owner, owner, self)
 
         net.Start("TTT_Bodysnatched")
         net.Send(ply)
@@ -47,8 +51,10 @@ if SERVER then
 
         ply:MoveRoleState(owner, true)
         owner:SetRole(role)
+        owner:StripRoleWeapons()
         owner:SelectWeapon("weapon_zm_carry")
         owner:SetNWBool("WasBodysnatcher", true)
+        RunHook("PlayerLoadout", owner)
 
         if GetConVar("ttt_bodysnatcher_destroy_body"):GetBool() then
             SafeRemoveEntity(body)
