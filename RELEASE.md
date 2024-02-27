@@ -9,7 +9,7 @@
 - Fixed case where all parasites infecting the same host would respawn even after the host was killed by the first infection
   - Now, all but the first parasite will have their infection cancelled when their host dies
 - Fixed parasite cure not showing in shops when the parasite is enabled via rolepacks
-- Fixed roles enabled via rolepacks not having their tutorials show in the list
+- Fixed roles enabled via rolepacks not having their per-role configurations show in the F1 menu's "Roles" tab
 
 ## 2.1.3 (Beta)
 **Released: February 24th, 2024**
