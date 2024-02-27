@@ -8,6 +8,7 @@
 - Fixed conflict between new medium seance logic and informant scanning
 - Fixed case where all parasites infecting the same host would respawn even after the host was killed by the first infection
   - Now, all but the first parasite will have their infection cancelled when their host dies
+- Fixed parasite cure not showing in shops when the parasite is enabled via rolepacks
 
 ## 2.1.3 (Beta)
 **Released: February 24th, 2024**

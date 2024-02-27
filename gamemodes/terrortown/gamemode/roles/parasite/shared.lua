@@ -21,7 +21,7 @@ PARASITE_SUICIDE_RESPAWN_CONSOLE = 2
 hook.Add("TTTUpdateRoleState", "Parasite_TTTUpdateRoleState", function()
     local parasite_cure = weapons.GetStored("weapon_par_cure")
     local fake_cure = weapons.GetStored("weapon_qua_fake_cure")
-    if GetConVar("ttt_parasite_enabled"):GetBool() then
+    if util.CanRoleSpawn(ROLE_PARASITE) then
         parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
         fake_cure.CanBuy = table.Copy(fake_cure.CanBuyDefault)
     else
