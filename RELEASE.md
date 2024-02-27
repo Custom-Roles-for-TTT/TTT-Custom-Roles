@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed bodysnatcher not removing or receiving role weapons when swapping to a role that has them (e.g. the mad scientist)
+- Fixed conflict between new medium seance logic and informant scanning
 
 ## 2.1.3 (Beta)
 **Released: February 24th, 2024**

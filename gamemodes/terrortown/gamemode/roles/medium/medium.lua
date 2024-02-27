@@ -99,7 +99,7 @@ end)
 -- SCANNER --
 -------------
 
-hook.Add("TTTPrepareRound", "Informant_TTTPrepareRound", function()
+hook.Add("TTTPrepareRound", "Medium_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE)
         v:SetNWInt("TTTMediumSeanceState", MEDIUM_SEANCE_IDLE)
