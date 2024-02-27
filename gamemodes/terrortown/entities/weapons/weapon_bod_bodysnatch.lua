@@ -33,6 +33,7 @@ end
 if SERVER then
     util.AddNetworkString("TTT_Bodysnatched")
     util.AddNetworkString("TTT_ScoreBodysnatch")
+    util.AddNetworkString("TTT_BodysnatchUpdateCorpseRole")
 
     function SWEP:OnSuccess(ply, body)
         local owner = self:GetOwner()
@@ -58,6 +59,14 @@ if SERVER then
 
         if GetConVar("ttt_bodysnatcher_destroy_body"):GetBool() then
             SafeRemoveEntity(body)
+        elseif GetConVar("ttt_bodysnatcher_swap_role"):GetBool() then
+            ply:SetRole(ROLE_BODYSNATCHER)
+            body.was_role = ROLE_BODYSNATCHER
+
+            net.Start("TTT_BodysnatchUpdateCorpseRole")
+            net.WriteUInt(ply:EntIndex(), 16)
+            net.WriteUInt(body:EntIndex(), 16)
+            net.Broadcast()
         end
         SetRoleMaxHealth(owner)
 
@@ -82,5 +91,27 @@ if CLIENT then
     local revived = Sound("items/smallmedkit1.wav")
     net.Receive("TTT_Bodysnatched", function()
         surface.PlaySound(revived)
+    end)
+
+    net.Receive("TTT_BodysnatchUpdateCorpseRole", function()
+        local plyIndex = net.ReadUInt(16)
+        local bodyIndex = net.ReadUInt(16)
+
+        local ply = Entity(plyIndex)
+        if IsValid(ply) and ply.search_result and ply.search_result.role then
+            ply.search_result.role = ROLE_BODYSNATCHER
+        end
+
+        local body = Entity(bodyIndex)
+        if IsValid(body) and body.search_result and body.search_result.role then
+            body.search_result.role = ROLE_BODYSNATCHER
+        end
+
+        -- Force the scoreboard to refresh so the updated role information is shown
+        if sboard_panel then
+            GAMEMODE:ScoreboardHide()
+            sboard_panel:Remove()
+            sboard_panel = nil
+        end
     end)
 end
