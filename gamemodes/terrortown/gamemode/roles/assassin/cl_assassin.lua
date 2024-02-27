@@ -227,9 +227,9 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
         end
 
-        local allow_lootgoblin_kill = assassin_allow_lootgoblin_kill:GetBool() and GetConVar("ttt_lootgoblin_enabled"):GetBool()
-        local allow_zombie_kill = assassin_allow_zombie_kill:GetBool() and GetConVar("ttt_zombie_enabled"):GetBool()
-        local allow_vampire_kill = assassin_allow_vampire_kill:GetBool() and GetConVar("ttt_vampire_enabled"):GetBool()
+        local allow_lootgoblin_kill = assassin_allow_lootgoblin_kill:GetBool() and util.CanRoleSpawn(ROLE_LOOTGOBLIN)
+        local allow_zombie_kill = assassin_allow_zombie_kill:GetBool() and util.CanRoleSpawn(ROLE_ZOMBIE)
+        local allow_vampire_kill = assassin_allow_vampire_kill:GetBool() and util.CanRoleSpawn(ROLE_VAMPIRE)
         if allow_lootgoblin_kill or allow_zombie_kill or allow_vampire_kill then
             local allowed_roles = {}
             if allow_lootgoblin_kill then

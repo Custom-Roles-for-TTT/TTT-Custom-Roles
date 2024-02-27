@@ -10,6 +10,7 @@
   - Now, all but the first parasite will have their infection cancelled when their host dies
 - Fixed parasite cure not showing in shops when the parasite is enabled via rolepacks
 - Fixed roles enabled via rolepacks not having their per-role configurations show in the F1 menu's "Roles" tab
+- Fixed roles enabled via rolepacks that have role-specific assassin targeting convars not correctly showing in the assassin tutorial
 
 ## 2.1.3 (Beta)
 **Released: February 24th, 2024**
