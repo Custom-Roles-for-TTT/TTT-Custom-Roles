@@ -1,5 +1,13 @@
 # Release Notes
 
+## 2.1.4 (Beta)
+**Released:**
+
+### Fixes
+- Fixed an issue where the Medium would briefly start to scan a spirit before it was visible if the Medium was close enough to where the player died
+- Fixed an issue where the Medium would be able to scan spirits that were spectating players if they started to scan them before they were spectating a player
+- Fixed an issue that caused errors in the hud at the start of a round if the player was previously a spectator and so did not have a role assigned
+
 ## 2.1.3 (Beta)
 **Released: February 24th, 2024**
 
