@@ -116,8 +116,9 @@ local function DoParasiteRespawn(parasite, attacker, hide_messages)
 
             local weaps = attacker:GetWeapons()
             local currentWeapon = "weapon_zm_improvised"
-            if attacker:GetActiveWeapon() then
-                currentWeapon = WEPS.GetClass(attacker:GetActiveWeapon())
+            local activeWeap = attacker:GetActiveWeapon()
+            if IsValid(activeWeap) then
+                currentWeapon = WEPS.GetClass(activeWeap)
             end
             attacker:StripAll()
             parasite:StripAll()
@@ -258,46 +259,44 @@ end)
 hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
-    if ply:GetNWBool("ParasiteInfected", false) then
-        local parasiteUsers = table.GetKeys(deadParasites)
-        for _, key in pairs(parasiteUsers) do
-            local parasite = deadParasites[key]
-            if parasite.attacker == ply:SteamID64() and IsValid(parasite.player) then
-                local deadParasite = parasite.player
-                local parasiteDead = deadParasite:IsParasite() and not deadParasite:Alive()
-                local transfer = parasite_infection_transfer:GetBool()
-                local suicideMode = parasite_infection_suicide_mode:GetInt()
-                -- Transfer the infection to the new attacker if there is one, they are alive, the parasite is still alive, and the transfer feature is enabled
-                if IsPlayer(attacker) and attacker:IsActive() and parasiteDead and transfer then
-                    deadParasites[key].attacker = attacker:SteamID64()
-                    HandleParasiteInfection(attacker, deadParasite, not parasite_infection_transfer_reset:GetBool())
-                    deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has been killed and your infection has spread to their killer.")
-                    net.Start("TTT_ParasiteInfect")
-                    net.WriteString(deadParasite:Nick())
-                    net.WriteString(attacker:Nick())
-                    net.Broadcast()
-                elseif suicideMode > PARASITE_SUICIDE_NONE and ShouldParasiteRespawnBySuicide(suicideMode, ply, attacker, dmginfo) then
-                    deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has killed themselves, allowing your infection to take over.")
-                    DoParasiteRespawn(deadParasite, attacker, true)
-                else
-                    ClearParasiteState(deadParasite)
-                    if parasiteDead then
-                        deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has died.")
+    local parasiteUsers = table.GetKeys(deadParasites)
+    for _, key in pairs(parasiteUsers) do
+        local parasite = deadParasites[key]
+        if parasite.attacker == ply:SteamID64() and IsValid(parasite.player) then
+            local deadParasite = parasite.player
+            local parasiteDead = deadParasite:IsParasite() and not deadParasite:Alive()
+            local transfer = parasite_infection_transfer:GetBool()
+            local suicideMode = parasite_infection_suicide_mode:GetInt()
+            -- Transfer the infection to the new attacker if there is one, they are alive, the parasite is still alive, and the transfer feature is enabled
+            if IsPlayer(attacker) and attacker:IsActive() and parasiteDead and transfer then
+                deadParasites[key].attacker = attacker:SteamID64()
+                HandleParasiteInfection(attacker, deadParasite, not parasite_infection_transfer_reset:GetBool())
+                deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has been killed and your infection has spread to their killer.")
+                net.Start("TTT_ParasiteInfect")
+                net.WriteString(deadParasite:Nick())
+                net.WriteString(attacker:Nick())
+                net.Broadcast()
+            elseif suicideMode > PARASITE_SUICIDE_NONE and ShouldParasiteRespawnBySuicide(suicideMode, ply, attacker, dmginfo) then
+                deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has killed themselves, allowing your infection to take over.")
+                DoParasiteRespawn(deadParasite, attacker, true)
+            else
+                ClearParasiteState(deadParasite)
+                if parasiteDead then
+                    deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has died.")
 
-                        if parasite_infection_saves_lover:GetBool() then
-                            local loverSID = deadParasite:GetNWString("TTTCupidLover", "")
-                            if #loverSID > 0 then
-                                local lover = player.GetBySteamID64(loverSID)
-                                lover:PrintMessage(HUD_PRINTTALK, "Your lover's host has died!")
-                            end
+                    if parasite_infection_saves_lover:GetBool() then
+                        local loverSID = deadParasite:GetNWString("TTTCupidLover", "")
+                        if #loverSID > 0 then
+                            local lover = player.GetBySteamID64(loverSID)
+                            lover:PrintMessage(HUD_PRINTTALK, "Your lover's host has died!")
                         end
                     end
                 end
             end
         end
-
-        ply:SetNWBool("ParasiteInfected", false)
     end
+
+    ply:SetNWBool("ParasiteInfected", false)
 end)
 
 ------------------
