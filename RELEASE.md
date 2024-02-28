@@ -15,6 +15,7 @@
 - Fixed roles enabled via rolepacks not having their per-role configurations show in the F1 menu's "Roles" tab
 - Fixed roles enabled via rolepacks that have role-specific assassin targeting convars not correctly showing in the assassin tutorial
 - Fixed magneto stick showing pinning instructions to non-traitors when `ttt_ragdoll_pinning_innocents` was enabled but `ttt_ragdoll_pinning` was disabled
+- Fixed non-vanilla traitors not seeing the player disguise label on their allies
 
 ## 2.1.3 (Beta)
 **Released: February 24th, 2024**
