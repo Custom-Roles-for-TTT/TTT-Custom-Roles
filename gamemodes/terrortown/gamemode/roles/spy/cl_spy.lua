@@ -27,10 +27,35 @@ end)
 -- ROLE STATE --
 ----------------
 
-hook.Add("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", function(ply, client, text, clr)
-    -- If enabled, the Spy's disguise changes their name to the player they last killed
-    if ply:IsSpy() and ply:GetNWString("TTTSpyDisguiseName", false) and not client:IsTraitorTeam() and spy_steal_name:GetBool() then
-        return ply:GetNWString("TTTSpyDisguiseName"), clr
+-- If enabled, the Spy's disguise changes their name to the player they last killed
+hook.Add("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", function(ply, cli, text, clr)
+    if not spy_steal_name:GetBool() then return end
+    if not ply:IsActiveSpy() then return end
+
+    -- Don't override the name for the player or their allies
+    if cli:IsTraitorTeam() then return end
+
+    local disguiseName = ply:GetNWString("TTTSpyDisguiseName", nil)
+    if disguiseName then
+        return disguiseName, clr
+    end
+end)
+
+local client
+hook.Add("TTTChatPlayerName", "Spy_TTTChatPlayerName", function(ply)
+    if not spy_steal_name:GetBool() then return end
+    if not ply:IsActiveSpy() then return end
+
+    if not IsPlayer(client) then
+        client = LocalPlayer()
+    end
+
+    -- Don't override the name for the player or their allies
+        if client:IsTraitorTeam() then return end
+
+    local disguiseName = ply:GetNWString("TTTSpyDisguiseName", nil)
+    if disguiseName then
+        return disguiseName
     end
 end)
 

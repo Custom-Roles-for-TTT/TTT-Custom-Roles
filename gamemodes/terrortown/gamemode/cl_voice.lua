@@ -17,13 +17,18 @@ local timer = timer
 local util = util
 local vgui = vgui
 
+local AddHook = hook.Add
+local CallHook = hook.Call
 local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
 local function GetPlayerName(ply)
-    local name = ply:GetNWString("PlayerName", nil)
-    if name ~= nil then
+    local name = CallHook("TTTChatPlayerName", nil, ply)
+    if not name then
+        name = ply:GetNWString("PlayerName", nil)
+    end
+    if name == nil then
         name = ply:Nick()
     end
     return name
@@ -516,12 +521,12 @@ function GM:PlayerStartVoice(ply)
 
     if not IsValid(ply) then return end
 
-    local clientCanUseTraitorVoice = hook.Call("TTTCanUseTraitorVoice", nil, client)
+    local clientCanUseTraitorVoice = CallHook("TTTCanUseTraitorVoice", nil, client)
     if type(clientCanUseTraitorVoice) ~= "boolean" then
         clientCanUseTraitorVoice = client:IsActiveTraitorTeam()
     end
 
-    local plyCanUseTraitorVoice = hook.Call("TTTCanUseTraitorVoice", nil, ply)
+    local plyCanUseTraitorVoice = CallHook("TTTCanUseTraitorVoice", nil, ply)
     if type(plyCanUseTraitorVoice) ~= "boolean" then
         plyCanUseTraitorVoice = ply:IsActiveTraitorTeam()
     end
@@ -606,7 +611,7 @@ local function ReceiveVoiceState()
     local cli = LocalPlayer()
     if not IsValid(cli) then return end
 
-    local canUseTraitorVoice = hook.Call("TTTCanUseTraitorVoice", nil, cli)
+    local canUseTraitorVoice = CallHook("TTTCanUseTraitorVoice", nil, cli)
     if type(canUseTraitorVoice) ~= "boolean" then
         canUseTraitorVoice = cli:IsActiveTraitorTeam()
     end
@@ -665,7 +670,7 @@ local function CreateVoiceVGUI()
     MutedState:SetTextColor(Color(240, 240, 240, 250))
     MutedState:SetVisible(false)
 end
-hook.Add("InitPostEntity", "CreateVoiceVGUI", CreateVoiceVGUI)
+AddHook("InitPostEntity", "CreateVoiceVGUI", CreateVoiceVGUI)
 
 local MuteText = {
     [MUTE_NONE] = "",

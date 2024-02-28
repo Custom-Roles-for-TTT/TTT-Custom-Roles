@@ -4,7 +4,10 @@
 **Released:**
 
 ### Additions
-- Added an option to have the bodysnatcher's target become the bodysnatcher (disabled by default)
+
+### Changes
+- Changed spy name override to also show in the chat
+  - Doesn't affect the spy or their teammates
 
 ### Fixes
 - Fixed bodysnatcher not removing or receiving role weapons when swapping to a role that has them (e.g. the mad scientist)
@@ -17,6 +20,9 @@
 - Fixed magneto stick showing pinning instructions to non-traitors when `ttt_ragdoll_pinning_innocents` was enabled but `ttt_ragdoll_pinning` was disabled
 - Fixed non-vanilla traitors not seeing the player disguise label on their allies
 - Fixed non-vanilla traitors not being able to pin ragdolls when `ttt_ragdoll_pinning` was enabled but `ttt_ragdoll_pinning_innocents` was disabled
+
+### Developer
+- Added `TTTChatPlayerName` hook to override the player name as shown in chat
 
 ## 2.1.3 (Beta)
 **Released: February 24th, 2024**
