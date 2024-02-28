@@ -36,7 +36,7 @@ hook.Add("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", function(ply, cli
     if cli:IsTraitorTeam() then return end
 
     local disguiseName = ply:GetNWString("TTTSpyDisguiseName", nil)
-    if disguiseName then
+    if disguiseName and #disguiseName > 0 then
         return disguiseName, clr
     end
 end)
@@ -54,7 +54,7 @@ hook.Add("TTTChatPlayerName", "Spy_TTTChatPlayerName", function(ply)
         if client:IsTraitorTeam() then return end
 
     local disguiseName = ply:GetNWString("TTTSpyDisguiseName", nil)
-    if disguiseName then
+    if disguiseName and #disguiseName > 0 then
         return disguiseName
     end
 end)
