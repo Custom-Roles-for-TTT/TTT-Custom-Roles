@@ -476,11 +476,13 @@ end
 
 function SWEP:PinRagdoll()
     if not pin_rag:GetBool() then return end
-    if (not self:GetOwner():IsTraitor()) and (not pin_rag_inno:GetBool()) then return end
+
+    local ply = self:GetOwner()
+    if not IsPlayer(ply) then return end
+
+    if (not ply:IsTraitorTeam()) and (not pin_rag_inno:GetBool()) then return end
 
     local rag = self.EntHolding
-    local ply = self:GetOwner()
-
     local tr = util.TraceLine({start  = ply:EyePos(),
                                 endpos = ply:EyePos() + (ply:GetAimVector() * PIN_RAG_RANGE),
                                 filter = {ply, self, rag, self.CarryHack},
