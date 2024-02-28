@@ -318,7 +318,7 @@ function SWEP:DoAttack(pickup)
                         phys = ent:GetPhysicsObjectNum(trace.PhysicsBone)
 
                         -- increase refire to make rags easier to drag
-                        --self.Weapon:SetNextSecondaryFire(CurTime() + 0.04)
+                        --self:SetNextSecondaryFire(CurTime() + 0.04)
                     end
 
                     if IsValid(phys) then

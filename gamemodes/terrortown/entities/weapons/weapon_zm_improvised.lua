@@ -193,16 +193,16 @@ function SWEP:PrimaryAttack()
 
             hitEnt:DispatchTraceAttack(dmg, spos + (owner:GetAimVector() * 3), sdest)
 
-            --         self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
+            --         self:SendWeaponAnim( ACT_VM_HITCENTER )
 
             --         owner:TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
             --         owner:FireBullets({Num=1, Src=spos, Dir=owner:GetAimVector(), Spread=vector_origin, Tracer=0, Force=1, Damage=20})
 
         else
             --         if tr_main.HitWorld then
-            --            self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
+            --            self:SendWeaponAnim( ACT_VM_HITCENTER )
             --         else
-            --            self.Weapon:SendWeaponAnim( ACT_VM_MISSCENTER )
+            --            self:SendWeaponAnim( ACT_VM_MISSCENTER )
             --         end
 
             -- See if our nodraw trace got the goods
