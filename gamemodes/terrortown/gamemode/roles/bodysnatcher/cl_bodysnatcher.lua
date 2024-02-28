@@ -18,7 +18,7 @@ local bodysnatcher_reveal_monster = GetConVar("ttt_bodysnatcher_reveal_monster")
 local bodysnatcher_is_independent = GetConVar("ttt_bodysnatcher_is_independent")
 local bodysnatcher_destroy_body = GetConVar("ttt_bodysnatcher_destroy_body")
 local bodysnatcher_show_role = GetConVar("ttt_bodysnatcher_show_role")
-local bodysnatcher_swap_role = GetConVar("ttt_bodysnatcher_swap_role")
+local bodysnatcher_swap_mode = GetConVar("ttt_bodysnatcher_swap_mode")
 
 ------------------
 -- TRANSLATIONS --
@@ -200,8 +200,17 @@ hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(rol
         if bodysnatcher_destroy_body:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Once the corpse's role has been snatched, the corpse <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will be destroyed</span>.</span>"
         -- Swap role
-        elseif bodysnatcher_swap_role:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>Once the corpse's role has been snatched, the corpse's owning player <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will become the new bodysnatcher</span> if they are respawned.</span>"
+        else
+            local swap_mode = bodysnatcher_swap_mode:GetInt()
+            if swap_mode > BODYSNATCHER_SWAP_MODE_NOTHING then
+                html = html .. "<span style='display: block; margin-top: 10px;'>Once the corpse's role has been snatched, the corpse's owning player <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will become the new bodysnatcher</span>"
+                if swap_mode == BODYSNATCHER_SWAP_MODE_IDENTITY then
+                    html = html .. ". They are also respawned and have their name, model, and location swapped with the " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. "."
+                else
+                    html = html .. " if they are respawned."
+                end
+                html = html .. "</span>"
+            end
         end
 
         -- Respawn

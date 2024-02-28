@@ -4,6 +4,10 @@
 **Released:**
 
 ### Additions
+- Added an option to have the bodysnatcher and their target swap:
+  - Nothing (default)
+  - Roles
+  - Identities (role, model, name, location). NOTE: Also respawns the target
 
 ### Changes
 - Changed spy name override to also show in the chat

@@ -2,12 +2,16 @@ AddCSLuaFile()
 
 local hook = hook
 local net = net
+local player = player
 local surface = surface
 local string = string
 local util = util
 
+local AddHook = hook.Add
 local CallHook = hook.Call
 local RunHook = hook.Run
+local GetAllPlayers = player.GetAll
+local SetMDL = FindMetaTable("Entity").SetModel
 
 if CLIENT then
     SWEP.PrintName = "Bodysnatching Device"
@@ -35,7 +39,58 @@ if SERVER then
     util.AddNetworkString("TTT_ScoreBodysnatch")
     util.AddNetworkString("TTT_BodysnatchUpdateCorpseRole")
 
+    local playerInfos = {}
+    local function SavePlayerInfo(ply)
+        local sid64 = ply:SteamID64()
+        -- If we already have model information stored for this player, don't overwrite it
+        if playerInfos[sid64] then return end
+
+        playerInfos[sid64] = {
+            model = ply:GetModel(),
+            skin = ply:GetSkin(),
+            bodygroups = {},
+            color = ply:GetColor(),
+            nick = ply:Nick()
+        }
+
+        for _, value in pairs(ply:GetBodyGroups()) do
+            playerInfos[sid64].bodygroups[value.id] = ply:GetBodygroup(value.id)
+        end
+    end
+
+    local function ApplyPlayerInfoToTarget(sourceSid64, ply)
+        local playerInfo = playerInfos[sourceSid64]
+        if not playerInfo then return end
+
+        SetMDL(ply, playerInfo.model)
+        ply:SetSkin(playerInfo.skin)
+        ply:SetColor(playerInfo.color)
+        for id, value in pairs(playerInfo.bodygroups) do
+            ply:SetBodygroup(id, value)
+        end
+
+        timer.Simple(0.1, function()
+            ply:SetupHands()
+        end)
+
+        ply:SetNWString("TTTBodysnatcherName", playerInfo.nick)
+        ply.TTTBodysnatcherSource = sourceSid64
+    end
+
+    local function ClearPlayerInfoOverride(ply)
+        local sid64 = ply:SteamID64()
+        -- Make the player look like themselves again
+        ApplyPlayerInfoToTarget(sid64, ply)
+
+        -- Clear the stored data
+        ply:SetNWString("TTTBodysnatcherName", nil)
+        ply.TTTBodysnatcherSource = nil
+        playerInfos[sid64] = nil
+    end
+
     function SWEP:OnSuccess(ply, body)
+        if not IsValid(body) then return end
+
         local owner = self:GetOwner()
         CallHook("TTTPlayerRoleChangedByItem", nil, owner, owner, self)
 
@@ -59,14 +114,53 @@ if SERVER then
 
         if GetConVar("ttt_bodysnatcher_destroy_body"):GetBool() then
             SafeRemoveEntity(body)
-        elseif GetConVar("ttt_bodysnatcher_swap_role"):GetBool() then
-            ply:SetRole(ROLE_BODYSNATCHER)
-            body.was_role = ROLE_BODYSNATCHER
+        else
+            local swap_mode = GetConVar("ttt_bodysnatcher_swap_mode"):GetInt()
+            if swap_mode > BODYSNATCHER_SWAP_MODE_NOTHING then
+                ply:SetRole(ROLE_BODYSNATCHER)
+                body.was_role = ROLE_BODYSNATCHER
+                SetRoleMaxHealth(ply)
 
-            net.Start("TTT_BodysnatchUpdateCorpseRole")
-            net.WriteUInt(ply:EntIndex(), 16)
-            net.WriteUInt(body:EntIndex(), 16)
-            net.Broadcast()
+                if swap_mode == BODYSNATCHER_SWAP_MODE_IDENTITY then
+                    -- Respawn the new bodysnatcher
+                    ply:SpawnForRound(true)
+
+                    -- Store the former bodysnatcher's position and angles
+                    local pos = owner:GetPos()
+                    local angles = owner:EyeAngles()
+
+                    -- Swap positions between players
+                    owner:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
+                    owner:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
+                    ply:SetPos(pos)
+                    ply:SetEyeAngles(angles)
+                    SafeRemoveEntity(body)
+
+                    -- Include whether the player is crouching
+                    if owner:Crouching() then
+                        owner:ConCommand("-duck")
+                        ply:ConCommand("+duck")
+                    end
+
+                    -- Swap names and playermodels (skin, color, bodygroups, etc.) between ply and owner
+                    SavePlayerInfo(ply)
+                    SavePlayerInfo(owner)
+
+                    local ownerSource = owner.TTTBodysnatcherSource or owner:SteamID64()
+                    local plySource = ply.TTTBodysnatcherSource or ply:SteamID64()
+                    ApplyPlayerInfoToTarget(ownerSource, ply)
+                    ApplyPlayerInfoToTarget(plySource, owner)
+
+                    -- Show message to each player explaining what just happened
+                    ply:QueueMessage(MSG_PRINTBOTH, string.Capitalize(ROLE_STRINGS_EXT[ROLE_BODYSNATCHER]) .. " has swapped identities with you! You are now " .. ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] .. " and you look like " .. ply:GetNWString("TTTBodysnatcherName", owner:Nick()) .. "!")
+                    owner:QueueMessage(MSG_PRINTBOTH, "You have swapped identities with " .. ply:Nick() .. "! You are now " .. ROLE_STRINGS_EXT[owner:GetRole()] .. " and you look like " .. owner:GetNWString("TTTBodysnatcherName", ply:Nick()) .. "!")
+                end
+
+                net.Start("TTT_BodysnatchUpdateCorpseRole")
+                net.WriteUInt(ply:EntIndex(), 16)
+                net.WriteUInt(body:EntIndex(), 16)
+                net.Broadcast()
+            end
         end
         SetRoleMaxHealth(owner)
 
@@ -85,6 +179,14 @@ if SERVER then
     function SWEP:GetAbortMessage()
         return "BODYSNATCH ABORTED"
     end
+
+    AddHook("TTTEndRound", "Bodysnatcher_InfoOverride_TTTEndRound", function()
+        for _, ply in ipairs(GetAllPlayers()) do
+            ClearPlayerInfoOverride(ply)
+        end
+
+        table.Empty(playerInfos)
+    end)
 end
 
 if CLIENT then
@@ -113,5 +215,33 @@ if CLIENT then
             sboard_panel:Remove()
             sboard_panel = nil
         end
+    end)
+
+    -- If the player has snatched another player's name, show that name to other, non-allied, players
+    hook.Add("TTTTargetIDPlayerName", "Bodysnatcher_TTTTargetIDPlayerName", function(ply, cli, text, clr)
+        local disguiseName = ply:GetNWString("TTTBodysnatcherName", nil)
+        if not disguiseName or #disguiseName == 0 then return end
+
+        -- Don't override the name for the player or their allies
+        if ply == cli then return end
+        if cli:IsSameTeam(ply) then return end
+
+        return disguiseName, clr
+    end)
+
+    local client
+    hook.Add("TTTChatPlayerName", "Bodysnatcher_TTTChatPlayerName", function(ply)
+        local disguiseName = ply:GetNWString("TTTBodysnatcherName", nil)
+        if not disguiseName or #disguiseName == 0 then return end
+
+        if not IsPlayer(client) then
+            client = LocalPlayer()
+        end
+
+        -- Don't override the name for the player or their allies
+        if ply == client then return end
+        if client:IsSameTeam(ply) then return end
+
+        return disguiseName
     end)
 end

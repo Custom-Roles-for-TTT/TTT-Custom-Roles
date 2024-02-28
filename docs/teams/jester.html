@@ -464,10 +464,17 @@
                             <td>Whether the bodysnatching device shows the role of the corpse it is used on or not.</td>
                         </tr>
                         <tr class="betaonly"> 
-                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_bodysnatcher_swap_role</td>
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_bodysnatcher_swap_mode</td>
                             <td>0</td>
                             <td>Boolean</td>
-                            <td>Whether the bodysnatcher's target should become a bodysnatcher</i></td>
+                            <td>What should be swapped when a bodysnatcher uses their device on a corpse:
+                                <ol start="0">
+                                    <li>Nothing.</li>
+                                    <li>Role.</li>
+                                    <li>Identity (role, model, name, location). <i>(Also respawns the target)</i></li>
+                                </ol>
+                                <i>(Requires <code>ttt_bodysnatcher_destroy_body</code> to be disabled.)</i>
+                            </td>
                         </tr>
                         <tr>
                             <td>ttt_bodysnatcher_update_scoreboard</td>
