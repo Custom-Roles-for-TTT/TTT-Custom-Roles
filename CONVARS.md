@@ -616,6 +616,9 @@ ttt_sponge_notify_mode                      0       // The logic to use when not
 ttt_sponge_notify_sound                     0       // Whether to play a cheering sound when a sponge is killed
 ttt_sponge_notify_confetti                  0       // Whether to throw confetti when a sponge is a killed
 ttt_sponge_device_time                      8       // The amount of time (in seconds) the spongifier takes to use
+ttt_sponge_aura_shrink                      1       // Whether the Sponge's aura should shrink when players die
+ttt_sponge_aura_mode                        0       // The way in which the Sponge's aura redirects damage. 0 - Redirects unless all living players are inside, 1 - Redirects unless attacker and victim are both inside
+ttt_sponge_aura_float_time                  0       // The amount of time (in seconds) a player can spend outside the Sponge's aura before they are no longer considered inside
 ttt_sponge_device_for_beggar                0       // Whether the beggar should get the spongifier
 ttt_sponge_device_for_bodysnatcher          0       // Whether the bodysnatcher should get the spongifier
 ttt_sponge_device_for_clown                 0       // Whether the clown should get the spongifier

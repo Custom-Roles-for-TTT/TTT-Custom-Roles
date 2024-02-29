@@ -2,6 +2,9 @@ AddCSLuaFile()
 
 local table = table
 
+SPONGE_ALL_PLAYERS = 0
+SPONGE_ATTACKER_AND_VICTIM = 1
+
 -------------------
 -- ROLE FEATURES --
 -------------------
@@ -14,6 +17,8 @@ ROLE_MAX_HEALTH[ROLE_SPONGE] = 150
 ------------------
 
 CreateConVar("ttt_sponge_aura_radius", "5", FCVAR_REPLICATED, "The radius of the sponge's aura in meters", 1, 30)
+CreateConVar("ttt_sponge_aura_shrink", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_sponge_aura_mode", "0", FCVAR_REPLICATED, "The way in which the Sponge's aura redirects damage. 0 - Redirects unless all living players are inside, 1 - Redirects unless attacker and victim are both inside", 0, 1)
 
 if not ROLE_CONVARS[ROLE_SPONGE] then
     ROLE_CONVARS[ROLE_SPONGE] = {}
@@ -39,6 +44,21 @@ table.insert(ROLE_CONVARS[ROLE_SPONGE], {
 })
 table.insert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_device_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+    cvar = "ttt_sponge_aura_shrink",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+    cvar = "ttt_sponge_aura_mode",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"All players", "Attacker and victim"},
+    isNumeric = true
+})
+table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+    cvar = "ttt_sponge_aura_float_time",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })

@@ -198,7 +198,7 @@
                     <p>If the Beggar is killed before they have the chance to change team, they can optionally respawn or join the opposite team of the player who killed them. <code>ttt_beggar_respawn</code>, <code>ttt_beggar_respawn_limit</code>, and <code>ttt_beggar_respawn_change_role</code> can be configured to do this as detailed in the ConVars table below.</p>
                     <p>The Beggar can optionally have access to an <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-informant"></i><a href="../teams/traitor.html#informant">Informant</a></span> style scanner that can be used to learn if other players are <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span> or have access to a shop. This is disabled by default but can be configured with <code>ttt_beggar_scan</code>.</p>
                     <p>The scanning starts as soon as the Beggar looks at another player and finishes if they can maintain line of sight for a length of time determined by <code>ttt_beggar_scan_time</code>. They are allowed to break line of sight for a short window of time determined by <code>ttt_beggar_scan_float_time</code> withing interrupting their scan, but losing line of sight for any longer will abort the scan. The scanner will then go on cooldown and be unusable for an amount of time determined by <code>ttt_beggar_scan_cooldown</code>.</p>
-                    <p>The Beggar can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html.html">independent</a></span> instead of being a jester by enabling <code>ttt_beggar_is_independent</code>.</p>
+                    <p>The Beggar can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html">independent</a></span> instead of being a jester by enabling <code>ttt_beggar_is_independent</code>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -338,7 +338,7 @@
                     <p>Once the Bodysnatcher successfully steals a dead player's role, the body they used the bodysnatching device on is removed if <code>ttt_bodysnatcher_destroy_body</code> is enabled.</p>
                     <p>When the Bodysnatcher steals someone's role, other players are notified. The <code>ttt_bodysnatcher_reveal_innocent</code>, <code>ttt_bodysnatcher_reveal_traitor</code>, <code>ttt_bodysnatcher_reveal_jester</code>, <code>ttt_bodysnatcher_reveal_independent</code>, and <code>ttt_bodysnatcher_reveal_monster</code> ConVars configure who is notified depending on what team the Bodysnatcher joined as detailed in the ConVars table below.</p>
                     <p>If the Bodysnatcher is killed before they have the chance to change role, they can optionally respawn. <code>ttt_bodysnatcher_respawn</code>, <code>ttt_bodysnatcher_respawn_delay</code>, and <code>ttt_bodysnatcher_respawn_limit</code> can be configured to do this as detailed in the ConVars table below.</p>
-                    <p>The Bodysnatcher can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html.html">independent</a></span> instead of being a jester by enabling <code>ttt_bodysnatcher_is_independent</code>.</p>
+                    <p>The Bodysnatcher can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html">independent</a></span> instead of being a jester by enabling <code>ttt_bodysnatcher_is_independent</code>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -618,7 +618,7 @@
                     <p>When Cupid makes two players fall in love, other players are notified. The <code>ttt_cupid_lovers_notify_mode</code> ConVar configures who is notified as detailed in the ConVars table below.</p>
                     <p>By default, lovers are unable to deal damage to the Cupid but can damage each other. The <code>ttt_cupid_can_damage_lovers</code>, <code>ttt_cupid_lovers_can_damage_cupid</code>, and <code>ttt_cupid_lovers_can_damage_lovers</code> ConVars configure who can and can't deal damage to who.</p>
                     <p>The Cupid can see lovers through walls if <code>ttt_cupid_lover_vision_enabled</code> is enabled.</p>
-                    <p>The Cupid can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html.html">independent</a></span> instead of being a jester by enabling <code>ttt_cupid_is_independent</code>.</p>
+                    <p>The Cupid can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html">independent</a></span> instead of being a jester by enabling <code>ttt_cupid_is_independent</code>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -997,11 +997,34 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_sponge_aura_float_time</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The amount of time (in seconds) a player can spend outside the Sponge's aura before they are no longer considered inside.</td>
+                        </tr>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_sponge_aura_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-1)</td>
+                            <td>The way in which the Sponge's aura redirects damage:
+                                <ol start="0">
+                                    <li>Redirects damage unless all living players are inside the aura.</li>
+                                    <li>Redirects damage unless the attacker and the victim are both inside the aura.</li>
+                                </ol>
+                            </td>
+                        </tr>
                         <tr>
                             <td>ttt_sponge_aura_radius</td>
                             <td>5</td>
                             <td>Float</td>
                             <td>The radius of the Sponge's aura in meters.</td>
+                        </tr>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_sponge_aura_shrink</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Sponge's aura should shrink when players die.</td>
                         </tr>
                         <tr>
                             <td>ttt_sponge_device_time</td>
