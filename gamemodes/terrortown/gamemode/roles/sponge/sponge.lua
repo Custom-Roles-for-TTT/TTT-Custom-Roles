@@ -51,7 +51,6 @@ hook.Add("EntityTakeDamage", "Sponge_EntityTakeDamage", function(target, dmginfo
     -- This prevents an infinite loop of transferring the damage back and forth
     if target:IsSponge() then return end
 
-    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
     -- Check if this player is within the radius of any living sponge
     for _, p in ipairs(GetAllPlayers()) do
         if p == target then continue end

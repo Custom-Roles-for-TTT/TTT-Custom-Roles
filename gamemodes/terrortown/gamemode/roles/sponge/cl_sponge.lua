@@ -3,8 +3,6 @@ local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
-local MathRand = math.Rand
-local MathRandom = math.random
 local StringUpper = string.upper
 local GetAllPlayers = player.GetAll
 
