@@ -499,10 +499,12 @@ local function InfoPaint(client)
         text = L[roundstate_string[round_state]]
     end
 
-    if #text > 10 then
-        CRHUD:ShadowedText(text, "TraitorStateSmall", x + margin + 74, traitor_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
-    else
-        CRHUD:ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
+    if text then
+        if #text > 10 then
+            CRHUD:ShadowedText(text, "TraitorStateSmall", x + margin + 74, traitor_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        else
+            CRHUD:ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        end
     end
 
     -- Draw round time

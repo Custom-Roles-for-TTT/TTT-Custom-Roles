@@ -74,7 +74,7 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
         spirit:SetRenderMode(RENDERMODE_NONE)
         spirit:SetNotSolid(true)
         spirit:DrawShadow(false)
-        spirit:SetNWBool("MediumSpirit", true)
+        spirit:SetNWBool("MediumSpirit", false)
         spirit:AddFlags(FL_NOTARGET)
         local col = Vector(1, 1, 1)
         if medium_spirit_color:GetBool() then
@@ -147,6 +147,8 @@ end
 
 local function InRange(ply, target)
     if not IsValid(ply) or not IsValid(target) then return false end
+
+    if not target:GetNWBool("MediumSpirit", false) then return false end
 
     local plyPos = ply:GetPos()
     local targetPos = target:GetPos()
