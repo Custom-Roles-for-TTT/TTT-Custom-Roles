@@ -129,7 +129,6 @@ end)
 
 -- Flag a sponge when all living players are within their radius
 hook.Add("Think", "Sponge_Aura_Think", function()
-    --
     local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
     local alive_players = #util.GetAlivePlayers()
     local floatTime = sponge_aura_float_time:GetInt()

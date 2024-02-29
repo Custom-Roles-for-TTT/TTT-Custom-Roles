@@ -27,8 +27,8 @@ AddHook("EntityTakeDamage", "HitmarkerDetector", function(ent, dmginfo)
 
         local shouldDraw, newDrawCrit, drawImmune, drawJester = HookCall("TTTDrawHitMarker", nil, ent, dmginfo)
 
-        if shouldDraw == false then return end
-        if newDrawCrit ~= nil then
+        if type(shouldDraw) == "boolean" and not shouldDraw then return end
+        if type(newDrawCrit) == "boolean" then
             drawCrit = newDrawCrit
         end
 
