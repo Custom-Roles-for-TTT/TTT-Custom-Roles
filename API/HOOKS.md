@@ -118,7 +118,7 @@ Called when an entity is attacked by a player, before hitmarkers are drawn.\
 - *shouldDraw* - If the hitmarker should be drawn
 - *drawCrit* - If the hitmarker should be drawn as a crit
 - *drawImmune* - If the hitmarker should be drawn as an immune hit (Takes priority over crits and jester hits)
-- *drawJester* - If the hitmarker should be drawn as a jester hit (Takes priority over jester hits)
+- *drawJester* - If the hitmarker should be drawn as a jester hit (Takes priority over crits)
 
 ### TTTEventFinishText(e)
 Called before the event text for the "round finished" event is rendered in the end-of-round summary's Events tab.\
