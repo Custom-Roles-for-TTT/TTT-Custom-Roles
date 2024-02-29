@@ -1210,3 +1210,6 @@ L.rolepacks_delete_role = "Delete role"
 L.rolepacks_add_slot = "Add slot"
 L.rolepacks_delete_slot = "Delete slot"
 L.rolepacks_use_default = "Use Default"
+
+-- Player name disguising
+L.player_name_disguised = "{name} (Disguised as {disguise})"

@@ -32,31 +32,38 @@ hook.Add("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", function(ply, cli
     if not spy_steal_name:GetBool() then return end
     if not ply:IsActiveSpy() then return end
 
-    -- Don't override the name for the player or their allies
-    if cli:IsTraitorTeam() then return end
-
     local disguiseName = ply:GetNWString("TTTSpyDisguiseName", nil)
-    if disguiseName and #disguiseName > 0 then
-        return disguiseName, clr
+    if not disguiseName or #disguiseName == 0 then return end
+
+    -- Show the overwritten name alongside their real name for allies
+    if ply == cli or cli:IsTraitorTeam() then
+        return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName }), clr
     end
+
+    return disguiseName, clr
 end)
 
 local client
-hook.Add("TTTChatPlayerName", "Spy_TTTChatPlayerName", function(ply)
+hook.Add("TTTChatPlayerName", "Spy_TTTChatPlayerName", function(ply, team_chat)
     if not spy_steal_name:GetBool() then return end
     if not ply:IsActiveSpy() then return end
+
+    local disguiseName = ply:GetNWString("TTTSpyDisguiseName", nil)
+    if not disguiseName or #disguiseName == 0 then return end
 
     if not IsPlayer(client) then
         client = LocalPlayer()
     end
 
-    -- Don't override the name for the player or their allies
-        if client:IsTraitorTeam() then return end
+    -- Don't override the name for team chat
+    if team_chat then return end
 
-    local disguiseName = ply:GetNWString("TTTSpyDisguiseName", nil)
-    if disguiseName and #disguiseName > 0 then
-        return disguiseName
+    -- Show the overwritten name alongside their real name for allies
+    if ply == client or client:IsTraitorTeam() then
+        return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName })
     end
+
+    return disguiseName
 end)
 
 --------------

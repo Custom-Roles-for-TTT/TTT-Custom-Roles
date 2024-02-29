@@ -226,11 +226,16 @@ if CLIENT then
         if ply == cli then return end
         if cli:IsSameTeam(ply) then return end
 
+        -- Show the overwritten name alongside their real name for allies
+        if ply == cli or cli:IsSameTeam(ply) then
+            return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName }), clr
+        end
+
         return disguiseName, clr
     end)
 
     local client
-    hook.Add("TTTChatPlayerName", "Bodysnatcher_TTTChatPlayerName", function(ply)
+    hook.Add("TTTChatPlayerName", "Bodysnatcher_TTTChatPlayerName", function(ply, team_chat)
         local disguiseName = ply:GetNWString("TTTBodysnatcherName", nil)
         if not disguiseName or #disguiseName == 0 then return end
 
@@ -238,9 +243,13 @@ if CLIENT then
             client = LocalPlayer()
         end
 
-        -- Don't override the name for the player or their allies
-        if ply == client then return end
-        if client:IsSameTeam(ply) then return end
+        -- Don't override the name for team chat
+        if team_chat then return end
+
+        -- Show the overwritten name alongside their real name for allies
+        if ply == client or client:IsSameTeam(ply) then
+            return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName })
+        end
 
         return disguiseName
     end)
