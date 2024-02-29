@@ -997,11 +997,34 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_sponge_aura_float_time</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>The amount of time (in seconds) a player can spend outside the Sponge's aura before they are no longer considered inside.</td>
+                        </tr>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_sponge_aura_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-1)</td>
+                            <td>The way in which the Sponge's aura redirects damage:
+                                <ol start="0">
+                                    <li>Redirects damage unless all living players are inside the aura.</li>
+                                    <li>Redirects damage unless the attacker and the victim are both inside the aura.</li>
+                                </ol>
+                            </td>
+                        </tr>
                         <tr>
                             <td>ttt_sponge_aura_radius</td>
                             <td>5</td>
                             <td>Float</td>
                             <td>The radius of the Sponge's aura in meters.</td>
+                        </tr>
+                        <tr class="betaonly">
+                            <td><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> ttt_sponge_aura_shrink</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Sponge's aura should shrink when players die.</td>
                         </tr>
                         <tr>
                             <td>ttt_sponge_device_time</td>

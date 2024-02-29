@@ -5,6 +5,7 @@ local string = string
 local util = util
 
 local AddHook = hook.Add
+local HookCall = hook.Call
 local StringLower = string.lower
 local StringSub = string.sub
 
@@ -24,8 +25,17 @@ AddHook("EntityTakeDamage", "HitmarkerDetector", function(ent, dmginfo)
     if IsPlayer(att) and att ~= ent and (ent:IsPlayer() or ent:IsNPC()) then
         local drawCrit = ent:GetNWBool("LastHitCrit", false) and not GetConVar("ttt_disable_headshots"):GetBool()
 
+        local shouldDraw, newDrawCrit, drawImmune, drawJester = HookCall("TTTDrawHitMarker", nil, ent, dmginfo)
+
+        if shouldDraw == false then return end
+        if newDrawCrit ~= nil then
+            drawCrit = newDrawCrit
+        end
+
         net.Start("TTT_DrawHitMarker")
         net.WriteBool(drawCrit)
+        net.WriteBool(drawImmune)
+        net.WriteBool(drawJester)
         net.Send(att) -- Send the message to the attacker
 
         net.Start("TTT_CreateBlood")
@@ -47,10 +57,28 @@ AddHook("PlayerSay", "ColorMixerOpen", function(ply, text, team_only)
     if (StringSub(text, 1, 12) == "!hmcritcolor") then
         net.Start("TTT_OpenMixer")
         net.WriteBool(true)
+        net.WriteBool(false)
+        net.WriteBool(false)
+        net.Send(ply)
+        return false
+    elseif (StringSub(text, 1, 14) == "!hmimmunecolor") then
+        net.Start("TTT_OpenMixer")
+        net.WriteBool(false)
+        net.WriteBool(true)
+        net.WriteBool(false)
+        net.Send(ply)
+        return false
+    elseif (StringSub(text, 1, 14) == "!hmjestercolor") then
+        net.Start("TTT_OpenMixer")
+        net.WriteBool(false)
+        net.WriteBool(false)
+        net.WriteBool(true)
         net.Send(ply)
         return false
     elseif (StringSub(text, 1, 8) == "!hmcolor") then
         net.Start("TTT_OpenMixer")
+        net.WriteBool(false)
+        net.WriteBool(false)
         net.WriteBool(false)
         net.Send(ply)
         return false

@@ -3,8 +3,16 @@ local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
+local MathRand = math.Rand
+local MathRandom = math.random
 local StringUpper = string.upper
 local GetAllPlayers = player.GetAll
+
+-------------
+-- CONVARS --
+-------------
+
+local sponge_aura_mode = GetConVar("ttt_sponge_aura_mode")
 
 ------------------
 -- TRANSLATIONS --
@@ -35,6 +43,7 @@ end)
 -------------------
 
 hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
+    local shouldDraw = false
     if ply:GetRole() == ROLE_SPONGE then
         local ply_pos = ply:GetPos()
         if not ply.SpongeAuraEmitter then ply.SpongeAuraEmitter = ParticleEmitter(ply_pos) end
@@ -63,7 +72,47 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
             end
             particle:SetColor(color.r, color.g, color.b)
         end
-    elseif ply.SpongeAuraEmitter then
+        shouldDraw = true
+    elseif ply ~= client then
+        for _, p in pairs(GetAllPlayers()) do
+            if p:IsActiveSponge() then
+                if sponge_aura_mode:GetInt() == SPONGE_ATTACKER_AND_VICTIM then
+                    local cliAuraEndTime = client:GetNWFloat("SpongeAuraEndTime", -1)
+                    if client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) or (cliAuraEndTime ~= -1 and cliAuraEndTime > CurTime()) then
+                        break
+                    end
+                end
+                local auraEndTime = ply:GetNWFloat("SpongeAuraEndTime", -1)
+                if not p:GetNWBool("SpongeAllInRadius", false) and (ply:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) or (auraEndTime ~= -1 and auraEndTime > CurTime())) then
+                    local ply_pos = ply:GetPos()
+                    if not ply.SpongeAuraEmitter then ply.SpongeAuraEmitter = ParticleEmitter(ply_pos) end
+                    if not ply.SpongeAuraNextPart then ply.SpongeAuraNextPart = CurTime() end
+                    if not ply.SpongeAuraDir then ply.SpongeAuraDir = 0 end
+                    local pos = ply_pos + Vector(0, 0, 10)
+                    if ply.SpongeAuraNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+                        ply.SpongeAuraEmitter:SetPos(pos)
+                        ply.SpongeAuraNextPart = CurTime() + 0.04
+                        ply.SpongeAuraDir = ply.SpongeAuraDir + 0.4
+                        local radius = 20
+                        local vec = Vector(MathSin(ply.SpongeAuraDir) * radius, MathCos(ply.SpongeAuraDir) * radius, 10)
+                        local particle = ply.SpongeAuraEmitter:Add("particle/sponge.vmt", ply_pos + vec)
+                        particle:SetVelocity(Vector(0, 0, 20))
+                        particle:SetDieTime(1)
+                        particle:SetStartAlpha(200)
+                        particle:SetEndAlpha(0)
+                        particle:SetStartSize(3)
+                        particle:SetEndSize(2)
+                        particle:SetRoll(0)
+                        particle:SetRollDelta(0)
+                        particle:SetColor(ROLE_COLORS[ROLE_SPONGE].r, ROLE_COLORS[ROLE_SPONGE].g, ROLE_COLORS[ROLE_SPONGE].b)
+                    end
+                    shouldDraw = true
+                end
+            end
+        end
+    end
+
+    if not shouldDraw and ply.SpongeAuraEmitter then
         ply.SpongeAuraEmitter:Finish()
         ply.SpongeAuraEmitter = nil
         ply.SpongeAuraDir = nil
@@ -83,12 +132,15 @@ hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
     local inside = false
     local allInside = false
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActiveSponge() and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) then
-            inside = true
-            if p:GetNWBool("SpongeAllInRadius", false) then
-                allInside = true
+        if p:IsActiveSponge() then
+            local auraEndTime = client:GetNWFloat("SpongeAuraEndTime", -1)
+            if client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
+                inside = true
+                if p:GetNWBool("SpongeAllInRadius", false) then
+                    allInside = true
+                end
+                break
             end
-            break
         end
     end
     CRHUD:PaintStatusEffect(inside and not allInside, ROLE_COLORS[ROLE_SPONGE], sponge, "SpongeAura")
@@ -201,9 +253,17 @@ hook.Add("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText", function(role, tit
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         html = html .. "<span style='display: block; margin-top: 10px;'>The main way " .. ROLE_STRINGS_PLURAL[ROLE_SPONGE] .. " take damage is by absorbing it from other players who are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>damaged within their visible aura</span>. Keep other players close to secure the win!</span>"
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! If all players are within the " .. ROLE_STRINGS[ROLE_SPONGE] .. "'s aura, <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>it will stop working</span>. Watch out for when it changes color to red!</span>"
+        local mode = sponge_aura_mode:GetInt()
+        if mode == SPONGE_ALL_PLAYERS then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! If all players are within the " .. ROLE_STRINGS[ROLE_SPONGE] .. "'s aura, <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>it will stop working</span>. Watch out for when it changes color to red!</span>"
+        else
+            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! If the attacker is also within the " .. ROLE_STRINGS[ROLE_SPONGE] .. "'s aura, <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>it will stop working</span>.</span>"
+        end
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Another thing to watch out for: The aura will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>shrink in size</span> as more players die!</span>"
+        local shrink = cvars.Bool("ttt_sponge_aura_shrink", true)
+        if shrink then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Another thing to watch out for: The aura will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>shrink in size</span> as more players die!</span>"
+        end
 
         return html
     end

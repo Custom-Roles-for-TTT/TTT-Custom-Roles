@@ -168,6 +168,27 @@
             <li><em>ply</em> - The detective-like player who was promoted</li>
         </ul>
 
+        <h3><a id="tttdrawhitmarkerent-dmginfo" href="#tttdrawhitmarkerent-dmginfo">TTTDrawHitMarker(ent, dmginfo)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when an entity is attacked by a player, before hitmarkers are drawn.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.1.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The entity being attacked</li>
+            <li><em>dmginfo</em> - The damage to be applied to the attacked entity</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>shouldDraw</em> - If the hitmarker should be drawn</li>
+            <li><em>drawCrit</em> - If the hitmarker should be drawn as a crit</li>
+            <li><em>drawImmune</em> - If the hitmarker should be drawn as an immune hit (Takes priority over crits and jester hits)</li>
+            <li><em>drawJester</em> - If the hitmarker should be drawn as a jester hit (Takes priority over jester hits)</li>
+        </ul>
+
         <h3><a id="ttteventfinishtexte" href="#ttteventfinishtexte">TTTEventFinishText(e)</a></h3>
         <p>
             Called before the event text for the "round finished" event is rendered in the end-of-round summary's Events tab.<br>

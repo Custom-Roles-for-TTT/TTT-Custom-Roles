@@ -75,6 +75,7 @@ table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
 })
 table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
     cvar = "ttt_medium_seance_max_info",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Name", "Role", "Team"},
+    isNumeric = true
 })
