@@ -142,11 +142,9 @@ function plymeta:HandleDetectiveLikePromotion()
     local role = self:GetRole()
     local rolestring = ROLE_STRINGS_RAW[role]
     local convar = "ttt_" .. rolestring .. "_activation_credits"
-    if ConVarExists(convar) then
-        local credits = GetConVar(convar):GetInt()
-        if credits > 0 then
-            self:AddCredits(credits)
-        end
+    local credits = cvars.Number(convar, 0)
+    if credits > 0 then
+        self:AddCredits(credits)
     end
 
     -- Give the player their shop items if purchase was delayed

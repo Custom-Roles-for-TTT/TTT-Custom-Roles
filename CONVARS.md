@@ -556,6 +556,7 @@ ttt_beggar_announce_delay                   0       // How long the delay betwee
 // Bodysnatcher
 ttt_bodysnatcher_is_independent             0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
 ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
+ttt_bodysnatcher_swap_mode                  0       // What should be swapped when a bodysnatcher uses their device on a corpse. 0 - Nothing. 1 - Role. 2 - Identity (role, model, name, location) NOTE: Also respawns the target. Not used when ttt_bodysnatcher_destroy_body is enabled
 ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching device shows the role of the corpse it is used on or not
 ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Their new team. 3 - Roles that can see jesters
 ttt_bodysnatcher_reveal_innocent            1       // Who the bodysnatcher is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Their new team. 3 - Roles that can see jesters

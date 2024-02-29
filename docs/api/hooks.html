@@ -118,6 +118,21 @@
             <em>Return:</em> Whether to allow this player to use traitor voice chat. (Defaults to checking whether the player is on the traitor team)
         </p>
 
+        <h3><a id="tttchatplayernameply-team_chat" href="#tttchatplayernameply-team_chat"></a>TTTChatPlayerName(ply, team_chat)</a></h3>
+        <p>
+            Called when a player is using chat. Used to override the name shown.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.1.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is chatting</li>
+            <li><em>team_chat</em> - Whether the player is chatting to their team</li>
+        </ul>
+        <p>
+            <em>Return:</em> The player name to show, if it should be overridden. Otherwise do not return anything.
+        </p>
+
         <h3><a id="tttcupidshouldloversurviveply-lover" href="#tttcupidshouldloversurviveply-lover">TTTCupidShouldLoverSurvive(ply, lover)</a></h3>
         <p>
             Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.<br>

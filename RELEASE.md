@@ -7,14 +7,33 @@
 - Added an option to prevent the Sponge's aura from shrinking when players die (disabled by default)
 - Added an option to allow players to damage each other if they are both within the Sponge's aura without redirecting damage to the Sponge (disabled by default)
 - Added an option to prevent the Sponge's aura from shrinking when players die (disabled by default)
+- Added an option to have the bodysnatcher and their target swap:
+  - Nothing (default)
+  - Roles
+  - Identities (role, model, name, location). NOTE: Also respawns the target
+
+### Changes
+- Changed spy name override to also show in the chat
+  - Doesn't affect the spy or their teammates
 
 ### Fixes
 - Fixed an issue where the Medium would briefly start to scan a spirit before it was visible if the Medium was close enough to where the player died
 - Fixed an issue where the Medium would be able to scan spirits that were spectating players if they started to scan them before they were spectating a player
 - Fixed an issue that caused errors in the hud at the start of a round if the player was previously a spectator and so did not have a role assigned
+- Fixed bodysnatcher not removing or receiving role weapons when swapping to a role that has them (e.g. the mad scientist)
+- Fixed conflict between new medium seance logic and informant scanning
+- Fixed case where all parasites infecting the same host would respawn even after the host was killed by the first infection
+  - Now, all but the first parasite will have their infection cancelled when their host dies
+- Fixed parasite cure not showing in shops when the parasite is enabled via rolepacks
+- Fixed roles enabled via rolepacks not having their per-role configurations show in the F1 menu's "Roles" tab
+- Fixed roles enabled via rolepacks that have role-specific assassin targeting convars not correctly showing in the assassin tutorial
+- Fixed magneto stick showing pinning instructions to non-traitors when `ttt_ragdoll_pinning_innocents` was enabled but `ttt_ragdoll_pinning` was disabled
+- Fixed non-vanilla traitors not seeing the player disguise label on their allies
+- Fixed non-vanilla traitors not being able to pin ragdolls when `ttt_ragdoll_pinning` was enabled but `ttt_ragdoll_pinning_innocents` was disabled
 
 ### Developer
 - Added `TTTDrawHitMarker` hook that is called when a player damages an entity before hitmarkers are drawn
+- Added `TTTChatPlayerName` hook to override the player name as shown in chat
 
 ## 2.1.3 (Beta)
 **Released: February 24th, 2024**

@@ -9,6 +9,11 @@ BODYSNATCHER_REVEAL_ALL = 1
 BODYSNATCHER_REVEAL_TEAM = 2
 BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER = 3
 
+-- Bodysnatcher swap modes
+BODYSNATCHER_SWAP_MODE_NOTHING = 0
+BODYSNATCHER_SWAP_MODE_ROLE = 1
+BODYSNATCHER_SWAP_MODE_IDENTITY = 2
+
 --------------------
 -- PLAYER METHODS --
 --------------------
@@ -48,6 +53,7 @@ CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_REPLICATED, "Who 
 CreateConVar("ttt_bodysnatcher_reveal_monster", "1", FCVAR_REPLICATED, "Who the bodysnatcher is revealed to when they join the monster team", 0, 3)
 CreateConVar("ttt_bodysnatcher_destroy_body", "0", FCVAR_REPLICATED, "Whether the bodysnatching device destroys the body it is used on or not", 0, 1)
 CreateConVar("ttt_bodysnatcher_show_role", "1", FCVAR_REPLICATED, "Whether the bodysnatching device shows the role of the corpse it is used on or not", 0, 1)
+CreateConVar("ttt_bodysnatcher_swap_mode", "0", FCVAR_REPLICATED, "What should be swapped when a bodysnatcher uses their device on a corpse. 0 - Nothing. 1 - Role. 2 - Identity (role, model, name, location) NOTE: Also respawns the target. Not used when ttt_bodysnatcher_destroy_body is enabled", 0, 2)
 CreateConVar("ttt_bodysnatcher_can_see_jesters", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_bodysnatcher_update_scoreboard", "0", FCVAR_REPLICATED)
 local bodysnatcher_is_independent = CreateConVar("ttt_bodysnatcher_is_independent", "0", FCVAR_REPLICATED, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
@@ -70,6 +76,12 @@ table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_destroy_body",
     type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_swap_mode",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Nothing", "Role", "Identity (role, model, name, location)"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_show_role",

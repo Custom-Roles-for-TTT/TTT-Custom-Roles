@@ -34,7 +34,7 @@ local function ShouldReduceHealth(ply)
 
     local rolestring = ROLE_STRINGS_RAW[role]
     local convar = "ttt_" .. rolestring .. "_healthstation_reduce_max"
-    return ConVarExists(convar) and GetConVar(convar):GetBool()
+    return cvars.Bool(convar, false)
 end
 
 function ENT:SetupDataTables()
