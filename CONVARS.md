@@ -605,6 +605,7 @@ ttt_cupid_can_damage_lovers                 0       // Whether cupid should be a
 ttt_cupid_lovers_can_damage_lovers          1       // Whether the lovers should be able to damage each other
 ttt_cupid_lovers_can_damage_cupid           0       // Whether the lovers should be able to damage cupid
 ttt_cupid_lover_vision_enabled              1       // Whether the lovers can see outlines of each other through walls
+ttt_cupid_arrow_speed_mult                  1       // The speed multiplier for the cupid's arrow
 ttt_cupid_notify_mode                       0       // The logic to use when notifying players that a cupid is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_cupid_notify_sound                      0       // Whether to play a cheering sound when a cupid is killed
 ttt_cupid_notify_confetti                   0       // Whether to throw confetti when a cupid is a killed

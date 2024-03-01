@@ -123,6 +123,10 @@ sound.Add({
     sound = "cupid/zoomout.wav"
 })
 
+if SERVER then
+    CreateConVar("ttt_cupid_arrow_speed_mult", "1", FCVAR_NONE, "The speed multiplier for the cupid's arrow", 0.1, 1.5)
+end
+
 function SWEP:SetupDataTables()
     self:NetworkVar("Int", 0, "WepState")
 end
@@ -179,13 +183,15 @@ function SWEP:Think()
                 local charge = self:GetNextSecondaryFire()
                 charge = math.Clamp(CurTime() - charge, 0, 1)
 
+                local mult = GetConVar("ttt_cupid_arrow_speed_mult"):GetFloat()
+                local speed = 2500 * mult
                 local arrow = ents.Create("ttt_cup_arrow")
                 arrow:SetOwner(owner)
                 arrow:SetPos(pos)
                 arrow:SetAngles(ang)
                 arrow:Spawn()
                 arrow:Activate()
-                arrow:SetVelocity(ang:Forward() * 2500 * charge)
+                arrow:SetVelocity(ang:Forward() * speed * charge)
                 arrow.Weapon = self
             end
         end
