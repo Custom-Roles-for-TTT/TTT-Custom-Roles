@@ -144,7 +144,7 @@ local paired_role_blocks = {
     {"jester", "swapper"}
 }
 
-local function floatToFraction(x)
+local function FloatToFraction(x)
     local error = 0.001
     local lowerN = 0
     local lowerD = 1
@@ -167,11 +167,11 @@ local function floatToFraction(x)
     return lowerN + upperN, lowerD + upperD
 end
 
-local function greatestCommonDivisor(a, b)
+local function GreatestCommonDivisor(a, b)
     if b == 0 then
         return a
     else
-        return greatestCommonDivisor(b, a % b)
+        return GreatestCommonDivisor(b, a % b)
     end
 end
 
@@ -193,8 +193,8 @@ hook.Add("TTTPrepareRound", "OldRoleBlocks_TTTPrepareRound", function()
             end
             if not exists then
                 local weight = cvars.Number(cvar_name .. "_chance", 0.5)
-                local n, d = floatToFraction(weight)
-                local gcd = greatestCommonDivisor(n, d)
+                local n, d = FloatToFraction(weight)
+                local gcd = GreatestCommonDivisor(n, d)
                 local weight1 = n / gcd
                 local weight2 = (d / gcd) - weight1
                 TableInsert(roleblocks, {{role = v[1], weight = weight1}, {role = v[2], weight = weight2}})
