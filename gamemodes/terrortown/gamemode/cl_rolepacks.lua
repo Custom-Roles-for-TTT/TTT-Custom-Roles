@@ -360,6 +360,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
                 TableInsert(slotTable.slots, roleTable)
             end
             SendStreamToServer(slotTable, "TTT_WriteRolePackRoles")
+            droles.unsavedChanges = false
         end
     end
 
@@ -373,6 +374,241 @@ local function BuildRoleConfig(dsheet, packName, tab)
     end
 
     return droles, tab
+end
+
+local function BuildRoleBlockConfig(dsheet, packName, tab)
+    UpdateRoleColours()
+
+    local groupList = {}
+
+    local droleblocks = vgui.Create("DPanel", dsheet)
+    droleblocks:SetPaintBackground(false)
+    droleblocks:StretchToParent(0, 0, 0, 0)
+    droleblocks.unsavedChanges = false
+
+    local configHeight = 16
+    local buttonHeight = 22
+
+    local dconfig = vgui.Create("DPanel", droleblocks)
+    dconfig:SetPaintBackground(false)
+    dconfig:StretchToParent(0, 0, 0, nil)
+    dconfig:SetHeight(configHeight)
+
+    local dusedefault = vgui.Create("DCheckBoxLabel", dconfig)
+    dusedefault:SetText("Use Default Role Blocks")
+    dusedefault:Dock(LEFT)
+    dusedefault.OnChange = function()
+        droleblocks.unsavedChanges = true
+    end
+
+    local dgrouplist = vgui.Create("DScrollPanel", droleblocks)
+    dgrouplist:SetPaintBackground(false)
+    dgrouplist:StretchToParent(0, configHeight + m, 16, buttonHeight + m + 36)  -- For some reason filling the scroll panel to the size of its parent makes it too big, thus the magic numbers
+
+    local function CreateGroup(roleTable)
+        local labelHeight = 10
+        local iconWidth = 64
+        local iconHeight = 84
+        local buttonSize = 22
+
+        local dgroup = vgui.Create("DPanel", dgrouplist)
+        dgroup:SetPaintBackground(false)
+        dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconHeight + 2 * m)
+        dgroup:Dock(TOP)
+
+        local dlabel = vgui.Create("DLabel", dgroup)
+        dlabel:SetFont("TabLarge")
+        dlabel:SetContentAlignment(7)
+        dlabel:SetPos(3, 0) -- For some reason the text isn't inline with the icons so we shift it 3px to the right
+        dlabel:SetText("Blocking Group:")
+        dlabel:SetWidth(200)
+
+        local dlist = vgui.Create("EquipSelect", dgroup)
+        dlist:SetPos(0, labelHeight + m)
+        dlist:StretchToParent(0, nil, 0, nil)
+        dlist:SetHeight(iconHeight + 2 * m)
+        dlist:EnableHorizontal(true)
+
+        local roleList = {}
+        TableInsert(groupList, roleList)
+
+        local function CreateRole(rolestr, weight)
+            local role = ROLE_NONE
+            for r = ROLE_INNOCENT, ROLE_MAX do
+                if ROLE_STRINGS_RAW[r] == rolestr then
+                    role = r
+                    break
+                end
+            end
+
+            local drole = vgui.Create("DPanel", dlist)
+            drole:SetSize(iconWidth, iconHeight)
+            drole:SetPaintBackground(false)
+            drole.role = role
+            drole.weight = 1
+
+            local dicon = vgui.Create("SimpleIcon", drole)
+
+            local roleStringShort = ROLE_STRINGS_SHORT[role]
+            local material = util.GetRoleIconPath(roleStringShort, "icon", "vtf")
+
+            dicon:SetIconSize(iconWidth)
+            dicon:SetIcon(material)
+            dicon:SetBackgroundColor(ROLE_COLORS[role] or Color(0, 0, 0, 0))
+            dicon:SetTooltip(ROLE_STRINGS[role])
+            dicon.DoClick = function()
+                local dmenu = DermaMenu()
+                for r, s in SortedPairsByValue(ROLE_STRINGS) do
+                    dmenu:AddOption(s, function()
+                        roleStringShort = ROLE_STRINGS_SHORT[r]
+                        material = util.GetRoleIconPath(roleStringShort, "icon", "vtf")
+                        dicon:SetIcon(material)
+                        dicon:SetBackgroundColor(ROLE_COLORS[r] or Color(0, 0, 0, 0))
+                        dicon:SetTooltip(s)
+                        drole.role = r
+                        droleblocks.unsavedChanges = true
+                    end)
+                end
+                dmenu:Open()
+            end
+
+            local dweight = vgui.Create("DNumberWang", drole)
+            dweight:SetWidth(iconWidth)
+            dweight:SetPos(0, iconWidth)
+            dweight:SetMin(1)
+            dweight:SetValue(weight)
+            dweight.OnValueChanged = function(_, value)
+                drole.weight = value
+                droleblocks.unsavedChanges = true
+            end
+
+            TableInsert(roleList, drole)
+
+            local iconRows = MathCeil((#roleList + 1) / 8)
+            dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dlist:SetHeight(iconRows * iconHeight + 2 * m)
+
+            dlist:AddPanel(drole)
+        end
+
+        for _, role in pairs(roleTable) do
+            CreateRole(role.role, role.weight)
+        end
+
+        local dbuttons = vgui.Create("DPanel", dlist)
+        dbuttons:SetSize(iconWidth, iconHeight)
+        dbuttons:SetPaintBackground(false)
+
+        local daddrolebutton = vgui.Create("DButton", dbuttons)
+        daddrolebutton:SetSize(buttonSize, buttonSize)
+        daddrolebutton:SetPos(0, 0)
+        daddrolebutton:SetText("")
+        daddrolebutton:SetIcon("icon16/add.png")
+        daddrolebutton:SetTooltip(GetTranslation("rolepacks_add_role"))
+        daddrolebutton.DoClick = function()
+            TableRemove(dlist.Items)
+            CreateRole(ROLE_INNOCENT, 1)
+            dlist:AddPanel(dbuttons)
+            droleblocks.unsavedChanges = true
+        end
+
+        local ddeleterolebutton = vgui.Create("DButton", dbuttons)
+        ddeleterolebutton:SetSize(buttonSize, buttonSize)
+        ddeleterolebutton:SetPos(0, buttonSize + m)
+        ddeleterolebutton:SetText("")
+        ddeleterolebutton:SetIcon("icon16/delete.png")
+        ddeleterolebutton:SetTooltip(GetTranslation("rolepacks_delete_role"))
+        ddeleterolebutton.DoClick = function()
+            if #dlist.Items == 1 then return end
+            TableRemove(dlist.Items)
+            local drole = TableRemove(roleList)
+            drole:Remove()
+            dlist:AddPanel(dbuttons)
+            local iconRows = MathCeil((#dlist.Items) / 8)
+            dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dlist:SetHeight(iconRows * iconHeight + 2 * m)
+            droleblocks.unsavedChanges = true
+        end
+
+        local ddeletegroupbutton = vgui.Create("DButton", dbuttons)
+        ddeletegroupbutton:SetSize(buttonSize, buttonSize)
+        ddeletegroupbutton:SetPos(0, 2 * (buttonSize + m))
+        ddeletegroupbutton:SetText("")
+        ddeletegroupbutton:SetIcon("icon16/bin.png")
+        ddeletegroupbutton:SetTooltip(GetTranslation("roleblocks_delete_group"))
+        ddeletegroupbutton.DoClick = function()
+            TableRemoveByValue(groupList, roleList)
+            dgroup:Remove()
+            droleblocks.unsavedChanges = true
+        end
+
+        dlist:AddPanel(dbuttons)
+
+        dgrouplist:AddItem(dgroup)
+    end
+
+    local daddgroupbutton = vgui.Create("DButton", droleblocks)
+    daddgroupbutton:SetText(GetTranslation("roleblocks_add_group"))
+    daddgroupbutton:Dock(BOTTOM)
+    daddgroupbutton.DoClick = function()
+        CreateGroup({})
+        droleblocks.unsavedChanges = true
+    end
+
+    local function ReadRolePackRoleBlockTable(name)
+        net.Start("TTT_RequestRolePackRoleBlocks")
+        net.WriteString(name)
+        net.SendToServer()
+    end
+
+    local function UpdateRolePackRoleBlockUI(jsonTable)
+        dgrouplist:Clear()
+        if jsonTable.config then
+            dusedefault:SetChecked(jsonTable.config.usedefault)
+
+            for _, group in pairs(jsonTable.groups) do
+                CreateGroup(group)
+            end
+        end
+    end
+    ReceiveStreamFromServer("TTT_ReadRolePackRoleBlocks", UpdateRolePackRoleBlockUI)
+
+    if not packName or #packName == 0 then
+        daddgroupbutton:SetDisabled(true)
+        dusedefault:SetDisabled(true)
+    else
+        ReadRolePackRoleBlockTable(packName)
+    end
+
+    droleblocks.HasUnsavedChanges = function()
+        return droleblocks.unsavedChanges
+    end
+
+    droleblocks.Save = function()
+        if droleblocks.HasUnsavedChanges() then
+            local groupTable = { name = packName, config = { usedefault = dusedefault:GetChecked()}, groups = {}}
+            for _, group in pairs(groupList) do
+                local roleTable = {}
+                for _, role in pairs(group) do
+                    TableInsert(roleTable, {role = ROLE_STRINGS_RAW[role.role], weight = role.weight})
+                end
+                TableInsert(groupTable.groups, roleTable)
+            end
+            SendStreamToServer(groupTable, "TTT_WriteRolePackRoleBlocks")
+            droleblocks.unsavedChanges = false
+        end
+    end
+
+    if tab then
+        tab:SetPanel(droleblocks)
+        local properySheetPadding = tab:GetPropertySheet():GetPadding()
+        droleblocks:SetPos(properySheetPadding, 20 + properySheetPadding) -- From PANEL:AddSheet
+    else
+        local tabTable = dsheet:AddSheet(GetTranslation("rolepacks_roleblock_tabtitle"), droleblocks, "icon16/stop.png", false, false, GetTranslation("rolepacks_roleblock_tabtitle_tooltip"))
+        tab = tabTable.Tab
+    end
+
+    return droleblocks, tab
 end
 
 local function BuildWeaponConfig(dsheet, packName, tab)
@@ -958,6 +1194,7 @@ local function BuildConVarConfig(dsheet, packName, tab)
                 end
             end
             SendStreamToServer(convarTable, "TTT_WriteRolePackConvars")
+            dconvars.unsavedChanges = false
         end
     end
 
@@ -995,6 +1232,8 @@ local function OpenDialog()
 
     local droles, drolestab = BuildRoleConfig(dsheet, "")
 
+    local droleblocks, droleblockstab = BuildRoleBlockConfig(dsheet, "")
+
     local dweapons, dweaponstab = BuildWeaponConfig(dsheet, "")
 
     local dconvars, dconvarstab = BuildConVarConfig(dsheet, "")
@@ -1004,15 +1243,18 @@ local function OpenDialog()
     dpack:StretchToParent(m, nil, m + 6 * (m + iconButtonSize), nil)
     dpack.OnSelect = function(_, _, name)
         droles:Remove()
+        droleblocks:Remove()
         dweapons:Remove()
         dconvars:Remove()
         droles = BuildRoleConfig(dsheet, name, drolestab)
+        droleblocks = BuildRoleBlockConfig(dsheet, name, droleblockstab)
         dweapons = BuildWeaponConfig(dsheet, name, dweaponstab)
         dconvars = BuildConVarConfig(dsheet, name, dconvarstab)
     end
 
     local function Save()
         droles.Save()
+        droleblocks.Save()
         dweapons.Save()
         dconvars.Save()
         net.Start("TTT_SavedRolePack")
@@ -1025,7 +1267,7 @@ local function OpenDialog()
     dpack.ChooseOption = function(self, value, index)
         local pack, _ = dpack:GetSelected()
         if pack == value then return end
-        if not pack or #pack == 0 or (not droles.HasUnsavedChanges() and not dweapons.HasUnsavedChanges() and not dconvars.HasUnsavedChanges()) then
+        if not pack or #pack == 0 or (not droles.HasUnsavedChanges() and not droleblocks.HasUnsavedChanges() and not dweapons.HasUnsavedChanges() and not dconvars.HasUnsavedChanges()) then
             oldChooseOption(self, value, index)
             return
         end
@@ -1067,7 +1309,7 @@ local function OpenDialog()
     local oldClose = dframe.Close
     dframe.Close = function(self)
         local pack, _ = dpack:GetSelected()
-        if not pack or #pack == 0 or (not droles.HasUnsavedChanges() and not dweapons.HasUnsavedChanges() and not dconvars.HasUnsavedChanges()) then
+        if not pack or #pack == 0 or (not droles.HasUnsavedChanges() and not droleblocks.HasUnsavedChanges() and not dweapons.HasUnsavedChanges() and not dconvars.HasUnsavedChanges()) then
             oldClose(self)
             return
         end
@@ -1193,10 +1435,12 @@ local function OpenDialog()
             net.WriteString(pack)
             net.SendToServer()
             droles:Remove()
+            droleblocks:Remove()
             dweapons:Remove()
             dconvars:Remove()
             dconfirmdialog:Close()
             droles = BuildRoleConfig(dsheet, "", drolestab)
+            droleblocks = BuildRoleConfig(dsheet, "", droleblockstab)
             dweapons = BuildWeaponConfig(dsheet, "", dweaponstab)
             dconvars = BuildConVarConfig(dsheet, "", dconvarstab)
         end
@@ -1253,10 +1497,12 @@ local function OpenDialog()
             net.WriteString(newpack)
             net.SendToServer()
             droles:Remove()
+            droleblocks:Remove()
             dweapons:Remove()
             dconvars:Remove()
             drenamedialog:Close()
             droles = BuildRoleConfig(dsheet, "", drolestab)
+            droleblocks = BuildRoleConfig(dsheet, "", droleblockstab)
             dweapons = BuildWeaponConfig(dsheet, "", dweaponstab)
             dconvars = BuildConVarConfig(dsheet, "", dconvarstab)
         end
@@ -1302,10 +1548,12 @@ local function OpenDialog()
             net.WriteString(pack)
             net.SendToServer()
             droles:Remove()
+            droleblocks:Remove()
             dweapons:Remove()
             dconvars:Remove()
             dnewdialog:Close()
             droles = BuildRoleConfig(dsheet, pack, drolestab)
+            droleblocks = BuildRoleConfig(dsheet, pack, droleblockstab)
             dweapons = BuildWeaponConfig(dsheet, pack, dweaponstab)
             dconvars = BuildConVarConfig(dsheet, pack, dconvarstab)
         end
