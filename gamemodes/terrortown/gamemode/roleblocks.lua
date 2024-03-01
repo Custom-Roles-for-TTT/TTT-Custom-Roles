@@ -8,10 +8,6 @@ local string = string
 
 local StringSub = string.sub
 local TableInsert = table.insert
-local TableRemove = table.remove
-local TableRemoveByValue = table.RemoveByValue
-local TableHasValue = table.HasValue
-local TableShuffle = table.Shuffle
 
 ROLEBLOCKS = {}
 

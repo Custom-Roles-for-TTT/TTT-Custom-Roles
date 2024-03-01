@@ -8,17 +8,11 @@ local math = math
 local string = string
 
 local GetTranslation = LANG.GetTranslation
-local SafeTranslate = LANG.TryTranslation
 local TableInsert = table.insert
 local TableRemove = table.remove
-local TableSort = table.sort
 local TableRemoveByValue = table.RemoveByValue
-local TableHasValue = table.HasValue
-local TableCopy = table.Copy
 local MathCeil = math.ceil
 local StringSub = string.sub
-local StringLower = string.lower
-local StringFind = string.find
 
 local numCols = 4
 local numRows = 5
