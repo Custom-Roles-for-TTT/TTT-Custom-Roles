@@ -11,6 +11,8 @@
   - Nothing (default)
   - Roles
   - Identities (role, model, name, location). NOTE: Also respawns the target
+- Added ability to set a multiplier for the speed of cupid's arrow (defaults to 1)
+- Added ability for cupid's bow to use hitscan instead of projectiles to calculate whether something is hit (disabled by default)
 
 ### Changes
 - Changed spy name override to also show in the chat

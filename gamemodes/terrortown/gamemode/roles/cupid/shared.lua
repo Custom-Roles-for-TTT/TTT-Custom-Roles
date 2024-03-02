@@ -17,6 +17,15 @@ CreateConVar("ttt_cupid_lovers_can_damage_cupid", "0", FCVAR_REPLICATED, "Whethe
 
 ROLE_CONVARS[ROLE_CUPID] = {}
 table.insert(ROLE_CONVARS[ROLE_CUPID], {
+    cvar = "ttt_cupid_arrow_speed_mult",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_CUPID], {
+    cvar = "ttt_cupid_arrow_hitscan",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_CUPID], {
     cvar = "ttt_cupid_notify_mode",
     type = ROLE_CONVAR_TYPE_DROPDOWN,
     choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
