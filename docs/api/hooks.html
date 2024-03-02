@@ -118,6 +118,21 @@
             <em>Return:</em> Whether to allow this player to use traitor voice chat. (Defaults to checking whether the player is on the traitor team)
         </p>
 
+        <h3><a id="tttchatplayernameply-team_chat" href="#tttchatplayernameply-team_chat"></a>TTTChatPlayerName(ply, team_chat)</a></h3>
+        <p>
+            Called when a player is using chat. Used to override the name shown.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.1.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is chatting</li>
+            <li><em>team_chat</em> - Whether the player is chatting to their team</li>
+        </ul>
+        <p>
+            <em>Return:</em> The player name to show, if it should be overridden. Otherwise do not return anything.
+        </p>
+
         <h3><a id="tttcupidshouldloversurviveply-lover" href="#tttcupidshouldloversurviveply-lover">TTTCupidShouldLoverSurvive(ply, lover)</a></h3>
         <p>
             Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.<br>
@@ -166,6 +181,27 @@
         </p>
         <ul>
             <li><em>ply</em> - The detective-like player who was promoted</li>
+        </ul>
+
+        <h3><a id="tttdrawhitmarkerent-dmginfo" href="#tttdrawhitmarkerent-dmginfo">TTTDrawHitMarker(ent, dmginfo)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when an entity is attacked by a player, before hitmarkers are drawn.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.1.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The entity being attacked</li>
+            <li><em>dmginfo</em> - The damage to be applied to the attacked entity</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>shouldDraw</em> - If the hitmarker should be drawn</li>
+            <li><em>drawCrit</em> - If the hitmarker should be drawn as a crit</li>
+            <li><em>drawImmune</em> - If the hitmarker should be drawn as an immune hit (Takes priority over crits and jester hits)</li>
+            <li><em>drawJester</em> - If the hitmarker should be drawn as a jester hit (Takes priority over crits)</li>
         </ul>
 
         <h3><a id="ttteventfinishtexte" href="#ttteventfinishtexte">TTTEventFinishText(e)</a></h3>

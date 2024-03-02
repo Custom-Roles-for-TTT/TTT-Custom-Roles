@@ -556,6 +556,7 @@ ttt_beggar_announce_delay                   0       // How long the delay betwee
 // Bodysnatcher
 ttt_bodysnatcher_is_independent             0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
 ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
+ttt_bodysnatcher_swap_mode                  0       // What should be swapped when a bodysnatcher uses their device on a corpse. 0 - Nothing. 1 - Role. 2 - Identity (role, model, name, location) NOTE: Also respawns the target. Not used when ttt_bodysnatcher_destroy_body is enabled
 ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching device shows the role of the corpse it is used on or not
 ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Their new team. 3 - Roles that can see jesters
 ttt_bodysnatcher_reveal_innocent            1       // Who the bodysnatcher is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Their new team. 3 - Roles that can see jesters
@@ -604,6 +605,8 @@ ttt_cupid_can_damage_lovers                 0       // Whether cupid should be a
 ttt_cupid_lovers_can_damage_lovers          1       // Whether the lovers should be able to damage each other
 ttt_cupid_lovers_can_damage_cupid           0       // Whether the lovers should be able to damage cupid
 ttt_cupid_lover_vision_enabled              1       // Whether the lovers can see outlines of each other through walls
+ttt_cupid_arrow_hitscan                     0       // Whether the cupid's arrow should be an instant hit instead of a projectile
+ttt_cupid_arrow_speed_mult                  1       // The speed multiplier for the cupid's arrow (Only applies when ttt_cupid_arrow_hitscan is disabled)
 ttt_cupid_notify_mode                       0       // The logic to use when notifying players that a cupid is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_cupid_notify_sound                      0       // Whether to play a cheering sound when a cupid is killed
 ttt_cupid_notify_confetti                   0       // Whether to throw confetti when a cupid is a killed
@@ -616,6 +619,9 @@ ttt_sponge_notify_mode                      0       // The logic to use when not
 ttt_sponge_notify_sound                     0       // Whether to play a cheering sound when a sponge is killed
 ttt_sponge_notify_confetti                  0       // Whether to throw confetti when a sponge is a killed
 ttt_sponge_device_time                      8       // The amount of time (in seconds) the spongifier takes to use
+ttt_sponge_aura_shrink                      1       // Whether the Sponge's aura should shrink when players die
+ttt_sponge_aura_mode                        0       // The way in which the Sponge's aura redirects damage. 0 - Redirects unless all living players are inside, 1 - Redirects unless attacker and victim are both inside
+ttt_sponge_aura_float_time                  0       // The amount of time (in seconds) a player can spend outside the Sponge's aura before they are no longer considered inside
 ttt_sponge_device_for_beggar                0       // Whether the beggar should get the spongifier
 ttt_sponge_device_for_bodysnatcher          0       // Whether the bodysnatcher should get the spongifier
 ttt_sponge_device_for_clown                 0       // Whether the clown should get the spongifier

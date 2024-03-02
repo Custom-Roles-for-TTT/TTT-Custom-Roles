@@ -78,7 +78,6 @@ function plymeta:SubtractCredits(amt) self:AddCredits(-amt) end
 function plymeta:SetDefaultCredits(keep_existing)
     if self:IsSpec() or self:GetRole() == ROLE_NONE then return end
 
-    local c = 0
     local cvar
     if self:IsTraitor() then
         cvar = "ttt_credits_starting"
@@ -87,14 +86,10 @@ function plymeta:SetDefaultCredits(keep_existing)
     else
         cvar = "ttt_" .. ROLE_STRINGS_RAW[self:GetRole()] .. "_credits_starting"
     end
-    if ConVarExists(cvar) then
-        c = GetConVar(cvar):GetInt()
-    end
 
-    if self:IsTraitorTeam() then
-        if CountTraitors() == 1 then
-            c = c + GetConVar("ttt_credits_alonebonus"):GetInt()
-        end
+    local c = cvars.Number(cvar, 0)
+    if self:IsTraitorTeam() and CountTraitors() == 1 then
+        c = c + GetConVar("ttt_credits_alonebonus"):GetInt()
     end
 
     if not keep_existing then

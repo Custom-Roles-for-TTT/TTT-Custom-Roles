@@ -985,7 +985,7 @@ function HELPSCRN:CreateRoles(droles)
     local enabled_roles = {}
     for r = ROLE_NONE + 1, ROLE_MAX do
         -- Skip disabled roles
-        if not DEFAULT_ROLES[r] and not GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() then continue end
+        if not DEFAULT_ROLES[r] and not util.CanRoleSpawn(r) then continue end
 
         table.insert(enabled_roles, {role = r, role_string = ROLE_STRINGS[r]})
     end

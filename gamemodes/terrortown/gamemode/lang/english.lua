@@ -1195,6 +1195,8 @@ L.roleweapons_command_reload_desc = "Reloads the configurations from the server'
 L.rolepacks_title = "Role Packs Configuration"
 L.rolepacks_role_tabtitle = "Roles"
 L.rolepacks_role_tabtitle_tooltip = "Configure which roles spawn in each role pack"
+L.rolepacks_roleblock_tabtitle = "Role Blocks"
+L.rolepacks_roleblock_tabtitle_tooltip = "Configure which roles blocks are in effect in each role pack"
 L.rolepacks_weapon_tabtitle = "Weapons"
 L.rolepacks_weapon_tabtitle_tooltip = "Configure which weapons are buyable in each role pack"
 L.rolepacks_convar_tabtitle = "ConVars"
@@ -1210,3 +1212,11 @@ L.rolepacks_delete_role = "Delete role"
 L.rolepacks_add_slot = "Add slot"
 L.rolepacks_delete_slot = "Delete slot"
 L.rolepacks_use_default = "Use Default"
+
+-- Role Blocks Configuration
+L.roleblocks_title = "Role Blocks Configuration"
+L.roleblocks_add_group = "Add group"
+L.roleblocks_delete_group = "Delete group"
+
+-- Player name disguising
+L.player_name_disguised = "{name} (Disguised as {disguise})"

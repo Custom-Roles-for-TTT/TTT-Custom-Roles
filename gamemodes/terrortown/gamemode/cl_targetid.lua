@@ -448,7 +448,7 @@ function GM:HUDDrawTargetID()
         if hidden then
             client.last_id = nil
 
-            if client:IsTraitor() or client:IsSpec() then
+            if client:IsTraitorTeam() or client:IsSpec() then
                 text = ent:Nick() .. L.target_disg
             else
                 -- Do not show anything
