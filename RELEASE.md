@@ -4,6 +4,10 @@
 **Released:**
 
 ### Additions
+- Added `ttt_roleblocks` command which opens the new role blocks UI
+  - Role blocks allow more control over which roles are not able to spawn together in a round
+  - **BREAKING CHANGE** - This replaces the old `ttt_single_role1_role2` ConVars. If you are currently using these ConVars your configuration will automatically be imported into the new role blocks system.
+- Added role blocks tab to the role packs UI to allow for role pack specific role blocks
 - Added an option to prevent the Sponge's aura from shrinking when players die (disabled by default)
 - Added an option to allow players to damage each other if they are both within the Sponge's aura without redirecting damage to the Sponge (disabled by default)
 - Added an option to prevent the Sponge's aura from shrinking when players die (disabled by default)
@@ -32,6 +36,7 @@
 - Fixed magneto stick showing pinning instructions to non-traitors when `ttt_ragdoll_pinning_innocents` was enabled but `ttt_ragdoll_pinning` was disabled
 - Fixed non-vanilla traitors not seeing the player disguise label on their allies
 - Fixed non-vanilla traitors not being able to pin ragdolls when `ttt_ragdoll_pinning` was enabled but `ttt_ragdoll_pinning_innocents` was disabled
+- Fixed role packs sometimes asking you to save again if you attempt to close the window after saving
 
 ### Developer
 - Added `TTTDrawHitMarker` hook that is called when a player damages an entity before hitmarkers are drawn
