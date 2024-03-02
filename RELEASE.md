@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.5 (Beta)
+**Released:**
+
+### Fixes
+- Fixed "press KEY to possess" label showing on corpses for living players after the round has ended
+
 ## 2.1.4 (Beta)
 **Released: March 2nd, 2024**
 

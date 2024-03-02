@@ -32,7 +32,7 @@ local ClassHint = {
             if DetectiveMode() then
                 local ply = LocalPlayer()
                 -- Handle special labels for spectators
-                if not ply:IsActive() then
+                if not ply:Alive() and ply:IsSpec() then
                     -- Cache the convar reference
                     if not spectator_corpse_search then
                         spectator_corpse_search = GetConVar("ttt_spectator_corpse_search")
