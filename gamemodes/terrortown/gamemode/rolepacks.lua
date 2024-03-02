@@ -375,6 +375,7 @@ end
 function ROLEPACKS.GetRolePackBlockedRoles()
     local name = GetConVar("ttt_role_pack"):GetString()
     local json = file.Read("rolepacks/" .. name .. "/roleblocks.json", "DATA")
+    if not json then return end
 
     local jsonTable = util.JSONToTable(json)
     if jsonTable == nil then

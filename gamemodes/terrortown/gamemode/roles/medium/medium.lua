@@ -64,11 +64,15 @@ end)
 
 hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, attacker)
     -- Create spirit for the medium
-    local mediums = {}
+    local mediumCount = 0
     for _, v in pairs(GetAllPlayers()) do
-        if v:IsMedium() then table.insert(mediums, v) end
+        if v:IsMedium() then
+            mediumCount = mediumCount + 1
+        end
     end
-    if #mediums > 0 or util.CanRoleSpawn(ROLE_MEDIUM) then
+
+    -- If there is a medium or a medium can spawn we want to create the spirits
+    if mediumCount > 0 or util.CanRoleSpawn(ROLE_MEDIUM) then
         local spirit = CreateEntity("npc_kleiner")
         spirit:SetPos(victim:GetPos())
         spirit:SetRenderMode(RENDERMODE_NONE)
@@ -85,8 +89,8 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
         spirit:Spawn()
         spirits[victim:SteamID64()] = spirit
 
-        -- Let the player who died know there is a medium as long as this player isn't the only medium and they are not turning into a zombie
-        if medium_dead_notify:GetBool() and (#mediums > 1 or not victim:IsMedium()) and not victim:IsZombifying() then
+        -- If there is a medium in the round, let the player who died know there is a medium as long as this player isn't the only medium and they are not turning into a zombie
+        if medium_dead_notify:GetBool() and mediumCount > 0 and (mediumCount > 1 or not victim:IsMedium()) and not victim:IsZombifying() then
             victim:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
         end
 
