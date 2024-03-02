@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.1.4 (Beta)
-**Released:**
+**Released: March 2nd, 2024**
 
 ### Additions
 - Added `ttt_roleblocks` command which opens the new role blocks UI
@@ -10,7 +10,7 @@
 - Added role blocks tab to the role packs UI to allow for role pack specific role blocks
 - Added an option to prevent the Sponge's aura from shrinking when players die (disabled by default)
 - Added an option to allow players to damage each other if they are both within the Sponge's aura without redirecting damage to the Sponge (disabled by default)
-- Added an option to prevent the Sponge's aura from shrinking when players die (disabled by default)
+- Added an option for players to have a brief window of time after leaving a Sponge's aura where they are still effected by the Sponge (disabled by default)
 - Added an option to have the bodysnatcher and their target swap:
   - Nothing (default)
   - Roles
