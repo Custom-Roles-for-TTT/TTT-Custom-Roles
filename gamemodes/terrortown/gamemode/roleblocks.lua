@@ -102,6 +102,7 @@ end)
 
 function ROLEBLOCKS.GetBlockedRoles()
     local json = file.Read("roleblocks.json", "DATA")
+    if not json then return end
 
     local roleblocks = util.JSONToTable(json)
     if roleblocks == nil then
