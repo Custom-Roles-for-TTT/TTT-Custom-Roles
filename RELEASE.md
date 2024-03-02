@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.1.4 (Beta)
-**Released:**
+**Released: March 2nd, 2024**
 
 ### Additions
 - Added `ttt_roleblocks` command which opens the new role blocks UI
