@@ -1,11 +1,5 @@
 # Release Notes
 
-## 2.1.5 (Beta)
-**Released:**
-
-### Fixes
-- Fixed "press KEY to possess" label showing on corpses for living players after the round has ended
-
 ## 2.1.4 (Beta)
 **Released: March 2nd, 2024**
 
@@ -43,6 +37,7 @@
 - Fixed non-vanilla traitors not seeing the player disguise label on their allies
 - Fixed non-vanilla traitors not being able to pin ragdolls when `ttt_ragdoll_pinning` was enabled but `ttt_ragdoll_pinning_innocents` was disabled
 - Fixed role packs sometimes asking you to save again if you attempt to close the window after saving
+- Fixed "press KEY to possess" label showing on corpses for living players after the round has ended
 
 ### Developer
 - Added `TTTDrawHitMarker` hook that is called when a player damages an entity before hitmarkers are drawn
