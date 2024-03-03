@@ -177,21 +177,20 @@ local function GreatestCommonDivisor(a, b)
 end
 
 hook.Add("TTTPrepareRound", "OldRoleBlocks_TTTPrepareRound", function()
-    local roleblocks = ROLEBLOCKS.GetBlockedRoles()
+    local roleblocks = ROLEBLOCKS.GetBlockedRoles() or {}
     local changes = false
     for _, v in ipairs(paired_role_blocks) do
         local cvar_name = "ttt_single_" .. v[1] .. "_" .. v[2]
         if cvars.Bool(cvar_name, false) then
             local exists = false
-            if roleblocks then
-                for _, group in ipairs(roleblocks) do
-                    if #group ~= 2 then continue end
-                    if (group[1].role == v[1] and group[2].role == v[2]) or (group[1].role == v[2] and group[2].role == v[1]) then
-                        exists = true
-                        break
-                    end
+            for _, group in ipairs(roleblocks) do
+                if #group ~= 2 then continue end
+                if (group[1].role == v[1] and group[2].role == v[2]) or (group[1].role == v[2] and group[2].role == v[1]) then
+                    exists = true
+                    break
                 end
             end
+
             if not exists then
                 local weight = cvars.Number(cvar_name .. "_chance", 0.5)
                 local n, d = FloatToFraction(weight)
@@ -204,6 +203,7 @@ hook.Add("TTTPrepareRound", "OldRoleBlocks_TTTPrepareRound", function()
             end
         end
     end
+
     if changes then
         local json = util.TableToJSON(roleblocks)
         if json == nil then
