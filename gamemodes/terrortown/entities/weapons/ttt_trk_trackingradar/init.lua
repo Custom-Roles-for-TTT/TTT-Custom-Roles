@@ -64,9 +64,9 @@ local function TrackRadarScan(ply, cmd, args)
         net.Start("TTT_TrackRadar")
         net.WriteUInt(#targets, 8)
         for _, tgt in ipairs(targets) do
-            net.WriteInt(tgt.pos.x, 32)
-            net.WriteInt(tgt.pos.y, 32)
-            net.WriteInt(tgt.pos.z, 32)
+            net.WriteInt(tgt.pos.x, 15)
+            net.WriteInt(tgt.pos.y, 15)
+            net.WriteInt(tgt.pos.z, 15)
 
             net.WriteFloat(tgt.col.x)
             net.WriteFloat(tgt.col.y)

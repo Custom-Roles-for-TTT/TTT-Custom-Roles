@@ -128,9 +128,9 @@ local function ReceiveDeathRadarScan()
     DEATHRADAR.targets = {}
     for _ = 1, num_targets do
         local pos = Vector()
-        pos.x = net.ReadInt(32)
-        pos.y = net.ReadInt(32)
-        pos.z = net.ReadInt(32)
+        pos.x = net.ReadInt(15)
+        pos.y = net.ReadInt(15)
+        pos.z = net.ReadInt(15)
 
         table.insert(DEATHRADAR.targets, { pos = pos })
     end

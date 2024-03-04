@@ -317,9 +317,9 @@ local function ReceiveRadarScan()
         local role = net.ReadInt(8)
 
         local pos = Vector()
-        pos.x = net.ReadInt(32)
-        pos.y = net.ReadInt(32)
-        pos.z = net.ReadInt(32)
+        pos.x = net.ReadInt(15)
+        pos.y = net.ReadInt(15)
+        pos.z = net.ReadInt(15)
 
         local was_beggar = net.ReadBool()
         local was_bodysnatcher = net.ReadBool()
