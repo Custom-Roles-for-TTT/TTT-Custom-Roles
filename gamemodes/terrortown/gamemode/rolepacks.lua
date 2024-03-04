@@ -489,7 +489,6 @@ function ROLEPACKS.AssignRoles(choices)
                 for _, role in ipairs(groupRoles) do
                     if role ~= chosenRole then
                         blockedRoles[role] = true
-                        print("Blocking: " .. ROLE_STRINGS[role])
                     end
                 end
             end
