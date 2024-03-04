@@ -14,7 +14,7 @@
     </div>
     <div class="contentheader panel">
         <h1>Role Packs <span id="betaswitch"></span></h1>
-        <p>Role packs are a new way of configuring roles, weapons, and additional ConVars all in one place. First and foremost, role packs give you much more control over how you want specific roles to spawn that our current system just can't handle. Want to always have a certain role spawn each round? Want multiple copies of some roles? Want to enable two different roles but never have them spawn together? Role packs will let you do all of this and way more!</p>
+        <p>Role packs are a way of configuring roles, weapons, and additional ConVars all in one place. First and foremost, role packs give you much more control over how you want specific roles to spawn that our current system just can't handle. Want to always have a certain role spawn each round? Want multiple copies of some roles? Want to enable two different roles but never have them spawn together? Role packs will let you do all of this and way more!</p>
         <p>On top of all this, role packs allow you to configure which weapons are available to specific roles in the shop, and any additional ConVars you might only want enabled in certain situations. These roles, weapons, and ConVars are bundled up into a role pack that you can enable or disable at any time, however only one role pack can be enabled at a time. Role packs are entirely optional, so if you don't enable any role packs you can still continue to play as you always have.</p>
     </div>
     <div class="contentbody panel">
@@ -24,6 +24,7 @@
                 <ol>
                     <li><a href="#overall">Overall</a></li>
                     <li><a href="#roles">Roles</a></li>
+                    <li><a href="#roleblocks">Role Blocks</a></li>
                     <li><a href="#weapons">Weapons</a></li>
                     <li><a href="#convars">ConVars</a></li>
                 </ol>
@@ -31,7 +32,7 @@
         </ol>
 
         <h2><a id="configuration-by-ui" href="#configuration-by-ui">Configuration by UI</a></h2>
-        <p>Role packs are created using the new UI, accessible by admins using the <code>ttt_rolepacks</code> command. Once a role pack has been created in the UI, it is saved as a folder of .json files in the <em>data/rolepacks</em> folder. Role packs can then be backed up or copied from server-to-server just by transferring those folders.</p>
+        <p>Role packs are created using the UI, accessible by admins using the <code>ttt_rolepacks</code> command. Once a role pack has been created in the UI, it is saved as a folder of .json files in the <em>data/rolepacks</em> folder. Role packs can then be backed up or copied from server-to-server just by transferring those folders.</p>
         <p><img src="img/RolePacks_Blank.png" alt="Blank Role Packs Window" style="max-width: 100%;"></p>
         <p id="role-pack-convar-note">To enable a role pack, set the <code>ttt_role_pack</code> ConVar to the name of the role pack you want to use.</p>
         <p><em>NOTE</em>: If you do this in either 'server.cfg' or 'listenserver.cfg' as detailed on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, make sure to put the <code>ttt_role_pack</code> ConVar at the bottom of the file. ConVars are read from top to bottom and so any ConVars placed under <code>ttt_role_pack</code> will override ConVars configured through role packs.</p>
@@ -54,7 +55,7 @@
         <p>The roles tab is where most configuration of the role pack will occur. On this tab, you can create role "slots" which represent a single player in the round. Within each slot you can configure a pool of 0 or more roles for that player to be randomly assigned from. If a slot has 0 roles assigned to it, the normal (e.g. non-role pack) random role selection logic will be used for that slot instead. Each role within a slot can also have a weight assigned to it, making that role more likely than the others to be selected.</p>
 
         <h4><a id="adding-a-new-role-slot" href="#adding-a-new-role-slot"><strong>Adding a new Role Slot</strong></a></h4>
-        <p>To add a new role slot, click the "Add Slot" button on the bottom of the tab. One a slot has been added, you will be presented with three buttons:</p>
+        <p>To add a new role slot, click the "Add Slot" button on the bottom of the tab. Once a slot has been added, you will be presented with three buttons:</p>
         <ul>
             <li><strong>Add role button</strong> - Adds a new role entry to the role slot</li>
             <li><strong>Delete role button</strong> - Deletes the last role entry in the role slot</li>
@@ -63,7 +64,7 @@
         <p><img src="img/RolePacks_EmptySlot.png" alt="Role Packs Empty Slot" style="max-width: 100%;"></p>
 
         <h4><a id="configuring-a-role-slot-role" href="#configuring-a-role-slot-role"><strong>Configuring a Role Slot Role</strong></a></h4>
-        <p>When a new role entry has been added to a lot it defaults to the "NONE" or "?" role. When this placeholder role is along in a slot, behaves the same as if the slot was empty: The player in this slot will have their role randomly assigned by the normal role selection logic.</p>
+        <p>When a new role entry has been added to a slot it defaults to the Innocent role. When this placeholder role is alone in a slot, it behaves the same as if the slot was empty: The player in this slot will have their role randomly assigned by the normal role selection logic.</p>
         <p>Two other things to note about the role slot usage:</p>
         <ol>
             <li>If there are more slots than players (e.g., 8 configured slots but only 7 players) than the extra slot(s) will not be used.</li>
@@ -76,6 +77,12 @@
 
         <p>To change the weight of a role (how often this role should be selected relative to the other roles in this slot), change the number in the box below the role icon by typing or using the adjustment arrows.</p>
         <p><img src="img/RolePacks_RoleWeights.png" alt="Role Packs New Role" style="max-width: 100%;"></p>
+
+        <h3><a id="roleblocks" href="#roleblocks"><string>Role Blocks</string></a></h3>
+        <p>This tab is nearly identical to the Role Blocks UI described in the <a href="configuring_role_blocks.html#configuration-by-ui" target="_blank">Configuring Role Blocks</a> tutorial. The only differences are the "Use Default Role Blocks" checkbox and the ability for a role to block itself.</p>
+        <p>Checking the "Use Default Role Blocks" box will cause role blocks configured through the Role Blocks UI described in the <a href="../tutorials/configuring_role_blocks.html">Configuring Role Blocks</a> tutorial to also take effect on top of any that are added to this role pack. Leaving this box unchecked means only role blocks configured for this role pack will work.</p>
+        <p>When configuring role blocks for a role pack, it is also possible for a role to be able to block itself. This can be useful if you would like the same role to have the possibility to spawn in multiple slots without the possibility of having duplicates of that specific role. To do this, create a blocking group with only two copies of the same role. Having any other roles in the same blocking group will not work. In the example below it would not be possible for more than one Mercenary to spawn, even if there were multiple slots in which the Mercenary could spawn and "Allow Duplicate Roles" was enabled on the "Roles" tab.</p>
+        <p><img src="img/RolePacks_RoleBlockingSelf.png" alt="Role Packs Role Blocking Itself" style="max-width: 100%;"></p>
 
         <h3><a id="weapons" href="#weapons"><strong>Weapons</strong></a></h3>
         <p>This tab is nearly identical to the Role Weapons UI described in the <a href="configuring_role_weapons.html#configuration-by-ui" target="_blank">Configuring Role Weapons</a> tutorial. The only differences are the removal of the "Update" and "Close" buttons (which are not needed in this UI), and the rename of the "None" checkbox to "Use Default". All of the functionality in this tab is identical to that in the role weapons UI, except it only takes effect when the specific role pack is enabled. Weapons configured through role packs take priority over role weapons configuration. (e.g. If a weapon is disabled/excluded in role weapons but enabled/included in the active role pack, the role pack will take priority and the weapon will be enabled/included.)</p>
