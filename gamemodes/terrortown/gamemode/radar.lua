@@ -65,9 +65,9 @@ local function RadarScan(ply, cmd, args)
             for _, tgt in ipairs(targets) do
                 net.WriteInt(tgt.role, 8)
 
-                net.WriteInt(tgt.pos.x, 32)
-                net.WriteInt(tgt.pos.y, 32)
-                net.WriteInt(tgt.pos.z, 32)
+                net.WriteInt(tgt.pos.x, 15)
+                net.WriteInt(tgt.pos.y, 15)
+                net.WriteInt(tgt.pos.z, 15)
 
                 net.WriteBool(tgt.was_beggar)
                 net.WriteBool(tgt.was_bodysnatcher)
