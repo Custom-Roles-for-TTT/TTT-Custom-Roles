@@ -1,11 +1,15 @@
 # Release Notes
 
 ## 2.1.5
-**Released:**\
+**Released: March 4th, 2024**\
 Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
 
 ### Additions
 - Added the ability for a role to block itself when configuring role blocks for role packs
+
+### Changes
+- Ported "TTT: optimise radar ping network traffic" from base TTT
+ - Also updated the mad scientist's death radar and the tracker's tracking radar to have the same optimization
 
 ### Fixes
 - Fixed an issue that would cause role pack specific role blocks to not work if there was no main role blocks file
@@ -19,9 +23,9 @@ Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
   - Role blocks allow more control over which roles are not able to spawn together in a round
   - **BREAKING CHANGE** - This replaces the old `ttt_single_role1_role2` ConVars. If you are currently using these ConVars your configuration will automatically be imported into the new role blocks system.
 - Added role blocks tab to the role packs UI to allow for role pack specific role blocks
-- Added an option to prevent the Sponge's aura from shrinking when players die (disabled by default)
-- Added an option to allow players to damage each other if they are both within the Sponge's aura without redirecting damage to the Sponge (disabled by default)
-- Added an option for players to have a brief window of time after leaving a Sponge's aura where they are still effected by the Sponge (disabled by default)
+- Added an option to prevent the sponge's aura from shrinking when players die (disabled by default)
+- Added an option to allow players to damage each other if they are both within the sponge's aura without redirecting damage to the sponge (disabled by default)
+- Added an option for players to have a brief window of time after leaving a sponge's aura where they are still effected by the sponge (disabled by default)
 - Added an option to have the bodysnatcher and their target swap:
   - Nothing (default)
   - Roles
@@ -34,8 +38,8 @@ Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
   - Doesn't affect the spy or their teammates
 
 ### Fixes
-- Fixed an issue where the Medium would briefly start to scan a spirit before it was visible if the Medium was close enough to where the player died
-- Fixed an issue where the Medium would be able to scan spirits that were spectating players if they started to scan them before they were spectating a player
+- Fixed an issue where the medium would briefly start to scan a spirit before it was visible if the medium was close enough to where the player died
+- Fixed an issue where the medium would be able to scan spirits that were spectating players if they started to scan them before they were spectating a player
 - Fixed an issue that caused errors in the hud at the start of a round if the player was previously a spectator and so did not have a role assigned
 - Fixed bodysnatcher not removing or receiving role weapons when swapping to a role that has them (e.g. the mad scientist)
 - Fixed conflict between new medium seance logic and informant scanning
@@ -58,11 +62,11 @@ Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
 **Released: February 24th, 2024**
 
 ### Additions
-- Added an option to require the Arsonist to have line of sight with their target to douse them (enabled by default)
-- Added an option to prevent the Arsonist from being able to douse corpses (disabled by default)
-- Added an option for the Arsonist to have a brief window of time after leaving range or losing line of sight of their target before dousing is cancelled (1 second by default)
-- Added an option to change the amount of time after an Arsonist fails to douse a target before they can start dousing again (3 seconds by default)
-- Added an option for the Medium to be able to scan spirits to learn their name, team and role (disabled by default)
+- Added an option to require the arsonist to have line of sight with their target to douse them (enabled by default)
+- Added an option to prevent the arsonist from being able to douse corpses (disabled by default)
+- Added an option for the arsonist to have a brief window of time after leaving range or losing line of sight of their target before dousing is cancelled (1 second by default)
+- Added an option to change the amount of time after an arsonist fails to douse a target before they can start dousing again (3 seconds by default)
+- Added an option for the medium to be able to scan spirits to learn their name, team and role (disabled by default)
 - Added option for spectators (not dead players) to be able to see the roles of all players (disabled by default)
 - Added an option for whether to show a progress bar for the when the shadow's buff will be activated (enabled by default)
 
@@ -72,7 +76,7 @@ Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
 ### Fixes
 - Fixed minor typo in vindicator event log entry
 - Fixed hive mind all having the same number of credits on their body, allowing their killer to loot many times the credits they should have gotten
-- Fixed some players who switched roles to become a Medium not being able to see spirits of players that died prior to the Medium switching roles
+- Fixed some players who switched roles to become a medium not being able to see spirits of players that died prior to the medium switching roles
 
 ### Developer
 - Added `TTTBodyCreditsLooted` hook that is called when a player loots credits from a body
