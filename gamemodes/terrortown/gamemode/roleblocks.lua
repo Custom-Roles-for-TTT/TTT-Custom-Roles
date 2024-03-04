@@ -100,19 +100,21 @@ net.Receive("TTT_RequestRoleBlocks", function(len, ply)
     SendStreamToClient(ply, json, "TTT_ReadRoleBlocks")
 end)
 
-function ROLEBLOCKS.GetBlockedRoles()
+function ROLEBLOCKS.GetBlockedRoles(excludeRolePack)
+    local roleblocks = {}
     local json = file.Read("roleblocks.json", "DATA")
-    if not json then return end
-
-    local roleblocks = util.JSONToTable(json)
-    if roleblocks == nil then
-        ErrorNoHalt("Table decoding failed!\n")
-        return
+    if json then
+        roleblocks = util.JSONToTable(json)
+        if roleblocks == nil then
+            ErrorNoHalt("Table decoding failed!\n")
+            roleblocks = {}
+        end
     end
 
     local blocks = {}
+    excludeRolePack = excludeRolePack or false
     local rolepack = GetConVar("ttt_role_pack"):GetString()
-    if rolepack and #rolepack > 0 then
+    if rolepack and #rolepack > 0 and not excludeRolePack then
         local rolepackblocks = ROLEPACKS.GetRolePackBlockedRoles()
         if rolepackblocks and rolepackblocks.groups then
             blocks = table.Copy(rolepackblocks.groups)
@@ -177,7 +179,7 @@ local function GreatestCommonDivisor(a, b)
 end
 
 hook.Add("TTTPrepareRound", "OldRoleBlocks_TTTPrepareRound", function()
-    local roleblocks = ROLEBLOCKS.GetBlockedRoles() or {}
+    local roleblocks = ROLEBLOCKS.GetBlockedRoles(true)
     local changes = false
     for _, v in ipairs(paired_role_blocks) do
         local cvar_name = "ttt_single_" .. v[1] .. "_" .. v[2]
