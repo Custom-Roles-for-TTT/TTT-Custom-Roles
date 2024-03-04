@@ -9,7 +9,7 @@ Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
 
 ### Changes
 - Ported "TTT: optimise radar ping network traffic" from base TTT
- - Also updated the mad scientist's death radar and the tracker's tracking radar to have the same optimization
+  - Also updated the mad scientist's death radar and the tracker's tracking radar to have the same optimization
 
 ### Fixes
 - Fixed an issue that would cause role pack specific role blocks to not work if there was no main role blocks file
