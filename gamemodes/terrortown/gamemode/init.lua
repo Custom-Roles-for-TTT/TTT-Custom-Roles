@@ -1330,22 +1330,24 @@ function SelectRoles()
                     forcedMonsterCount = forcedMonsterCount + 1
                 end
 
-                for _, group in ipairs(roleblocks) do
-                    for _, groupRole in ipairs(group) do
-                        if groupRole.role == ROLE_STRINGS_RAW[role] then
-                            for _, blockRole in ipairs(group) do
-                                if blockRole.role ~= ROLE_STRINGS_RAW[role] then
-                                    local toBlock = ROLE_NONE
-                                    for r = ROLE_INNOCENT, ROLE_MAX do
-                                        if ROLE_STRINGS_RAW[r] == blockRole.role then
-                                            toBlock = r
-                                            break
+                if roleblocks and #roleblocks > 0 then
+                    for _, group in ipairs(roleblocks) do
+                        for _, groupRole in ipairs(group) do
+                            if groupRole.role == ROLE_STRINGS_RAW[role] then
+                                for _, blockRole in ipairs(group) do
+                                    if blockRole.role ~= ROLE_STRINGS_RAW[role] then
+                                        local toBlock = ROLE_NONE
+                                        for r = ROLE_INNOCENT, ROLE_MAX do
+                                            if ROLE_STRINGS_RAW[r] == blockRole.role then
+                                                toBlock = r
+                                                break
+                                            end
                                         end
+                                        blocked_roles[toBlock] = true
                                     end
-                                    blocked_roles[toBlock] = true
                                 end
+                                break
                             end
-                            break
                         end
                     end
                 end
