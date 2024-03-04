@@ -1411,9 +1411,13 @@ end
 
 local function KillFromPlayer(victim, killer, remove_body)
     if not IsValid(victim) or not victim:Alive() then return end
-    if not IsValid(killer) then return end
+    if not IsValid(killer) and not (killer and killer:IsWorld()) then return end
 
-    print("Killing " .. victim:Nick() .. " by " .. killer:Nick())
+    if killer:IsPlayer() then
+        print("Killing " .. victim:Nick() .. " by " .. killer:Nick())
+    else
+        print("Killing " .. victim:Nick() .. " by <something/world>")
+    end
 
     -- Kill the player with a "bullet"
     local dmginfo = DamageInfo()
@@ -1451,8 +1455,12 @@ concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
     local allow_dead = #args > 2 and tobool(args[3])
     local killer = GetTargetPlayerByName(killer_name, allow_dead)
     if not IsPlayer(killer) then
-        print("No player named " .. killer_name .. " found")
-        return
+        if killer_name == "world" then
+            killer = game.GetWorld()
+        else
+            print("No player named " .. killer_name .. " found")
+            return
+        end
     end
 
     local remove_body = #args > 1 and tobool(args[2])
@@ -1489,8 +1497,12 @@ concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
     local allow_dead = #args > 3 and tobool(args[4])
     local killer = GetTargetPlayerByName(killer_name, allow_dead)
     if not IsPlayer(killer) then
-        print("No player named " .. killer_name .. " found")
-        return
+        if killer_name == "world" then
+            killer = game.GetWorld()
+        else
+            print("No player named " .. killer_name .. " found")
+            return
+        end
     end
 
     local remove_body = #args > 2 and tobool(args[3])

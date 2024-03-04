@@ -94,6 +94,20 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_CreditsSync_TTTPlayerRoleChanged", fun
     HandleCreditsSync(ply:GetCredits())
 end)
 
+AddHook("TTTBodyCreditsLooted", "HiveMind_CreditsSync_TTTBodyCreditsLooted", function(ply, deadPly, rag, credits)
+    if not IsPlayer(deadPly) or not deadPly:IsHiveMind() then return end
+
+    -- Find all corpses that belong to hive minds and remove their credits
+    for _, p in ipairs(GetAllPlayers()) do
+        if not p:IsHiveMind() then continue end
+        p:SetCredits(0)
+        local p_rag = p.server_ragdoll or p:GetRagdollEntity()
+        if IsValid(p_rag) then
+            CORPSE.SetCredits(p_rag, 0)
+        end
+    end
+end)
+
 -------------------
 -- SHARED HEALTH --
 -------------------

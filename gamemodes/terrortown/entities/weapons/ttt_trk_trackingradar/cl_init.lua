@@ -132,9 +132,9 @@ local function ReceiveTrackRadarScan()
     TRACKRADAR.targets = {}
     for _ = 1, num_targets do
         local pos = Vector()
-        pos.x = net.ReadInt(32)
-        pos.y = net.ReadInt(32)
-        pos.z = net.ReadInt(32)
+        pos.x = net.ReadInt(15)
+        pos.y = net.ReadInt(15)
+        pos.z = net.ReadInt(15)
 
         local col = Vector()
         col.x = net.ReadFloat() * 255

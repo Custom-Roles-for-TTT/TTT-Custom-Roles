@@ -205,7 +205,7 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
     if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker then
         local wasNotTarget = ply:SteamID64() ~= attackertarget and (#attackertarget > 0 or timer.Exists(attacker:Nick() .. "AssassinTarget"))
         local convar = "ttt_assassin_allow_" .. ROLE_STRINGS_RAW[ply:GetRole()] .. "_kill"
-        local skipPenalty = ConVarExists(convar) and GetConVar(convar):GetBool() and ply:IsRoleActive()
+        local skipPenalty = cvars.Bool(convar, false) and ply:IsRoleActive()
         if wasNotTarget and not skipPenalty then
             timer.Remove(attacker:Nick() .. "AssassinTarget")
             attacker:QueueMessage(MSG_PRINTBOTH, "Contract failed. You killed the wrong player.")

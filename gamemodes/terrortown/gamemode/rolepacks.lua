@@ -12,6 +12,7 @@ local TableRemove = table.remove
 local TableRemoveByValue = table.RemoveByValue
 local TableHasValue = table.HasValue
 local TableShuffle = table.Shuffle
+local TableCopy = table.Copy
 
 ROLEPACKS = {}
 
@@ -20,6 +21,11 @@ util.AddNetworkString("TTT_WriteRolePackRoles_Part")
 util.AddNetworkString("TTT_RequestRolePackRoles")
 util.AddNetworkString("TTT_ReadRolePackRoles")
 util.AddNetworkString("TTT_ReadRolePackRoles_Part")
+util.AddNetworkString("TTT_WriteRolePackRoleBlocks")
+util.AddNetworkString("TTT_WriteRolePackRoleBlocks_Part")
+util.AddNetworkString("TTT_RequestRolePackRoleBlocks")
+util.AddNetworkString("TTT_ReadRolePackRoleBlocks")
+util.AddNetworkString("TTT_ReadRolePackRoleBlocks_Part")
 util.AddNetworkString("TTT_WriteRolePackWeapons")
 util.AddNetworkString("TTT_WriteRolePackWeapons_Part")
 util.AddNetworkString("TTT_RequestRolePackWeapons")
@@ -127,6 +133,25 @@ net.Receive("TTT_RequestRolePackRoles", function(len, ply)
     SendStreamToClient(ply, json, "TTT_ReadRolePackRoles")
 end)
 
+local function WriteRolePackRoleBlocks(json)
+    local jsonTable = util.JSONToTable(json)
+    local name = jsonTable.name
+    file.Write("rolepacks/" .. name .. "/roleblocks.json", json)
+end
+ReceiveStreamFromClient("TTT_WriteRolePackRoleBlocks", WriteRolePackRoleBlocks)
+
+net.Receive("TTT_RequestRolePackRoleBlocks", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
+    local name = net.ReadString()
+    local json = file.Read("rolepacks/" .. name .. "/roleblocks.json", "DATA")
+    if not json then return end
+    SendStreamToClient(ply, json, "TTT_ReadRolePackRoleBlocks")
+end)
+
 local function WriteRolePackWeapons(json)
     local jsonTable = util.JSONToTable(json)
     if not jsonTable then
@@ -180,12 +205,7 @@ net.Receive("TTT_RequestRolePackConvars", function(len, ply)
     SendStreamToClient(ply, json, "TTT_ReadRolePackConvars")
 end)
 
-net.Receive("TTT_RequestRolePackList", function(len, ply)
-    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
-        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
-        return
-    end
-
+local function SendRolePackList(ply)
     net.Start("TTT_SendRolePackList")
     local _, directories = file.Find("rolepacks/*", "DATA")
     net.WriteUInt(#directories, 8)
@@ -193,6 +213,15 @@ net.Receive("TTT_RequestRolePackList", function(len, ply)
         net.WriteString(v)
     end
     net.Send(ply)
+end
+
+net.Receive("TTT_RequestRolePackList", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
+    SendRolePackList(ply)
 end)
 
 net.Receive("TTT_CreateRolePack", function(len, ply)
@@ -234,6 +263,8 @@ net.Receive("TTT_RenameRolePack", function(len, ply)
     if file.Exists(oldPath, "DATA") then
         file.Rename(oldPath, newPath)
     end
+
+    SendRolePackList(ply)
 end)
 
 net.Receive("TTT_DeleteRolePack", function(len, ply)
@@ -246,6 +277,7 @@ net.Receive("TTT_DeleteRolePack", function(len, ply)
     local path = "rolepacks/" .. name
     if file.Exists(path, "DATA") then
         file.Delete(path .. "/roles.json")
+        file.Delete(path .. "/roleblocks.json")
         file.Delete(path .. "/convars.json")
         for _, v in pairs(file.Find(path .. "/weapons/*.json", "DATA")) do
             file.Delete(path .. "/weapons/" .. v)
@@ -253,6 +285,8 @@ net.Receive("TTT_DeleteRolePack", function(len, ply)
         file.Delete(path .. "/weapons")
         file.Delete(path)
     end
+
+    SendRolePackList(ply)
 end)
 
 net.Receive("TTT_SavedRolePack", function(len, ply)
@@ -339,6 +373,20 @@ function ROLEPACKS.SendRolePackRoleList(ply)
     end
 end
 
+function ROLEPACKS.GetRolePackBlockedRoles()
+    local name = GetConVar("ttt_role_pack"):GetString()
+    local json = file.Read("rolepacks/" .. name .. "/roleblocks.json", "DATA")
+    if not json then return end
+
+    local jsonTable = util.JSONToTable(json)
+    if jsonTable == nil then
+        ErrorNoHalt("Table decoding failed!\n")
+        return
+    end
+
+    return jsonTable
+end
+
 function ROLEPACKS.SendRolePackWeapons(ply)
     local rolePackName = GetConVar("ttt_role_pack"):GetString()
     if #rolePackName == 0 then return end
@@ -375,12 +423,75 @@ function ROLEPACKS.AssignRoles(choices)
         return
     end
 
+    local blockedRoles = {}
+    local toBlockRoles = {}
+    local roleblocks = ROLEBLOCKS.GetBlockedRoles()
+
     local rolePackChoices = table.Copy(choices)
     local forcedRoles = {}
     for k, v in ipairs(rolePackChoices) do
         if v.forcedRole and v.forcedRole ~= ROLE_NONE then
             TableInsert(forcedRoles, v.forcedRole)
             TableRemove(rolePackChoices, k)
+            if roleblocks and #roleblocks > 0 then
+                for _, group in ipairs(roleblocks) do
+                    for i, groupRole in ipairs(group) do
+                        if groupRole.role == ROLE_STRINGS_RAW[v.forcedRole] then
+                            local blockGroup = TableCopy(group)
+                            TableRemove(blockGroup, i)
+                            for _, blockRole in ipairs(blockGroup) do
+                                local toBlock = ROLE_NONE
+                                for r = ROLE_INNOCENT, ROLE_MAX do
+                                    if ROLE_STRINGS_RAW[r] == blockRole.role then
+                                        toBlock = r
+                                        break
+                                    end
+                                end
+                                blockedRoles[toBlock] = true
+                            end
+                            break
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    if roleblocks and #roleblocks > 0 then
+        for _, group in ipairs(roleblocks) do
+            if #group == 2 and group[1].role == group[2].role then
+                local role = ROLE_NONE
+                for r = ROLE_INNOCENT, ROLE_MAX do
+                    if ROLE_STRINGS_RAW[r] == group[1].role then
+                        role = r
+                        break
+                    end
+                end
+                toBlockRoles[role] = true
+            else
+                local groupRoles = {}
+                for _, groupRole in ipairs(group) do
+                    local role = ROLE_NONE
+                    for r = ROLE_INNOCENT, ROLE_MAX do
+                        if ROLE_STRINGS_RAW[r] == groupRole.role then
+                            role = r
+                            break
+                        end
+                    end
+                    if role ~= ROLE_NONE and not blockedRoles[role] then
+                        for _ = 1, groupRole.weight do
+                            TableInsert(groupRoles, role)
+                        end
+                    end
+                end
+                TableShuffle(groupRoles)
+                local chosenRole = groupRoles[1]
+                for _, role in ipairs(groupRoles) do
+                    if role ~= chosenRole then
+                        blockedRoles[role] = true
+                    end
+                end
+            end
         end
     end
 
@@ -413,6 +524,8 @@ function ROLEPACKS.AssignRoles(choices)
 
                 if not allowDuplicates and TableHasValue(chosenRoles, role) then continue end
 
+                if blockedRoles[role] then continue end
+
                 for _ = 1, roleslot.weight do
                     TableInsert(possibleRoles, role)
                 end
@@ -427,6 +540,10 @@ function ROLEPACKS.AssignRoles(choices)
 
             TableShuffle(possibleRoles)
             local role = TableRemove(possibleRoles)
+
+            if toBlockRoles[role] then
+                blockedRoles[role] = true
+            end
 
             local ply
             if DETECTIVE_ROLES[role] then

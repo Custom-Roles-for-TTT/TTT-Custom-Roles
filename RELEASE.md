@@ -1,5 +1,112 @@
 # Release Notes
 
+## 2.1.5
+**Released: March 4th, 2024**\
+Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
+
+### Additions
+- Added the ability for a role to block itself when configuring role blocks for role packs
+
+### Changes
+- Ported "TTT: optimise radar ping network traffic" from base TTT
+ - Also updated the mad scientist's death radar and the tracker's tracking radar to have the same optimization
+
+### Fixes
+- Fixed an issue that would cause role pack specific role blocks to not work if there was no main role blocks file
+- Fixed an issue that would sometimes copy role pack specific role blocks into the main role blocks file
+
+## 2.1.4 (Beta)
+**Released: March 2nd, 2024**
+
+### Additions
+- Added `ttt_roleblocks` command which opens the new role blocks UI
+  - Role blocks allow more control over which roles are not able to spawn together in a round
+  - **BREAKING CHANGE** - This replaces the old `ttt_single_role1_role2` ConVars. If you are currently using these ConVars your configuration will automatically be imported into the new role blocks system.
+- Added role blocks tab to the role packs UI to allow for role pack specific role blocks
+- Added an option to prevent the sponge's aura from shrinking when players die (disabled by default)
+- Added an option to allow players to damage each other if they are both within the sponge's aura without redirecting damage to the sponge (disabled by default)
+- Added an option for players to have a brief window of time after leaving a sponge's aura where they are still effected by the sponge (disabled by default)
+- Added an option to have the bodysnatcher and their target swap:
+  - Nothing (default)
+  - Roles
+  - Identities (role, model, name, location). NOTE: Also respawns the target
+- Added ability to set a multiplier for the speed of cupid's arrow (defaults to 1)
+- Added ability for cupid's bow to use hitscan instead of projectiles to calculate whether something is hit (disabled by default)
+
+### Changes
+- Changed spy name override to also show in the chat
+  - Doesn't affect the spy or their teammates
+
+### Fixes
+- Fixed an issue where the medium would briefly start to scan a spirit before it was visible if the medium was close enough to where the player died
+- Fixed an issue where the medium would be able to scan spirits that were spectating players if they started to scan them before they were spectating a player
+- Fixed an issue that caused errors in the hud at the start of a round if the player was previously a spectator and so did not have a role assigned
+- Fixed bodysnatcher not removing or receiving role weapons when swapping to a role that has them (e.g. the mad scientist)
+- Fixed conflict between new medium seance logic and informant scanning
+- Fixed case where all parasites infecting the same host would respawn even after the host was killed by the first infection
+  - Now, all but the first parasite will have their infection cancelled when their host dies
+- Fixed parasite cure not showing in shops when the parasite is enabled via rolepacks
+- Fixed roles enabled via rolepacks not having their per-role configurations show in the F1 menu's "Roles" tab
+- Fixed roles enabled via rolepacks that have role-specific assassin targeting convars not correctly showing in the assassin tutorial
+- Fixed magneto stick showing pinning instructions to non-traitors when `ttt_ragdoll_pinning_innocents` was enabled but `ttt_ragdoll_pinning` was disabled
+- Fixed non-vanilla traitors not seeing the player disguise label on their allies
+- Fixed non-vanilla traitors not being able to pin ragdolls when `ttt_ragdoll_pinning` was enabled but `ttt_ragdoll_pinning_innocents` was disabled
+- Fixed role packs sometimes asking you to save again if you attempt to close the window after saving
+- Fixed "press KEY to possess" label showing on corpses for living players after the round has ended
+
+### Developer
+- Added `TTTDrawHitMarker` hook that is called when a player damages an entity before hitmarkers are drawn
+- Added `TTTChatPlayerName` hook to override the player name as shown in chat
+
+## 2.1.3 (Beta)
+**Released: February 24th, 2024**
+
+### Additions
+- Added an option to require the arsonist to have line of sight with their target to douse them (enabled by default)
+- Added an option to prevent the arsonist from being able to douse corpses (disabled by default)
+- Added an option for the arsonist to have a brief window of time after leaving range or losing line of sight of their target before dousing is cancelled (1 second by default)
+- Added an option to change the amount of time after an arsonist fails to douse a target before they can start dousing again (3 seconds by default)
+- Added an option for the medium to be able to scan spirits to learn their name, team and role (disabled by default)
+- Added option for spectators (not dead players) to be able to see the roles of all players (disabled by default)
+- Added an option for whether to show a progress bar for the when the shadow's buff will be activated (enabled by default)
+
+### Changes
+- Changed shadow buff message for stealing role to state that explicitly instead of just say they will "give [their] target a buff"
+
+### Fixes
+- Fixed minor typo in vindicator event log entry
+- Fixed hive mind all having the same number of credits on their body, allowing their killer to loot many times the credits they should have gotten
+- Fixed some players who switched roles to become a medium not being able to see spirits of players that died prior to the medium switching roles
+
+### Developer
+- Added `TTTBodyCreditsLooted` hook that is called when a player loots credits from a body
+
+## 2.1.2 (Beta)
+**Released: February 17th, 2024**
+
+### Changes
+- Changed guesser team info messages to lowercase the team names for consistency and to help differentiate from role names
+- Changed shadow to no longer have a win condition when the "steal role" buff is configured
+
+### Fixes
+- Fixed role pack weapon config not taking priority over role weapons config
+- Fixed role pack weapon config unselecting some equipment items when re-opening the role pack UI
+- Fixed role pack weapon config prompting to save when no changes had been made
+- Fixed role pack weapon config sometimes adding duplicate weapons to saved .json files
+- Fixed renaming or deleting a role pack causing the list of role packs to display incorrectly
+- Fixed potential errors and weird behavior due to type mismatch when sending purchased equipment back to the client
+- Fixed shadow not getting new role weapons when they swap to their target's role when the "steal role" buff is applied
+- Fixed vindicator not dying when their target was killed by a non-player
+
+### Developer
+- Added `plymeta:RemoveEquipmentItem` to allow removal of a player's equipment
+- **BREAKING CHANGE** - Changed equipment system to use sequential equipment IDs and store in a table instead of as a bit mask
+  - This was deemed necessary to allow more than 32 equipment IDs to be generated and used
+  - `ply.equipment_items` is now a table and the `plymeta:GetEquipmentItems` method now returns that table
+  - The `TTT_Equipment` net method has been updated to transmit the equipment items table instead of the bit mask
+  - The `TTT_RagdollSearch` net method has been updated to transmit the equipment items table instead of the bit mask
+- Added ability for `ttt_kill_from_player` and `ttt_kill_target_from_player` to use "world" as the killer parameter
+
 ## 2.1.1
 **Released: February 13th, 2024**
 
@@ -8,7 +115,6 @@
 
 ### Developer
 - Changed `Get{ROLE}`, `Is{ROLE}` and `IsActive{ROLE}` functions to not be dynamically assigned for a role if the resulting function shares a name with a pre-existing method
-
 
 ## 2.1.0
 **Released: February 5th, 2024**\

@@ -18,10 +18,16 @@ hook.Add("Initialize", "Hitmarkers_Initialize", function()
     LANG.AddToLanguage("english", "set_title_hitmarkers", "Hitmarkers settings")
     LANG.AddToLanguage("english", "set_label_hitmarkers", [[All changes made here are clientside and will only apply to your own menu!
 Use the !hmcolor command in chat to change the marker colors.
-Use the !hmcritcolor command in chat to change the color of critical hit markers.]])
+Use the !hmcritcolor command in chat to change the color of critical hit markers.
+Use the !hmimmunecolor command in chat to change the color of immune hit markers.
+Use the !hmjestercolor command in chat to change the color of jester hit markers.]])
     LANG.AddToLanguage("english", "set_hitmarkers_convar_enabled", "Enabled")
-    LANG.AddToLanguage("english", "set_hitmarkers_convar_showcrits", "Show criticals")
+    LANG.AddToLanguage("english", "set_hitmarkers_convar_showcrits", "Show critical hits")
+    LANG.AddToLanguage("english", "set_hitmarkers_convar_showimmune", "Highlight hits to immune target")
+    LANG.AddToLanguage("english", "set_hitmarkers_convar_showjester", "Highlight hits on jesters who want to die")
     LANG.AddToLanguage("english", "set_hitmarkers_convar_hitsound", "Play hit sound")
+    LANG.AddToLanguage("english", "set_hitmarkers_convar_hitimmunesound", "Play sound when hitting immune targets")
+    LANG.AddToLanguage("english", "set_hitmarkers_convar_hitjestersound", "Play sound when hitting jesters who want to die")
 end)
 
 hook.Add("TTTSettingsConfigTabSections", "Hitmarkers_TTTSettingsConfigTabSections", function(dsettings)
@@ -39,7 +45,11 @@ hook.Add("TTTSettingsConfigTabSections", "Hitmarkers_TTTSettingsConfigTabSection
 
     dmarkers:CheckBox(GetTranslation("set_hitmarkers_convar_enabled"), "hm_enabled")
     dmarkers:CheckBox(GetTranslation("set_hitmarkers_convar_showcrits"), "hm_showcrits")
+    dmarkers:CheckBox(GetTranslation("set_hitmarkers_convar_showimmune"), "hm_showimmune")
+    dmarkers:CheckBox(GetTranslation("set_hitmarkers_convar_showjester"), "hm_showjester")
     dmarkers:CheckBox(GetTranslation("set_hitmarkers_convar_hitsound"), "hm_hitsound")
+    dmarkers:CheckBox(GetTranslation("set_hitmarkers_convar_hitimmunesound"), "hm_hitimmunesound")
+    dmarkers:CheckBox(GetTranslation("set_hitmarkers_convar_hitjestersound"), "hm_hitjestersound")
 
     HookCall("TTTSettingsConfigTabFields", nil, "Hitmarkers", dmarkers)
 
@@ -52,29 +62,23 @@ local hm_toggle = CreateClientConVar("hm_enabled", "1", true, true)
 local hm_type = CreateClientConVar("hm_hitmarkertype", "lines", true, true)
 local hm_color = CreateClientConVar("hm_hitmarkercolor", "255, 255, 255", true, true)
 local hm_crit = CreateClientConVar("hm_showcrits", "1", true, true)
+local hm_immune = CreateClientConVar("hm_showimmune", "1", true, true)
+local hm_jester = CreateClientConVar("hm_showjester", "1", true, true)
 local hm_critcolor = CreateClientConVar("hm_hitmarkercritcolor", "255, 0, 0", true, true)
+local hm_immunecolor = CreateClientConVar("hm_hitmarkerimmunecolor", "0, 255, 255", true, true)
+local hm_jestercolor = CreateClientConVar("hm_hitmarkerjestercolor", "200, 0, 255", true, true)
 local hm_sound = CreateClientConVar("hm_hitsound", "0", true, true)
+local hm_immunesound = CreateClientConVar("hm_hitimmunesound", "1", true, true)
+local hm_jestersound = CreateClientConVar("hm_hitjestersound", "1", true, true)
 local hm_DrawHitM = false
 local hm_LastHitCrit = false
+local hm_LastHitImmune = false
+local hm_LastHitJester = false
 local hm_CanPlayS = true
 local hm_Alpha = 0
 
-local function GrabColor() -- Used for retrieving the console color
-    local coltable = StringExplode(",", hm_color:GetString())
-    local newcol = {}
-
-    for k, v in pairs(coltable) do
-        v = tonumber(v)
-        if v == nil then -- Fixes missing values
-            coltable[k] = 0
-        end
-    end
-    newcol[1], newcol[2], newcol[3] = coltable[1] or 0, coltable[2] or 0, coltable[3] or 0 -- Fixes missing keys
-    return Color(newcol[1], newcol[2], newcol[3]) -- Returns the finished color
-end
-
-local function GrabCritColor() -- Used for retrieving the console color
-    local coltable = StringExplode(",", hm_critcolor:GetString())
+local function GrabColor(convar)
+    local coltable = StringExplode(",", convar:GetString())
     local newcol = {}
 
     for k, v in pairs(coltable) do
@@ -89,11 +93,17 @@ end
 
 net.Receive("TTT_OpenMixer", function() -- Receive the server message
     local crit = net.ReadBool()
+    local immune = net.ReadBool()
+    local jester = net.ReadBool()
 
     -- Creating the color mixer panel
     local frame = vgui.Create("DFrame")
     if crit then
         frame:SetTitle("Hitmarker Critical Color Config")
+    elseif immune then
+        frame:SetTitle("Hitmarker Immune Color Config")
+    elseif jester then
+        frame:SetTitle("Hitmarker Jester Color Config")
     else
         frame:SetTitle("Hitmarker Color Config")
     end
@@ -108,9 +118,13 @@ net.Receive("TTT_OpenMixer", function() -- Receive the server message
     colMix:SetWangs(false)
     -- Sets the default color to your current one
     if crit then
-        colMix:SetColor(GrabCritColor())
+        colMix:SetColor(GrabColor(hm_critcolor))
+    elseif immune then
+        colMix:SetColor(GrabColor(hm_immunecolor))
+    elseif jester then
+        colMix:SetColor(GrabColor(hm_jestercolor))
     else
-        colMix:SetColor(GrabColor())
+        colMix:SetColor(GrabColor(hm_color))
     end
 
     local button = vgui.Create("DButton", frame)
@@ -122,6 +136,10 @@ net.Receive("TTT_OpenMixer", function() -- Receive the server message
         local colstring = tostring(colors.r .. ", " .. colors.g .. ", " .. colors.b)
         if crit then
             RunConsoleCommand("hm_hitmarkercritcolor", colstring)
+        elseif immune then
+            RunConsoleCommand("hm_hitmarkerimmunecolor", colstring)
+        elseif jester then
+            RunConsoleCommand("hm_hitmarkerjestercolor", colstring)
         else
             RunConsoleCommand("hm_hitmarkercolor", colstring)
         end
@@ -132,9 +150,25 @@ net.Receive("TTT_DrawHitMarker", function()
     if hm_toggle:GetBool() == false then return end -- Enables/Disables the hitmarkers
     hm_DrawHitM = true
     hm_CanPlayS = true
-    if net.ReadBool() then
+    local crit = net.ReadBool()
+    local immune = net.ReadBool()
+    local jester = net.ReadBool()
+    -- Immune takes priority, then jester, then crit, finally regular hits
+    if immune and hm_immune:GetBool() then
+        hm_LastHitImmune = true
+        hm_LastHitJester = false
+        hm_LastHitCrit = false
+    elseif jester and hm_jester:GetBool() then
+        hm_LastHitImmune = false
+        hm_LastHitJester = true
+        hm_LastHitCrit = false
+    elseif crit and hm_crit:GetBool() then
+        hm_LastHitImmune = false
+        hm_LastHitJester = false
         hm_LastHitCrit = true
     else
+        hm_LastHitImmune = false
+        hm_LastHitJester = false
         hm_LastHitCrit = false
     end
     hm_Alpha = 255
@@ -153,18 +187,28 @@ AddHook("HUDPaint", "HitmarkerDrawer", function()
     if hm_Alpha == 0 then hm_DrawHitM = false hm_CanPlayS = true end -- Removes them after they decay
 
     if hm_DrawHitM == true then
-        if hm_CanPlayS and hm_sound:GetBool() == true then
-            surface.PlaySound("hitmarkers/mlghit.wav")
+        if hm_CanPlayS then
             hm_CanPlayS = false
+            if hm_LastHitImmune and hm_immune:GetBool() and hm_immunesound:GetBool() then
+                surface.PlaySound("hitmarkers/immune.wav")
+            elseif hm_LastHitJester and hm_jester:GetBool() and hm_jestersound:GetBool() then
+                surface.PlaySound("hitmarkers/buzzer.wav")
+            elseif hm_sound:GetBool() then
+                surface.PlaySound("hitmarkers/mlghit.wav")
+            end
         end
 
         local x = ScrW() / 2
         local y = ScrH() / 2
 
         hm_Alpha = MathApproach(hm_Alpha, 0, 5)
-        local col = GrabColor()
+        local col = GrabColor(hm_color)
         if hm_LastHitCrit and hm_crit:GetBool() then
-            col = GrabCritColor()
+            col = GrabColor(hm_critcolor)
+        elseif hm_LastHitImmune and hm_immune:GetBool() then
+            col = GrabColor(hm_immunecolor)
+        elseif hm_LastHitJester and hm_jester:GetBool() then
+            col = GrabColor(hm_jestercolor)
         end
         col.a = hm_Alpha
         surface.SetDrawColor(col)

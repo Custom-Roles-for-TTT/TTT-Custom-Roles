@@ -32,7 +32,7 @@ local ClassHint = {
             if DetectiveMode() then
                 local ply = LocalPlayer()
                 -- Handle special labels for spectators
-                if not ply:IsActive() then
+                if not ply:Alive() and ply:IsSpec() then
                     -- Cache the convar reference
                     if not spectator_corpse_search then
                         spectator_corpse_search = GetConVar("ttt_spectator_corpse_search")
@@ -185,6 +185,7 @@ end
 function GM:PostDrawTranslucentRenderables()
     client = LocalPlayer()
     plys = GetAllPlayers()
+    local spectatorOverride = client:GetRole() == ROLE_NONE and client:IsSpec() and GetConVar("ttt_spectators_see_roles"):GetBool()
 
     dir = client:GetForward() * -1
 
@@ -198,7 +199,7 @@ function GM:PostDrawTranslucentRenderables()
     for _, v in pairs(plys) do
         -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
         local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead()) or v:GetNWBool("PD_Disguised", false)
-        if v:IsActive() and v ~= client and not hidden and not CallHook("TTTTargetIDPlayerBlockIcon", nil, v, client) then
+        if v:IsActive() and v ~= client and (not hidden or spectatorOverride) and not CallHook("TTTTargetIDPlayerBlockIcon", nil, v, client) then
             pos = v:GetPos()
             pos.z = pos.z + v:GetHeight() + 15
 
@@ -209,59 +210,63 @@ function GM:PostDrawTranslucentRenderables()
             local role = nil
             local color_role = nil
             local noz = false
-            if v:IsDetectiveTeam() then
-                local disp_role, changed = v:GetDisplayedRole()
-                -- If the displayed role was changed, use it for the color but use the question mark for the icon
-                if changed then
-                    color_role = disp_role
-                    role = ROLE_NONE
-                else
-                    role = disp_role
-                end
-            elseif v:IsDetectiveLike() and not (v:IsImpersonator() and client:IsTraitorTeam()) then
-                role = GetDetectiveIconRole(false)
-            end
-            if not hide_roles then
-                if v:ShouldRevealRoleWhenActive() and v:IsRoleActive() then
-                    role = v:GetRole()
-                elseif client:IsTraitorTeam() then
-                    noz = true
-                    if showJester then
+            if spectatorOverride then
+                role = v:GetRole()
+            else
+                if v:IsDetectiveTeam() then
+                    local disp_role, changed = v:GetDisplayedRole()
+                    -- If the displayed role was changed, use it for the color but use the question mark for the icon
+                    if changed then
+                        color_role = disp_role
                         role = ROLE_NONE
-                        color_role = ROLE_JESTER
-                        noz = false
-                    elseif v:IsTraitorTeam() then
-                        if glitchRound then
-                            role, color_role = GetGlitchedRole(v, glitchMode)
-                        -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
-                        elseif v:IsImpersonator() and v:IsRoleActive() then
-                            role = GetDetectiveIconRole(true)
-                            color_role = ROLE_IMPERSONATOR
-                        else
-                            role = v:GetRole()
-                        end
-                    elseif v:IsGlitch() then
-                        if client:IsZombie() then
-                            role = ROLE_ZOMBIE
-                        else
-                            role, color_role = GetGlitchedRole(v, glitchMode)
-                        end
-                    -- Disable "No Z" for other icons like the Detective-like roles
                     else
-                        noz = false
+                        role = disp_role
                     end
-                elseif client:IsMonsterTeam() then
-                    if showJester then
-                        role = ROLE_NONE
-                        color_role = ROLE_JESTER
-                    elseif v:IsMonsterTeam() then
+                elseif v:IsDetectiveLike() and not (v:IsImpersonator() and client:IsTraitorTeam()) then
+                    role = GetDetectiveIconRole(false)
+                end
+                if not hide_roles then
+                    if v:ShouldRevealRoleWhenActive() and v:IsRoleActive() then
                         role = v:GetRole()
+                    elseif client:IsTraitorTeam() then
                         noz = true
-                    end
-                elseif client:IsIndependentTeam() then
-                    if showJester and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters", false) then
-                        role = ROLE_NONE
-                        color_role = ROLE_JESTER
+                        if showJester then
+                            role = ROLE_NONE
+                            color_role = ROLE_JESTER
+                            noz = false
+                        elseif v:IsTraitorTeam() then
+                            if glitchRound then
+                                role, color_role = GetGlitchedRole(v, glitchMode)
+                                -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
+                            elseif v:IsImpersonator() and v:IsRoleActive() then
+                                role = GetDetectiveIconRole(true)
+                                color_role = ROLE_IMPERSONATOR
+                            else
+                                role = v:GetRole()
+                            end
+                        elseif v:IsGlitch() then
+                            if client:IsZombie() then
+                                role = ROLE_ZOMBIE
+                            else
+                                role, color_role = GetGlitchedRole(v, glitchMode)
+                            end
+                            -- Disable "No Z" for other icons like the Detective-like roles
+                        else
+                            noz = false
+                        end
+                    elseif client:IsMonsterTeam() then
+                        if showJester then
+                            role = ROLE_NONE
+                            color_role = ROLE_JESTER
+                        elseif v:IsMonsterTeam() then
+                            role = v:GetRole()
+                            noz = true
+                        end
+                    elseif client:IsIndependentTeam() then
+                        if showJester and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters", false) then
+                            role = ROLE_NONE
+                            color_role = ROLE_JESTER
+                        end
                     end
                 end
             end
@@ -443,7 +448,7 @@ function GM:HUDDrawTargetID()
         if hidden then
             client.last_id = nil
 
-            if client:IsTraitor() or client:IsSpec() then
+            if client:IsTraitorTeam() or client:IsSpec() then
                 text = ent:Nick() .. L.target_disg
             else
                 -- Do not show anything
@@ -462,37 +467,43 @@ function GM:HUDDrawTargetID()
             _, color = util.HealthToString(ent:Health(), ent:GetMaxHealth())
         end
 
-        if not hide_roles and GetRoundState() == ROUND_ACTIVE then
-            local hideBeggar = ent:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ent)
-            local hideBodysnatcher = ent:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ent)
-            local showJester = (ent:ShouldActLikeJester() or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
-            if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then
-                target_role = true
-            elseif client:IsTraitorTeam() then
-                if showJester then
-                    target_jester = showJester
-                else
-                    target_traitor = ent:IsTraitor()
-                    target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
-                    target_glitch = ent:IsGlitch()
+        local spectatorOverride = client:GetRole() == ROLE_NONE and client:IsSpec() and GetConVar("ttt_spectators_see_roles"):GetBool()
 
-                    if glitchRound and (target_traitor or target_special_traitor or (target_glitch and not GetGlobalBool("ttt_zombie_round", false))) then
-                        local role, color_role = GetGlitchedRole(ent, glitchMode)
-                        target_traitor = role == ROLE_TRAITOR
-                        target_unknown_traitor = role == ROLE_NONE and color_role == ROLE_TRAITOR
-                        target_special_traitor = role ~= ROLE_NONE and role ~= ROLE_TRAITOR
-                        target_unknown_special_traitor = role == ROLE_NONE and color_role ~= ROLE_TRAITOR
+        if (not hide_roles or spectatorOverride) and GetRoundState() == ROUND_ACTIVE then
+            if spectatorOverride then
+                target_role = true
+            else
+                local hideBeggar = ent:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ent)
+                local hideBodysnatcher = ent:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ent)
+                local showJester = (ent:ShouldActLikeJester() or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
+                if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then
+                    target_role = true
+                elseif client:IsTraitorTeam() then
+                    if showJester then
+                        target_jester = showJester
+                    else
+                        target_traitor = ent:IsTraitor()
+                        target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
+                        target_glitch = ent:IsGlitch()
+
+                        if glitchRound and (target_traitor or target_special_traitor or (target_glitch and not GetGlobalBool("ttt_zombie_round", false))) then
+                            local role, color_role = GetGlitchedRole(ent, glitchMode)
+                            target_traitor = role == ROLE_TRAITOR
+                            target_unknown_traitor = role == ROLE_NONE and color_role == ROLE_TRAITOR
+                            target_special_traitor = role ~= ROLE_NONE and role ~= ROLE_TRAITOR
+                            target_unknown_special_traitor = role == ROLE_NONE and color_role ~= ROLE_TRAITOR
+                        end
                     end
-                end
-            elseif client:IsMonsterTeam() then
-                if showJester then
-                    target_jester = showJester
-                elseif ent:IsMonsterTeam() then
-                    target_monster = ent:GetRole()
-                end
-            elseif client:IsIndependentTeam() then
-                if showJester and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters", false) then
-                    target_jester = showJester
+                elseif client:IsMonsterTeam() then
+                    if showJester then
+                        target_jester = showJester
+                    elseif ent:IsMonsterTeam() then
+                        target_monster = ent:GetRole()
+                    end
+                elseif client:IsIndependentTeam() then
+                    if showJester and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters", false) then
+                        target_jester = showJester
+                    end
                 end
             end
         end

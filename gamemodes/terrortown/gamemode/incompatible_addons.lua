@@ -1,3 +1,4 @@
+local hook = hook
 local pairs = pairs
 
 local incompatible = {
@@ -75,7 +76,8 @@ local incompatible = {
     -- Miscellaneous
     ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook.", alt = "3052896263" }, -- Avengers RandoMat Event by Jenssons
     ["2209392671"] = { reason = "Breaks the weapon switch HUD (and possibly others)."}, -- TTT SimpleHUD by Suphax
-    ["1256344426"] = { reason = "Breaks body searching" } -- TTT Bots 2.0 by immortal man
+    ["1256344426"] = { reason = "Breaks body searching and role-specific features" }, -- TTT Bots 2.0 by immortal man
+    ["2797209031"] = { convars = { { name = "ttt_roundend_slowmo", value = "1", reason = "Breaks many role win conditions around blocking or triggering round endings (jester, clown, etc.)", alt = "686457995" } } } -- Misc TTT tweaks and fixes by wget
 }
 
 if CR_BETA then
@@ -95,15 +97,30 @@ else
     incompatible["2414297330"] = { reason = "Incorrect version of ULX Module for Custom Roles for TTT is installed.", alt = "2421043753"} -- ULX Module for Custom Roles for TTT (Beta)
 end
 
-local addons = engine.GetAddons()
+hook.Add("InitPostEntity", "Incompatibility_InitPostEntity", function()
+    local addons = engine.GetAddons()
 
-for _, v in pairs(addons) do
-    local addon = incompatible[tostring(v.wsid)]
-    if addon and v.mounted then
-        ErrorNoHalt("WARNING: Addon \'" .. v.title .. "\' is incompatible with Custom Roles for TTT!\n")
-        ErrorNoHalt("         Reason: " .. addon.reason .. "\n")
-        if addon.alt then
-            ErrorNoHalt("         An alternative addon is available at https://steamcommunity.com/sharedfiles/filedetails/?id=" .. addon.alt .. "\n")
+    for _, v in pairs(addons) do
+        local addon = incompatible[tostring(v.wsid)]
+        if addon and v.mounted then
+            if addon.convars then
+                for _, convar in ipairs(addon.convars) do
+                    local value = cvars.String(convar.name, nil)
+                    if value == convar.value then
+                        ErrorNoHalt("WARNING: ConVar '" .. convar.name .. "' from '" .. v.title .. "' is incompatible with Custom Roles for TTT!\n")
+                        ErrorNoHalt("         Reason: " .. convar.reason .. "\n")
+                        if convar.alt then
+                            ErrorNoHalt("         An alternative addon is available at https://steamcommunity.com/sharedfiles/filedetails/?id=" .. convar.alt .. "\n")
+                        end
+                    end
+                end
+            else
+                ErrorNoHalt("WARNING: Addon '" .. v.title .. "' is incompatible with Custom Roles for TTT!\n")
+                ErrorNoHalt("         Reason: " .. addon.reason .. "\n")
+                if addon.alt then
+                    ErrorNoHalt("         An alternative addon is available at https://steamcommunity.com/sharedfiles/filedetails/?id=" .. addon.alt .. "\n")
+                end
+            end
         end
     end
-end
+end)

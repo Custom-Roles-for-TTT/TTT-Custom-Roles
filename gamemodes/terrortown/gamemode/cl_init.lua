@@ -74,6 +74,7 @@ include("cl_popups.lua")
 include("cl_equip.lua")
 include("cl_voice.lua")
 include("cl_rolepacks.lua")
+include("cl_roleblocks.lua")
 include("cl_roleweapons.lua")
 include("cl_hitmarkers.lua")
 include("cl_deathnotify.lua")
@@ -288,7 +289,7 @@ function GM:ClearClientState()
 
     client:SetRole(ROLE_INNOCENT)
 
-    client.equipment_items = EQUIP_NONE
+    client.equipment_items = {}
     client.equipment_credits = 0
     client.bought = {}
     client.last_id = nil

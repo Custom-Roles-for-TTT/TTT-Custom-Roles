@@ -34,11 +34,11 @@ local StringLower = string.lower
 EQUIP_NONE = 0
 EQUIP_ARMOR = 1
 EQUIP_RADAR = 2
-EQUIP_DISGUISE = 4
-EQUIP_SPEED = 8
-EQUIP_REGEN = 16
+EQUIP_DISGUISE = 3
+EQUIP_SPEED = 4
+EQUIP_REGEN = 5
 
-EQUIP_MAX = 16
+EQUIP_MAX = 5
 
 -- Icon doesn't have to be in this dir, but all default ones are in here
 local mat_dir = "vgui/ttt/"
@@ -156,7 +156,7 @@ end
 
 -- Utility function to register a new Equipment ID
 function GenerateNewEquipmentID()
-    EQUIP_MAX = EQUIP_MAX * 2
+    EQUIP_MAX = EQUIP_MAX + 1
     return EQUIP_MAX
 end
 

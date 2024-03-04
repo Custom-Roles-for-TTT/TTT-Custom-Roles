@@ -123,6 +123,11 @@ sound.Add({
     sound = "cupid/zoomout.wav"
 })
 
+if SERVER then
+    CreateConVar("ttt_cupid_arrow_speed_mult", "1", FCVAR_NONE, "The speed multiplier for the cupid's arrow (Only applies when ttt_cupid_arrow_hitscan is disabled)", 0.1, 1.5)
+    CreateConVar("ttt_cupid_arrow_hitscan", "0", FCVAR_NONE, "Whether the cupid's arrow should be an instant hit instead of a projectile", 0, 1)
+end
+
 function SWEP:SetupDataTables()
     self:NetworkVar("Int", 0, "WepState")
 end
@@ -169,15 +174,27 @@ function SWEP:Think()
             self:RunActivity(ACT_VM_PRIMARYATTACK)
 
             if SERVER then
-                local ang = owner:GetAimVector():Angle()
+                local aimVec = owner:GetAimVector()
+                local ang = aimVec:Angle()
                 local pos = owner:EyePos() + ang:Up() * -7 + ang:Forward() * -4
 
                 if not owner:KeyDown(IN_ATTACK2) then
                     pos = pos + ang:Right() * 1.5
                 end
 
-                local charge = self:GetNextSecondaryFire()
-                charge = math.Clamp(CurTime() - charge, 0, 1)
+                local mult = 1
+                if GetConVar("ttt_cupid_arrow_hitscan"):GetBool() then
+                    local trace = util.TraceLine({ start = pos, endpos = pos + (aimVec * 4096), filter={self, owner} })
+                    if not trace.Hit then return end
+
+                    -- Start a little bit back from where it hit so it can fly and trigger the impact correctly
+                    pos = trace.HitPos - (aimVec * 4)
+                else
+                    local charge = self:GetNextSecondaryFire()
+                    charge = math.Clamp(CurTime() - charge, 0, 1)
+
+                    mult = GetConVar("ttt_cupid_arrow_speed_mult"):GetFloat() * charge
+                end
 
                 local arrow = ents.Create("ttt_cup_arrow")
                 arrow:SetOwner(owner)
@@ -185,7 +202,7 @@ function SWEP:Think()
                 arrow:SetAngles(ang)
                 arrow:Spawn()
                 arrow:Activate()
-                arrow:SetVelocity(ang:Forward() * 2500 * charge)
+                arrow:SetVelocity(ang:Forward() * 2500 * mult)
                 arrow.Weapon = self
             end
         end

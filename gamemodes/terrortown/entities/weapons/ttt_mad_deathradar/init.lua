@@ -44,9 +44,9 @@ local function DeathRadarScan(ply, cmd, args)
         net.Start("TTT_DeathRadar")
         net.WriteUInt(#targets, 8)
         for _, tgt in ipairs(targets) do
-            net.WriteInt(tgt.pos.x, 32)
-            net.WriteInt(tgt.pos.y, 32)
-            net.WriteInt(tgt.pos.z, 32)
+            net.WriteInt(tgt.pos.x, 15)
+            net.WriteInt(tgt.pos.y, 15)
+            net.WriteInt(tgt.pos.z, 15)
         end
         net.Send(ply)
 

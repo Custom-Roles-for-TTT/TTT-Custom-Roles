@@ -7,6 +7,16 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 ***NOTE:*** Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the *remaining hook instances to be completely skipped*. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.
 
+### TTTBodyCreditsLooted(ply, deadPly, rag, credits)
+Called when a player loots credits off of a dead player's body.\
+*Realm:* Server\
+*Added in:* 2.1.3\
+*Parameters:*
+- *ply* - The player who is looting credits
+- *deadPly* - The dead player whose corpse was looted
+- *rag* - The corpse that was looted
+- *credits* - The number of credits looted
+
 ### TTTBodySearchButtons(ply, rag, buttons, searchRaw, detectiveSearchOnly)
 Called when a player opens the body search dialog. Used to add new buttons to the dialog.\
 *Realm:* Client\
@@ -62,6 +72,16 @@ Called when a player is attempting to use traitor chat, both speaking and listen
 
 *Return:* Whether to allow this player to use traitor voice chat. (Defaults to checking whether the player is on the traitor team)
 
+### TTTChatPlayerName(ply, team_chat)
+Called when a player is using chat. Used to override the name shown.\
+*Realm:* Client\
+*Added in:* 2.1.4\
+*Parameters:*
+- *ply* - The player who is chatting
+- *team_chat* - Whether the player is chatting to their team
+
+*Return:* The player name to show, if it should be overridden. Otherwise do not return anything.
+
 ### TTTCupidShouldLoverSurvive(ply, lover)
 Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.\
 *Realm:* Server\
@@ -95,6 +115,20 @@ Called when a detective-like (deputy, impersonator, etc.) player is promoted.\
 *Added in:* 2.0.1\
 *Parameters:*
 - *ply* - The detective-like player who was promoted
+
+### TTTDrawHitMarker(ent, dmginfo)
+Called when an entity is attacked by a player, before hitmarkers are drawn.\
+*Realm:* Server\
+*Added in:* 2.1.4\
+*Parameters:*
+- *ent* - The entity being attacked
+- *dmginfo* - The damage to be applied to the attacked entity
+
+*Return:*
+- *shouldDraw* - If the hitmarker should be drawn
+- *drawCrit* - If the hitmarker should be drawn as a crit
+- *drawImmune* - If the hitmarker should be drawn as an immune hit (Takes priority over crits and jester hits)
+- *drawJester* - If the hitmarker should be drawn as a jester hit (Takes priority over crits)
 
 ### TTTEventFinishText(e)
 Called before the event text for the "round finished" event is rendered in the end-of-round summary's Events tab.\

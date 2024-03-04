@@ -328,7 +328,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     -- do this after the hook in case it wants to change some of that data
     local role = rag.was_role
     local nick = CORPSE.GetPlayerNick(rag)
-    local eq = rag.equipment or EQUIP_NONE
+    local eq = rag.equipment or {}
     local c4 = rag.bomb_wire or -1
     local dmg = rag.dmgtype or DMG_GENERIC
     local wep = rag.dmgwep or ""
@@ -349,6 +349,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         CORPSE.SetCredits(rag, 0)
         ServerLog(ply:Nick() .. " took " .. credits .. " credits from the body of " .. nick .. "\n")
         SCORE:HandleCreditFound(ply, nick, credits)
+        hook.Call("TTTBodyCreditsLooted", GAMEMODE, ply, ownerEnt, rag, credits)
         return
     elseif DetectiveMode() then
         if CORPSE.CanBeSearched(ply, rag) then
@@ -411,7 +412,11 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     net.WriteUInt(rag:EntIndex(), 16) -- 16 bits
     net.WriteUInt(owner, 8) -- 128 max players. ( 8 bits )
     net.WriteString(sendName and nick or "<Unknown>")
-    net.WriteUInt(eq, 32) -- Equipment ( 32 = max. )
+    -- Equipment table
+    net.WriteUInt(#eq, 8)
+    for _, v in ipairs(eq) do
+        net.WriteUInt(v, 8)
+    end
     net.WriteInt(sendRole and role or -1, 8) -- ( 8 bits )
     net.WriteInt(c4, bitsRequired(C4_WIRE_COUNT) + 1) -- -1 -> 2^bits ( default c4: 4 bits )
     net.WriteUInt(dmg, 30) -- DMG_BUCKSHOT is the highest. ( 30 bits )

@@ -376,7 +376,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
                 TableInsert(mergedExcludeWeapons, v)
             end
         end
-        if not block_exclusion and TableHasValue(mergedExcludeWeapons, id) then
+        if not block_exclusion and TableHasValue(mergedExcludeWeapons, id) and not TableHasValue(rolepack_weps.Buyables, id) then
             TableRemoveByValue(wep.CanBuy, role)
         -- Remove some weapons based on a random chance if it isn't blocked or bypassed
         -- Only run this on the client because there is no easy way to sync randomization between client and server

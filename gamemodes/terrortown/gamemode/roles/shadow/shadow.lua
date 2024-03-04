@@ -9,6 +9,7 @@ local MathMax = math.max
 local MathMin = math.min
 local MathRandom = math.random
 local MathRound = math.Round
+local RunHook = hook.Run
 
 util.AddNetworkString("TTT_UpdateShadowWins")
 util.AddNetworkString("TTT_ResetShadowWins")
@@ -180,10 +181,13 @@ local function CreateBuffTimer(shadow, target)
     local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. target:SteamID64()
     if buffTimers[timerId] then return end
 
+    local buffType = shadow_target_buff:GetInt()
     local buffDelay = shadow_target_buff_delay:GetInt()
     local message = "Stay with your target for " .. buffDelay .. " seconds to "
-    if shadow_target_buff:GetInt() == SHADOW_BUFF_TEAM_JOIN then
+    if buffType == SHADOW_BUFF_TEAM_JOIN then
         message = message .. "join their team!"
+    elseif buffType == SHADOW_BUFF_STEAL_ROLE then
+        message = message .. "steal their role!"
     else
         message = message .. "give them a buff!"
     end
@@ -240,10 +244,13 @@ local function CreateBuffTimer(shadow, target)
             end
 
             shadow:SetRole(role)
+            shadow:StripRoleWeapons()
+            RunHook("PlayerLoadout", shadow)
+
             target:MoveRoleState(shadow)
             target:SetRole(ROLE_SHADOW)
             target:StripRoleWeapons()
-            shadow:StripRoleWeapons()
+            RunHook("PlayerLoadout", target)
 
             target:Kill()
 
@@ -548,6 +555,8 @@ end)
 
 hook.Add("TTTWinCheckComplete", "Shadow_TTTWinCheckComplete", function(win_type)
     if win_type == WIN_NONE then return end
+    -- If the shadow is stealing their target's role, they don't win just by surviving
+    if shadow_target_buff:GetInt() == SHADOW_BUFF_STEAL_ROLE then return end
     if not player.IsRoleLiving(ROLE_SHADOW) then return end
 
     net.Start("TTT_UpdateShadowWins")

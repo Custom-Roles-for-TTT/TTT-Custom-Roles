@@ -32,6 +32,7 @@ AddCSLuaFile("cl_transfer.lua")
 AddCSLuaFile("cl_search.lua")
 AddCSLuaFile("cl_targetid.lua")
 AddCSLuaFile("cl_rolepacks.lua")
+AddCSLuaFile("cl_roleblocks.lua")
 AddCSLuaFile("cl_roleweapons.lua")
 AddCSLuaFile("vgui/ColoredBox.lua")
 AddCSLuaFile("vgui/SimpleIcon.lua")
@@ -69,6 +70,7 @@ include("deathnotify.lua")
 include("roleweapons.lua")
 include("sprint_shd.lua")
 include("rolepacks.lua")
+include("roleblocks.lua")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local concommand = concommand
@@ -186,6 +188,7 @@ CreateConVar("ttt_deputy_impersonator_start_promoted", "0")
 CreateConVar("ttt_single_jester_independent", "1")
 CreateConVar("ttt_single_jester_independent_max_players", "0")
 
+-- TODO: Deprecated - Remove after next major update
 local paired_role_blocks = {
     {ROLE_DEPUTY, ROLE_IMPERSONATOR},
     {ROLE_DOCTOR, ROLE_QUACK},
@@ -1250,16 +1253,7 @@ function SelectRoles()
     -- special spawning cvars
     local blocked_roles = {}
 
-    for _, r in ipairs(paired_role_blocks) do
-        local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[r[1]] .. "_" .. ROLE_STRINGS_RAW[r[2]]
-        if GetConVar(cvar_name):GetBool() then
-            if math.random() <= GetConVar(cvar_name .. "_chance"):GetFloat() then
-                blocked_roles[r[2]] = true
-            else
-                blocked_roles[r[1]] = true
-            end
-        end
-    end
+    local roleblocks = ROLEBLOCKS.GetBlockedRoles()
 
     if choice_count == 0 then return end
 
@@ -1336,22 +1330,56 @@ function SelectRoles()
                     forcedMonsterCount = forcedMonsterCount + 1
                 end
 
-                for _, r in ipairs(paired_role_blocks) do
-                    local role_pair1 = r[1]
-                    local role_pair2 = r[2]
-                    if role == role_pair1 or role == role_pair2 then
-                        local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[role_pair1] .. "_" .. ROLE_STRINGS_RAW[role_pair2]
-                        if GetConVar(cvar_name):GetBool() then
-                            if role == role_pair1 then
-                                blocked_roles[role_pair2] = true
-                            else
-                                blocked_roles[role_pair1] = true
+                if roleblocks and #roleblocks > 0 then
+                    for _, group in ipairs(roleblocks) do
+                        for _, groupRole in ipairs(group) do
+                            if groupRole.role == ROLE_STRINGS_RAW[role] then
+                                for _, blockRole in ipairs(group) do
+                                    if blockRole.role ~= ROLE_STRINGS_RAW[role] then
+                                        local toBlock = ROLE_NONE
+                                        for r = ROLE_INNOCENT, ROLE_MAX do
+                                            if ROLE_STRINGS_RAW[r] == blockRole.role then
+                                                toBlock = r
+                                                break
+                                            end
+                                        end
+                                        blocked_roles[toBlock] = true
+                                    end
+                                end
+                                break
                             end
                         end
                     end
                 end
 
                 PrintRole(v, role)
+            end
+        end
+    end
+
+    if roleblocks and #roleblocks > 0 then
+        for _, group in ipairs(roleblocks) do
+            local groupRoles = {}
+            for _, groupRole in ipairs(group) do
+                local role = ROLE_NONE
+                for r = ROLE_INNOCENT, ROLE_MAX do
+                    if ROLE_STRINGS_RAW[r] == groupRole.role then
+                        role = r
+                        break
+                    end
+                end
+                if role ~= ROLE_NONE and not blocked_roles[role] then
+                    for _ = 1, groupRole.weight do
+                        table.insert(groupRoles, role)
+                    end
+                end
+            end
+            table.Shuffle(groupRoles)
+            local chosenRole = groupRoles[1]
+            for _, role in ipairs(groupRoles) do
+                if role ~= chosenRole then
+                    blocked_roles[role] = true
+                end
             end
         end
     end
