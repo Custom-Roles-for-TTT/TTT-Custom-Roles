@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Roles for TTT - Tutorials - Configuring Role Blocks</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#tutorials" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>Role Blocks <span id="betaswitch"></span></h1>
+        <p>Role blocks let you prevent specific roles from spawning together in the same round. Previously this functionality was only available to a few select pairs of roles using ConVars such as <code>ttt_single_paramedic_hypnotist</code>, but these have been removed as role blocks can achieve everything these ConVars could, and more.</p>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="configuration-by-ui" href="#configuration-by-ui">Configuration by UI</a></h2>
+        <p>Role blocks are configured using the UI, accessible by admins using the <code>ttt_roleblocks</code> command. Role blocks are saved in the <em>data/rolepacks.json</em> file so that they can then be backed up or copied from server-to-server just by transferring that file.</p>
+        <p><img src="img/RoleBlocks_Blank.png" alt="Blank Role Blocks Window" style="max-width: 100%;"></p>
+        <p>By default, your role blocks window should be mostly empty. (If you were previously using ConVars such as <code>ttt_single_paramedic_hypnotist</code>, you will see those options have already copied over.)</p>
+        <p>Here you will be able to create "blocking groups" which determine which roles cannot spawn together. Roles that are in the same blocking group will be unable to spawn together at the start of a round, but will still have the ability to appear later in the round through other means. (e.g. Marshal deputizing, Drunk sobering, etc.) Each role within a blocking group can have a weight assigned to it, making it more likely to block other roles in the same blocking group from spawning.</p>
+
+        <h4><a id="adding-a-new-blocking-group" href="#adding-a-new-blocking-group"><strong>Adding a new Blocking Group</strong></a></h4>
+        <p>To add a new role blocking group, start by clicking the "Add group" button. Once a group has been added, you will be presented with three buttons:</p>
+        <ul>
+            <li><strong>Add role button</strong> - Adds a new role entry to the blocking group</li>
+            <li><strong>Delete role button</strong> - Deletes the last role entry in the blocking group</li>
+            <li><strong>Delete group button</strong> - Deletes the entire blocking group</li>
+        </ul>
+        <p><img src="img/RoleBlocks_EmptyGroup.png" alt="Role Blocks Empty Group" style="max-width: 100%;"></p>
+
+        <h4><a id="configuring-a-blocking-group-role" href="#configuring-a-blocking-group-role"><strong>Configuring a Blocking Group Role</strong></a></h4>
+        <p>When a new role entry has been added to a blocking group it defaults to the "NONE" or "?" role. When this placeholder role is alone in a blocking group, it behaves the same as if the blocking group was empty and will do nothing.</p>
+        <p><img src="img/RoleBlocks_NewRole.png" alt="Role Blocks New Role" style="max-width: 100%;"></p>
+
+        <p>To change the role that the slot belongs to, click the role icon and select the new role from the dropdown.</p>
+        <p><img src="img/RoleBlocks_NewRoleSelection.png" alt="Role Blocks New Role" style="max-width: 100%;"></p>
+
+        <p>To change the weight of a role (how often this role should be selected relative to the other roles in this blocking group), change the number in the box below the role icon by typing or using the adjustment arrows.</p>
+        <p><img src="img/RoleBlocks_RoleWeights.png" alt="Role Blocks New Role" style="max-width: 100%;"></p>
+    </div>
+    <div class="footerpadding panel"></div>
+</body>
+</html>

@@ -12,6 +12,7 @@ local TableRemove = table.remove
 local TableRemoveByValue = table.RemoveByValue
 local TableHasValue = table.HasValue
 local TableShuffle = table.Shuffle
+local TableCopy = table.Copy
 
 ROLEPACKS = {}
 
@@ -423,6 +424,7 @@ function ROLEPACKS.AssignRoles(choices)
     end
 
     local blockedRoles = {}
+    local toBlockRoles = {}
     local roleblocks = ROLEBLOCKS.GetBlockedRoles()
 
     local rolePackChoices = table.Copy(choices)
@@ -431,11 +433,13 @@ function ROLEPACKS.AssignRoles(choices)
         if v.forcedRole and v.forcedRole ~= ROLE_NONE then
             TableInsert(forcedRoles, v.forcedRole)
             TableRemove(rolePackChoices, k)
-            for _, group in ipairs(roleblocks) do
-                for _, groupRole in ipairs(group) do
-                    if groupRole.role == ROLE_STRINGS_RAW[v.forcedRole] then
-                        for _, blockRole in ipairs(group) do
-                            if blockRole.role ~= ROLE_STRINGS_RAW[v.forcedRole] then
+            if roleblocks and #roleblocks > 0 then
+                for _, group in ipairs(roleblocks) do
+                    for i, groupRole in ipairs(group) do
+                        if groupRole.role == ROLE_STRINGS_RAW[v.forcedRole] then
+                            local blockGroup = TableCopy(group)
+                            TableRemove(blockGroup, i)
+                            for _, blockRole in ipairs(blockGroup) do
                                 local toBlock = ROLE_NONE
                                 for r = ROLE_INNOCENT, ROLE_MAX do
                                     if ROLE_STRINGS_RAW[r] == blockRole.role then
@@ -445,8 +449,8 @@ function ROLEPACKS.AssignRoles(choices)
                                 end
                                 blockedRoles[toBlock] = true
                             end
+                            break
                         end
-                        break
                     end
                 end
             end
@@ -455,26 +459,37 @@ function ROLEPACKS.AssignRoles(choices)
 
     if roleblocks and #roleblocks > 0 then
         for _, group in ipairs(roleblocks) do
-            local groupRoles = {}
-            for _, groupRole in ipairs(group) do
+            if #group == 2 and group[1].role == group[2].role then
                 local role = ROLE_NONE
                 for r = ROLE_INNOCENT, ROLE_MAX do
-                    if ROLE_STRINGS_RAW[r] == groupRole.role then
+                    if ROLE_STRINGS_RAW[r] == group[1].role then
                         role = r
                         break
                     end
                 end
-                if role ~= ROLE_NONE and not blockedRoles[role] then
-                    for _ = 1, groupRole.weight do
-                        table.insert(groupRoles, role)
+                toBlockRoles[role] = true
+            else
+                local groupRoles = {}
+                for _, groupRole in ipairs(group) do
+                    local role = ROLE_NONE
+                    for r = ROLE_INNOCENT, ROLE_MAX do
+                        if ROLE_STRINGS_RAW[r] == groupRole.role then
+                            role = r
+                            break
+                        end
+                    end
+                    if role ~= ROLE_NONE and not blockedRoles[role] then
+                        for _ = 1, groupRole.weight do
+                            TableInsert(groupRoles, role)
+                        end
                     end
                 end
-            end
-            table.Shuffle(groupRoles)
-            local chosenRole = groupRoles[1]
-            for _, role in ipairs(groupRoles) do
-                if role ~= chosenRole then
-                    blockedRoles[role] = true
+                TableShuffle(groupRoles)
+                local chosenRole = groupRoles[1]
+                for _, role in ipairs(groupRoles) do
+                    if role ~= chosenRole then
+                        blockedRoles[role] = true
+                    end
                 end
             end
         end
@@ -525,6 +540,10 @@ function ROLEPACKS.AssignRoles(choices)
 
             TableShuffle(possibleRoles)
             local role = TableRemove(possibleRoles)
+
+            if toBlockRoles[role] then
+                blockedRoles[role] = true
+            end
 
             local ply
             if DETECTIVE_ROLES[role] then

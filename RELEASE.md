@@ -1,5 +1,16 @@
 # Release Notes
 
+## 2.1.5
+**Released:**\
+Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
+
+### Additions
+- Added the ability for a role to block itself when configuring role blocks for role packs
+
+### Fixes
+- Fixed an issue that would cause role pack specific role blocks to not work if there was no main role blocks file
+- Fixed an issue that would sometimes copy role pack specific role blocks into the main role blocks file
+
 ## 2.1.4 (Beta)
 **Released: March 2nd, 2024**
 
