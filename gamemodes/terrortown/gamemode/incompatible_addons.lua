@@ -76,8 +76,11 @@ local incompatible = {
     -- Miscellaneous
     ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook.", alt = "3052896263" }, -- Avengers RandoMat Event by Jenssons
     ["2209392671"] = { reason = "Breaks the weapon switch HUD (and possibly others)."}, -- TTT SimpleHUD by Suphax
-    ["1256344426"] = { reason = "Breaks body searching and role-specific features" }, -- TTT Bots 2.0 by immortal man
-    ["2797209031"] = { convars = { { name = "ttt_roundend_slowmo", value = "1", reason = "Breaks many role win conditions around blocking or triggering round endings (jester, clown, etc.)", alt = "686457995" } } } -- Misc TTT tweaks and fixes by wget
+    ["1256344426"] = { reason = "Breaks body searching and role-specific features" } -- TTT Bots 2.0 by immortal man
+
+
+    -- Example convar config
+    -- ["124567890"] = { convars = { { name = "ttt_broken_convar", value = "1", reason = "Breaks all the things", alt = "987654321" } } } -- An addon by a person
 }
 
 if CR_BETA then

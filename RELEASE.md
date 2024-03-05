@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.6 (Beta)
+**Released:**
+
+### Changes
+- Changed how jester and sponge win logic is performed to fix compatibility with other addons that occur on round end
+
 ## 2.1.5
 **Released: March 4th, 2024**\
 Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
