@@ -623,14 +623,23 @@ ttt_sponge_aura_shrink                      1       // Whether the Sponge's aura
 ttt_sponge_aura_mode                        0       // The way in which the Sponge's aura redirects damage. 0 - Redirects unless all living players are inside, 1 - Redirects unless attacker and victim are both inside
 ttt_sponge_aura_float_time                  0       // The amount of time (in seconds) a player can spend outside the Sponge's aura before they are no longer considered inside
 ttt_sponge_device_for_beggar                0       // Whether the beggar should get the spongifier
+ttt_sponge_device_for_beggar_heal           0       // Whether the beggar should be fully healed when using the spongifier
 ttt_sponge_device_for_bodysnatcher          0       // Whether the bodysnatcher should get the spongifier
+ttt_sponge_device_for_bodysnatcher_heal     0       // Whether the bodysnatcher be fully healed when using the spongifier
 ttt_sponge_device_for_clown                 0       // Whether the clown should get the spongifier
+ttt_sponge_device_for_clown_heal            0       // Whether the clown should be fully healed when using the spongifier
 ttt_sponge_device_for_cupid                 0       // Whether the cupid should get the spongifier
+ttt_sponge_device_for_cupid_heal            0       // Whether the cupid should be fully healed when using the spongifier
 ttt_sponge_device_for_guesser               0       // Whether the guesser should get the spongifier
+ttt_sponge_device_for_guesser_heal          0       // Whether the guesser should be fully healed when using the spongifier
 ttt_sponge_device_for_jester                0       // Whether the jester should get the spongifier
+ttt_sponge_device_for_jester_heal           0       // Whether the jester should be fully healed when using the spongifier
 ttt_sponge_device_for_lootgoblin            0       // Whether the lootgoblin should get the spongifier
+ttt_sponge_device_for_lootgoblin_heal       0       // Whether the lootgoblin should be fully healed when using the spongifier
 ttt_sponge_device_for_shadow                0       // Whether the shadow should get the spongifier
+ttt_sponge_device_for_shadow_heal           0       // Whether the shadow should be fully healed when using the spongifier
 ttt_sponge_device_for_swapper               0       // Whether the swapper should get the spongifier
+ttt_sponge_device_for_swapper_heal          0       // Whether the swapper should be fully healed when using the spongifier
 
 // Guesser
 ttt_guesser_can_guess_detectives            0       // Whether the guesser is allowed to guess detectives

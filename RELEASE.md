@@ -3,6 +3,9 @@
 ## 2.1.6 (Beta)
 **Released:**
 
+### Additions
+- Added option to have players who use the spongifier be fully healed after becoming the sponge (disabled by default)
+
 ### Changes
 - Changed how jester and sponge win logic is performed to fix compatibility with other addons that occur on round end
 

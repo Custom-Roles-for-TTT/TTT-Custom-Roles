@@ -74,6 +74,14 @@ for _, r in ipairs(GetTeamRoles(JESTER_ROLES)) do
         cvar = convarname,
         type = ROLE_CONVAR_TYPE_BOOL
     })
+
+    convarname = "ttt_sponge_device_for_" .. rolestring .. "_heal"
+    CreateConVar(convarname, "0", FCVAR_REPLICATED, "Whether the " .. rolestring .. " should be healed when they use the spongifier", 0, 1)
+
+    table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+        cvar = convarname,
+        type = ROLE_CONVAR_TYPE_BOOL
+    })
 end
 
 -----------------
