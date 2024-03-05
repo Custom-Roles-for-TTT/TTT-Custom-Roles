@@ -10,7 +10,7 @@
 - Changed how jester and sponge win logic is performed to fix compatibility with other addons that occur on round end
 
 ### Fixes
-- Fixed player who becomes the new swapper not getting an role weapons the swapper may have (like the spongifier)
+- Fixed player who becomes the new swapper not getting any role weapons the swapper may have (like the spongifier)
 
 ## 2.1.5
 **Released: March 4th, 2024**\
