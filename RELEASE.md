@@ -12,6 +12,10 @@
 ### Fixes
 - Fixed player who becomes the new swapper not getting any role weapons the swapper may have (like the spongifier)
 
+### Developer
+- Changed `TTTBodySearchEquipment` so if an error occurs when it is called (most likely due to the equipment tracking changes) it will be called again with `0` for the `eq` parameter instead of a table
+  - This is to work around the search dialog not opening if an addon is attempting to use the `eq` parameter as a number
+
 ## 2.1.5
 **Released: March 4th, 2024**\
 Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
