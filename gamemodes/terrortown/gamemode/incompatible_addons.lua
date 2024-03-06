@@ -76,8 +76,11 @@ local incompatible = {
     -- Miscellaneous
     ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook.", alt = "3052896263" }, -- Avengers RandoMat Event by Jenssons
     ["2209392671"] = { reason = "Breaks the weapon switch HUD (and possibly others)."}, -- TTT SimpleHUD by Suphax
-    ["1256344426"] = { reason = "Breaks body searching and role-specific features" } -- TTT Bots 2.0 by immortal man
+    ["1256344426"] = { reason = "Breaks body searching and role-specific features" }, -- TTT Bots 2.0 by immortal man
 
+    -- COD Zombie Perk Bottles
+    ["842302491"] = { reason = "Incompatible with equipment item changes", alt = "2243578658"}, -- [TTT/2] Zombie Perk Bottles by Hagen
+    ["2552701051"] = { reason = "Incompatible with equipment item changes", alt = "2243578658"} -- TTT Zombie Perk Bottles Rebalanced by Emzatin.
 
     -- Example convar config
     -- ["124567890"] = { convars = { { name = "ttt_broken_convar", value = "1", reason = "Breaks all the things", alt = "987654321" } } } -- An addon by a person
