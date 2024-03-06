@@ -77,7 +77,6 @@ local incompatible = {
     ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook.", alt = "3052896263" }, -- Avengers RandoMat Event by Jenssons
     ["2209392671"] = { reason = "Breaks the weapon switch HUD (and possibly others)."}, -- TTT SimpleHUD by Suphax
     ["1256344426"] = { reason = "Breaks body searching and role-specific features" }, -- TTT Bots 2.0 by immortal man
-    ["2129490712"] = { reason = "Breaks HUD by overwriting network messaging" }, -- TTT VR - VRMod Support by Beverly
 
     -- COD Zombie Perk Bottles
     ["842302491"] = { reason = "Incompatible with equipment item changes", alt = "2243578658"}, -- [TTT/2] Zombie Perk Bottles by Hagen
