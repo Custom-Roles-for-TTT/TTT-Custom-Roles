@@ -15,6 +15,8 @@
 ### Developer
 - Changed `TTTBodySearchEquipment` so if an error occurs when it is called (most likely due to the equipment tracking changes) it will be called again with `0` for the `eq` parameter instead of a table
   - This is to work around the search dialog not opening if an addon is attempting to use the `eq` parameter as a number
+- Changed `plymeta:RemoveEquipmentItem` to only sync to the client if something was actually removed from the equipment list
+- Fixed `plymeta:AddEquipmentItem` adding duplicate entries if it was called with a value already in the equipment list
 
 ## 2.1.5
 **Released: March 4th, 2024**\
