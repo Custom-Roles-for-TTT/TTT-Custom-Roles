@@ -452,6 +452,7 @@ ttt_paladin_credits_starting                1       // The number of credits a p
 ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
 ttt_tracker_credits_starting                1       // The number of credits a tracker should start with
+ttt_tracker_radar_loadout                   0       // Whether the Tracker should get the tracking radar automatically for free. Server or round must be restarted for changes to take effect
 
 // Medium
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors

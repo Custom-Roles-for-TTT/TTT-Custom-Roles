@@ -6,6 +6,8 @@ end
 local hook = hook
 local table = table
 
+CreateConVar("ttt_tracker_radar_loadout", "0", FCVAR_REPLICATED)
+
 EQUIP_TRK_TRACKRADAR = EQUIP_TRK_TRACKRADAR or GenerateNewEquipmentID()
 local function InitializeEquipment()
     if DefaultEquipment then
@@ -19,10 +21,18 @@ local function InitializeEquipment()
             EquipmentItems[ROLE_TRACKER] = {}
         end
 
-        -- If we haven't already registered this item, add it to the list
-        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_TRACKER], "id", EQUIP_TRK_TRACKRADAR) then
+        -- If we haven't already registered this item, add it to the list. Otherwise, update if it should be in the Tracker's loadout or not
+        if table.HasItemWithPropertyValue(EquipmentItems[ROLE_TRACKER], "id", EQUIP_TRK_TRACKRADAR) then
+            for _, i in ipairs(EquipmentItems[ROLE_TRACKER]) do
+                if i.id == EQUIP_TRK_TRACKRADAR then
+                    i.loadout = cvars.Bool("ttt_tracker_radar_loadout", false)
+                    break
+                end
+            end
+        else
             table.insert(EquipmentItems[ROLE_TRACKER], {
                 id = EQUIP_TRK_TRACKRADAR,
+                loadout = cvars.Bool("ttt_tracker_radar_loadout", false),
                 type = "item_active",
                 material = "vgui/ttt/icon_track_radar",
                 name = "item_track_radar",

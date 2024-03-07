@@ -1,5 +1,17 @@
 # Release Notes
 
+## 2.1.6
+**Released:**
+
+### Additions
+- Added the option for the Tracker to have the tracking radar as part of their loadout (disabled by default)
+
+### Changes
+- Changed player color generation for the Medium and the Tracker to use the golden ratio so that colors are not too similar
+
+### Fixes
+- Fixed `ttt_spectators_see_roles` not working sometimes when a hook overwrote the target ID and/or scoreboard row information
+
 ## 2.1.5
 **Released: March 4th, 2024**\
 Includes beta updates [2.1.2](#212-beta) to [2.1.4](#214-beta).
