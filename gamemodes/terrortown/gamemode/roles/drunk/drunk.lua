@@ -237,14 +237,14 @@ function plymeta:DrunkJoinLosingTeam()
                     -- If there should be more jesters/independents then fill as many empty slots as required with jesters/independents
                     if rolePackJestersIndependents < jestersIndependents and remainingSlots > 0 then
                         local requiredExtraJestersIndependents = math.min(jestersIndependents - rolePackJestersIndependents, remainingSlots)
-                        rolePackJestersIndependents = rolePackJestersIndependents + requiredExtraJestersIndependents
+                        -- We don't actually need to know how many jesters/independents there are but we do need to know if any slots have been taken up
                         remainingSlots = remainingSlots - requiredExtraJestersIndependents
                     end
 
                     -- If there should be more monsters then fill as many empty slots as required with monsters
                     if rolePackMonsters < monsters and remainingSlots > 0 then
                         local requiredExtraMonsters = math.min(monsters - rolePackMonsters, remainingSlots)
-                        rolePackMonsters = rolePackMonsters + requiredExtraMonsters
+                        -- We don't actually need to know how many monsters there are but we do need to know if any slots have been taken up
                         remainingSlots = remainingSlots - requiredExtraMonsters
                     end
 
