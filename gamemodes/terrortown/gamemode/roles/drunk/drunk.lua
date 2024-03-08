@@ -217,10 +217,11 @@ function plymeta:DrunkJoinLosingTeam()
                     end
 
                     -- From the summed weights, add the percentage change that this slot will be filled by a role of each team to the totals
-                    rolePackInnocents = rolePackInnocents + (slotInnocents / (slotInnocents + slotTraitors + slotMonsters + slotJestersIndependents))
-                    rolePackTraitors = rolePackTraitors + (slotTraitors / (slotInnocents + slotTraitors + slotMonsters + slotJestersIndependents))
-                    rolePackMonsters = rolePackMonsters + (slotMonsters / (slotInnocents + slotTraitors + slotMonsters + slotJestersIndependents))
-                    rolePackJestersIndependents = rolePackJestersIndependents + (slotJestersIndependents / (slotInnocents + slotTraitors + slotMonsters + slotJestersIndependents))
+                    local totalSlotWeight = slotInnocents + slotTraitors + slotMonsters + slotJestersIndependents
+                    rolePackInnocents = rolePackInnocents + (slotInnocents / totalSlotWeight)
+                    rolePackTraitors = rolePackTraitors + (slotTraitors / totalSlotWeight)
+                    rolePackMonsters = rolePackMonsters + (slotMonsters / totalSlotWeight)
+                    rolePackJestersIndependents = rolePackJestersIndependents + (slotJestersIndependents / totalSlotWeight)
                 end
 
                 -- If we didn't fill enough slots for each player then we need to calculate what teams would fill the remaining slots using the same order used in regular role spawning (traitor>jester/independent>monster>innocent)
