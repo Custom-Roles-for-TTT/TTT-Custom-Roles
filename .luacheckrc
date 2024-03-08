@@ -1151,6 +1151,7 @@ globals = {
     "Randomat",
 
     -- Scripts
+    "EQUIP_BLUE_BULL",
     "EQUIP_DOUBLETAP",
     "EQUIP_JUGGERNOG",
     "EQUIP_PHD",
