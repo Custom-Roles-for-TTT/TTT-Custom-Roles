@@ -11,6 +11,7 @@
 
 ### Fixes
 - Fixed `ttt_spectators_see_roles` not working sometimes when a hook overwrote the target ID and/or scoreboard row information
+- Fixed `ttt_drunk_join_losing_team` not taking role packs into account when calculating the losing team
 
 ## 2.1.5
 **Released: March 4th, 2024**\
