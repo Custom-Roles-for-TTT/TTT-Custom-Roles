@@ -80,6 +80,7 @@ local incompatible = {
 
     -- COD Zombie Perk Bottles
     ["842302491"] = { reason = "Incompatible with equipment item changes", alt = "2243578658"}, -- [TTT/2] Zombie Perk Bottles by Hagen
+    ["653258161"] = { reason = "Incompatible with equipment item changes"}, -- [TTT/2] Blue Bull by Hagen
     ["2552701051"] = { reason = "Incompatible with equipment item changes", alt = "2243578658"} -- TTT Zombie Perk Bottles Rebalanced by Emzatin.
 
     -- Example convar config
