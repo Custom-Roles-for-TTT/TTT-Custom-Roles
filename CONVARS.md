@@ -1022,7 +1022,7 @@ ttt_beggar_max_health                       100     // The maximum amount of hea
 ttt_bodysnatcher_max_health                 100     // The maximum amount of health the bodysnatcher can have
 ttt_lootgoblin_max_health                   50      // The maximum amount of health the loot goblin can have
 ttt_cupid_max_health                        100     // The maximum amount of health the cupid can have
-ttt_sponge_max__health                      150     // The maximum amount of health the sponge can have
+ttt_sponge_max_health                       150     // The maximum amount of health the sponge can have
 ttt_drunk_max_health                        100     // The maximum amount of health the drunk can have
 ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have
