@@ -28,6 +28,10 @@ local function ApplyFixes()
     hook.Add("TTTBodySearchEquipment", "StaminupCorpseIcon", function(search, eq)
         search.eq_staminup = table.HasValue(eq, EQUIP_STAMINUP)
     end)
+
+    hook.Add("TTTBodySearchEquipment", "BlueBullCorpseIcon", function(search, eq)
+        search.eq_bluebull = table.HasValue(eq, EQUIP_BLUE_BULL)
+    end )
 end
 
 hook.Add("TTTPrepareRound", "PerkFixHooks_Prepare", ApplyFixes)

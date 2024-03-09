@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 local hook = hook
 local pairs = pairs
-local timer = timer
 
 local GetAllPlayers = player.GetAll
 
@@ -33,7 +32,10 @@ local function JesterKilledNotification(attacker, victim)
         end)
 end
 
+local jesterWinTime = nil
 hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, attacker)
+    if jesterWinTime then return end
+
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
 
@@ -49,11 +51,20 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
         -- Don't end the round if the jester was killed by a traitor
         -- and the functionality that blocks Jester wins from traitor deaths is enabled
         if jester_win_by_traitors:GetBool() or not attacker:IsTraitorTeam() then
-            -- Stop the win checks so someone else doesn't steal the jester's win
-            StopWinChecks()
             -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
-            timer.Simple(1, function() EndRound(WIN_JESTER) end)
+            jesterWinTime = CurTime() + 1
         end
+    end
+end)
+
+hook.Add("TTTCheckForWin", "Jester_TTTCheckForWin", function()
+    if jesterWinTime then
+        if CurTime() > jesterWinTime then
+            jesterWinTime = nil
+            return WIN_JESTER
+        end
+
+        return WIN_NONE
     end
 end)
 
@@ -66,6 +77,8 @@ hook.Add("TTTPrintResultMessage", "Jester_TTTPrintResultMessage", function(type)
 end)
 
 hook.Add("TTTPrepareRound", "Jester_PrepareRound", function()
+    jesterWinTime = nil
+
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWString("JesterKiller", "")
     end
