@@ -452,6 +452,7 @@ ttt_paladin_credits_starting                1       // The number of credits a p
 ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
 ttt_tracker_credits_starting                1       // The number of credits a tracker should start with
+ttt_tracker_radar_loadout                   0       // Whether the Tracker should get the tracking radar automatically for free. Server or round must be restarted for changes to take effect
 
 // Medium
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
@@ -623,14 +624,23 @@ ttt_sponge_aura_shrink                      1       // Whether the Sponge's aura
 ttt_sponge_aura_mode                        0       // The way in which the Sponge's aura redirects damage. 0 - Redirects unless all living players are inside, 1 - Redirects unless attacker and victim are both inside
 ttt_sponge_aura_float_time                  0       // The amount of time (in seconds) a player can spend outside the Sponge's aura before they are no longer considered inside
 ttt_sponge_device_for_beggar                0       // Whether the beggar should get the spongifier
+ttt_sponge_device_for_beggar_heal           0       // Whether the beggar should be fully healed when using the spongifier
 ttt_sponge_device_for_bodysnatcher          0       // Whether the bodysnatcher should get the spongifier
+ttt_sponge_device_for_bodysnatcher_heal     0       // Whether the bodysnatcher be fully healed when using the spongifier
 ttt_sponge_device_for_clown                 0       // Whether the clown should get the spongifier
+ttt_sponge_device_for_clown_heal            0       // Whether the clown should be fully healed when using the spongifier
 ttt_sponge_device_for_cupid                 0       // Whether the cupid should get the spongifier
+ttt_sponge_device_for_cupid_heal            0       // Whether the cupid should be fully healed when using the spongifier
 ttt_sponge_device_for_guesser               0       // Whether the guesser should get the spongifier
+ttt_sponge_device_for_guesser_heal          0       // Whether the guesser should be fully healed when using the spongifier
 ttt_sponge_device_for_jester                0       // Whether the jester should get the spongifier
+ttt_sponge_device_for_jester_heal           0       // Whether the jester should be fully healed when using the spongifier
 ttt_sponge_device_for_lootgoblin            0       // Whether the lootgoblin should get the spongifier
+ttt_sponge_device_for_lootgoblin_heal       0       // Whether the lootgoblin should be fully healed when using the spongifier
 ttt_sponge_device_for_shadow                0       // Whether the shadow should get the spongifier
+ttt_sponge_device_for_shadow_heal           0       // Whether the shadow should be fully healed when using the spongifier
 ttt_sponge_device_for_swapper               0       // Whether the swapper should get the spongifier
+ttt_sponge_device_for_swapper_heal          0       // Whether the swapper should be fully healed when using the spongifier
 
 // Guesser
 ttt_guesser_can_guess_detectives            0       // Whether the guesser is allowed to guess detectives
@@ -1013,7 +1023,7 @@ ttt_beggar_max_health                       100     // The maximum amount of hea
 ttt_bodysnatcher_max_health                 100     // The maximum amount of health the bodysnatcher can have
 ttt_lootgoblin_max_health                   50      // The maximum amount of health the loot goblin can have
 ttt_cupid_max_health                        100     // The maximum amount of health the cupid can have
-ttt_sponge_max__health                      150     // The maximum amount of health the sponge can have
+ttt_sponge_max_health                       150     // The maximum amount of health the sponge can have
 ttt_drunk_max_health                        100     // The maximum amount of health the drunk can have
 ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have

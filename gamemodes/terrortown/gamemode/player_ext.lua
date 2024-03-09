@@ -108,7 +108,7 @@ end
 --- Equipment items
 function plymeta:AddEquipmentItem(id)
     id = tonumber(id)
-    if id then
+    if id and not table.HasValue(self.equipment_items, id) then
         table.insert(self.equipment_items, id)
         self:SendEquipment()
     end
@@ -116,8 +116,7 @@ end
 
 function plymeta:RemoveEquipmentItem(id)
     id = tonumber(id)
-    if id then
-        table.RemoveByValue(self.equipment_items, id)
+    if id and table.RemoveByValue(self.equipment_items, id) then
         -- Reset the indexes of the table
         self.equipment_items = table.ClearKeys(self.equipment_items)
         self:SendEquipment()

@@ -221,10 +221,19 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
                             GivePlayerWeaponAndAmmo(victim, w)
                         end
                     end
+
+                    -- Give the attacker all of the victim's role weapons
+                    for _, w in ipairs(victim_weapons) do
+                        if w.category == WEAPON_CATEGORY_ROLE then
+                            GivePlayerWeaponAndAmmo(attacker, w)
+                        end
+                    end
                 end
 
                 -- Give the victim all their weapons back
                 for _, w in ipairs(victim_weapons) do
+                    -- Don't give the victim back their old role weapons
+                    if w.category == WEAPON_CATEGORY_ROLE then continue end
                     GivePlayerWeaponAndAmmo(victim, w)
                 end
             end

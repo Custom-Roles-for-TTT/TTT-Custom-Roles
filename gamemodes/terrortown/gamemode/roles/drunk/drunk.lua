@@ -166,6 +166,103 @@ function plymeta:DrunkJoinLosingTeam()
     -- Find the average percentage of players that are traitors in each round ignoring jesters, independents, and monsters
     local traitorPct = traitors / (players - jestersIndependents - monsters)
 
+    -- If a role pack is enabled calculate the expected ratio of innocents to traitors
+    local rolePack = GetConVar("ttt_role_pack"):GetString()
+    if #rolePack > 0 then
+        local json = file.Read("rolepacks/" .. rolePack .. "/roles.json", "DATA")
+        if json then
+            local rolePackTable = util.JSONToTable(json)
+            if rolePackTable then
+                local filledSlotCount = 0
+
+                local rolePackInnocents = 0
+                local rolePackTraitors = 0
+                local rolePackMonsters = 0
+                local rolePackJestersIndependents = 0
+
+                for _, slot in ipairs(rolePackTable.slots) do
+                    -- If the slot is empty then we dont need to do any calculations
+                    if #slot == 0 then continue end
+
+                    -- If we have already filled enough slots for each player then don't include later slots in the calculation
+                    if filledSlotCount >= players then
+                        break
+                    end
+                    filledSlotCount = filledSlotCount + 1
+
+                    -- Calculate the number of roles and their weights within this slot that belong to each team
+                    local slotInnocents = 0
+                    local slotTraitors = 0
+                    local slotMonsters = 0
+                    local slotJestersIndependents = 0
+                    for _, roleslot in ipairs(slot) do
+                        local role = ROLE_NONE
+                        for r = ROLE_INNOCENT, ROLE_MAX do
+                            if ROLE_STRINGS_RAW[r] == roleslot.role then
+                                role = r
+                                break
+                            end
+                        end
+                        if role > ROLE_NONE then
+                            if INNOCENT_ROLES[role] then
+                                slotInnocents = slotInnocents + roleslot.weight
+                            elseif TRAITOR_ROLES[role] then
+                                slotTraitors = slotTraitors + roleslot.weight
+                            elseif MONSTER_ROLES[role] then
+                                slotMonsters = slotMonsters + roleslot.weight
+                            else
+                                slotJestersIndependents = slotJestersIndependents + roleslot.weight
+                            end
+                        end
+                    end
+
+                    -- From the summed weights, add the percentage change that this slot will be filled by a role of each team to the totals
+                    local totalSlotWeight = slotInnocents + slotTraitors + slotMonsters + slotJestersIndependents
+                    rolePackInnocents = rolePackInnocents + (slotInnocents / totalSlotWeight)
+                    rolePackTraitors = rolePackTraitors + (slotTraitors / totalSlotWeight)
+                    rolePackMonsters = rolePackMonsters + (slotMonsters / totalSlotWeight)
+                    rolePackJestersIndependents = rolePackJestersIndependents + (slotJestersIndependents / totalSlotWeight)
+                end
+
+                -- If we didn't fill enough slots for each player then we need to calculate what teams would fill the remaining slots using the same order used in regular role spawning (traitor>jester/independent>monster>innocent)
+                if filledSlotCount < players then
+                    local remainingSlots = players - filledSlotCount
+
+                    -- If there should be more traitors then fill as many empty slots as required with traitors
+                    if rolePackTraitors < traitors and remainingSlots > 0 then
+                        local requiredExtraTraitors = math.min(traitors - rolePackTraitors, remainingSlots)
+                        rolePackTraitors = rolePackTraitors + requiredExtraTraitors
+                        remainingSlots = remainingSlots - requiredExtraTraitors
+                    end
+
+                    -- If there should be more jesters/independents then fill as many empty slots as required with jesters/independents
+                    if rolePackJestersIndependents < jestersIndependents and remainingSlots > 0 then
+                        local requiredExtraJestersIndependents = math.min(jestersIndependents - rolePackJestersIndependents, remainingSlots)
+                        -- We don't actually need to know how many jesters/independents there are but we do need to know if any slots have been taken up
+                        remainingSlots = remainingSlots - requiredExtraJestersIndependents
+                    end
+
+                    -- If there should be more monsters then fill as many empty slots as required with monsters
+                    if rolePackMonsters < monsters and remainingSlots > 0 then
+                        local requiredExtraMonsters = math.min(monsters - rolePackMonsters, remainingSlots)
+                        -- We don't actually need to know how many monsters there are but we do need to know if any slots have been taken up
+                        remainingSlots = remainingSlots - requiredExtraMonsters
+                    end
+
+                    -- Any remaining slots would be innocents
+                    rolePackInnocents = rolePackInnocents + remainingSlots
+                end
+
+                -- Find the average percentage of players that are traitors in each round ignoring jesters, independents, and monsters
+                traitorPct = rolePackTraitors / (rolePackInnocents + rolePackTraitors)
+            else
+                ErrorNoHalt("Table decoding failed!\n")
+            end
+        else
+            ErrorNoHalt("No role pack named '" .. rolePack .. "' found!\n")
+        end
+    end
+
     -- Find whether the drunk joining the innocent, traitor, or another team will bring the ratio of traitor health to traitor and innocent health closest to the value calculated above
     local drunkHealth = self:Health()
 
