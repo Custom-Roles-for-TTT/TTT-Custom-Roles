@@ -1,16 +1,20 @@
 # Release Notes
 
 ## 2.1.6 (Beta)
-**Released:**
+**Released: March 9th, 2024**
 
 ### Additions
 - Added option to have players who use the spongifier be fully healed after becoming the sponge (disabled by default)
+- Added the option for the Tracker to have the tracking radar as part of their loadout (disabled by default)
 
 ### Changes
 - Changed how jester and sponge win logic is performed to fix compatibility with other addons that occur on round end
+- Changed player color generation for the Medium and the Tracker to use the golden ratio so that colors are not too similar
 
 ### Fixes
 - Fixed player who becomes the new swapper not getting any role weapons the swapper may have (like the spongifier)
+- Fixed `ttt_spectators_see_roles` not working sometimes when a hook overwrote the target ID and/or scoreboard row information
+- Fixed `ttt_drunk_join_losing_team` not taking role packs into account when calculating the losing team
 
 ### Developer
 - Changed `TTTBodySearchEquipment` so if an error occurs when it is called (most likely due to the equipment tracking changes) it will be called again with `0` for the `eq` parameter instead of a table

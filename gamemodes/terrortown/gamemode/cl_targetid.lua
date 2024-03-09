@@ -271,10 +271,12 @@ function GM:PostDrawTranslucentRenderables()
                 end
             end
 
-            local newRole, newNoZ, newColorRole = CallHook("TTTTargetIDPlayerRoleIcon", nil, v, client, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
-            if newRole or (type(newRole) == "boolean" and not newRole) then role = newRole end
-            if type(newNoZ) == "boolean" then noz = newNoZ end
-            if newColorRole then color_role = newColorRole end
+            if not spectatorOverride then
+                local newRole, newNoZ, newColorRole = CallHook("TTTTargetIDPlayerRoleIcon", nil, v, client, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
+                if newRole or (type(newRole) == "boolean" and not newRole) then role = newRole end
+                if type(newNoZ) == "boolean" then noz = newNoZ end
+                if newColorRole then color_role = newColorRole end
+            end
 
             local icon, iconNoZ, iconColor, iconType = CallHook("TTTTargetIDPlayerTargetIcon", nil, v, client, showJester)
             local offset = role and icon
@@ -442,6 +444,8 @@ function GM:HUDDrawTargetID()
         hide_roles = GetConVar("ttt_hide_role"):GetBool()
     end
 
+    local spectatorOverride = client:GetRole() == ROLE_NONE and client:IsSpec() and GetConVar("ttt_spectators_see_roles"):GetBool()
+
     if ent:IsPlayer() and ent:Alive() then
         -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
         local hidden = ent:GetNWBool("disguised", false) or (ent.IsFakeDead and ent:IsFakeDead()) or ent:GetNWBool("PD_Disguised", false)
@@ -466,8 +470,6 @@ function GM:HUDDrawTargetID()
         if minimal then
             _, color = util.HealthToString(ent:Health(), ent:GetMaxHealth())
         end
-
-        local spectatorOverride = client:GetRole() == ROLE_NONE and client:IsSpec() and GetConVar("ttt_spectators_see_roles"):GetBool()
 
         if (not hide_roles or spectatorOverride) and GetRoundState() == ROUND_ACTIVE then
             if spectatorOverride then
@@ -555,8 +557,12 @@ function GM:HUDDrawTargetID()
 
     local ring_visible = target_role or target_traitor or target_unknown_traitor or target_special_traitor or target_unknown_special_traitor or target_detective or target_unknown_detective or target_special_detective or target_glitch or target_jester or target_monster
 
-    local new_visible, color_override = CallHook("TTTTargetIDPlayerRing", nil, ent, client, ring_visible)
-    if type(new_visible) == "boolean" then ring_visible = new_visible end
+    local color_override
+    if not spectatorOverride then
+        local new_visible, new_color_override = CallHook("TTTTargetIDPlayerRing", nil, ent, client, ring_visible)
+        if type(new_visible) == "boolean" then ring_visible = new_visible end
+        if new_color_override then color_override = new_color_override end
+    end
 
     if ring_visible then
         surface.SetTexture(ring_tex)
@@ -761,10 +767,16 @@ function GM:HUDDrawTargetID()
         col = COLOR_YELLOW
     end
 
-    local new_text, new_color, secondary_text, secondary_col = CallHook("TTTTargetIDPlayerText", nil, ent, client, text, col)
-    -- If either text return value is a boolean and it's "false" then save that so we know to skip rendering the text
-    if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
-    if new_color then col = new_color end
+    local secondary_text
+    local secondary_col
+    if not spectatorOverride then
+        local new_text, new_color, new_secondary_text, new_secondary_col = CallHook("TTTTargetIDPlayerText", nil, ent, client, text, col)
+        -- If either text return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_color then col = new_color end
+        if new_secondary_text  or (type(new_secondary_text) == "boolean" and not new_secondary_text) then secondary_text = new_secondary_text end
+        if new_secondary_col then secondary_col = new_secondary_col end
+    end
 
     if text then
         w, h = surface.GetTextSize(text)
