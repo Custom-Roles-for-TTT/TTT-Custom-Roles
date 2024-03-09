@@ -1156,6 +1156,7 @@ globals = {
     "EQUIP_DOUBLETAP",
     "EQUIP_JUGGERNOG",
     "EQUIP_PHD",
+    "EQUIP_SM",
     "EQUIP_SPEEDCOLA",
     "EQUIP_STAMINUP",
     "EQUIP_TLH"

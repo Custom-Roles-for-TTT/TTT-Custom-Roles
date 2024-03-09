@@ -52,6 +52,22 @@ local function ApplyFixes()
     AddHook("TTTBodySearchEquipment", "ASCCorpseIcon", function(search, eq)
         search.eq_asc = TableHasValue(eq, EQUIP_ASC)
     end)
+
+    -- Slowmotion by Hagen (https://steamcommunity.com/sharedfiles/filedetails/?id=611911370)
+    AddHook("TTTBodySearchEquipment", "SMCorpseIcon", function(search, eq)
+        search.eq_sm = TableHasValue(eq, EQUIP_SM)
+    end)
+
+    AddHook("TTTBodySearchPopulate", "SMCorpseIcon", function(search, raw)
+        if not raw.eq_sm then return end
+
+        local highest = 0
+        for _, v in pairs(search) do
+            highest = math.max(highest, v.p)
+        end
+
+        search.eq_sm = {img = "vgui/ttt/slowmotion_icon", text = "They had a Slowmotion to manipulate the time.", p = highest + 1}
+    end)
 end
 
 AddHook("TTTPrepareRound", "EquipFixHooks_Prepare", ApplyFixes)
