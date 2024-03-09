@@ -631,7 +631,12 @@ local function ReceiveRagdollSearch()
     local words = net.ReadString()
     search.words = (#words > 0) and words or nil
 
-    hook.Call("TTTBodySearchEquipment", nil, search, eq)
+    xpcall(function()
+        hook.Call("TTTBodySearchEquipment", nil, search, eq)
+    end, function(err)
+        ErrorNoHaltWithStack("WARNING: Addon is using equipment code incompatible with CR4TTT. Contact CR4TTT authors with this error please.")
+        hook.Call("TTTBodySearchEquipment", nil, search, 0)
+    end)
 
     if search.show then
         ShowSearchScreen(search)

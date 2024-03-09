@@ -38,20 +38,27 @@ if SERVER then
         local owner = self:GetOwner()
         hook.Call("TTTPlayerRoleChangedByItem", nil, owner, owner, self)
 
+        local originalRole = owner:GetRole()
         owner:SetRole(ROLE_SPONGE)
         owner:StripRoleWeapons()
         owner:QueueMessage(MSG_PRINTCENTER, "You have converted yourself to be " .. ROLE_STRINGS_EXT[ROLE_SPONGE])
 
         local maxhealth = owner:GetMaxHealth()
         local health = owner:Health()
-        local healthscale = health / maxhealth
         SetRoleMaxHealth(owner)
 
-        -- Scale the player's health to match their new max
-        -- If they were at 100/100 before, they'll be at 150/150 now
         local newmaxhealth = owner:GetMaxHealth()
-        local newhealth = math.max(math.min(newmaxhealth, math.Round(newmaxhealth * healthscale, 0)), 1)
-        owner:SetHealth(newhealth)
+        local rolestring = ROLE_STRINGS_RAW[originalRole]
+        local heal = cvars.Bool("ttt_sponge_device_for_" .. rolestring .. "_heal", false)
+        if heal then
+            owner:SetHealth(newmaxhealth)
+        else
+            -- Scale the player's health to match their new max
+            -- If they were at 100/100 before, they'll be at 150/150 now
+            local healthscale = health / maxhealth
+            local newhealth = math.max(math.min(newmaxhealth, math.Round(newmaxhealth * healthscale, 0)), 1)
+            owner:SetHealth(newhealth)
+        end
 
         SendFullStateUpdate()
     end
