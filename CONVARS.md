@@ -23,6 +23,7 @@
    1. [Roles](#role-pack-roles)
        1. [Adding a new Role Slot](#adding-a-new-role-slot)
        1. [Configuring a Role Slot Role](#configuring-a-role-slot-role)
+   1. [Role Pack Role Blocks](#role-pack-role-blocks)
    1. [Weapons](#role-pack-weapons)
    1. [ConVars](#role-pack-convars)
 1. [Role Blocks](#Role-Blocks)
@@ -1262,6 +1263,14 @@ To change the role that the slot belongs to, click the role icon and select the 
 To change the weight of a role (how often this role should be selected relative to the other roles in this slot), change the number in the box below the role icon by typing or using the adjustment arrows.
 
 ![Role Packs New Role](docs/tutorials/img/RolePacks_RoleWeights.png)
+
+### Role Pack Role Blocks
+This tab is nearly identical to the Role Blocks UI described in the [Role Blocks](#role-blocks) tutorial. The only differences are the "Use Default Role Blocks" checkbox and the ability for a role to block itself.
+
+Checking the "Use Default Role Blocks" box will cause role blocks configured through the Role Blocks UI described in the [Role Blocks](#role-blocks) tutorial to also take effect on top of any that are added to this role pack. Leaving this box unchecked means only role blocks configured for this role pack will work.
+
+When configuring role blocks for a role pack, it is also possible for a role to be able to block itself. This can be useful if you would like the same role to have the possibility to spawn in multiple slots without the possibility of having duplicates of that specific role. To do this, create a blocking group with only two copies of the same role. Having any other roles in the same blocking group will not work. In the example below it would not be possible for more than one Mercenary to spawn, even if there were multiple slots in which the Mercenary could spawn and "Allow Duplicate Roles" was enabled on the "Roles" tab.
+![Role Packs Role Blocking Itself](docs/tutorials/img/RolePacks_RoleBlockingSelf.png)
 
 ### Role Pack Weapons
 
