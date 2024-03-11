@@ -640,9 +640,10 @@ local function ReceiveRagdollSearch()
             -- Most of the time the hook fails because someone is using util.BitSet(eq, EQUIP_SOMETHING)
             -- Luckily it has the same signature as table.HasValue, so lets temporarily override util.BitSet to call table.HasValue instead
             util.BitSet = table.HasValue
-            hook.Call("TTTBodySearchEquipment", nil, search, 0)
+            hook.Call("TTTBodySearchEquipment", nil, search, eq)
         end, function()
             ErrorNoHalt("WARNING: util.BitSet override fallback failed")
+            hook.Call("TTTBodySearchEquipment", nil, search, 0)
         end)
         -- Once we're done, be sure to remove the override
         util.BitSet = origBitSet

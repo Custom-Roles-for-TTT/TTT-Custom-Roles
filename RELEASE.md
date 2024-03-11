@@ -17,7 +17,7 @@
 - Fixed `ttt_drunk_join_losing_team` not taking role packs into account when calculating the losing team
 
 ### Developer
-- Changed `TTTBodySearchEquipment` so if an error occurs when it is called (most likely due to the equipment tracking changes) it will be called again with `0` for the `eq` parameter instead of a table
+- Changed `TTTBodySearchEquipment` so if an error occurs when it is called (most likely due to the equipment tracking changes) it will be called again with a method override and if it errors a third time it will be called again with `0` for the `eq` parameter instead of a table
   - This is to work around the search dialog not opening if an addon is attempting to use the `eq` parameter as a number
 - Changed `plymeta:RemoveEquipmentItem` to only sync to the client if something was actually removed from the equipment list
 - Fixed `plymeta:AddEquipmentItem` adding duplicate entries if it was called with a value already in the equipment list
