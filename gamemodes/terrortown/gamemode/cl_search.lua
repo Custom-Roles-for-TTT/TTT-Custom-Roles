@@ -563,6 +563,7 @@ local function bitsRequired(num)
     return bits
 end
 
+local origBitSet = util.BitSet
 local search = {}
 local function ReceiveRagdollSearch()
     if not client then
@@ -633,9 +634,23 @@ local function ReceiveRagdollSearch()
 
     xpcall(function()
         hook.Call("TTTBodySearchEquipment", nil, search, eq)
-    end, function(err)
-        ErrorNoHaltWithStack("WARNING: Addon is using equipment code incompatible with CR4TTT. Contact CR4TTT authors with this error please.")
-        hook.Call("TTTBodySearchEquipment", nil, search, 0)
+    end, function()
+        ErrorNoHaltWithStack("WARNING: Addon is using equipment code incompatible with CR4TTT. Using util.BitSet override fallback. Contact CR4TTT authors with this error please.")
+        xpcall(function()
+            -- Most of the time the hook fails because someone is using util.BitSet(eq, EQUIP_SOMETHING)
+            -- Luckily it has the same signature as table.HasValue, so lets temporarily override util.BitSet to call table.HasValue instead
+            util.BitSet = table.HasValue
+            hook.Call("TTTBodySearchEquipment", nil, search, eq)
+        end, function()
+            -- Unset the override before we call again because otherwise we'll potentially cause another error trying to use table.HasValue on a number
+            util.BitSet = origBitSet
+
+            ErrorNoHalt("WARNING: util.BitSet override fallback failed. Calling hook again with equipment value of 0.")
+            hook.Call("TTTBodySearchEquipment", nil, search, 0)
+        end)
+
+        -- Once we're done, be sure to remove the override if it hasn't been done already
+        util.BitSet = origBitSet
     end)
 
     if search.show then

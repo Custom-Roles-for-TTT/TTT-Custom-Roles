@@ -1,5 +1,15 @@
 # Release Notes
 
+## 2.1.7
+**Released: March 11th, 2024**\
+Includes beta update [2.1.6](#216-beta).
+
+### Developer
+- Changed `TTTBodySearchEquipment` so it now has multiple levels of fallback
+  - Call with the equipment table
+  - Temporarily override `util.BitSet` to be `table.HasValue` and call with the equipment table again
+  - Call with a `0` instead of the equipment table
+
 ## 2.1.6 (Beta)
 **Released: March 9th, 2024**
 

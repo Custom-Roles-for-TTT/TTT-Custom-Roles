@@ -1,3 +1,5 @@
+-- Put this script in the "garrysmod/lua/autorun" directory of your GMod install.
+
 if engine.ActiveGamemode() ~= "terrortown" then return end
 
 local function ShootBullet(weap, dmg, onPlayerShot)
