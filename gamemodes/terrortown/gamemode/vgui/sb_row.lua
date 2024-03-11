@@ -148,11 +148,15 @@ local function GetGlitchedRole(p, glitchMode)
     return ROLE_NONE, ROLE_TRAITOR
 end
 
+local function ShouldSpectatorSeeRoles(cli)
+    return cli:GetRole() == ROLE_NONE and cli:IsSpec() and GetConVar("ttt_spectators_see_roles"):GetBool()
+end
+
 function GM:TTTScoreboardRowColorForPlayer(ply)
     if not IsValid(ply) or GetRoundState() == ROUND_WAIT or GetRoundState() == ROUND_PREP then return defaultcolor end
 
     local client = LocalPlayer()
-    if client:GetRole() == ROLE_NONE and client:IsSpec() and GetConVar("ttt_spectators_see_roles"):GetBool() then
+    if ShouldSpectatorSeeRoles(client) then
         return ply:GetRole()
     end
 
@@ -237,7 +241,7 @@ function PANEL:Paint(width, height)
     local client = LocalPlayer()
     local roleStr = ""
     local role = c
-    if c ~= defaultcolor then
+    if c ~= defaultcolor and not ShouldSpectatorSeeRoles(client) then
         local color = nil
 
         if client:IsTraitorTeam() then
@@ -290,10 +294,21 @@ function PANEL:Paint(width, height)
         end
     end
 
-    -- Allow external addons (like new roles) to manipulate how a player appears on the scoreboard
-    local new_color, new_role_str, flash_role = CallHook("TTTScoreboardPlayerRole", nil, ply, client, c, roleStr)
-    if new_color then c = new_color end
-    if new_role_str then roleStr = new_role_str end
+    local flash_role
+    if ShouldSpectatorSeeRoles(client) then
+        if c == nil or ScoreGroup(ply) == GROUP_SPEC then
+            c = defaultcolor
+        elseif c ~= defaultcolor then
+            roleStr = ROLE_STRINGS_SHORT[c]
+            c = ROLE_COLORS_SCOREBOARD[c]
+        end
+    else
+        -- Allow external addons (like new roles) to manipulate how a player appears on the scoreboard
+        local new_color, new_role_str, new_flash_role = CallHook("TTTScoreboardPlayerRole", nil, ply, client, c, roleStr)
+        if new_color then c = new_color end
+        if new_role_str then roleStr = new_role_str end
+        if new_flash_role then flash_role = new_flash_role end
+    end
 
     if c then
         surface.SetDrawColor(c)

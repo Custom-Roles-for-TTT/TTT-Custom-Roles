@@ -23,8 +23,12 @@
    1. [Roles](#role-pack-roles)
        1. [Adding a new Role Slot](#adding-a-new-role-slot)
        1. [Configuring a Role Slot Role](#configuring-a-role-slot-role)
+   1. [Role Pack Role Blocks](#role-pack-role-blocks)
    1. [Weapons](#role-pack-weapons)
    1. [ConVars](#role-pack-convars)
+1. [Role Blocks](#Role-Blocks)
+   1. [Adding a new Blocking Group](#adding-a-new-blocking-group)
+   1. [Configuring a Blocking Group Role](#configuring-a-blocking-group-role)
 1. [Renaming Roles](#Renaming-Roles)
 
 ## Server Configurations
@@ -452,6 +456,7 @@ ttt_paladin_credits_starting                1       // The number of credits a p
 ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
 ttt_tracker_credits_starting                1       // The number of credits a tracker should start with
+ttt_tracker_radar_loadout                   0       // Whether the Tracker should get the tracking radar automatically for free. Server or round must be restarted for changes to take effect
 
 // Medium
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
@@ -623,14 +628,23 @@ ttt_sponge_aura_shrink                      1       // Whether the Sponge's aura
 ttt_sponge_aura_mode                        0       // The way in which the Sponge's aura redirects damage. 0 - Redirects unless all living players are inside, 1 - Redirects unless attacker and victim are both inside
 ttt_sponge_aura_float_time                  0       // The amount of time (in seconds) a player can spend outside the Sponge's aura before they are no longer considered inside
 ttt_sponge_device_for_beggar                0       // Whether the beggar should get the spongifier
+ttt_sponge_device_for_beggar_heal           0       // Whether the beggar should be fully healed when using the spongifier
 ttt_sponge_device_for_bodysnatcher          0       // Whether the bodysnatcher should get the spongifier
+ttt_sponge_device_for_bodysnatcher_heal     0       // Whether the bodysnatcher be fully healed when using the spongifier
 ttt_sponge_device_for_clown                 0       // Whether the clown should get the spongifier
+ttt_sponge_device_for_clown_heal            0       // Whether the clown should be fully healed when using the spongifier
 ttt_sponge_device_for_cupid                 0       // Whether the cupid should get the spongifier
+ttt_sponge_device_for_cupid_heal            0       // Whether the cupid should be fully healed when using the spongifier
 ttt_sponge_device_for_guesser               0       // Whether the guesser should get the spongifier
+ttt_sponge_device_for_guesser_heal          0       // Whether the guesser should be fully healed when using the spongifier
 ttt_sponge_device_for_jester                0       // Whether the jester should get the spongifier
+ttt_sponge_device_for_jester_heal           0       // Whether the jester should be fully healed when using the spongifier
 ttt_sponge_device_for_lootgoblin            0       // Whether the lootgoblin should get the spongifier
+ttt_sponge_device_for_lootgoblin_heal       0       // Whether the lootgoblin should be fully healed when using the spongifier
 ttt_sponge_device_for_shadow                0       // Whether the shadow should get the spongifier
+ttt_sponge_device_for_shadow_heal           0       // Whether the shadow should be fully healed when using the spongifier
 ttt_sponge_device_for_swapper               0       // Whether the swapper should get the spongifier
+ttt_sponge_device_for_swapper_heal          0       // Whether the swapper should be fully healed when using the spongifier
 
 // Guesser
 ttt_guesser_can_guess_detectives            0       // Whether the guesser is allowed to guess detectives
@@ -1250,6 +1264,14 @@ To change the weight of a role (how often this role should be selected relative 
 
 ![Role Packs New Role](docs/tutorials/img/RolePacks_RoleWeights.png)
 
+### Role Pack Role Blocks
+This tab is nearly identical to the Role Blocks UI described in the [Role Blocks](#role-blocks) tutorial. The only differences are the "Use Default Role Blocks" checkbox and the ability for a role to block itself.
+
+Checking the "Use Default Role Blocks" box will cause role blocks configured through the Role Blocks UI described in the [Role Blocks](#role-blocks) tutorial to also take effect on top of any that are added to this role pack. Leaving this box unchecked means only role blocks configured for this role pack will work.
+
+When configuring role blocks for a role pack, it is also possible for a role to be able to block itself. This can be useful if you would like the same role to have the possibility to spawn in multiple slots without the possibility of having duplicates of that specific role. To do this, create a blocking group with only two copies of the same role. Having any other roles in the same blocking group will not work. In the example below it would not be possible for more than one Mercenary to spawn, even if there were multiple slots in which the Mercenary could spawn and "Allow Duplicate Roles" was enabled on the "Roles" tab.
+![Role Packs Role Blocking Itself](docs/tutorials/img/RolePacks_RoleBlockingSelf.png)
+
 ### Role Pack Weapons
 
 This tab is nearly identical to the [Role Weapons UI](#configuration-by-ui) described above. The only differences are the removal of the "Update" and "Close" buttons (which are not needed in this UI), and the rename of the "None" checkbox to "Use Default". All of the functionality in this tab is identical to that in the role weapons UI, except it only takes effect when the specific role pack is enabled
@@ -1259,6 +1281,35 @@ This tab is nearly identical to the [Role Weapons UI](#configuration-by-ui) desc
 The ConVars tab allows you to specify configuration values to set only when the specified role pack is enabled. Add each ConVar on their own line along with the value you would like to set.
 
 ![Role Packs ConVars Tab](docs/tutorials/img/RolePacks_ConVars.png)
+
+## Role Blocks
+Role blocks let you prevent specific roles from spawning together in the same round. Previously this functionality was only available to a few select pairs of roles using ConVars such as `ttt_single_paramedic_hypnotist`, but these have been removed as role blocks can achieve everything these ConVars could, and more.
+
+Role blocks are configured using the UI, accessible by admins using the `ttt_roleblocks` command. Role blocks are saved in the *data/rolepacks.json* file so that they can then be backed up or copied from server-to-server just by transferring that file.
+
+![Blank Role Blocks Window](docs/tutorials/img/RoleBlocks_Blank.png)
+
+By default, your role blocks window should be mostly empty. (If you were previously using ConVars such as `ttt_single_paramedic_hypnotist`, you will see those options have already copied over.)
+
+Here you will be able to create "blocking groups" which determine which roles cannot spawn together. Roles that are in the same blocking group will be unable to spawn together at the start of a round, but will still have the ability to appear later in the round through other means. (e.g. Marshal deputizing, Drunk sobering, etc.) Each role within a blocking group can have a weight assigned to it, making it more likely to block other roles in the same blocking group from spawning.
+
+### Adding a new Blocking Group
+To add a new role blocking group, start by clicking the "Add group" button. Once a group has been added, you will be presented with three buttons:\
+- **Add role button** - Adds a new role entry to the blocking group
+- **Delete role button** - Deletes the last role entry in the blocking group
+- **Delete group button** - Deletes the entire blocking group
+
+![Role Blocks Empty Group](docs/tutorials/img/RoleBlocks_EmptyGroup.png)
+
+### Configuring a Blocking Group Role
+When a new role entry has been added to a blocking group it defaults to the "NONE" or "?" role. When this placeholder role is alone in a blocking group, it behaves the same as if the blocking group was empty and will do nothing.\
+![Role Blocks Empty Group](docs/tutorials/img/RoleBlocks_NewRole.png)
+
+To change the role that the slot belongs to, click the role icon and select the new role from the dropdown.\
+![Role Blocks New Role Selection](docs/tutorials/img/RoleBlocks_NewRoleSelection.png)
+
+To change the weight of a role (how often this role should be selected relative to the other roles in this blocking group), change the number in the box below the role icon by typing or using the adjustment arrows.\
+![Role Blocks New Role](docs/tutorials/img/RoleBlocks_RoleWeights.png)
 
 ## Renaming Roles
 

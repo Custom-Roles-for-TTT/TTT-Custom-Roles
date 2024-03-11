@@ -31,6 +31,16 @@ Called when a player opens the body search dialog. Used to add new buttons to th
 - *searchRaw* - The raw search data
 - *detectiveSearchOnly* - Whether only detectives should be able to search bodies
 
+### TTTBodySearchEquipment(search, eq)
+Called when a player searches a body, passing the search info and the equipment found on the body.\
+Changed `eq` parameter to be a table of the body's owned equipment IDs instead of a bitmask.\
+*NOTE:* If an error happened while calling this hook, we will call it again and pass `0` for the `eq` parameter to at least allow the body search dialog to open.\
+*Realm:* Client\
+*Added in:*: 1.0.0\
+*Parameters:*
+- *search* - The body's search info
+- *eq* - A table of the body's owned equipment IDs 
+
 ### TTTBlockPlayerFootstepSound(ply)
 Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.\
 *Realm:* Client and Server\
@@ -321,7 +331,7 @@ Called before the round win results message is printed to the top-right corner o
 
 *Return:* `true` if the default print messages should be skipped (Defaults to `false`).
 
-#### TTTQuartermasterCrateOpened(ply, tgt, item_id)
+### TTTQuartermasterCrateOpened(ply, tgt, item_id)
 Called when a player opens a crate from a quartermaster.\
 *Realm:* Server\
 *Added in:* 1.9.6\

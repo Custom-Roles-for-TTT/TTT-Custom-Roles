@@ -55,6 +55,20 @@
             <li><em>detectiveSearchOnly</em> - Whether only detectives should be able to search bodies</li>
         </ul>
 
+        <h3><a id="tttbodysearchequipmentsearch-eq" href="#tttbodysearchequipmentsearch-eq">TTTBodySearchEquipment(search, eq)</a></h3>
+        <p>
+            Called when a player searches a body, passing the search info and the equipment found on the body.<br>
+            Changed <code>eq</code> parameter to be a table of the body's owned equipment IDs instead of a bitmask.<br>
+            <em>NOTE:</em> If an error happened while calling this hook, we will call it again and pass <code>0</code> for the <code>eq</code> parameter to at least allow the body search dialog to open.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>search</em> - The body's search info</li>
+            <li><em>eq</em> - A table of the body's owned equipment IDs </li>
+        </ul>
+
         <h3><a id="tttblockplayerfootstepsoundply" href="#tttblockplayerfootstepsoundply">TTTBlockPlayerFootstepSound(ply)</a></h3>
         <p>
             Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.<br>

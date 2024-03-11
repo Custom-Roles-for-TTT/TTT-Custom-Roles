@@ -36,3 +36,7 @@ table.insert(ROLE_CONVARS[ROLE_TRACKER], {
     cvar = "ttt_tracker_footstep_color",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_TRACKER], {
+    cvar = "ttt_tracker_radar_loadout",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

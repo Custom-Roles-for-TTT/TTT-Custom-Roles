@@ -23,7 +23,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.1.5"
+CR_VERSION = "2.1.7"
 CR_BETA = false
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 

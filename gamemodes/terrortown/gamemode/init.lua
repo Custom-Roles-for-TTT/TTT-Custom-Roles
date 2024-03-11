@@ -833,6 +833,7 @@ local function InitRoundEndTime()
     SetRoundEnd(endtime)
 end
 
+local colorGenerationHue = MathRand(0, 360)
 function BeginRound()
     GAMEMODE:SyncGlobals()
 
@@ -870,8 +871,11 @@ function BeginRound()
 
     for _, v in pairs(GetAllPlayers()) do
         -- Player color
-        -- Generate a random color, but make sure it's not too bright or too dark
-        local col = HSLToColor(MathRand(0, 360), MathRand(0.5, 1), MathRand(0.25, 0.75))
+        -- Generate a new color, but make sure it's not too bright or too dark
+        local col = HSLToColor(colorGenerationHue, MathRand(0.5, 1), MathRand(0.25, 0.75))
+        -- Add the golden ratio conjugate (multiplied by 360) to the previous hue to get the next one
+        colorGenerationHue = colorGenerationHue + (0.61803 * 360)
+        colorGenerationHue = colorGenerationHue % 360
         local vec = Vector(col.r / 255, col.g / 255, col.b / 255)
         v:SetNWVector("PlayerColor", vec)
 
