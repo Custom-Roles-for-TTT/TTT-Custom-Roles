@@ -642,7 +642,7 @@ local function ReceiveRagdollSearch()
             util.BitSet = table.HasValue
             hook.Call("TTTBodySearchEquipment", nil, search, eq)
         end, function()
-            ErrorNoHalt("WARNING: util.BitSet override fallback failed")
+            ErrorNoHalt("WARNING: util.BitSet override fallback failed. Calling hook again with equipment value of 0.")
             hook.Call("TTTBodySearchEquipment", nil, search, 0)
         end)
         -- Once we're done, be sure to remove the override
