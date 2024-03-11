@@ -331,7 +331,7 @@ Called before the round win results message is printed to the top-right corner o
 
 *Return:* `true` if the default print messages should be skipped (Defaults to `false`).
 
-#### TTTQuartermasterCrateOpened(ply, tgt, item_id)
+### TTTQuartermasterCrateOpened(ply, tgt, item_id)
 Called when a player opens a crate from a quartermaster.\
 *Realm:* Server\
 *Added in:* 1.9.6\

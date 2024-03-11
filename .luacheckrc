@@ -1151,12 +1151,15 @@ globals = {
     "Randomat",
 
     -- Scripts
+    "EQUIP_ASC",
     "EQUIP_BLUE_BULL",
     "EQUIP_DOUBLETAP",
     "EQUIP_JUGGERNOG",
     "EQUIP_PHD",
+    "EQUIP_SM",
     "EQUIP_SPEEDCOLA",
-    "EQUIP_STAMINUP"
+    "EQUIP_STAMINUP",
+    "EQUIP_TLH"
 }
 std = {
     globals = {

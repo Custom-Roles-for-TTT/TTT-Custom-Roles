@@ -1,3 +1,7 @@
+-- Put this script in the "garrysmod/lua/autorun/server" directory of your GMod install.
+
+if engine.ActiveGamemode() ~= "terrortown" then return end
+
 local startChance = .2
 local startDelay = 10
 local minSpectators = 3
