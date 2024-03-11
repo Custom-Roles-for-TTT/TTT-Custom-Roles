@@ -1,5 +1,15 @@
 # Release Notes
 
+## 2.1.7
+**Released:**\
+Includes beta update [2.1.6](#216-beta).
+
+### Developer
+- Changed `TTTBodySearchEquipment` so it now has multiple levels of fallback
+  - Call with the equipment table
+  - Temporarily override `util.BitSet` to be `table.HasValue` and call with the equipment table again
+  - Call with a `0` instead of the equipment table
+
 ## 2.1.6 (Beta)
 **Released: March 9th, 2024**
 
@@ -17,7 +27,7 @@
 - Fixed `ttt_drunk_join_losing_team` not taking role packs into account when calculating the losing team
 
 ### Developer
-- Changed `TTTBodySearchEquipment` so if an error occurs when it is called (most likely due to the equipment tracking changes) it will be called again with a method override and if it errors a third time it will be called again with `0` for the `eq` parameter instead of a table
+- Changed `TTTBodySearchEquipment` so if an error occurs when it is called (most likely due to the equipment tracking changes) it will be called again with `0` for the `eq` parameter instead of a table
   - This is to work around the search dialog not opening if an addon is attempting to use the `eq` parameter as a number
 - Changed `plymeta:RemoveEquipmentItem` to only sync to the client if something was actually removed from the equipment list
 - Fixed `plymeta:AddEquipmentItem` adding duplicate entries if it was called with a value already in the equipment list
