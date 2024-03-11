@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.1.7
-**Released:**\
+**Released: March 11th, 2024**\
 Includes beta update [2.1.6](#216-beta).
 
 ### Developer
