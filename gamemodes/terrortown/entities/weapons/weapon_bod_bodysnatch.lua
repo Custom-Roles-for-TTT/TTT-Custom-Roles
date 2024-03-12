@@ -124,6 +124,8 @@ if SERVER then
                 if swap_mode == BODYSNATCHER_SWAP_MODE_IDENTITY then
                     -- Respawn the new bodysnatcher
                     ply:SpawnForRound(true)
+                    -- Give them their loadout weapons since SpawnForRound doesn't do that for players being resurrected
+                    RunHook("PlayerLoadout", ply)
 
                     -- Store the former bodysnatcher's position and angles
                     local pos = owner:GetPos()
@@ -180,13 +182,16 @@ if SERVER then
         return "BODYSNATCH ABORTED"
     end
 
-    AddHook("TTTEndRound", "Bodysnatcher_InfoOverride_TTTEndRound", function()
+    local function ClearFullState()
         for _, ply in ipairs(GetAllPlayers()) do
             ClearPlayerInfoOverride(ply)
         end
 
         table.Empty(playerInfos)
-    end)
+    end
+
+    AddHook("TTTEndRound", "Bodysnatcher_InfoOverride_TTTEndRound", ClearFullState)
+    AddHook("TTTPrepareRound", "Bodysnatcher_InfoOverride_TTTPrepareRound", ClearFullState)
 end
 
 if CLIENT then
