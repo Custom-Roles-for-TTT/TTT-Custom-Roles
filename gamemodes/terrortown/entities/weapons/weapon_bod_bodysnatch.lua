@@ -278,6 +278,7 @@ if CLIENT then
 
     -- Detect the crouching keybinds and tell the server to stop forcing this player to duck
     AddHook("PlayerBindPress", "Bodysnatcher_DuckReset_PlayerBindPress", function(ply, bind, pressed)
+        if not pressed then return end
         if not IsPlayer(ply) then return end
         if not ply:Alive() or ply:IsSpec() then return end
         if not ply:GetNWBool("TTTBodysnatcherForceDuck", false) then return end
