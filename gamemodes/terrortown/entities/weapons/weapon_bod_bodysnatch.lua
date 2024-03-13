@@ -245,7 +245,7 @@ if CLIENT then
         if not disguiseName or #disguiseName == 0 then return end
 
         -- Show the overwritten name alongside their real name for non-innocent allies
-        if not cli:IsInnocentTeam() and (ply == cli or cli:IsSameTeam(ply)) then
+        if ply == cli or (not cli:IsInnocentTeam() and cli:IsSameTeam(ply)) then
             return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName }), clr
         end
 
@@ -265,7 +265,7 @@ if CLIENT then
         if team_chat then return end
 
         -- Show the overwritten name alongside their real name for allies
-        if not client:IsInnocentTeam() and (ply == client or client:IsSameTeam(ply)) then
+        if ply == client or (not client:IsInnocentTeam() and client:IsSameTeam(ply)) then
             return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName })
         end
 
