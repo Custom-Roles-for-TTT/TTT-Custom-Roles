@@ -1,8 +1,10 @@
 # Release Notes
 
-## 2.1.7
-**Released: March 11th, 2024**\
-Includes beta update [2.1.6](#216-beta).
+## 2.1.8
+**Released:**
+
+### Additions
+- Added jester and immune hitmarkers to jester roles revealed by the informant and the old man
 
 ### Changes
 - Changed bodysnatcher disguise name label to not show to innocents even if they are on the same team as the disguised player
@@ -12,6 +14,10 @@ Includes beta update [2.1.6](#216-beta).
 - Fixed round restarts not clearing bodysnatcher and spy disguises
 - Fixed players who swap identities with a bodysnatcher sometimes being stuck ducking
 - Fixed name label when looking at an allied player with a bodysnatcher disguise not showing their real name
+
+## 2.1.7
+**Released: March 11th, 2024**\
+Includes beta update [2.1.6](#216-beta).
 
 ### Developer
 - Changed `TTTBodySearchEquipment` so it now has multiple levels of fallback
