@@ -92,20 +92,16 @@ hook.Add("PlayerDeath", "Spy_PlayerDeath", function(victim, inflictor, attacker)
     end
 end)
 
--- Reset every spy's disguise at the end of the round
-hook.Add("TTTEndRound", "Spy_TTTEndRound", function()
+local function ClearFullState()
     for _, ply in ipairs(GetAllPlayers()) do
-        if ply:IsSpy() then
-            local sid64 = ply:SteamID64()
-
-            local playerModel = playerModels[sid64]
-            if playerModel then
-                SetMDL(ply, playerModel.model)
-                ply:SetSkin(playerModel.skin)
-                ply:SetColor(playerModel.color)
-                for id, value in pairs(playerModel.bodygroups) do
-                    ply:SetBodygroup(id, value)
-                end
+        local sid64 = ply:SteamID64()
+        local playerModel = playerModels[sid64]
+        if playerModel then
+            SetMDL(ply, playerModel.model)
+            ply:SetSkin(playerModel.skin)
+            ply:SetColor(playerModel.color)
+            for id, value in pairs(playerModel.bodygroups) do
+                ply:SetBodygroup(id, value)
             end
 
             timer.Simple(0.1, function()
@@ -117,4 +113,7 @@ hook.Add("TTTEndRound", "Spy_TTTEndRound", function()
     end
 
     table.Empty(playerModels)
-end)
+end
+
+hook.Add("TTTEndRound", "Spy_TTTEndRound", ClearFullState)
+hook.Add("TTTPrepareRound", "Spy_TTTPrepareRound", ClearFullState)
