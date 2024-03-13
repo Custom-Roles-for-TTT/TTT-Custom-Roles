@@ -1,7 +1,7 @@
 for role = 0, ROLE_MAX do
     local rolestring = ROLE_STRINGS_RAW[role]
 
-    if not DEFAULT_ROLES[role] then
+    if not DEFAULT_ROLES[role] and not ROLE_BLOCK_SPAWN_CONVARS[role] then
         CreateConVar("ttt_" .. rolestring .. "_enabled", "0", FCVAR_REPLICATED)
     end
 

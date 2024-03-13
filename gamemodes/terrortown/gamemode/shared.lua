@@ -886,6 +886,8 @@ ROLE_HAS_SHOP_MODE = {}
 ROLE_HAS_SHOP_SYNC = {}
 ROLE_SHOP_SYNC_ROLES = {}
 ROLE_SHOULD_NOT_DROWN = {}
+ROLE_BLOCK_SPAWN_CONVARS = {}
+ROLE_BLOCK_HEALTH_CONVARS = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -1031,6 +1033,14 @@ function RegisterRole(tbl)
 
     if type(tbl.shouldnotdrown) == "boolean" then
         ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
+    end
+
+    if type(tbl.blockspawnconvars) == "boolean" then
+        ROLE_BLOCK_SPAWN_CONVARS[roleID] = tbl.blockspawnconvars
+    end
+
+    if type(tbl.blockhealthconvars) == "boolean" then
+        ROLE_BLOCK_HEALTH_CONVARS[roleID] = tbl.blockhealthconvars
     end
 
     -- Equipment
@@ -1610,7 +1620,7 @@ if SERVER then
         local role = ply:GetRole()
         if role <= ROLE_NONE or role > ROLE_MAX then return end
 
-        local health = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_starting_health"):GetInt()
+        local health = cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_starting_health", 100)
         if health <= 0 then return end
         ply:SetHealth(health)
     end
@@ -1620,7 +1630,7 @@ if SERVER then
         local role = ply:GetRole()
         if role <= ROLE_NONE or role > ROLE_MAX then return end
 
-        local maxhealth = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_max_health"):GetInt()
+        local maxhealth = cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_max_health", 100)
         if maxhealth <= 0 then return end
         ply:SetMaxHealth(maxhealth)
     end

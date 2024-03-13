@@ -137,19 +137,21 @@ CreateConVar("ttt_monster_chance", 0.5)
 for role = 0, ROLE_MAX do
     local rolestring = ROLE_STRINGS_RAW[role]
     local shortstring = ROLE_STRINGS_SHORT[role]
-    if not DEFAULT_ROLES[role] then
+    if not DEFAULT_ROLES[role] and not ROLE_BLOCK_SPAWN_CONVARS[role] then
         CreateConVar("ttt_" .. rolestring .. "_spawn_weight", "1")
         CreateConVar("ttt_" .. rolestring .. "_min_players", "0")
     end
 
-    local starting_health = "100"
-    if ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
+    if not ROLE_BLOCK_HEALTH_CONVARS[role] then
+        local starting_health = "100"
+        if ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
 
-    local max_health = nil
-    if ROLE_MAX_HEALTH[role] then max_health = ROLE_MAX_HEALTH[role] end
+        local max_health = nil
+        if ROLE_MAX_HEALTH[role] then max_health = ROLE_MAX_HEALTH[role] end
 
-    CreateConVar("ttt_" .. rolestring .. "_starting_health", starting_health)
-    CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health)
+        CreateConVar("ttt_" .. rolestring .. "_starting_health", starting_health)
+        CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health)
+    end
 
     -- Body icon
     resource.AddFile(util.GetRoleIconPath(shortstring, "icon", "vmt"))
@@ -1439,14 +1441,14 @@ function SelectRoles()
     end
 
     local function IsRoleAvailable(role)
-        return not hasRole[role] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_min_players"):GetInt() and DoesRolePassPredicate(role)
+        return not hasRole[role] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() and choice_count >= cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_min_players", 0) and DoesRolePassPredicate(role)
     end
 
     local function HandleDelayedRole(role, tbl, pred)
         if not IsRoleAvailable(role) then return end
         if pred and not pred() then return end
 
-        for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_spawn_weight"):GetInt() do
+        for _ = 1, cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_spawn_weight", 1) do
             table.insert(tbl, role)
         end
     end
@@ -1464,7 +1466,7 @@ function SelectRoles()
     -- Build the weighted lists for all non-default roles
     for r = ROLE_DETECTIVE + 1, ROLE_MAX do
         if not delayedCheckRoles[r] and IsRoleAvailable(r) then
-            for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
+            for _ = 1, cvars.Number("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight") , 1do
                 -- Don't include zombies in the traitor list since they will spawn as a special "zombie round" sometimes if they are traitors
                 if TRAITOR_ROLES[r] and r ~= ROLE_ZOMBIE then
                     table.insert(specialTraitorRoles, r)
