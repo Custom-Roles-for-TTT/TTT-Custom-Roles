@@ -4,7 +4,7 @@
 **Released:**
 
 ### Additions
-- Added jester and immune hitmarkers to jester roles revealed by the informant and the old man
+- Added immune and jester hitmarkers to the Old Man and jester roles revealed by the Informant
 
 ### Changes
 - Changed bodysnatcher disguise name label to not show to innocents even if they are on the same team as the disguised player
