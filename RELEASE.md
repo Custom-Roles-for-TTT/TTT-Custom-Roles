@@ -10,6 +10,11 @@ Includes beta update [2.1.6](#216-beta).
   - Temporarily override `util.BitSet` to be `table.HasValue` and call with the equipment table again
   - Call with a `0` instead of the equipment table
 
+### Fixes
+- Fixed player being turned into a bodysnatcher not getting the bodysnatching device
+- Fixed round restarts not clearing bodysnatcher and spy disguises
+- Fixed players who swap identities with a bodysnatcher sometimes being stuck ducking
+
 ## 2.1.6 (Beta)
 **Released: March 9th, 2024**
 
