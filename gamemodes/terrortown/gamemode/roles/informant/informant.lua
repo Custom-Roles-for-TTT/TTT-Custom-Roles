@@ -338,7 +338,7 @@ hook.Add("TTTDrawHitMarker", "Informant_TTTDrawHitMarker", function(victim, dmgi
 
     if not att:IsInformant() and not (informant_share_scans:GetBool() and att:IsTraitorTeam()) then return end
 
-    if victim:IsJester() or victim:IsSwapper() or victim:IsGuesser() or (victim:IsBeggar() and cvars.Bool("ttt_beggar_respawn_change_role", false)) then
+    if victim:IsJester() or victim:IsSwapper() or victim:IsGuesser() or (victim:IsBeggar() and GetConVar("ttt_beggar_respawn_change_role"):GetBool()) then
         return true, false, false, true
     end
 end)
