@@ -1441,7 +1441,7 @@ function SelectRoles()
     end
 
     local function IsRoleAvailable(role)
-        return not hasRole[role] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() and choice_count >= cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_min_players", 0) and DoesRolePassPredicate(role)
+        return not hasRole[role] and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled", false) and choice_count >= cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_min_players", 0) and DoesRolePassPredicate(role)
     end
 
     local function HandleDelayedRole(role, tbl, pred)
@@ -1466,7 +1466,7 @@ function SelectRoles()
     -- Build the weighted lists for all non-default roles
     for r = ROLE_DETECTIVE + 1, ROLE_MAX do
         if not delayedCheckRoles[r] and IsRoleAvailable(r) then
-            for _ = 1, cvars.Number("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight") , 1do
+            for _ = 1, cvars.Number("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight", 1) do
                 -- Don't include zombies in the traitor list since they will spawn as a special "zombie round" sometimes if they are traitors
                 if TRAITOR_ROLES[r] and r ~= ROLE_ZOMBIE then
                     table.insert(specialTraitorRoles, r)

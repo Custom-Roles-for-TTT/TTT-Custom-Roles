@@ -20,6 +20,7 @@
 ### Developer
 - Added `ROLE_BLOCK_SPAWN_CONVARS` table which can be used to prevent `ttt_rolename_enabled`, `ttt_rolename_spawn_weight`, and `ttt_rolename_min_players` ConVars from being created for specific roles
 - Added `ROLE_BLOCK_HEALTH_CONVARS` table which can be used to prevent `ttt_rolename_starting_health` and `ttt_rolename_max_health` ConVars from being created for specific roles
+- Added `ROLE_BLOCK_SHOP_CONVARS` table which can be used to prevent shop related ConVars from being created for specific roles
 
 ## 2.1.7
 **Released: March 11th, 2024**\

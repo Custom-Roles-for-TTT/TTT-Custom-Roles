@@ -888,6 +888,7 @@ ROLE_SHOP_SYNC_ROLES = {}
 ROLE_SHOULD_NOT_DROWN = {}
 ROLE_BLOCK_SPAWN_CONVARS = {}
 ROLE_BLOCK_HEALTH_CONVARS = {}
+ROLE_BLOCK_SHOP_CONVARS = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -1041,6 +1042,10 @@ function RegisterRole(tbl)
 
     if type(tbl.blockhealthconvars) == "boolean" then
         ROLE_BLOCK_HEALTH_CONVARS[roleID] = tbl.blockhealthconvars
+    end
+
+    if type(tbl.blockshopconvars) == "boolean" then
+        ROLE_BLOCK_SHOP_CONVARS[roleID] = tbl.blockshopconvars
     end
 
     -- Equipment
