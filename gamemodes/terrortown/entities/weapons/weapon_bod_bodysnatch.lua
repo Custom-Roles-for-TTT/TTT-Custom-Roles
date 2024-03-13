@@ -244,12 +244,8 @@ if CLIENT then
         local disguiseName = ply:GetNWString("TTTBodysnatcherName", nil)
         if not disguiseName or #disguiseName == 0 then return end
 
-        -- Don't override the name for the player or their allies
-        if ply == cli then return end
-        if cli:IsSameTeam(ply) then return end
-
-        -- Show the overwritten name alongside their real name for allies
-        if ply == cli or cli:IsSameTeam(ply) then
+        -- Show the overwritten name alongside their real name for non-innocent allies
+        if not cli:IsInnocentTeam() and (ply == cli or cli:IsSameTeam(ply)) then
             return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName }), clr
         end
 
@@ -269,7 +265,7 @@ if CLIENT then
         if team_chat then return end
 
         -- Show the overwritten name alongside their real name for allies
-        if ply == client or client:IsSameTeam(ply) then
+        if not cli:IsInnocentTeam() and (ply == client or client:IsSameTeam(ply)) then
             return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName })
         end
 

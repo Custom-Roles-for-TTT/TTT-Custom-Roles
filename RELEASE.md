@@ -4,16 +4,20 @@
 **Released: March 11th, 2024**\
 Includes beta update [2.1.6](#216-beta).
 
-### Developer
-- Changed `TTTBodySearchEquipment` so it now has multiple levels of fallback
-  - Call with the equipment table
-  - Temporarily override `util.BitSet` to be `table.HasValue` and call with the equipment table again
-  - Call with a `0` instead of the equipment table
+### Changes
+- Changed bodysnatcher disguise name label to not show to innocents even if they are on the same team as the disguised player
 
 ### Fixes
 - Fixed player being turned into a bodysnatcher not getting the bodysnatching device
 - Fixed round restarts not clearing bodysnatcher and spy disguises
 - Fixed players who swap identities with a bodysnatcher sometimes being stuck ducking
+- Fixed name label when looking at an allied player with a bodysnatcher disguise not showing their real name
+
+### Developer
+- Changed `TTTBodySearchEquipment` so it now has multiple levels of fallback
+  - Call with the equipment table
+  - Temporarily override `util.BitSet` to be `table.HasValue` and call with the equipment table again
+  - Call with a `0` instead of the equipment table
 
 ## 2.1.6 (Beta)
 **Released: March 9th, 2024**
