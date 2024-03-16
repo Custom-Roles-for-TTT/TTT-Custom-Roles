@@ -1,7 +1,7 @@
 # Release Notes
 
-## 2.1.8
-**Released:**
+## 2.1.8 (Beta)
+**Released: March 16th, 2024**
 
 ### Additions
 - Added immune and jester hitmarkers to the old man and jester roles revealed by the informant
