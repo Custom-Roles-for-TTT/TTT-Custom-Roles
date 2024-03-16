@@ -1,17 +1,30 @@
 # Release Notes
 
-## 2.1.7
-**Released: March 11th, 2024**\
-Includes beta update [2.1.6](#216-beta).
+## 2.1.8 (Beta)
+**Released: March 16th, 2024**
+
+### Additions
+- Added immune and jester hitmarkers to the old man and jester roles revealed by the informant
 
 ### Changes
 - Changed bodysnatcher disguise name label to not show to innocents even if they are on the same team as the disguised player
+- Changed drunk sobering with `ttt_drunk_any_role` enabled so that they can only sober into a role that spawns naturally
+  - e.g. If the mad scientist was enabled but not the zombie, the drunk would only be able to become the mad scientist
 
 ### Fixes
 - Fixed player being turned into a bodysnatcher not getting the bodysnatching device
 - Fixed round restarts not clearing bodysnatcher and spy disguises
 - Fixed players who swap identities with a bodysnatcher sometimes being stuck ducking
 - Fixed name label when looking at an allied player with a bodysnatcher disguise not showing their real name
+
+### Developer
+- Added `ROLE_BLOCK_SPAWN_CONVARS` table which can be used to prevent `ttt_rolename_enabled`, `ttt_rolename_spawn_weight`, and `ttt_rolename_min_players` ConVars from being created for specific roles
+- Added `ROLE_BLOCK_HEALTH_CONVARS` table which can be used to prevent `ttt_rolename_starting_health` and `ttt_rolename_max_health` ConVars from being created for specific roles
+- Added `ROLE_BLOCK_SHOP_CONVARS` table which can be used to prevent shop related ConVars from being created for specific roles
+
+## 2.1.7
+**Released: March 11th, 2024**\
+Includes beta update [2.1.6](#216-beta).
 
 ### Developer
 - Changed `TTTBodySearchEquipment` so it now has multiple levels of fallback
