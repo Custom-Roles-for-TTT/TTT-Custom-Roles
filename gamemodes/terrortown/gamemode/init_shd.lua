@@ -1,7 +1,7 @@
 for role = 0, ROLE_MAX do
     local rolestring = ROLE_STRINGS_RAW[role]
 
-    if not DEFAULT_ROLES[role] then
+    if not DEFAULT_ROLES[role] and not ROLE_BLOCK_SPAWN_CONVARS[role] then
         CreateConVar("ttt_" .. rolestring .. "_enabled", "0", FCVAR_REPLICATED)
     end
 
@@ -58,7 +58,7 @@ cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
     local enabled = tobool(newValue)
     if enabled then
         for role = 0, ROLE_MAX do
-            if not SHOP_ROLES[role] then
+            if not SHOP_ROLES[role] and not ROLE_BLOCK_SHOP_CONVARS[role] then
                 CreateShopConVars(role)
                 SHOP_ROLES[role] = true
             end
@@ -68,7 +68,9 @@ end)
 
 local shop_roles = GetTeamRoles(SHOP_ROLES)
 for _, role in ipairs(shop_roles) do
-    CreateShopConVars(role)
+    if not ROLE_BLOCK_SHOP_CONVARS[role] then
+        CreateShopConVars(role)
+    end
 end
 
 -- Create the starting credit convar for all roles that have credits but don't have a shop
