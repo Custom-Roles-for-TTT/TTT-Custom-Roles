@@ -32,7 +32,7 @@ hook.Add("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", function(ply, cli
     if not spy_steal_name:GetBool() then return end
     if not ply:IsActiveSpy() then return end
 
-    local disguiseName = ply:GetNWString("TTTSpyDisguiseName", nil)
+    local disguiseName = ply:GetNWString("TTTSpyDisguiseName", "")
     if not disguiseName or #disguiseName == 0 then return end
 
     -- Show the overwritten name alongside their real name for allies
@@ -48,7 +48,7 @@ hook.Add("TTTChatPlayerName", "Spy_TTTChatPlayerName", function(ply, team_chat)
     if not spy_steal_name:GetBool() then return end
     if not ply:IsActiveSpy() then return end
 
-    local disguiseName = ply:GetNWString("TTTSpyDisguiseName", nil)
+    local disguiseName = ply:GetNWString("TTTSpyDisguiseName", "")
     if not disguiseName or #disguiseName == 0 then return end
 
     if not IsPlayer(client) then
