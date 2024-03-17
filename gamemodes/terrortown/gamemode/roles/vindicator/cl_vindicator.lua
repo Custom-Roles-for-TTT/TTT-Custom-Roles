@@ -43,7 +43,7 @@ hook.Add("TTTTargetIDPlayerTargetIcon", "Vindicator_TTTTargetIDPlayerTargetIcon"
 end)
 
 hook.Add("TTTTargetIDPlayerText", "Vindicator_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
-    if cli:IsVindicator() and IsPlayer(ent) and ent:SteamID64() == cli:GetNWString("VindicatorTarget", "") then
+    if IsPlayer(ent) and cli:IsVindicator() and ent:SteamID64() == cli:GetNWString("VindicatorTarget", "") then
         return LANG.GetTranslation("target_current_target"), ROLE_COLORS_RADAR[ROLE_VINDICATOR]
     end
 end)
