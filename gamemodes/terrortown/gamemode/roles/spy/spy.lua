@@ -109,7 +109,7 @@ local function ClearFullState()
             end)
         end
 
-        ply:SetNWString("TTTSpyDisguiseName", nil)
+        ply:SetNWString("TTTSpyDisguiseName", "")
     end
 
     table.Empty(playerModels)

@@ -43,7 +43,7 @@ hook.Add("TTTPrepareRound", "Phantom_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("PhantomHaunted", false)
         v:SetNWBool("PhantomHaunting", false)
-        v:SetNWString("PhantomHauntingTarget", nil)
+        v:SetNWString("PhantomHauntingTarget", "")
         v:SetNWBool("PhantomPossessing", false)
         v:SetNWInt("PhantomPossessingPower", 0)
         timer.Remove(v:Nick() .. "PhantomPossessingPower")
@@ -55,8 +55,8 @@ end)
 local function ResetPlayer(ply)
     -- If this player is haunting someone else, make sure to clear them of the haunt too
     if ply:GetNWBool("PhantomHaunting", false) then
-        local sid = ply:GetNWString("PhantomHauntingTarget", nil)
-        if sid then
+        local sid = ply:GetNWString("PhantomHauntingTarget", "")
+        if sid and #sid > 0 then
             local target = player.GetBySteamID64(sid)
             if IsPlayer(target) then
                 target:SetNWBool("PhantomHaunted", false)
@@ -64,7 +64,7 @@ local function ResetPlayer(ply)
         end
     end
     ply:SetNWBool("PhantomHaunting", false)
-    ply:SetNWString("PhantomHauntingTarget", nil)
+    ply:SetNWString("PhantomHauntingTarget", "")
     ply:SetNWBool("PhantomPossessing", false)
     ply:SetNWInt("PhantomPossessingPower", 0)
     timer.Remove(ply:Nick() .. "PhantomPossessingPower")
@@ -83,7 +83,7 @@ end)
 
 -- Un-haunt the device owner if they used their device on the phantom
 hook.Add("TTTPlayerRoleChangedByItem", "Phantom_TTTPlayerRoleChangedByItem", function(ply, tgt, item)
-    if tgt:IsPhantom() and tgt:GetNWString("PhantomHauntingTarget", nil) == ply:SteamID64() then
+    if tgt:IsPhantom() and tgt:GetNWString("PhantomHauntingTarget", "") == ply:SteamID64() then
         ply:SetNWBool("PhantomHaunted", false)
     end
 end)
@@ -143,7 +143,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
                         timer.Remove(victim:Nick() .. "PhantomPossessingSpectate")
                         attacker:SetNWBool("PhantomHaunted", false)
                         victim:SetNWBool("PhantomHaunting", false)
-                        victim:SetNWString("PhantomHauntingTarget", nil)
+                        victim:SetNWString("PhantomHauntingTarget", "")
                         victim:SetNWBool("PhantomPossessing", false)
                         victim:SetNWInt("PhantomPossessingPower", 0)
 
@@ -264,7 +264,7 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
             if phantom.attacker == ply:SteamID64() and IsValid(phantom.player) then
                 local deadPhantom = phantom.player
                 deadPhantom:SetNWBool("PhantomHaunting", false)
-                deadPhantom:SetNWString("PhantomHauntingTarget", nil)
+                deadPhantom:SetNWString("PhantomHauntingTarget", "")
                 deadPhantom:SetNWBool("PhantomPossessing", false)
                 deadPhantom:SetNWInt("PhantomPossessingPower", 0)
                 timer.Remove(deadPhantom:Nick() .. "PhantomPossessingPower")

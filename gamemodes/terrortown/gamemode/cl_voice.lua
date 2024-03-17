@@ -26,7 +26,7 @@ local GetPTranslation = LANG.GetParamTranslation
 local function GetPlayerName(ply, team_chat)
     local name = CallHook("TTTChatPlayerName", nil, ply, team_chat or false)
     if not name or #name == 0 then
-        name = ply:GetNWString("PlayerName", nil)
+        name = ply:GetNWString("PlayerName", "")
     end
     if not name or #name == 0 then
         name = ply:Nick()

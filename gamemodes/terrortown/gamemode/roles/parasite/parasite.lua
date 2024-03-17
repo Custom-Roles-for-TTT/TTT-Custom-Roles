@@ -35,7 +35,7 @@ local parasite_infection_suicide_mode = GetConVar("ttt_parasite_infection_suicid
 
 local function ClearParasiteState(ply)
     ply:SetNWBool("ParasiteInfecting", false)
-    ply:SetNWString("ParasiteInfectingTarget", nil)
+    ply:SetNWString("ParasiteInfectingTarget", "")
     ply:SetNWInt("ParasiteInfectionProgress", 0)
     timer.Remove(ply:Nick() .. "ParasiteInfectionProgress")
     timer.Remove(ply:Nick() .. "ParasiteInfectingSpectate")
@@ -45,8 +45,8 @@ end
 local function ResetPlayer(ply)
     -- If this player is infecting someone else, make sure to clear them of the infection too
     if ply:GetNWBool("ParasiteInfecting", false) then
-        local sid = ply:GetNWString("ParasiteInfectingTarget", nil)
-        if sid then
+        local sid = ply:GetNWString("ParasiteInfectingTarget", "")
+        if sid and #sid > 0 then
             local target = player.GetBySteamID64(sid)
             if IsPlayer(target) then
                 target:SetNWBool("ParasiteInfected", false)
@@ -77,7 +77,7 @@ end)
 
 -- Un-haunt the device owner if they used their device on the parasite
 hook.Add("TTTPlayerRoleChangedByItem", "Parasite_TTTPlayerRoleChangedByItem", function(ply, tgt, item)
-    if tgt:IsParasite() and tgt:GetNWString("ParasiteInfectingTarget", nil) == ply:SteamID64() then
+    if tgt:IsParasite() and tgt:GetNWString("ParasiteInfectingTarget", "") == ply:SteamID64() then
         ply:SetNWBool("ParasiteInfected", false)
     end
 end)

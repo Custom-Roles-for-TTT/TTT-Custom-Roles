@@ -59,7 +59,7 @@ if SERVER then
         end
     end
 
-    local function ApplyPlayerInfoToTarget(sourceSid64, ply)
+    local function ApplyPlayerModelToTarget(sourceSid64, ply)
         local playerInfo = playerInfos[sourceSid64]
         if not playerInfo then return end
 
@@ -73,6 +73,13 @@ if SERVER then
         timer.Simple(0.1, function()
             ply:SetupHands()
         end)
+    end
+
+    local function ApplyPlayerInfoToTarget(sourceSid64, ply)
+        local playerInfo = playerInfos[sourceSid64]
+        if not playerInfo then return end
+
+        ApplyPlayerModelToTarget(sourceSid64, ply)
 
         ply:SetNWString("TTTBodysnatcherName", playerInfo.nick)
         ply.TTTBodysnatcherSource = sourceSid64
@@ -81,10 +88,10 @@ if SERVER then
     local function ClearPlayerInfoOverride(ply)
         local sid64 = ply:SteamID64()
         -- Make the player look like themselves again
-        ApplyPlayerInfoToTarget(sid64, ply)
+        ApplyPlayerModelToTarget(sid64, ply)
 
         -- Clear the stored data
-        ply:SetNWString("TTTBodysnatcherName", nil)
+        ply:SetNWString("TTTBodysnatcherName", "")
         ply.TTTBodysnatcherSource = nil
         playerInfos[sid64] = nil
     end
@@ -241,7 +248,7 @@ if CLIENT then
 
     -- If the player has snatched another player's name, show that name to other, non-allied, players
     AddHook("TTTTargetIDPlayerName", "Bodysnatcher_TTTTargetIDPlayerName", function(ply, cli, text, clr)
-        local disguiseName = ply:GetNWString("TTTBodysnatcherName", nil)
+        local disguiseName = ply:GetNWString("TTTBodysnatcherName", "")
         if not disguiseName or #disguiseName == 0 then return end
 
         -- Show the overwritten name alongside their real name for non-innocent allies
@@ -254,7 +261,7 @@ if CLIENT then
 
     local client
     AddHook("TTTChatPlayerName", "Bodysnatcher_TTTChatPlayerName", function(ply, team_chat)
-        local disguiseName = ply:GetNWString("TTTBodysnatcherName", nil)
+        local disguiseName = ply:GetNWString("TTTBodysnatcherName", "")
         if not disguiseName or #disguiseName == 0 then return end
 
         if not IsPlayer(client) then
