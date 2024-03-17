@@ -83,7 +83,7 @@ if SERVER then
                 if v:GetNWString("ParasiteInfectingTarget", "") == ply:SteamID64() then
                     ply:SetNWBool("ParasiteInfected", false)
                     v:SetNWBool("ParasiteInfecting", false)
-                    v:SetNWString("ParasiteInfectingTarget", nil)
+                    v:SetNWString("ParasiteInfectingTarget", "")
                     v:SetNWInt("ParasiteInfectionProgress", 0)
                     timer.Remove(v:Nick() .. "ParasiteInfectionProgress")
                     timer.Remove(v:Nick() .. "ParasiteInfectingSpectate")

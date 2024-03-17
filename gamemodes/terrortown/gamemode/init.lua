@@ -495,8 +495,8 @@ function FixSpectators()
 end
 
 local function GetPlayerName(ply)
-    local name = ply:GetNWString("PlayerName", nil)
-    if name == nil then
+    local name = ply:GetNWString("PlayerName", "")
+    if not name or #name == 0 then
         name = ply:Nick()
     end
     return name
