@@ -64,7 +64,7 @@ if SERVER then
                 if v:GetNWString("PhantomHauntingTarget", "") == ply:SteamID64() then
                     ply:SetNWBool("PhantomHaunted", false)
                     v:SetNWBool("PhantomHaunting", false)
-                    v:SetNWString("PhantomHauntingTarget", nil)
+                    v:SetNWString("PhantomHauntingTarget", "")
                     v:SetNWBool("PhantomPossessing", false)
                     v:SetNWInt("PhantomPossessingPower", 0)
                     timer.Remove(v:Nick() .. "PhantomPossessingPower")

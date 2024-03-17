@@ -38,6 +38,7 @@ if SERVER then
     util.AddNetworkString("TTT_Bodysnatched")
     util.AddNetworkString("TTT_ScoreBodysnatch")
     util.AddNetworkString("TTT_BodysnatchUpdateCorpseRole")
+    util.AddNetworkString("TTT_BodysnatcherUnforceDuck")
 
     local playerInfos = {}
     local function SavePlayerInfo(ply)
@@ -58,7 +59,7 @@ if SERVER then
         end
     end
 
-    local function ApplyPlayerInfoToTarget(sourceSid64, ply)
+    local function ApplyPlayerModelToTarget(sourceSid64, ply)
         local playerInfo = playerInfos[sourceSid64]
         if not playerInfo then return end
 
@@ -72,6 +73,13 @@ if SERVER then
         timer.Simple(0.1, function()
             ply:SetupHands()
         end)
+    end
+
+    local function ApplyPlayerInfoToTarget(sourceSid64, ply)
+        local playerInfo = playerInfos[sourceSid64]
+        if not playerInfo then return end
+
+        ApplyPlayerModelToTarget(sourceSid64, ply)
 
         ply:SetNWString("TTTBodysnatcherName", playerInfo.nick)
         ply.TTTBodysnatcherSource = sourceSid64
@@ -80,10 +88,10 @@ if SERVER then
     local function ClearPlayerInfoOverride(ply)
         local sid64 = ply:SteamID64()
         -- Make the player look like themselves again
-        ApplyPlayerInfoToTarget(sid64, ply)
+        ApplyPlayerModelToTarget(sid64, ply)
 
         -- Clear the stored data
-        ply:SetNWString("TTTBodysnatcherName", nil)
+        ply:SetNWString("TTTBodysnatcherName", "")
         ply.TTTBodysnatcherSource = nil
         playerInfos[sid64] = nil
     end
@@ -118,12 +126,15 @@ if SERVER then
             local swap_mode = GetConVar("ttt_bodysnatcher_swap_mode"):GetInt()
             if swap_mode > BODYSNATCHER_SWAP_MODE_NOTHING then
                 ply:SetRole(ROLE_BODYSNATCHER)
+                ply:SetNWString("TTTBodysnatcherSwappedWith", owner:Nick())
                 body.was_role = ROLE_BODYSNATCHER
                 SetRoleMaxHealth(ply)
 
                 if swap_mode == BODYSNATCHER_SWAP_MODE_IDENTITY then
                     -- Respawn the new bodysnatcher
                     ply:SpawnForRound(true)
+                    -- Give them their loadout weapons since SpawnForRound doesn't do that for players being resurrected
+                    RunHook("PlayerLoadout", ply)
 
                     -- Store the former bodysnatcher's position and angles
                     local pos = owner:GetPos()
@@ -140,6 +151,7 @@ if SERVER then
                     if owner:Crouching() then
                         owner:ConCommand("-duck")
                         ply:ConCommand("+duck")
+                        ply:SetNWBool("TTTBodysnatcherForceDuck", true)
                     end
 
                     -- Swap names and playermodels (skin, color, bodygroups, etc.) between ply and owner
@@ -180,12 +192,36 @@ if SERVER then
         return "BODYSNATCH ABORTED"
     end
 
-    AddHook("TTTEndRound", "Bodysnatcher_InfoOverride_TTTEndRound", function()
+    local function ClearFullState()
         for _, ply in ipairs(GetAllPlayers()) do
             ClearPlayerInfoOverride(ply)
+
+            if ply:GetNWBool("TTTBodysnatcherForceDuck", false) and ply:Crouching() then
+                ply:ConCommand("-duck")
+            end
+            ply:SetNWBool("TTTBodysnatcherForceDuck", false)
         end
 
         table.Empty(playerInfos)
+    end
+
+    AddHook("TTTEndRound", "Bodysnatcher_InfoOverride_TTTEndRound", ClearFullState)
+    AddHook("TTTPrepareRound", "Bodysnatcher_InfoOverride_TTTPrepareRound", function()
+        for _, ply in ipairs(GetAllPlayers()) do
+            -- We want this info to show up in the round summary so we can't clear it on round end
+            ply:SetNWString("TTTBodysnatcherSwappedWith", "")
+        end
+        ClearFullState()
+    end)
+
+    -- If a client tells us to stop them being forced to duck... do it
+    net.Receive("TTT_BodysnatcherUnforceDuck", function(len, ply)
+        if not IsPlayer(ply) then return end
+        if not ply:Alive() or ply:IsSpec() then return end
+        if not ply:GetNWBool("TTTBodysnatcherForceDuck", false) then return end
+
+        ply:SetNWBool("TTTBodysnatcherForceDuck", false)
+        ply:ConCommand("-duck")
     end)
 end
 
@@ -218,16 +254,12 @@ if CLIENT then
     end)
 
     -- If the player has snatched another player's name, show that name to other, non-allied, players
-    hook.Add("TTTTargetIDPlayerName", "Bodysnatcher_TTTTargetIDPlayerName", function(ply, cli, text, clr)
-        local disguiseName = ply:GetNWString("TTTBodysnatcherName", nil)
+    AddHook("TTTTargetIDPlayerName", "Bodysnatcher_TTTTargetIDPlayerName", function(ply, cli, text, clr)
+        local disguiseName = ply:GetNWString("TTTBodysnatcherName", "")
         if not disguiseName or #disguiseName == 0 then return end
 
-        -- Don't override the name for the player or their allies
-        if ply == cli then return end
-        if cli:IsSameTeam(ply) then return end
-
-        -- Show the overwritten name alongside their real name for allies
-        if ply == cli or cli:IsSameTeam(ply) then
+        -- Show the overwritten name alongside their real name for non-innocent allies
+        if ply == cli or (not cli:IsInnocentTeam() and cli:IsSameTeam(ply)) then
             return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName }), clr
         end
 
@@ -235,8 +267,8 @@ if CLIENT then
     end)
 
     local client
-    hook.Add("TTTChatPlayerName", "Bodysnatcher_TTTChatPlayerName", function(ply, team_chat)
-        local disguiseName = ply:GetNWString("TTTBodysnatcherName", nil)
+    AddHook("TTTChatPlayerName", "Bodysnatcher_TTTChatPlayerName", function(ply, team_chat)
+        local disguiseName = ply:GetNWString("TTTBodysnatcherName", "")
         if not disguiseName or #disguiseName == 0 then return end
 
         if not IsPlayer(client) then
@@ -247,10 +279,23 @@ if CLIENT then
         if team_chat then return end
 
         -- Show the overwritten name alongside their real name for allies
-        if ply == client or client:IsSameTeam(ply) then
+        if ply == client or (not client:IsInnocentTeam() and client:IsSameTeam(ply)) then
             return LANG.GetParamTranslation("player_name_disguised", { name=ply:Nick(), disguise=disguiseName })
         end
 
         return disguiseName
+    end)
+
+    -- Detect the crouching keybinds and tell the server to stop forcing this player to duck
+    AddHook("PlayerBindPress", "Bodysnatcher_DuckReset_PlayerBindPress", function(ply, bind, pressed)
+        if not pressed then return end
+        if not IsPlayer(ply) then return end
+        if not ply:Alive() or ply:IsSpec() then return end
+        if not ply:GetNWBool("TTTBodysnatcherForceDuck", false) then return end
+
+        if bind == "+duck" or bind == "-duck" then
+            net.Start("TTT_BodysnatcherUnforceDuck")
+            net.SendToServer()
+        end
     end)
 end

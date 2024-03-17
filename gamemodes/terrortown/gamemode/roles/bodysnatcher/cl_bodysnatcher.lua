@@ -34,6 +34,9 @@ hook.Add("Initialize", "Bodysnatcher_Translations_Initialize", function()
     LANG.AddToLanguage("english", "bodysnatcher_hidden_all_hud", "You still appear as {bodysnatcher} to others")
     LANG.AddToLanguage("english", "bodysnatcher_hidden_team_hud", "Only your team knows you are no longer {bodysnatcher}")
 
+    -- Scoring
+    LANG.AddToLanguage("english", "score_bodysnatcher_bodysnatched", "Bodysnatched by")
+
     -- Popups
     LANG.AddToLanguage("english", "info_popup_bodysnatcher_jester", [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage. Use your body snatching device on a corpse
@@ -115,8 +118,15 @@ end)
 hook.Add("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
-    if startingRole == ROLE_BODYSNATCHER then
-        return ROLE_STRINGS_SHORT[ROLE_BODYSNATCHER]
+    if GetConVar("ttt_bodysnatcher_swap_mode"):GetInt() == BODYSNATCHER_SWAP_MODE_NOTHING then
+        if startingRole == ROLE_BODYSNATCHER then
+            return ROLE_STRINGS_SHORT[ROLE_BODYSNATCHER]
+        end
+    elseif ply:IsBodysnatcher() then
+        local swappedWith = ply:GetNWString("TTTBodysnatcherSwappedWith", "")
+        if swappedWith and #swappedWith > 0 then
+            return roleFileName, groupingRole, roleColor, name, swappedWith, LANG.GetTranslation("score_bodysnatcher_bodysnatched")
+        end
     end
 end)
 

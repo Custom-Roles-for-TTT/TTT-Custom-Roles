@@ -325,3 +325,20 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
         end
     end
 end)
+
+----------------
+-- HITMARKERS --
+----------------
+
+hook.Add("TTTDrawHitMarker", "Informant_TTTDrawHitMarker", function(victim, dmginfo)
+    local att = dmginfo:GetAttacker()
+    if not IsPlayer(att) or not IsPlayer(victim) then return end
+
+    if victim:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) ~= INFORMANT_SCANNED_ROLE then return end
+
+    if not att:IsInformant() and not (informant_share_scans:GetBool() and att:IsTraitorTeam()) then return end
+
+    if victim:IsJester() or victim:IsSwapper() or victim:IsGuesser() or (victim:IsBeggar() and GetConVar("ttt_beggar_respawn_change_role"):GetBool()) then
+        return true, false, false, true
+    end
+end)

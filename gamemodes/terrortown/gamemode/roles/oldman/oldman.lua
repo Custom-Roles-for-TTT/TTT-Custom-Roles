@@ -98,6 +98,18 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
     end
 end)
 
+hook.Add("TTTDrawHitMarker", "OldMan_TTTDrawHitMarker", function(victim, dmginfo)
+    local adrenalineTime = oldman_adrenaline_rush:GetInt()
+    if adrenalineTime <= 0 then return end
+
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if not IsPlayer(victim) then return end
+    if victim:IsOldMan() and victim:IsRoleActive() then
+        return true, false, true, false
+    end
+end)
+
 hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dmginfo, took)
     -- Don't run this if adrenaline rush is disabled
     local adrenalineTime = oldman_adrenaline_rush:GetInt()
