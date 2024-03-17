@@ -198,8 +198,8 @@ end)
 
 hook.Add("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
-    if not cli:IsBeggar() then return end
     if not IsPlayer(ent) then return end
+    if not cli:IsBeggar() then return end
 
     if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
 
