@@ -1,13 +1,14 @@
 # Release Notes
 
-## 2.1.8 (Beta)
-**Released: March 16th, 2024**
+## 2.1.8
+**Released: March 17th, 2024**
 
 ### Additions
 - Added immune and jester hitmarkers to the old man and jester roles revealed by the informant
 
 ### Changes
 - Changed bodysnatcher disguise name label to not show to innocents even if they are on the same team as the disguised player
+- Changed round summary to show who was bodysnatched by who if `ttt_bodysnatcher_swap_mode` is configured so that the dead player becomes a bodysnatcher
 - Changed drunk sobering with `ttt_drunk_any_role` enabled so that they can only sober into a role that spawns naturally
   - e.g. If the mad scientist was enabled but not the zombie, the drunk would only be able to become the mad scientist
 

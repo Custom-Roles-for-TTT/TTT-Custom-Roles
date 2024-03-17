@@ -126,6 +126,7 @@ if SERVER then
             local swap_mode = GetConVar("ttt_bodysnatcher_swap_mode"):GetInt()
             if swap_mode > BODYSNATCHER_SWAP_MODE_NOTHING then
                 ply:SetRole(ROLE_BODYSNATCHER)
+                ply:SetNWString("TTTBodysnatcherSwappedWith", owner:Nick())
                 body.was_role = ROLE_BODYSNATCHER
                 SetRoleMaxHealth(ply)
 
@@ -205,7 +206,13 @@ if SERVER then
     end
 
     AddHook("TTTEndRound", "Bodysnatcher_InfoOverride_TTTEndRound", ClearFullState)
-    AddHook("TTTPrepareRound", "Bodysnatcher_InfoOverride_TTTPrepareRound", ClearFullState)
+    AddHook("TTTPrepareRound", "Bodysnatcher_InfoOverride_TTTPrepareRound", function()
+        for _, ply in ipairs(GetAllPlayers()) do
+            -- We want this info to show up in the round summary so we can't clear it on round end
+            ply:SetNWString("TTTBodysnatcherSwappedWith", "")
+        end
+        ClearFullState()
+    end)
 
     -- If a client tells us to stop them being forced to duck... do it
     net.Receive("TTT_BodysnatcherUnforceDuck", function(len, ply)
