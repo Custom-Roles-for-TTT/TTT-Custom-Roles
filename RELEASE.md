@@ -18,7 +18,7 @@
 - Fixed players who swap identities with a bodysnatcher sometimes being stuck ducking
 - Fixed name label when looking at an allied player with a bodysnatcher disguise not showing their real name
 - Fixed a few pieces of data getting stuck in bodysnatcher, phantom, and parasite that may have been caused by a change in the march GMod update
-- Fixed "doused" label showing on non-player entities for the arsonist
+- Fixed "doused" label showing for the arsonist on entities that cannot be doused
 
 ### Developer
 - Added `ROLE_BLOCK_SPAWN_CONVARS` table which can be used to prevent `ttt_rolename_enabled`, `ttt_rolename_spawn_weight`, and `ttt_rolename_min_players` ConVars from being created for specific roles
