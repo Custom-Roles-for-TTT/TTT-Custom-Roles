@@ -1,13 +1,14 @@
 # Release Notes
 
 ## 2.1.8
-**Released:**
+**Released: March 17th, 2024**
 
 ### Additions
 - Added immune and jester hitmarkers to the old man and jester roles revealed by the informant
 
 ### Changes
 - Changed bodysnatcher disguise name label to not show to innocents even if they are on the same team as the disguised player
+- Changed round summary to show who was bodysnatched by who if `ttt_bodysnatcher_swap_mode` is configured so that the dead player becomes a bodysnatcher
 - Changed drunk sobering with `ttt_drunk_any_role` enabled so that they can only sober into a role that spawns naturally
   - e.g. If the mad scientist was enabled but not the zombie, the drunk would only be able to become the mad scientist
 
@@ -16,6 +17,7 @@
 - Fixed round restarts not clearing bodysnatcher and spy disguises
 - Fixed players who swap identities with a bodysnatcher sometimes being stuck ducking
 - Fixed name label when looking at an allied player with a bodysnatcher disguise not showing their real name
+- Fixed a few pieces of data getting stuck in bodysnatcher, phantom, and parasite that may have been caused by a change in the march GMod update
 
 ### Developer
 - Added `ROLE_BLOCK_SPAWN_CONVARS` table which can be used to prevent `ttt_rolename_enabled`, `ttt_rolename_spawn_weight`, and `ttt_rolename_min_players` ConVars from being created for specific roles
