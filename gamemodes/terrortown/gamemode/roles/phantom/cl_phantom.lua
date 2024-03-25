@@ -87,6 +87,7 @@ end
 ---------------
 
 hook.Add("TTTTargetIDPlayerText", "Phantom_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
+    if not IsPlayer(ent) then return end
     if IsLoverHaunting(cli, ent) then
         return LANG.GetTranslation("target_haunted"), ROLE_COLORS_RADAR[ROLE_PHANTOM]
     end

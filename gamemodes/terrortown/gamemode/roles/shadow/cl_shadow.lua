@@ -182,15 +182,15 @@ AddHook("TTTTargetIDPlayerRing", "Shadow_TTTTargetIDPlayerRing", function(ent, c
 end)
 
 AddHook("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
-    if IsPlayer(ent) then
-        if cli:IsActiveShadow() and ent:SteamID64() == cli:GetNWString("ShadowTarget", "") then
-            if text == nil then
-                return LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
-            end
-            return text, clr, LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
-        elseif shadow_target_notify_mode:GetInt() == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
-            return StringUpper(ROLE_STRINGS[ROLE_SHADOW]), ROLE_COLORS_RADAR[ROLE_SHADOW]
+    if not IsPlayer(ent) then return end
+
+    if cli:IsActiveShadow() and ent:SteamID64() == cli:GetNWString("ShadowTarget", "") then
+        if text == nil then
+            return LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
         end
+        return text, clr, LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
+    elseif shadow_target_notify_mode:GetInt() == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+        return StringUpper(ROLE_STRINGS[ROLE_SHADOW]), ROLE_COLORS_RADAR[ROLE_SHADOW]
     end
 end)
 

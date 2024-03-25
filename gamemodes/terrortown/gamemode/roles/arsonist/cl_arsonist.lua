@@ -60,6 +60,7 @@ end)
 -- Show "DOUSED" label on players who have been doused
 hook.Add("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
+    if not IsPlayer(ent) and not IsRagdoll(ent) then return end
     if not cli:IsArsonist() then return end
 
     -- If this is a player, check their doused state
