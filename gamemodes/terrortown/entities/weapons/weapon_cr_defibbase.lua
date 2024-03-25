@@ -109,7 +109,7 @@ if SERVER then
             ply = player.GetBySteamID64(body.sid64)
         elseif body.sid == "BOT" then
             ply = player.GetByUniqueID(body.uqid)
-        else
+        elseif body.sid then
             ply = player.GetBySteamID(body.sid)
         end
 
