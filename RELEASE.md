@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.1.9 (Beta)
+**Released:**
+
+### Fixes
+- Fixed rare error in defib-like devices when used on a corpse that doesn't have a Steam ID property set
+
 ## 2.1.8
 **Released: March 17th, 2024**
 
