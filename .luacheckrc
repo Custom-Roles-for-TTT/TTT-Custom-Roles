@@ -631,6 +631,7 @@ globals = {
     "HasteMode",
     "HSLToColor",
     "IncRoundEnd",
+    "IgniteTarget",
     "IsFavorite",
     "IsFirstTimePredicted",
     "IsOffScreen",
