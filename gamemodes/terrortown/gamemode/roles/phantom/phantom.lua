@@ -329,6 +329,7 @@ hook.Add("PlayerFootstep", "Phantom_PlayerFootstep", function(ply, pos, foot, so
     net.WriteBit(foot)
     net.WriteTable(Color(138, 4, 4))
     net.WriteUInt(killer_footstep_time, 8)
+    net.WriteFloat(1) -- Scale
     net.Broadcast()
 end)
 

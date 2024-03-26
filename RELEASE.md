@@ -1,5 +1,13 @@
 # Release Notes
 
+## 2.1.9 (Beta)
+**Released:**
+
+### Fixes
+- Fixed rare error in defib-like devices when used on a corpse that doesn't have a Steam ID property set
+- Fixed freeze caused by the spy's flaregun when running CR4TTT alongside wget's TTT Weapons Rework
+- Fixed footprints sometimes being giant and sometimes not showing at all
+
 ## 2.1.8
 **Released: March 17th, 2024**
 

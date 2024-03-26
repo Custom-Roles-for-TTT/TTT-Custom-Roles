@@ -45,5 +45,6 @@ hook.Add("PlayerFootstep", "Tracker_PlayerFootstep", function(ply, pos, foot, so
             table.insert(tab, p)
         end
     end
+    net.WriteFloat(1) -- Scale
     net.Send(tab)
 end)
