@@ -17,7 +17,7 @@ Adds a footstep to the list's list of footsteps to show.\
 - *Bit* - Which foot's step is currently being recorded (0 = Left, 1 = Right)
 - *Table* - The R, G, and B values of the color for the placed footstep
 - *UInt(8)* - The amount of time (in seconds) before the footsteps should fade completely from view
-- *Float* - The size scale ot use for the footsteps. (Optional, defaults to 1.0) *(Added in 2.0.6)*
+- *Float* - The size scale ot use for the footsteps. *(Added in 2.0.6)*
 
 ### TTT_ClearPlayerFootsteps
 Resets the client's list of footsteps to show.\
