@@ -729,7 +729,13 @@ function plymeta:ClearProperty(name, targets)
 end
 
 function plymeta:IsRoleAbilityDisabled(...)
-    return hook.Call("TTTIsRoleAbilityDisabled", nil, self, ...) == true
+    local roleIsDisabled = hook.Call("TTTIsRoleAbilityDisabled", nil, self, ...) == true
+
+    if roleIsDisabled then
+        hook.Call("TTTOnRoleAbilityDisabled ", nil, self, self:GetRole(), ...)
+    end
+
+    return roleIsDisabled
 end
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded

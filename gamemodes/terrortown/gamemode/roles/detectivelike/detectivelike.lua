@@ -56,14 +56,14 @@ end
 local function BeginRoleChecks(ply)
     -- If this is a promotable role and they should be promoted, promote them immediately
     -- The logic which handles a detective dying is in the PlayerDeath hook
-    if ply:IsDetectiveLikePromotable() and ShouldPromoteDetectiveLike() then
+    if ply:IsDetectiveLikePromotable() and ShouldPromoteDetectiveLike() and not ply:IsRoleAbilityDisabled() then
         ply:HandleDetectiveLikePromotion()
     end
 end
 
 local function FindAndPromoteDetectiveLike()
     for _, ply in PlayerIterator() do
-        if ply:IsDetectiveLikePromotable() then
+        if ply:IsDetectiveLikePromotable() and not ply:IsRoleAbilityDisabled() then
             local alive = ply:IsActive()
             if alive then
                 ply:QueueMessage(MSG_PRINTBOTH, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")

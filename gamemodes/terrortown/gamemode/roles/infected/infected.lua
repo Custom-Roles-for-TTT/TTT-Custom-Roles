@@ -70,6 +70,8 @@ hook.Add("Initialize", "Infected_RoleChange_Initialize", function()
 end)
 
 local function InfectedSuccumb(ply, respawn)
+    if ply:IsRoleAbilityDisabled(respawn) then return end
+
     local message = "You have succumbed to your disease and "
     if respawn then
         message = message .. " respawned as "

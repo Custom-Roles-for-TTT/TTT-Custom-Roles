@@ -197,14 +197,16 @@ local function CheckTwinsInvulnerability(ply, oldRole)
             end
         elseif #livingEvilTwins > 0 then
             for _, p in ipairs(livingEvilTwins) do
-                p:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_GOODTWIN] .. " has died! You have been granted " .. invulnerability_timer .. " seconds of invulnerability.")
-                p:SetInvulnerable(true, true)
-                p:SetNWFloat("TTTTwinsInvulnerabilityEnd", CurTime() + invulnerability_timer)
-                timer.Create("TwinInvulnerabilityEnd_" .. p:SteamID64(), invulnerability_timer, 1, function()
-                    p:QueueMessage(MSG_PRINTTALK, "Your invulnerability period has ended.")
-                    p:SetInvulnerable(false, true)
-                    p:SetNWFloat("TTTTwinsInvulnerabilityEnd", 0)
-                end)
+                if not p:IsRoleAbilityDisabled() then
+                    p:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_GOODTWIN] .. " has died! You have been granted " .. invulnerability_timer .. " seconds of invulnerability.")
+                    p:SetInvulnerable(true, true)
+                    p:SetNWFloat("TTTTwinsInvulnerabilityEnd", CurTime() + invulnerability_timer)
+                    timer.Create("TwinInvulnerabilityEnd_" .. p:SteamID64(), invulnerability_timer, 1, function()
+                        p:QueueMessage(MSG_PRINTTALK, "Your invulnerability period has ended.")
+                        p:SetInvulnerable(false, true)
+                        p:SetNWFloat("TTTTwinsInvulnerabilityEnd", 0)
+                    end)
+                end
             end
         end
     else
