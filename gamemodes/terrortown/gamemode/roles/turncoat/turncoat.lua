@@ -28,7 +28,9 @@ function plymeta:ChangeTurncoatTeam(extra)
     if self:IsTraitorTeam() then return end
 
     -- Change team and broadcast to everyone
-    SetTurncoatTeam(self, true)
+    if not self:IsRoleAbilityDisabled() then
+        SetTurncoatTeam(self, true)
+    end
 
     -- Announce the role change
     local message = self:Nick() .. " is " .. ROLE_STRINGS_EXT[ROLE_TURNCOAT] .. " and has joined the " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR]

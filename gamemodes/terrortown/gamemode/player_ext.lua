@@ -728,11 +728,11 @@ function plymeta:ClearProperty(name, targets)
     SYNC:ClearPlayerProperty(self, name, targets)
 end
 
-function plymeta:IsRoleAbilityDisabled(...)
-    local roleIsDisabled = hook.Call("TTTIsRoleAbilityDisabled", nil, self, ...) == true
+function plymeta:IsShopPurchaseBlocked(...)
+    local roleIsDisabled = hook.Call("TTTIsShopPurchaseBlocked", nil, self, ...) == true
 
     if roleIsDisabled then
-        hook.Call("TTTOnRoleAbilityDisabled ", nil, self, self:GetRole(), ...)
+        hook.Call("TTTOnShopPurchaseBlocked", nil, self, self:GetRole(), ...)
     end
 
     return roleIsDisabled

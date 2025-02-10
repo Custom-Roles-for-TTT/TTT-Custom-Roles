@@ -117,7 +117,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
     local valid_kill = IsPlayer(attacker) and GetRoundState() == ROUND_ACTIVE
     local handled = false
     if valid_kill then
-        if victim:IsVindicator() and not victim:IsRoleActive() and attacker ~= victim then
+        if victim:IsVindicator() and not victim:IsRoleActive() and attacker ~= victim and not victim:IsRoleAbilityDisabled() then
             if attacker:IsVictimChangingRole(victim) then return end
 
             victim:SetNWBool("VindicatorIsRespawning", true)
@@ -133,7 +133,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
             end
             handled = true
         elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") then
-            OnVindicatorSuccess(attacker, victim, "You ha1ve successfully killed your target.")
+            OnVindicatorSuccess(attacker, victim, "You have successfully killed your target.")
             handled = true
         end
     end

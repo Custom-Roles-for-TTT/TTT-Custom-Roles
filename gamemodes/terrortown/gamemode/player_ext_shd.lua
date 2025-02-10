@@ -391,6 +391,16 @@ function plymeta:IsInvulnerable()
     return self:GetNWBool("CRTTT_Invulnerable", false)
 end
 
+function plymeta:IsRoleAbilityDisabled(...)
+    local roleIsDisabled = hook.Call("TTTIsRoleAbilityDisabled", nil, self, ...) == true
+
+    if roleIsDisabled then
+        hook.Call("TTTOnRoleAbilityDisabled", nil, self, self:GetRole(), ...)
+    end
+
+    return roleIsDisabled
+end
+
 if CLIENT then
     local function GetMaxBoneZ(ply, pred)
         local max_bone_z = 0

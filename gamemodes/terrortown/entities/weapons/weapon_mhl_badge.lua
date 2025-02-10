@@ -54,6 +54,8 @@ if SERVER then
     util.AddNetworkString("TTT_Deputized")
 
     function SWEP:OnSuccess(ply, body)
+        if self.Owner:IsRoleAbilityDisabled() then return end
+
         local role = ROLE_DEPUTY
         if ply:IsTraitorTeam() then
             role = ROLE_IMPERSONATOR
