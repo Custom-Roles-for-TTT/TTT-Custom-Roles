@@ -362,7 +362,7 @@ function plymeta:SoberDrunk(team)
             -- Remove any roles that are not enabled or allowed
             for _, r in ipairs(role_options) do
                 local rolestring = ROLE_STRINGS_RAW[r]
-                if GetConVar("ttt_drunk_can_be_" .. rolestring):GetBool() and (DEFAULT_ROLES[r] or drunk_any_role_include_disabled:GetBool() or util.CanRoleSpawnNaturally(r)) then
+                if cvars.Bool("ttt_drunk_can_be_" .. rolestring, false) and (DEFAULT_ROLES[r] or drunk_any_role_include_disabled:GetBool() or util.CanRoleSpawnNaturally(r)) then
                     table.insert(allowed_options, r)
                 end
             end

@@ -39,6 +39,7 @@ if SERVER then
     util.AddNetworkString("TTT_ScoreBodysnatch")
     util.AddNetworkString("TTT_BodysnatchUpdateCorpseRole")
     util.AddNetworkString("TTT_BodysnatcherUnforceDuck")
+    util.AddNetworkString("TTT_BodysnatcherForceDuck")
 
     local playerInfos = {}
     local function SavePlayerInfo(ply)
@@ -149,9 +150,13 @@ if SERVER then
 
                     -- Include whether the player is crouching
                     if owner:Crouching() then
-                        owner:ConCommand("-duck")
-                        ply:ConCommand("+duck")
-                        ply:SetNWBool("TTTBodysnatcherForceDuck", true)
+                        ply:SetProperty("TTTBodysnatcherForceDuck", true, ply)
+                        net.Start("TTT_BodysnatcherForceDuck")
+                        net.ReadBool(true)
+                        net.Send(ply)
+                        net.Start("TTT_BodysnatcherForceDuck")
+                        net.ReadBool(false)
+                        net.Send(owner)
                     end
 
                     -- Swap names and playermodels (skin, color, bodygroups, etc.) between ply and owner
@@ -195,11 +200,7 @@ if SERVER then
     local function ClearFullState()
         for _, ply in PlayerIterator() do
             ClearPlayerInfoOverride(ply)
-
-            if ply:GetNWBool("TTTBodysnatcherForceDuck", false) and ply:Crouching() then
-                ply:ConCommand("-duck")
-            end
-            ply:SetNWBool("TTTBodysnatcherForceDuck", false)
+            ply:ClearProperty("TTTBodysnatcherForceDuck", ply)
         end
 
         table.Empty(playerInfos)
@@ -214,14 +215,13 @@ if SERVER then
         ClearFullState()
     end)
 
-    -- If a client tells us to stop them being forced to duck... do it
+    -- If a client tells us they have stopped being forced to duck, clear the state for them
     net.Receive("TTT_BodysnatcherUnforceDuck", function(len, ply)
         if not IsPlayer(ply) then return end
         if not ply:Alive() or ply:IsSpec() then return end
-        if not ply:GetNWBool("TTTBodysnatcherForceDuck", false) then return end
+        if not ply.TTTBodysnatcherForceDuck then return end
 
-        ply:SetNWBool("TTTBodysnatcherForceDuck", false)
-        ply:ConCommand("-duck")
+        ply:ClearProperty("TTTBodysnatcherForceDuck", ply)
     end)
 end
 
@@ -286,14 +286,26 @@ if CLIENT then
         return disguiseName
     end)
 
-    -- Detect the crouching keybinds and tell the server to stop forcing this player to duck
-    AddHook("PlayerBindPress", "Bodysnatcher_DuckReset_PlayerBindPress", function(ply, bind, pressed)
-        if not pressed then return end
+    -- If the server tells us this player should be ducking, do it
+    net.Receive("TTT_BodysnatcherForceDuck", function()
+        local ply = LocalPlayer()
         if not IsPlayer(ply) then return end
         if not ply:Alive() or ply:IsSpec() then return end
-        if not ply:GetNWBool("TTTBodysnatcherForceDuck", false) then return end
 
-        if bind == "+duck" or bind == "-duck" then
+        local state = net.ReadBool()
+        ply:ConCommand((state and "+" or "-") .. "duck")
+    end)
+
+    -- Detect the crouching keybinds and tell the server to stop forcing this player to duck
+    AddHook("PlayerButtonUp", "Bodysnatcher_DuckReset_PlayerButtonUp", function(ply, button)
+        if not IsPlayer(ply) then return end
+        if not ply:Alive() or ply:IsSpec() then return end
+        if not ply.TTTBodysnatcherForceDuck then return end
+
+        local key = input.LookupKeyBinding(button)
+        if key == "+duck" then
+            ply:ConCommand("-duck")
+
             net.Start("TTT_BodysnatcherUnforceDuck")
             net.SendToServer()
         end

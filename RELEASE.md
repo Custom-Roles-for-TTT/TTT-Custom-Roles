@@ -1,5 +1,14 @@
 # Release Notes
 
+## 2.2.5 (Beta)
+**Released: January 25th, 2025**
+
+### Additions
+- Added ability to control whether to apply the damage penalties after an assassin has completed their assignments (enabled by default)
+
+### Changes
+- Changed assassin to apply damage scaling to jesters since the reason it wasn't (activated clown) no longer applies anyway
+
 ## 2.2.4 (Beta)
 **Released: January 12th, 2025**
 
@@ -103,11 +112,13 @@ Includes beta updates [2.1.17](#2117-beta) and [2.1.20](#2120-beta).
 ### Changes
 - Changed the plaguemaster's default convar value to make the spread time lower
   - This should make it easier for the plague to naturally spread between infected players
+- Changed how bodysnatcher forced crouch logic works to hopefully fix cases where the resurrected player could not uncrouch
 
 ### Fixes
 - Fixed external roles that belong to teams with default shop items (traitors, detectives) not having those default items in their shop if they set up their equipment items table manually
 - Fixed illusionist not blocking traitor team highlighting when that is enabled
 - Fixed the twins not spawning/despawning correctly when only one twin was assigned through a rolepack
+- Fixed error in the drunk role selection logic when a role doesn't have the `ttt_drunk_can_be_*` convar
 
 ## 2.1.20 (Beta)
 **Released: August 10th, 2024**

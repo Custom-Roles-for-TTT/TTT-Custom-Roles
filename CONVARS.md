@@ -259,6 +259,7 @@ ttt_assassin_target_damage_bonus               1       // Damage bonus that the 
 ttt_assassin_target_bonus_bought               1       // Whether the damage bonus that the assassin has against their target should apply on weapons bought from the shop
 ttt_assassin_wrong_damage_penalty              0.5     // Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)
 ttt_assassin_failed_damage_penalty             0.5     // Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)
+ttt_assassin_damage_penalty_complete           1       // Whether to apply the damage penalties after an assassin has completed their assignments
 ttt_assassin_shop_roles_last                   0       // Whether the assassin should target the shop roles right before Detective or not
 ttt_assassin_credits_starting                  1       // The number of credits an assassin should start with
 ttt_assassin_allow_jesters_kill                1       // Whether the assassin can kill a member of the jester team without damage penalty, even if it is not their target

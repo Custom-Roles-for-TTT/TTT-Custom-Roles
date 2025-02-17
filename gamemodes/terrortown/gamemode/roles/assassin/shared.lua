@@ -71,6 +71,10 @@ table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
     decimal = 2
 })
 table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
+    cvar = "ttt_assassin_damage_penalty_complete",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
     cvar = "ttt_assassin_shop_roles_last",
     type = ROLE_CONVAR_TYPE_BOOL
 })

@@ -274,7 +274,7 @@ function SWEP:DoUnfreeze()
     if CLIENT then return end
     local freeze_count = self:AdjustFreezeCount(self.TargetEntity, -1, 1)
     -- Only unfreeze the target if nobody else is draining them
-    if freeze_count == 0 then
+    if freeze_count <= 0 then
         self.TargetEntity:Freeze(false)
     end
     self.TargetEntity:RemoveEFlags(EFL_NO_DAMAGE_FORCES)
