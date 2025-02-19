@@ -47,6 +47,8 @@ globals = {
     "ACT_MP_CROUCH_IDLE",
     "ACT_MP_CROUCHWALK",
     "ACT_MP_JUMP",
+    "ACT_MP_RELOAD_CROUCH",
+    "ACT_MP_RELOAD_STAND",
     "ACT_MP_RUN",
     "ACT_MP_WALK",
     "ACT_RANGE_ATTACK1",
