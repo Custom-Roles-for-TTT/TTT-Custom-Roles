@@ -24,7 +24,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.2.5"
+CR_VERSION = "2.2.6"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -1478,8 +1478,10 @@ SPECIAL_DETECTIVE_HIDE_FOR_ALL = 1
 SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
 
 -- Misc. role constants
-UNITS_PER_METER = 52.49
+UNITS_PER_FOOT = 12
+UNITS_PER_METER = 39.37
 UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
+UNITS_PER_SIX_METERS = UNITS_PER_METER * 6
 
 -- Message queue modes
 MSG_PRINTBOTH = 1

@@ -133,7 +133,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
             end
             handled = true
         elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") then
-            OnVindicatorSuccess(attacker, victim, "You ha1ve successfully killed your target.")
+            OnVindicatorSuccess(attacker, victim, "You have successfully killed your target.")
             handled = true
         end
     end

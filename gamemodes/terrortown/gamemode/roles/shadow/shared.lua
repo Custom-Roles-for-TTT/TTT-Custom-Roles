@@ -46,7 +46,7 @@ CreateConVar("ttt_shadow_start_timer", "30", FCVAR_REPLICATED, "How much time (i
 CreateConVar("ttt_shadow_buffer_timer", "7", FCVAR_REPLICATED, "How much time (in seconds) the shadow can stay out of their target's radius", 1, 30)
 CreateConVar("ttt_shadow_delay_timer_min", "0", FCVAR_REPLICATED, "Minimum time (in seconds) before the shadow is assigned a target at the start of the round", 0, 180)
 CreateConVar("ttt_shadow_delay_timer_max", "0", FCVAR_REPLICATED, "Maximum time (in seconds) before the shadow is assigned a target at the start of the round", 0, 180)
-CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_REPLICATED, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
+CreateConVar("ttt_shadow_dead_radius", "4", FCVAR_REPLICATED, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
 CreateConVar("ttt_shadow_target_buff", "4", FCVAR_REPLICATED, "The type of buff the shadow should get while near their target for enough time. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join. 5 - Kill target and steal their role.", 0, 5)
 CreateConVar("ttt_shadow_target_buff_delay", "90", FCVAR_REPLICATED, "How long (in seconds) the shadow needs to be near their target before the buff takes effect", 1, 120)
 CreateConVar("ttt_shadow_target_buff_show_progress", "1", FCVAR_REPLICATED, "Whether to show a progress bar for the when the shadow's buff will be activated", 0, 1)
@@ -58,7 +58,7 @@ CreateConVar("ttt_shadow_failure_mode", "0", FCVAR_REPLICATED, "How to handle th
 
 CreateConVar("ttt_sponge_device_for_shadow", "0", FCVAR_REPLICATED, "Whether the shadow should get the spongifier", 0, 1)
 
-local shadow_alive_radius = CreateConVar("ttt_shadow_alive_radius", "8", FCVAR_REPLICATED, "The radius (in meters) from the living target that the shadow has to stay within", 1, 15)
+local shadow_alive_radius = CreateConVar("ttt_shadow_alive_radius", "10", FCVAR_REPLICATED, "The radius (in meters) from the living target that the shadow has to stay within", 1, 15)
 local shadow_speed_mult = CreateConVar("ttt_shadow_speed_mult", "1.1", FCVAR_REPLICATED, "The minimum multiplier to use on the shadow's sprint speed when they are outside of their target radius (e.g. 1.1 = 110% normal speed)", 1, 2)
 local shadow_speed_mult_max = CreateConVar("ttt_shadow_speed_mult_max", "1.5", FCVAR_REPLICATED, "The maximum multiplier to use on the shadow's sprint speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)", 1, 2)
 local shadow_sprint_recovery = CreateConVar("ttt_shadow_sprint_recovery", "0.1", FCVAR_REPLICATED, "The minimum amount of stamina to recover per tick when the shadow is outside of their target radius", 0, 1)

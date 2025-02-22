@@ -29,7 +29,7 @@ end)
 ---------------------
 
 local function ShouldRedirectDamage(sponge, victim, attacker)
-    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
 
     local auraEndTime = victim:GetNWFloat("SpongeAuraEndTime", -1)
     if victim:GetPos():Distance(sponge:GetPos()) <= radius or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
@@ -98,7 +98,7 @@ end)
 local diff_per_death = 0
 hook.Add("TTTBeginRound", "Sponge_AuraSize_TTTBeginRound", function()
     if sponge_aura_shrink:GetBool() then
-        local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+        local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
         local starting_players = #util.GetAlivePlayers()
         diff_per_death = radius / starting_players
     else
@@ -109,7 +109,7 @@ end)
 -- Decrease the aura radius for each player death
 local aura_deaths = {}
 hook.Add("PostPlayerDeath", "Sponge_AuraSize_PostPlayerDeath", function(ply)
-    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
     SetGlobalFloat("ttt_sponge_aura_radius", radius - diff_per_death)
     aura_deaths[ply:SteamID64()] = true
 end)
@@ -121,7 +121,7 @@ hook.Add("PlayerSpawn", "Sponge_AuraSize_PlayerSpawn", function(ply, transition)
     local sid64 = ply:SteamID64()
     if not aura_deaths[sid64] then return end
 
-    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
     SetGlobalFloat("ttt_sponge_aura_radius", radius + diff_per_death)
     aura_deaths[sid64] = false
 end)
@@ -132,7 +132,7 @@ end)
 
 -- Flag a sponge when all living players are within their radius
 hook.Add("Think", "Sponge_Aura_Think", function()
-    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
     local alive_players = #util.GetAlivePlayers()
     local floatTime = sponge_aura_float_time:GetInt()
     for _, p in PlayerIterator() do

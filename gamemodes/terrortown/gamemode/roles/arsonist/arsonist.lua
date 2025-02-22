@@ -14,7 +14,7 @@ local MathRandom = math.random
 -- CONVARS --
 -------------
 
-local arsonist_douse_float_time = CreateConVar("ttt_arsonist_douse_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the arsonist to lose their target after getting out of range", 0, 60)
+local arsonist_douse_float_time = CreateConVar("ttt_arsonist_douse_float_time", "3", FCVAR_NONE, "The amount of time (in seconds) it takes for the arsonist to lose their target after getting out of range", 0, 60)
 local arsonist_douse_cooldown = CreateConVar("ttt_arsonist_douse_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the arsonist's douse goes on cooldown for after they lose their target", 0, 60)
 local arsonist_douse_require_los = CreateConVar("ttt_arsonist_douse_require_los", "1")
 local arsonist_douse_distance = CreateConVar("ttt_arsonist_douse_distance", "250", FCVAR_NONE, "The maximum distance away the dousing target can be", 50, 1000)
