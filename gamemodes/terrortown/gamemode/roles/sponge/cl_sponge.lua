@@ -56,7 +56,7 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
             ply.SpongeAuraEmitter:SetPos(pos)
             ply.SpongeAuraNextPart = CurTime() + 0.02
             ply.SpongeAuraDir = ply.SpongeAuraDir + 0.05
-            local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+            local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
             local vec = Vector(MathSin(ply.SpongeAuraDir) * radius, MathCos(ply.SpongeAuraDir) * radius, 10)
             local particle = ply.SpongeAuraEmitter:Add("particle/sponge.vmt", ply_pos + vec)
             particle:SetVelocity(Vector(0, 0, 20))
@@ -80,12 +80,12 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
             if p:IsActiveSponge() then
                 if sponge_aura_mode:GetInt() == SPONGE_ATTACKER_AND_VICTIM then
                     local cliAuraEndTime = client:GetNWFloat("SpongeAuraEndTime", -1)
-                    if client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) or (cliAuraEndTime ~= -1 and cliAuraEndTime > CurTime()) then
+                    if client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS) or (cliAuraEndTime ~= -1 and cliAuraEndTime > CurTime()) then
                         break
                     end
                 end
                 local auraEndTime = ply:GetNWFloat("SpongeAuraEndTime", -1)
-                if not p:GetNWBool("SpongeAllInRadius", false) and (ply:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) or (auraEndTime ~= -1 and auraEndTime > CurTime())) then
+                if not p:GetNWBool("SpongeAllInRadius", false) and (ply:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS) or (auraEndTime ~= -1 and auraEndTime > CurTime())) then
                     local ply_pos = ply:GetPos()
                     if not ply.SpongeAuraEmitter then ply.SpongeAuraEmitter = ParticleEmitter(ply_pos) end
                     if not ply.SpongeAuraNextPart then ply.SpongeAuraNextPart = CurTime() end
@@ -136,7 +136,7 @@ hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
     for _, p in PlayerIterator() do
         if p:IsActiveSponge() then
             local auraEndTime = client:GetNWFloat("SpongeAuraEndTime", -1)
-            if client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
+            if client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS) or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
                 inside = true
                 if p:GetNWBool("SpongeAllInRadius", false) then
                     allInside = true

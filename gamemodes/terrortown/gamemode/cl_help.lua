@@ -75,7 +75,16 @@ CreateClientConVar("ttt_bypass_culling", "1", true, true, "Whether to bypass vis
 
 HELPSCRN = {}
 
-local dframe
+local dframe = nil
+hook.Add("OnPauseMenuShow", "Help_OnPauseMenuShow", function()
+    -- If we needed to close the help menu, don't open the pause menu too
+    if IsValid(dframe) then
+        dframe:Close()
+        dframe = nil
+        return false
+    end
+end)
+
 function HELPSCRN:Show()
     if IsValid(dframe) then return end
     local margin = 15
@@ -92,7 +101,10 @@ function HELPSCRN:Show()
     dbut:SetSize(bw, bh)
     dbut:SetPos(w - bw - margin, h - bh - margin / 2)
     dbut:SetText(GetTranslation("close"))
-    dbut.DoClick = function() dframe:Close() end
+    dbut.DoClick = function()
+        dframe:Close()
+        dframe = nil
+    end
 
     local dtabs = vgui.Create("DPropertySheet", dframe)
     dtabs:SetPos(margin, margin * 2)
