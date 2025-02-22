@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.2.6 (Beta)
-**Released:**
+**Released: February 22nd, 2025**
 
 ### Changes
 - Ported "TTT: Magneto-stick code cleanup"
