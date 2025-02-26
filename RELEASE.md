@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.2.7 (Beta)
+**Released:**
+
+### Fixes
+- Fixed error when a vindicator tries to respawn after their target has disconnected
+
 ## 2.2.6 (Beta)
 **Released: February 22nd, 2025**
 
