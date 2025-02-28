@@ -246,7 +246,7 @@ if CLIENT then
         end
 
         -- Force the scoreboard to refresh so the updated role information is shown
-        if sboard_panel then
+        if IsValid(sboard_panel) then
             GAMEMODE:ScoreboardHide()
             sboard_panel:Remove()
             sboard_panel = nil

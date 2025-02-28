@@ -378,7 +378,7 @@ function PANEL:SetPlayer(ply)
 
     self.voice.DoRightClick = function()
         if IsValid(ply) and ply ~= LocalPlayer() then
-           self:ShowMicVolumeSlider()
+            self.voice.volume = self:ShowMicVolumeSlider()
         end
      end
 
@@ -528,14 +528,6 @@ function PANEL:DoRightClick()
     menu:Open()
 end
 
-local volumeFrame
-local function HideVolume()
-   if IsValid(volumeFrame) then
-    volumeFrame:Close()
-   end
-end
-hook.Add("ScoreboardHide", "TTT_HideVolume", HideVolume)
-
 function PANEL:ShowMicVolumeSlider()
     local width = 300
     local height = 50
@@ -551,23 +543,23 @@ function PANEL:ShowMicVolumeSlider()
     currentPlayerVolume = currentPlayerVolume ~= nil and currentPlayerVolume or 1
 
     -- Frame for the slider
-    volumeFrame = vgui.Create("DFrame", self)
-    volumeFrame:SetPos(x, y)
-    volumeFrame:SetSize(width, height)
-    volumeFrame:MakePopup()
-    volumeFrame:SetTitle("")
-    volumeFrame:ShowCloseButton(false)
-    volumeFrame:SetDraggable(false)
-    volumeFrame:SetSizable(false)
-    volumeFrame.Paint = function(s, w, h)
+    local frame = vgui.Create("DFrame", self)
+    frame:SetPos(x, y)
+    frame:SetSize(width, height)
+    frame:MakePopup()
+    frame:SetTitle("")
+    frame:ShowCloseButton(false)
+    frame:SetDraggable(false)
+    frame:SetSizable(false)
+    frame.Paint = function(s, w, h)
         draw.RoundedBox(5, 0, 0, w, h, Color(24, 25, 28, 255))
     end
 
     -- Automatically close after 10 seconds (something may have gone wrong)
-    timer.Create("TTT_CloseVolumeSlider", 10, 1, HideVolume)
+    timer.Simple(10, function() if IsValid(frame) then frame:Close() end end)
 
     -- "Player volume"
-    local label = vgui.Create("DLabel", volumeFrame)
+    local label = vgui.Create("DLabel", frame)
     label:SetPos(padding, padding)
     label:SetFont("cool_small")
     label:SetSize(width - padding * 2, 20)
@@ -575,7 +567,7 @@ function PANEL:ShowMicVolumeSlider()
     label:SetText(LANG.GetTranslation("sb_playervolume"))
 
     -- Slider
-    local slider = vgui.Create("DSlider", volumeFrame)
+    local slider = vgui.Create("DSlider", frame)
     slider:SetHeight(sliderHeight)
     slider:Dock(TOP)
     slider:DockMargin(padding, 0, padding, 0)
@@ -587,8 +579,8 @@ function PANEL:ShowMicVolumeSlider()
     end
 
     -- Close the slider panel once the player has selected a volume
-    slider.OnMouseReleased = function(panel, mcode) volumeFrame:Close() end
-    slider.Knob.OnMouseReleased = function(panel, mcode) volumeFrame:Close() end
+    slider.OnMouseReleased = function(panel, mcode) frame:Close() end
+    slider.Knob.OnMouseReleased = function(panel, mcode) frame:Close() end
 
     -- Slider rendering
     -- Render slider bar
@@ -622,6 +614,22 @@ function PANEL:ShowMicVolumeSlider()
 
         draw.RoundedBox(100, 0, 0, sliderHeight, sliderHeight, COLOR_WHITE)
     end
- end
+
+    return frame
+end
+
+local function HideVolumePanels()
+    if not IsValid(sboard_panel) then return end
+
+    for _, grp in pairs(sboard_panel.ply_groups) do
+        for _, ply in pairs(grp.rows) do
+            if IsValid(ply.voice.volume) then
+               ply.voice.volume:Close()
+               ply.voice.volume = nil
+            end
+        end
+    end
+end
+hook.Add("ScoreboardHide", "TTT_HideVolumePanels", HideVolumePanels)
 
 vgui.Register("TTTScorePlayerRow", PANEL, "DButton")
