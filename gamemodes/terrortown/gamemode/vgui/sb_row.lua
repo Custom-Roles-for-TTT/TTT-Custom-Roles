@@ -26,9 +26,9 @@ local function HideVolumePanels()
     for _, pnl in pairs(OpenedVoicePanels) do
         if IsValid(pnl) then
             pnl:Close()
-            pnl = nil
         end
     end
+    table.Empty(OpenedVoicePanels)
 end
 hook.Add("ScoreboardHide", "TTT_HideVolumePanels", HideVolumePanels)
 
