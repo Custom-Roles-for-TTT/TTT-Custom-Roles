@@ -3,6 +3,9 @@
 ## 2.2.7 (Beta)
 **Released:**
 
+### Additions
+- Ported "TTT: add ttt_filter_role entity"
+
 ### Fixes
 - Fixed error when a vindicator tries to respawn after their target has disconnected
 - Ported "TTT: Close player volume slider along with scoreboard"
