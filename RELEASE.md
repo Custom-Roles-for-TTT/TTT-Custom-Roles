@@ -6,9 +6,13 @@
 ### Additions
 - Ported "TTT: add ttt_filter_role entity"
 
+### Changes
+- Ported "TTT: Let TTTLastWordsMsg hook override default behaviour"
+
 ### Fixes
-- Fixed error when a vindicator tries to respawn after their target has disconnected
 - Ported "TTT: Close player volume slider along with scoreboard"
+- Fixed error when a vindicator tries to respawn after their target has disconnected
+- Fixed `TTTLastWordsMsg` hook missing
 
 ## 2.2.6 (Beta)
 **Released: February 22nd, 2025**
