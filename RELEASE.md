@@ -11,6 +11,7 @@
 
 ### Fixes
 - Ported "TTT: Close player volume slider along with scoreboard"
+- Ported "[TTT] fix players sometimes being revealed as dead when they chat/voicechat right as they die"
 - Fixed error when a vindicator tries to respawn after their target has disconnected
 - Fixed `TTTLastWordsMsg` hook missing
 
