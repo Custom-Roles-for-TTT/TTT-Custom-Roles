@@ -8,6 +8,7 @@
 
 ### Changes
 - Ported "TTT: Let TTTLastWordsMsg hook override default behaviour"
+- Changed the sponge "all in radius" detection logic to hopefully work around a case where it wasn't counting correctly
 
 ### Fixes
 - Ported "TTT: Close player volume slider along with scoreboard"

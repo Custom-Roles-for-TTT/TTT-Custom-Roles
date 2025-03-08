@@ -156,7 +156,7 @@ hook.Add("Think", "Sponge_Aura_Think", function()
 
         if sponge_aura_mode:GetInt() == SPONGE_ALL_PLAYERS then
             local all_in_radius = p:GetNWBool("SpongeAllInRadius", false)
-            local should_all_in_radius = alive_players == playersInRadius
+            local should_all_in_radius = playersInRadius >= alive_players
             if all_in_radius ~= should_all_in_radius then
                 p:SetNWBool("SpongeAllInRadius", should_all_in_radius)
             end
