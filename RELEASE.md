@@ -16,6 +16,7 @@
 - Fixed error when a vindicator tries to respawn after their target has disconnected
 - Fixed `TTTLastWordsMsg` hook missing
 - Fixed illusionist scoreboard blocking not working for dead players
+- Fixed vindicator not having their respawn location set far from their killer sometimes
 
 ## 2.2.6 (Beta)
 **Released: February 22nd, 2025**

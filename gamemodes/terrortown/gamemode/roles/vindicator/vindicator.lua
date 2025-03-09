@@ -67,10 +67,8 @@ local function ActivateVindicator(vindicator, target)
         end
     end
     if IsValid(furthestSpawn) then
-        local respawnPos = FindRespawnLocation(furthestSpawn:GetPos())
-        if respawnPos then
-            vindicator:SetPos(respawnPos)
-        end
+        local furthestPos = furthestSpawn:GetPos()
+        vindicator:SetPos(FindRespawnLocation(furthestPos) or furthestPos)
     end
 
     local vect = target:GetPos() - vindicator:GetPos()
