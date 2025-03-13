@@ -30,9 +30,10 @@ end)
 
 local function ShouldRedirectDamage(sponge, victim, attacker)
     local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
+    local radiusSqr = radius * radius
 
     local auraEndTime = victim:GetNWFloat("SpongeAuraEndTime", -1)
-    if victim:GetPos():Distance(sponge:GetPos()) <= radius or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
+    if victim:GetPos():DistToSqr(sponge:GetPos()) <= radiusSqr or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
         if sponge_aura_mode:GetInt() == SPONGE_ALL_PLAYERS then
             local living_players = player.GetLivingInRadius(sponge:GetPos(), radius)
             if #living_players == #util.GetAlivePlayers() then return false end
@@ -40,7 +41,7 @@ local function ShouldRedirectDamage(sponge, victim, attacker)
         else
             if not IsPlayer(attacker) then return false end
             local attAuraEndTime = attacker:GetNWFloat("SpongeAuraEndTime", -1)
-            if attacker:GetPos():Distance(sponge:GetPos()) <= radius or (attAuraEndTime ~= -1 and attAuraEndTime > CurTime()) then return false end
+            if attacker:GetPos():DistToSqr(sponge:GetPos()) <= radiusSqr or (attAuraEndTime ~= -1 and attAuraEndTime > CurTime()) then return false end
             return true
         end
     end
@@ -133,6 +134,7 @@ end)
 -- Flag a sponge when all living players are within their radius
 hook.Add("Think", "Sponge_Aura_Think", function()
     local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
+    local radiusSqr = radius * radius
     local alive_players = #util.GetAlivePlayers()
     local floatTime = sponge_aura_float_time:GetInt()
     for _, p in PlayerIterator() do
@@ -143,7 +145,7 @@ hook.Add("Think", "Sponge_Aura_Think", function()
         for _, v in PlayerIterator() do
             if not p:Alive() or p:IsSpec() then continue end
             if v == p then continue end
-            if v:GetPos():Distance(p:GetPos()) <= radius then
+            if v:GetPos():DistToSqr(p:GetPos()) <= radiusSqr then
                 v:SetNWFloat("SpongeAuraEndTime", CurTime() + floatTime)
                 playersInRadius = playersInRadius + 1
             else

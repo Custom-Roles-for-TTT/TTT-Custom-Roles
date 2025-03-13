@@ -60,7 +60,7 @@ local function ActivateVindicator(vindicator, target)
     local furthestSpawn = nil
     local furthestDistance = 0
     for _, spawn in ipairs(spawns) do
-        local distance = spawn:GetPos():Distance(target:GetPos())
+        local distance = spawn:GetPos():DistToSqr(target:GetPos())
         if distance > furthestDistance then
             furthestSpawn = spawn
             furthestDistance = distance

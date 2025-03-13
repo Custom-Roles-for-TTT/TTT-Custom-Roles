@@ -206,7 +206,8 @@ local function InRange(ply, target)
 
     local plyPos = ply:GetPos()
     local targetPos = target:GetPos()
-    if plyPos:Distance(targetPos) > informant_scanner_distance:GetInt() then return false end
+    local scanner_distance = informant_scanner_distance:GetInt()
+    if plyPos:DistToSqr(targetPos) > (scanner_distance * scanner_distance) then return false end
 
     return ply:IsOnScreen(target, 0.35)
 end
