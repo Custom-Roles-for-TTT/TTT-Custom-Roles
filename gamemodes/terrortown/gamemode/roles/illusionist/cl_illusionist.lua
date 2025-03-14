@@ -30,7 +30,7 @@ end)
 ---------------
 
 AddHook("TTTTargetIDPlayerRoleIcon", "Illusionist_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
-    if GetGlobalBool("ttt_illusionist_alive", false) and ((cli:IsTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if GetGlobalBool("ttt_illusionist_alive", false) and ((cli:IsActiveTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsActiveMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local icon_overridden, _, _ = cli:IsTargetIDOverridden(ply)
         if icon_overridden then return end
 
@@ -42,7 +42,7 @@ AddHook("TTTTargetIDPlayerRing", "Illusionist_TTTTargetIDPlayerRing", function(e
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
-    if GetGlobalBool("ttt_illusionist_alive", false) and ((cli:IsTraitorTeam() and (ent:IsTraitorTeam() or ent:IsGlitch())) or (cli:IsMonsterTeam() and ent:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if GetGlobalBool("ttt_illusionist_alive", false) and ((cli:IsActiveTraitorTeam() and (ent:IsTraitorTeam() or ent:IsGlitch())) or (cli:IsActiveMonsterTeam() and ent:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local _, ring_overridden, _ = cli:IsTargetIDOverridden(ent)
         if ring_overridden then return end
 
@@ -54,7 +54,7 @@ AddHook("TTTTargetIDPlayerText", "Illusionist_TTTTargetIDPlayerText", function(e
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
-    if GetGlobalBool("ttt_illusionist_alive", false) and ((cli:IsTraitorTeam() and (ent:IsTraitorTeam() or ent:IsGlitch())) or (cli:IsMonsterTeam() and ent:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if GetGlobalBool("ttt_illusionist_alive", false) and ((cli:IsActiveTraitorTeam() and (ent:IsTraitorTeam() or ent:IsGlitch())) or (cli:IsActiveMonsterTeam() and ent:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local _, _, text_overridden = cli:IsTargetIDOverridden(ent)
         if text_overridden then return end
 
@@ -67,7 +67,7 @@ end)
 ----------------
 
 AddHook("TTTScoreboardPlayerRole", "Illusionist_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
-    if GetGlobalBool("ttt_illusionist_alive", false) and ply ~= cli and ((cli:IsTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if GetGlobalBool("ttt_illusionist_alive", false) and ply ~= cli and ((cli:IsActiveTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsActiveMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local _, role_overridden = cli:IsScoreboardInfoOverridden(ply)
         if role_overridden then return end
 
@@ -84,8 +84,8 @@ AddHook("TTTRadarPlayerRender", "Illusionist_TTTRadarPlayerRender", function(cli
     if cli == tgt then return end
     if not GetGlobalBool("ttt_illusionist_alive", false) then return end
 
-    if (cli:IsTraitorTeam() and (TRAITOR_ROLES[tgt.role] or tgt.role == ROLE_GLITCH)) or
-        (cli:IsMonsterTeam() and MONSTER_ROLES[tgt.role] and illusionist_hides_monsters:GetBool()) then
+    if (cli:IsActiveTraitorTeam() and (TRAITOR_ROLES[tgt.role] or tgt.role == ROLE_GLITCH)) or
+        (cli:IsActiveMonsterTeam() and MONSTER_ROLES[tgt.role] and illusionist_hides_monsters:GetBool()) then
         return ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], color.a)
     end
 end)

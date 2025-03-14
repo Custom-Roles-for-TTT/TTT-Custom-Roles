@@ -102,7 +102,7 @@ hook.Add("FinishMove", "LootGoblin_FinishMove", function(ply, mv)
         local loc = ply:GetPos()
         local sid64 = ply:SteamID64()
         -- Keep track of when a player moves and stop regeneration when they do
-        if playermoveloc[sid64] == nil or math.abs(playermoveloc[sid64]:DistToSqr(loc)) > 0 then
+        if playermoveloc[sid64] == nil or math.abs(playermoveloc[sid64]:Distance(loc)) > 0 then
             StopRegen(ply)
             playermoveloc[sid64] = loc
         -- If regen stuff hasn't started yet, do it

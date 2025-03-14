@@ -285,10 +285,9 @@ hook.Add("TTTSprintStaminaRecovery", "Shadow_TTTSprintStaminaRecovery", function
         end
 
         local default_recovery = sprint_regenerate_innocent:GetFloat()
-        local distance = ply:GetPos():DistToSqr(target:GetPos())
+        local distance = ply:GetPos():Distance(target:GetPos())
         local min_distance = shadow_alive_radius:GetFloat() * UNITS_PER_METER
-        local minDistanceSqr = min_distance * min_distance
-        return ScaleSprintValue(recovery_value, default_recovery, max_recovery, distance, minDistanceSqr)
+        return ScaleSprintValue(recovery_value, default_recovery, max_recovery, distance, min_distance)
     end
 end)
 
@@ -311,10 +310,9 @@ hook.Add("TTTSpeedMultiplier", "Shadow_TTTSpeedMultiplier", function(ply, mults)
             max_speed = speed_value
         end
 
-        local distance = ply:GetPos():DistToSqr(target:GetPos())
+        local distance = ply:GetPos():Distance(target:GetPos())
         local min_distance = shadow_alive_radius:GetFloat() * UNITS_PER_METER
-        local minDistanceSqr = min_distance * min_distance
-        local scaled_speed = ScaleSprintValue(speed_value, 1, max_speed, distance, minDistanceSqr)
+        local scaled_speed = ScaleSprintValue(speed_value, 1, max_speed, distance, min_distance)
         TableInsert(mults, scaled_speed)
     end
 end)

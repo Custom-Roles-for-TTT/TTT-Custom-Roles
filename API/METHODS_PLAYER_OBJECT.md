@@ -154,12 +154,7 @@ Whether `plymeta:IsCustom` returns `true` and the player is active.\
 *Added in:* 1.0.0
 
 ### plymeta:IsActiveDetectiveLike()
-Whether `plymeta:IsDetectiveLike` returns `true` and the player is active.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-### plymeta:IsActiveDetectiveTeam()
-Whether `plymeta:IsDetectiveTeam` returns `true` and the player is active.\
+Whether `plymeta:IsActiveDetectiveLike` returns `true` and the player is active.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
@@ -207,11 +202,6 @@ Whether the player's role is like a detective (e.g. detective or promoted deputy
 Whether the player's role is an unpromoted detective-like role (deputy/impersonator).\
 *Realm:* Client and Server\
 *Added in:* 1.2.5
-
-### plymeta:IsDetectiveTeam()
-Whether the player is a detective role (e.g. detective or special detective).\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
 
 ### plymeta:IsIndependentTeam()
 Whether the player is on the independent team.\

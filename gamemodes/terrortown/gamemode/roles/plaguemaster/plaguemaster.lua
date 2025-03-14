@@ -93,7 +93,6 @@ AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", functi
     -- Check for players within radius and (optionally LOS) to spread the plague
     local spread_time = plaguemaster_spread_time:GetInt()
     local spread_distance = plaguemaster_spread_distance:GetInt()
-    local spreadDistanceSqr = spread_distance * spread_distance
     local spread_require_los = plaguemaster_spread_require_los:GetBool()
     local sid64 = ply:SteamID64()
     local immune = plaguemaster_immune:GetBool()
@@ -108,8 +107,8 @@ AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", functi
             v.TTTPlaguemasterSpreadStartTimes = {}
         end
 
-        local distance = v:GetPos():DistToSqr(ply:GetPos())
-        if distance > spreadDistanceSqr then
+        local distance = v:GetPos():Distance(ply:GetPos())
+        if distance > spread_distance then
             ClearSpreadStart(v, sid64)
             continue
         end

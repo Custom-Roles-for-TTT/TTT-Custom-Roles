@@ -74,9 +74,7 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
         if not ply.SapAuraNextPart then ply.SapAuraNextPart = CurTime() end
         if not ply.SapAuraDir then ply.SapAuraDir = 0 end
         local pos = ply:GetPos() + Vector(0, 0, 30)
-        -- Use DistToSqr as it's more efficient and this is called very frequently
-        -- 9000000 = 3000^2
-        if ply.SapAuraNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
+        if ply.SapAuraNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
             ply.SapAuraEmitter:SetPos(pos)
             ply.SapAuraNextPart = CurTime() + 0.02
             ply.SapAuraDir = ply.SapAuraDir + 0.05
@@ -101,10 +99,8 @@ hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
     if client:IsSapper() then return end
 
     local inside = false
-    local radius = (sapper_aura_radius:GetInt() * UNITS_PER_METER)
-    local radiusSqr = radius * radius
     for _, p in PlayerIterator() do
-        if p:IsActive() and p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr then
+        if p:IsActive() and p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= (sapper_aura_radius:GetInt() * UNITS_PER_METER) then
             inside = true
             break
         end

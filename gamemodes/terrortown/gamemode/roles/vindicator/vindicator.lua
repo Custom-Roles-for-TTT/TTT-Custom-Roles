@@ -37,6 +37,7 @@ local function ActivateVindicator(vindicator, target)
 
     -- Change their team and set their target even if the target is already dead
     SetVindicatorTeam(true)
+    vindicator:SetNWString("VindicatorTarget", target:SteamID64())
     vindicator:SetNWBool("VindicatorIsRespawning", false)
 
     net.Start("TTT_VindicatorActive")
@@ -60,15 +61,17 @@ local function ActivateVindicator(vindicator, target)
     local furthestSpawn = nil
     local furthestDistance = 0
     for _, spawn in ipairs(spawns) do
-        local distance = spawn:GetPos():DistToSqr(target:GetPos())
+        local distance = spawn:GetPos():Distance(target:GetPos())
         if distance > furthestDistance then
             furthestSpawn = spawn
             furthestDistance = distance
         end
     end
     if IsValid(furthestSpawn) then
-        local furthestPos = furthestSpawn:GetPos()
-        vindicator:SetPos(FindRespawnLocation(furthestPos) or furthestPos)
+        local respawnPos = FindRespawnLocation(furthestSpawn:GetPos())
+        if respawnPos then
+            vindicator:SetPos(respawnPos)
+        end
     end
 
     local vect = target:GetPos() - vindicator:GetPos()
@@ -118,7 +121,6 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
             if attacker:IsVictimChangingRole(victim) then return end
 
             victim:SetNWBool("VindicatorIsRespawning", true)
-            victim:SetNWString("VindicatorTarget", attacker:SteamID64())
 
             local delay = vindicator_respawn_delay:GetInt()
             if delay == 0 then
@@ -266,19 +268,6 @@ hook.Add("PlayerDisconnected", "Vindicator_PlayerDisconnected", function(ply)
             v:QueueMessage(MSG_PRINTBOTH, "Your target has disconnected so you have rejoined the innocent team!")
             SetVindicatorTeam(false)
             v:SetNWString("VindicatorTarget", "")
-
-            -- If this vindicator is currently in the respawn delay, stop the timer and respawn them immediately instead
-            if v:GetNWBool("VindicatorIsRespawning", false) then
-                v:SetNWBool("VindicatorIsRespawning", false)
-                timer.Remove("VindicatorRespawn" .. v:SteamID64())
-
-                local body = v.server_ragdoll or v:GetRagdollEntity()
-                if IsValid(body) then
-                    body:Remove()
-                end
-                v:SpawnForRound(true)
-                v:SetHealth(vindicator_respawn_health:GetInt())
-            end
         end
     end
 end)

@@ -108,9 +108,7 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
             if not ent.WispEmitter then ent.WispEmitter = ParticleEmitter(ent:GetPos()) end
             if not ent.WispNextPart then ent.WispNextPart = CurTime() end
             local pos = ent:GetPos() + Vector(0, 0, 64)
-            -- Use DistToSqr as it's more efficient and this is called very frequently
-            -- 9000000 = 3000^2
-            if ent.WispNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
+            if ent.WispNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
                 ent.WispEmitter:SetPos(pos)
                 ent.WispNextPart = CurTime() + MathRand(0.003, 0.01)
                 local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)

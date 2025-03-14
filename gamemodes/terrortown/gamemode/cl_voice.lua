@@ -19,7 +19,6 @@ local vgui = vgui
 
 local AddHook = hook.Add
 local CallHook = hook.Call
-local RunHook = hook.Run
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
@@ -72,15 +71,6 @@ local function RoleChatRecv()
         ": " .. text)
 end
 net.Receive("TTT_RoleChat", RoleChatRecv)
-
-function GM:GetTeamColor(ent)
-    -- don't reveal that a player has died when they happen to chat or voicechat at the moment of death
-    if ent:IsPlayer() and ent:IsSpec() and ScoreGroup(ent) == GROUP_NOTFOUND then
-        return RunHook("GetTeamNumColor", TEAM_TERROR)
-    end
-
-    return BaseClass.GetTeamColor(self, ent)
-end
 
 -- special processing for certain special chat types
 function GM:ChatText(idx, name, text, type)

@@ -41,9 +41,7 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
         if not ply.AuraNextPart then ply.AuraNextPart = CurTime() end
         if not ply.AuraDir then ply.AuraDir = 0 end
         local pos = ply:GetPos() + Vector(0, 0, 30)
-        -- Use DistToSqr as it's more efficient and this is called very frequently
-        -- 9000000 = 3000^2
-        if ply.AuraNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
+        if ply.AuraNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
             ply.AuraEmitter:SetPos(pos)
             ply.AuraNextPart = CurTime() + 0.02
             ply.AuraDir = ply.AuraDir + 0.05
@@ -78,10 +76,8 @@ hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
     if client:IsPaladin() then return end
 
     local inside = false
-    local radius = (paladin_aura_radius:GetFloat() * UNITS_PER_METER)
-    local radiusSqr = radius * radius
     for _, p in PlayerIterator() do
-        if p:IsActive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr then
+        if p:IsActive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= (paladin_aura_radius:GetFloat() * UNITS_PER_METER) then
             inside = true
             break
         end

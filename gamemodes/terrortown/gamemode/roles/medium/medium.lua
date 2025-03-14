@@ -148,10 +148,8 @@ local function FindSeanceTarget(medium)
 
         if ply:GetNWInt("TTTMediumSeanceStage") >= medium_seance_max_info:GetInt() then continue end
 
-        local distance = ent:GetPos():DistToSqr(medium:GetPos())
-        local seance_distance = medium_seance_distance:GetInt()
-        local seanceDistanceSqr = seance_distance * seance_distance
-        if distance < seanceDistanceSqr and (closest_dist == -1 or distance < closest_dist) then
+        local distance = ent:GetPos():Distance(medium:GetPos())
+        if distance < medium_seance_distance:GetInt() and (closest_dist == -1 or distance < closest_dist) then
             closest_dist = distance
             closest_player = ply
         end
@@ -177,9 +175,7 @@ local function InRange(ply, target)
 
     local plyPos = ply:GetPos()
     local targetPos = target:GetPos()
-    local seance_distance = medium_seance_distance:GetInt()
-    local seanceDistanceSqr = seance_distance * seance_distance
-    if plyPos:DistToSqr(targetPos) > seanceDistanceSqr then return false end
+    if plyPos:Distance(targetPos) > medium_seance_distance:GetInt() then return false end
 
     return true
 end
