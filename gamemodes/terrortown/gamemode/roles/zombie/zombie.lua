@@ -364,7 +364,7 @@ hook.Add("DoPlayerDeath", "Zombie_DoPlayerDeath", function(victim, attacker, dmg
     if not IsValid(inflictor) or WEPS.GetClass(inflictor) ~= "weapon_zom_claws" then return end
 
     -- If they were killed by a normal slash attack or spit conversion is enabled and they were killed by spitting, convert them
-    if not attacker:IsRoleAbilityDisabled() and (dmginfo:IsDamageType(DMG_SLASH) or (zombie_spit_convert:GetBool() and dmginfo:IsDamageType(DMG_BULLET))) then
+    if (dmginfo:IsDamageType(DMG_SLASH) or (zombie_spit_convert:GetBool() and dmginfo:IsDamageType(DMG_BULLET))) and not attacker:IsRoleAbilityDisabled() then
         attacker:AddCredits(1)
         LANG.Msg(attacker, "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
         hook.Call("TTTPlayerRoleChangedByItem", nil, attacker, victim, inflictor)
