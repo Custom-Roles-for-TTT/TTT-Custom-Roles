@@ -27,11 +27,12 @@ hook.Add("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound", function()
     local paladinHeal = paladin_heal_rate:GetInt()
     local paladinHealSelf = paladin_heal_self:GetBool()
     local paladinRadius = paladin_aura_radius:GetFloat() * UNITS_PER_METER
+    local paladinRadiusSqr = paladinRadius * paladinRadius
     timer.Create("paladinheal", 1, 0, function()
         for _, p in PlayerIterator() do
             if p:IsActivePaladin() then
                 for _, v in PlayerIterator() do
-                    if v:IsActive() and (not v:IsPaladin() or paladinHealSelf) and v:GetPos():Distance(p:GetPos()) <= paladinRadius and v:Health() < v:GetMaxHealth() then
+                    if v:IsActive() and (not v:IsPaladin() or paladinHealSelf) and v:GetPos():DistToSqr(p:GetPos()) <= paladinRadiusSqr and v:Health() < v:GetMaxHealth() then
                         local health = math.min(v:GetMaxHealth(), v:Health() + paladinHeal)
                         CallHook("TTTPaladinAuraHealed", nil, p, v, health - v:Health())
                         v:SetHealth(health)
@@ -58,8 +59,9 @@ hook.Add("ScalePlayerDamage", "Paladin_ScalePlayerDamage", function(ply, hitgrou
 
     local withPaladin = false
     local radius = paladin_aura_radius:GetFloat() * UNITS_PER_METER
+    local radiusSqr = radius * radius
     for _, v in PlayerIterator() do
-        if v:IsActivePaladin() and v:GetPos():Distance(ply:GetPos()) <= radius then
+        if v:IsActivePaladin() and v:GetPos():DistToSqr(ply:GetPos()) <= radiusSqr then
             withPaladin = true
             break
         end

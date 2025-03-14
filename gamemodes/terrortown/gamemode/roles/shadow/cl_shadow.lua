@@ -163,7 +163,9 @@ end)
 hook.Add("TTTTargetIDPlayerTargetIcon", "Shadow_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
     if cli:IsShadow() and ply:SteamID64() == cli:GetNWString("ShadowTarget", "") then
         local iconColor = ROLE_COLORS_SPRITE[ROLE_TRAITOR]
-        if cli:GetPos():Distance(ply:GetPos()) <= shadow_alive_radius:GetFloat() * UNITS_PER_METER then
+        local radius = shadow_alive_radius:GetFloat() * UNITS_PER_METER
+        local radiusSqr = radius * radius
+        if cli:GetPos():DistToSqr(ply:GetPos()) <= radiusSqr then
             iconColor = ROLE_COLORS_SPRITE[ROLE_INNOCENT]
         end
         return "shadow", true, iconColor, "up"
@@ -241,7 +243,7 @@ local function EnableShadowTargetHighlights()
         if not IsValid(ent) then return end
 
         local color = ROLE_COLORS[ROLE_TRAITOR]
-        if client:GetPos():Distance(ent:GetPos()) <= r then
+        if client:GetPos():DistToSqr(ent:GetPos()) <= (r * r) then
             color = ROLE_COLORS[ROLE_INNOCENT]
         end
 
@@ -284,7 +286,9 @@ local function DrawRadius(ply, ent, r)
     if not ent.RadiusDir then ent.RadiusDir = 0 end
     local pos = ent:GetPos() + Vector(0, 0, 30)
 
-    if ent.RadiusNextPart < CurTime() and ply:GetPos():Distance(pos) <= 3000 then
+    -- Use DistToSqr as it's more efficient and this is called very frequently
+    -- 9000000 = 3000^2
+    if ent.RadiusNextPart < CurTime() and ply:GetPos():DistToSqr(pos) <= 9000000 then
         for _ = 1, 24 do
             ent.RadiusEmitter:SetPos(pos)
             ent.RadiusNextPart = CurTime() + 0.02
@@ -300,7 +304,7 @@ local function DrawRadius(ply, ent, r)
             particle:SetRoll(MathRand(0, MathPi))
             particle:SetRollDelta(0)
             local color = ROLE_COLORS[ROLE_TRAITOR]
-            if ply:GetPos():Distance(ent:GetPos()) <= r then
+            if ply:GetPos():DistToSqr(ent:GetPos()) <= (r * r) then
                 color = ROLE_COLORS[ROLE_INNOCENT]
             end
             particle:SetColor(color.r, color.g, color.b)
@@ -328,7 +332,9 @@ local function DrawLink(ply, ent)
     dir = dir:GetNormalized() * 50
     if ent.LinkNextPart < CurTime() then
         local pos = startPos + (dir * ent.LinkOffset)
-        while startPos:Distance(pos) <= 3000 and startPos:Distance(pos) <= startPos:Distance(endPos) do
+        -- Use DistToSqr as it's more efficient and this is called very frequently
+        -- 9000000 = 3000^2
+        while startPos:DistToSqr(pos) <= 9000000 and startPos:DistToSqr(pos) <= startPos:DistToSqr(endPos) do
             ent.LinkEmitter:SetPos(pos)
             ent.LinkNextPart = CurTime() + 0.02
             local particle = ent.LinkEmitter:Add("particle/wisp.vmt", pos)
@@ -387,7 +393,8 @@ AddHook("Think", "Shadow_Think", function()
             if targetPlayer:IsActive() then
                 local alive_radius = shadow_alive_radius:GetFloat() * UNITS_PER_METER
                 DrawRadius(client, targetPlayer, alive_radius)
-                if client:GetPos():Distance(targetPlayer:GetPos()) > alive_radius then
+                local aliveRadiusSqr = alive_radius * alive_radius
+                if client:GetPos():DistToSqr(targetPlayer:GetPos()) > aliveRadiusSqr then
                     DrawLink(client, targetPlayer)
                 end
             else
@@ -397,7 +404,8 @@ AddHook("Think", "Shadow_Think", function()
                 if IsValid(targetBody) then
                     local dead_radius = shadow_dead_radius:GetFloat() * UNITS_PER_METER
                     DrawRadius(client, targetBody, dead_radius)
-                    if client:GetPos():Distance(targetBody:GetPos()) > dead_radius then
+                    local deadRadiusSqr = dead_radius * dead_radius
+                    if client:GetPos():DistToSqr(targetBody:GetPos()) > deadRadiusSqr then
                         DrawLink(client, targetBody)
                     end
                 end
