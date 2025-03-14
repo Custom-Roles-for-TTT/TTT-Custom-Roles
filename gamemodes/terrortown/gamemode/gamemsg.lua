@@ -12,6 +12,7 @@ local table = table
 
 local PlayerIterator = player.Iterator
 local CallHook = hook.Call
+local RunHook = hook.Run
 
 -- NOTE: most uses of the Msg functions here have been moved to the LANG
 -- functions. These functions are essentially deprecated, though they won't be
@@ -431,11 +432,14 @@ local function LastWordsMsg(ply, words)
 
     -- add optional context relating to death type
     local context = LastWordContext[ply.death_type] or ""
+    local lastWordsStr = words .. (final and "" or "--") .. context
 
-    net.Start("TTT_LastWordsMsg")
-        net.WritePlayer(ply)
-        net.WriteString(words .. (final and "" or "--") .. context)
-    net.Broadcast()
+    if RunHook("TTTLastWordsMsg", ply, lastWordsStr, words) ~= true then
+        net.Start("TTT_LastWordsMsg")
+            net.WritePlayer(ply)
+            net.WriteString(lastWordsStr)
+        net.Broadcast()
+    end
 end
 
 local function LastWords(ply, cmd, args)

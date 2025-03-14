@@ -21,6 +21,17 @@ local MathMin = math.min
 local MathRound = math.Round
 local MathSin = math.sin
 
+local OpenedVoicePanels = {}
+local function HideVolumePanels()
+    for _, pnl in pairs(OpenedVoicePanels) do
+        if IsValid(pnl) then
+            pnl:Close()
+        end
+    end
+    table.Empty(OpenedVoicePanels)
+end
+hook.Add("ScoreboardHide", "TTT_HideVolumePanels", HideVolumePanels)
+
 SB_ROW_HEIGHT = 24 --16
 
 local PANEL = {}
@@ -378,7 +389,9 @@ function PANEL:SetPlayer(ply)
 
     self.voice.DoRightClick = function()
         if IsValid(ply) and ply ~= LocalPlayer() then
-           self:ShowMicVolumeSlider()
+            HideVolumePanels()
+            local voiceSlider = self:ShowMicVolumeSlider()
+            table.insert(OpenedVoicePanels, voiceSlider)
         end
      end
 
@@ -528,14 +541,6 @@ function PANEL:DoRightClick()
     menu:Open()
 end
 
-local volumeFrame
-local function HideVolume()
-   if IsValid(volumeFrame) then
-    volumeFrame:Close()
-   end
-end
-hook.Add("ScoreboardHide", "TTT_HideVolume", HideVolume)
-
 function PANEL:ShowMicVolumeSlider()
     local width = 300
     local height = 50
@@ -544,30 +549,31 @@ function PANEL:ShowMicVolumeSlider()
     local sliderHeight = 16
     local sliderDisplayHeight = 8
 
-    local x = MathMax(gui.MouseX() - width, 0)
+    local x = MathMax(gui.MouseX() - width - padding, 0)
     local y = MathMin(gui.MouseY(), ScrH() - height)
 
     local currentPlayerVolume = self:GetPlayer():GetVoiceVolumeScale()
     currentPlayerVolume = currentPlayerVolume ~= nil and currentPlayerVolume or 1
 
     -- Frame for the slider
-    volumeFrame = vgui.Create("DFrame", self)
-    volumeFrame:SetPos(x, y)
-    volumeFrame:SetSize(width, height)
-    volumeFrame:MakePopup()
-    volumeFrame:SetTitle("")
-    volumeFrame:ShowCloseButton(false)
-    volumeFrame:SetDraggable(false)
-    volumeFrame:SetSizable(false)
-    volumeFrame.Paint = function(s, w, h)
+    local frame = vgui.Create("DFrame", self)
+    frame:SetPos(x, y)
+    frame:SetSize(width, height)
+    frame:MakePopup()
+    frame:SetTitle("")
+    frame:ShowCloseButton(false)
+    frame:SetDraggable(false)
+    frame:SetSizable(false)
+    frame.Paint = function(s, w, h)
         draw.RoundedBox(5, 0, 0, w, h, Color(24, 25, 28, 255))
     end
+    frame.Player = self:GetPlayer()
 
     -- Automatically close after 10 seconds (something may have gone wrong)
-    timer.Create("TTT_CloseVolumeSlider", 10, 1, HideVolume)
+    timer.Simple(10, function() if IsValid(frame) then frame:Close() end end)
 
     -- "Player volume"
-    local label = vgui.Create("DLabel", volumeFrame)
+    local label = vgui.Create("DLabel", frame)
     label:SetPos(padding, padding)
     label:SetFont("cool_small")
     label:SetSize(width - padding * 2, 20)
@@ -575,20 +581,20 @@ function PANEL:ShowMicVolumeSlider()
     label:SetText(LANG.GetTranslation("sb_playervolume"))
 
     -- Slider
-    local slider = vgui.Create("DSlider", volumeFrame)
+    local slider = vgui.Create("DSlider", frame)
     slider:SetHeight(sliderHeight)
     slider:Dock(TOP)
     slider:DockMargin(padding, 0, padding, 0)
     slider:SetSlideX(currentPlayerVolume)
     slider:SetLockY(0.5)
     slider.TranslateValues = function(s, sx, sy)
-        if IsValid(self:GetPlayer()) then self:GetPlayer():SetVoiceVolumeScale(sx) end
+        if IsValid(frame.Player) then frame.Player:SetVoiceVolumeScale(x) end
         return sx, sy
     end
 
     -- Close the slider panel once the player has selected a volume
-    slider.OnMouseReleased = function(panel, mcode) volumeFrame:Close() end
-    slider.Knob.OnMouseReleased = function(panel, mcode) volumeFrame:Close() end
+    slider.OnMouseReleased = function(panel, mcode) frame:Close() end
+    slider.Knob.OnMouseReleased = function(panel, mcode) frame:Close() end
 
     -- Slider rendering
     -- Render slider bar
@@ -622,6 +628,8 @@ function PANEL:ShowMicVolumeSlider()
 
         draw.RoundedBox(100, 0, 0, sliderHeight, sliderHeight, COLOR_WHITE)
     end
- end
+
+    return frame
+end
 
 vgui.Register("TTTScorePlayerRow", PANEL, "DButton")
