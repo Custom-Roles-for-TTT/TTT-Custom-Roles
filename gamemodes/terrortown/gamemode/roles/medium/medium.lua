@@ -269,7 +269,7 @@ local function Scan(ply, target)
 end
 
 hook.Add("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", function(ply)
-    if not ply:IsActiveMedium() then return end
+    if not ply:IsActiveMedium() or ply:IsRoleAbilityDisabled() then return end
 
     local seance_max_info = medium_seance_max_info:GetInt()
     if seance_max_info == MEDIUM_SCANNED_NONE then return end

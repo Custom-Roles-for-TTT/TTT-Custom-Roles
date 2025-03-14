@@ -33,6 +33,10 @@ local function ShouldRedirectDamage(sponge, victim, attacker)
 
     local auraEndTime = victim:GetNWFloat("SpongeAuraEndTime", -1)
     if victim:GetPos():Distance(sponge:GetPos()) <= radius or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
+        if sponge:IsRoleAbilityDisabled() then
+            return false
+        end
+
         if sponge_aura_mode:GetInt() == SPONGE_ALL_PLAYERS then
             local living_players = player.GetLivingInRadius(sponge:GetPos(), radius)
             if #living_players == #util.GetAlivePlayers() then return false end

@@ -182,7 +182,9 @@ function SWEP:PrimaryAttack()
     local ent = tr.Entity
     if IsValid(ent) and (not ent:IsPlayer()) then
         if SERVER then
-            if ent:GetClass() == "prop_ragdoll" and ent.killer_sample then
+            if self:GetOwner():IsActiveDetective() and self:GetOwner():IsRoleAbilityDisabled() then
+                self:Report("dna_notfound")
+            elseif ent:GetClass() == "prop_ragdoll" and ent.killer_sample then
                 if CORPSE.GetFound(ent, false) then
                     self:GatherRagdollSample(ent)
                 else

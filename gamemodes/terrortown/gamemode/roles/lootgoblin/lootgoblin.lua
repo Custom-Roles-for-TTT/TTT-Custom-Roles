@@ -68,7 +68,7 @@ end)
 local function StartRegen(ply)
     local rate = lootgoblin_regen_rate:GetInt()
     timer.Create("LootGoblinRegen_" .. ply:SteamID64(), rate, 0, function()
-        if ply:IsActiveLootGoblin() then
+        if ply:IsActiveLootGoblin() and not ply:IsRoleAbilityDisabled() then
             local hp = ply:Health()
             if hp < ply:GetMaxHealth() then
                 ply:SetHealth(hp + 1)
@@ -334,7 +334,7 @@ end
 
 hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacker)
     if victim:IsLootGoblin() then
-        if victim:IsRoleActive() and not victim:GetNWBool("LootGoblinKilled", false) then
+        if victim:IsRoleActive() and not victim:GetNWBool("LootGoblinKilled", false) and not victim:IsRoleAbilityDisabled() then
             JesterTeamKilledNotification(attacker, victim,
             -- getkillstring
                     function()

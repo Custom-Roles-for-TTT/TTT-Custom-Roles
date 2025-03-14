@@ -39,6 +39,11 @@ local function AssignAssassinTarget(ply, start, delay)
         not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false) or ply:GetNWBool("AssassinComplete", false)
     then
         return
+    else if ply:IsRoleAbilityDisabled() then
+        timer.Remove(ply:Nick() .. "AssassinTarget")
+        ply:ClearQueuedMessage("asnTarget")
+        ply:SetNWBool("AssassinFailed", true)
+        ply:SetNWString("AssassinTarget", "")
     end
 
     -- Reset the target to empty in case there are no valid targets

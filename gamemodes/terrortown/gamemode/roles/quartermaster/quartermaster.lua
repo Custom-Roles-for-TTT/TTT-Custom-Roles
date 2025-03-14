@@ -27,6 +27,10 @@ AddHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment", function(p
         crate.source_ply = ply
         crate:Spawn()
 
+        if ply:IsRoleAbilityDisabled() then
+            crate.item_id = -1
+        end
+
         return false
     end
 end)

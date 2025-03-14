@@ -103,7 +103,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
     end
 
     for _, p in PlayerIterator() do
-        if not p:IsActiveArsonist() then continue end
+        if not p:IsActiveArsonist() or p:IsRoleAbilityDisabled() then continue end
         if p:GetNWBool("TTTArsonistDouseComplete", false) then continue end
 
         local target_sid64 = p:GetNWString("TTTArsonistDouseTarget", "")

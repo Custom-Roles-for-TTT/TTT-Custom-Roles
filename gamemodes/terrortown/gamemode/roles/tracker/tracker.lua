@@ -30,7 +30,7 @@ hook.Add("PlayerFootstep", "Tracker_PlayerFootstep", function(ply, pos, foot, so
 
     local tab = {}
     for k, p in PlayerIterator() do
-        if p:IsActiveTracker() then
+        if p:IsActiveTracker() and not p:IsRoleAbilityDisabled() then
             table.insert(tab, p)
         end
     end

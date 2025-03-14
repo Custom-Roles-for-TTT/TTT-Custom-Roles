@@ -144,7 +144,7 @@ hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderable
     if not client then
         client = LocalPlayer()
     end
-    if not IsPlayer(client) or not client:IsActiveMedium() then return end
+    if not IsPlayer(client) or not client:IsActiveMedium() or client:IsRoleAbilityDisabled() then return end
 
     for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
         if ent:GetNWBool("MediumSpirit", false) then

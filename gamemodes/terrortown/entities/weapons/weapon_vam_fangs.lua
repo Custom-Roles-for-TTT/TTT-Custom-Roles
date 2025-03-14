@@ -176,7 +176,7 @@ function SWEP:PrimaryAttack()
     if CLIENT then return end
 
     local tr = self:GetTraceEntity()
-    if IsValid(tr.Entity) then
+    if IsValid(tr.Entity) and not self:GetOwner():IsRoleAbilityDisabled() then
         local ent = tr.Entity
         if ent:GetClass() == "prop_ragdoll" then
             self:SetTargetIsBody(true)
@@ -202,7 +202,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-    if self:Clip1() == 100 then
+    if self:Clip1() == 100 and not self:GetOwner():IsRoleAbilityDisabled() then
         self:SetClip1(0)
 
         if SERVER then

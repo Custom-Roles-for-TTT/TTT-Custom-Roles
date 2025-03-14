@@ -118,6 +118,14 @@ if SERVER then
 
             local equip_id = tonumber(item_id)
             if equip_id then
+                if equip_id == -1 then
+                    activator:SetNWBool("TTTQuartermasterLooted", true)
+                    hook.Call("TTTQuartermasterCrateOpened", nil, self.source_ply, activator, item_id)
+                    self:Remove()
+
+                    return
+                end
+
                 local has = activator:HasEquipmentItem(equip_id)
                 NotifyPlayer(activator, equip_id, has, true)
                 if has then

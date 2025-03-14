@@ -159,7 +159,8 @@ end
 
 local function GetGlitchedRole(p, glitchMode)
     -- Use the player's role if they are a traitor, otherwise this is a glitch and we should use their fake role
-    local role = p:IsTraitorTeam() and p:GetRole() or p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    local disabledRole = (p:IsGlitch() and not p:IsRoleAbilityDisabled()) and p:GetNWInt("GlitchBluff", ROLE_TRAITOR) or ROLE_NONE
+    local role = p:IsTraitorTeam() and p:GetRole() or disabledRole
     -- Only hide vanilla traitors
     if glitchMode == GLITCH_SHOW_AS_TRAITOR then
         if role == ROLE_TRAITOR then
@@ -488,7 +489,7 @@ function GM:HUDDrawTargetID()
                     elseif not hideBeggar and not hideBodysnatcher then
                         target_traitor = ent:IsTraitor()
                         target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
-                        target_glitch = ent:IsGlitch()
+                        target_glitch = ent:IsGlitch() and not ent:IsRoleAbilityDisabled()
 
                         if glitchRound and (target_traitor or target_special_traitor or (target_glitch and not GetGlobalBool("ttt_zombie_round", false))) then
                             local role, color_role = GetGlitchedRole(ent, glitchMode)

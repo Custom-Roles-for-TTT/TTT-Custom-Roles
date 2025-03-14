@@ -34,7 +34,7 @@ hook.Add("EntityTakeDamage", "Sapper_EntityTakeDamage", function(ent, dmginfo)
                 break
             end
         end
-        if IsPlayer(sapper) then
+        if IsPlayer(sapper) and not sapper:IsRoleAbilityDisabled() then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
 

@@ -119,6 +119,10 @@ function SWEP:PrimaryAttack()
                     v:SetNWFloat("TTTGuesserDamageDealt", 0)
                 end
 
+                if owner:IsRoleAbilityDisabled() then
+                    return
+                end
+
                 if ply:IsRole(role) then
                     owner:QueueMessage(MSG_PRINTBOTH, "You guessed correctly and have become " .. ROLE_STRINGS_EXT[role] .. "!")
                     owner:SetNWBool("TTTGuesserWasGuesser", true)

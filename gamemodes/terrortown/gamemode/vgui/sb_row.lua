@@ -195,6 +195,8 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         elseif ply:IsGlitch() then
             if client:IsZombie() then
                 return ROLE_ZOMBIE
+            elseif ply:IsRoleAbilityDisabled() then
+                return ROLE_NONE
             else
                 return ply:GetNWInt("GlitchBluff", ROLE_TRAITOR)
             end
@@ -258,7 +260,7 @@ function PANEL:Paint(width, height)
         local color = nil
 
         if client:IsTraitorTeam() then
-            if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
+            if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false) and not ply:IsRoleAbilityDisabled())) and client ~= ply then
                 local glitch_role, color_role = GetGlitchedRole(ply, GetConVar("ttt_glitch_mode"):GetInt())
                 role = glitch_role
                 if color_role then

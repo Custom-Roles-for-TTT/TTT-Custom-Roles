@@ -90,13 +90,14 @@ timer.Create("KillerKillCheckTimer", 1, 0, function()
         local timer_remaining = smoke_timer - killerSmokeTime
         local timer_fraction = (timer_remaining / smoke_timer)
         -- Don't do the 1/2 and 1/4 checks if they represent < 10 seconds
-        if (timer_fraction == 0.5 and timer_remaining > 10) or
+        if ((timer_fraction == 0.5 and timer_remaining > 10) or
             (timer_fraction == 0.25 and timer_remaining > 10) or
-            timer_remaining == 10 or timer_remaining == 5 then
+            timer_remaining == 10 or timer_remaining == 5) and 
+            not killer:IsRoleAbilityDisabled() then
             killer:PrintMessage(HUD_PRINTTALK, "Your evil grows impatient. Kill someone in the next " .. timer_remaining .. " seconds or you will be revealed!")
         end
 
-        if killerSmokeTime >= smoke_timer then
+        if killerSmokeTime >= smoke_timer or killer:IsRoleAbilityDisabled() then
             HandleKillerSmokeTick()
         else
             timer.Remove("KillerTick")

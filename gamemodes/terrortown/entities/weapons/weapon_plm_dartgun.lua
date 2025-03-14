@@ -65,6 +65,7 @@ function SWEP:PrimaryAttack()
         if not IsValid(owner) then return end
         if not tr.Hit or not tr.HitNonWorld then return end
         if not IsPlayer(tr.Entity) then return end
+        if owner:IsRoleAbilityDisabled() then return end
 
         local victim = tr.Entity
         -- If the target already has the plague, don't try to give it to them again

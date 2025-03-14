@@ -309,7 +309,7 @@ function plymeta:DrunkJoinLosingTeam()
 end
 
 function plymeta:SoberDrunk(team)
-    if not self:IsActiveDrunk() then return false end
+    if not self:IsActiveDrunk() or self:IsRoleAbilityDisabled() then return false end
 
     local role = nil
     -- If any role is allowed

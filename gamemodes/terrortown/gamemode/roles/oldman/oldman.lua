@@ -136,7 +136,7 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
     if damage >= health then
         local att = dmginfo:GetAttacker()
         -- If they are attacked by a player, enter an adrenaline rush
-        if IsPlayer(att) then
+        if IsPlayer(att) and not ent:IsRoleAbilityDisabled() then
             ent:SetNWBool("AdrenalineRush", true)
             -- Delay the health change here slightly so that any other damage events can fully clear first
             -- Without this delay, double damage events (from, e.g. a Holy Hand Grenade explosion) will cause the player to die

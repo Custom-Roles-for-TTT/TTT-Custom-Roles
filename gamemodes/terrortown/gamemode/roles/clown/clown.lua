@@ -73,7 +73,7 @@ hook.Add("PostPlayerDeath", "Clown_ActivationPercent_PostPlayerDeath", function(
     local clowns = {}
     for _, p in PlayerIterator() do
         -- Keep track of the clowns
-        if p:IsClown() then
+        if p:IsClown() and not p:IsRoleAbilityDisabled() then
             table.insert(clowns, p)
         -- Ignore players who were spectator the whole time
         elseif p:GetRole() ~= ROLE_NONE and not p:IsClown() then

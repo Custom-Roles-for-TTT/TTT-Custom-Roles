@@ -90,7 +90,7 @@ end)
 hook.Add("Think", "Killer_Highlight_Think", function()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
-    if killer_vision and client:IsKiller() then
+    if killer_vision and client:IsKiller() and not client:IsRoleAbilityDisabled() then
         if not vision_enabled then
             EnableKillerHighlights()
             vision_enabled = true
