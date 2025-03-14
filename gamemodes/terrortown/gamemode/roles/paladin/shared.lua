@@ -24,7 +24,7 @@ end)
 -- ROLE CONVARS --
 ------------------
 
-CreateConVar("ttt_paladin_aura_radius", "5", FCVAR_REPLICATED, "The radius of the paladin's aura in meters", 1, 30)
+CreateConVar("ttt_paladin_aura_radius", "6", FCVAR_REPLICATED, "The radius of the paladin's aura in meters", 1, 30)
 CreateConVar("ttt_paladin_protect_self", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_paladin_heal_self", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_paladin_damage_reduction", "0.3", FCVAR_REPLICATED, "The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura", 0, 1)

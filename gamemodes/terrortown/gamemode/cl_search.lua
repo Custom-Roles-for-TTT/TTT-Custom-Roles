@@ -333,6 +333,16 @@ local function SearchInfoController(search, dback, dactive, dtext)
     end
 end
 
+local dframe = nil
+hook.Add("OnPauseMenuShow", "Search_OnPauseMenuShow", function()
+    -- If we needed to close the search menu, don't open the pause menu too
+    if IsValid(dframe) then
+        dframe:Close()
+        dframe = nil
+        return false
+    end
+end)
+
 local function ShowSearchScreen(search_raw)
     if not client then
         client = LocalPlayer()
@@ -367,7 +377,7 @@ local function ShowSearchScreen(search_raw)
         search.role = nil
     end
 
-    local dframe = vgui.Create("DFrame")
+    dframe = vgui.Create("DFrame")
     dframe:SetSize(w, h)
     dframe:Center()
     dframe:SetTitle(T("search_title") .. " - " .. ((search.nick or {}).nick or "???"))
@@ -465,7 +475,10 @@ local function ShowSearchScreen(search_raw)
     -- Add the close button last
     table.insert(buttons, {
         text = T("close"),
-        doclick = function() dframe:Close() end,
+        doclick = function()
+            dframe:Close()
+            dframe = nil
+        end,
         rightjustify = true
     })
 

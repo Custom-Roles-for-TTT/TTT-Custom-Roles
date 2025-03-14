@@ -99,7 +99,7 @@ local function FindNewTarget(shadow)
                 (shadow_target_independent:GetBool() or not p:IsIndependentTeam()) and
                 (shadow_target_traitor:GetBool() or not p:IsTraitorTeam()) and
                 (shadow_target_monster:GetBool() or not p:IsMonsterTeam()) then
-                local distance = shadow:GetPos():Distance(p:GetPos())
+                local distance = shadow:GetPos():DistToSqr(p:GetPos())
                 if closestDistance == -1 or distance < closestDistance then
                     closestTarget = p
                     closestDistance = distance
@@ -570,7 +570,8 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
 
                 if not IsValid(ent) or v:IsRoleAbilityDisabled() then continue end
 
-                if v:GetPos():Distance(ent:GetPos()) <= radius and then
+                local radiusSqr = radius * radius
+                if v:GetPos():DistToSqr(ent:GetPos()) <= radiusSqr then
                     if not v:GetNWBool("ShadowActive", false) then
                         v:SetNWBool("ShadowActive", true)
                     end

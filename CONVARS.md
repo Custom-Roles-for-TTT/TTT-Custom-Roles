@@ -514,7 +514,7 @@ ttt_detectives_search_credits_friendly         0       // Whether detectives sho
 ttt_detectives_search_credits_share            0       // Whether all detectives should get credits for searching corpses. If disabled, only the searching detective gets credits
 
 // Paladin
-ttt_paladin_aura_radius                        5       // The radius of the paladin's aura in meters
+ttt_paladin_aura_radius                        6       // The radius of the paladin's aura in meters
 ttt_paladin_damage_reduction                   0.3     // The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura
 ttt_paladin_heal_rate                          1       // The amount of health a player inside the paladin's aura will heal each second
 ttt_paladin_protect_self                       0       // Whether the paladin's damage reduction aura will protect themselves or not
@@ -541,7 +541,7 @@ ttt_medium_credits_starting                    1       // The number of credits 
 
 // Sapper
 ttt_sapper_is_innocent                         0       // Whether the sapper should be treated as a special innocent
-ttt_sapper_aura_radius                         5       // The radius of the sapper's aura in meters
+ttt_sapper_aura_radius                         6       // The radius of the sapper's aura in meters
 ttt_sapper_protect_self                        1       // Whether the sapper's protection aura will protect themselves or not
 ttt_sapper_fire_immune                         0       // Whether sapper's protection aura also grands fire immunity
 ttt_sapper_can_see_c4                          0       // Whether the sapper can see C4 pings on their radar like traitors
@@ -707,7 +707,7 @@ ttt_cupid_can_see_jesters                      0       // Whether jesters are re
 ttt_cupid_update_scoreboard                    0       // Whether cupid shows dead players as missing in action (Only applies if ttt_cupid_is_independent is enabled)
 
 // Sponge
-ttt_sponge_aura_radius                         5       // The radius of the sponge's aura in meters
+ttt_sponge_aura_radius                         6       // The radius of the sponge's aura in meters
 ttt_sponge_notify_mode                         0       // The logic to use when notifying players that a sponge was killed. Killer is notified unless "ttt_sponge_notify_killer" is disabled. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_sponge_notify_killer                       1       // Whether to notify a sponge's killer
 ttt_sponge_notify_sound                        0       // Whether to play a cheering sound when a sponge is killed
@@ -886,8 +886,8 @@ ttt_shadow_start_timer                         30      // How much time (in seco
 ttt_shadow_buffer_timer                        7       // How much time (in seconds) the shadow can stay out of their target's radius without dying
 ttt_shadow_delay_timer_min                     0       // Minimum time (in seconds) before the shadow is assigned a target at the start of the round
 ttt_shadow_delay_timer_max                     0       // Maximum time (in seconds) before the shadow is assigned a target at the start of the round
-ttt_shadow_alive_radius                        8       // The radius (in meters) from the living target that the shadow has to stay within
-ttt_shadow_dead_radius                         3       // The radius (in meters) from the death target that the shadow has to stay within
+ttt_shadow_alive_radius                        10       // The radius (in meters) from the living target that the shadow has to stay within
+ttt_shadow_dead_radius                         4       // The radius (in meters) from the death target that the shadow has to stay within
 ttt_shadow_target_buff                         4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join. 5 - Kill target and steal their role.
 ttt_shadow_target_buff_show_progress           1       // Whether to show a progress bar for the when the shadow's buff will be activated
 ttt_shadow_target_buff_resumable               0       // Whether the shadow's buff should retain progress if they move away from their target

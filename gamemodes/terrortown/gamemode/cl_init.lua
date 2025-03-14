@@ -426,7 +426,9 @@ function GM:Think()
                 if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
                 if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
                 local pos = v:GetPos() + smokeOffset
-                if v.SmokeNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+                -- Use DistToSqr as it's more efficient and this is called very frequently
+                -- 9000000 = 3000^2
+                if v.SmokeNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
                     v.SmokeEmitter:SetPos(pos)
                     v.SmokeNextPart = CurTime() + MathRand(0.003, 0.01)
                     local vec = Vector(MathRand(-8, 8), MathRand(-8, 8), MathRand(10, 55))
@@ -451,7 +453,9 @@ function GM:Think()
                 if not v.InvulnerableEmitter then v.InvulnerableEmitter = ParticleEmitter(v:GetPos()) end
                 if not v.InvulnerableNextPart then v.InvulnerableNextPart = CurTime() end
                 local pos = v:GetPos()
-                if v.InvulnerableNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+                -- Use DistToSqr as it's more efficient and this is called very frequently
+                -- 9000000 = 3000^2
+                if v.InvulnerableNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
                     v.InvulnerableEmitter:SetPos(pos)
                     v.InvulnerableNextPart = CurTime() + MathRand(0.0005, 0.02)
                     local vec = Vector(MathRand(-8, 8), MathRand(-8, 8), MathRand(-25, 25))

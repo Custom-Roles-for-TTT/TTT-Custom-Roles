@@ -14,7 +14,7 @@ local MathRandom = math.random
 -- CONVARS --
 -------------
 
-local arsonist_douse_float_time = CreateConVar("ttt_arsonist_douse_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the arsonist to lose their target after getting out of range", 0, 60)
+local arsonist_douse_float_time = CreateConVar("ttt_arsonist_douse_float_time", "3", FCVAR_NONE, "The amount of time (in seconds) it takes for the arsonist to lose their target after getting out of range", 0, 60)
 local arsonist_douse_cooldown = CreateConVar("ttt_arsonist_douse_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the arsonist's douse goes on cooldown for after they lose their target", 0, 60)
 local arsonist_douse_require_los = CreateConVar("ttt_arsonist_douse_require_los", "1")
 local arsonist_douse_distance = CreateConVar("ttt_arsonist_douse_distance", "250", FCVAR_NONE, "The maximum distance away the dousing target can be", 50, 1000)
@@ -30,7 +30,7 @@ local arsonist_douse_corpses = GetConVar("ttt_arsonist_douse_corpses")
 -- PLAYER DOUSING --
 --------------------
 
-local function FindArsonistTarget(arsonist, douse_distance)
+local function FindArsonistTarget(arsonist, douseDistanceSqr)
     local closest_ply
     local closest_ply_dist = -1
     local doused_count = 0
@@ -47,8 +47,8 @@ local function FindArsonistTarget(arsonist, douse_distance)
         end
         if douse_stage ~= ARSONIST_UNDOUSED then continue end
 
-        local distance = p:GetPos():Distance(arsonist:GetPos())
-        if distance < douse_distance and (closest_ply_dist == -1 or distance < closest_ply_dist) then
+        local distance = p:GetPos():DistToSqr(arsonist:GetPos())
+        if distance < douseDistanceSqr and (closest_ply_dist == -1 or distance < closest_ply_dist) then
             if douse_require_los and not arsonist:IsLineOfSightClear(p) then continue end
             closest_ply_dist = distance
             closest_ply = p
@@ -67,8 +67,8 @@ local function FindArsonistTarget(arsonist, douse_distance)
             local douse_stage = p:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
             if douse_stage ~= ARSONIST_UNDOUSED then continue end
 
-            local distance = rag:GetPos():Distance(arsonist:GetPos())
-            if distance < douse_distance and (closest_ply_dist == -1 or distance < closest_ply_dist) then
+            local distance = rag:GetPos():DistToSqr(arsonist:GetPos())
+            if distance < douseDistanceSqr and (closest_ply_dist == -1 or distance < closest_ply_dist) then
                 if douse_require_los and not arsonist:IsLineOfSightClear(rag) then continue end
                 closest_ply_dist = distance
                 closest_ply = p
@@ -102,6 +102,9 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
         douse_notify_delay_min = douse_notify_delay_max
     end
 
+    -- Use the square distance because vec:DistToSqr(vec) is more efficient than vec:Distance(vec)
+    local douseDistanceSqr = douse_distance * douse_distance
+
     for _, p in PlayerIterator() do
         if not p:IsActiveArsonist() or p:IsRoleAbilityDisabled() then continue end
         if p:GetNWBool("TTTArsonistDouseComplete", false) then continue end
@@ -109,7 +112,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
         local target_sid64 = p:GetNWString("TTTArsonistDouseTarget", "")
         local target = player.GetBySteamID64(target_sid64)
         if not target_sid64 or #target_sid64 == 0 or not IsPlayer(target) then
-            local complete = FindArsonistTarget(p, douse_distance)
+            local complete = FindArsonistTarget(p, douseDistanceSqr)
             if complete then
                 p:SetNWBool("TTTArsonistDouseComplete", true)
 
@@ -152,12 +155,12 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             end
         end
 
-        local distance = target_pos:Distance(p:GetPos())
+        local distance = target_pos:DistToSqr(p:GetPos())
         if stage == ARSONIST_UNDOUSED then
             p:SetNWFloat("TTTArsonistDouseStartTime", CurTime())
             target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING)
         elseif stage == ARSONIST_DOUSING then
-            if distance > douse_distance or (douse_require_los and not p:IsLineOfSightClear(los_ent)) then
+            if distance > douseDistanceSqr or (douse_require_los and not p:IsLineOfSightClear(los_ent)) then
                 target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING_LOSING)
                 p:SetNWFloat("TTTArsonistDouseLostTime", CurTime() + douse_float_time)
             end
@@ -173,7 +176,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                     target:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
                 end
             else
-                if distance <= douse_distance and (not douse_require_los or p:IsLineOfSightClear(los_ent)) then
+                if distance <= douseDistanceSqr and (not douse_require_los or p:IsLineOfSightClear(los_ent)) then
                     target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSING)
                     p:SetNWFloat("TTTArsonistDouseLostTime", -1)
                 end

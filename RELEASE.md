@@ -1,5 +1,44 @@
 # Release Notes
 
+## 2.2.7 (Beta)
+**Released:**
+
+### Additions
+- Ported "TTT: add ttt_filter_role entity"
+
+### Changes
+- Ported "TTT: Let TTTLastWordsMsg hook override default behaviour"
+- Changed the sponge "all in radius" detection logic to hopefully work around a case where it wasn't counting correctly
+- Changed distance calculations to use a more efficient method in locations where it occurs frequently
+
+### Fixes
+- Ported "TTT: Close player volume slider along with scoreboard"
+- Ported "[TTT] fix players sometimes being revealed as dead when they chat/voicechat right as they die"
+- Fixed error when a vindicator tries to respawn after their target has disconnected
+- Fixed `TTTLastWordsMsg` hook missing
+- Fixed illusionist scoreboard blocking not working for dead players
+- Fixed vindicator not having their respawn location set far from their killer sometimes
+
+## 2.2.6 (Beta)
+**Released: February 22nd, 2025**
+
+### Changes
+- Ported "TTT: Magneto-stick code cleanup"
+- Ported "TTT: Change holdtypes for consistency with viewmodels"
+- Ported "[TTT] Change L.hstation_hint to better reflect how to use it"
+- Changed the time it takes to lose a target as an arsonist to be higher
+- Changed buy menu, help menu, scoring screen, and body search window to all close when pressing ESC
+- Changed units/foot and units/meter scaling to be more accurate to an accepted conversion
+  - Updated convars for paladin, sapper, shadow, and sponge radiuses to compensate
+
+### Fixes
+- Ported "TTT: Fix C4/Radio sounds not playing outside of PAS"
+- Ported "TTT: Fix "CS:S not mounted" warning"
+- Fixed vampire fangs sometimes leaving players stuck frozen
+- Fixed weapons that are excluded from a role not showing in the roleweapons configuration UI, blocking admins from un-excluding them easily
+- Fixed weapons excluded from the traitor/detective shops using the rolepack weapons tab still showing in the shop for roles whose shop are synced from it
+- Fixed minor typo in vindicator success message
+
 ## 2.2.5 (Beta)
 **Released: January 25th, 2025**
 
