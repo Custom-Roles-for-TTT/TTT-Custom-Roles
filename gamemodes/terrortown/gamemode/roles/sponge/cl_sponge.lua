@@ -52,7 +52,9 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
         if not ply.SpongeAuraNextPart then ply.SpongeAuraNextPart = CurTime() end
         if not ply.SpongeAuraDir then ply.SpongeAuraDir = 0 end
         local pos = ply_pos + Vector(0, 0, 30)
-        if ply.SpongeAuraNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+        -- Use DistToSqr as it's more efficient and this is called very frequently
+        -- 9000000 = 3000^2
+        if ply.SpongeAuraNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
             ply.SpongeAuraEmitter:SetPos(pos)
             ply.SpongeAuraNextPart = CurTime() + 0.02
             ply.SpongeAuraDir = ply.SpongeAuraDir + 0.05
@@ -76,27 +78,31 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
         end
         shouldDraw = true
     elseif ply ~= client then
+        local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
+        local radiusSqr = radius * radius
         for _, p in PlayerIterator() do
             if p:IsActiveSponge() then
                 if sponge_aura_mode:GetInt() == SPONGE_ATTACKER_AND_VICTIM then
                     local cliAuraEndTime = client:GetNWFloat("SpongeAuraEndTime", -1)
-                    if client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS) or (cliAuraEndTime ~= -1 and cliAuraEndTime > CurTime()) then
+                    if client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr or (cliAuraEndTime ~= -1 and cliAuraEndTime > CurTime()) then
                         break
                     end
                 end
                 local auraEndTime = ply:GetNWFloat("SpongeAuraEndTime", -1)
-                if not p:GetNWBool("SpongeAllInRadius", false) and (ply:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS) or (auraEndTime ~= -1 and auraEndTime > CurTime())) then
+                if not p:GetNWBool("SpongeAllInRadius", false) and (ply:GetPos():DistToSqr(p:GetPos()) <= radiusSqr or (auraEndTime ~= -1 and auraEndTime > CurTime())) then
                     local ply_pos = ply:GetPos()
                     if not ply.SpongeAuraEmitter then ply.SpongeAuraEmitter = ParticleEmitter(ply_pos) end
                     if not ply.SpongeAuraNextPart then ply.SpongeAuraNextPart = CurTime() end
                     if not ply.SpongeAuraDir then ply.SpongeAuraDir = 0 end
                     local pos = ply_pos + Vector(0, 0, 10)
-                    if ply.SpongeAuraNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+                    -- Use DistToSqr as it's more efficient and this is called very frequently
+                    -- 9000000 = 3000^2
+                    if ply.SpongeAuraNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
                         ply.SpongeAuraEmitter:SetPos(pos)
                         ply.SpongeAuraNextPart = CurTime() + 0.04
                         ply.SpongeAuraDir = ply.SpongeAuraDir + 0.4
-                        local radius = 20
-                        local vec = Vector(MathSin(ply.SpongeAuraDir) * radius, MathCos(ply.SpongeAuraDir) * radius, 10)
+                        local auraRadius = 20
+                        local vec = Vector(MathSin(ply.SpongeAuraDir) * auraRadius, MathCos(ply.SpongeAuraDir) * auraRadius, 10)
                         local particle = ply.SpongeAuraEmitter:Add("particle/sponge.vmt", ply_pos + vec)
                         particle:SetVelocity(Vector(0, 0, 20))
                         particle:SetDieTime(1)
@@ -133,10 +139,12 @@ hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
 
     local inside = false
     local allInside = false
+    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
+    local radiusSqr = radius * radius
     for _, p in PlayerIterator() do
         if p:IsActiveSponge() then
             local auraEndTime = client:GetNWFloat("SpongeAuraEndTime", -1)
-            if client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS) or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
+            if client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
                 inside = true
                 if p:GetNWBool("SpongeAllInRadius", false) then
                     allInside = true
