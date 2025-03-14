@@ -171,7 +171,7 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
     BeggarKilledNotification(attacker, victim)
 
     local respawnLimit = beggar_respawn_limit:GetInt()
-    if beggar_respawn:GetBool() and (respawnLimit == 0 or victim.BeggarRespawn < respawnLimit) and not vicitm:IsRoleAbilityDisabled() then
+    if beggar_respawn:GetBool() and (respawnLimit == 0 or victim.BeggarRespawn < respawnLimit) and not victim:IsRoleAbilityDisabled() then
         victim.BeggarRespawn = victim.BeggarRespawn + 1
 
         local change_role = beggar_respawn_change_role:GetBool()
