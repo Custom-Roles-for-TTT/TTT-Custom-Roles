@@ -39,7 +39,7 @@ local function AssignAssassinTarget(ply, start, delay)
         not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false) or ply:GetNWBool("AssassinComplete", false)
     then
         return
-    else if ply:IsRoleAbilityDisabled() then
+    elseif ply:IsRoleAbilityDisabled() then
         timer.Remove(ply:Nick() .. "AssassinTarget")
         ply:ClearQueuedMessage("asnTarget")
         ply:SetNWBool("AssassinFailed", true)
