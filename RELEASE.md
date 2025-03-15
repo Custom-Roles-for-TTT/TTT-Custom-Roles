@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.2.7 (Beta)
-**Released:**
+**Released: March 15th, 2025**
 
 ### Additions
 - Ported "TTT: add ttt_filter_role entity"
