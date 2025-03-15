@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.2.8 (Beta)
+**Released:**
+
+### Fixes
+- Fixed a rare error when closing the body search window
+
 ## 2.2.7 (Beta)
 **Released:**
 
