@@ -1616,7 +1616,7 @@ function GM:Move(ply, mv)
     if ply:IsTerror() then
         local basemul = 1
         local slowed = false
-        -- Slow down ironsighters
+        -- Slow down iron sighters
         local wep = ply:GetActiveWeapon()
         if IsValid(wep) and wep.GetIronsights and wep:GetIronsights() then
             basemul = 120 / 220

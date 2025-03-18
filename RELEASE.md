@@ -4,6 +4,7 @@
 **Released:**
 
 ### Fixes
+- Ported "TTT: Fix Spelling"
 - Fixed a rare error when closing the body search window
 
 ## 2.2.7 (Beta)
