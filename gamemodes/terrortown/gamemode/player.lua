@@ -701,7 +701,7 @@ end
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() or IsValid(ply.dying_wep) then return end
 
-    -- Experimental: Fire a last shot if ironsighting and not headshot
+    -- Experimental: Fire a last shot if iron sighting and not headshot
     if GetConVar("ttt_dyingshot"):GetBool() then
         local wep = ply:GetActiveWeapon()
         if IsValid(wep) and wep.DyingShot and not ply.was_headshot and dmginfo:IsBulletDamage() then
