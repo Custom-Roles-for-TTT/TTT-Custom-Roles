@@ -6,6 +6,7 @@
 ### Fixes
 - Ported "TTT: Fix Spelling"
 - Fixed a rare error when closing the body search window
+- Fixed health station and bomb station having one more health than intended
 
 ## 2.2.7 (Beta)
 **Released: March 15th, 2025**
