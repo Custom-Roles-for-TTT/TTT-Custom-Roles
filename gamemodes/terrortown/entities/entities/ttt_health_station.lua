@@ -174,14 +174,14 @@ if SERVER then
 
     -- traditional equipment destruction effects
     function ENT:OnTakeDamage(dmginfo)
+        local att = dmginfo:GetAttacker()
         local placer = self:GetPlacer()
-        if dmginfo:GetAttacker() == placer and not ttt_damage_own_healthstation:GetBool() then return end
+        if att == placer and not ttt_damage_own_healthstation:GetBool() then return end
 
         self:TakePhysicsDamage(dmginfo)
 
         self:SetHealth(self:Health() - dmginfo:GetDamage())
 
-        local att = dmginfo:GetAttacker()
         if IsPlayer(att) then
             DamageLog(Format("DMG: \t %s [%s] damaged bomb station [%s] for %d dmg", att:Nick(), ROLE_STRINGS[att:GetRole()], IsPlayer(placer) and placer:Nick() or "<disconnected>", dmginfo:GetDamage()))
         end

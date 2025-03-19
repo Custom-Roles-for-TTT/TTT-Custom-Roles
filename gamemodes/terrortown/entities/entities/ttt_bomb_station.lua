@@ -177,14 +177,14 @@ function ENT:Use(ply)
 end
 
 function ENT:OnTakeDamage(dmginfo)
+    local att = dmginfo:GetAttacker()
     local placer = self:GetPlacer()
-    if dmginfo:GetAttacker() == placer then return end
+    if att == placer then return end
 
     self:TakePhysicsDamage(dmginfo)
 
     self:SetHealth(self:Health() - dmginfo:GetDamage())
 
-    local att = dmginfo:GetAttacker()
     if IsPlayer(att) then
         DamageLog(Format("DMG: \t %s [%s] damaged bomb station [%s] for %d dmg", att:Nick(), ROLE_STRINGS[att:GetRole()], IsPlayer(placer) and placer:Nick() or "<disconnected>", dmginfo:GetDamage()))
     end
