@@ -334,7 +334,7 @@ local function ModifyColor(color, type)
     local h, s, l = ColorToHSL(color)
     if type == "dark" then
         l = math.max(l - 0.125, 0.125)
-    elseif type == "highlight" or "radar" then
+    elseif type == "highlight" or type == "radar" then
         s = 1
     end
 
