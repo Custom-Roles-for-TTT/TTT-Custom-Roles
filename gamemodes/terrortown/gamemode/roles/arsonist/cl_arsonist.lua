@@ -11,6 +11,7 @@ local arsonist_douse_notify_delay_min = GetConVar("ttt_arsonist_douse_notify_del
 local arsonist_douse_notify_delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max")
 local arsonist_douse_corpses = GetConVar("ttt_arsonist_douse_corpses")
 local arsonist_early_ignite = GetConVar("ttt_arsonist_early_ignite")
+local arsonist_warn_all = GetConVar("ttt_arsonist_warn_all")
 local hide_role = GetConVar("ttt_hide_role")
 
 ------------------
@@ -306,6 +307,10 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
                 html = html .. ", but they are not required to activate your igniter"
             end
             html = html .. ".</span>"
+        end
+
+        if arsonist_warn_all:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>All players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>warned</span> when there is "  .. ROLE_STRINGS_EXT[ROLE_ARSONIST] .. " in the game.</span>"
         end
 
         return html

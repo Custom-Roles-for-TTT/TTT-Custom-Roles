@@ -931,6 +931,7 @@ ttt_arsonist_update_scoreboard                 1       // Whether the arsonist s
 ttt_arsonist_ignite_on_death                   0       // Whether to allow the arsonist to enable automatic triggering of their igniter on death
 ttt_arsonist_ignite_on_death_timer             0       // How long after the arsonist's death to trigger their igniter. Set to 0 to trigger instantly
 ttt_arsonist_ignite_on_death_notify            1       // Whether to notify other players that a arsonist's igniter is going to be triggered
+ttt_arsonist_warn_all                          0       // Whether all players are warned when there's an arsonist in a round
 ttt_detectives_search_only_arsonistdouse       0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
 
 // Hive Mind

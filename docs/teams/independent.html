@@ -134,6 +134,7 @@
                     <p>They can douse players in gasoline by standing near them and then set them on fire using their igniter weapon once all other players have all been doused. If <code>ttt_arsonist_early_ignite</code> is enabled, the igniter weapon can be used at any time, but keep in mind it can only be used once.</p>
                     <p>Players are notified when they are doused after a configurable delay (see <code>ttt_arsonist_douse_notify_delay_min</code> and <code>ttt_arsonist_douse_notify_delay_max</code> below). This is to encourage Arsonists to be sneaky or blend in with other players to disguise themselves.</p>
                     <p>Dead players' corpses can also be doused and will be ignited with living doused players. Dousing all corpses is not required to activate the igniter when <code>ttt_arsonist_early_ignite</code> is disabled.</p>
+                    <p>Players will be notified if there is an Arsonist at the start of the round if <code>ttt_arsonist_warn_all</code> is enabled.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -234,6 +235,12 @@
                             <td>1</td>
                             <td>Boolean</td>
                             <td>Whether the Arsonist shows dead players as missing in action.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_arsonist_warn_all</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether all players are warned when there's an Arsonist in a round.</td>
                         </tr>
                         <tr>
                             <td>ttt_detectives_search_only_arsonistdouse</td>

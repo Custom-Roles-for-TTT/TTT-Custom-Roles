@@ -5,6 +5,9 @@
 
 ### Additions
 - Added `ttt_killer_warn` (enabled by default) convar to allow controlling the "there is a Killer" warning on round start
+  - This differs from the `ttt_killer_warn_all` convar which allows controlling whether non-traitors are warned
+  - Prior to this there was no way to disable the warning entirely
+- Added `ttt_arsonist_warn_all` (disabled by default) convar to allow warning players that there is an arsonist on round start
 
 ### Changes
 - **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
