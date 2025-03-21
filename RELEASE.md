@@ -8,6 +8,7 @@
   - This differs from the `ttt_killer_warn_all` convar which allows controlling whether non-traitors are warned
   - Prior to this there was no way to disable the warning entirely
 - Added `ttt_arsonist_warn_all` (disabled by default) convar to allow warning players that there is an arsonist on round start
+- Added `ttt_shadow_failure_mode 4` to have the shadow turn into a bodysnatcher then they fail
 
 ### Changes
 - **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
@@ -19,6 +20,7 @@
 - Fixed role colors being too saturated in many situations
 - Fixed Beggar reveal announcements not working if `ttt_beggar_keep_begging` was enabled
 - Fixed Beggar reveal announcements not using custom role names
+- Fixed potential minor grammar issue with the shadow's tutorial when using a renamed jester or swapper
 
 ### Developer
 - Added new `TTTCanTransferWeaponOwnership` hook to determine if a player can have the ownership of a weapon transferred to them
