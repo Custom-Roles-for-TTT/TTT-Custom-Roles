@@ -832,6 +832,7 @@ ttt_killer_smoke_timer                         60      // Number of seconds befo
 ttt_killer_show_target_icon                    1       // Whether killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_killer_damage_penalty                      0.25    // The fraction a killer's damage will be scaled by when they are attacking without using their knife
 ttt_killer_damage_reduction                    0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a killer
+ttt_killer_warn                                1       // Whether to warn players if there is a killer
 ttt_killer_warn_all                            0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
 ttt_killer_vision_enabled                      1       // Whether killers have their special vision highlights enabled
 ttt_killer_credits_starting                    2       // The number of credits a killer should start with

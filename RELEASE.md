@@ -3,14 +3,17 @@
 ## 2.2.8 (Beta)
 **Released:**
 
+### Additions
+- Added `ttt_killer_warn` (enabled by default) convar to allow controlling the "there is a Killer" warning on round start
+
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
+
 ### Fixes
 - Ported "TTT: Fix Spelling"
 - Fixed a rare error when closing the body search window
 - Fixed health station and bomb station having one more health than intended
 - Fixed role colors being too saturated in many situations
-
-### Changes
-- **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
 
 ### Developer
 - Added new `TTTCanTransferWeaponOwnership` hook to determine if a player can have the ownership of a weapon transferred to them
