@@ -47,7 +47,7 @@ local beggar_is_independent = GetConVar("ttt_beggar_is_independent")
 local function AnnounceTeamChange(ply, role)
     for _, v in PlayerIterator() do
         if v ~= ply and v:ShouldRevealBeggar(ply) then
-            v:QueueMessage(MSG_PRINTBOTH, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
+            v:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " has joined the " .. ROLE_STRINGS[role] .. " team")
         end
     end
 end

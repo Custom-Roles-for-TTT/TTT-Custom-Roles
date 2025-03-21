@@ -17,6 +17,8 @@
 - Fixed a rare error when closing the body search window
 - Fixed health station and bomb station having one more health than intended
 - Fixed role colors being too saturated in many situations
+- Fixed Beggar reveal announcements not working if `ttt_beggar_keep_begging` was enabled
+- Fixed Beggar reveal announcements not using custom role names
 
 ### Developer
 - Added new `TTTCanTransferWeaponOwnership` hook to determine if a player can have the ownership of a weapon transferred to them
