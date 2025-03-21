@@ -1204,6 +1204,7 @@ ttt_karma_jesterdmg_ratio                      0.5     // Ratio of damage to jes
 // Sprint
 ttt_sprint_enabled                             1       // Whether sprint is enabled
 ttt_sprint_bonus_rel                           0.4     // The relative speed bonus given while sprinting (e.g. 0.4 = 40% speed increase)
+ttt_sprint_regenerate_delay                    0       // The amount of time (in seconds) after sprinting before stamina regeneration starts
 ttt_sprint_regenerate_innocent                 0.08    // Stamina regeneration for non-traitors
 ttt_sprint_regenerate_traitor                  0.12    // Stamina regeneration for traitors
 ttt_sprint_consume                             0.2     // Stamina consumption speed

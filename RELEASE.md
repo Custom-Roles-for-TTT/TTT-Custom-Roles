@@ -9,6 +9,7 @@
   - Prior to this there was no way to disable the warning entirely
 - Added `ttt_arsonist_warn_all` (disabled by default) convar to allow warning players that there is an arsonist on round start
 - Added `ttt_shadow_failure_mode 3` to have the shadow turn into a bodysnatcher then they fail
+- Added new `ttt_sprint_regenerate_delay` convar to control the delay time between sprinting and stamina recovery (defaults to 0)
 
 ### Changes
 - **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
