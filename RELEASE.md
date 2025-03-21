@@ -1,5 +1,104 @@
 # Release Notes
 
+## 2.2.8 (Beta)
+**Released:**
+
+### Fixes
+- Ported "TTT: Fix Spelling"
+- Fixed a rare error when closing the body search window
+- Fixed health station and bomb station having one more health than intended
+- Fixed role colors being too saturated in many situations
+
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
+
+### Developer
+- Added new `TTTCanTransferWeaponOwnership` hook to determine if a player can have the ownership of a weapon transferred to them
+    - This is only called when `SWEP.BoughtBy` is not set or it is set and `ttt_weapon_transfer_ownership` is enabled
+- Changed the function version of `ENT.TargetIDHint` to take the entity as a parameter
+- Changed `EVENTS_BY_ROLE` to create an inner table if a role registers more than one event ID
+
+## 2.2.7 (Beta)
+**Released: March 15th, 2025**
+
+### Additions
+- Ported "TTT: add ttt_filter_role entity"
+
+### Changes
+- Ported "TTT: Let TTTLastWordsMsg hook override default behaviour"
+- Changed the sponge "all in radius" detection logic to hopefully work around a case where it wasn't counting correctly
+- Changed distance calculations to use a more efficient method in locations where it occurs frequently
+
+### Fixes
+- Ported "TTT: Close player volume slider along with scoreboard"
+- Ported "[TTT] fix players sometimes being revealed as dead when they chat/voicechat right as they die"
+- Fixed error when a vindicator tries to respawn after their target has disconnected
+- Fixed `TTTLastWordsMsg` hook missing
+- Fixed illusionist scoreboard blocking not working for dead players
+- Fixed vindicator not having their respawn location set far from their killer sometimes
+
+## 2.2.6 (Beta)
+**Released: February 22nd, 2025**
+
+### Changes
+- Ported "TTT: Magneto-stick code cleanup"
+- Ported "TTT: Change holdtypes for consistency with viewmodels"
+- Ported "[TTT] Change L.hstation_hint to better reflect how to use it"
+- Changed the time it takes to lose a target as an arsonist to be higher
+- Changed buy menu, help menu, scoring screen, and body search window to all close when pressing ESC
+- Changed units/foot and units/meter scaling to be more accurate to an accepted conversion
+  - Updated convars for paladin, sapper, shadow, and sponge radiuses to compensate
+
+### Fixes
+- Ported "TTT: Fix C4/Radio sounds not playing outside of PAS"
+- Ported "TTT: Fix "CS:S not mounted" warning"
+- Fixed vampire fangs sometimes leaving players stuck frozen
+- Fixed weapons that are excluded from a role not showing in the roleweapons configuration UI, blocking admins from un-excluding them easily
+- Fixed weapons excluded from the traitor/detective shops using the rolepack weapons tab still showing in the shop for roles whose shop are synced from it
+- Fixed minor typo in vindicator success message
+
+## 2.2.5 (Beta)
+**Released: January 25th, 2025**
+
+### Additions
+- Added ability to control whether to apply the damage penalties after an assassin has completed their assignments (enabled by default)
+
+### Changes
+- Changed assassin to apply damage scaling to jesters since the reason it wasn't (activated clown) no longer applies anyway
+
+## 2.2.4 (Beta)
+**Released: January 12th, 2025**
+
+### Additions
+- Added ability to have the vindicator reset back to the innocent team when they successfully kill their target (disabled by default)
+  - There is also a second configuration to disable the vindicator's secondary win when they reset to the innocent team
+- Added ability to have the shadow die one tick after they reach 1HP when `ttt_shadow_weaken_health_to` is set to `1` (disabled by default)
+- Added ability to control whether draining a player or corpse as a vampire drops bones (enabled by default)
+- Added ability to control whether an assassin is penalized for killing a player by their role or team (only for independents, jesters, and monsters)
+  - The following roles have this featured enabled by default: Clown, Loot Goblin, Vampire, Vindicator, Zombie
+  - NOTE: This expands a feature that already existed for the Loot Goblin, Vampire, and Zombie
+  - NOTE: Roles that activate (e.g. Clown, Loot Goblin, Vindicator, etc.) can only bypass the kill penalty when they are active. This keeps the same behavior as before these additional convars were added
+  - NOTE: Any role that can be moved to another team by configuration will only have this convar created if they are an independent, jester, or monster
+- Added ability for zombies to consume a player's corpse to heal themselves (disabled by default)
+
+### Changes
+- Changed the vindicator to reset back to the innocent team if their target becomes an unkillable role (like the guesser)
+- Changed zombie rounds (`ttt_zombie_round_chance`) to obey `ttt_zombie_min_players`
+- Changed how zombie and vampire prime are assigned to hopefully work around a rare issue where they weren't set on round start
+
+### Fixes
+- Ported "TTT: fix ragdoll not being created if ttt_dyingshot is on"
+- Fixed detective hat not being wearable by special detectives or detective-like roles
+- Fixed error loading guesser tutorial
+- Fixed plaguemaster not being able to see Missing in Action players by default due to a typo
+- Fixed corpse role being shown on all player's scoreboards when `ttt_detectives_search_only_role` and `ttt_corpse_search_not_shared` are both enabled
+- Fixed error clearing shadow buff state on round prep
+- Reverted jester and sponge round win logic compatibility change from 2.1.6 that didn't actually added compatibility and did cause jester and sponge wins to not work when certain independent roles (e.g. Arsonist) were in the round
+
+### Developer
+- Added `TTTCheatSheetRoleStringOverride` client hook to allow changing the cheat sheet string based on convar values
+- Added `TTTZombieBodyEaten` server hook so addons can tell when a zombie eats a body
+
 ## 2.2.3 (Beta)
 **Released: October 5th, 2024**
 
@@ -19,10 +118,10 @@
 - Fixed assassin whose target is made their lover by a cupid not being assigned a new lover
 - Fixed illusionist not blocking the radar color for traitors revealing other traitors
 - Fixed error when calling `plymeta:ClearMessageQueue` or `plymeta:PrintMessageQueue` when the player didn't have a message queue created first
-- Fixed player whose role is changed into a beggar with scanning ability being told they need to have their role rescanned
-- Fixed player whose role is changed into an informant being told they need to have their role rescanned
-- Fixed player whose role is changed to a member of the traitor team being told they need to have their role rescanned by the informant
-- Fixed killers seeing eachother via vision even though they normally wouldn't know eachothers roles
+- Fixed player whose role is changed into a beggar with scanning ability being told they need to have their role re-scanned
+- Fixed player whose role is changed into an informant being told they need to have their role re-scanned
+- Fixed player whose role is changed to a member of the traitor team being told they need to have their role re-scanned by the informant
+- Fixed killers seeing each other via vision even though they normally wouldn't know each other's roles
 - Fixed occasional error in Plaguemaster code when a player dies
 - Ported "TTT: fix and optimize traitor button rendering" from base TTT
 
@@ -70,11 +169,13 @@ Includes beta updates [2.1.17](#2117-beta) and [2.1.20](#2120-beta).
 ### Changes
 - Changed the plaguemaster's default convar value to make the spread time lower
   - This should make it easier for the plague to naturally spread between infected players
+- Changed how bodysnatcher forced crouch logic works to hopefully fix cases where the resurrected player could not uncrouch
 
 ### Fixes
 - Fixed external roles that belong to teams with default shop items (traitors, detectives) not having those default items in their shop if they set up their equipment items table manually
 - Fixed illusionist not blocking traitor team highlighting when that is enabled
 - Fixed the twins not spawning/despawning correctly when only one twin was assigned through a rolepack
+- Fixed error in the drunk role selection logic when a role doesn't have the `ttt_drunk_can_be_*` convar
 
 ## 2.1.20 (Beta)
 **Released: August 10th, 2024**
@@ -332,7 +433,7 @@ Includes beta update [2.1.10](#2110-beta).
 
 ### Fixes
 - Fixed rare error in defib-like devices when used on a corpse that doesn't have a Steam ID property set
-- Fixed freeze caused by the spy's flaregun when running CR4TTT alongside wget's TTT Weapons Rework
+- Fixed freeze caused by the spy's flare gun when running CR4TTT alongside wget's TTT Weapons Rework
 - Fixed footprints sometimes being giant and sometimes not showing at all
 - Fixed transferring credits to the glitch as a member of the traitor team not doing anything, revealing the glitch to the traitors
 - Fixed disguised spy or bodysnatcher being revealed by the quickchat radio menu and messages
@@ -2436,7 +2537,7 @@ Includes all beta updates from [1.1.4](#114-beta) to [1.1.11](#1111-beta).
 - Fixed error in round summary caused by a player being an in invalid role state
 - Fixed weapon switch GUI not updating when you picked up a new weapon and ttt_weaponswitcher_stay was enabled
 - Fixed weapon switch GUI closing when you dropped a weapon and ttt_weaponswitcher_stay was enabled
-- Fixed weapon switch GUI closing when you tried to drop an undroppable weapon
+- Fixed weapon switch GUI closing when you tried to drop an un-droppable weapon
 - Fixed player not appearing on the round summary screen if they were idled to spectator last round and only un-spectated during this round's preparation phase
 
 ### Developer

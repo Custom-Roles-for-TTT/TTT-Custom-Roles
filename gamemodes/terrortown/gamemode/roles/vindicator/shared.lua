@@ -48,6 +48,8 @@ end
 CreateConVar("ttt_vindicator_target_suicide_success", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_vindicator_kill_on_fail", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_vindicator_kill_on_success", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_vindicator_reset_on_success", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_vindicator_reset_win_on_success", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_vindicator_can_see_jesters", 0, FCVAR_REPLICATED)
 CreateConVar("ttt_vindicator_update_scoreboard", 0, FCVAR_REPLICATED)
 
@@ -82,6 +84,14 @@ table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
 })
 table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
     cvar = "ttt_vindicator_kill_on_success",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
+    cvar = "ttt_vindicator_reset_on_success",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
+    cvar = "ttt_vindicator_reset_win_on_success",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {

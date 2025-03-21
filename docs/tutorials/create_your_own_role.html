@@ -426,7 +426,7 @@ end</code></pre></div>
         <p>Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.</p>
         <p>For our example's sake we've taken the Phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the <code>ROLE.shouldshowspectatorhud</code> function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the <code>TTTSpectatorShowHUD</code> hook. Within that hook we prepare the information required and call the shared <code>CRHUD:PaintPowersHUD</code> method which handles the rendering for us. The server side is similar, we use the <code>TTTSpectatorHUDKeyPress</code> hook to intercept key presses and define what action each keypress should result in. The <a href="../api.html" target="_blank">API</a> has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:</p>
         <div><pre><code class="language-lua">ROLE.shouldshowspectatorhud = function(ply)
-    if ply:GetNWBool("Haunting") then
+    if ply:GetNWBool("SummonerHaunting") then
         return true
     end
 end
@@ -458,7 +458,7 @@ if CLIENT then
             [L.summoner_haunt_drop] = summoner_killer_haunt_drop_cost:GetInt()
         }
         local max_power = summoner_killer_haunt_power_max:GetInt()
-        local current_power = cli:GetNWInt("PhantomPossessingPower", 0)
+        local current_power = cli:GetNWInt("SummonerPossessingPower", 0)
 
         CRHUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.summoner_haunt_title)
     end)
@@ -466,7 +466,7 @@ end
 
 if SERVER then
     hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:IsActive() then
+        if ply:GetNWBool("SummonerHaunting", false) and IsValid(tgt) and tgt:IsActive() then
             powers[IN_ATTACK2] = {
                 start_command = "+menu",
                 end_command = "-menu",
@@ -480,7 +480,7 @@ if SERVER then
                 cost = summoner_killer_haunt_jump_cost:GetInt()
             }
 
-            return true, "PhantomPossessingPower"
+            return true, "SummonerPossessingPower"
         end
     end)
 end</code></pre></div>

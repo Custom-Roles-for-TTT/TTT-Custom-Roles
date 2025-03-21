@@ -39,6 +39,7 @@ hook.Add("Initialize", "Vampire_Translations_Initialize", function()
 
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_vampire", "Can drain players and bodies of blood to heal, leaving only a pile of bones behind as evidence.")
+    LANG.AddToLanguage("english", "cheatsheet_desc_vampire_no_bones", "Can drain players and bodies of blood to heal, leaving behind no evidence.")
 
     -- Popup
     LANG.AddToLanguage("english", "info_popup_vampire", [[You are {role}! {comrades}
@@ -52,6 +53,12 @@ end)
 hook.Add("TTTRolePopupParams", "Vampire_TTTRolePopupParams", function(cli)
     if cli:IsVampire() and cli:IsIndependentTeam() then
         return {comrades = "\n\nKill all others to win!"}
+    end
+end)
+
+hook.Add("TTTCheatSheetRoleStringOverride", "Vampire_TTTCheatSheetRoleStringOverride", function(cli, roleString)
+    if not cvars.Bool("ttt_vampire_drop_bones", true) then
+        return roleString .. "_no_bones"
     end
 end)
 

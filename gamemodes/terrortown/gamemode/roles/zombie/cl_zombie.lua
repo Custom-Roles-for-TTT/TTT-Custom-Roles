@@ -327,6 +327,11 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
             html = html .. "convert them</span>.</span>"
         end
 
+        -- Eat
+        if GetConVar("ttt_zombie_eat_enabled"):GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] .. "'s claws can be used to <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'> consume a player's corpse</span>, healing the " .. ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] .. " in the process.</span>"
+        end
+
         -- Vision
         local hasVision = zombie_vision_enabled:GetBool()
         if hasVision then

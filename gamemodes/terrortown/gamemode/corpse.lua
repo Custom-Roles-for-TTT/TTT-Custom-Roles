@@ -1,7 +1,9 @@
 ---- Corpse functions
 
+CreateConVar("ttt_corpse_search_not_shared", "0", FCVAR_NONE, "Whether corpse searches are not shared with other players (only affects non-detective-like searchers)", 0, 1)
+
 -- namespaced because we have no ragdoll metatable
-CORPSE = {}
+CORPSE = CORPSE or {}
 
 include("corpse_shd.lua")
 
@@ -188,9 +190,15 @@ local function IdentifyBody(ply, rag)
             -- Otherwise the scoreboard gets updated which reveals their name anyway
             if announceName then
                 deadply:SetNWBool("body_found", true)
+                local search_not_shared = GetConVar("ttt_corpse_search_not_shared"):GetBool()
                 -- Don't set "searched" if we're not sharing this information
-                if ply:IsDetectiveLike() or not GetConVar("ttt_corpse_search_not_shared"):GetBool() then
+                if ply:IsDetectiveLike() or not search_not_shared then
                     deadply:SetNWBool("body_searched", true)
+                end
+
+                -- If this information isn't shared, tell just the searching player that the body's role should be known
+                if search_not_shared then
+                    deadply:SetProperty("body_found_role", true, ply)
                 end
             end
 

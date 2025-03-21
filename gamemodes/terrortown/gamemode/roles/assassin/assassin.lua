@@ -14,6 +14,7 @@ local PlayerIterator = player.Iterator
 -------------
 
 local assassin_shop_roles_last = CreateConVar("ttt_assassin_shop_roles_last", "0")
+local assassin_damage_penalty_complete = CreateConVar("ttt_assassin_damage_penalty_complete", "1", FCVAR_NONE, "Whether to apply the damage penalties after an assassin has completed their assignments", 0, 1)
 
 local assassin_show_target_icon = GetConVar("ttt_assassin_show_target_icon")
 local assassin_target_vision_enabled = GetConVar("ttt_assassin_target_vision_enabled")
@@ -22,6 +23,9 @@ local assassin_target_damage_bonus = GetConVar("ttt_assassin_target_damage_bonus
 local assassin_target_bonus_bought = GetConVar("ttt_assassin_target_bonus_bought")
 local assassin_wrong_damage_penalty = GetConVar("ttt_assassin_wrong_damage_penalty")
 local assassin_failed_damage_penalty = GetConVar("ttt_assassin_failed_damage_penalty")
+local assassin_allow_independents_kill = GetConVar("ttt_assassin_allow_independents_kill")
+local assassin_allow_jesters_kill = GetConVar("ttt_assassin_allow_jesters_kill")
+local assassin_allow_monsters_kill = GetConVar("ttt_assassin_allow_monsters_kill")
 
 -----------------------
 -- TARGET ASSIGNMENT --
@@ -226,8 +230,14 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
     if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker then
         local wasNotTarget = ply:SteamID64() ~= attackertarget and (#attackertarget > 0 or timer.Exists(attacker:Nick() .. "AssassinTarget"))
-        local convar = "ttt_assassin_allow_" .. ROLE_STRINGS_RAW[ply:GetRole()] .. "_kill"
-        local skipPenalty = cvars.Bool(convar, false) and ply:IsRoleActive()
+        local role = ply:GetRole()
+        -- The extra checks at the beginning are to handle cases of roles switching teams, just in case
+        local allowKill = (INDEPENDENT_ROLES[role] or JESTER_ROLES[role] or MONSTER_ROLES[role]) and
+                            ((INDEPENDENT_ROLES[role] and assassin_allow_independents_kill:GetBool()) or
+                             (JESTER_ROLES[role] and assassin_allow_jesters_kill:GetBool()) or
+                             (MONSTER_ROLES[role] and assassin_allow_monsters_kill:GetBool()) or
+                             cvars.Bool("ttt_assassin_allow_" .. ROLE_STRINGS_RAW[role] .. "_kill", false))
+        local skipPenalty = allowKill and ply:IsRoleActive()
         if wasNotTarget and not skipPenalty then
             timer.Remove(attacker:Nick() .. "AssassinTarget")
             attacker:ClearQueuedMessage("asnTarget")
@@ -260,32 +270,39 @@ end)
 ------------
 
 hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
-    local att = dmginfo:GetAttacker()
-    -- Only apply damage scaling after the round starts
-    if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
-        -- Assassins deal extra damage to their target, less damage to other players, and less damage if they fail their contract
-        -- Don't apply the scaling to the Jester team to specifically allow doing 100% damage to the active killer clown
-        if att:IsAssassin() and ply ~= att and not ply:IsJesterTeam() then
-            local scale = 0
-            if att:GetNWBool("AssassinFailed", false) then
-                scale = -assassin_failed_damage_penalty:GetFloat()
-            elseif ply:SteamID64() == att:GetNWString("AssassinTarget", "") then
-                -- Get the active weapon, whather it's in the inflictor or it's from the attacker
-                local active_weapon = dmginfo:GetInflictor()
-                if not IsValid(active_weapon) or IsPlayer(active_weapon) then
-                    active_weapon = att:GetActiveWeapon()
-                end
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+    if not IsPlayer(ply) then return end
 
-                -- Only scale bought weapons if that is enabled
-                if (active_weapon.Spawnable or (not active_weapon.CanBuy or assassin_target_bonus_bought:GetBool())) then
-                    scale = assassin_target_damage_bonus:GetFloat()
-                end
-            else
-                scale = -assassin_wrong_damage_penalty:GetFloat()
-            end
-            dmginfo:ScaleDamage(1 + scale)
+    local att = dmginfo:GetAttacker()
+    if not IsPlayer(att) then return end
+    if not att:IsAssassin() then return end
+    if ply == att then return end
+
+    -- If the assassin has completed their contract successfully and we've disabled damage penalities in that case, let them do full damage
+    if att:GetNWBool("AssassinComplete", false) and not assassin_damage_penalty_complete:GetBool() then return end
+
+    -- Assassins deal extra damage to their target, less damage to other players, and less damage if they fail their contract
+    local scale = 0
+    if att:GetNWBool("AssassinFailed", false) then
+        scale = -assassin_failed_damage_penalty:GetFloat()
+    elseif ply:SteamID64() == att:GetNWString("AssassinTarget", "") then
+        -- Get the active weapon, whether it's in the inflictor or it's from the attacker
+        local active_weapon = dmginfo:GetInflictor()
+        if not IsValid(active_weapon) or IsPlayer(active_weapon) then
+            active_weapon = att:GetActiveWeapon()
         end
+
+        -- Only scale bought weapons if that is enabled
+        if (active_weapon.Spawnable or (not active_weapon.CanBuy or assassin_target_bonus_bought:GetBool())) then
+            scale = assassin_target_damage_bonus:GetFloat()
+        end
+    else
+        scale = -assassin_wrong_damage_penalty:GetFloat()
     end
+
+    if scale == 0 then return end
+
+    dmginfo:ScaleDamage(1 + scale)
 end)
 
 -----------------------

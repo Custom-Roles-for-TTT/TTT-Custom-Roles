@@ -148,10 +148,6 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_transfer_ownership",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_can_see_jesters",
     type = ROLE_CONVAR_TYPE_BOOL
 })

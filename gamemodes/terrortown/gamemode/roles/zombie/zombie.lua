@@ -64,26 +64,25 @@ hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
     new_prime:QueueMessage(MSG_PRINTBOTH, "The prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " has been lost and you've seized power in their absence!")
 end)
 
+-- Keep previous naming scheme for backwards compatibility
 function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
 
 -----------------
 -- ROLE STATUS --
 -----------------
 
-hook.Add("TTTBeginRound", "Zombie_RoleFeatures_BeginRound", function()
-    for _, v in PlayerIterator() do
-        if v:IsZombie() then
-            v:SetZombiePrime(true)
-        end
-    end
+hook.Add("TTTPlayerRoleChanged", "Zombie_RoleFeatures_TTTPlayerRoleChanged", function(ply, oldRole, role)
+    if role ~= ROLE_ZOMBIE then return end
+    if oldRole ~= ROLE_NONE then return end
+
+    ply:SetZombiePrime(true)
 end)
 
 hook.Add("TTTPrepareRound", "Zombie_RoleFeatures_PrepareRound", function()
     for _, v in PlayerIterator() do
         v.WasZombieColored = false
         v:SetNWBool("IsZombifying", false)
-        -- Keep previous naming scheme for backwards compatibility
-        v:SetNWBool("zombie_prime", false)
+        v:SetZombiePrime(false)
         timer.Remove("Zombify_" .. v:SteamID64())
     end
 end)

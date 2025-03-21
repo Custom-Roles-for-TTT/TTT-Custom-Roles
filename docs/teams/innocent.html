@@ -1004,7 +1004,7 @@
                 <div class="expansion">
                     <p>If they are killed, the Vindicator will respawn as an independent who need to track down their killer and get revenge. As they are no longer part of the <span style="color:var(--innocent);">innocent team</span> they do not win with their old team and must kill their killer to win the round.</p>
                     <p>The Vindicator must be the one to get the killing blow on their killer. If someone else gets the kill, the Vindicator will not win. By default, if the Vindicator's killer kills themselves, it counts as a win for the Vindicator as well. This can be disabled by changing the <code>ttt_vindicator_target_suicide_success</code> ConVar.</p>
-                    <p>What happens to the Vindicator when their target is killed depends on the values of <code>ttt_vindicator_kill_on_success</code> and <code>ttt_vindicator_kill_on_fail</code>. By default, the Vindicator is killed if they fail to kill their killer but will live for the remainder of the round if they are successful.</p>
+                    <p>What happens to the Vindicator when their target is killed depends on the values of <code>ttt_vindicator_reset_on_success</code> ,<code>ttt_vindicator_kill_on_success</code>, and <code>ttt_vindicator_kill_on_fail</code>. By default, the Vindicator is killed if they fail to kill their killer but will live for the remainder of the round if they are successful.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -1044,13 +1044,25 @@
                             <td>ttt_vindicator_kill_on_success</td>
                             <td>0</td>
                             <td>Boolean</td>
-                            <td>Whether the Vindicator should be killed after they kill their target.</td>
+                            <td>Whether the Vindicator should be killed after they kill their target. <em>(Not used when <code>ttt_vindicator_reset_on_success</code> is enabled)</em></td>
                         </tr>
                         <tr>
                             <td>ttt_vindicator_prevent_revival</td>
                             <td>0</td>
                             <td>Boolean</td>
                             <td>Whether the Vindicator should be killed if they are revived after having died due to failing or succeeding in killing their target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vindicator_reset_on_success <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Vindicator should be reset to the innocent team after they kill their target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vindicator_reset_win_on_success <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Vindicator, when they are reset to the innocent team after killing their target, should only win with the innocent team. When disabled, the Vindicator will also have a solo secondary win. <em>(Requires <code>ttt_vindicator_reset_on_success</code> to be enabled).</em></td>
                         </tr>
                         <tr>
                             <td>ttt_vindicator_respawn_delay</td>

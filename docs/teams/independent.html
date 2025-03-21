@@ -886,7 +886,7 @@
                         <tbody>
                         <tr>
                             <td>ttt_shadow_alive_radius</td>
-                            <td>8</td>
+                            <td>10</td>
                             <td>Float</td>
                             <td>The radius in meters from the living target that the Shadow has to stay within.</td>
                         </tr>
@@ -904,7 +904,7 @@
                         </tr>
                         <tr>
                             <td>ttt_shadow_dead_radius</td>
-                            <td>3</td>
+                            <td>4</td>
                             <td>Float</td>
                             <td>The radius in meters from the death target that the Shadow has to stay within.</td>
                         </tr>
@@ -1092,6 +1092,12 @@
                             <td>How low to reduce the Shadow's health to when they are outside of the target circle instead of their normal punishment. <i>(Setting to 0 will use <code>ttt_shadow_failure_mode</code> instead.)</i></td>
                         </tr>
                         <tr>
+                            <td>ttt_shadow_weaken_health_to_death</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether to kill the Shadow one tick after they reach 1HP when <code>ttt_shadow_weaken_health_to</code> is set to <code>1</code></td>
+                        </tr>
+                        <tr>
                             <td>ttt_shadow_weaken_timer</td>
                             <td>3</td>
                             <td>Integer</td>
@@ -1146,6 +1152,36 @@
                             <td>0</td>
                             <td>Float (0-1)</td>
                             <td>The fraction an attacker's bullet damage will be reduced by when they are shooting a Zombie. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_enabled <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies have the ability to eat a player's corpse.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_drop_bones <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies should drop bones when eating a player's corpse.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_timer <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>5</td>
+                            <td>Integer</td>
+                            <td>The amount of time it takes to consume a player's corpse.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_heal <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>50</td>
+                            <td>Integer</td>
+                            <td>The amount of health a Zombie will heal by when they consume a player's corpse.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_overheal <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>25</td>
+                            <td>Integer</td>
+                            <td>The amount over the Zombie's normal maximum health (e.g. 100 + this ConVar) that the Zombie can heal to by consuming a player's corpse.</td>
                         </tr>
                         <tr>
                             <td>ttt_zombie_friendly_fire</td>

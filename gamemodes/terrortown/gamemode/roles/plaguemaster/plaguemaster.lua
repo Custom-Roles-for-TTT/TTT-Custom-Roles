@@ -93,6 +93,7 @@ AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", functi
     -- Check for players within radius and (optionally LOS) to spread the plague
     local spread_time = plaguemaster_spread_time:GetInt()
     local spread_distance = plaguemaster_spread_distance:GetInt()
+    local spreadDistanceSqr = spread_distance * spread_distance
     local spread_require_los = plaguemaster_spread_require_los:GetBool()
     local sid64 = ply:SteamID64()
     local immune = plaguemaster_immune:GetBool()
@@ -107,8 +108,8 @@ AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", functi
             v.TTTPlaguemasterSpreadStartTimes = {}
         end
 
-        local distance = v:GetPos():Distance(ply:GetPos())
-        if distance > spread_distance then
+        local distance = v:GetPos():DistToSqr(ply:GetPos())
+        if distance > spreadDistanceSqr then
             ClearSpreadStart(v, sid64)
             continue
         end
@@ -172,7 +173,7 @@ AddHook("PostPlayerDeath", "Plaguemaster_PostPlayerDeath", function(ply)
     end
 
     local dart_replace_timer = plaguemaster_dart_replace_timer:GetInt()
-    -- If nobody has theplague and we're set to replace their dart gun, let them know and start the timer
+    -- If nobody has the plague and we're set to replace their dart gun, let them know and start the timer
     if living_players > 1 and not plague_active and dart_replace_timer > 0 then
         local source = player.GetBySteamID64(original_source)
         if not IsPlayer(source) then return end

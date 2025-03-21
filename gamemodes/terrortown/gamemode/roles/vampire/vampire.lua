@@ -110,7 +110,7 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
     if victim:IsVampirePrime() and prime_death_mode > VAMPIRE_DEATH_NONE then
         local living_vampire_primes = 0
         local vampires = {}
-        -- Find all the living vampires anmd count the primes
+        -- Find all the living vampires and count the primes
         for _, v in PlayerIterator() do
             if v:IsActiveVampire() then
                 if v:IsVampirePrime() then
@@ -182,6 +182,7 @@ hook.Add("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", function(ply)
     new_prime:QueueMessage(MSG_PRINTBOTH, "The prime " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " has faded away and you've seized power in their absence!")
 end)
 
+-- Keep previous naming scheme for backwards compatibility
 function plymeta:SetVampirePrime(p) self:SetNWBool("vampire_prime", p) end
 function plymeta:SetVampirePreviousRole(r) self:SetNWInt("vampire_previous_role", r) end
 
@@ -189,20 +190,18 @@ function plymeta:SetVampirePreviousRole(r) self:SetNWInt("vampire_previous_role"
 -- ROLE STATUS --
 -----------------
 
-hook.Add("TTTBeginRound", "Vampire_RoleFeatures_PrepareRound", function()
-    for _, v in PlayerIterator() do
-        if v:IsVampire() then
-            v:SetVampirePrime(true)
-        end
-    end
+hook.Add("TTTPlayerRoleChanged", "Vampire_RoleFeatures_TTTPlayerRoleChanged", function(ply, oldRole, role)
+    if role ~= ROLE_VAMPIRE then return end
+    if oldRole ~= ROLE_NONE then return end
+
+    ply:SetVampirePrime(true)
 end)
 
 hook.Add("TTTPrepareRound", "Vampire_RoleFeatures_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWInt("VampireFreezeCount", 0)
-        -- Keep previous naming scheme for backwards compatibility
-        v:SetNWBool("vampire_prime", false)
-        v:SetNWInt("vampire_previous_role", ROLE_NONE)
+        v:SetVampirePrime(false)
+        v:SetVampirePreviousRole(ROLE_NONE)
     end
 end)
 

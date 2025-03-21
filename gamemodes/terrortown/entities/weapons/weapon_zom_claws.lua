@@ -1,8 +1,15 @@
 AddCSLuaFile()
 
+local ents = ents
+local hook = hook
 local IsValid = IsValid
 local math = math
+local net = net
+local player = player
+local timer = timer
 local util = util
+
+local CreateEntity = ents.Create
 
 if SERVER then
     util.AddNetworkString("TTT_ZombieLeapStart")
@@ -63,6 +70,14 @@ SWEP.NextReload = CurTime()
 
 -- Pull out faster than standard guns
 SWEP.DeploySpeed = 2
+
+SWEP.TargetEntity = nil
+
+local STATE_ERROR = -1
+local STATE_NONE = 0
+local STATE_EAT = 1
+
+local beep = Sound("npc/fast_zombie/fz_alert_close1.wav")
 local sound_single = Sound("Weapon_Crowbar.Single")
 
 local zombie_leap_enabled = CreateConVar("ttt_zombie_leap_enabled", "1", FCVAR_REPLICATED)
@@ -71,6 +86,25 @@ local zombie_prime_attack_damage = CreateConVar("ttt_zombie_prime_attack_damage"
 local zombie_thrall_attack_damage = CreateConVar("ttt_zombie_thrall_attack_damage", "45", FCVAR_REPLICATED, "The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
 local zombie_prime_attack_delay = CreateConVar("ttt_zombie_prime_attack_delay", "0.7", FCVAR_REPLICATED, "The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect", 0.1, 3)
 local zombie_thrall_attack_delay = CreateConVar("ttt_zombie_thrall_attack_delay", "1.4", FCVAR_REPLICATED, "The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect", 0.1, 3)
+local zombie_eat_enabled = CreateConVar("ttt_zombie_eat_enabled", "0", FCVAR_REPLICATED, "Whether zombies have the ability to eat a player's corpse", 0, 1)
+local zombie_eat_drop_bones = CreateConVar("ttt_zombie_eat_drop_bones", "1", FCVAR_REPLICATED, "Whether zombies should drop bones when eating a player's corpse", 0, 1)
+
+if SERVER then
+    CreateConVar("ttt_zombie_eat_timer", "5", FCVAR_NONE, "The amount of time it takes to consume a player's corpse", 0, 30)
+    CreateConVar("ttt_zombie_eat_heal", "50", FCVAR_NONE, "The amount of health a zombie will heal by when they consume a player's corpse", 0, 100)
+    CreateConVar("ttt_zombie_eat_overheal", "25", FCVAR_NONE, "The amount over the zombie's normal maximum health (e.g. 100 + this ConVar) that the zombie can heal to by consuming a player's corpse", 0, 100)
+end
+
+function SWEP:SetupDataTables()
+    self:NetworkVar("Int", 0, "State")
+    self:NetworkVar("Int", 1, "EatTime")
+    self:NetworkVar("Float", 0, "StartTime")
+    self:NetworkVar("String", 0, "Message")
+    if SERVER then
+        self:SetEatTime(GetConVar("ttt_zombie_eat_timer"):GetInt())
+        self:Reset()
+    end
+end
 
 function SWEP:Initialize()
     if CLIENT then
@@ -117,6 +151,22 @@ end
 Claw Attack
 ]]
 
+local function GetPlayerFromBody(body)
+    local ply
+
+    if body.sid64 then
+        ply = player.GetBySteamID64(body.sid64)
+    elseif body.sid == "BOT" then
+        ply = player.GetByUniqueID(body.uqid)
+    else
+        ply = player.GetBySteamID(body.sid)
+    end
+
+    if not IsValid(ply) then return false end
+
+    return ply
+end
+
 function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
@@ -157,6 +207,13 @@ function SWEP:PrimaryAttack()
                 util.Effect("BloodImpact", edata)
                 owner:LagCompensation(false)
                 owner:FireBullets({ Num = 1, Src = spos, Dir = owner:GetAimVector(), Spread = vector_origin, Tracer = 0, Force = 1, Damage = 0 })
+
+                if SERVER and zombie_eat_enabled:GetBool() and hitEnt:GetClass() == "prop_ragdoll" then
+                    local ply = GetPlayerFromBody(hitEnt)
+                    if IsValid(ply) and not ply:Alive() then
+                        self:Eat(hitEnt)
+                    end
+                end
             else
                 util.Effect("Impact", edata)
             end
@@ -217,10 +274,30 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:Think()
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+
+    if SERVER and self:GetState() >= STATE_EAT then
+        local tr = self:GetTraceEntity()
+        if not owner:KeyDown(IN_ATTACK) or tr.Entity ~= self.TargetEntity then
+            self:Error("EATING ABORTED")
+            return
+        end
+
+        -- We've finished eating
+        if CurTime() >= self:GetStartTime() + self:GetEatTime() then
+            self:DropBones()
+            self:DoHeal()
+            SafeRemoveEntity(self.TargetEntity)
+
+            -- Not actually an error, but it resets the things we want
+            self:FireError()
+        end
+    end
+
     if self.ActivityTranslate[ACT_MP_JUMP] == nil then return end
 
-    local owner = self:GetOwner()
-    if not IsValid(owner) or owner.m_bJumping then return end
+    if owner.m_bJumping then return end
 
     -- When the player hits the ground or lands in water, reset the animation back to normal
     if owner:IsOnGround() or owner:WaterLevel() > 0 then
@@ -266,6 +343,73 @@ function SWEP:Reload()
         vm:SendViewModelMatchingSequence(vm:LookupSequence("fists_draw"))
     end)
 end
+
+--[[
+Eat
+]]
+
+function SWEP:Eat(entity)
+    self:GetOwner():EmitSound("weapons/ttt/zombieeat.wav")
+    self:SetState(STATE_EAT)
+    self:SetStartTime(CurTime())
+    self:SetMessage("EATING BODY")
+
+    self.TargetEntity = entity
+
+    self:SetNextPrimaryFire(CurTime() + self:GetEatTime())
+end
+
+function SWEP:DoHeal()
+    local overheal = GetConVar("ttt_zombie_eat_overheal"):GetInt()
+    local heal = GetConVar("ttt_zombie_eat_heal"):GetInt()
+    local owner = self:GetOwner()
+    local health = math.min(owner:Health() + heal, owner:GetMaxHealth() + overheal)
+    hook.Call("TTTZombieBodyEaten", nil, owner, self.TargetEntity, health - owner:Health())
+    owner:SetHealth(health)
+end
+
+function SWEP:DropBones()
+    if not zombie_eat_drop_bones:GetBool() then return end
+
+    local pos = self.TargetEntity:GetPos()
+    local fingerprints = { self:GetOwner() }
+
+    local skull = CreateEntity("prop_physics")
+    if not IsValid(skull) then return end
+    skull:SetModel("models/Gibs/HGIBS.mdl")
+    skull:SetPos(pos)
+    skull:Spawn()
+    skull:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    skull.fingerprints = fingerprints
+
+    local ribs = CreateEntity("prop_physics")
+    if not IsValid(ribs) then return end
+    ribs:SetModel("models/Gibs/HGIBS_rib.mdl")
+    ribs:SetPos(pos + Vector(0, 0, 15))
+    ribs:Spawn()
+    ribs:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    ribs.fingerprints = fingerprints
+
+    local spine = CreateEntity("prop_physics")
+    if not IsValid(ribs) then return end
+    spine:SetModel("models/Gibs/HGIBS_spine.mdl")
+    spine:SetPos(pos + Vector(0, 0, 30))
+    spine:Spawn()
+    spine:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    spine.fingerprints = fingerprints
+
+    local scapula = CreateEntity("prop_physics")
+    if not IsValid(scapula) then return end
+    scapula:SetModel("models/Gibs/HGIBS_scapula.mdl")
+    scapula:SetPos(pos + Vector(0, 0, 45))
+    scapula:Spawn()
+    scapula:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    scapula.fingerprints = fingerprints
+end
+
+--[[
+Misc.
+]]
 
 function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
     numbul = numbul or 1
@@ -327,6 +471,66 @@ function SWEP:Holster(weap)
         vm:SetColor(COLOR_WHITE)
     end
     return true
+end
+
+if CLIENT then
+    function SWEP:DrawHUD()
+        self.BaseClass.DrawHUD(self)
+
+        local progress
+        local color
+        if self:GetState() == STATE_ERROR then
+            progress = 1
+            color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
+        elseif self:GetState() >= STATE_EAT then
+            progress = math.TimeFraction(self:GetStartTime(), self:GetStartTime() + self:GetEatTime(), CurTime())
+            color = Color(0, 255, 0, 155)
+        else
+            return
+        end
+
+        if progress < 0 then return end
+
+        progress = math.Clamp(progress, 0, 1)
+
+        local x = ScrW() / 2.0
+        local y = ScrH() / 2.0
+        y = y + (y / 3)
+        CRHUD:PaintProgressBar(x, y, 255, color, self:GetMessage(), progress)
+    end
+else
+    function SWEP:Reset()
+        self:SetState(STATE_NONE)
+        self:SetStartTime(-1)
+        self:SetMessage('')
+        self:SetNextPrimaryFire(CurTime() + 0.1)
+    end
+
+    function SWEP:Error(msg)
+        self:SetState(STATE_ERROR)
+        self:SetStartTime(CurTime())
+        self:SetMessage(msg)
+
+        self:GetOwner():EmitSound(beep, 60, 50, 1)
+
+        timer.Simple(0.75, function()
+            if IsValid(self) then self:Reset() end
+        end)
+    end
+
+    function SWEP:GetTraceEntity()
+        local spos = self:GetOwner():GetShootPos()
+        local sdest = spos + (self:GetOwner():GetAimVector() * 70)
+        local kmins = Vector(1,1,1) * -10
+        local kmaxs = Vector(1,1,1) * 10
+
+        return util.TraceHull({start=spos, endpos=sdest, filter=self:GetOwner(), mask=MASK_SHOT_HULL, mins=kmins, maxs=kmaxs})
+    end
+
+    function SWEP:FireError()
+        self:SetState(STATE_NONE)
+        self:SetNextPrimaryFire(CurTime() + 0.1)
+    end
 end
 
 if CLIENT then

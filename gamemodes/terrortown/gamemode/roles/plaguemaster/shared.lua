@@ -67,7 +67,7 @@ table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
 -- ROLE FEATURES --
 -------------------
 
-ROLE_CAN_SEE_MIA[ROLE_HIVEMIND] = true
+ROLE_CAN_SEE_MIA[ROLE_PLAGUEMASTER] = true
 
 hook.Add("TTTCanCureableRoleSpawn", "Plaguemaster_TTTCanCureableRoleSpawn", function()
     if util.CanRoleSpawn(ROLE_PLAGUEMASTER) then

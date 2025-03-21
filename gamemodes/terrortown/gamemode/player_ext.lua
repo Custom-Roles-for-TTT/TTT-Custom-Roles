@@ -211,6 +211,7 @@ function plymeta:ResetRoundFlags()
     self:SetNWBool("det_called", false)
     self:SetNWBool("body_found", false)
     self:SetNWBool("body_searched", false)
+    self:ClearProperty("body_found_role")
     self:SetNWBool("body_searched_det", false)
 
     self.kills = {}
@@ -382,6 +383,7 @@ function plymeta:SpawnForRound(dead_only)
         -- Clear all search information for this resurrected player
         self:SetNWBool("det_called", false)
         self:SetNWBool("body_found", false)
+        self:ClearProperty("body_found_role")
         self:SetNWBool("body_searched", false)
         self:SetNWBool("body_searched_det", false)
 
@@ -733,8 +735,11 @@ hook.Add("TTTPrepareRound", "PostLoadOverride", function()
         local oldDRuncloak = plymeta.DRuncloak
         -- Handle clearing search and corpse data when a Dead Ringer'd player uncloaks
         function plymeta:DRuncloak()
-            self:SetNWBool("body_searched", false)
             self:SetNWBool("det_called", false)
+            self:SetNWBool("body_found", false)
+            self:SetNWBool("body_searched", false)
+            self:ClearProperty("body_found_role")
+            self:SetNWBool("body_searched_det", false)
             oldDRuncloak(self)
 
             net.Start("TTT_RemoveCorpseCall")

@@ -259,11 +259,30 @@ ttt_assassin_target_damage_bonus               1       // Damage bonus that the 
 ttt_assassin_target_bonus_bought               1       // Whether the damage bonus that the assassin has against their target should apply on weapons bought from the shop
 ttt_assassin_wrong_damage_penalty              0.5     // Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)
 ttt_assassin_failed_damage_penalty             0.5     // Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)
+ttt_assassin_damage_penalty_complete           1       // Whether to apply the damage penalties after an assassin has completed their assignments
 ttt_assassin_shop_roles_last                   0       // Whether the assassin should target the shop roles right before Detective or not
 ttt_assassin_credits_starting                  1       // The number of credits an assassin should start with
-ttt_assassin_allow_lootgoblin_kill             1       // Whether the assassin can kill a loot goblin without penalty, even if it is not their target
-ttt_assassin_allow_zombie_kill                 1       // Whether the assassin can kill a zombie without penalty, even if it is not their target
-ttt_assassin_allow_vampire_kill                1       // Whether the assassin can kill a vampire without penalty, even if it is not their target
+ttt_assassin_allow_jesters_kill                1       // Whether the assassin can kill a member of the jester team without damage penalty, even if it is not their target
+ttt_assassin_allow_independents_kill           1       // Whether the assassin can kill an independent role without damage penalty, even if it is not their target
+ttt_assassin_allow_monsters_kill               1       // Whether the assassin can kill a member of the monster team without damage penalty, even if it is not their target
+ttt_assassin_allow_jester_kill                 1       // Whether the assassin can kill a jester without damage penalty, even if it is not their target
+ttt_assassin_allow_swapper_kill                1       // Whether the assassin can kill a swapper without damage penalty, even if it is not their target
+ttt_assassin_allow_clown_kill                  1       // Whether the assassin can kill a clown without damage penalty, even if it is not their target
+ttt_assassin_allow_beggar_kill                 1       // Whether the assassin can kill a beggar without damage penalty, even if it is not their target
+ttt_assassin_allow_bodysnatcher_kill           1       // Whether the assassin can kill a bodysnatcher without damage penalty, even if it is not their target
+ttt_assassin_allow_lootgoblin_kill             1       // Whether the assassin can kill a loot goblin without damage penalty, even if it is not their target
+ttt_assassin_allow_cupid_kill                  1       // Whether the assassin can kill a cupid without damage penalty, even if it is not their target
+ttt_assassin_allow_sponge_kill                 1       // Whether the assassin can kill a sponge without damage penalty, even if it is not their target
+ttt_assassin_allow_guesser_kill                1       // Whether the assassin can kill a guesser without damage penalty, even if it is not their target
+ttt_assassin_allow_oldman_kill                 1       // Whether the assassin can kill a oldman without damage penalty, even if it is not their target
+ttt_assassin_allow_killer_kill                 1       // Whether the assassin can kill a killer without damage penalty, even if it is not their target
+ttt_assassin_allow_zombie_kill                 1       // Whether the assassin can kill a zombie without damage penalty, even if it is not their target
+ttt_assassin_allow_madscientist_kill           1       // Whether the assassin can kill a mad scientist without damage penalty, even if it is not their target
+ttt_assassin_allow_shadow_kill                 1       // Whether the assassin can kill a shadow without damage penalty, even if it is not their target
+ttt_assassin_allow_arsonist_kill               1       // Whether the assassin can kill an arsonist without damage penalty, even if it is not their target
+ttt_assassin_allow_hivemind_kill               1       // Whether the assassin can kill a member of the hive mind without damage penalty, even if it is not their target
+ttt_assassin_allow_plaguemaster_kill           1       // Whether the assassin can kill a plaguemaster without damage penalty, even if it is not their target
+ttt_assassin_allow_vindicator_kill             1       // Whether the assassin can kill a vindicator without damage penalty, even if it is not their target
 
 // Vampire
 ttt_vampire_is_monster                         0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
@@ -274,6 +293,7 @@ ttt_vampire_drain_first                        0       // Whether vampires shoul
 ttt_vampire_drain_credits                      0       // How many credits a vampire should get for draining a living target
 ttt_vampire_drain_mute_target                  0       // Whether players being drained by a vampire should be muted
 ttt_vampire_convert_enabled                    0       // Whether vampires have the ability to convert living targets to a vampire thrall using their fangs
+ttt_vampire_drop_bones                         1       // Whether vampires should drop bones when draining a player or a corpse
 ttt_vampire_show_target_icon                   0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_vampire_damage_reduction                   0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire
 ttt_vampire_fang_timer                         5       // The amount of time fangs must be used to fully drain a target's blood
@@ -447,7 +467,9 @@ ttt_vindicator_announcement_mode               1       // Who is notified when t
 ttt_vindicator_prevent_revival                 0       // Whether the vindicator should be killed if they are revived after having died due to failing or succeeding in killing their target
 ttt_vindicator_target_suicide_success          1       // Whether the vindicator's killer killing themselves should count as a win for the vindicator
 ttt_vindicator_kill_on_fail                    1       // Whether the vindicator should be killed if they fail to kill their target
-ttt_vindicator_kill_on_success                 0       // Whether the vindicator should be killed after they kill their target
+ttt_vindicator_kill_on_success                 0       // Whether the vindicator should be killed after they kill their target (Not used when `ttt_vindicator_reset_on_success` is enabled)
+ttt_vindicator_reset_on_success                0       // Whether the vindicator should be reset to the innocent team after they kill their target
+ttt_vindicator_reset_win_on_success            0       // Whether the Vindicator, when they are reset to the innocent team after killing their target, should only win with the innocent team. When disabled, the Vindicator will also have a solo secondary win. (Requires `ttt_vindicator_reset_on_success` to be enabled)
 ttt_vindicator_can_see_jesters                 0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to vindicators when they are on the independent team
 ttt_vindicator_update_scoreboard               0       // Whether vindicators show dead players as missing in action when they are on the independent team
 
@@ -492,7 +514,7 @@ ttt_detectives_search_credits_friendly         0       // Whether detectives sho
 ttt_detectives_search_credits_share            0       // Whether all detectives should get credits for searching corpses. If disabled, only the searching detective gets credits
 
 // Paladin
-ttt_paladin_aura_radius                        5       // The radius of the paladin's aura in meters
+ttt_paladin_aura_radius                        6       // The radius of the paladin's aura in meters
 ttt_paladin_damage_reduction                   0.3     // The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura
 ttt_paladin_heal_rate                          1       // The amount of health a player inside the paladin's aura will heal each second
 ttt_paladin_protect_self                       0       // Whether the paladin's damage reduction aura will protect themselves or not
@@ -519,7 +541,7 @@ ttt_medium_credits_starting                    1       // The number of credits 
 
 // Sapper
 ttt_sapper_is_innocent                         0       // Whether the sapper should be treated as a special innocent
-ttt_sapper_aura_radius                         5       // The radius of the sapper's aura in meters
+ttt_sapper_aura_radius                         6       // The radius of the sapper's aura in meters
 ttt_sapper_protect_self                        1       // Whether the sapper's protection aura will protect themselves or not
 ttt_sapper_fire_immune                         0       // Whether sapper's protection aura also grands fire immunity
 ttt_sapper_can_see_c4                          0       // Whether the sapper can see C4 pings on their radar like traitors
@@ -613,7 +635,6 @@ ttt_beggar_scan_time                           15      // The amount of time (in
 ttt_beggar_scan_float_time                     1       // The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight
 ttt_beggar_scan_cooldown                       3       // The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target
 ttt_beggar_scan_distance                       2500    // The maximum distance away the scanner target can be
-ttt_beggar_transfer_ownership                  0       // Whether the ownership of a shop item should transfer each time its picked up by a non-beggar
 ttt_beggar_can_see_jesters                     0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the beggar (Only applies if ttt_beggar_is_independent is enabled)
 ttt_beggar_update_scoreboard                   0       // Whether the beggar shows dead players as missing in action (Only applies if ttt_beggar_is_independent is enabled)
 ttt_beggar_announce_delay                      0       // How long the delay between role change and announcement should be
@@ -685,7 +706,7 @@ ttt_cupid_can_see_jesters                      0       // Whether jesters are re
 ttt_cupid_update_scoreboard                    0       // Whether cupid shows dead players as missing in action (Only applies if ttt_cupid_is_independent is enabled)
 
 // Sponge
-ttt_sponge_aura_radius                         5       // The radius of the sponge's aura in meters
+ttt_sponge_aura_radius                         6       // The radius of the sponge's aura in meters
 ttt_sponge_notify_mode                         0       // The logic to use when notifying players that a sponge was killed. Killer is notified unless "ttt_sponge_notify_killer" is disabled. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_sponge_notify_killer                       1       // Whether to notify a sponge's killer
 ttt_sponge_notify_sound                        0       // Whether to play a cheering sound when a sponge is killed
@@ -843,6 +864,11 @@ ttt_zombie_prime_convert_chance                1.0     // The chance that a prim
 ttt_zombie_thrall_convert_chance               1.0     // The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
 ttt_zombie_friendly_fire                       2       // How to handle friendly fire damage between zombies. 0 - Do nothing. 1 - Reflect the damage back to the attacker. 2 - Negate the damage.
 ttt_zombie_respawn_block_win                   0       // Whether a player respawning as a zombie blocks the round from ending, allowing them to join the winning team
+ttt_zombie_eat_enabled                         0       // Whether zombies have the ability to eat a player's corpse
+ttt_zombie_eat_drop_bones                      1       // Whether zombies should drop bones when eating a player's corpse
+ttt_zombie_eat_timer                           5       // The amount of time it takes to consume a player's corpse
+ttt_zombie_eat_heal                            50      // The amount of health a zombie will heal by when they consume a player's corpse
+ttt_zombie_eat_overheal                        25      // The amount over the zombie's normal maximum health (e.g. 100 + this ConVar) that the zombie can heal to by consuming a player's corpse
 ttt_zombie_can_see_jesters                     1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to zombies (Only applies if ttt_zombie_is_monster and ttt_zombie_is_traitor are not enabled)
 ttt_zombie_update_scoreboard                   1       // Whether the zombies show dead players as missing in action (Only applies if ttt_zombie_is_monster and ttt_zombie_is_traitor are not enabled)
 
@@ -859,8 +885,8 @@ ttt_shadow_start_timer                         30      // How much time (in seco
 ttt_shadow_buffer_timer                        7       // How much time (in seconds) the shadow can stay out of their target's radius without dying
 ttt_shadow_delay_timer_min                     0       // Minimum time (in seconds) before the shadow is assigned a target at the start of the round
 ttt_shadow_delay_timer_max                     0       // Maximum time (in seconds) before the shadow is assigned a target at the start of the round
-ttt_shadow_alive_radius                        8       // The radius (in meters) from the living target that the shadow has to stay within
-ttt_shadow_dead_radius                         3       // The radius (in meters) from the death target that the shadow has to stay within
+ttt_shadow_alive_radius                        10       // The radius (in meters) from the living target that the shadow has to stay within
+ttt_shadow_dead_radius                         4       // The radius (in meters) from the death target that the shadow has to stay within
 ttt_shadow_target_buff                         4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join. 5 - Kill target and steal their role.
 ttt_shadow_target_buff_show_progress           1       // Whether to show a progress bar for the when the shadow's buff will be activated
 ttt_shadow_target_buff_resumable               0       // Whether the shadow's buff should retain progress if they move away from their target
@@ -882,6 +908,7 @@ ttt_shadow_target_traitor                      1       // Whether the shadow sho
 ttt_shadow_target_notify_mode                  0       // How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.
 ttt_shadow_soul_link                           0       // Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.
 ttt_shadow_weaken_health_to                    0       // How low to reduce the Shadow's health to when they are outside of the target circle instead of their normal punishment. (Setting to 0 will use "ttt_shadow_failure_mode" instead.)
+ttt_shadow_weaken_health_to_death              0       // Whether to kill the shadow one tick after they reach 1HP when "ttt_shadow_weaken_health_to" is set to 1
 ttt_shadow_weaken_timer                        3       // How often (in seconds) to adjust the shadow's health when they are outside of the target circle
 ttt_shadow_failure_mode                        0       // How to handle the shadow failing to stay near their target. 0 - Kill them. 1 - Change them to be a jester. 2 - Change them to be a swapper. Not used when "ttt_shadow_weaken_health_to" is enabled.
 ttt_shadow_can_see_jesters                     0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the shadow
@@ -1216,6 +1243,7 @@ ttt_corpse_search_team_text_independent        0       // Whether corpse searche
 ttt_corpse_search_team_text_jester             0       // Whether corpse searches of jesters should include flavor text hinting at the team of their killer
 ttt_color_mode_override                        "none"  // Forces all players to have a certain role color setting. none (let user decide), default, simple, protan, deutan, tritan
 ttt_spectators_see_roles                       0       // Whether spectators (not dead players) should be able to see the roles of all players
+ttt_weapon_transfer_ownership                  0       // Whether the ownership of a shop item should transfer each time its picked up
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for their original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

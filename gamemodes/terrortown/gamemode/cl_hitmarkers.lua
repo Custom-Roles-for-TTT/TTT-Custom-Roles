@@ -186,7 +186,7 @@ AddHook("HUDPaint", "HitmarkerDrawer", function()
     if hm_toggle:GetBool() == false then return end -- Enables/Disables the hitmarkers
     if hm_Alpha == 0 then hm_DrawHitM = false hm_CanPlayS = true end -- Removes them after they decay
 
-    if hm_DrawHitM == true then
+    if hm_DrawHitM then
         if hm_CanPlayS then
             hm_CanPlayS = false
             if hm_LastHitImmune and hm_immune:GetBool() and hm_immunesound:GetBool() then

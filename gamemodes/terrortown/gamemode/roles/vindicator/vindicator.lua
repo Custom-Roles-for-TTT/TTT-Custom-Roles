@@ -25,6 +25,8 @@ local vindicator_prevent_revival = CreateConVar("ttt_vindicator_prevent_revival"
 local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suicide_success")
 local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
 local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
+local vindicator_reset_on_success = GetConVar("ttt_vindicator_reset_on_success")
+local vindicator_reset_win_on_success = GetConVar("ttt_vindicator_reset_win_on_success")
 
 -------------------
 -- ROLE FEATURES --
@@ -35,7 +37,6 @@ local function ActivateVindicator(vindicator, target)
 
     -- Change their team and set their target even if the target is already dead
     SetVindicatorTeam(true)
-    vindicator:SetNWString("VindicatorTarget", target:SteamID64())
     vindicator:SetNWBool("VindicatorIsRespawning", false)
 
     net.Start("TTT_VindicatorActive")
@@ -59,17 +60,15 @@ local function ActivateVindicator(vindicator, target)
     local furthestSpawn = nil
     local furthestDistance = 0
     for _, spawn in ipairs(spawns) do
-        local distance = spawn:GetPos():Distance(target:GetPos())
+        local distance = spawn:GetPos():DistToSqr(target:GetPos())
         if distance > furthestDistance then
             furthestSpawn = spawn
             furthestDistance = distance
         end
     end
     if IsValid(furthestSpawn) then
-        local respawnPos = FindRespawnLocation(furthestSpawn:GetPos())
-        if respawnPos then
-            vindicator:SetPos(respawnPos)
-        end
+        local furthestPos = furthestSpawn:GetPos()
+        vindicator:SetPos(FindRespawnLocation(furthestPos) or furthestPos)
     end
 
     local vect = target:GetPos() - vindicator:GetPos()
@@ -91,6 +90,26 @@ local function ActivateVindicator(vindicator, target)
     end
 end
 
+local function OnVindicatorSuccess(vindicator, target, msg)
+    if vindicator_reset_on_success:GetBool() and not vindicator_reset_win_on_success:GetBool() then
+        vindicator:SetNWBool("VindicatorSuccess", true)
+    end
+    vindicator:QueueMessage(MSG_PRINTBOTH, msg)
+    net.Start("TTT_VindicatorSuccess")
+    net.WriteString(vindicator:Nick())
+    net.WriteString(target:Nick())
+    net.Broadcast()
+
+    if vindicator_reset_on_success:GetBool() then
+        vindicator:SetNWString("VindicatorTarget", "")
+        SetVindicatorTeam(false)
+        vindicator:QueueMessage(MSG_PRINTBOTH, "You have gotten your revenge and will now return to your peaceful existence.")
+    elseif not vindicator_prevent_revival:GetBool() and vindicator_kill_on_success:GetBool() then
+        vindicator:Kill()
+        vindicator:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
+    end
+end
+
 hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and GetRoundState() == ROUND_ACTIVE
     local handled = false
@@ -99,6 +118,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
             if attacker:IsVictimChangingRole(victim) then return end
 
             victim:SetNWBool("VindicatorIsRespawning", true)
+            victim:SetNWString("VindicatorTarget", attacker:SteamID64())
 
             local delay = vindicator_respawn_delay:GetInt()
             if delay == 0 then
@@ -111,16 +131,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
             end
             handled = true
         elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") then
-            attacker:SetNWBool("VindicatorSuccess", true)
-            attacker:QueueMessage(MSG_PRINTBOTH, "You have successfully killed your target.")
-            net.Start("TTT_VindicatorSuccess")
-            net.WriteString(attacker:Nick())
-            net.WriteString(victim:Nick())
-            net.Broadcast()
-            if not vindicator_prevent_revival:GetBool() and vindicator_kill_on_success:GetBool() then
-                attacker:Kill()
-                attacker:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
-            end
+            OnVindicatorSuccess(attacker, victim, "You have successfully killed your target.")
             handled = true
         end
     end
@@ -133,16 +144,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
     for _, ply in PlayerIterator() do
         if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") then
             if attacker == victim and vindicator_target_suicide_success:GetBool() then
-                ply:SetNWBool("VindicatorSuccess", true)
-                ply:QueueMessage(MSG_PRINTBOTH, "Your target finished the job for you and has killed themselves.")
-                net.Start("TTT_VindicatorSuccess")
-                net.WriteString(ply:Nick())
-                net.WriteString(victim:Nick())
-                net.Broadcast()
-                if not vindicator_prevent_revival:GetBool() and vindicator_kill_on_success:GetBool() then
-                    ply:Kill()
-                    ply:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
-                end
+                OnVindicatorSuccess(ply, victim, "Your target finished the job for you and has killed themselves.")
             else
                 ply:QueueMessage(MSG_PRINTBOTH, "Your target was killed by someone else and you have failed.")
                 net.Start("TTT_VindicatorFail")
@@ -191,6 +193,8 @@ local function HandleVindicatorMidRound(ply)
     end
 end
 
+local unkillable_roles = { ROLE_GUESSER }
+
 hook.Add("TTTPlayerRoleChanged", "Vindicator_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
 
@@ -201,6 +205,22 @@ hook.Add("TTTPlayerRoleChanged", "Vindicator_TTTPlayerRoleChanged", function(ply
         HandleVindicatorMidRound(vindicator)
     elseif newRole == ROLE_VINDICATOR then
         HandleVindicatorMidRound(ply)
+    -- If the player has changed to an unkillable role
+    elseif table.HasValue(unkillable_roles, newRole) then
+        local plySid64 = ply:SteamID64()
+        -- Find activated vindicators who have this player as their target
+        for _, p in PlayerIterator() do
+            if not p:Alive() or p:IsSpec() then continue end
+            if not p:IsVindicator() or not p:IsRoleActive() then continue end
+
+            local targetSid64 = p:GetNWString("VindicatorTarget", "")
+            -- Then clear their target and swap them back to being innocent
+            if plySid64 == targetSid64 then
+                p:SetNWString("VindicatorTarget", "")
+                SetVindicatorTeam(false)
+                p:QueueMessage(MSG_PRINTBOTH, "Your target has changed to a new role that you cannot kill. You have calmed your need for revenge.")
+            end
+        end
     end
 end)
 
@@ -246,6 +266,19 @@ hook.Add("PlayerDisconnected", "Vindicator_PlayerDisconnected", function(ply)
             v:QueueMessage(MSG_PRINTBOTH, "Your target has disconnected so you have rejoined the innocent team!")
             SetVindicatorTeam(false)
             v:SetNWString("VindicatorTarget", "")
+
+            -- If this vindicator is currently in the respawn delay, stop the timer and respawn them immediately instead
+            if v:GetNWBool("VindicatorIsRespawning", false) then
+                v:SetNWBool("VindicatorIsRespawning", false)
+                timer.Remove("VindicatorRespawn" .. v:SteamID64())
+
+                local body = v.server_ragdoll or v:GetRagdollEntity()
+                if IsValid(body) then
+                    body:Remove()
+                end
+                v:SpawnForRound(true)
+                v:SetHealth(vindicator_respawn_health:GetInt())
+            end
         end
     end
 end)

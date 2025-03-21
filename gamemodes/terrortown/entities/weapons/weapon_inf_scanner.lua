@@ -18,8 +18,8 @@ end
 SWEP.Base                   = "weapon_tttbase"
 SWEP.Category               = WEAPON_CATEGORY_ROLE
 
-SWEP.ViewModel		        = "models/weapons/v_binoculars.mdl"
-SWEP.WorldModel		        = "models/weapons/w_binoculars.mdl"
+SWEP.ViewModel                = "models/weapons/v_binoculars.mdl"
+SWEP.WorldModel                = "models/weapons/w_binoculars.mdl"
 
 SWEP.Primary.ClipSize       = -1
 SWEP.Primary.DefaultClip    = -1

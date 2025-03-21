@@ -284,6 +284,8 @@ end)
 local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suicide_success")
 local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
 local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
+local vindicator_reset_on_success = GetConVar("ttt_vindicator_reset_on_success")
+local vindicator_reset_win_on_success = GetConVar("ttt_vindicator_reset_win_on_success")
 
 hook.Add("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_VINDICATOR then
@@ -300,7 +302,18 @@ hook.Add("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", function(role,
         html = html .. "</span>"
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Once the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. "'s target has died, "
-        if vindicator_kill_on_fail:GetBool() and vindicator_kill_on_success:GetBool() then
+        if vindicator_reset_on_success:GetBool() then
+            html = html .. "if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " was the one to kill them then they will reset to the <span style='color: rgb(" .. innocentColor.r .. ", " .. innocentColor.g .. ", " .. innocentColor.b .. ")'>innocent team</span>."
+            if vindicator_reset_win_on_success:GetBool() then
+                html = html .. " They will win with the <span style='color: rgb(" .. innocentColor.r .. ", " .. innocentColor.g .. ", " .. innocentColor.b .. ")'>innocent team</span> once more."
+            else
+                html = html .. " They will win even if they die before the round ends."
+            end
+            if vindicator_kill_on_fail:GetBool() then
+                html = html .. " However if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " failed to kill their target then they are killed also."
+            end
+            html = html .. "</span>"
+        elseif vindicator_kill_on_fail:GetBool() and vindicator_kill_on_success:GetBool() then
             html = html .. "the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " is killed also. However they can still win, even if dead.</span>"
         elseif vindicator_kill_on_fail:GetBool() then
             html = html .. "if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " was the one to kill them then they are free to live out the rest of the round. They will win even if they die before the round ends. However if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " failed to kill their target then they are killed also.</span>"

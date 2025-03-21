@@ -439,7 +439,7 @@ function GM:HUDDrawTargetID()
     local minimal = minimalist:GetBool()
     local hint = (not minimal) and (ent.TargetIDHint or ClassHint[cls])
     if type(hint) == "function" then
-        hint = hint()
+        hint = hint(ent)
     end
 
     local spectatorOverride = client:GetRole() == ROLE_NONE and client:IsSpec() and GetConVar("ttt_spectators_see_roles"):GetBool()

@@ -21,6 +21,17 @@ local MathMin = math.min
 local MathRound = math.Round
 local MathSin = math.sin
 
+local OpenedVoicePanels = {}
+local function HideVolumePanels()
+    for _, pnl in pairs(OpenedVoicePanels) do
+        if IsValid(pnl) then
+            pnl:Close()
+        end
+    end
+    table.Empty(OpenedVoicePanels)
+end
+hook.Add("ScoreboardHide", "TTT_HideVolumePanels", HideVolumePanels)
+
 SB_ROW_HEIGHT = 24 --16
 
 local PANEL = {}
@@ -156,7 +167,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
     if not IsValid(ply) or GetRoundState() == ROUND_WAIT or GetRoundState() == ROUND_PREP then return defaultcolor end
 
     local client = LocalPlayer()
-    if ShouldSpectatorSeeRoles(client) then
+    if client == ply or ShouldSpectatorSeeRoles(client) then
         return ply:GetRole()
     end
 
@@ -166,8 +177,8 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         return ply.search_result.role
     end
 
-    if ply == client or
-        (ply:GetNWBool("body_found", false) and GetConVar("ttt_corpse_search_not_shared"):GetBool()) then
+    -- If this client should know the player's role, show it
+    if ply.body_found_role then
         return ply:GetRole()
     end
 
@@ -378,7 +389,9 @@ function PANEL:SetPlayer(ply)
 
     self.voice.DoRightClick = function()
         if IsValid(ply) and ply ~= LocalPlayer() then
-           self:ShowMicVolumeSlider()
+            HideVolumePanels()
+            local voiceSlider = self:ShowMicVolumeSlider()
+            table.insert(OpenedVoicePanels, voiceSlider)
         end
      end
 
@@ -536,7 +549,7 @@ function PANEL:ShowMicVolumeSlider()
     local sliderHeight = 16
     local sliderDisplayHeight = 8
 
-    local x = MathMax(gui.MouseX() - width, 0)
+    local x = MathMax(gui.MouseX() - width - padding, 0)
     local y = MathMin(gui.MouseY(), ScrH() - height)
 
     local currentPlayerVolume = self:GetPlayer():GetVoiceVolumeScale()
@@ -554,6 +567,7 @@ function PANEL:ShowMicVolumeSlider()
     frame.Paint = function(s, w, h)
         draw.RoundedBox(5, 0, 0, w, h, Color(24, 25, 28, 255))
     end
+    frame.Player = self:GetPlayer()
 
     -- Automatically close after 10 seconds (something may have gone wrong)
     timer.Simple(10, function() if IsValid(frame) then frame:Close() end end)
@@ -574,7 +588,7 @@ function PANEL:ShowMicVolumeSlider()
     slider:SetSlideX(currentPlayerVolume)
     slider:SetLockY(0.5)
     slider.TranslateValues = function(s, sx, sy)
-        if IsValid(self:GetPlayer()) then self:GetPlayer():SetVoiceVolumeScale(sx) end
+        if IsValid(frame.Player) then frame.Player:SetVoiceVolumeScale(x) end
         return sx, sy
     end
 
@@ -614,6 +628,8 @@ function PANEL:ShowMicVolumeSlider()
 
         draw.RoundedBox(100, 0, 0, sliderHeight, sliderHeight, COLOR_WHITE)
     end
- end
+
+    return frame
+end
 
 vgui.Register("TTTScorePlayerRow", PANEL, "DButton")

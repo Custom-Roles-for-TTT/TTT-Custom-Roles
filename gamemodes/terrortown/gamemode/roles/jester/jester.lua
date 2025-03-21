@@ -2,6 +2,7 @@ AddCSLuaFile()
 
 local hook = hook
 local player = player
+local timer = timer
 
 local PlayerIterator = player.Iterator
 
@@ -37,10 +38,7 @@ local function JesterKilledNotification(attacker, victim)
         end)
 end
 
-local jesterWinTime = nil
 hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, attacker)
-    if jesterWinTime then return end
-
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
 
@@ -54,7 +52,6 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
         -- If we're not ending the round, just reuse the existing variable and
         -- set it to something valid so the win check logic sees it's been updated
         if not jester_win_ends_round:GetBool() then
-            jesterWinTime = 1
             net.Start("TTT_UpdateJesterSecondaryWins")
             net.Broadcast()
             return
@@ -65,21 +62,10 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
             return
         end
 
+        -- Stop the win checks so someone else doesn't steal the jester's win
+        StopWinChecks()
         -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
-        jesterWinTime = CurTime() + 1
-    end
-end)
-
-hook.Add("TTTCheckForWin", "Jester_TTTCheckForWin", function()
-    if not jester_win_ends_round:GetBool() then return end
-
-    if jesterWinTime then
-        if CurTime() > jesterWinTime then
-            jesterWinTime = nil
-            return WIN_JESTER
-        end
-
-        return WIN_NONE
+        timer.Simple(1, function() EndRound(WIN_JESTER) end)
     end
 end)
 
@@ -92,8 +78,6 @@ hook.Add("TTTPrintResultMessage", "Jester_TTTPrintResultMessage", function(type)
 end)
 
 hook.Add("TTTPrepareRound", "Jester_TTTPrepareRound", function()
-    jesterWinTime = nil
-
     for _, v in PlayerIterator() do
         v:SetNWString("JesterKiller", "")
     end

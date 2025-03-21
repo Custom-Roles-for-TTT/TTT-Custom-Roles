@@ -117,6 +117,16 @@
             <li><em>result</em> - The new result value to use or the original passed into the hook</li>
         </ul>
 
+        <h3><a id="tttcancureablerolespawn" href="#tttcancureablerolespawn">TTTCanCureableRoleSpawn()</a></h3>
+        <p>
+            Called to determine if a role can spawn that causes a state that can be cured.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.1.18<br>
+        </p>
+        <p>
+            <em>Return:</em> <code>true</code> if a role can spawn that causes a state that can be cured. Otherwise do not return anything.
+        </p>
+
         <h3><a id="tttcanidentifycorpseply-rag-wastraitor" href="#tttcanidentifycorpseply-rag-wastraitor">TTTCanIdentifyCorpse(ply, rag, wasTraitor)</a></h3>
         <p>
             Changed <code>was_traitor</code> parameter to be <code>true</code> for any member of the traitor team, rather than just the regular Traitor role.<br>
@@ -147,14 +157,19 @@
             <em>Return:</em> Whether to allow using the cure on this player. (Defaults to <code>false</code>)
         </p>
 
-        <h3><a id="tttcancureablerolespawn" href="#tttcancureablerolespawn">TTTCanCureableRoleSpawn()</a></h3>
+        <h3><a id="tttcantransferweaponownershipply-wep" href="#tttcantransferweaponownershipply-wep">TTTCanTransferWeaponOwnership(ply, wep)</a></h3>
         <p>
-            Called to determine if a role can spawn that causes a state that can be cured.<br>
-            <em>Realm:</em> Client and Server<br>
-            <em>Added in:</em> 2.1.18<br>
+            Called when determining if a player can have ownership of a specific weapon transferred to them.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.8<br>
+            <em>Parameters:</em>
         </p>
+        <ul>
+            <li><em>ply</em> - The target player who is potentially having ownership of a weapon transferred to them</li>
+            <li><em>wep</em> - The target weapon whose ownership is potentially being transferred</li>
+        </ul>
         <p>
-            <em>Return:</em> <code>true</code> if a role can spawn that causes a state that can be cured. Otherwise do not return anything.
+            <em>Return:</em> Whether to allow this player to have ownership of the weapon transferred to them. (Defaults to <code>true</code>)
         </p>
 
         <h3><a id="tttcanusetraitorvoiceply" href="#tttcanusetraitorvoiceply"></a>TTTCanUseTraitorVoice(ply)</a></h3>
@@ -185,6 +200,24 @@
         <p>
             <em>Return:</em> The player name to show, if it should be overridden. Otherwise do not return anything.
         </p>
+
+        <h3><a id="tttcheatsheetrolestringoverrideclient-rolestring" href="#tttcheatsheetrolestringoverrideclient-rolestring">TTTCheatSheetRoleStringOverride(client, roleString)</a></h3>
+        <p>
+            Called when the cheat sheet is displayed, allowing the target translation string to be changed.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>roleString</em> - The string representing role of the local player. Is normally used to build the role cheat sheet description translation</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>roleString</em> - The new string to use when building the role cheat sheet description translation</li>
+        </ul>
 
         <h3><a id="tttcupidshouldloversurviveply-lover" href="#tttcupidshouldloversurviveply-lover">TTTCupidShouldLoverSurvive(ply, lover)</a></h3>
         <p>
@@ -1817,6 +1850,19 @@
         </p>
         <ul>
             <li><em>win</em> - The win type that the round is about to end with</li>
+        </ul>
+
+        <h3><a id="tttzombiebodyeatenply-ent-healed" href="#tttzombiebodyeatenply-ent-healed">TTTZombieBodyEaten(ply, ent, healed)</a>  <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called after a Zombie eats a body.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The Zombie eating the body</li>
+            <li><em>ent</em> - The target entity. Generally either a player or a ragdoll</li>
+            <li><em>healed</em> - The amount of health the player gained from eating the body</li>
         </ul>
     </div>
     <div class="footerpadding panel"></div>
