@@ -9,6 +9,13 @@
 - Fixed health station and bomb station having one more health than intended
 - Fixed role colors being too saturated in many situations
 
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
+
+### Developer
+- Added new `TTTCanTransferWeaponOwnership` hook to determine if a player can have the ownership of a weapon transferred to them
+    - This is only called when `SWEP.BoughtBy` is not set or it is set and `ttt_weapon_transfer_ownership` is enabled
+
 ## 2.2.7 (Beta)
 **Released: March 15th, 2025**
 

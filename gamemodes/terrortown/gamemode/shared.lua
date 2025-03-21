@@ -1825,7 +1825,8 @@ end
 -- Add entries to this table in the form of: { "old_convar_name", "new_convar_name" }
 local deprecatedConVars = {
     { "ttt_parasite_cure_time", "ttt_doctor_cure_time" },
-    { "ttt_parasite_cure_mode", "ttt_doctor_cure_mode" }
+    { "ttt_parasite_cure_mode", "ttt_doctor_cure_mode" },
+    { "ttt_beggar_transfer_ownership", "ttt_weapon_transfer_ownership" }
 }
 
 for _, c in ipairs(deprecatedConVars) do
