@@ -16,6 +16,7 @@
 - Added new `TTTCanTransferWeaponOwnership` hook to determine if a player can have the ownership of a weapon transferred to them
     - This is only called when `SWEP.BoughtBy` is not set or it is set and `ttt_weapon_transfer_ownership` is enabled
 - Changed the function version of `ENT.TargetIDHint` to take the entity as a parameter
+- Changed `EVENTS_BY_ROLE` to create an inner table if a role registers more than one event ID
 
 ## 2.2.7 (Beta)
 **Released: March 15th, 2025**

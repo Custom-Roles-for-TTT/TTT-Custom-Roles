@@ -1340,7 +1340,13 @@ if SERVER then
 
         -- Don't assign this event ID to a role we haven't found
         if role and role > ROLE_NONE and role <= ROLE_MAX then
-            EVENTS_BY_ROLE[role] = EVENT_MAX
+            if type(EVENTS_BY_ROLE[role]) == "number" then
+                EVENTS_BY_ROLE[role] = { EVENTS_BY_ROLE[role], EVENT_MAX }
+            elseif type(EVENTS_BY_ROLE[role]) == "table" then
+                table.insert(EVENTS_BY_ROLE[role], EVENT_MAX)
+            else
+                EVENTS_BY_ROLE[role] = EVENT_MAX
+            end
         end
 
         return EVENT_MAX
