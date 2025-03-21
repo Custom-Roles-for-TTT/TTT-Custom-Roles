@@ -9,6 +9,7 @@
 - Fixed health station and bomb station having one more health than intended
 - Fixed role colors being too saturated in many situations
 - Fixed Beggar reveal announcements not working if `ttt_beggar_keep_begging` was enabled
+- Fixed Beggar reveal announcements not using custom role names
 
 ### Changes
 - **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
