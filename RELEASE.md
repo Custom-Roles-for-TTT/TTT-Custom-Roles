@@ -1,5 +1,23 @@
 # Release Notes
 
+## 2.2.8 (Beta)
+**Released:**
+
+### Fixes
+- Ported "TTT: Fix Spelling"
+- Fixed a rare error when closing the body search window
+- Fixed health station and bomb station having one more health than intended
+- Fixed role colors being too saturated in many situations
+
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
+
+### Developer
+- Added new `TTTCanTransferWeaponOwnership` hook to determine if a player can have the ownership of a weapon transferred to them
+    - This is only called when `SWEP.BoughtBy` is not set or it is set and `ttt_weapon_transfer_ownership` is enabled
+- Changed the function version of `ENT.TargetIDHint` to take the entity as a parameter
+- Changed `EVENTS_BY_ROLE` to create an inner table if a role registers more than one event ID
+
 ## 2.2.7 (Beta)
 **Released: March 15th, 2025**
 

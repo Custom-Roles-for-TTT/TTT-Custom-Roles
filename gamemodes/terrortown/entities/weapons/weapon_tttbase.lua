@@ -483,7 +483,7 @@ function SWEP:SetIronsightsTime(time) end
 function SWEP:GetIronsightsPredicted() return false end
 function SWEP:SetIronsightsPredicted(bool) end
 
--- Set up ironsights dt bool. Weapons using their own DT vars will have to make
+-- Set up iron sights dt bool. Weapons using their own DT vars will have to make
 -- sure they call this.
 function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 3, "IronsightsPredicted")
