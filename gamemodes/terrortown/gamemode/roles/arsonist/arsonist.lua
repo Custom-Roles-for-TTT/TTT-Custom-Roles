@@ -25,6 +25,7 @@ local arsonist_douse_time = GetConVar("ttt_arsonist_douse_time")
 local arsonist_douse_notify_delay_min = GetConVar("ttt_arsonist_douse_notify_delay_min")
 local arsonist_douse_notify_delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max")
 local arsonist_douse_corpses = GetConVar("ttt_arsonist_douse_corpses")
+local arsonist_warn_all = GetConVar("ttt_arsonist_warn_all")
 
 --------------------
 -- PLAYER DOUSING --
@@ -304,6 +305,32 @@ hook.Add("EntityTakeDamage", "Arsonist_EntityTakeDamage", function(ent, dmginfo)
         dmginfo:SetInflictor(ent.ignite_info.infl)
         dmginfo:SetDamage(arsonist_burn_damage:GetInt())
     end
+end)
+
+------------------
+-- ANNOUNCEMENT --
+------------------
+
+-- Warn other players that there is an arsonist
+hook.Add("TTTBeginRound", "Arsonist_Announce_TTTBeginRound", function()
+    if not arsonist_warn_all:GetBool() then return end
+
+    timer.Simple(1.5, function()
+        local hasArsonist = false
+        for _, v in PlayerIterator() do
+            if v:IsArsonist() then
+                hasArsonist = true
+            end
+        end
+
+        if hasArsonist then
+            for _, v in PlayerIterator() do
+                if not v:IsArsonist() then
+                    v:QueueMessage(MSG_PRINTBOTH, "There is " .. ROLE_STRINGS_EXT[ROLE_ARSONIST] .. ".")
+                end
+            end
+        end
+    end)
 end)
 
 ----------------

@@ -91,6 +91,7 @@ CreateConVar("ttt_killer_smoke_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_show_target_icon", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_vision_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_update_scoreboard", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_killer_warn", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_warn_all", "0", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_KILLER] = {}
@@ -124,6 +125,10 @@ table.insert(ROLE_CONVARS[ROLE_KILLER], {
     cvar = "ttt_killer_damage_reduction",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_warn",
+    type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_KILLER], {
     cvar = "ttt_killer_warn_all",

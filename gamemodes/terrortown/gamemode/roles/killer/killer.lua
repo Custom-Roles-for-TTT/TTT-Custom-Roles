@@ -24,6 +24,7 @@ local killer_crowbar_enabled = GetConVar("ttt_killer_crowbar_enabled")
 local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled")
 local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon")
 local killer_vision_enabled = GetConVar("ttt_killer_vision_enabled")
+local killer_warn = GetConVar("ttt_killer_warn")
 local killer_warn_all = GetConVar("ttt_killer_warn_all")
 
 -----------
@@ -280,6 +281,8 @@ end)
 
 -- Warn other players that there is a killer
 hook.Add("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
+    if not killer_warn:GetBool() then return end
+
     timer.Simple(1.5, function()
         local hasKiller = false
         for _, v in PlayerIterator() do

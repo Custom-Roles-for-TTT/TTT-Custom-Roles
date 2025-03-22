@@ -10,15 +10,17 @@ local MathClamp = math.Clamp
 local staminaMax = 100
 local sprintEnabled = true
 local speedMultiplier = 0.4
+local recoveryDelay = 0
 local defaultRecovery = 0.08
 local traitorRecovery = 0.12
 local consumption = 0.2
 
 CreateConVar("ttt_sprint_enabled", "1", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Whether sprint is enabled")
-CreateConVar("ttt_sprint_bonus_rel", "0.4", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "The relative speed bonus given while sprinting. Def: 0.4")
-CreateConVar("ttt_sprint_regenerate_innocent", "0.08", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Sets stamina regeneration for innocents. Def: 0.08")
-CreateConVar("ttt_sprint_regenerate_traitor", "0.12", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Sets stamina regeneration speed for traitors. Def: 0.12")
-CreateConVar("ttt_sprint_consume", "0.2", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Sets stamina consumption speed. Def: 0.2")
+CreateConVar("ttt_sprint_bonus_rel", "0.4", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "The relative speed bonus given while sprinting")
+CreateConVar("ttt_sprint_regenerate_delay", "0", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "The amount of time (in seconds) after sprinting before stamina regeneration starts")
+CreateConVar("ttt_sprint_regenerate_innocent", "0.08", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Sets stamina regeneration for innocents")
+CreateConVar("ttt_sprint_regenerate_traitor", "0.12", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Sets stamina regeneration speed for traitors")
+CreateConVar("ttt_sprint_consume", "0.2", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Sets stamina consumption speed")
 
 function GetSprintMultiplier(ply, sprinting)
     local mult = 1
@@ -64,9 +66,13 @@ local function HandleSprintStaminaConsumption(ply)
     if result then stamina = result end
 
     ply:SetSprintStamina(MathClamp(stamina, 0, staminaMax))
+    ply:SetLastSprintTime(CurTime())
 end
 
 local function HandleSprintStaminaRecovery(ply)
+    -- If we have a delayed recovery, make sure the player has waited at least that long before recovering stamina
+    if recoveryDelay > 0 and CurTime() < ply:GetLastSprintTime() + recoveryDelay then return end
+
     local recovery = defaultRecovery
     if ply:IsTraitorTeam() or ply:IsMonsterTeam() or ply:IsIndependentTeam() then
         recovery = traitorRecovery
@@ -87,6 +93,7 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
     speedMultiplier = GetConVar("ttt_sprint_bonus_rel"):GetFloat()
     defaultRecovery = GetConVar("ttt_sprint_regenerate_innocent"):GetFloat()
     traitorRecovery = GetConVar("ttt_sprint_regenerate_traitor"):GetFloat()
+    recoveryDelay = GetConVar("ttt_sprint_regenerate_delay"):GetFloat()
     consumption = GetConVar("ttt_sprint_consume"):GetFloat()
 
     if SERVER then
