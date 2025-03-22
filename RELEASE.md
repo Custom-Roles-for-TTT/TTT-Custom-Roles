@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.2.8 (Beta)
-**Released:**
+**Released: March 22nd, 2025**
 
 ### Additions
 - Added `ttt_killer_warn` (enabled by default) convar to allow controlling the "there is a Killer" warning on round start
