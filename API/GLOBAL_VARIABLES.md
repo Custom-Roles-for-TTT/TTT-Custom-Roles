@@ -72,7 +72,7 @@ The maximum event identifier.\
 *Added in:* 1.2.5
 
 ### EVENTS_BY_ROLE
-Table of event IDs for each role.\
+Table of event IDs for each role. If a role has multiple events, the value in this table will be a table of all event IDs for the role.\
 *Realm:* Client and Server\
 *Added in:* 1.4.2
 

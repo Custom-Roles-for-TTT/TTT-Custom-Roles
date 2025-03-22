@@ -27,6 +27,7 @@ CreateConVar("ttt_killer_dna_range", "550")
 CreateConVar("ttt_killer_dna_basetime", "100")
 
 local player_set_color = CreateConVar("ttt_player_set_color", "1", FCVAR_NONE, "Whether to set the player's color when they spawn", 0, 1)
+local weapon_transfer_ownership = CreateConVar("ttt_weapon_transfer_ownership", "0", FCVAR_NONE, "Whether the ownership of a shop item should transfer each time its picked up", 0, 1)
 
 -- First spawn on the server
 function GM:PlayerInitialSpawn(ply)
@@ -701,7 +702,7 @@ end
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() or IsValid(ply.dying_wep) then return end
 
-    -- Experimental: Fire a last shot if ironsighting and not headshot
+    -- Experimental: Fire a last shot if iron sighting and not headshot
     if GetConVar("ttt_dyingshot"):GetBool() then
         local wep = ply:GetActiveWeapon()
         if IsValid(wep) and wep.DyingShot and not ply.was_headshot and dmginfo:IsBulletDamage() then
@@ -1369,6 +1370,18 @@ function GM:PlayerShouldTaunt(ply, actid)
     -- Disable taunts, we don't have a system for them (camera freezing etc).
     -- Mods/plugins that add such a system should override this.
     return false
+end
+
+function GM:PlayerDroppedWeapon(ply, wep)
+    if not IsValid(wep) or not IsPlayer(ply) then return end
+    if not wep.CanBuy or wep.AutoSpawnable then return end
+
+    -- If this weapon has already recorded who it was bought by and we're not allowing ownership transfer, block it
+    if IsPlayer(wep.BoughtBy) and not weapon_transfer_ownership:GetBool() then return end
+
+    if CallHook("TTTCanTransferWeaponOwnership", nil, ply, wep) ~= false then
+        wep.BoughtBy = ply
+    end
 end
 
 local function GetTargetPlayerByName(name, allow_dead)

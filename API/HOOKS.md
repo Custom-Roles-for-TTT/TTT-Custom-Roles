@@ -72,6 +72,13 @@ Modified to allow changing the defusal result via the new return value.\
 *Return:*
 - *result* - The new result value to use or the original passed into the hook
 
+### TTTCanCureableRoleSpawn()
+Called to determine if a role can spawn that causes a state that can be cured.\
+*Realm:* Client and Server\
+*Added in:* 2.1.18
+
+*Return:* `true` if a role can spawn that causes a state that can be cured. Otherwise do not return anything.
+
 ### TTTCanIdentifyCorpse(ply, rag, wasTraitor)
 Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
@@ -92,12 +99,15 @@ Called when someone is attempting to use a cure on a player.\
 
 *Return:* Whether to allow using the cure on this player. (Defaults to `false`)
 
-### TTTCanCureableRoleSpawn()
-Called to determine if a role can spawn that causes a state that can be cured.\
-*Realm:* Client and Server\
-*Added in:* 2.1.18
+### TTTCanTransferWeaponOwnership(ply, wep)
+Called when determining if a player can have ownership of a specific weapon transferred to them.\
+*Realm:* Server\
+*Added in:* 2.2.8\
+*Parameters:*
+- *ply* - The target player who is potentially having ownership of a weapon transferred to them
+- *wep* - The target weapon whose ownership is potentially being transferred
 
-*Return:* `true` if a role can spawn that causes a state that can be cured. Otherwise do not return anything.
+*Return:* Whether to allow this player to have ownership of the weapon transferred to them. (Defaults to `true`)
 
 ### TTTCanUseTraitorVoice(ply)
 Called when a player is attempting to use traitor chat, both speaking and listening. Used to change the default behavior.\

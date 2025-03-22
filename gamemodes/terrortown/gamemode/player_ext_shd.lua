@@ -27,6 +27,7 @@ function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
 function plymeta:SetupDataTables()
     self:NetworkVar("Bool", 0, "Sprinting")
     self:NetworkVar("Float", 0, "SprintStamina")
+    self:NetworkVar("Float", 1, "LastSprintTime")
 end
 
 AccessorFunc(plymeta, "role", "Role", FORCE_NUMBER)

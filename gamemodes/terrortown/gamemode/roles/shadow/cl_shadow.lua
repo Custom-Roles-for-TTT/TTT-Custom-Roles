@@ -591,9 +591,11 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
         else
             local failure_mode = shadow_failure_mode:GetInt()
             if failure_mode == SHADOW_FAILURE_JESTER then
-                html = html .. "becomes a " .. ROLE_STRINGS[ROLE_JESTER]
+                html = html .. "becomes " .. ROLE_STRINGS_EXT[ROLE_JESTER]
             elseif failure_mode == SHADOW_FAILURE_SWAPPER then
-                html = html .. "becomes a " .. ROLE_STRINGS[ROLE_SWAPPER]
+                html = html .. "becomes " .. ROLE_STRINGS_EXT[ROLE_SWAPPER]
+            elseif failure_mode == SHADOW_FAILURE_BODYSNATCHER then
+                html = html .. "becomes " .. ROLE_STRINGS_EXT[ROLE_BODYSNATCHER]
             else
                 html = html .. "dies"
             end
