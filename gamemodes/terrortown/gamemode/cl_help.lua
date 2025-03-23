@@ -998,6 +998,9 @@ function HELPSCRN:CreateConfig(dsettings)
     --- Crosshair area
 
     local dcross = vgui.Create("DForm", dsettings)
+    dcross:Dock(TOP)
+    dcross:DockMargin(0, 0, 5, 10)
+    dcross:DoExpansion(false)
     dcross:SetName(GetTranslation("set_title_cross"))
 
     dcross:CheckBox(GetTranslation("set_cross_disable"), "ttt_disable_crosshair")
@@ -1044,6 +1047,8 @@ function HELPSCRN:CreateConfig(dsettings)
     if cb.Label then
         cb.Label:SetWrap(true)
     end
+
+    HookCall("TTTSettingsConfigTabFields", nil, "Crosshair", dsettings)
 
     dsettings:AddItem(dcross)
 end
