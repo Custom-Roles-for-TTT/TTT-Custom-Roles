@@ -175,8 +175,12 @@ end
 function SWEP:PrimaryAttack()
     if CLIENT then return end
 
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+    if owner:IsRoleAbilityDisabled() then return end
+
     local tr = self:GetTraceEntity()
-    if IsValid(tr.Entity) and not self:GetOwner():IsRoleAbilityDisabled() then
+    if IsValid(tr.Entity) then
         local ent = tr.Entity
         if ent:GetClass() == "prop_ragdoll" then
             self:SetTargetIsBody(true)
@@ -201,13 +205,16 @@ function SWEP:PrimaryAttack()
     end
 end
 
-function SWEP:SecondaryAttack()
-    if self:Clip1() == 100 and not self:GetOwner():IsRoleAbilityDisabled() then
+function SWEP:SecondaryAttack()    
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+
+    if self:Clip1() == 100 and not owner:IsRoleAbilityDisabled() then
         self:SetClip1(0)
 
         if SERVER then
             net.Start("TTT_Vampire_Fade")
-                net.WritePlayer(self:GetOwner())
+                net.WritePlayer(owner)
             net.Broadcast()
         end
     end
