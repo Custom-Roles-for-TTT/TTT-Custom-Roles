@@ -22,14 +22,11 @@ AddHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment", function(p
 
         local ang = ply:EyeAngles()
         crate:SetPos(ply:GetShootPos() + ang:Forward() * 50 + ang:Right() * 1 - ang:Up() * 1)
-        crate.item_id = id
+        -- Mark this crate as invalid if the quartermaster's role ability is disabled
+        crate.item_id = not ply:IsRoleAbilityDisabled() and id or -1
         -- For some reason "SetOwner" is making it so you can walk through the crate so... we'll just use our own property
         crate.source_ply = ply
         crate:Spawn()
-
-        if ply:IsRoleAbilityDisabled() then
-            crate.item_id = -1
-        end
 
         return false
     end
