@@ -309,7 +309,7 @@ function plymeta:DrunkJoinLosingTeam()
 end
 
 function plymeta:SoberDrunk(team)
-    if not self:IsActiveDrunk() or self:IsRoleAbilityDisabled() then return false end
+    if not self:IsActiveDrunk() then return false end
 
     local role = nil
     -- If any role is allowed
@@ -394,7 +394,7 @@ function plymeta:SoberDrunk(team)
 end
 
 function plymeta:DrunkRememberRole(role, hidecenter)
-    if not self:IsActiveDrunk() then return false end
+    if not self:IsActiveDrunk() or self:IsRoleAbilityDisabled() then return false end
 
     self:SetNWBool("WasDrunk", true)
     self:SetRole(role)
@@ -475,8 +475,14 @@ end
 local function HandleDrunkWinBlock(win_type)
     if win_type == WIN_NONE then return win_type end
 
-    local drunk = player.GetLivingRole(ROLE_DRUNK)
-    if not IsPlayer(drunk) then return win_type end
+    local drunk
+    -- Iterate manually so we can skip disabled drunks and find the non-disabled ones
+    for _, v in PlayerIterator() do
+        if v:IsActiveDrunk() and not v:IsRoleAbilityDisabled() then
+            drunk = v
+            break
+        end
+    end
 
     -- Make the drunk a clown
     if drunk_become_clown:GetBool() then
