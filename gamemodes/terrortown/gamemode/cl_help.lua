@@ -1004,7 +1004,7 @@ function HELPSCRN:CreateConfig(dsettings)
 
     dcross:CheckBox(GetTranslation("set_cross_color_enable"), "ttt_crosshair_color_enable")
 
-    cm = vgui.Create("DColorMixer")
+    local cm = vgui.Create("DColorMixer")
     cm:SetLabel(GetTranslation("set_cross_color"))
     cm:SetTall(120)
     cm:SetAlphaBar(false)
