@@ -24,7 +24,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.2.7"
+CR_VERSION = "2.2.8"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -334,7 +334,7 @@ local function ModifyColor(color, type)
     local h, s, l = ColorToHSL(color)
     if type == "dark" then
         l = math.max(l - 0.125, 0.125)
-    elseif type == "highlight" or "radar" then
+    elseif type == "highlight" or type == "radar" then
         s = 1
     end
 
@@ -1340,7 +1340,13 @@ if SERVER then
 
         -- Don't assign this event ID to a role we haven't found
         if role and role > ROLE_NONE and role <= ROLE_MAX then
-            EVENTS_BY_ROLE[role] = EVENT_MAX
+            if type(EVENTS_BY_ROLE[role]) == "number" then
+                EVENTS_BY_ROLE[role] = { EVENTS_BY_ROLE[role], EVENT_MAX }
+            elseif type(EVENTS_BY_ROLE[role]) == "table" then
+                table.insert(EVENTS_BY_ROLE[role], EVENT_MAX)
+            else
+                EVENTS_BY_ROLE[role] = EVENT_MAX
+            end
         end
 
         return EVENT_MAX
@@ -1616,7 +1622,7 @@ function GM:Move(ply, mv)
     if ply:IsTerror() then
         local basemul = 1
         local slowed = false
-        -- Slow down ironsighters
+        -- Slow down iron sighters
         local wep = ply:GetActiveWeapon()
         if IsValid(wep) and wep.GetIronsights and wep:GetIronsights() then
             basemul = 120 / 220
@@ -1825,7 +1831,8 @@ end
 -- Add entries to this table in the form of: { "old_convar_name", "new_convar_name" }
 local deprecatedConVars = {
     { "ttt_parasite_cure_time", "ttt_doctor_cure_time" },
-    { "ttt_parasite_cure_mode", "ttt_doctor_cure_mode" }
+    { "ttt_parasite_cure_mode", "ttt_doctor_cure_mode" },
+    { "ttt_beggar_transfer_ownership", "ttt_weapon_transfer_ownership" }
 }
 
 for _, c in ipairs(deprecatedConVars) do

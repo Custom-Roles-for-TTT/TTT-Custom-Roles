@@ -635,7 +635,6 @@ ttt_beggar_scan_time                           15      // The amount of time (in
 ttt_beggar_scan_float_time                     1       // The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight
 ttt_beggar_scan_cooldown                       3       // The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target
 ttt_beggar_scan_distance                       2500    // The maximum distance away the scanner target can be
-ttt_beggar_transfer_ownership                  0       // Whether the ownership of a shop item should transfer each time its picked up by a non-beggar
 ttt_beggar_can_see_jesters                     0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the beggar (Only applies if ttt_beggar_is_independent is enabled)
 ttt_beggar_update_scoreboard                   0       // Whether the beggar shows dead players as missing in action (Only applies if ttt_beggar_is_independent is enabled)
 ttt_beggar_announce_delay                      0       // How long the delay between role change and announcement should be
@@ -833,6 +832,7 @@ ttt_killer_smoke_timer                         60      // Number of seconds befo
 ttt_killer_show_target_icon                    1       // Whether killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_killer_damage_penalty                      0.25    // The fraction a killer's damage will be scaled by when they are attacking without using their knife
 ttt_killer_damage_reduction                    0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a killer
+ttt_killer_warn                                1       // Whether to warn players if there is a killer
 ttt_killer_warn_all                            0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
 ttt_killer_vision_enabled                      1       // Whether killers have their special vision highlights enabled
 ttt_killer_credits_starting                    2       // The number of credits a killer should start with
@@ -911,7 +911,7 @@ ttt_shadow_soul_link                           0       // Whether the shadow's s
 ttt_shadow_weaken_health_to                    0       // How low to reduce the Shadow's health to when they are outside of the target circle instead of their normal punishment. (Setting to 0 will use "ttt_shadow_failure_mode" instead.)
 ttt_shadow_weaken_health_to_death              0       // Whether to kill the shadow one tick after they reach 1HP when "ttt_shadow_weaken_health_to" is set to 1
 ttt_shadow_weaken_timer                        3       // How often (in seconds) to adjust the shadow's health when they are outside of the target circle
-ttt_shadow_failure_mode                        0       // How to handle the shadow failing to stay near their target. 0 - Kill them. 1 - Change them to be a jester. 2 - Change them to be a swapper. Not used when "ttt_shadow_weaken_health_to" is enabled.
+ttt_shadow_failure_mode                        0       // How to handle the shadow failing to stay near their target. 0 - Kill them. 1 - Change them to be a jester. 2 - Change them to be a swapper. 3 - Change them to be a bodysnatcher. Not used when "ttt_shadow_weaken_health_to" is enabled.
 ttt_shadow_can_see_jesters                     0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the shadow
 ttt_shadow_update_scoreboard                   0       // Whether the shadow shows dead players as missing in action
 
@@ -931,6 +931,7 @@ ttt_arsonist_update_scoreboard                 1       // Whether the arsonist s
 ttt_arsonist_ignite_on_death                   0       // Whether to allow the arsonist to enable automatic triggering of their igniter on death
 ttt_arsonist_ignite_on_death_timer             0       // How long after the arsonist's death to trigger their igniter. Set to 0 to trigger instantly
 ttt_arsonist_ignite_on_death_notify            1       // Whether to notify other players that a arsonist's igniter is going to be triggered
+ttt_arsonist_warn_all                          0       // Whether all players are warned when there's an arsonist in a round
 ttt_detectives_search_only_arsonistdouse       0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
 
 // Hive Mind
@@ -1203,6 +1204,7 @@ ttt_karma_jesterdmg_ratio                      0.5     // Ratio of damage to jes
 // Sprint
 ttt_sprint_enabled                             1       // Whether sprint is enabled
 ttt_sprint_bonus_rel                           0.4     // The relative speed bonus given while sprinting (e.g. 0.4 = 40% speed increase)
+ttt_sprint_regenerate_delay                    0       // The amount of time (in seconds) after sprinting before stamina regeneration starts
 ttt_sprint_regenerate_innocent                 0.08    // Stamina regeneration for non-traitors
 ttt_sprint_regenerate_traitor                  0.12    // Stamina regeneration for traitors
 ttt_sprint_consume                             0.2     // Stamina consumption speed
@@ -1244,6 +1246,7 @@ ttt_corpse_search_team_text_independent        0       // Whether corpse searche
 ttt_corpse_search_team_text_jester             0       // Whether corpse searches of jesters should include flavor text hinting at the team of their killer
 ttt_color_mode_override                        "none"  // Forces all players to have a certain role color setting. none (let user decide), default, simple, protan, deutan, tritan
 ttt_spectators_see_roles                       0       // Whether spectators (not dead players) should be able to see the roles of all players
+ttt_weapon_transfer_ownership                  0       // Whether the ownership of a shop item should transfer each time its picked up
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for their original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

@@ -1,5 +1,35 @@
 # Release Notes
 
+## 2.2.8 (Beta)
+**Released: March 22nd, 2025**
+
+### Additions
+- Added `ttt_killer_warn` (enabled by default) convar to allow controlling the "there is a Killer" warning on round start
+  - This differs from the `ttt_killer_warn_all` convar which allows controlling whether non-traitors are warned
+  - Prior to this there was no way to disable the warning entirely
+- Added `ttt_arsonist_warn_all` (disabled by default) convar to allow warning players that there is an arsonist on round start
+- Added `ttt_shadow_failure_mode 3` to have the shadow turn into a bodysnatcher then they fail
+- Added new `ttt_sprint_regenerate_delay` convar to control the delay time between sprinting and stamina recovery (defaults to 0)
+
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_beggar_transfer_ownership` to `ttt_weapon_transfer_ownership` since the `SWEP.BoughtBy` property can be used by any role
+
+### Fixes
+- Ported "TTT: Fix Spelling"
+- Fixed a rare error when closing the body search window
+- Fixed health station and bomb station having one more health than intended
+- Fixed role colors being too saturated in many situations
+- Fixed beggar reveal announcements not working if `ttt_beggar_keep_begging` was enabled
+- Fixed beggar reveal announcements not using custom role names
+- Fixed potential minor grammar issue with the shadow's tutorial when using a renamed jester or swapper
+- Fixed occasional error opening the shop when a rolepack is enabled
+
+### Developer
+- Added new `TTTCanTransferWeaponOwnership` hook to determine if a player can have the ownership of a weapon transferred to them
+    - This is only called when `SWEP.BoughtBy` is not set or it is set and `ttt_weapon_transfer_ownership` is enabled
+- Changed the function version of `ENT.TargetIDHint` to take the entity as a parameter
+- Changed `EVENTS_BY_ROLE` to create an inner table if a role registers more than one event ID
+
 ## 2.2.7 (Beta)
 **Released: March 15th, 2025**
 

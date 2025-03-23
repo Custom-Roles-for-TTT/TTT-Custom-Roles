@@ -476,8 +476,10 @@ local function ShowSearchScreen(search_raw)
     table.insert(buttons, {
         text = T("close"),
         doclick = function()
-            dframe:Close()
-            dframe = nil
+            if IsValid(dframe) then
+                dframe:Close()
+                dframe = nil
+            end
         end,
         rightjustify = true
     })

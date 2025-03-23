@@ -27,7 +27,6 @@ CreateConVar("ttt_beggar_notify_confetti", "0", FCVAR_NONE, "Whether to throw co
 local beggar_scan_float_time = CreateConVar("ttt_beggar_scan_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight", 0, 60)
 local beggar_scan_cooldown = CreateConVar("ttt_beggar_scan_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target", 0, 60)
 local beggar_scan_distance = CreateConVar("ttt_beggar_scan_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
-local beggar_transfer_ownership = CreateConVar("ttt_beggar_transfer_ownership", "0", FCVAR_NONE, "Whether the ownership of a shop item should transfer each time its picked up by a non-beggar", 0, 1)
 local beggar_ignore_empty_weapons = CreateConVar("ttt_beggar_ignore_empty_weapons", "1", FCVAR_NONE, "Whether the beggar should not change teams if they are given a weapon with no ammo", 0, 1)
 local beggar_ignore_empty_weapons_warning = CreateConVar("ttt_beggar_ignore_empty_weapons_warning", "1", FCVAR_NONE, "Whether the beggar should receive a chat message warning on receiving an empty weapon", 0, 1)
 
@@ -48,77 +47,84 @@ local beggar_is_independent = GetConVar("ttt_beggar_is_independent")
 local function AnnounceTeamChange(ply, role)
     for _, v in PlayerIterator() do
         if v ~= ply and v:ShouldRevealBeggar(ply) then
-            v:QueueMessage(MSG_PRINTBOTH, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
+            v:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " has joined the " .. ROLE_STRINGS[role] .. " team")
         end
     end
 end
 
 hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
-    if not IsValid(wep) or not IsPlayer(ply) then return end
-    if not wep.CanBuy or wep.AutoSpawnable then return end
-    if wep.BoughtBy and wep.BoughtBy:IsBeggar() then return end -- If a beggar is the owner of this weapon then it should no longer change ownership or convert beggars as it has already been 'used'
+    if not IsValid(wep) or not wep.CanBuy or wep.AutoSpawnable then return end
+    -- We only care about beggars here
+    if not IsPlayer(ply) or not ply:IsBeggar() then return end
+    -- If a beggar is the owner of this weapon then it should no longer change ownership or convert beggars as it has already been 'used'
+    if not IsPlayer(wep.BoughtBy) or wep.BoughtBy:IsBeggar() then return end
+    -- Beggar can only become a traitor or an innocent, so ignore everyone else
+    if not wep.BoughtBy:IsTraitorTeam() and not wep.BoughtBy:IsInnocentTeam() then return end
+    -- If the beggar's ability is disabled, they don't change roles
+    if ply:IsRoleAbilityDisabled() then return end
 
-    if ply:IsBeggar() and wep.BoughtBy and IsPlayer(wep.BoughtBy) and (wep.BoughtBy:IsTraitorTeam() or wep.BoughtBy:IsInnocentTeam()) and not ply:IsRoleAbilityDisabled() then
-        if beggar_ignore_empty_weapons:GetBool() and wep:GetMaxClip1() > 0 and wep:Clip1() == 0 then
-            if beggar_ignore_empty_weapons_warning:GetBool() then
-                ply:PrintMessage(HUD_PRINTTALK, "Empty weapons don't convert the " .. ROLE_STRINGS[ROLE_BEGGAR])
-            end
-            return
+    if beggar_ignore_empty_weapons:GetBool() and wep:GetMaxClip1() > 0 and wep:Clip1() == 0 then
+        if beggar_ignore_empty_weapons_warning:GetBool() then
+            ply:PrintMessage(HUD_PRINTTALK, "Empty weapons don't convert the " .. ROLE_STRINGS[ROLE_BEGGAR])
         end
-
-        local result = CallHook("TTTBeggarConvert", nil, ply, wep)
-        if type(result) == "boolean" and not result then return end
-
-        local role
-        if wep.BoughtBy:IsTraitorTeam() and not TRAITOR_ROLES[ROLE_BEGGAR] then
-            role = ROLE_TRAITOR
-        elseif wep.BoughtBy:IsInnocentTeam() and not INNOCENT_ROLES[ROLE_BEGGAR] then
-            role = ROLE_INNOCENT
-        end
-
-        if beggar_keep_begging:GetBool() then
-            wep.BoughtBy = ply -- Make the beggar the owner of this weapon, thus preventing it from converting any beggars again
-            if not role then return end -- If the beggar has been given an item from the team they are already part of then we don't need to change anything else
-
-            JESTER_ROLES[ROLE_BEGGAR] = false
-            INDEPENDENT_ROLES[ROLE_BEGGAR] = false
-            net.Start("TTT_BeggarChangeTeam")
-            if role == ROLE_INNOCENT then
-                INNOCENT_ROLES[ROLE_BEGGAR] = true
-                TRAITOR_ROLES[ROLE_BEGGAR] = false
-                net.WriteBool(true)
-            elseif role == ROLE_TRAITOR then
-                INNOCENT_ROLES[ROLE_BEGGAR] = false
-                TRAITOR_ROLES[ROLE_BEGGAR] = true
-                net.WriteBool(false)
-            end
-            net.Broadcast()
-        else
-            ply:SetRole(role)
-        end
-        ply:SetNWBool("WasBeggar", true)
-        ply:QueueMessage(MSG_PRINTBOTH, "You have joined the " .. ROLE_STRINGS[role] .. " team")
-        timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
-
-        local announceDelay = beggar_announce_delay:GetInt()
-        if announceDelay > 0 then
-            timer.Create(ply:Nick() .. "BeggarAnnounce", announceDelay, 1, function()
-                if not IsPlayer(ply) then return end
-                AnnounceTeamChange(ply, role)
-            end)
-        else
-            AnnounceTeamChange(ply, role)
-        end
-
-        net.Start("TTT_BeggarConverted")
-        net.WriteString(ply:Nick())
-        net.WriteString(wep.BoughtBy:Nick())
-        net.WriteString(ROLE_STRINGS_EXT[role])
-        net.WriteString(ply:SteamID64())
-        net.Broadcast()
-    elseif not ply:IsBeggar() and (not wep.BoughtBy or not IsPlayer(wep.BoughtBy) or beggar_transfer_ownership:GetBool()) then -- Only non-beggars should receive ownership of weapons under normal circumstances
-        wep.BoughtBy = ply
+        return
     end
+
+    local result = CallHook("TTTBeggarConvert", nil, ply, wep)
+    if type(result) == "boolean" and not result then return end
+
+    local role
+    if wep.BoughtBy:IsTraitorTeam() and not TRAITOR_ROLES[ROLE_BEGGAR] then
+        role = ROLE_TRAITOR
+    elseif wep.BoughtBy:IsInnocentTeam() and not INNOCENT_ROLES[ROLE_BEGGAR] then
+        role = ROLE_INNOCENT
+    end
+
+    if beggar_keep_begging:GetBool() then
+        wep.BoughtBy = ply -- Make the beggar the owner of this weapon, thus preventing it from converting any beggars again
+        if not role then return end -- If the beggar has been given an item from the team they are already part of then we don't need to change anything else
+
+        JESTER_ROLES[ROLE_BEGGAR] = false
+        INDEPENDENT_ROLES[ROLE_BEGGAR] = false
+        net.Start("TTT_BeggarChangeTeam")
+        if role == ROLE_INNOCENT then
+            INNOCENT_ROLES[ROLE_BEGGAR] = true
+            TRAITOR_ROLES[ROLE_BEGGAR] = false
+            net.WriteBool(true)
+        elseif role == ROLE_TRAITOR then
+            INNOCENT_ROLES[ROLE_BEGGAR] = false
+            TRAITOR_ROLES[ROLE_BEGGAR] = true
+            net.WriteBool(false)
+        end
+        net.Broadcast()
+    else
+        ply:SetRole(role)
+    end
+    ply:SetNWBool("WasBeggar", true)
+    ply:QueueMessage(MSG_PRINTBOTH, "You have joined the " .. ROLE_STRINGS[role] .. " team")
+    timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
+
+    local announceDelay = beggar_announce_delay:GetInt()
+    if announceDelay > 0 then
+        timer.Create(ply:Nick() .. "BeggarAnnounce", announceDelay, 1, function()
+            if not IsPlayer(ply) then return end
+            AnnounceTeamChange(ply, role)
+        end)
+    else
+        AnnounceTeamChange(ply, role)
+    end
+
+    net.Start("TTT_BeggarConverted")
+    net.WriteString(ply:Nick())
+    net.WriteString(wep.BoughtBy:Nick())
+    net.WriteString(ROLE_STRINGS_EXT[role])
+    net.WriteString(ply:SteamID64())
+    net.Broadcast()
+end)
+
+hook.Add("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership", function(ply, wep)
+    -- Only non-beggars should receive ownership of weapons under normal circumstances
+    if IsPlayer(ply) and ply:IsBeggar() then return false end
 end)
 
 -- Disable tracking that this player was a beggar at the start of a new round or if their role changes again (e.g. if they go beggar -> innocent -> dead -> hypnotist res to traitor)

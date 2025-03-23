@@ -438,15 +438,18 @@ end)
 local function HandleShadowFailure(shadow)
     local message = "You didn't stay close to your target!"
     local failure_mode = shadow_failure_mode:GetInt()
-    if failure_mode == SHADOW_FAILURE_JESTER or failure_mode == SHADOW_FAILURE_SWAPPER then
+    if failure_mode == SHADOW_FAILURE_JESTER or failure_mode == SHADOW_FAILURE_SWAPPER or failure_mode == SHADOW_FAILURE_BODYSNATCHER then
         local target_role = ROLE_JESTER
         if failure_mode == SHADOW_FAILURE_SWAPPER then
             target_role = ROLE_SWAPPER
+        elseif failure_mode == SHADOW_FAILURE_BODYSNATCHER then
+            target_role = ROLE_BODYSNATCHER
         end
 
         message = message .. " As punishment, you have become " .. ROLE_STRINGS_EXT[target_role]
         shadow:SetRole(target_role)
         shadow:StripRoleWeapons()
+        RunHook("PlayerLoadout", shadow)
 
         local maxhealth = shadow:GetMaxHealth()
         local health = shadow:Health()

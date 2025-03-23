@@ -29,6 +29,7 @@ SHADOW_SOUL_LINK_TARGET = 2
 SHADOW_FAILURE_KILL = 0
 SHADOW_FAILURE_JESTER = 1
 SHADOW_FAILURE_SWAPPER = 2
+SHADOW_FAILURE_BODYSNATCHER = 3
 
 SHADOW_FORCED_PROGRESS_BAR = -2
 
@@ -54,7 +55,7 @@ CreateConVar("ttt_shadow_soul_link", "0", FCVAR_REPLICATED, "Whether the shadow'
 CreateConVar("ttt_shadow_weaken_health_to", "0", FCVAR_REPLICATED, "How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. Set to 0 to disable, meaning the shadow will be killed", 0, 100)
 CreateConVar("ttt_shadow_weaken_health_to_death", "0", FCVAR_REPLICATED, "Whether to kill the shadow one tick after they reach 1HP when \"ttt_shadow_weaken_health_to\" is set to 1", 0, 1)
 CreateConVar("ttt_shadow_target_notify_mode", "0", FCVAR_REPLICATED, "How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.", 0, 2)
-CreateConVar("ttt_shadow_failure_mode", "0", FCVAR_REPLICATED, "How to handle the shadow failing to stay near their target. 0 - Kill them. 1 - Change them to be a jester. 2 - Change them to be a swapper. Not used when \"ttt_shadow_weaken_health_to\" is enabled", 0, 2)
+CreateConVar("ttt_shadow_failure_mode", "0", FCVAR_REPLICATED, "How to handle the shadow failing to stay near their target. 0 - Kill them. 1 - Change them to be a jester. 2 - Change them to be a swapper. 3 - Change them to be a bodysnatcher. Not used when \"ttt_shadow_weaken_health_to\" is enabled", 0, 3)
 
 CreateConVar("ttt_sponge_device_for_shadow", "0", FCVAR_REPLICATED, "Whether the shadow should get the spongifier", 0, 1)
 
@@ -220,7 +221,7 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_failure_mode",
     type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Kill", "Become Jester", "Become Swapper"},
+    choices = {"Kill", "Become Jester", "Become Swapper", "Become Bodysnatcher"},
     isNumeric = true
 })
 
