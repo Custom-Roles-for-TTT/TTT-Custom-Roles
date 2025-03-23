@@ -47,7 +47,9 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
         victim:SetNWString("JesterKiller", attacker:Nick())
 
         -- If the attacker was a traitor and the jester doesn't win when killed by a traitor, then don't continue
-        if (attacker:IsTraitorTeam() and not jester_win_by_traitors:GetBool()) or not victim:IsRoleAbilityDisabled() then return end
+        if attacker:IsTraitorTeam() and not jester_win_by_traitors:GetBool() then return end
+        -- If their ability was disabled then they don't win the round either
+        if victim:IsRoleAbilityDisabled() then return end
 
         -- If we're not ending the round, just reuse the existing variable and
         -- set it to something valid so the win check logic sees it's been updated
