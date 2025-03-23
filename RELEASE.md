@@ -19,9 +19,10 @@
 - Fixed a rare error when closing the body search window
 - Fixed health station and bomb station having one more health than intended
 - Fixed role colors being too saturated in many situations
-- Fixed Beggar reveal announcements not working if `ttt_beggar_keep_begging` was enabled
-- Fixed Beggar reveal announcements not using custom role names
+- Fixed beggar reveal announcements not working if `ttt_beggar_keep_begging` was enabled
+- Fixed beggar reveal announcements not using custom role names
 - Fixed potential minor grammar issue with the shadow's tutorial when using a renamed jester or swapper
+- Fixed occasional error opening the shop when a rolepack is enabled
 
 ### Developer
 - Added new `TTTCanTransferWeaponOwnership` hook to determine if a player can have the ownership of a weapon transferred to them
