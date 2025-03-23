@@ -143,7 +143,8 @@ end
 
 local function GetGlitchedRole(p, glitchMode)
     -- Use the player's role if they are a traitor, otherwise this is a glitch and we should use their fake role
-    local role = p:IsTraitorTeam() and p:GetRole() or p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    local disabledRole = (p:IsGlitch() and not p:IsRoleAbilityDisabled()) and p:GetNWInt("GlitchBluff", ROLE_TRAITOR) or ROLE_NONE
+    local role = p:IsTraitorTeam() and p:GetRole() or disabledRole
     -- Only hide vanilla traitors
     if glitchMode == GLITCH_SHOW_AS_TRAITOR then
         if role == ROLE_TRAITOR then
@@ -271,7 +272,7 @@ function PANEL:Paint(width, height)
         local color = nil
 
         if client:IsTraitorTeam() then
-            if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false) and not ply:IsRoleAbilityDisabled())) and client ~= ply then
+            if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
                 local glitch_role, color_role = GetGlitchedRole(ply, GetConVar("ttt_glitch_mode"):GetInt())
                 role = glitch_role
                 if color_role then
