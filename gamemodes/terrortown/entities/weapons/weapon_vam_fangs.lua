@@ -205,7 +205,7 @@ function SWEP:PrimaryAttack()
     end
 end
 
-function SWEP:SecondaryAttack()    
+function SWEP:SecondaryAttack()
     local owner = self:GetOwner()
     if not IsValid(owner) then return end
 
