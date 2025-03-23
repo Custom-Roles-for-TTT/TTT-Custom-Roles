@@ -44,6 +44,7 @@ local function AssignAssassinTarget(ply, start, delay)
         ply:ClearQueuedMessage("asnTarget")
         ply:SetNWBool("AssassinFailed", true)
         ply:SetNWString("AssassinTarget", "")
+        return
     end
 
     -- Reset the target to empty in case there are no valid targets

@@ -102,7 +102,7 @@ AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", functi
         if not v:Alive() or v:IsSpec() then continue end
         -- Don't bother checking players that already have the plague
         if v.TTTPlaguemasterStartTime then continue end
-        if v:IsPlaguemaster() and (immune or v:IsRoleAbilityDisabled()) then continue end
+        if v:IsPlaguemaster() and immune and not v:IsRoleAbilityDisabled() then continue end
 
         if not v.TTTPlaguemasterSpreadStartTimes then
             v.TTTPlaguemasterSpreadStartTimes = {}

@@ -729,13 +729,13 @@ function plymeta:ClearProperty(name, targets)
 end
 
 function plymeta:IsShopPurchaseBlocked(...)
-    local roleIsDisabled = hook.Call("TTTIsShopPurchaseBlocked", nil, self, ...) == true
+    local shopBlocked = hook.Call("TTTIsShopPurchaseBlocked", nil, self, ...) == true
 
-    if roleIsDisabled then
+    if shopBlocked then
         hook.Call("TTTOnShopPurchaseBlocked", nil, self, self:GetRole(), ...)
     end
 
-    return roleIsDisabled
+    return shopBlocked
 end
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded

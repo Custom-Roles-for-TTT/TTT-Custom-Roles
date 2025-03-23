@@ -92,7 +92,7 @@ timer.Create("KillerKillCheckTimer", 1, 0, function()
         -- Don't do the 1/2 and 1/4 checks if they represent < 10 seconds
         if ((timer_fraction == 0.5 and timer_remaining > 10) or
             (timer_fraction == 0.25 and timer_remaining > 10) or
-            timer_remaining == 10 or timer_remaining == 5) and 
+            timer_remaining == 10 or timer_remaining == 5) and
             not killer:IsRoleAbilityDisabled() then
             killer:PrintMessage(HUD_PRINTTALK, "Your evil grows impatient. Kill someone in the next " .. timer_remaining .. " seconds or you will be revealed!")
         end

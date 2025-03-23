@@ -372,7 +372,7 @@ local function ShowSearchScreen(search_raw)
     -- search is a table of tables that have an img and text key
     local search = PreprocSearch(search_raw)
 
-    if client:IsRoleAbilityDisabled() and client:IsDetectiveTeam() then
+    if client:IsDetectiveTeam() and client:IsRoleAbilityDisabled() then
         search.team = nil
         search.role = nil
     end

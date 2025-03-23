@@ -61,7 +61,7 @@ hook.Add("ScalePlayerDamage", "Paladin_ScalePlayerDamage", function(ply, hitgrou
     local radius = paladin_aura_radius:GetFloat() * UNITS_PER_METER
     local radiusSqr = radius * radius
     for _, v in PlayerIterator() do
-        if v:IsActivePaladin() and not v:IsRoleAbilityDisabled() and v:GetPos():DistToSqr(ply:GetPos()) <= radiusSqr then
+        if v:IsActivePaladin() and v:GetPos():DistToSqr(ply:GetPos()) <= radiusSqr and not v:IsRoleAbilityDisabled() then
             withPaladin = true
             break
         end

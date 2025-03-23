@@ -161,7 +161,8 @@ if SERVER then
 
     function SWEP:DoSuccess(target)
         local ply, body = self:GetPlayerAndBodyFromTarget(target)
-        if not IsPlayer(ply) or (self.DeadTarget and ply:IsActive()) or self:GetOwner():IsRoleAbilityDisabled() then
+        local owner = self:GetOwner()
+        if not IsPlayer(ply) or (self.DeadTarget and ply:IsActive()) or (IsValid(owner) and owner:IsRoleAbilityDisabled()) then
             self:DoFailure()
             return
         end
