@@ -392,6 +392,12 @@ function ROLEPACKS.SendRolePackWeapons(ply)
     if #rolePackName == 0 then return end
 
     for id, _ in pairs(ROLE_STRINGS_RAW) do
+        -- If this rolepack table doesn't exist that implies we never loaded
+        -- the tables. Do that now before we try to use it
+        if not WEPS.RolePackBuyableWeapons[id] then
+            ROLEPACKS.FillRolePackWeaponTables()
+        end
+
         local roleBuyables = WEPS.RolePackBuyableWeapons[id]
         local roleExcludes = WEPS.RolePackExcludeWeapons[id]
         local roleNoRandoms = WEPS.RolePackBypassRandomWeapons[id]
