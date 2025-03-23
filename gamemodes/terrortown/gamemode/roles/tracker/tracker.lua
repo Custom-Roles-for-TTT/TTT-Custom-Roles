@@ -35,6 +35,9 @@ hook.Add("PlayerFootstep", "Tracker_PlayerFootstep", function(ply, pos, foot, so
         end
     end
 
+    -- Nobody to send to
+    if #tab == 0 then return end
+
     net.Start("TTT_PlayerFootstep")
         net.WritePlayer(ply)
         net.WriteVector(pos)
