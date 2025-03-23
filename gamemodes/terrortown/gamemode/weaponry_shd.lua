@@ -291,6 +291,8 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
     if wep == nil then return end
     if not wep.CanBuy then return end
 
+    WEPS.PrepWeaponsLists(role)
+
     local packName = GetConVar("ttt_role_pack"):GetString()
     if rolepack_weps == nil and #packName > 0 then
         rolepack_weps = {Buyables = WEPS.RolePackBuyableWeapons[role], Excludes = WEPS.RolePackExcludeWeapons[role], NoRandoms = WEPS.RolePackBypassRandomWeapons[role]}
