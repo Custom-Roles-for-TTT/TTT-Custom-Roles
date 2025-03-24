@@ -331,6 +331,8 @@ local function ColorFromCustomConVars(name)
 end
 
 local function ModifyColor(color, type)
+    if not type then return color end
+
     local h, s, l = ColorToHSL(color)
     if type == "dark" then
         l = math.max(l - 0.125, 0.125)
