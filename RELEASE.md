@@ -1,5 +1,16 @@
 # Release Notes
 
+## 2.2.9 (Beta)
+**Released:**
+
+### Developer
+- Added `plymeta:IsRoleAbilityDisabled` method to determine whether a player's role ability should be disabled
+- Added `TTTIsRoleAbilityDisabled` hook to determine whether a player's role ability should be disabled
+- Added `TTTOnRoleAbilityDisabled` hook called when the result of `TTTIsRoleAbilityDisabled` is `true`
+- Added `plymeta:IsShopPurchaseBlocked` method to determine whether a player's shop purchase is blocked
+- Added `TTTIsShopPurchaseBlocked` hook to determine whether a player's shop purchase is blocked
+- Added `TTTOnShopPurchaseBlocked` hook called when the result of `TTTIsShopPurchaseBlocked` is `true`
+
 ## 2.2.8 (Beta)
 **Released: March 22nd, 2025**
 
