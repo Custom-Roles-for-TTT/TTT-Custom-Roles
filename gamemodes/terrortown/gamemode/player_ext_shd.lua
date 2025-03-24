@@ -393,10 +393,10 @@ function plymeta:IsInvulnerable()
 end
 
 function plymeta:IsRoleAbilityDisabled(...)
-    local roleIsDisabled = hook.Call("TTTIsRoleAbilityDisabled", nil, self, ...) == true
+    local roleIsDisabled = CallHook("TTTIsRoleAbilityDisabled", nil, self, ...) == true
 
     if roleIsDisabled then
-        hook.Call("TTTOnRoleAbilityDisabled", nil, self, self:GetRole(), ...)
+        CallHook("TTTOnRoleAbilityDisabled", nil, self, self:GetRole(), ...)
     end
 
     return roleIsDisabled
