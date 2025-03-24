@@ -251,6 +251,17 @@ Whether this player is currently respawning.\
 *Realm:* Client and Server\
 *Added in:* 2.1.12
 
+### plymeta:IsRoleAbilityDisabled(...)
+Called to check whether a player's role ability is disabled.\
+*NOTE*: Calls `TTTIsRoleAbilityDisabled` hook to determine status.\
+*NOTE*: Calls `TTTOnRoleAbilityDisabled` hook if role ability is disabled.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *...* - Any parameters to be passed to the `TTTIsRoleAbilityDisabled` hook
+
+*Return:* `true` if the player's role ability is currently disabled, `false` otherwise
+
 ### plymeta:IsRoleActive()
 Whether the player's role feature has been activated.\
 *Realm:* Client and Server\
@@ -273,6 +284,17 @@ Whether the player is currently overriding a piece of scoreboard information.\
 *Returns:*
 - *isNameOverridden* - Whether the player name is currently overridden
 - *isRoleOverridden* - Whether the role color or icon is currently overridden
+
+### plymeta:IsShopPurchaseBlocked(...)
+Called to check whether a player's shop purchases are blocked.\
+*NOTE*: Calls `TTTIsShopPurchaseBlocked` hook to determine status.\
+*NOTE*: Calls `TTTOnShopPurchaseBlocked` hook if shop purchases are blocked.\
+*Realm:* Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *...* - Any parameters to be passed to the `TTTIsShopPurchaseBlocked` hook
+
+*Return:* `true` if the player's shop purchases are currently blocked, `false` otherwise
 
 ### plymeta:IsShopRole()
 Whether the player has a shop (see `plymeta:CanUseShop` for determining if it is openable).\

@@ -291,9 +291,32 @@ Called to check whether a player is currently respawning.\
 *Realm:* Client and Server\
 *Added in:* 2.1.12\
 *Parameters:*
-- *ply*</em>* - The player being queried for respawn status
+- *ply* - The player being queried for respawn status
 
 *Return:* `true` if the player is currently respawning, `false` if they are not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
+### TTTIsRoleAbilityDisabled(ply, ...)
+Called to check whether a player's role ability is disabled.\
+*NOTE*: This will be called every time something queries for whether a player's role ability is disabled.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player being queried for role ability disabled status
+- *...* - Any other parameters that are passed to `plymeta:TTTIsRoleAbilityDisabled`
+
+*Return:* `true` if the player's role ability is currently disabled. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
+### TTTIsShopPurchaseBlocked(ply, ...)
+Called to check whether a player's shop purchases are blocked.\
+*NOTE*: This will be called every time something queries for whether a player's shop purchases are blocked.\
+*NOTE*: If `true` is returned from this hook, the player's shop purchase will be silently blocked and they will have 1 credit removed.\
+*Realm:* Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player being queried for shop purchase block status
+- *...* - Any other parameters that are passed to `plymeta:IsShopPurchaseBlocked`
+
+*Return:* `true` if the player's shop purchases are currently blocked. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
 
 ### TTTKarmaGiveReward(ply, reward, victim)
 Called before a player is rewarded with karma. Used to block a player's karma reward.\
@@ -323,6 +346,24 @@ Called when a mad scientist begins zombifying a target.\
 *Parameters:*
 - *ply* - The mad scientist doing the zombifying
 - *tgt* - The target being zombified
+
+### TTTOnRoleAbilityDisabled(ply, ...)
+Called when a player's role ability is disabled.\
+*NOTE*: This will be called every time something queries for whether a player's role ability is disabled and the result is `true`.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player whose role ability is disabled
+- *...* - Any other parameters that are passed to `plymeta:TTTIsRoleAbilityDisabled`
+
+### TTTOnShopPurchaseBlocked(ply, ...)
+Called when a player's shop purchases are blocked.\
+*NOTE*: This will be called every time something queries for whether a player's shop purchases are blocked and the result is `true`.\
+*Realm:* Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player whose shop purchases are blocked
+- *...* - Any other parameters that are passed to `plymeta:IsShopPurchaseBlocked`
 
 ### TTTPaladinAuraHealed(ply, tgt, healed)
 Called when a paladin heals a target.\
