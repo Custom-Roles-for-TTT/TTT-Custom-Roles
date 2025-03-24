@@ -729,10 +729,10 @@ function plymeta:ClearProperty(name, targets)
 end
 
 function plymeta:IsShopPurchaseBlocked(...)
-    local shopBlocked = hook.Call("TTTIsShopPurchaseBlocked", nil, self, ...) == true
+    local shopBlocked = CallHook("TTTIsShopPurchaseBlocked", nil, self, ...) == true
 
     if shopBlocked then
-        hook.Call("TTTOnShopPurchaseBlocked", nil, self, self:GetRole(), ...)
+        CallHook("TTTOnShopPurchaseBlocked", nil, self, self:GetRole(), ...)
     end
 
     return shopBlocked
