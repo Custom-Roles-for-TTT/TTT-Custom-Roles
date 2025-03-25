@@ -457,6 +457,39 @@
             <em>Return:</em> <code>true</code> if the player is currently respawning, <code>false</code> if they are not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
         </p>
 
+        <h3><a id="tttisroleabilitydisabled" href="#tttisroleabilitydisabled">TTTIsRoleAbilityDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called to check whether a player's role ability is disabled.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's role ability is disabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player being queried for role ability disabled status</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:TTTIsRoleAbilityDisabled</code></li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> if the player's role ability is currently disabled. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
+        <h3><a id="tttisshoppurchaseblocked" href="#tttisshoppurchaseblocked">TTTIsShopPurchaseBlocked(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called to check whether a player's shop purchases are blocked.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's shop purchases are blocked.<br>
+            <em>NOTE</em>: If <code>true</code> is returned from this hook, the player's shop purchase will be silently blocked and they will have 1 credit removed.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player being queried for shop purchase block status</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:TTTIsShopPurchaseBlocked</code></li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> if the player's shop purchases are currently blocked. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
         <h3><a id="tttkarmagiverewardply-reward-victim" href="#tttkarmagiverewardply-reward-victim">TTTKarmaGiveReward(ply, reward, victim)</a></h3>
         <p>
             Called before a player is rewarded with karma. Used to block a player's karma reward.<br>
@@ -498,6 +531,32 @@
         <ul>
             <li><em>ply</em> - The Mad Scientist doing the zombifying</li>
             <li><em>tgt</em> - The target being zombified</li>
+        </ul>
+
+        <h3><a id="tttonroleabilitydisabled" href="#tttonroleabilitydisabled">TTTOnRoleAbilityDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player's role ability is disabled.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's role ability is disabled and the result is <code>true</code>.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose role ability is disabled</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:TTTIsRoleAbilityDisabled</code></li>
+        </ul>
+
+        <h3><a id="tttonshoppurchaseblocked" href="#tttonshoppurchaseblocked">TTTOnShopPurchaseBlocked(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player's shop purchases are blocked.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's shop purchases are blocked and the result is <code>true</code>.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose shop purchases are blocked</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:TTTIsShopPurchaseBlocked</code></li>
         </ul>
 
         <h3><a id="tttpaladinaurahealedply-tgt-healed" href="#tttpaladinaurahealedply-tgt-healed">TTTPaladinAuraHealed(ply, tgt, healed)</a></h3>

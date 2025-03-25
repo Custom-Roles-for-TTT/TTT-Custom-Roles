@@ -378,6 +378,19 @@
             <em>Added in:</em> 2.1.12
         </p>
 
+        <h3><a id="plymetaisroleabilitydisabled" href="#plymetaisroleabilitydisabled">plymeta:IsRoleAbilityDisabled(...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called to check whether a player's role ability is disabled.<br>
+            <em>NOTE</em>: Calls <code>TTTIsRoleAbilityDisabled</code> hook to determine status.<br>
+            <em>NOTE</em>: Calls <code>TTTOnRoleAbilityDisabled</code> hook if role ability is disabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsRoleAbilityDisabled</code> hook</li>
+        </ul>
+
         <h3><a id="plymetaisroleactive" href="#plymetaisroleactive">plymeta:IsRoleActive()</a></h3>
         <p>
             Whether the player's role feature has been activated.<br>
@@ -412,6 +425,19 @@
         <ul>
             <li><em>isNameOverridden</em> - Whether the player name is currently overridden</li>
             <li><em>isRoleOverridden</em> - Whether the role color or icon is currently overridden</li>
+        </ul>
+
+        <h3><a id="plymetaisshoppurchaseblocked" href="#plymetaisshoppurchaseblocked">plymeta:IsShopPurchaseBlocked(...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called to check whether a player's shop purchases are blocked.<br>
+            <em>NOTE</em>: Calls <code>TTTIsShopPurchaseBlocked</code> hook to determine status.<br>
+            <em>NOTE</em>: Calls <code>TTTOnShopPurchaseBlocked</code> hook if shop purchases are blocked.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsShopPurchaseBlocked</code> hook</li>
         </ul>
 
         <h3><a id="plymetaisshoprole" href="#plymetaisshoprole">plymeta:IsShopRole()</a></h3>
