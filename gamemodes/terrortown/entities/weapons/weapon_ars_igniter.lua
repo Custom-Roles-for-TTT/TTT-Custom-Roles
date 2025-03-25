@@ -88,6 +88,7 @@ function SWEP:Initialize()
             if not IsPlayer(ply) then return end
             -- We only care if an arsonist has been killed and this igniter has been dropped (no owner)
             if not ply:IsArsonist() or IsValid(self:GetOwner()) then return end
+            if ply:IsRoleAbilityDisabled() then return end
 
             -- Don't ignite if all players aren't doused unless early ignition is enabled
             if not arsonist_early_ignite:GetBool() and not ply:GetNWBool("TTTArsonistDouseComplete", false) then
@@ -211,6 +212,8 @@ function SWEP:PrimaryAttack()
     local owner = self:GetOwner()
     if not IsPlayer(owner) then return end
 
+    if owner:IsRoleAbilityDisabled() then return end
+
     -- Don't ignite if all players aren't doused unless early ignition is enabled
     if not arsonist_early_ignite:GetBool() and not owner:GetNWBool("TTTArsonistDouseComplete", false) then
         if not owner:IsArsonist() then
@@ -240,6 +243,8 @@ function SWEP:SecondaryAttack()
 
     local owner = self:GetOwner()
     if not IsPlayer(owner) then return end
+
+    if owner:IsRoleAbilityDisabled() then return end
 
     if timer.Exists("TTTArsonistAutomaticTrigger_" .. self:EntIndex()) then
         self:SetOnDeath(false)
