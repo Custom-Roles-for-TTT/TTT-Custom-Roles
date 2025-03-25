@@ -175,6 +175,11 @@ local function IdentifyBody(ply, rag)
             end
         end
 
+        if ply:IsActiveDetectiveTeam() and ply:IsRoleAbilityDisabled() then
+            role_string = ROLE_STRINGS_EXT[ROLE_NONE]
+            color_role = ROLE_NONE
+        end
+
         LANG.Msg("body_found", {
             finder = finder,
             victim = name,
