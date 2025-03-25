@@ -484,6 +484,8 @@ local function HandleDrunkWinBlock(win_type)
         end
     end
 
+    if not IsPlayer(drunk) then return win_type end
+
     -- Make the drunk a clown
     if drunk_become_clown:GetBool() then
         StopDrunkTimers()
