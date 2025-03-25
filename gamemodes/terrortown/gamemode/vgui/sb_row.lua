@@ -7,6 +7,7 @@ local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local pairs = pairs
+local player = player
 local surface = surface
 local table = table
 local timer = timer
@@ -20,6 +21,7 @@ local MathMax = math.max
 local MathMin = math.min
 local MathRound = math.Round
 local MathSin = math.sin
+local PlayerIterator = player.Iterator
 
 local OpenedVoicePanels = {}
 local function HideVolumePanels()
@@ -142,12 +144,32 @@ function GM:TTTScoreboardColorForPlayer(ply)
 end
 
 local function GetGlitchedRole(p, glitchMode)
+    -- If this is the glitch but their role is disabled, don't show anything
     if p:IsGlitch() and p:IsRoleAbilityDisabled() then
         return nil, nil
     end
 
     -- Use the player's role if they are a traitor, otherwise this is a glitch and we should use their fake role
-    local role = p:IsTraitorTeam() and p:GetRole() or p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    local role
+    if p:IsTraitorTeam() then
+        local allDisabled = true
+        for _, v in PlayerIterator() do
+            if v:IsGlitch() and not v:IsRoleAbilityDisabled() then
+                allDisabled = false
+                break
+            end
+        end
+
+        -- If all glitches have been disabled then we can show this player's true role as if there was no glitch
+        if allDisabled then
+            return p:GetRole(), nil
+        end
+
+        role = p:GetRole()
+    else
+        role = p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    end
+
     -- Only hide vanilla traitors
     if glitchMode == GLITCH_SHOW_AS_TRAITOR then
         if role == ROLE_TRAITOR then
