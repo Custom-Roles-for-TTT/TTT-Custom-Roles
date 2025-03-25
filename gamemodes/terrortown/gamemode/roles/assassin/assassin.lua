@@ -208,6 +208,12 @@ hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", functio
     end
 end)
 
+hook.Add("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsAssassin() then return end
+
+    AssignAssassinTarget(ply, false, true)
+end)
+
 hook.Add("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", function(ply, traitor)
     if not IsPlayer(ply) then return end
 

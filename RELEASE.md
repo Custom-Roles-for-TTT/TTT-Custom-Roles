@@ -7,6 +7,7 @@
 - Added `plymeta:IsRoleAbilityDisabled` method to determine whether a player's role ability should be disabled
 - Added `TTTIsRoleAbilityDisabled` hook to determine whether a player's role ability should be disabled
 - Added `TTTOnRoleAbilityDisabled` hook called when the result of `TTTIsRoleAbilityDisabled` is `true`
+- Added `TTTOnRoleAbilityEnabled` hook to be called when the effect causing a player's role ability to be disabled has ended
 - Added `plymeta:IsShopPurchaseBlocked` method to determine whether a player's shop purchase is blocked
 - Added `TTTIsShopPurchaseBlocked` hook to determine whether a player's shop purchase is blocked
 - Added `TTTOnShopPurchaseBlocked` hook called when the result of `TTTIsShopPurchaseBlocked` is `true`

@@ -356,6 +356,14 @@ Called when a player's role ability is disabled.\
 - *ply* - The player whose role ability is disabled
 - *...* - Any other parameters that are passed to `plymeta:TTTIsRoleAbilityDisabled`
 
+### TTTOnRoleAbilityEnabled(ply)
+Called when a player's role ability is re-enabled.\
+*NOTE*: This needs to be called by whatever source has caused the role ability to be disabled when that effect ends.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player whose role ability is being enabled
+
 ### TTTOnShopPurchaseBlocked(ply, ...)
 Called when a player's shop purchases are blocked.\
 *NOTE*: This will be called every time something queries for whether a player's shop purchases are blocked and the result is `true`.\
