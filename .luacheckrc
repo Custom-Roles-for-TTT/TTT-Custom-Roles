@@ -1177,6 +1177,7 @@ globals = {
     "GetWinningMonsterRole",
     "HandleRoleEquipment",
     "HandleRoleHighlights",
+    "IsIllusionistBlocking",
     "JesterTeamKilledNotification",
     "LoadMonsterEquipment",
     "OnPlayerHighlightEnabled",
