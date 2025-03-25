@@ -142,9 +142,12 @@ function GM:TTTScoreboardColorForPlayer(ply)
 end
 
 local function GetGlitchedRole(p, glitchMode)
+    if p:IsGlitch() and p:IsRoleAbilityDisabled() then
+        return nil, nil
+    end
+
     -- Use the player's role if they are a traitor, otherwise this is a glitch and we should use their fake role
-    local disabledRole = (p:IsGlitch() and not p:IsRoleAbilityDisabled()) and p:GetNWInt("GlitchBluff", ROLE_TRAITOR) or ROLE_NONE
-    local role = p:IsTraitorTeam() and p:GetRole() or disabledRole
+    local role = p:IsTraitorTeam() and p:GetRole() or p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
     -- Only hide vanilla traitors
     if glitchMode == GLITCH_SHOW_AS_TRAITOR then
         if role == ROLE_TRAITOR then
@@ -307,17 +310,19 @@ function PANEL:Paint(width, height)
             end
         end
 
-        c = color or ROLE_COLORS_SCOREBOARD[role]
-        -- Show the question mark icon for jesters who haven't been searched
-        if role == ROLE_JESTER and not ply:GetNWBool("body_searched", false) then
-            roleStr = ROLE_STRINGS_SHORT[ROLE_NONE]
-        else
-            roleStr = ROLE_STRINGS_SHORT[role]
-        end
+        if role then
+            c = color or ROLE_COLORS_SCOREBOARD[role]
+            -- Show the question mark icon for jesters who haven't been searched
+            if role == ROLE_JESTER and not ply:GetNWBool("body_searched", false) then
+                roleStr = ROLE_STRINGS_SHORT[ROLE_NONE]
+            else
+                roleStr = ROLE_STRINGS_SHORT[role]
+            end
 
-        if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then
-            c = ROLE_COLORS_SCOREBOARD[role]
-            roleStr = ROLE_STRINGS_SHORT[role]
+            if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then
+                c = ROLE_COLORS_SCOREBOARD[role]
+                roleStr = ROLE_STRINGS_SHORT[role]
+            end
         end
     end
 

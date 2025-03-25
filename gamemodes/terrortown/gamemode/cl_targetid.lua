@@ -158,9 +158,12 @@ local function GetDetectiveIconRole(is_traitor)
 end
 
 local function GetGlitchedRole(p, glitchMode)
+    if p:IsGlitch() and p:IsRoleAbilityDisabled() then
+        return nil, nil
+    end
+
     -- Use the player's role if they are a traitor, otherwise this is a glitch and we should use their fake role
-    local disabledRole = (p:IsGlitch() and not p:IsRoleAbilityDisabled()) and p:GetNWInt("GlitchBluff", ROLE_TRAITOR) or ROLE_NONE
-    local role = p:IsTraitorTeam() and p:GetRole() or disabledRole
+    local role = p:IsTraitorTeam() and p:GetRole() or p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
     -- Only hide vanilla traitors
     if glitchMode == GLITCH_SHOW_AS_TRAITOR then
         if role == ROLE_TRAITOR then
