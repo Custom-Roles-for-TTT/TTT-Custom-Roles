@@ -324,6 +324,9 @@ function SWEP:SecondaryAttack()
 
     if CLIENT then return end
 
+    local owner = self:GetOwner()
+    if IsValid(owner) and owner:IsActiveDetective() and owner:IsRoleAbilityDisabled() then return end
+
     self:SendPrints(true)
 end
 
