@@ -107,12 +107,34 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
     local douseDistanceSqr = douse_distance * douse_distance
 
     for _, p in PlayerIterator() do
-        if not p:IsActiveArsonist() or p:IsRoleAbilityDisabled() then continue end
+        if not p:IsActiveArsonist() then continue end
         if p:GetNWBool("TTTArsonistDouseComplete", false) then continue end
 
+        local start_time = p:GetNWFloat("TTTArsonistDouseStartTime", -1)
         local target_sid64 = p:GetNWString("TTTArsonistDouseTarget", "")
         local target = player.GetBySteamID64(target_sid64)
-        if not target_sid64 or #target_sid64 == 0 or not IsPlayer(target) then
+
+        -- If this role has their ability disabled, clear any set tracking variables and continue
+        -- Clearing the state is required to get the progress bar to disappear if they were
+        -- actively dousing when it begins
+        if p:IsRoleAbilityDisabled() then
+            -- Only set these if they have a value to remove
+            if start_time ~= -1 then
+                p:SetNWFloat("TTTArsonistDouseStartTime", -1)
+                p:SetNWFloat("TTTArsonistDouseLostTime", -1)
+            end
+
+            if #target_sid64 > 0 then
+                p:SetNWString("TTTArsonistDouseTarget", "")
+                if IsPlayer(target) then
+                    target:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+                    target:SetNWInt("TTTArsonistDouseTime", -1)
+                end
+            end
+            continue
+        end
+
+        if not IsPlayer(target) then
             local complete = FindArsonistTarget(p, douseDistanceSqr)
             if complete then
                 p:SetNWBool("TTTArsonistDouseComplete", true)
@@ -127,7 +149,6 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
         end
 
         local stage = target:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
-        local start_time = p:GetNWFloat("TTTArsonistDouseStartTime", -1)
 
         local target_pos = target:GetPos()
         local target_dead = not target:Alive() or target:IsSpec()
