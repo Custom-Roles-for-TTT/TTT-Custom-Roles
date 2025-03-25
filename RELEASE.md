@@ -6,6 +6,9 @@
 ### Additions
 - Ported "TTT: Add crosshair customisation"
 
+### Fixes
+- Fixed assassin targetting logic so independents are last, as was intended
+
 ## 2.2.8 (Beta)
 **Released: March 22nd, 2025**
 
