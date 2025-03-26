@@ -24,7 +24,7 @@ function PANEL:SetGroupInfo(name, color, group)
     self.group = group
 end
 
-local bgcolor = Color(20,20,20, 150)
+local bgcolor = Color(20, 20, 20, 150)
 function PANEL:Paint()
     -- Darkened background
     draw.RoundedBox(8, 0, 0, self:GetWide(), self:GetTall(), bgcolor)
@@ -38,19 +38,19 @@ function PANEL:Paint()
 
     -- Shadow
     surface.SetTextPos(11, 11 - h/2)
-    surface.SetTextColor(0,0,0, 200)
+    surface.SetTextColor(0, 0, 0, 200)
     surface.DrawText(txt)
 
     -- Text
     surface.SetTextPos(10, 10 - h/2)
-    surface.SetTextColor(255,255,255,255)
+    surface.SetTextColor(255, 255, 255, 255)
     surface.DrawText(txt)
 
     -- Alternating row background
     local y = 24
     for i, row in ipairs(self.rows_sorted) do
         if (i % 2) ~= 0 then
-            surface.SetDrawColor(75,75,75, 100)
+            surface.SetDrawColor(75, 75, 75, 100)
             surface.DrawRect(0, y, self:GetWide(), row:GetTall())
         end
 
@@ -59,7 +59,7 @@ function PANEL:Paint()
 
     -- Column darkening
     local scr = sboard_panel.ply_frame.scroll.Enabled and 16 or 0
-    surface.SetDrawColor(0,0,0, 80)
+    surface.SetDrawColor(0, 0, 0, 80)
     if sboard_panel.cols then
         local cx = self:GetWide() - scr
         for k,v in ipairs(sboard_panel.cols) do
@@ -112,15 +112,14 @@ function PANEL:UpdateSortCache()
         if not IsValid(plyb) then return true end
 
         local sort_mode = GetConVar("ttt_scoreboard_sorting"):GetString()
-        local sort_func = sboard_sort[sort_mode]
+        local sort_func = _G.sboard_sort[sort_mode]
 
         local comp = 0
         if sort_func ~= nil then
             comp = sort_func(plya, plyb)
         end
 
-        local ret = true
-
+        local ret
         if comp ~= 0 then
             ret = comp > 0
         else
