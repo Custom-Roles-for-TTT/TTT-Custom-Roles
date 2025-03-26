@@ -539,6 +539,7 @@ function UpdateRoleColours()
     FillRoleColors(ROLE_COLORS_RADAR, "radar")
     ROLE_COLOURS_RADAR = ROLE_COLORS_RADAR
 end
+UpdateRoleColors = UpdateRoleColours
 UpdateRoleColours()
 
 -- Role strings

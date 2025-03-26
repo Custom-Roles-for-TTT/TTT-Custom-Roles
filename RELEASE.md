@@ -11,6 +11,9 @@
 ### Fixes
 - Fixed assassin targeting logic so independents are last, as was intended
 
+### Developer
+- Added `UpdateRoleColors` alias for `UpdateRoleColours` which was documented but didn't actually exist
+
 ## 2.2.8 (Beta)
 **Released: March 22nd, 2025**
 
