@@ -84,6 +84,7 @@ end
 timer.Create("KillerKillCheckTimer", 1, 0, function()
     local killer = player.GetLivingRole(ROLE_KILLER)
     if GetRoundState() == ROUND_ACTIVE and killer_smoke_enabled:GetBool() and killer ~= nil then
+        local roleDisabled = killer:IsRoleAbilityDisabled()
         killerSmokeTime = killerSmokeTime + 1
 
         -- Warn the killer that they need to kill at 1/2 time remaining, 1/4 time remaining, 10 seconds remaining, and 5 seconds remaining
@@ -94,11 +95,18 @@ timer.Create("KillerKillCheckTimer", 1, 0, function()
         if ((timer_fraction == 0.5 and timer_remaining > 10) or
             (timer_fraction == 0.25 and timer_remaining > 10) or
             timer_remaining == 10 or timer_remaining == 5) and
-            not killer:IsRoleAbilityDisabled() then
+            not roleDisabled then
             killer:PrintMessage(HUD_PRINTTALK, "Your evil grows impatient. Kill someone in the next " .. timer_remaining .. " seconds or you will be revealed!")
         end
 
-        if killerSmokeTime >= smoke_timer or killer:IsRoleAbilityDisabled() then
+        -- If the killer's ability is disabled, we want the smoke to show immediately
+        -- Set the smoke time to the timer value so it does that
+        -- Just calling "HandleKillerSmokeTick" isn't enough because it checks the convar internally
+        if roleDisabled and killerSmokeTime < smoke_timer then
+            killerSmokeTime = smoke_timer
+        end
+
+        if killerSmokeTime >= smoke_timer then
             HandleKillerSmokeTick()
         else
             timer.Remove("KillerTick")
