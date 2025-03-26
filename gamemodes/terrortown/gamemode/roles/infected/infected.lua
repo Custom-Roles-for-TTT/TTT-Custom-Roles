@@ -159,6 +159,20 @@ hook.Add("TTTStopPlayerRespawning", "Infected_TTTStopPlayerRespawning", function
     end
 end)
 
+hook.Add("TTTOnRoleAbilityEnabled", "Infected_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsInfected() then return end
+    if timer.Exists("InfectedSuccumb") and timer.TimeLeft("InfectedSuccumb") > 0 then return end
+
+    ply:SetNWBool("InfectedIsZombifying", false)
+    if not ply:Alive() or ply:IsSpec() then
+        if infected_respawn_enabled:GetBool() then
+            InfectedSuccumb(ply, true)
+        end
+    else
+        InfectedSuccumb(ply, false)
+    end
+end)
+
 ----------------
 -- WIN CHECKS --
 ----------------
