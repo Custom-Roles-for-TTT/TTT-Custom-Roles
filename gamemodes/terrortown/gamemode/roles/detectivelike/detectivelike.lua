@@ -90,6 +90,12 @@ end
 ROLE_ON_ROLE_ASSIGNED[ROLE_DEPUTY] = BeginRoleChecks
 ROLE_ON_ROLE_ASSIGNED[ROLE_IMPERSONATOR] = BeginRoleChecks
 
+hook.Add("TTTOnRoleAbilityEnabled", "DetectiveLike_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsDetectiveLikePromotable() then return end
+    if not ShouldPromoteDetectiveLike() then return end
+    FindAndPromoteDetectiveLike()
+end)
+
 hook.Add("TTTPrepareRound", "DetectiveLike_RoleState_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("HasPromotion", false)

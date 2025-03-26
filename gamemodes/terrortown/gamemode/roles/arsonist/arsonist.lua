@@ -108,6 +108,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
 
     for _, p in PlayerIterator() do
         if not p:IsActiveArsonist() then continue end
+        if p.DouseDisabled then continue end
         if p:GetNWBool("TTTArsonistDouseComplete", false) then continue end
 
         local start_time = p:GetNWFloat("TTTArsonistDouseStartTime", -1)
@@ -131,6 +132,8 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                     target:SetNWInt("TTTArsonistDouseTime", -1)
                 end
             end
+            -- Use a server-side property to track this so we can short-circuit the processing loop and prevent repeated hook calls
+            p.DouseDisabled = true
             continue
         end
 
@@ -244,6 +247,11 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
     end
 end)
 
+hook.Add("TTTOnRoleAbilityEnabled", "Arsonist_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsArsonist() then return end
+    ply.DouseDisabled = false
+end)
+
 hook.Add("PostPlayerDeath", "Arsonist_PostPlayerDeath", function(ply)
     -- Remove the notification delay timer since the player is already dead
     timer.Remove("TTTArsonistNotifyDelay_" .. ply:SteamID64())
@@ -258,6 +266,7 @@ end)
 
 hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
+        v.DouseDisabled = false
         v:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
         v:SetNWInt("TTTArsonistDouseTime", -1)
         v:SetNWString("TTTArsonistDouseTarget", "")
