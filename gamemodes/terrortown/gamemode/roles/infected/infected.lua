@@ -187,6 +187,7 @@ hook.Add("TTTWinCheckBlocks", "Infected_TTTWinCheckBlocks", function(win_blocks)
 
         for _, v in PlayerIterator() do
             if not v:IsActiveInfected() then continue end
+            if v:IsRoleAbilityDisabled() then continue end
 
             -- If this infected isn't already zombifying, start that
             if not v:GetNWBool("InfectedIsZombifying", false) then
