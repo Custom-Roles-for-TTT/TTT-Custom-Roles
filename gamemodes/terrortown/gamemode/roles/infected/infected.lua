@@ -72,9 +72,9 @@ end)
 local function InfectedSuccumb(ply, respawn)
     local message = "You have succumbed to your disease and "
     if respawn then
-        message = message .. " respawned as "
+        message = message .. "respawned as "
     else
-        message = message .. " become "
+        message = message .. "become "
     end
     ply:QueueMessage(MSG_PRINTCENTER, message .. ROLE_STRINGS_EXT[ROLE_ZOMBIE])
 
