@@ -317,6 +317,16 @@ L.set_title_lang = "Language settings"
 -- find the language setting even if it's set to a language they don't know.
 L.set_lang = "Select language:"
 
+L.set_title_scoreboard = "Scoreboard settings"
+
+L.set_scoreboard_sort = "Sort scoreboard by:"
+L.set_scoreboard_sort_name = "Player Name"
+
+L.set_scoreboard_sort_order = "Sort ascending"
+L.set_scoreboard_sort_order_tip = "Whether to sort selected scoreboard column in ascending or descending order"
+
+L.set_scoreboard_alternate = "Alternate row colors"
+L.set_scoreboard_alternate_tip = "Whether the scoreboard rows should alternate colors"
 
 --- Weapons and equipment, HUD and messages
 

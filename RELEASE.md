@@ -5,6 +5,8 @@
 
 ### Additions
 - Ported "TTT: Add crosshair customisation"
+- Added ability to disable scoreboard alternating row colors
+- Added scoreboard client setting to F1 Config menu
 
 ### Fixes
 - Fixed assassin targetting logic so independents are last, as was intended

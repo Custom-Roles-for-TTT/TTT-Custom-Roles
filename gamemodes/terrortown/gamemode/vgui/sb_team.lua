@@ -11,6 +11,8 @@ local surface = surface
 local table = table
 local vgui = vgui
 
+local alternate_colors = CreateClientConVar("ttt_scoreboard_alternate_colors", "1", true, false, "Whether to alternate row colors")
+
 local PANEL = {}
 
 function PANEL:Init()
@@ -55,14 +57,16 @@ function PANEL:Paint()
     surface.DrawText(txt)
 
     -- Alternating row background
-    local y = 24
-    for i, row in ipairs(self.rows_sorted) do
-        if (i % 2) ~= 0 then
-            surface.SetDrawColor(75, 75, 75, 100)
-            surface.DrawRect(0, y, self:GetWide(), row:GetTall())
-        end
+    if alternate_colors:GetBool() then
+        local y = 24
+        for i, row in ipairs(self.rows_sorted) do
+            if (i % 2) ~= 0 then
+                surface.SetDrawColor(75, 75, 75, 100)
+                surface.DrawRect(0, y, self:GetWide(), row:GetTall())
+            end
 
-        y = y + row:GetTall() + 1
+            y = y + row:GetTall() + 1
+        end
     end
 
     -- Column darkening

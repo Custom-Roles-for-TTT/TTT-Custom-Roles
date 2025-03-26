@@ -1051,6 +1051,66 @@ function HELPSCRN:CreateConfig(dsettings)
     HookCall("TTTSettingsConfigTabFields", nil, "Crosshair", dsettings)
 
     dsettings:AddItem(dcross)
+
+    -- Scoreboard area
+
+    local dscoreboard = vgui.Create("DForm", dsettings)
+    dscoreboard:Dock(TOP)
+    dscoreboard:DockMargin(0, 0, 5, 10)
+    dscoreboard:DoExpansion(false)
+    dscoreboard:SetName(GetTranslation("set_title_scoreboard"))
+
+    local dsorting = vgui.Create("DComboBox", dscoreboard)
+    dsorting:SetConVar("ttt_scoreboard_sorting")
+    dsorting:SetSortItems(false)
+
+    local values = {
+        { name = GetTranslation("set_scoreboard_sort_name"), value = "name" },
+        { name = GetTranslation("sb_role"), value = "role" },
+        { name = GetTranslation("sb_karma"), value = "karma" },
+        { name = GetTranslation("sb_score"), value = "score" },
+        { name = GetTranslation("sb_deaths"), value = "deaths" },
+        { name = GetTranslation("sb_ping"), value = "ping" }
+    }
+    for _, v in ipairs(values) do
+        dsorting:AddChoice(v.name, v.value)
+    end
+
+    -- Why is DComboBox not updating the cvar by default?
+    dsorting.OnSelect = function(pnl, idx, val, data)
+        RunConsoleCommand("ttt_scoreboard_sorting", data)
+    end
+
+    local scoreboard_sorting = GetConVar("ttt_scoreboard_sorting")
+    -- Adapted from ConVarStringThink
+    dsorting.Think = function()
+		if not dsorting.m_strConVar or #dsorting.m_strConVar < 2 then return end
+
+		local strValue = scoreboard_sorting:GetString()
+		if dsorting.m_strConVarValue == strValue then return end
+
+		dsorting.m_strConVarValue = strValue
+
+        for _, v in ipairs(values) do
+            if v.value == strValue then
+		        dsorting:SetValue(v.name)
+                break
+            end
+        end
+	end
+
+    dscoreboard:Help(GetTranslation("set_lang"))
+    dscoreboard:AddItem(dsorting)
+
+    cb = dscoreboard:CheckBox(GetTranslation("set_scoreboard_sort_order"), "ttt_scoreboard_ascending")
+    cb:SetTooltip(GetTranslation("set_scoreboard_sort_order_tip"))
+
+    cb = dscoreboard:CheckBox(GetTranslation("set_scoreboard_alternate"), "ttt_scoreboard_alternate_colors")
+    cb:SetTooltip(GetTranslation("set_scoreboard_alternate_tip"))
+
+    HookCall("TTTSettingsConfigTabFields", nil, "Scoreboard", dscoreboard)
+
+    dsettings:AddItem(dscoreboard)
 end
 
 local roleExpandState = {}
