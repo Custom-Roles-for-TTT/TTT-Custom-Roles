@@ -46,7 +46,12 @@ function ENT:Explode()
     local radius = self.ExplosionRange
     local damage = self.ExplosionDamage
 
-    util.BlastDamage( self, self:GetPlacer(), pos, radius, damage )
+    local placer = self:GetPlacer()
+    if IsPlayer(placer) and placer:IsQuack() and placer:IsRoleAbilityDisabled() then
+        damage = 0
+    end
+
+    util.BlastDamage(self, self:GetPlacer(), pos, radius, damage)
     local effect = EffectData()
         effect:SetStart(pos)
         effect:SetOrigin(pos)
