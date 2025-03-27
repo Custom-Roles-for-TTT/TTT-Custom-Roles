@@ -460,14 +460,14 @@
         <h3><a id="tttisroleabilitydisabled" href="#tttisroleabilitydisabled">TTTIsRoleAbilityDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
         <p>
             Called to check whether a player's role ability is disabled.<br>
-            <em>NOTE</em>: This will be called every time something queries for whether a player's role ability is disabled.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's role ability is disabled as long as is remains enabled.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 2.2.9<br>
             <em>Parameters:</em>
         </p>
         <ul>
             <li><em>ply</em> - The player being queried for role ability disabled status</li>
-            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:TTTIsRoleAbilityDisabled</code></li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableRoleAbility</code> or <code>plymeta:IsRoleAbilityDisabled</code></li>
         </ul>
         <p>
             <em>Return:</em> <code>true</code> if the player's role ability is currently disabled. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
@@ -476,7 +476,7 @@
         <h3><a id="tttisshoppurchaseblocked" href="#tttisshoppurchaseblocked">TTTIsShopPurchaseBlocked(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
         <p>
             Called to check whether a player's shop purchases are blocked.<br>
-            <em>NOTE</em>: This will be called every time something queries for whether a player's shop purchases are blocked.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's shop purchases are blocked as long as they remain unblocked.<br>
             <em>NOTE</em>: If <code>true</code> is returned from this hook, the player's shop purchase will be silently blocked and they will have 1 credit removed.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 2.2.9<br>
@@ -484,7 +484,7 @@
         </p>
         <ul>
             <li><em>ply</em> - The player being queried for shop purchase block status</li>
-            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:TTTIsShopPurchaseBlocked</code></li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:BlockShopPurchases</code> or <code>plymeta:IsShopPurchaseBlocked</code></li>
         </ul>
         <p>
             <em>Return:</em> <code>true</code> if the player's shop purchases are currently blocked. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
@@ -536,20 +536,18 @@
         <h3><a id="tttonroleabilitydisabled" href="#tttonroleabilitydisabled">TTTOnRoleAbilityDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
         <p>
             Called when a player's role ability is disabled.<br>
-            <em>NOTE</em>: This will be called every time something queries for whether a player's role ability is disabled and the result is <code>true</code>.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 2.2.9<br>
             <em>Parameters:</em>
         </p>
         <ul>
             <li><em>ply</em> - The player whose role ability is disabled</li>
-            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:TTTIsRoleAbilityDisabled</code></li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableRoleAbility</code> or <code>plymeta:IsRoleAbilityDisabled</code></li>
         </ul>
 
         <h3><a id="tttonroleabilityenabled" href="#tttonroleabilityenabled">TTTOnRoleAbilityEnabled(ply)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
         <p>
             Called when a player's role ability is re-enabled.<br>
-            <em>NOTE</em>: This needs to be called by whatever source has caused the role ability to be disabled when that effect ends.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 2.2.9<br>
             <em>Parameters:</em>
@@ -561,14 +559,24 @@
         <h3><a id="tttonshoppurchaseblocked" href="#tttonshoppurchaseblocked">TTTOnShopPurchaseBlocked(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
         <p>
             Called when a player's shop purchases are blocked.<br>
-            <em>NOTE</em>: This will be called every time something queries for whether a player's shop purchases are blocked and the result is <code>true</code>.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 2.2.9<br>
             <em>Parameters:</em>
         </p>
         <ul>
             <li><em>ply</em> - The player whose shop purchases are blocked</li>
-            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:TTTIsShopPurchaseBlocked</code></li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:BlockShopPurchases</code> or <code>plymeta:IsShopPurchaseBlocked</code></li>
+        </ul>
+
+        <h3><a id="tttonshoppurchaseunblocked" href="#tttonshoppurchaseunblocked">TTTOnShopPurchaseUnblocked(ply)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player's shop purchases are unblocked.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose shop purchases are being unblocked</li>
         </ul>
 
         <h3><a id="tttpaladinaurahealedply-tgt-healed" href="#tttpaladinaurahealedply-tgt-healed">TTTPaladinAuraHealed(ply, tgt, healed)</a></h3>

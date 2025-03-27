@@ -4,13 +4,22 @@
 **Released:**
 
 ### Developer
+- Added `plymeta:DisableRoleAbility` method to disable a player's role ability
+    - Should be called when the effect causing a player's role ability to be disabled has ended
+- Added `plymeta:EnableRoleAbility` method to re-enable a player's role ability
 - Added `plymeta:IsRoleAbilityDisabled` method to determine whether a player's role ability should be disabled
+- Added `TTTOnRoleAbilityDisabled` hook called when `plymeta:DisableRoleAbility` is called or the result of `TTTIsRoleAbilityDisabled` is `true`
+- Added `TTTOnRoleAbilityEnabled` hook called when `plymeta:EnableRoleAbility` is called
 - Added `TTTIsRoleAbilityDisabled` hook to determine whether a player's role ability should be disabled
-- Added `TTTOnRoleAbilityDisabled` hook called when the result of `TTTIsRoleAbilityDisabled` is `true`
-- Added `TTTOnRoleAbilityEnabled` hook to be called when the effect causing a player's role ability to be disabled has ended
+    - Called when `plymeta:IsRoleAbilityDisabled` is called and `plymeta:DisableRoleAbility` had not previously be called
+- Added `plymeta:UnblockShopPurchases` method to remove shop purchase block
+    - Should be called when the effect causing a player's shop purchases to be blocked has ended
+- Added `plymeta:BlockShopPurchases` method to block shop purchases
 - Added `plymeta:IsShopPurchaseBlocked` method to determine whether a player's shop purchase is blocked
+- Added `TTTOnShopPurchaseBlocked` hook called when `plymeta:BlockShopPurchases` is called or the result of `TTTIsShopPurchaseBlocked` is `true`
+- Added `TTTOnShopPurchaseUnblocked` hook called when `plymeta:UnblockShopPurchases` is called
 - Added `TTTIsShopPurchaseBlocked` hook to determine whether a player's shop purchase is blocked
-- Added `TTTOnShopPurchaseBlocked` hook called when the result of `TTTIsShopPurchaseBlocked` is `true`
+    - Called when `plymeta:IsShopPurchaseBlocked` is called and `plymeta:BlockShopPurchases` had not previously be called
 
 ## 2.2.8 (Beta)
 **Released: March 22nd, 2025**

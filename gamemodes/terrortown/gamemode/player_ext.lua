@@ -728,14 +728,34 @@ function plymeta:ClearProperty(name, targets)
     SYNC:ClearPlayerProperty(self, name, targets)
 end
 
+local shopBlockedCache = {}
 function plymeta:IsShopPurchaseBlocked(...)
-    local shopBlocked = CallHook("TTTIsShopPurchaseBlocked", nil, self, ...) == true
+    if shopBlockedCache[self:SteamID64()] then
+        return true
+    end
 
+    local shopBlocked = CallHook("TTTIsShopPurchaseBlocked", nil, self, ...) == true
     if shopBlocked then
-        CallHook("TTTOnShopPurchaseBlocked", nil, self, self:GetRole(), ...)
+        self:BlockShopPurchases(...)
     end
 
     return shopBlocked
+end
+
+function plymeta:BlockShopPurchases(...)
+    local sid64 = self:SteamID64()
+    if shopBlockedCache[sid64] then return end
+
+    shopBlockedCache[sid64] = true
+    CallHook("TTTOnShopPurchaseBlocked", nil, self, ...)
+end
+
+function plymeta:UnblockShopPurchases()
+    local sid64 = self:SteamID64()
+    if not shopBlockedCache[sid64] then return end
+
+    shopBlockedCache[sid64] = nil
+    CallHook("TTTOnShopPurchaseUnblocked", nil, self)
 end
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded

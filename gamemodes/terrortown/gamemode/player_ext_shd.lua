@@ -392,14 +392,34 @@ function plymeta:IsInvulnerable()
     return self:GetNWBool("CRTTT_Invulnerable", false)
 end
 
+local roleAbilityCache = {}
 function plymeta:IsRoleAbilityDisabled(...)
-    local roleIsDisabled = CallHook("TTTIsRoleAbilityDisabled", nil, self, ...) == true
+    if roleAbilityCache[self:SteamID64()] then
+        return true
+    end
 
+    local roleIsDisabled = CallHook("TTTIsRoleAbilityDisabled", nil, self, ...) == true
     if roleIsDisabled then
-        CallHook("TTTOnRoleAbilityDisabled", nil, self, self:GetRole(), ...)
+        self:DisableRoleAbility(...)
     end
 
     return roleIsDisabled
+end
+
+function plymeta:DisableRoleAbility(...)
+    local sid64 = self:SteamID64()
+    if roleAbilityCache[sid64] then return end
+
+    roleAbilityCache[sid64] = true
+    CallHook("TTTOnRoleAbilityDisabled", nil, self, ...)
+end
+
+function plymeta:EnableRoleAbility()
+    local sid64 = self:SteamID64()
+    if not roleAbilityCache[sid64] then return end
+
+    roleAbilityCache[sid64] = nil
+    CallHook("TTTOnRoleAbilityEnabled", nil, self)
 end
 
 if CLIENT then

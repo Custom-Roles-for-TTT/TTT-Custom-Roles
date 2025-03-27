@@ -6,6 +6,12 @@ Sets up role logic for the player to handle role-specific events and checks.\
 *Realm:* Server\
 *Added in:* 1.1.9
 
+### plymeta:BlockShopPurchases()
+Blocks player's purchases from the equipment shop, if they weren't already.\
+*NOTE*: If the player's purchases were not already blocked, this will also call the `TTTOnShopPurchaseBlocked` hook
+*Realm:* Server\
+*Added in:* 2.2.9
+
 ### plymeta:Celebrate(snd, showConfetti)
 Plays a celebration effect (sound and or confetti) at the player's location.\
 *Realm:* Client\
@@ -58,6 +64,12 @@ Removes queued messages with the given ID from the queue and clears any currentl
 *Parameters:*
 - *id* - The identifier of the message(s) you want to clear
 
+### plymeta:DisableRoleAbility()
+Disables this player's role ability, if it isn't already.\
+*NOTE*: If the player's role ability was not already disabled, this will also call the `TTTOnRoleAbilityDisabled` hook
+*Realm:* Client and Server\
+*Added in:* 2.2.9
+
 ### plymeta:DrunkJoinLosingTeam()
 Attempts to find the losing team and calls `self:SoberDrunk(team)` using the losing team as the *team* parameter.\
 *Realm:* Server\
@@ -69,6 +81,12 @@ Sets the drunk's role and runs required checks for that role.\
 *Added in:* 1.1.9\
 *Parameters:*
 - *role* - Which role to set the drunk to (see ROLE_* global enumeration)
+
+### plymeta:EnableRoleAbility()
+Enables this player's role ability, if it was previously disabled.\
+*NOTE*: If the player's role ability was previously disabled, this will also call the `TTTOnRoleAbilityEnabled` hook
+*Realm:* Client and Server\
+*Added in:* 2.2.9
 
 ### plymeta:ForceRoleNextRound(role)
 Forces a player to spawn as the specified role next round. Returns `true` if successful, `false` if that player has already been forced to be another role.\
@@ -253,8 +271,8 @@ Whether this player is currently respawning.\
 
 ### plymeta:IsRoleAbilityDisabled(...)
 Called to check whether a player's role ability is disabled.\
-*NOTE*: Calls `TTTIsRoleAbilityDisabled` hook to determine status.\
-*NOTE*: Calls `TTTOnRoleAbilityDisabled` hook if role ability is disabled.\
+*NOTE*: Calls `TTTIsRoleAbilityDisabled` hook to determine status if `plymeta:DisableRoleAbility` has not previously been called.\
+*NOTE*: Calls `plymeta:DisableRoleAbility` if `TTTIsRoleAbilityDisabled` is called and result is `true`.\
 *Realm:* Client and Server\
 *Added in:* 2.2.9\
 *Parameters:*
@@ -287,8 +305,8 @@ Whether the player is currently overriding a piece of scoreboard information.\
 
 ### plymeta:IsShopPurchaseBlocked(...)
 Called to check whether a player's shop purchases are blocked.\
-*NOTE*: Calls `TTTIsShopPurchaseBlocked` hook to determine status.\
-*NOTE*: Calls `TTTOnShopPurchaseBlocked` hook if shop purchases are blocked.\
+*NOTE*: Calls `TTTIsShopPurchaseBlocked` hook to determine status if `plymeta:BlockShopPurchases` has not previously been called.\
+*NOTE*: Calls `plymeta:BlockShopPurchases` if `TTTIsShopPurchaseBlocked` hook is called and result is `true`.\
 *Realm:* Server\
 *Added in:* 2.2.9\
 *Parameters:*
@@ -541,3 +559,9 @@ Stops the player from respawning due to a role feature.\
 Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
+
+### plymeta:UnblockShopPurchases()
+Unblocks player's purchases from the equipment shop, if they were previously blocked.\
+*NOTE*: If the player's shop purchases were previously blocked, this will also call the `TTTOnShopPurchaseUnblocked` hook
+*Realm:* Server\
+*Added in:* 2.2.9
