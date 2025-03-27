@@ -57,7 +57,7 @@ end)
 hook.Add("PlayerDeath", "Revenger_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     for _, v in PlayerIterator() do
-        if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() and not v:IsRoleAbilityDisabled() then
+        if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
             local message
             if v == attacker then
                 message = "Your love has died by your hand."
@@ -103,7 +103,7 @@ ROLE_MOVE_ROLE_STATE[ROLE_REVENGER] = function(ply, target, keep_on_source)
         if IsValid(revenger_lover) then
             target:QueueMessage(MSG_PRINTBOTH, "You are now in love with " .. revenger_lover:Nick() .. ".")
 
-            if (not revenger_lover:Alive() or revenger_lover:IsSpec()) and not target:IsRoleAbilityDisabled() then
+            if not revenger_lover:Alive() or revenger_lover:IsSpec() then
                 local message
                 if killer == target:SteamID64() then
                     message = "Your love has died by your hand."

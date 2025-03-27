@@ -113,7 +113,7 @@ local beep_success = Sound("buttons/blip2.wav")
 local function SetRevengerLoverKillerPosition()
     local cli = LocalPlayer()
     local attacker = GetLoverKiller(cli)
-    if IsPlayer(attacker) and attacker:IsActive() then
+    if IsPlayer(attacker) and attacker:IsActive() and cli:IsRevenger() and not cli:IsRoleAbilityDisabled() then
         revenger_lover_killers = {
             { pos = attacker:LocalToWorld(attacker:OBBCenter()) }
         }
