@@ -24,6 +24,14 @@
             <em>Added in:</em> 1.1.9
         </p>
 
+        <h3><a id="plymetablockshoppurchases" href="#plymetablockshoppurchases">plymeta:BlockShopPurchases()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Blocks player's purchases from the equipment shop, if they weren't already.<br>
+            <em>NOTE</em>: If the player's purchases were not already blocked, this will also call the <code>TTTOnShopPurchaseBlocked</code> hook<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9
+        </p>
+
         <h3><a id="plymetacelebratesnd-showconfetti" href="#plymetacelebratesnd-showconfetti">plymeta:Celebrate(snd, showConfetti)</a></h3>
         <p>
             Plays a celebration effect (sound and or confetti) at the player's location.<br>
@@ -102,6 +110,14 @@
             <li><em>id</em> - The identifier of the message(s) you want to clear</li>
         </ul>
 
+        <h3><a id="plymetadisableroleability" href="#plymetadisableroleability">plymeta:DisableRoleAbility()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Disables this player's role ability, if it isn't already.<br>
+            <em>NOTE</em>: If the player's role ability was not already disabled, this will also call the <code>TTTOnRoleAbilityDisabled</code> hook<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9
+        </p>
+
         <h3><a id="plymetadrunkjoinlosingteam" href="#plymetadrunkjoinlosingteam">plymeta:DrunkJoinLosingTeam()</a></h3>
         <p>
             Attempts to find the losing team and calls <code>self:SoberDrunk(team)</code> using the losing team as the <em>team</em> parameter.<br>
@@ -119,6 +135,14 @@
         <ul>
             <li><em>role</em> - Which role to set the Drunk to (see ROLE_* global enumeration)</li>
         </ul>
+
+        <h3><a id="plymetaenableroleability" href="#plymetaenableroleability">plymeta:EnableRoleAbility()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Enables this player's role ability, if it was previously disabled.<br>
+            <em>NOTE</em>: If the player's role ability was previously disabled, this will also call the <code>TTTOnRoleAbilityEnabled</code> hook<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9
+        </p>
 
         <h3><a id="plymetaforcerolenextroundrole" href="#plymetaforcerolenextroundrole">plymeta:ForceRoleNextRound(role)</a></h3>
         <p>
@@ -381,14 +405,14 @@
         <h3><a id="plymetaisroleabilitydisabled" href="#plymetaisroleabilitydisabled">plymeta:IsRoleAbilityDisabled(...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
         <p>
             Called to check whether a player's role ability is disabled.<br>
-            <em>NOTE</em>: Calls <code>TTTIsRoleAbilityDisabled</code> hook to determine status.<br>
-            <em>NOTE</em>: Calls <code>TTTOnRoleAbilityDisabled</code> hook if role ability is disabled.<br>
+            <em>NOTE</em>: Calls <code>TTTIsRoleAbilityDisabled</code> hook to determine status if <code>plymeta:DisableRoleAbility</code> has not previously been called.<br>
+            <em>NOTE</em>: Calls <code>plymeta:DisableRoleAbility</code> if <code>TTTIsRoleAbilityDisabled</code> is called and result is <code>true</code>.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 2.2.9<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsRoleAbilityDisabled</code> hook</li>
+            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsRoleAbilityDisabled</code> hook and <code>plymeta:DisableRoleAbility</code> method</li>
         </ul>
 
         <h3><a id="plymetaisroleactive" href="#plymetaisroleactive">plymeta:IsRoleActive()</a></h3>
@@ -430,14 +454,14 @@
         <h3><a id="plymetaisshoppurchaseblocked" href="#plymetaisshoppurchaseblocked">plymeta:IsShopPurchaseBlocked(...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
         <p>
             Called to check whether a player's shop purchases are blocked.<br>
-            <em>NOTE</em>: Calls <code>TTTIsShopPurchaseBlocked</code> hook to determine status.<br>
-            <em>NOTE</em>: Calls <code>TTTOnShopPurchaseBlocked</code> hook if shop purchases are blocked.<br>
+            <em>NOTE</em>: Calls <code>TTTIsShopPurchaseBlocked</code> hook to determine status if <code>plymeta:BlockShopPurchases</code> has not previously been called.<br>
+            <em>NOTE</em>: Calls <code>plymeta:BlockShopPurchases</code> if <code>TTTIsShopPurchaseBlocked</code> hook is called and result is <code>true</code>.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 2.2.9<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsShopPurchaseBlocked</code> hook</li>
+            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsShopPurchaseBlocked</code> hook and <code>plymeta:BlockShopPurchases</code> method</li>
         </ul>
 
         <h3><a id="plymetaisshoprole" href="#plymetaisshoprole">plymeta:IsShopRole()</a></h3>
@@ -804,6 +828,14 @@
             Strips all weapons from the player whose <code>Category</code> property matches the global <code>WEAPON_CATEGORY_ROLE</code> value.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.5
+        </p>
+
+        <h3><a id="plymetaunblockshoppurchases" href="#plymetaunblockshoppurchases">plymeta:UnblockShopPurchases()</a></h3>
+        <p>
+            Unblocks player's purchases from the equipment shop, if they were previously blocked.<br>
+            <em>NOTE</em>: If the player's shop purchases were previously blocked, this will also call the <code>TTTOnShopPurchaseUnblocked</code> hook.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9
         </p>
     </div>
     <div class="footerpadding panel"></div>

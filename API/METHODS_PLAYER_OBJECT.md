@@ -8,7 +8,7 @@ Sets up role logic for the player to handle role-specific events and checks.\
 
 ### plymeta:BlockShopPurchases()
 Blocks player's purchases from the equipment shop, if they weren't already.\
-*NOTE*: If the player's purchases were not already blocked, this will also call the `TTTOnShopPurchaseBlocked` hook
+*NOTE*: If the player's purchases were not already blocked, this will also call the `TTTOnShopPurchaseBlocked` hook.\
 *Realm:* Server\
 *Added in:* 2.2.9
 
@@ -66,7 +66,7 @@ Removes queued messages with the given ID from the queue and clears any currentl
 
 ### plymeta:DisableRoleAbility()
 Disables this player's role ability, if it isn't already.\
-*NOTE*: If the player's role ability was not already disabled, this will also call the `TTTOnRoleAbilityDisabled` hook
+*NOTE*: If the player's role ability was not already disabled, this will also call the `TTTOnRoleAbilityDisabled` hook.\
 *Realm:* Client and Server\
 *Added in:* 2.2.9
 
@@ -84,7 +84,7 @@ Sets the drunk's role and runs required checks for that role.\
 
 ### plymeta:EnableRoleAbility()
 Enables this player's role ability, if it was previously disabled.\
-*NOTE*: If the player's role ability was previously disabled, this will also call the `TTTOnRoleAbilityEnabled` hook
+*NOTE*: If the player's role ability was previously disabled, this will also call the `TTTOnRoleAbilityEnabled` hook.\
 *Realm:* Client and Server\
 *Added in:* 2.2.9
 
@@ -276,7 +276,7 @@ Called to check whether a player's role ability is disabled.\
 *Realm:* Client and Server\
 *Added in:* 2.2.9\
 *Parameters:*
-- *...* - Any parameters to be passed to the `TTTIsRoleAbilityDisabled` hook
+- *...* - Any parameters to be passed to the `TTTIsRoleAbilityDisabled` hook and `plymeta:DisableRoleAbility` method
 
 *Return:* `true` if the player's role ability is currently disabled, `false` otherwise
 
@@ -310,7 +310,7 @@ Called to check whether a player's shop purchases are blocked.\
 *Realm:* Server\
 *Added in:* 2.2.9\
 *Parameters:*
-- *...* - Any parameters to be passed to the `TTTIsShopPurchaseBlocked` hook
+- *...* - Any parameters to be passed to the `TTTIsShopPurchaseBlocked` hook and `plymeta:BlockShopPurchases` method
 
 *Return:* `true` if the player's shop purchases are currently blocked, `false` otherwise
 
@@ -562,6 +562,6 @@ Strips all weapons from the player whose `Category` property matches the global 
 
 ### plymeta:UnblockShopPurchases()
 Unblocks player's purchases from the equipment shop, if they were previously blocked.\
-*NOTE*: If the player's shop purchases were previously blocked, this will also call the `TTTOnShopPurchaseUnblocked` hook
+*NOTE*: If the player's shop purchases were previously blocked, this will also call the `TTTOnShopPurchaseUnblocked` hook.\
 *Realm:* Server\
 *Added in:* 2.2.9
