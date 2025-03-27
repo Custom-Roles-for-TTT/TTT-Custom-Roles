@@ -143,6 +143,17 @@ AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", functi
     end
 end)
 
+AddHook("TTTOnRoleAbilityEnabled", "Plaguemaster_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsPlaguemaster() then return end
+    if not plaguemaster_immune:GetBool() then return end
+
+    for sid64, _ in pairs(ply.TTTPlaguemasterSpreadStartTimes) do
+        ClearSpreadStart(ply, sid64)
+    end
+    ply.TTTPlaguemasterSpreadStartTimes = {}
+    ply:ClearProperty("TTTPlaguemasterStartTime")
+end)
+
 -- Clear the plague from anyone this player is spreading to
 AddHook("PostPlayerDeath", "Plaguemaster_PostPlayerDeath", function(ply)
     local plague_start = ply.TTTPlaguemasterStartTime
