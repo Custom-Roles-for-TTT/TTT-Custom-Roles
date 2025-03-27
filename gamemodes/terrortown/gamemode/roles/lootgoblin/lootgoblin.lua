@@ -229,7 +229,7 @@ local function StartGoblinTimers()
             timer.Create("LootGoblinDrop", dropTimer, 0, function()
                 local weps = weapons.GetList()
                 for _, ply in PlayerIterator() do
-                    if ply:IsActiveLootGoblin() then
+                    if ply:IsActiveLootGoblin() and not ply:IsRoleAbilityDisabled() then
                         local wep = nil
                         -- Loop in here so we get a different weapon for each loot goblin (if there are multiple)
                         for _, v in RandomPairs(weps) do
