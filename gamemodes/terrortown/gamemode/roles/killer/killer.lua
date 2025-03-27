@@ -222,13 +222,13 @@ hook.Add("ScalePlayerDamage", "Killer_ScalePlayerDamage", function(ply, hitgroup
     -- Only apply damage scaling after the round starts
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         -- Killers do less damage to encourage using the knife
-        if dmginfo:IsBulletDamage() and att:IsKiller() then
+        if dmginfo:IsBulletDamage() and att:IsKiller() and not att:IsRoleAbilityDisabled() then
             local penalty = killer_damage_penalty:GetFloat()
             dmginfo:ScaleDamage(1 - penalty)
         end
 
         -- Killers take less bullet damage
-        if dmginfo:IsBulletDamage() and ply:IsKiller() then
+        if dmginfo:IsBulletDamage() and ply:IsKiller() and not ply:IsRoleAbilityDisabled() then
             local reduction = killer_damage_reduction:GetFloat()
             dmginfo:ScaleDamage(1 - reduction)
         end
@@ -279,7 +279,7 @@ hook.Add("PlayerCanPickupWeapon", "Killer_Weapons_PlayerCanPickupWeapon", functi
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return end
 
-    if (wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar") then
+    if wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar" then
         return ply:IsKiller()
     end
 end)
