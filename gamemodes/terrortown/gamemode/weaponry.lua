@@ -461,7 +461,7 @@ function GM:TTTCanOrderEquipment(ply, id, is_item)
         -- Remove the credit for this item anyway
         -- Things that implement the `TTTIsShopPurchaseBlocked` hook can determine if they want to give the credit back or not
         if ply:GetCredits() > 0 then
-            ply:SubtractCredit(1)
+            ply:SubtractCredits(1)
         end
         return false
     end
