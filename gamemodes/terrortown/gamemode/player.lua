@@ -650,7 +650,7 @@ local function CheckCreditAward(victim, attacker)
                     if CallHook("TTTRewardTraitorInnocentDeath", nil, p, victim, attacker, amt) then
                         return false
                     end
-                    if p:IsActiveTraitorTeam() and p:IsShopRole() then
+                    if p:IsActiveTraitorTeam() and p:IsShopRole() and not p:IsRoleAbilityDisabled() then
                         return not p:IsVampire() or vampire_kill_credits
                     end
                     return false
@@ -799,7 +799,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     -- Check for T killing D or vice versa
     if IsPlayer(attacker) then
         local reward = 0
-        if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() then
+        if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() and not attacker:IsRoleAbilityDisabled() then
             reward = math.ceil(GetConVar("ttt_credits_detectivekill"):GetInt())
         elseif (attacker:IsActiveDetectiveTeam() or (attacker:IsActiveDeputy() and attacker:IsRoleActive())) and ply:IsTraitorTeam() then
             reward = math.ceil(GetConVar("ttt_det_credits_traitorkill"):GetInt())

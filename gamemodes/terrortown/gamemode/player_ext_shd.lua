@@ -157,6 +157,7 @@ function plymeta:CanUseTraitorButton(active_only)
 end
 function plymeta:CanLootCredits(active_only)
     if active_only and not self:IsActive() then return false end
+    if self:IsTraitorTeam() and self:IsRoleAbilityDisabled() then return false end
 
     local can_loot = CAN_LOOT_CREDITS_ROLES[self:GetRole()]
     -- If this is explicitly set, use it as-is
