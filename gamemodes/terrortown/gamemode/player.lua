@@ -974,8 +974,8 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if ply:ShouldActLikeJester() and GetRoundState() == ROUND_ACTIVE then
-        -- Jester team don't take fall damage
+    if GetRoundState() == ROUND_ACTIVE and ply:ShouldActLikeJester() and (not ply:IsJesterTeam() or not ply:IsRoleAbilityDisabled()) then
+        -- Jester team don't take fall damage, unless their ability is disabled
         return
     else
         if in_water or speed < 450 or not IsValid(ply) then return end
@@ -1059,8 +1059,11 @@ function GM:EntityTakeDamage(ent, dmginfo)
         if ent:ShouldActLikeJester() and (not IsValid(att) or att:GetClass() ~= "trigger_hurt") and
               (dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or
                dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE)) then
-            dmginfo:ScaleDamage(0)
-            dmginfo:SetDamage(0)
+            -- Explosion and fall damage are blocked unless this player is a jester whose ability was disabled
+            if (not dmginfo:IsExplosionDamage() and not dmginfo:IsDamageType(DMG_BURN)) or not ent:IsJesterTeam() or not ent:IsRoleAbilityDisabled() then
+                dmginfo:ScaleDamage(0)
+                dmginfo:SetDamage(0)
+            end
         end
 
         -- Prevent damage from jesters
