@@ -796,6 +796,20 @@ local function FakeTransferCredits(ply, cmd, args)
 end
 concommand.Add("ttt_fake_transfer_credits", FakeTransferCredits)
 
+-- Reduce fire rate by 80%
+local function ReduceWeaponFireRate(wep)
+    if wep.Primary and wep.Primary.Delay then
+        wep.Primary.DelayOrig = wep.Primary.Delay
+        wep.Primary.Delay = wep.Primary.Delay * 1.2
+    elseif wep.Primary_TFA and wep.Primary_TFA.RPM then
+        wep.Primary_TFA.RPMOrig = wep.Primary_TFA.RPM
+        wep.Primary_TFA.RPM = wep.Primary_TFA.RPM * 0.8
+    elseif wep.FireDelay then
+        wep.FireDelayOrig = wep.FireDelay
+        wep.FireDelay = wep.FireDelay * 1.2
+    end
+end
+
 -- Protect against non-TTT weapons that may break the HUD
 function GM:WeaponEquip(wep, ply)
     if not IsValid(wep) then return end
@@ -804,8 +818,42 @@ function GM:WeaponEquip(wep, ply)
     if not wep.Kind then
         wep:Remove()
         ErrorNoHalt("Equipped weapon " .. wep:GetClass() .. " is not compatible with TTT\n")
+    -- If this is an innocent or independent player with their role ability disabled, reduce their fire rate
+    elseif IsPlayer(ply) and (ply:IsInnocentTeam() or ply:IsIndependentTeam()) and ply:IsRoleAbilityDisabled() then
+        ReduceWeaponFireRate(wep)
     end
 end
+
+hook.Add("TTTOnRoleAbilityDisabled", "RateOfFire_TTTOnRoleAbilityDisabled", function(ply)
+    if not IsPlayer(ply) then return end
+    if not ply:IsInnocentTeam() and not ply:IsIndependentTeam() then return end
+
+    local weps = ply:GetWeapons()
+    -- Reduce the fire rate of all weapons
+    for _, wep in ipairs(weps) do
+        ReduceWeaponFireRate(wep)
+    end
+end)
+
+hook.Add("TTTOnRoleAbilityEnabled", "RateOfFire_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) then return end
+    if not ply:IsInnocentTeam() and not ply:IsIndependentTeam() then return end
+
+    local weps = ply:GetWeapons()
+    -- Reset the fire rate of all weapons to original
+    for _, wep in ipairs(weps) do
+        if wep.Primary and wep.Primary.DelayOrig then
+            wep.Primary.Delay = wep.Primary.DelayOrig
+            wep.Primary.DelayOrig = nil
+        elseif wep.Primary_TFA and wep.Primary_TFA.RPMOrig then
+            wep.Primary_TFA.RPM = wep.Primary_TFA.RPMOrig
+            wep.Primary_TFA.RPMOrig = nil
+        elseif wep.FireDelayOrig then
+            wep.FireDelay = wep.FireDelayOrig
+            wep.FireDelayOrig = nil
+        end
+    end
+end)
 
 -- non-cheat developer commands can reveal precaching the first time equipment
 -- is bought, so trigger it at the start of a round instead

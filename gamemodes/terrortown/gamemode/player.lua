@@ -958,6 +958,12 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             dmginfo:IsDamageType(DMG_PHYSGUN)) then
         dmginfo:ScaleDamage(2)
     end
+
+    local attacker = dmginfo:GetAttacker()
+    -- Disabled innocents and independents do 80% damage
+    if IsPlayer(attacker) and (attacker:IsInnocentTeam() or attacker:IsIndependentTeam()) and attacker:IsRoleAbilityDisabled() then
+        dmginfo:ScaleDamage(0.8)
+    end
 end
 
 -- The GetFallDamage hook does not get called until around 600 speed, which is a
@@ -1377,6 +1383,19 @@ end
 
 function GM:PlayerDroppedWeapon(ply, wep)
     if not IsValid(wep) or not IsPlayer(ply) then return end
+
+    -- If we previously changed the fire rate of this weapon, undo it on drop
+    if wep.Primary and wep.Primary.DelayOrig then
+        wep.Primary.Delay = wep.Primary.DelayOrig
+        wep.Primary.DelayOrig = nil
+    elseif wep.Primary_TFA and wep.Primary_TFA.RPMOrig then
+        wep.Primary_TFA.RPM = wep.Primary_TFA.RPMOrig
+        wep.Primary_TFA.RPMOrig = nil
+    elseif wep.FireDelayOrig then
+        wep.FireDelay = wep.FireDelayOrig
+        wep.FireDelayOrig = nil
+    end
+
     if not wep.CanBuy or wep.AutoSpawnable then return end
 
     -- If this weapon has already recorded who it was bought by and we're not allowing ownership transfer, block it
