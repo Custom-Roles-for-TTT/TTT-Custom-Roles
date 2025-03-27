@@ -758,6 +758,13 @@ function plymeta:UnblockShopPurchases()
     CallHook("TTTOnShopPurchaseUnblocked", nil, self)
 end
 
+local function ClearShopBlockedCache()
+    shopBlockedCache = {}
+end
+hook.Add("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedCache)
+hook.Add("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
+hook.Add("TTTEndRound", "ShopBlockedCache_TTTEndRound", ClearShopBlockedCache)
+
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
 hook.Add("TTTPrepareRound", "PostLoadOverride", function()
     -- Compatibility with Dead Ringer (810154456)

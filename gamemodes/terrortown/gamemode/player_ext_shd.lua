@@ -422,6 +422,13 @@ function plymeta:EnableRoleAbility()
     CallHook("TTTOnRoleAbilityEnabled", nil, self)
 end
 
+local function ClearRoleAbilityCache()
+    roleAbilityCache = {}
+end
+hook.Add("TTTPrepareRound", "RoleAbilityCache_TTTPrepareRound", ClearRoleAbilityCache)
+hook.Add("TTTBeginRound", "RoleAbilityCache_TTTBeginRound", ClearRoleAbilityCache)
+hook.Add("TTTEndRound", "RoleAbilityCache_TTTEndRound", ClearRoleAbilityCache)
+
 if CLIENT then
     local function GetMaxBoneZ(ply, pred)
         local max_bone_z = 0
