@@ -27,7 +27,7 @@ function plymeta:ChangeTurncoatTeam(extra)
     if not self:IsTurncoat() then return end
     if self:IsTraitorTeam() then return end
 
-    -- Change team and broadcast to everyone
+    -- Change team and broadcast to everyone, unless their role ability is disabled
     if not self:IsRoleAbilityDisabled() then
         SetTurncoatTeam(self, true)
     end
