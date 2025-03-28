@@ -571,10 +571,8 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                     radius = shadow_dead_radius:GetFloat() * UNITS_PER_METER
                 end
 
-                if not IsValid(ent) or v:IsRoleAbilityDisabled() then continue end
-
                 local radiusSqr = radius * radius
-                if v:GetPos():DistToSqr(ent:GetPos()) <= radiusSqr then
+                if v:GetPos():DistToSqr(ent:GetPos()) <= radiusSqr and not v:IsRoleAbilityDisabled() then
                     if not v:GetNWBool("ShadowActive", false) then
                         v:SetNWBool("ShadowActive", true)
                     end
