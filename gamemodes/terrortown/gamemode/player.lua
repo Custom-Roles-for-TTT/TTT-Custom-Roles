@@ -960,8 +960,8 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
     end
 
     local attacker = dmginfo:GetAttacker()
-    -- Disabled innocents and independents do 80% damage
-    if IsPlayer(attacker) and (attacker:IsInnocentTeam() or attacker:IsIndependentTeam()) and attacker:IsRoleAbilityDisabled() then
+    -- Disabled innocents, independents, and monsters do 80% damage
+    if IsPlayer(attacker) and (attacker:IsInnocentTeam() or attacker:IsIndependentTeam() or attacker:IsMonsterTeam()) and attacker:IsRoleAbilityDisabled() then
         dmginfo:ScaleDamage(0.8)
     end
 end

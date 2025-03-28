@@ -818,15 +818,15 @@ function GM:WeaponEquip(wep, ply)
     if not wep.Kind then
         wep:Remove()
         ErrorNoHalt("Equipped weapon " .. wep:GetClass() .. " is not compatible with TTT\n")
-    -- If this is an innocent or independent player with their role ability disabled, reduce their fire rate
-    elseif IsPlayer(ply) and (ply:IsInnocentTeam() or ply:IsIndependentTeam()) and ply:IsRoleAbilityDisabled() then
+    -- If this is an innocent, independent, or monster player with their role ability disabled, reduce their fire rate
+    elseif IsPlayer(ply) and (ply:IsInnocentTeam() or ply:IsIndependentTeam() or ply:IsMonsterTeam()) and ply:IsRoleAbilityDisabled() then
         ReduceWeaponFireRate(wep)
     end
 end
 
 hook.Add("TTTOnRoleAbilityDisabled", "RateOfFire_TTTOnRoleAbilityDisabled", function(ply)
     if not IsPlayer(ply) then return end
-    if not ply:IsInnocentTeam() and not ply:IsIndependentTeam() then return end
+    if not ply:IsInnocentTeam() and not ply:IsIndependentTeam() and not ply:IsMonsterTeam() then return end
 
     local weps = ply:GetWeapons()
     -- Reduce the fire rate of all weapons
@@ -837,7 +837,7 @@ end)
 
 hook.Add("TTTOnRoleAbilityEnabled", "RateOfFire_TTTOnRoleAbilityEnabled", function(ply)
     if not IsPlayer(ply) then return end
-    if not ply:IsInnocentTeam() and not ply:IsIndependentTeam() then return end
+    if not ply:IsInnocentTeam() and not ply:IsIndependentTeam() and not ply:IsMonsterTeam() then return end
 
     local weps = ply:GetWeapons()
     -- Reset the fire rate of all weapons to original
