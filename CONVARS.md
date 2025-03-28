@@ -115,7 +115,7 @@ ttt_shadow_enabled                             0       // Whether or not the Sha
 ttt_arsonist_enabled                           0       // Whether or not the Arsonist should spawn
 ttt_hivemind_enabled                           0       // Whether or not the Hive Mind should spawn
 ttt_plaguemaster_enabled                       0       // Whether or not the Plaguemaster should spawn
-ttt_cannibal_enabled                           0       // Whether or not the cannibal should spawn
+ttt_cannibal_enabled                           0       // Whether or not the Cannibal should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                     1       // The weight assigned to spawning the Hypnotist
@@ -164,6 +164,7 @@ ttt_shadow_spawn_weight                        1       // The weight assigned to
 ttt_arsonist_spawn_weight                      1       // The weight assigned to spawning the Arsonist
 ttt_hivemind_spawn_weight                      1       // The weight assigned to spawning the Hive Mind
 ttt_plaguemaster_spawn_weight                  1       // The weight assigned to spawning the Plaguemaster
+ttt_cannibal_spawn_weight                      1       // The weight assigned to spawning the Cannibal
 
 // (Note: Each role is limited to one player per round.)
 
@@ -214,6 +215,7 @@ ttt_shadow_min_players                         0       // The minimum number of 
 ttt_arsonist_min_players                       0       // The minimum number of players required to spawn the Arsonist
 ttt_hivemind_min_players                       0       // The minimum number of players required to spawn the Hive Mind
 ttt_plaguemaster_min_players                   0       // The minimum number of players required to spawn the Plaguemaster
+ttt_cannibal_min_players                       0       // The minimum number of players required to spawn the Cannibal
 
 // Grouped Role Spawn Settings
 ttt_twins_enabled                              0       // Whether or not the Twins should spawn
@@ -283,6 +285,7 @@ ttt_assassin_allow_shadow_kill                 1       // Whether the Assassin c
 ttt_assassin_allow_arsonist_kill               1       // Whether the Assassin can kill an Arsonist without damage penalty, even if it is not their target
 ttt_assassin_allow_hivemind_kill               1       // Whether the Assassin can kill a member of the Hive Mind without damage penalty, even if it is not their target
 ttt_assassin_allow_plaguemaster_kill           1       // Whether the Assassin can kill a Plaguemaster without damage penalty, even if it is not their target
+ttt_assassin_allow_cannibal_kill               1       // Whether the Assassin can kill a Cannibal without damage penalty, even if it is not their target
 ttt_assassin_allow_vindicator_kill             1       // Whether the Assassin can kill a Vindicator without damage penalty, even if it is not their target
 
 // Vampire
@@ -810,6 +813,7 @@ ttt_drunk_can_be_shadow                        1       // Whether the Drunk can 
 ttt_drunk_can_be_arsonist                      1       // Whether the Drunk can become a Arsonist
 ttt_drunk_can_be_hivemind                      1       // Whether the Drunk can become the Hive Mind
 ttt_drunk_can_be_plaguemaster                  1       // Whether the Drunk can become the Plaguemaster
+ttt_drunk_can_be_cannibal                      1       // Whether the Drunk can become the Cannibal
 
 // Old Man
 ttt_oldman_drain_health_to                     0       // The amount of health to drain the Old Man down to. Set to 0 to disable
@@ -961,6 +965,10 @@ ttt_plaguemaster_body_search_mode              1       // Whether dead bodies re
 ttt_plaguemaster_can_see_jesters               0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Plaguemaster
 ttt_plaguemaster_update_scoreboard             1       // Whether the Plaguemaster shows dead players as missing in action
 
+// Cannibal
+ttt_cannibal_can_see_jesters                   1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Cannibal
+ttt_cannibal_update_scoreboard                 1       // Whether the Cannibal shows dead players as missing in action
+    
 // ----------------------------------------
 
 // GROUPED ROLE SETTINGS
@@ -1137,6 +1145,7 @@ ttt_shadow_starting_health                     100     // The amount of health t
 ttt_arsonist_starting_health                   100     // The amount of health the Arsonist starts with
 ttt_hivemind_starting_health                   100     // The amount of health the Hive Mind starts with
 ttt_plaguemaster_starting_health               100     // The amount of health the Plaguemaster starts with
+ttt_cannibal_starting_health                   100     // The amount of health the Cannibal starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                         100     // The maximum amount of health a Traitor can have
@@ -1190,6 +1199,7 @@ ttt_shadow_max_health                          100     // The maximum amount of 
 ttt_arsonist_max_health                        100     // The maximum amount of health the Arsonist can have
 ttt_hivemind_max_health                        100     // The maximum amount of health the Hive Mind can have
 ttt_plaguemaster_max_health                    100     // The maximum amount of health the Plaguemaster can have
+ttt_cannibal_max_health                        100     // The maximum amount of health the Cannibal can have
 
 // Round Time
 ttt_roundtime_win_draw                         0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
