@@ -763,7 +763,7 @@ local function ClearShopBlockedCache()
 end
 hook.Add("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedCache)
 hook.Add("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
-hook.Add("TTTEndRound", "ShopBlockedCache_TTTEndRound", ClearShopBlockedCache)
+-- Don't clear on round end because we may need this for post-round summary stuff
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
 hook.Add("TTTPrepareRound", "PostLoadOverride", function()

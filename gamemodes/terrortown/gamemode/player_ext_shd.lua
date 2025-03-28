@@ -428,7 +428,7 @@ local function ClearRoleAbilityCache()
 end
 hook.Add("TTTPrepareRound", "RoleAbilityCache_TTTPrepareRound", ClearRoleAbilityCache)
 hook.Add("TTTBeginRound", "RoleAbilityCache_TTTBeginRound", ClearRoleAbilityCache)
-hook.Add("TTTEndRound", "RoleAbilityCache_TTTEndRound", ClearRoleAbilityCache)
+-- Don't clear on round end because we may need this for post-round summary stuff
 
 if CLIENT then
     local function GetMaxBoneZ(ply, pred)

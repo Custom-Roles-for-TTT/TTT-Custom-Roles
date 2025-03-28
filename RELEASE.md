@@ -20,6 +20,9 @@
 - Added `TTTOnShopPurchaseUnblocked` hook called when `plymeta:UnblockShopPurchases` is called
 - Added `TTTIsShopPurchaseBlocked` hook to determine whether a player's shop purchase is blocked
     - Called when `plymeta:IsShopPurchaseBlocked` is called and `plymeta:BlockShopPurchases` had not previously be called
+- Added `TTTCrosshairColorOverride` hook to override the color used for the local player's crosshair
+- Added `TTTHUDRoleColorOverride` hook to override the color used in place of the local player's role color on the HUD
+- Added `TTTHUDRoleNameOverride` hook to override the role name used on the local player's HUD
 
 ## 2.2.8 (Beta)
 **Released: March 22nd, 2025**

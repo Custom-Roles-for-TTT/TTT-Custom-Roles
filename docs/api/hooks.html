@@ -219,6 +219,20 @@
             <li><em>roleString</em> - The new string to use when building the role cheat sheet description translation</li>
         </ul>
 
+        <h3><a id="tttcrosshaircoloroverrideclient" href="#tttcrosshaircoloroverrideclient">TTTCrosshairColorOverride(client)</a></h3>
+        <p>
+            Allows overriding the color to use in place of the given player's normal crosshair color.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new crosshair color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
         <h3><a id="tttcupidshouldloversurviveply-lover" href="#tttcupidshouldloversurviveply-lover">TTTCupidShouldLoverSurvive(ply, lover)</a></h3>
         <p>
             Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.<br>
@@ -413,6 +427,35 @@
             <li><em>labelY</em> - The Y value representing the first clear space to add information</li>
             <li><em>activeLabels</em> - The list of current active additional labels. Used to determine the labelY offset to use via: <code>labelY = labelY + (20 * #activeLabels)</code>. Be sure to insert an entry when you add your own label so other addons can space appropriately. <em>(Added in 1.6.11)</em></li>
         </ul>
+
+        <h3><a id="ttthudrolecoloroverrideclient-colortype" href="#ttthudrolecoloroverrideclient-colortype">TTTHUDRoleColorOverride(client, colorType)</a></h3>
+        <p>
+            Allows overriding the color to use in place of the given player's normal role color.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>colorType</em> - The color modification type to use (e.g. "dark", "highlight", "scoreboard", "sprite", "radar") (Defaults to <code>nil</code>)</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new role color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
+        <h3><a id="ttthudrolenameoverrideclient" href="#ttthudrolenameoverrideclient">TTTHUDRoleNameOverride(client)</a></h3>
+        <p>
+            Allows overriding the name to use in place of the given player's normal role name.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new role name to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
 
         <h3><a id="tttinformantdefaultscanstageply-oldrole-newrole" href="#tttinformantdefaultscanstageply-oldrole-newrole">TTTInformantDefaultScanStage(ply, oldRole, newRole)</a></h3>
         <p>

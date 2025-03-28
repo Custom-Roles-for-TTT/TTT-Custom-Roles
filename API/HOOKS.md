@@ -139,6 +139,15 @@ Called when the cheat sheet is displayed, allowing the target translation string
 *Return:*
 - *roleString* - The new string to use when building the role cheat sheet description translation
 
+### TTTCrosshairColorOverride(client)
+Allows overriding the color to use in place of the given player's normal crosshair color.\
+*Realm:* Client\
+*Added in:* 2.2.9\
+*Parameters:*
+- *client* - The local player
+
+*Return:* The new crosshair color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
 ### TTTCupidShouldLoverSurvive(ply, lover)
 Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.\
 *Realm:* Server\
@@ -265,6 +274,25 @@ Called after player information such as role, health, and ammo and equipment inf
 - *labelX* - The X value representing the correct indentation from the left side of the screen to add information
 - *labelY* - The Y value representing the first clear space to add information
 - *activeLabels* - The list of current active additional labels. Used to determine the labelY offset to use via: `labelY = labelY + (20 * #activeLabels)`. Be sure to insert an entry when you add your own label so other addons can space appropriately. *(Added in 1.6.11)*
+
+### TTTHUDRoleColorOverride(client, colorType)
+Allows overriding the color to use in place of the given player's normal role color.\
+*Realm:* Client\
+*Added in:* 2.2.9\
+*Parameters:*
+- *client* - The local player
+- *colorType* - The color modification type to use (e.g. "dark", "highlight", "scoreboard", "sprite", "radar") (Defaults to `nil`).
+
+*Return:* The new role color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
+### TTTHUDRoleNameOverride(client)
+Allows overriding the name to use in place of the given player's normal role name.\
+*Realm:* Client\
+*Added in:* 2.2.9\
+*Parameters:*
+- *client* - The local player
+
+*Return:* The new role name to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
 
 ### TTTInformantDefaultScanStage(ply, oldRole, newRole)
 Called when an informant is trying to determine the default scan stage of a plyer. Used to override that value.\
