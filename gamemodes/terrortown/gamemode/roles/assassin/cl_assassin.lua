@@ -55,13 +55,13 @@ end)
 
 -- Show skull icon over the target's head
 hook.Add("TTTTargetIDPlayerTargetIcon", "Assassin_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsAssassin() and assassin_show_target_icon:GetBool() and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester and not cli:IsSameTeam(ply) then
+    if cli:IsAssassin() and assassin_show_target_icon:GetBool() and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester and not cli:IsSameTeam(ply) and not cli:IsRoleAbilityDisabled() then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_ASSASSIN], "down"
     end
 end)
 
 hook.Add("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
-    if cli:IsAssassin() and IsPlayer(ent) and ent:SteamID64() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and IsPlayer(ent) and ent:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         if ent:GetNWBool("ParasiteInfected", false) and ShouldShowTraitorExtraInfo() then
             secondary_text = LANG.GetTranslation("target_infected")
         end
@@ -72,6 +72,7 @@ end)
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target, showJester)
     if not ply:IsAssassin() then return end
     if not IsPlayer(target) then return end
+    if ply:IsRoleAbilityDisabled() then return end
 
     -- Shared logic
     local show = (target:SteamID64() == ply:GetNWString("AssassinTarget", "")) and not showJester
@@ -86,13 +87,13 @@ end
 
 -- Flash the assassin target's row on the scoreboard
 hook.Add("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
-    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         return c, roleStr, ROLE_ASSASSIN
     end
 end)
 
 hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function(ply, cli, text)
-    if cli:IsAssassin() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         local newText = " ("
         if ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false) then
             newText = newText .. LANG.GetTranslation("target_infected") .. " | "
@@ -105,6 +106,7 @@ end)
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target)
     if not ply:IsAssassin() then return end
     if not IsPlayer(target) then return end
+    if ply:IsRoleAbilityDisabled() then return end
 
     -- Shared logic
     local show = target:SteamID64() == ply:GetNWString("AssassinTarget", "")
@@ -157,7 +159,7 @@ end)
 hook.Add("Think", "Assassin_Highlight_Think", function()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
-    if assassin_target_vision and client:IsAssassin() then
+    if assassin_target_vision and client:IsAssassin() and not client:IsRoleAbilityDisabled() then
         if not vision_enabled then
             EnableAssassinTargetHighlights()
             vision_enabled = true
@@ -174,6 +176,7 @@ end)
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_ASSASSIN] = function(ply, target)
     if not ply:IsAssassin() then return end
     if not IsPlayer(target) then return end
+    if ply:IsRoleAbilityDisabled() then return end
 
     local target_sid64 = ply:GetNWString("AssassinTarget", "")
     if not target_sid64 or #target_sid64 == 0 then return end
