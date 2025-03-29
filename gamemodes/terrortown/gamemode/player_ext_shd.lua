@@ -396,12 +396,14 @@ end
 local roleAbilityCache = {}
 function plymeta:IsRoleAbilityDisabled(...)
     if roleAbilityCache[self:SteamID64()] then
+        CallHook("TTTOnRoleAbilityBlocked", nil, self, ...)
         return true
     end
 
     local roleIsDisabled = CallHook("TTTIsRoleAbilityDisabled", nil, self, ...) == true
     if roleIsDisabled then
         self:DisableRoleAbility(...)
+        CallHook("TTTOnRoleAbilityBlocked", nil, self, ...)
     end
 
     return roleIsDisabled

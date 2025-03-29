@@ -24,14 +24,6 @@
             <em>Added in:</em> 1.1.9
         </p>
 
-        <h3><a id="plymetablockshoppurchases" href="#plymetablockshoppurchases">plymeta:BlockShopPurchases()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
-        <p>
-            Blocks player's purchases from the equipment shop, if they weren't already.<br>
-            <em>NOTE</em>: If the player's purchases were not already blocked, this will also call the <code>TTTOnShopPurchaseBlocked</code> hook<br>
-            <em>Realm:</em> Server<br>
-            <em>Added in:</em> 2.2.9
-        </p>
-
         <h3><a id="plymetacelebratesnd-showconfetti" href="#plymetacelebratesnd-showconfetti">plymeta:Celebrate(snd, showConfetti)</a></h3>
         <p>
             Plays a celebration effect (sound and or confetti) at the player's location.<br>
@@ -118,6 +110,14 @@
             <em>Added in:</em> 2.2.9
         </p>
 
+        <h3><a id="plymetadisableshoppurchases" href="#plymetadisableshoppurchases">plymeta:DisableShopPurchases()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Blocks player's purchases from the equipment shop, if they weren't already.<br>
+            <em>NOTE</em>: If the player's purchases were not already blocked, this will also call the <code>TTTOnShopPurchaseDisabled</code> hook<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9
+        </p>
+
         <h3><a id="plymetadrunkjoinlosingteam" href="#plymetadrunkjoinlosingteam">plymeta:DrunkJoinLosingTeam()</a></h3>
         <p>
             Attempts to find the losing team and calls <code>self:SoberDrunk(team)</code> using the losing team as the <em>team</em> parameter.<br>
@@ -141,6 +141,14 @@
             Enables this player's role ability, if it was previously disabled.<br>
             <em>NOTE</em>: If the player's role ability was previously disabled, this will also call the <code>TTTOnRoleAbilityEnabled</code> hook<br>
             <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9
+        </p>
+
+        <h3><a id="plymetaenableshoppurchases" href="#plymetaenableshoppurchases">plymeta:EnableShopPurchases()</a></h3>
+        <p>
+            Enables player's ability to purchase from the equipment shop, if it was previously disabled.<br>
+            <em>NOTE</em>: If the player's shop purchases were previously disabled, this will also call the <code>TTTOnShopPurchaseEnabled</code> hook.<br>
+            <em>Realm:</em> Server<br>
             <em>Added in:</em> 2.2.9
         </p>
 
@@ -414,6 +422,9 @@
         <ul>
             <li><em>...</em> - Any parameters to be passed to the <code>TTTIsRoleAbilityDisabled</code> hook and <code>plymeta:DisableRoleAbility</code> method</li>
         </ul>
+        <p>
+            <em>Returns:</em> <code>true</code> if the player's role ability is currently disabled, <code>false</code> otherwise.
+        </p>
 
         <h3><a id="plymetaisroleactive" href="#plymetaisroleactive">plymeta:IsRoleActive()</a></h3>
         <p>
@@ -451,18 +462,21 @@
             <li><em>isRoleOverridden</em> - Whether the role color or icon is currently overridden</li>
         </ul>
 
-        <h3><a id="plymetaisshoppurchaseblocked" href="#plymetaisshoppurchaseblocked">plymeta:IsShopPurchaseBlocked(...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="plymetaisshoppurchasedisabled" href="#plymetaisshoppurchasedisabled">plymeta:IsShopPurchaseDisabled(...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
         <p>
-            Called to check whether a player's shop purchases are blocked.<br>
-            <em>NOTE</em>: Calls <code>TTTIsShopPurchaseBlocked</code> hook to determine status if <code>plymeta:BlockShopPurchases</code> has not previously been called.<br>
-            <em>NOTE</em>: Calls <code>plymeta:BlockShopPurchases</code> if <code>TTTIsShopPurchaseBlocked</code> hook is called and result is <code>true</code>.<br>
+            Called to check whether a player's shop purchases are disabled.<br>
+            <em>NOTE</em>: Calls <code>TTTIsShopPurchaseDisabled</code> hook to determine status if <code>plymeta:DisableShopPurchases</code> has not previously been called.<br>
+            <em>NOTE</em>: Calls <code>plymeta:DisableShopPurchases</code> if <code>TTTIsShopPurchaseDisabled</code> hook is called and result is <code>true</code>.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 2.2.9<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsShopPurchaseBlocked</code> hook and <code>plymeta:BlockShopPurchases</code> method</li>
+            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsShopPurchaseDisabled</code> hook and <code>plymeta:DisableShopPurchases</code> method</li>
         </ul>
+        <p>
+            <em>Returns:</em> <code>true</code> if the player's shop purchases are currently disabled, <code>false</code> otherwise.
+        </p>
 
         <h3><a id="plymetaisshoprole" href="#plymetaisshoprole">plymeta:IsShopRole()</a></h3>
         <p>
@@ -828,14 +842,6 @@
             Strips all weapons from the player whose <code>Category</code> property matches the global <code>WEAPON_CATEGORY_ROLE</code> value.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.5
-        </p>
-
-        <h3><a id="plymetaunblockshoppurchases" href="#plymetaunblockshoppurchases">plymeta:UnblockShopPurchases()</a></h3>
-        <p>
-            Unblocks player's purchases from the equipment shop, if they were previously blocked.<br>
-            <em>NOTE</em>: If the player's shop purchases were previously blocked, this will also call the <code>TTTOnShopPurchaseUnblocked</code> hook.<br>
-            <em>Realm:</em> Server<br>
-            <em>Added in:</em> 2.2.9
         </p>
     </div>
     <div class="footerpadding panel"></div>

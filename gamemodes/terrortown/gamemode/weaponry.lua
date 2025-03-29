@@ -457,9 +457,9 @@ local function HasPendingOrder(ply)
 end
 
 function GM:TTTCanOrderEquipment(ply, id, is_item)
-    if ply:IsShopPurchaseBlocked(id, is_item) then
+    if ply:IsShopPurchaseDisabled(id, is_item) then
         -- Remove the credit for this item anyway
-        -- Things that implement the `TTTIsShopPurchaseBlocked` hook can determine if they want to give the credit back or not
+        -- Things that implement the `TTTIsShopPurchaseDisabled` hook can determine if they want to give the credit back or not
         if ply:GetCredits() > 0 then
             ply:SubtractCredits(1)
         end

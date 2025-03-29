@@ -729,33 +729,35 @@ function plymeta:ClearProperty(name, targets)
 end
 
 local shopBlockedCache = {}
-function plymeta:IsShopPurchaseBlocked(...)
+function plymeta:IsShopPurchaseDisabled(...)
     if shopBlockedCache[self:SteamID64()] then
+        CallHook("TTTOnShopPurchaseBlocked", nil, self, ...)
         return true
     end
 
-    local shopBlocked = CallHook("TTTIsShopPurchaseBlocked", nil, self, ...) == true
+    local shopBlocked = CallHook("TTTIsShopPurchaseDisabled", nil, self, ...) == true
     if shopBlocked then
-        self:BlockShopPurchases(...)
+        self:DisableShopPurchases(...)
+        CallHook("TTTOnShopPurchaseBlocked", nil, self, ...)
     end
 
     return shopBlocked
 end
 
-function plymeta:BlockShopPurchases(...)
+function plymeta:DisableShopPurchases(...)
     local sid64 = self:SteamID64()
     if shopBlockedCache[sid64] then return end
 
     shopBlockedCache[sid64] = true
-    CallHook("TTTOnShopPurchaseBlocked", nil, self, ...)
+    CallHook("TTTOnShopPurchaseDisabled", nil, self, ...)
 end
 
-function plymeta:UnblockShopPurchases()
+function plymeta:EnableShopPurchases()
     local sid64 = self:SteamID64()
     if not shopBlockedCache[sid64] then return end
 
     shopBlockedCache[sid64] = nil
-    CallHook("TTTOnShopPurchaseUnblocked", nil, self)
+    CallHook("TTTOnShopPurchaseEnabled", nil, self)
 end
 
 local function ClearShopBlockedCache()

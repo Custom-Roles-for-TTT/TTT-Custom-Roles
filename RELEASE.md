@@ -7,19 +7,21 @@
 - Added `plymeta:DisableRoleAbility` method to disable a player's role ability
     - Should be called when the effect causing a player's role ability to be disabled has ended
 - Added `plymeta:EnableRoleAbility` method to re-enable a player's role ability
-- Added `plymeta:IsRoleAbilityDisabled` method to determine whether a player's role ability should be disabled
+- Added `plymeta:IsRoleAbilityDisabled` method to determine whether a player's role ability is disabled
+- Added `TTTOnRoleAbilityBlocked` hook called when `plymeta:IsRoleAbilityDisabled` is called and the result would be `true`
 - Added `TTTOnRoleAbilityDisabled` hook called when `plymeta:DisableRoleAbility` is called or the result of `TTTIsRoleAbilityDisabled` is `true`
 - Added `TTTOnRoleAbilityEnabled` hook called when `plymeta:EnableRoleAbility` is called
 - Added `TTTIsRoleAbilityDisabled` hook to determine whether a player's role ability should be disabled
     - Called when `plymeta:IsRoleAbilityDisabled` is called and `plymeta:DisableRoleAbility` had not previously be called
-- Added `plymeta:UnblockShopPurchases` method to remove shop purchase block
-    - Should be called when the effect causing a player's shop purchases to be blocked has ended
-- Added `plymeta:BlockShopPurchases` method to block shop purchases
-- Added `plymeta:IsShopPurchaseBlocked` method to determine whether a player's shop purchase is blocked
-- Added `TTTOnShopPurchaseBlocked` hook called when `plymeta:BlockShopPurchases` is called or the result of `TTTIsShopPurchaseBlocked` is `true`
-- Added `TTTOnShopPurchaseUnblocked` hook called when `plymeta:UnblockShopPurchases` is called
-- Added `TTTIsShopPurchaseBlocked` hook to determine whether a player's shop purchase is blocked
-    - Called when `plymeta:IsShopPurchaseBlocked` is called and `plymeta:BlockShopPurchases` had not previously be called
+- Added `plymeta:DisableShopPurchases` method to disabled a player's ability to buy from the shop
+    - Should be called when the effect causing a player's shop purchases to be disabled has ended
+- Added `plymeta:EnableShopPurchases` method to re-enable a player's ability to buy from the shop
+- Added `plymeta:IsShopPurchaseDisabled` method to determine whether a player's ability to buy from the shop is disabled
+- Added `TTTOnShopPurchaseBlocked` hook called when `plymeta:IsShopPurchaseDisabled` is called and the result would be `true`
+- Added `TTTOnShopPurchaseDisabled` hook called when `plymeta:DisableShopPurchases` is called or the result of `TTTIsShopPurchaseDisabled` is `true`
+- Added `TTTOnShopPurchaseEnabled` hook called when `plymeta:EnableShopPurchases` is called
+- Added `TTTIsShopPurchaseDisabled` hook to determine whether a player's ability to buy from the shop is disabled
+    - Called when `plymeta:IsShopPurchaseDisabled` is called and `plymeta:DisableShopPurchases` had not previously be called
 - Added `TTTCrosshairColorOverride` hook to override the color used for the local player's crosshair
 - Added `TTTHUDRoleColorOverride` hook to override the color used in place of the local player's role color on the HUD
 - Added `TTTHUDRoleNameOverride` hook to override the role name used on the local player's HUD
