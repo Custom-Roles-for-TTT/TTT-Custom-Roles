@@ -331,6 +331,8 @@ local function ColorFromCustomConVars(name)
 end
 
 local function ModifyColor(color, type)
+    if not type then return color end
+
     local h, s, l = ColorToHSL(color)
     if type == "dark" then
         l = math.max(l - 0.125, 0.125)
@@ -537,6 +539,7 @@ function UpdateRoleColours()
     FillRoleColors(ROLE_COLORS_RADAR, "radar")
     ROLE_COLOURS_RADAR = ROLE_COLORS_RADAR
 end
+UpdateRoleColors = UpdateRoleColours
 UpdateRoleColours()
 
 -- Role strings

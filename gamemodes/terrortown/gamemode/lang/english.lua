@@ -269,7 +269,7 @@ L.set_tips = "Show gameplay tips at the bottom of the screen while spectating"
 L.set_startpopup = "Start of round info popup duration"
 L.set_startpopup_tip = "When the round starts, a small popup appears at the bottom of your screen for a few seconds. Change the time it displays for here."
 
-L.set_cross_opacity = "Iron sight crosshair opacity"
+L.set_cross_opacity = "Opacity (iron sights)"
 L.set_cross_disable = "Disable crosshair completely"
 L.set_minimal_id = "Minimalist Target ID under crosshair (no karma text, hints, etc)"
 L.set_healthlabel = "Show health status label on health bar"
@@ -317,6 +317,16 @@ L.set_title_lang = "Language settings"
 -- find the language setting even if it's set to a language they don't know.
 L.set_lang = "Select language:"
 
+L.set_title_scoreboard = "Scoreboard settings"
+
+L.set_scoreboard_sort = "Sort scoreboard by:"
+L.set_scoreboard_sort_name = "Player Name"
+
+L.set_scoreboard_sort_order = "Sort ascending"
+L.set_scoreboard_sort_order_tip = "Whether to sort selected scoreboard column in ascending or descending order"
+
+L.set_scoreboard_alternate = "Alternate row colors"
+L.set_scoreboard_alternate_tip = "Whether the scoreboard rows should alternate colors"
 
 --- Weapons and equipment, HUD and messages
 
@@ -1144,8 +1154,8 @@ L.set_avoid_det_tip = "Enable this to ask the server not to select you as {detec
 L.drop_no_ammo = "Insufficient ammo in your weapon's clip to drop as an ammo box."
 
 --- v31
-L.set_cross_brightness = "Crosshair brightness"
-L.set_cross_size = "Crosshair size"
+L.set_cross_brightness = "brightness"
+L.set_cross_size = "Size"
 
 --- 5-25-15
 L.hat_retrieve = "You picked up {detective}'s hat."
@@ -1177,6 +1187,15 @@ L.idle_popup_title = "Idle"
 
 --- 2021-06-07
 L.sb_playervolume = "Player Volume"
+
+--- 2025-03-11
+L.set_title_cross = "Crosshair settings"
+
+L.set_cross_color_enable = "Enable custom color"
+L.set_cross_color = "Custom color"
+L.set_hip_cross_opacity = "Opacity"
+L.set_cross_thickness = "Thickness"
+L.set_cross_outlinethickness = "Outline thickness"
 
 -- Custom Events
 L.ev_defi = "{victim} was respawned"

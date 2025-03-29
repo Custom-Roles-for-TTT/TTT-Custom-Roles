@@ -3,7 +3,16 @@
 ## 2.2.9 (Beta)
 **Released:**
 
+### Additions
+- Ported "TTT: Add crosshair customisation"
+- Added ability to disable scoreboard alternating row colors
+- Added scoreboard client setting to F1 Config menu
+
+### Fixes
+- Fixed assassin targeting logic so independents are last, as was intended
+
 ### Developer
+- Added `UpdateRoleColors` alias for `UpdateRoleColours` which was documented but didn't actually exist
 - Added `plymeta:DisableRoleAbility` method to disable a player's role ability
     - Should be called when the effect causing a player's role ability to be disabled has ended
 - Added `plymeta:EnableRoleAbility` method to re-enable a player's role ability
