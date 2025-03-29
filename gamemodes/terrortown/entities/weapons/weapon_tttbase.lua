@@ -251,7 +251,7 @@ if CLIENT then
 
             local new_col = CallHook("TTTCrosshairColorOverride", nil, client)
             if new_col then color = new_col end
-      
+
             local r, g, b, _ = color:Unpack()
             surface.SetDrawColor(Color(r * bright, g * bright, b * bright, 255 * alpha))
         end
