@@ -53,7 +53,7 @@ end)
 -- Players killed by the hive mind join the hive mind
 AddHook("PlayerDeath", "HiveMind_Assimilate_PlayerDeath", function(victim, infl, attacker)
     if not IsPlayer(victim) or victim:IsHiveMind() then return end
-    if not IsPlayer(attacker) or not attacker:IsHiveMind() then return end
+    if not IsPlayer(attacker) or not attacker:IsHiveMind() or attacker:IsRoleAbilityDisabled() then return end
 
     -- Hive Mind bypasses whatever respawn feature the victim's old role had
     if victim:IsRespawning() then

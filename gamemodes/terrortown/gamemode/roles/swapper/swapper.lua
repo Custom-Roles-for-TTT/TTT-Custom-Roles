@@ -141,7 +141,7 @@ end
 hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
-    if not victim:IsSwapper() then return end
+    if not victim:IsSwapper() or victim:IsRoleAbilityDisabled() then return end
 
     victim:SetNWBool("IsSwapping", true)
     SwapperKilledNotification(attacker, victim)

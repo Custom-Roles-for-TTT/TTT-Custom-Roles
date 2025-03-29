@@ -103,6 +103,11 @@ function ENT:TakeFromStorage(amount)
     -- if we only have 5 healthpts in store, that is the amount we heal
     amount = math.min(amount, self:GetStoredHealth())
     self:SetStoredHealth(math.max(0, self:GetStoredHealth() - amount))
+
+    local placer = self:GetPlacer()
+    if IsPlayer(placer) and placer:IsDoctor() and placer:IsRoleAbilityDisabled() then
+        return 0
+    end
     return amount
 end
 

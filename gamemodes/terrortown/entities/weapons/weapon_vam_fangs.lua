@@ -175,6 +175,10 @@ end
 function SWEP:PrimaryAttack()
     if CLIENT then return end
 
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+    if owner:IsRoleAbilityDisabled() then return end
+
     local tr = self:GetTraceEntity()
     if IsValid(tr.Entity) then
         local ent = tr.Entity
@@ -202,12 +206,15 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
-    if self:Clip1() == 100 then
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+
+    if self:Clip1() == 100 and not owner:IsRoleAbilityDisabled() then
         self:SetClip1(0)
 
         if SERVER then
             net.Start("TTT_Vampire_Fade")
-                net.WritePlayer(self:GetOwner())
+                net.WritePlayer(owner)
             net.Broadcast()
         end
     end

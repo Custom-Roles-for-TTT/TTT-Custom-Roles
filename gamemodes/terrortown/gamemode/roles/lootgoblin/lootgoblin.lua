@@ -68,7 +68,7 @@ end)
 local function StartRegen(ply)
     local rate = lootgoblin_regen_rate:GetInt()
     timer.Create("LootGoblinRegen_" .. ply:SteamID64(), rate, 0, function()
-        if ply:IsActiveLootGoblin() then
+        if ply:IsActiveLootGoblin() and not ply:IsRoleAbilityDisabled() then
             local hp = ply:Health()
             if hp < ply:GetMaxHealth() then
                 ply:SetHealth(hp + 1)
@@ -229,7 +229,7 @@ local function StartGoblinTimers()
             timer.Create("LootGoblinDrop", dropTimer, 0, function()
                 local weps = weapons.GetList()
                 for _, ply in PlayerIterator() do
-                    if ply:IsActiveLootGoblin() then
+                    if ply:IsActiveLootGoblin() and not ply:IsRoleAbilityDisabled() then
                         local wep = nil
                         -- Loop in here so we get a different weapon for each loot goblin (if there are multiple)
                         for _, v in RandomPairs(weps) do
@@ -334,7 +334,7 @@ end
 
 hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacker)
     if victim:IsLootGoblin() then
-        if victim:IsRoleActive() and not victim:GetNWBool("LootGoblinKilled", false) then
+        if victim:IsRoleActive() and not victim:GetNWBool("LootGoblinKilled", false) and not victim:IsRoleAbilityDisabled() then
             JesterTeamKilledNotification(attacker, victim,
             -- getkillstring
                     function()

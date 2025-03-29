@@ -102,7 +102,7 @@ AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", functi
         if not v:Alive() or v:IsSpec() then continue end
         -- Don't bother checking players that already have the plague
         if v.TTTPlaguemasterStartTime then continue end
-        if v:IsPlaguemaster() and immune then continue end
+        if v:IsPlaguemaster() and immune and not v:IsRoleAbilityDisabled() then continue end
 
         if not v.TTTPlaguemasterSpreadStartTimes then
             v.TTTPlaguemasterSpreadStartTimes = {}
@@ -141,6 +141,17 @@ AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", functi
             v.TTTPlaguemasterSpreadStartTimes = {}
         end
     end
+end)
+
+AddHook("TTTOnRoleAbilityEnabled", "Plaguemaster_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsPlaguemaster() then return end
+    if not plaguemaster_immune:GetBool() then return end
+
+    for sid64, _ in pairs(ply.TTTPlaguemasterSpreadStartTimes) do
+        ClearSpreadStart(ply, sid64)
+    end
+    ply.TTTPlaguemasterSpreadStartTimes = {}
+    ply:ClearProperty("TTTPlaguemasterStartTime")
 end)
 
 -- Clear the plague from anyone this player is spreading to

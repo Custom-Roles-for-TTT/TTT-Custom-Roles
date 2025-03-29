@@ -170,19 +170,24 @@ end
 
 local beep_miss = Sound("player/suit_denydevice.wav")
 function SWEP:PrimaryAttack()
-    self:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
+    self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
 
     -- will be tracing against players
-    self:GetOwner():LagCompensation(true)
+    owner:LagCompensation(true)
 
-    local spos = self:GetOwner():GetShootPos()
-    local sdest = spos + (self:GetOwner():GetAimVector() * self.Range)
+    local spos = owner:GetShootPos()
+    local sdest = spos + (owner:GetAimVector() * self.Range)
 
-    local tr = util.TraceLine({start=spos, endpos=sdest, filter=self:GetOwner(), mask=MASK_SHOT})
+    local tr = util.TraceLine({start=spos, endpos=sdest, filter=owner, mask=MASK_SHOT})
     local ent = tr.Entity
     if IsValid(ent) and (not ent:IsPlayer()) then
         if SERVER then
-            if ent:GetClass() == "prop_ragdoll" and ent.killer_sample then
+            if owner:IsActiveDetective() and owner:IsRoleAbilityDisabled() then
+                self:Report("dna_notfound")
+            elseif ent:GetClass() == "prop_ragdoll" and ent.killer_sample then
                 if CORPSE.GetFound(ent, false) then
                     self:GatherRagdollSample(ent)
                 else
@@ -196,11 +201,11 @@ function SWEP:PrimaryAttack()
         end
     else
         if CLIENT then
-            self:GetOwner():EmitSound(beep_miss)
+            owner:EmitSound(beep_miss)
         end
     end
 
-    self:GetOwner():LagCompensation(false)
+    owner:LagCompensation(false)
 end
 
 function SWEP:GatherRagdollSample(ent)
@@ -318,6 +323,9 @@ function SWEP:SecondaryAttack()
     self:SetNextSecondaryFire( CurTime() + 0.05 )
 
     if CLIENT then return end
+
+    local owner = self:GetOwner()
+    if IsValid(owner) and owner:IsActiveDetective() and owner:IsRoleAbilityDisabled() then return end
 
     self:SendPrints(true)
 end

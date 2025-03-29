@@ -93,3 +93,10 @@ end
 ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[ROLE_CLOWN] = function()
     return not clown_hide_when_active:GetBool()
 end
+
+-- Keep pretending like the role-disabled clown is a jester
+ROLE_SHOULD_ACT_LIKE_JESTER[ROLE_CLOWN] = function(ply)
+    if not IsPlayer(ply) or not ply:IsClown() then return end
+    if not ply:IsRoleActive() or not ply:IsRoleAbilityDisabled() then return end
+    return true
+end

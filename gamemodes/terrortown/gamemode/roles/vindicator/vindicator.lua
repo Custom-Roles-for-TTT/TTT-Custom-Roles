@@ -114,7 +114,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
     local valid_kill = IsPlayer(attacker) and GetRoundState() == ROUND_ACTIVE
     local handled = false
     if valid_kill then
-        if victim:IsVindicator() and not victim:IsRoleActive() and attacker ~= victim then
+        if victim:IsVindicator() and not victim:IsRoleActive() and attacker ~= victim and not victim:IsRoleAbilityDisabled() then
             if attacker:IsVictimChangingRole(victim) then return end
 
             victim:SetNWBool("VindicatorIsRespawning", true)
@@ -130,7 +130,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
                 end)
             end
             handled = true
-        elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") then
+        elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") and not attacker:IsRoleAbilityDisabled() then
             OnVindicatorSuccess(attacker, victim, "You have successfully killed your target.")
             handled = true
         end
@@ -142,7 +142,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
     -- If we have already checked the attacker v. victim options, we know neither are a vindicator
     -- Check if the victim is a vindicator's target
     for _, ply in PlayerIterator() do
-        if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") then
+        if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") and not ply:IsRoleAbilityDisabled() then
             if attacker == victim and vindicator_target_suicide_success:GetBool() then
                 OnVindicatorSuccess(ply, victim, "Your target finished the job for you and has killed themselves.")
             else

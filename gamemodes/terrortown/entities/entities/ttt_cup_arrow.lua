@@ -108,7 +108,7 @@ function ENT:Touch(ent)
         return
     end
 
-    if ent:IsNPC() or ent:IsPlayer() then
+    if (ent:IsNPC() or ent:IsPlayer()) and not owner:IsRoleAbilityDisabled() then
         if tr2.Entity == ent then sound.Play(table.Random(FleshSound), tr.HitPos) end
         if ent:IsPlayer() and ent:IsActive() then
             if ent == owner then

@@ -1,6 +1,14 @@
 AddCSLuaFile()
 ENT.Type = "anim"
 
+AccessorFuncDT(ENT, "Item", "Item")
+AccessorFuncDT(ENT, "Placer", "Placer")
+
+function ENT:SetupDataTables()
+   self:DTVar("Entity", 0, "Placer")
+   self:DTVar("String", 0, "Item")
+end
+
 function ENT:Initialize()
     self:SetModel("models/items/item_item_crate.mdl")
     self:PhysicsInit(SOLID_VPHYSICS)
@@ -114,10 +122,15 @@ if SERVER then
                 return
             end
 
-            local item_id = self.item_id
+            local placer = self:GetPlacer()
+            if not IsValid(placer) then return end
 
+            local item_id = self:GetItem()
             local equip_id = tonumber(item_id)
-            if equip_id then
+            -- If the quartermaster who placed this crate is disabled, mark the activator as looted but don't give them anything
+            if placer:IsQuartermaster() and placer:IsRoleAbilityDisabled() then
+                activator:SetNWBool("TTTQuartermasterLooted", true)
+            elseif equip_id then
                 local has = activator:HasEquipmentItem(equip_id)
                 NotifyPlayer(activator, equip_id, has, true)
                 if has then
@@ -125,7 +138,7 @@ if SERVER then
                 else
                     activator:SetNWBool("TTTQuartermasterLooted", true)
                     activator:GiveEquipmentItem(equip_id)
-                    CallShopHooks(equip_id, equip_id, activator, self.source_ply)
+                    CallShopHooks(equip_id, equip_id, activator, placer)
                 end
             else
                 local has = activator:HasWeapon(item_id)
@@ -136,11 +149,11 @@ if SERVER then
                 else
                     activator:SetNWBool("TTTQuartermasterLooted", true)
                     activator:Give(item_id)
-                    CallShopHooks(nil, item_id, activator, self.source_ply)
+                    CallShopHooks(nil, item_id, activator, placer)
                 end
             end
 
-            hook.Call("TTTQuartermasterCrateOpened", nil, self.source_ply, activator, item_id)
+            hook.Call("TTTQuartermasterCrateOpened", nil, placer, activator, item_id)
             self:Remove()
         end
     end

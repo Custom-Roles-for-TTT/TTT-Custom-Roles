@@ -1699,7 +1699,7 @@ end
 function ShouldShowTraitorExtraInfo()
     -- Don't display Parasite, Assassin, Informant or Spy information if there is a Glitch or an Illusionist that is distorting the role information
     -- If the Illusionist is alive then don't reveal anything
-    if GetGlobalBool("ttt_illusionist_alive", false) then return false end
+    if IsIllusionistBlocking() then return false end
     -- If the glitch mode is "Show as Special Traitor" then we don't want to show this because it reveals which of the traitors is real (because this doesn't show for glitches)
     -- If the glitch mode is "Hide Special Traitor Roles" then we don't want to show anything that reveals what role a traitor really is
     local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()

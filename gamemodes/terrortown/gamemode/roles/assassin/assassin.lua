@@ -39,6 +39,11 @@ local function AssignAssassinTarget(ply, start, delay)
         not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false) or ply:GetNWBool("AssassinComplete", false)
     then
         return
+    elseif ply:IsRoleAbilityDisabled() then
+        timer.Remove(ply:Nick() .. "AssassinTarget")
+        ply:ClearQueuedMessage("asnTarget")
+        ply:SetNWString("AssassinTarget", "")
+        return
     end
 
     -- Reset the target to empty in case there are no valid targets
@@ -201,6 +206,12 @@ hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", functio
     if ValidTarget(oldRole) and not ValidTarget(newRole) then
         UpdateAssassinTargets(ply)
     end
+end)
+
+hook.Add("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsAssassin() then return end
+
+    AssignAssassinTarget(ply, false, true)
 end)
 
 hook.Add("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", function(ply, traitor)

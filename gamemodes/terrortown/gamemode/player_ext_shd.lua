@@ -157,6 +157,7 @@ function plymeta:CanUseTraitorButton(active_only)
 end
 function plymeta:CanLootCredits(active_only)
     if active_only and not self:IsActive() then return false end
+    if self:IsTraitorTeam() and self:IsRoleAbilityDisabled() then return false end
 
     local can_loot = CAN_LOOT_CREDITS_ROLES[self:GetRole()]
     -- If this is explicitly set, use it as-is
@@ -391,6 +392,45 @@ end
 function plymeta:IsInvulnerable()
     return self:GetNWBool("CRTTT_Invulnerable", false)
 end
+
+local roleAbilityCache = {}
+function plymeta:IsRoleAbilityDisabled(...)
+    if roleAbilityCache[self:SteamID64()] then
+        CallHook("TTTOnRoleAbilityBlocked", nil, self, ...)
+        return true
+    end
+
+    local roleIsDisabled = CallHook("TTTIsRoleAbilityDisabled", nil, self, ...) == true
+    if roleIsDisabled then
+        self:DisableRoleAbility(...)
+        CallHook("TTTOnRoleAbilityBlocked", nil, self, ...)
+    end
+
+    return roleIsDisabled
+end
+
+function plymeta:DisableRoleAbility(...)
+    local sid64 = self:SteamID64()
+    if roleAbilityCache[sid64] then return end
+
+    roleAbilityCache[sid64] = true
+    CallHook("TTTOnRoleAbilityDisabled", nil, self, ...)
+end
+
+function plymeta:EnableRoleAbility()
+    local sid64 = self:SteamID64()
+    if not roleAbilityCache[sid64] then return end
+
+    roleAbilityCache[sid64] = nil
+    CallHook("TTTOnRoleAbilityEnabled", nil, self)
+end
+
+local function ClearRoleAbilityCache()
+    roleAbilityCache = {}
+end
+hook.Add("TTTPrepareRound", "RoleAbilityCache_TTTPrepareRound", ClearRoleAbilityCache)
+hook.Add("TTTBeginRound", "RoleAbilityCache_TTTBeginRound", ClearRoleAbilityCache)
+-- Don't clear on round end because we may need this for post-round summary stuff
 
 if CLIENT then
     local function GetMaxBoneZ(ply, pred)

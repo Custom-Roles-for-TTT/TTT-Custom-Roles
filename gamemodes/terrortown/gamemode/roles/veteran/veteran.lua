@@ -32,7 +32,7 @@ hook.Add("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", function(victim, inf
     end
     if #veterans > 0 and innocents_alive == #veterans then
         for _, v in pairs(veterans) do
-            if not v:IsRoleActive() then
+            if not v:IsRoleActive() and not v:IsRoleAbilityDisabled() then
                 v:SetNWBool("VeteranActive", true)
                 v:AddCredits(veteran_activation_credits:GetInt())
 

@@ -26,6 +26,8 @@ local function TrackRadarScan(ply, cmd, args)
             return
         end
 
+        if ply:IsTracker() and ply:IsRoleAbilityDisabled() then return end
+
         ply.trackradar_charge = CurTime() + chargetime
 
         local scan_ents = GetAllPlayers()

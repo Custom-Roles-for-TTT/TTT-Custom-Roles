@@ -296,7 +296,7 @@ end
 hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
-    if ply:IsInformant() then
+    if ply:IsInformant() and not ply:IsRoleAbilityDisabled() then
         local state = ply:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
         if state == INFORMANT_SCANNER_IDLE then
             local target = IsTargetingPlayer(ply)

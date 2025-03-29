@@ -65,7 +65,7 @@ function ShouldGlitchBlockCommunications()
 
     local glitches = {}
     for _, v in PlayerIterator() do
-        if v:IsGlitch() then
+        if v:IsGlitch() and not v:IsRoleAbilityDisabled() then
             TableInsert(glitches, v)
         end
     end

@@ -144,6 +144,10 @@ local sparkle = CLIENT and CreateConVar("ttt_crazy_sparks", "0", FCVAR_ARCHIVE)
 
 -- crosshair
 if CLIENT then
+    local hook = hook
+
+    local CallHook = hook.Call
+
     local sights_opacity = CreateConVar("ttt_ironsights_crosshair_opacity", "0.8", FCVAR_ARCHIVE)
     local crosshair_brightness = CreateConVar("ttt_crosshair_brightness", "1.0", FCVAR_ARCHIVE)
     local crosshair_size = CreateConVar("ttt_crosshair_size", "1.0", FCVAR_ARCHIVE)
@@ -244,6 +248,9 @@ if CLIENT then
             else
                 color = ROLE_COLORS_HIGHLIGHT[ROLE_INNOCENT]
             end
+
+            local new_col = CallHook("TTTCrosshairColorOverride", nil, client)
+            if new_col then color = new_col end
 
             local r, g, b, _ = color:Unpack()
             surface.SetDrawColor(Color(r * bright, g * bright, b * bright, 255 * alpha))
