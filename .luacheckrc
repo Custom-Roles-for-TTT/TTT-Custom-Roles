@@ -1202,6 +1202,7 @@ globals = {
     "UpdateRoleWeaponState",
 
     -- CR Namespaces
+    "CANNIBAL",
     "CRHUD",
     "DEATHRADAR",
     "SYNC",
