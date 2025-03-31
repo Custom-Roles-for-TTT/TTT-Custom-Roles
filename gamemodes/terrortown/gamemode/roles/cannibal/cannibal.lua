@@ -8,19 +8,38 @@ local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_CannibalEaten")
 
+local playerCollisionGroups = {}
+
 --------------------
 -- PLAYER RESPAWN --
 --------------------
 
 local function ReleaseEatenPlayers(ply)
-    local sID64 = ply:SteamID64()
+    local cannibalSID64 = ply:SteamID64()
     for _, v in PlayerIterator() do
-        if v.TTTCannibalEaten and v.TTTCannibalEaten == sID64 then
+        if v.TTTCannibalEaten and v.TTTCannibalEaten == cannibalSID64 then
             v:ClearProperty("TTTCannibalEaten")
             v:UnSpectate()
             v:DrawViewModel(true)
             v:DrawWorldModel(true)
-            -- TODO: Figure out a way to avoid players getting stuck inside one another
+
+            local sID64 = v:SteamID64()
+            playerCollisionGroups[sID64] = v:GetCollisionGroup() or COLLISION_GROUP_PLAYER
+            v:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR)
+            timer.Create("TTTCannibalNoCollide" .. sID64, 0.5, 0, function()
+                local nearPlayer = false
+                for _, v2 in PlayerIterator() do
+                    if v ~= v2 and v:GetPos():DistToSqr(v2:GetPos()) <= 6400 then
+                        nearPlayer = true
+                        break
+                    end
+                end
+                if not nearPlayer and not (v:GetPhysicsObject() and v:GetPhysicsObject():IsPenetrating()) then
+                    v:SetCollisionGroup(playerCollisionGroups[sID64])
+                    playerCollisionGroups[sID64] = nil
+                    timer.Destroy("TTTCannibalNoCollide" .. sID64)
+                end
+            end)
         end
     end
 end
@@ -133,6 +152,17 @@ end)
 AddHook("TTTPrepareRound", "Cannibal_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v:ClearProperty("TTTCannibalEaten")
+    end
+end)
+
+AddHook("TTTEndRound", "Cannibal_TTTEndRound", function()
+    for _, v in pairs(playerCollisionGroups) do
+        local ply = player.GetBySteamID64(v)
+        if not IsPlayer(ply) then continue end
+
+        ply:SetCollisionGroup(playerCollisionGroups[v])
+        playerCollisionGroups[v] = nil
+        timer.Destroy("TTTCannibalNoCollide" .. v)
     end
 end)
 
