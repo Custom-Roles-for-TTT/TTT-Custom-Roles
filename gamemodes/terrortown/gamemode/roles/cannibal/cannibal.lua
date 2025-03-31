@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
-local hook
-local player
+local hook = hook
+local player = player
 
 local AddHook = hook.Add
 local PlayerIterator = player.Iterator
@@ -22,9 +22,12 @@ local function ReleaseEatenPlayers(ply)
     for _, v in PlayerIterator() do
         if v.TTTCannibalEaten and v.TTTCannibalEaten == cannibalSID64 then
             v:ClearProperty("TTTCannibalEaten")
+            v:SetParent(nil)
+            v:SpectateEntity(nil)
             v:UnSpectate()
             v:DrawViewModel(true)
             v:DrawWorldModel(true)
+            v:SetNoDraw(false)
 
             local sID64 = v:SteamID64()
 
@@ -93,7 +96,7 @@ local function ShouldBlockCommunications(listener, speaker)
     return true
 end
 
-AddHook("PlayerCanSeePlayersChat", "Cannibal_PlayerCanSeePlayersChat_" .. self:EntIndex(), function(text, team_only, listener, speaker)
+AddHook("PlayerCanSeePlayersChat", "Cannibal_PlayerCanSeePlayersChat", function(text, team_only, listener, speaker)
     if not IsPlayer(listener) or not IsPlayer(speaker) then return end
 
     if ShouldBlockCommunications(listener, speaker) then
@@ -101,7 +104,7 @@ AddHook("PlayerCanSeePlayersChat", "Cannibal_PlayerCanSeePlayersChat_" .. self:E
     end
 end)
 
-AddHook("PlayerCanHearPlayersVoice", "Cannibal_PlayerCanHearPlayersVoice_" .. self:EntIndex(), function(listener, speaker)
+AddHook("PlayerCanHearPlayersVoice", "Cannibal_PlayerCanHearPlayersVoice", function(listener, speaker)
     if not IsPlayer(listener) or not IsPlayer(speaker) then return end
 
     if ShouldBlockCommunications(listener, speaker) then
@@ -152,7 +155,7 @@ end)
 
 AddHook("TTTPrintResultMessage", "Cannibal_TTTPrintResultMessage", function(type)
     if type == WIN_CANNIBAL then
-        LANG.Msg("win_cannibal", { role = ROLE_STRINGS[ROLE_CANNIBAL] })
+        LANG.Msg("win_cannibal", {role = ROLE_STRINGS[ROLE_CANNIBAL]})
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " wins.\n")
         return true
     end

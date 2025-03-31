@@ -1,4 +1,4 @@
-local hook
+local hook = hook
 
 local AddHook = hook.Add
 
@@ -78,6 +78,29 @@ end)
 ----------------
 
 local client
+
+AddHook("TTTScoreboardPlayerRole", "Cannibal_TTTScoreboardPlayerRole", function(ply, client, c, roleStr)
+    if (client:IsTraitorTeam() and ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false)) or IsLoverInfecting(client, ply) then
+        return c, roleStr, ROLE_PARASITE
+    end
+end)
+
+AddHook("TTTScoreboardPlayerName", "Cannibal_TTTScoreboardPlayerName", function(ply, cli, text)
+    if not IsPlayer(ply) then return end
+    if not ply.TTTCannibalEaten then return end
+    if not cli:IsCannibal() then return end
+
+    return ply:Nick() .. " (" .. LANG.GetTranslation("target_infected") .. ")"
+end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CANNIBAL] = function(ply, target)
+    if not IsPlayer(target) then return end
+    if not target.TTTCannibalEaten then return end
+    if not ply:IsCannibal() then return end
+
+    ------ name, role
+    return true, true
+end
 
 AddHook("TTTScoreGroup", "Cannibal_TTTScoreGroup", function(ply)
     if GetRoundState() < ROUND_ACTIVE then return end

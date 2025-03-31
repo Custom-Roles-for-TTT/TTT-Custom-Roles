@@ -4,9 +4,7 @@ if CLIENT then
     SWEP.PrintName          = "Eater"
     SWEP.Slot               = 8
 
-    SWEP.ViewModelFOV       = 60
-    SWEP.DrawCrosshair      = false
-    SWEP.ViewModelFlip      = false
+    SWEP.ViewModelFOV        = 10
 end
 
 SWEP.ViewModel              = "models/weapons/v_crowbar.mdl"
@@ -67,7 +65,7 @@ function SWEP:PrimaryAttack()
     local tr_main = util.TraceHull({start=spos, endpos=sdest, filter=owner, mask=MASK_SHOT_HULL, mins=kmins, maxs=kmaxs})
     local hitEnt = tr_main.Entity
 
-    if not CLIENT and IsPlayer(hitEnt) then
+    if SERVER and IsPlayer(hitEnt) then
         hitEnt:Spectate(OBS_MODE_CHASE)
         hitEnt:SpectateEntity(owner)
         hitEnt:DrawViewModel(false)
@@ -76,7 +74,7 @@ function SWEP:PrimaryAttack()
         local sID64 = hitEnt:SteamID64()
 
         CANNIBAL.playerCollisionGroups[sID64] = hitEnt:GetCollisionGroup() or COLLISION_GROUP_PLAYER
-        v:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR)
+        hitEnt:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR)
 
         CANNIBAL.playerWeapons[sID64] = {}
 
