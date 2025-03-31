@@ -9,6 +9,7 @@
 - Added scoreboard client setting to F1 Config menu
 
 ### Fixes
+- Ported "Fixed a regression in TTT voice chat team colors"
 - Fixed assassin targeting logic so independents are last, as was intended
 
 ### Developer

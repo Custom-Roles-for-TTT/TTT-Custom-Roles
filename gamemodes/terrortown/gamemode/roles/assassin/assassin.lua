@@ -211,7 +211,9 @@ end)
 hook.Add("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", function(ply)
     if not IsPlayer(ply) or not ply:IsAssassin() then return end
 
-    AssignAssassinTarget(ply, false, true)
+    if ply:SetNWString("AssassinTarget", "") == "" then
+        AssignAssassinTarget(ply, false, true)
+    end
 end)
 
 hook.Add("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", function(ply, traitor)
@@ -296,7 +298,7 @@ hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgro
     local scale = 0
     if att:GetNWBool("AssassinFailed", false) then
         scale = -assassin_failed_damage_penalty:GetFloat()
-    elseif ply:SteamID64() == att:GetNWString("AssassinTarget", "") then
+    elseif ply:SteamID64() == att:GetNWString("AssassinTarget", "") and not att:IsRoleAbilityDisabled() then
         -- Get the active weapon, whether it's in the inflictor or it's from the attacker
         local active_weapon = dmginfo:GetInflictor()
         if not IsValid(active_weapon) or IsPlayer(active_weapon) then

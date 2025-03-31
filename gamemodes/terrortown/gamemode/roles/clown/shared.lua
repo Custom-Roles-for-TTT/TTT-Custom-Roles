@@ -97,6 +97,7 @@ end
 -- Keep pretending like the role-disabled clown is a jester
 ROLE_SHOULD_ACT_LIKE_JESTER[ROLE_CLOWN] = function(ply)
     if not IsPlayer(ply) or not ply:IsClown() then return end
-    if not ply:IsRoleActive() or not ply:IsRoleAbilityDisabled() then return end
-    return true
+    if ply:IsJesterTeam() or ply:IsRoleAbilityDisabled() then
+        return true
+    end
 end
