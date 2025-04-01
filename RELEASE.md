@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.2.10 (Beta)
+**Released:**
+
+### Developer
+- Added ability to specify role by constant name (e.g. `"ROLE_JESTER"`) in `ttt_logic_role` and `ttt_filter_role`
+
 ## 2.2.9 (Beta)
 **Released: April 1st, 2025**
 
