@@ -718,24 +718,6 @@ function HELPSCRN:CreateConfig(dsettings)
     end
     cb:SetTooltip(GetTranslation("set_startpopup_tip"))
 
-    cb = dgui:NumSlider(GetTranslation("set_cross_opacity"), "ttt_ironsights_crosshair_opacity", 0, 1, 1)
-    if cb.Label then
-        cb.Label:SetWrap(true)
-    end
-    cb:SetTooltip(GetTranslation("set_cross_opacity"))
-
-    cb = dgui:NumSlider(GetTranslation("set_cross_brightness"), "ttt_crosshair_brightness", 0, 1, 1)
-    if cb.Label then
-        cb.Label:SetWrap(true)
-    end
-
-    cb = dgui:NumSlider(GetTranslation("set_cross_size"), "ttt_crosshair_size", 0.1, 3, 1)
-    if cb.Label then
-        cb.Label:SetWrap(true)
-    end
-
-    dgui:CheckBox(GetTranslation("set_cross_disable"), "ttt_disable_crosshair")
-
     dgui:CheckBox(GetTranslation("set_minimal_id"), "ttt_minimal_targetid")
 
     dgui:CheckBox(GetTranslation("set_healthlabel"), "ttt_health_label")
@@ -1012,6 +994,123 @@ function HELPSCRN:CreateConfig(dsettings)
     HookCall("TTTSettingsConfigTabFields", nil, "Language", dlanguage)
 
     dsettings:AddItem(dlanguage)
+
+    --- Crosshair area
+
+    local dcross = vgui.Create("DForm", dsettings)
+    dcross:Dock(TOP)
+    dcross:DockMargin(0, 0, 5, 10)
+    dcross:DoExpansion(false)
+    dcross:SetName(GetTranslation("set_title_cross"))
+
+    dcross:CheckBox(GetTranslation("set_cross_disable"), "ttt_disable_crosshair")
+
+    dcross:CheckBox(GetTranslation("set_cross_color_enable"), "ttt_crosshair_color_enable")
+
+    cb = vgui.Create("DColorMixer")
+    cb:SetLabel(GetTranslation("set_cross_color"))
+    cb:SetTall(120)
+    cb:SetAlphaBar(false)
+    cb:SetPalette(false)
+    cb:SetColor(Color(255, 255, 255, 255))
+    cb:SetConVarR("ttt_crosshair_color_r")
+    cb:SetConVarG("ttt_crosshair_color_g")
+    cb:SetConVarB("ttt_crosshair_color_b")
+    dcross:AddItem(cb)
+
+    cb = dcross:NumSlider(GetTranslation("set_hip_cross_opacity"), "ttt_crosshair_opacity", 0, 1, 1)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+
+    cb = dcross:NumSlider(GetTranslation("set_cross_opacity"), "ttt_ironsights_crosshair_opacity", 0, 1, 1)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+
+    cb = dcross:NumSlider(GetTranslation("set_cross_brightness"), "ttt_crosshair_brightness", 0, 1, 1)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+
+    cb = dcross:NumSlider(GetTranslation("set_cross_size"), "ttt_crosshair_size", 0.1, 3, 1)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+
+    cb = dcross:NumSlider(GetTranslation("set_cross_thickness"), "ttt_crosshair_thickness", 1, 10, 0)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+
+    cb = dcross:NumSlider(GetTranslation("set_cross_outlinethickness"), "ttt_crosshair_outlinethickness", 0, 4, 0)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+
+    HookCall("TTTSettingsConfigTabFields", nil, "Crosshair", dsettings)
+
+    dsettings:AddItem(dcross)
+
+    -- Scoreboard area
+
+    local dscoreboard = vgui.Create("DForm", dsettings)
+    dscoreboard:Dock(TOP)
+    dscoreboard:DockMargin(0, 0, 5, 10)
+    dscoreboard:DoExpansion(false)
+    dscoreboard:SetName(GetTranslation("set_title_scoreboard"))
+
+    local dsorting = vgui.Create("DComboBox", dscoreboard)
+    dsorting:SetConVar("ttt_scoreboard_sorting")
+    dsorting:SetSortItems(false)
+
+    local values = {
+        { name = GetTranslation("set_scoreboard_sort_name"), value = "name" },
+        { name = GetTranslation("sb_role"), value = "role" },
+        { name = GetTranslation("sb_karma"), value = "karma" },
+        { name = GetTranslation("sb_score"), value = "score" },
+        { name = GetTranslation("sb_deaths"), value = "deaths" },
+        { name = GetTranslation("sb_ping"), value = "ping" }
+    }
+    for _, v in ipairs(values) do
+        dsorting:AddChoice(v.name, v.value)
+    end
+
+    -- Why is DComboBox not updating the cvar by default?
+    dsorting.OnSelect = function(pnl, idx, val, data)
+        RunConsoleCommand("ttt_scoreboard_sorting", data)
+    end
+
+    local scoreboard_sorting = GetConVar("ttt_scoreboard_sorting")
+    -- Adapted from ConVarStringThink
+    dsorting.Think = function()
+		if not dsorting.m_strConVar or #dsorting.m_strConVar < 2 then return end
+
+		local strValue = scoreboard_sorting:GetString()
+		if dsorting.m_strConVarValue == strValue then return end
+
+		dsorting.m_strConVarValue = strValue
+
+        for _, v in ipairs(values) do
+            if v.value == strValue then
+		        dsorting:SetValue(v.name)
+                break
+            end
+        end
+	end
+
+    dscoreboard:Help(GetTranslation("set_lang"))
+    dscoreboard:AddItem(dsorting)
+
+    cb = dscoreboard:CheckBox(GetTranslation("set_scoreboard_sort_order"), "ttt_scoreboard_ascending")
+    cb:SetTooltip(GetTranslation("set_scoreboard_sort_order_tip"))
+
+    cb = dscoreboard:CheckBox(GetTranslation("set_scoreboard_alternate"), "ttt_scoreboard_alternate_colors")
+    cb:SetTooltip(GetTranslation("set_scoreboard_alternate_tip"))
+
+    HookCall("TTTSettingsConfigTabFields", nil, "Scoreboard", dscoreboard)
+
+    dsettings:AddItem(dscoreboard)
 end
 
 local roleExpandState = {}

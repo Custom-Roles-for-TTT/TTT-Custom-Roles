@@ -1,5 +1,41 @@
 # Release Notes
 
+## 2.2.9 (Beta)
+**Released: April 1st, 2025**
+
+### Additions
+- Ported "TTT: Add crosshair customisation"
+- Added ability to disable scoreboard alternating row colors
+- Added scoreboard client setting to F1 Config menu
+
+### Fixes
+- Ported "Fixed a regression in TTT voice chat team colors"
+- Fixed assassin targeting logic so independents are last, as was intended
+
+### Developer
+- Added `UpdateRoleColors` alias for `UpdateRoleColours` which was documented but didn't actually exist
+- Added `plymeta:DisableRoleAbility` method to disable a player's role ability
+    - Should be called when the effect causing a player's role ability to be disabled has ended
+- Added `plymeta:EnableRoleAbility` method to re-enable a player's role ability
+- Added `plymeta:IsRoleAbilityDisabled` method to determine whether a player's role ability is disabled
+- Added `TTTOnRoleAbilityBlocked` hook called when `plymeta:IsRoleAbilityDisabled` is called and the result would be `true`
+- Added `TTTOnRoleAbilityDisabled` hook called when `plymeta:DisableRoleAbility` is called or the result of `TTTIsRoleAbilityDisabled` is `true`
+- Added `TTTOnRoleAbilityEnabled` hook called when `plymeta:EnableRoleAbility` is called
+- Added `TTTIsRoleAbilityDisabled` hook to determine whether a player's role ability should be disabled
+    - Called when `plymeta:IsRoleAbilityDisabled` is called and `plymeta:DisableRoleAbility` had not previously be called
+- Added `plymeta:DisableShopPurchases` method to disabled a player's ability to buy from the shop
+    - Should be called when the effect causing a player's shop purchases to be disabled has ended
+- Added `plymeta:EnableShopPurchases` method to re-enable a player's ability to buy from the shop
+- Added `plymeta:IsShopPurchaseDisabled` method to determine whether a player's ability to buy from the shop is disabled
+- Added `TTTOnShopPurchaseBlocked` hook called when `plymeta:IsShopPurchaseDisabled` is called and the result would be `true`
+- Added `TTTOnShopPurchaseDisabled` hook called when `plymeta:DisableShopPurchases` is called or the result of `TTTIsShopPurchaseDisabled` is `true`
+- Added `TTTOnShopPurchaseEnabled` hook called when `plymeta:EnableShopPurchases` is called
+- Added `TTTIsShopPurchaseDisabled` hook to determine whether a player's ability to buy from the shop is disabled
+    - Called when `plymeta:IsShopPurchaseDisabled` is called and `plymeta:DisableShopPurchases` had not previously be called
+- Added `TTTCrosshairColorOverride` hook to override the color used for the local player's crosshair
+- Added `TTTHUDRoleColorOverride` hook to override the color used in place of the local player's role color on the HUD
+- Added `TTTHUDRoleNameOverride` hook to override the role name used on the local player's HUD
+
 ## 2.2.8 (Beta)
 **Released: March 22nd, 2025**
 

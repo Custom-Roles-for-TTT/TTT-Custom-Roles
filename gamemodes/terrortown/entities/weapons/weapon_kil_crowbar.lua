@@ -154,10 +154,12 @@ function SWEP:Throw()
     self:SendWeaponAnim(ACT_VM_THROW)
     self.CanFire = false
 
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+    if owner:IsKiller() and owner:IsRoleAbilityDisabled() then return end
+
     local ent = ents.Create("ttt_kil_crowbar")
     ent:SetDamage(GetConVar("ttt_killer_crowbar_thrown_damage"):GetInt())
-
-    local owner = self:GetOwner()
     ent:SetOwner(owner)
     ent:SetPos(owner:EyePos() + (owner:GetAimVector() * 16))
     ent:SetAngles(owner:EyeAngles())

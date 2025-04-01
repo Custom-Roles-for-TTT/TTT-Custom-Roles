@@ -100,64 +100,67 @@ local function DoParasiteRespawnWithoutBody(parasite, hide_messages)
 end
 
 local function DoParasiteRespawn(parasite, attacker, hide_messages)
-    if parasite:IsParasite() and not parasite:Alive() then
-        attacker:SetNWBool("ParasiteInfected", false)
-        ClearParasiteState(parasite)
+    if not IsPlayer(parasite) then return end
 
-        local parasiteBody = parasite.server_ragdoll or parasite:GetRagdollEntity()
+    if not parasite:IsParasite() then return end
+    if parasite:Alive() then return end
+    if parasite:IsRoleAbilityDisabled() then return end
 
-        local respawnMode = parasite_respawn_mode:GetInt()
-        if respawnMode == PARASITE_RESPAWN_HOST then
+    attacker:SetNWBool("ParasiteInfected", false)
+    ClearParasiteState(parasite)
+
+    local parasiteBody = parasite.server_ragdoll or parasite:GetRagdollEntity()
+    local respawnMode = parasite_respawn_mode:GetInt()
+    if respawnMode == PARASITE_RESPAWN_HOST then
+        if not hide_messages then
+            parasite:QueueMessage(MSG_PRINTCENTER, "You have taken control of your host.")
+        end
+
+        parasite:SpawnForRound(true)
+        parasite:SetPos(attacker:GetPos())
+        parasite:SetEyeAngles(Angle(0, attacker:GetAngles().y, 0))
+
+        local weaps = attacker:GetWeapons()
+        local currentWeapon = "weapon_zm_improvised"
+        local activeWeap = attacker:GetActiveWeapon()
+        if IsValid(activeWeap) then
+            currentWeapon = WEPS.GetClass(activeWeap)
+        end
+        attacker:StripAll()
+        parasite:StripAll()
+        for _, v in ipairs(weaps) do
+            -- Don't give the parasite role weapons
+            if v.Category == WEAPON_CATEGORY_ROLE then continue end
+            local wep_class = WEPS.GetClass(v)
+            parasite:Give(wep_class)
+        end
+        parasite:SelectWeapon(currentWeapon)
+    elseif respawnMode == PARASITE_RESPAWN_BODY then
+        if IsValid(parasiteBody) then
             if not hide_messages then
-                parasite:QueueMessage(MSG_PRINTCENTER, "You have taken control of your host.")
+                parasite:QueueMessage(MSG_PRINTCENTER, "You have drained your host of energy and regenerated your old body.")
             end
-
             parasite:SpawnForRound(true)
-            parasite:SetPos(attacker:GetPos())
-            parasite:SetEyeAngles(Angle(0, attacker:GetAngles().y, 0))
-
-            local weaps = attacker:GetWeapons()
-            local currentWeapon = "weapon_zm_improvised"
-            local activeWeap = attacker:GetActiveWeapon()
-            if IsValid(activeWeap) then
-                currentWeapon = WEPS.GetClass(activeWeap)
-            end
-            attacker:StripAll()
-            parasite:StripAll()
-            for _, v in ipairs(weaps) do
-                -- Don't give the parastie role weapons
-                if v.Category == WEAPON_CATEGORY_ROLE then continue end
-                local wep_class = WEPS.GetClass(v)
-                parasite:Give(wep_class)
-            end
-            parasite:SelectWeapon(currentWeapon)
-        elseif respawnMode == PARASITE_RESPAWN_BODY then
-            if IsValid(parasiteBody) then
-                if not hide_messages then
-                    parasite:QueueMessage(MSG_PRINTCENTER, "You have drained your host of energy and regenerated your old body.")
-                end
-                parasite:SpawnForRound(true)
-                parasite:SetPos(FindRespawnLocation(parasiteBody:GetPos()) or parasiteBody:GetPos())
-                parasite:SetEyeAngles(Angle(0, parasiteBody:GetAngles().y, 0))
-            else
-                DoParasiteRespawnWithoutBody(parasite, hide_messages)
-            end
-        elseif respawnMode == PARASITE_RESPAWN_RANDOM then
+            parasite:SetPos(FindRespawnLocation(parasiteBody:GetPos()) or parasiteBody:GetPos())
+            parasite:SetEyeAngles(Angle(0, parasiteBody:GetAngles().y, 0))
+        else
             DoParasiteRespawnWithoutBody(parasite, hide_messages)
         end
-
-        local health = parasite_respawn_health:GetInt()
-        parasite:SetHealth(health)
-        SafeRemoveEntity(parasiteBody)
-        if attacker:Alive() then
-            attacker:Kill()
-        end
-        if not hide_messages then
-            attacker:QueueMessage(MSG_PRINTBOTH, "Your parasite has drained you of your energy.")
-        end
-
-        hook.Call("TTTParasiteRespawn", nil, parasite, attacker)
+    elseif respawnMode == PARASITE_RESPAWN_RANDOM then
+        DoParasiteRespawnWithoutBody(parasite, hide_messages)
     end
+
+    local health = parasite_respawn_health:GetInt()
+    parasite:SetHealth(health)
+    SafeRemoveEntity(parasiteBody)
+    if attacker:Alive() then
+        attacker:Kill()
+    end
+    if not hide_messages then
+        attacker:QueueMessage(MSG_PRINTBOTH, "Your parasite has drained you of your energy.")
+    end
+
+    hook.Call("TTTParasiteRespawn", nil, parasite, attacker)
 end
 
 local function ShouldParasiteRespawnBySuicide(mode, victim, attacker, dmginfo)
@@ -231,7 +234,7 @@ end
 
 hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
-    if valid_kill and victim:IsParasite() and not attacker:IsVictimChangingRole(victim) then
+    if valid_kill and victim:IsParasite() and not attacker:IsVictimChangingRole(victim) and not victim:IsRoleAbilityDisabled() then
         if not attacker:IsActive() then
             victim:QueueMessage(MSG_PRINTBOTH, "Your attacker is already dead, your infection failed to take hold.")
             return
@@ -318,7 +321,7 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
             local deadParasite = parasite.player
             if not deadParasite:IsParasite() or deadParasite:Alive() then continue end
 
-            -- If we're not infecting, but haunting then we just respawning immediately
+            -- If we're not infecting, but haunting then we just respawn immediately
             if parasite_infection_time:GetInt() <= 0 then
                 deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has been killed, allowing your infection to take over.")
                 DoParasiteRespawn(deadParasite, ply, true)

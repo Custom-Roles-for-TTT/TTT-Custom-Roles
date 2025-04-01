@@ -30,10 +30,13 @@ hook.Add("PlayerFootstep", "Tracker_PlayerFootstep", function(ply, pos, foot, so
 
     local tab = {}
     for k, p in PlayerIterator() do
-        if p:IsActiveTracker() then
+        if p:IsActiveTracker() and not p:IsRoleAbilityDisabled() then
             table.insert(tab, p)
         end
     end
+
+    -- Nobody to send to
+    if #tab == 0 then return end
 
     net.Start("TTT_PlayerFootstep")
         net.WritePlayer(ply)

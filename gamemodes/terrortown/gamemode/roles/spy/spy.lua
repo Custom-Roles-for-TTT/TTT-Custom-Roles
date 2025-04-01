@@ -39,7 +39,7 @@ local playerModels = {}
 -- The spy steals the identity of the victim on killing a player
 hook.Add("PlayerDeath", "Spy_PlayerDeath", function(victim, inflictor, attacker)
     if not IsPlayer(attacker) or attacker == victim or GetRoundState() ~= ROUND_ACTIVE then return end
-    if not attacker:IsSpy() then return end
+    if not attacker:IsSpy() or attacker:IsRoleAbilityDisabled() then return end
     -- Don't steal the identity of players who are respawning if we're told not to do that
     if not spy_steal_from_respawning:GetBool() and victim:IsRespawning() then return end
 

@@ -38,6 +38,26 @@ local function JesterKilledNotification(attacker, victim)
         end)
 end
 
+local function HandleJesterWin()
+    -- If we're not ending the round, just reuse the existing variable and
+    -- set it to something valid so the win check logic sees it's been updated
+    if not jester_win_ends_round:GetBool() then
+        net.Start("TTT_UpdateJesterSecondaryWins")
+        net.Broadcast()
+        return
+    end
+
+    -- If we're debugging, don't end the round
+    if GetConVar("ttt_debug_preventwin"):GetBool() then
+        return
+    end
+
+    -- Stop the win checks so someone else doesn't steal the jester's win
+    StopWinChecks()
+    -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
+    timer.Simple(1, function() EndRound(WIN_JESTER) end)
+end
+
 hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
@@ -48,25 +68,22 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
 
         -- If the attacker was a traitor and the jester doesn't win when killed by a traitor, then don't continue
         if attacker:IsTraitorTeam() and not jester_win_by_traitors:GetBool() then return end
-
-        -- If we're not ending the round, just reuse the existing variable and
-        -- set it to something valid so the win check logic sees it's been updated
-        if not jester_win_ends_round:GetBool() then
-            net.Start("TTT_UpdateJesterSecondaryWins")
-            net.Broadcast()
+        -- If their ability was disabled then they don't win the round either
+        if victim:IsRoleAbilityDisabled() then
+            victim.JesterShouldWin = true
             return
         end
 
-        -- If we're debugging, don't end the round
-        if GetConVar("ttt_debug_preventwin"):GetBool() then
-            return
-        end
-
-        -- Stop the win checks so someone else doesn't steal the jester's win
-        StopWinChecks()
-        -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
-        timer.Simple(1, function() EndRound(WIN_JESTER) end)
+        HandleJesterWin()
     end
+end)
+
+hook.Add("TTTOnRoleAbilityEnabled", "Jester_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsJester() then return end
+    if ply:Alive() or not ply:IsSpec() then return end
+    if not ply.JesterShouldWin then return end
+    ply.JesterShouldWin = false
+    HandleJesterWin()
 end)
 
 hook.Add("TTTPrintResultMessage", "Jester_TTTPrintResultMessage", function(type)
@@ -79,6 +96,7 @@ end)
 
 hook.Add("TTTPrepareRound", "Jester_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
+        v.JesterShouldWin = false
         v:SetNWString("JesterKiller", "")
     end
 

@@ -728,6 +728,45 @@ function plymeta:ClearProperty(name, targets)
     SYNC:ClearPlayerProperty(self, name, targets)
 end
 
+local shopBlockedCache = {}
+function plymeta:IsShopPurchaseDisabled(...)
+    if shopBlockedCache[self:SteamID64()] then
+        CallHook("TTTOnShopPurchaseBlocked", nil, self, ...)
+        return true
+    end
+
+    local shopBlocked = CallHook("TTTIsShopPurchaseDisabled", nil, self, ...) == true
+    if shopBlocked then
+        self:DisableShopPurchases(...)
+        CallHook("TTTOnShopPurchaseBlocked", nil, self, ...)
+    end
+
+    return shopBlocked
+end
+
+function plymeta:DisableShopPurchases(...)
+    local sid64 = self:SteamID64()
+    if shopBlockedCache[sid64] then return end
+
+    shopBlockedCache[sid64] = true
+    CallHook("TTTOnShopPurchaseDisabled", nil, self, ...)
+end
+
+function plymeta:EnableShopPurchases()
+    local sid64 = self:SteamID64()
+    if not shopBlockedCache[sid64] then return end
+
+    shopBlockedCache[sid64] = nil
+    CallHook("TTTOnShopPurchaseEnabled", nil, self)
+end
+
+local function ClearShopBlockedCache()
+    shopBlockedCache = {}
+end
+hook.Add("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedCache)
+hook.Add("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
+-- Don't clear on round end because we may need this for post-round summary stuff
+
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
 hook.Add("TTTPrepareRound", "PostLoadOverride", function()
     -- Compatibility with Dead Ringer (810154456)
