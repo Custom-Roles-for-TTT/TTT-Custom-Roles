@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.2.9 (Beta)
-**Released:**
+**Released: April 1st, 2025**
 
 ### Additions
 - Ported "TTT: Add crosshair customisation"
