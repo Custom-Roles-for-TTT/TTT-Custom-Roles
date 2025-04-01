@@ -60,6 +60,8 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
     if not IsPlayer(wep.BoughtBy) or wep.BoughtBy:IsBeggar() then return end
     -- Beggar can only become a traitor or an innocent, so ignore everyone else
     if not wep.BoughtBy:IsTraitorTeam() and not wep.BoughtBy:IsInnocentTeam() then return end
+    -- If the beggar's ability is disabled, they don't change roles
+    if ply:IsRoleAbilityDisabled() then return end
 
     if beggar_ignore_empty_weapons:GetBool() and wep:GetMaxClip1() > 0 and wep:Clip1() == 0 then
         if beggar_ignore_empty_weapons_warning:GetBool() then
@@ -175,7 +177,7 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
     BeggarKilledNotification(attacker, victim)
 
     local respawnLimit = beggar_respawn_limit:GetInt()
-    if beggar_respawn:GetBool() and (respawnLimit == 0 or victim.BeggarRespawn < respawnLimit) then
+    if beggar_respawn:GetBool() and (respawnLimit == 0 or victim.BeggarRespawn < respawnLimit) and not victim:IsRoleAbilityDisabled() then
         victim.BeggarRespawn = victim.BeggarRespawn + 1
 
         local change_role = beggar_respawn_change_role:GetBool()

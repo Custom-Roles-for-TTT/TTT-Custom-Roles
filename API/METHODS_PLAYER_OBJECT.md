@@ -58,6 +58,18 @@ Removes queued messages with the given ID from the queue and clears any currentl
 *Parameters:*
 - *id* - The identifier of the message(s) you want to clear
 
+### plymeta:DisableRoleAbility()
+Disables this player's role ability, if it isn't already.\
+*NOTE*: If the player's role ability was not already disabled, this will also call the `TTTOnRoleAbilityDisabled` hook.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9
+
+### plymeta:DisableShopPurchases()
+Disables player's ability to purchase from the equipment shop, if it isn't already.\
+*NOTE*: If the player's purchases were not already disabled, this will also call the `TTTOnShopPurchaseDisabled` hook.\
+*Realm:* Server\
+*Added in:* 2.2.9
+
 ### plymeta:DrunkJoinLosingTeam()
 Attempts to find the losing team and calls `self:SoberDrunk(team)` using the losing team as the *team* parameter.\
 *Realm:* Server\
@@ -69,6 +81,18 @@ Sets the drunk's role and runs required checks for that role.\
 *Added in:* 1.1.9\
 *Parameters:*
 - *role* - Which role to set the drunk to (see ROLE_* global enumeration)
+
+### plymeta:EnableRoleAbility()
+Enables this player's role ability, if it was previously disabled.\
+*NOTE*: If the player's role ability was previously disabled, this will also call the `TTTOnRoleAbilityEnabled` hook.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9
+
+### plymeta:EnableShopPurchases()
+Enables player's ability to purchase from the equipment shop, if it was previously disabled.\
+*NOTE*: If the player's shop purchases were previously disabled, this will also call the `TTTOnShopPurchaseEnabled` hook.\
+*Realm:* Server\
+*Added in:* 2.2.9
 
 ### plymeta:ForceRoleNextRound(role)
 Forces a player to spawn as the specified role next round. Returns `true` if successful, `false` if that player has already been forced to be another role.\
@@ -251,6 +275,17 @@ Whether this player is currently respawning.\
 *Realm:* Client and Server\
 *Added in:* 2.1.12
 
+### plymeta:IsRoleAbilityDisabled(...)
+Called to check whether a player's role ability is disabled.\
+*NOTE*: Calls `TTTIsRoleAbilityDisabled` hook to determine status if `plymeta:DisableRoleAbility` has not previously been called.\
+*NOTE*: Calls `plymeta:DisableRoleAbility` if `TTTIsRoleAbilityDisabled` is called and result is `true`.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *...* - Any parameters to be passed to the `TTTIsRoleAbilityDisabled` hook and `plymeta:DisableRoleAbility` method
+
+*Return:* `true` if the player's role ability is currently disabled, `false` otherwise
+
 ### plymeta:IsRoleActive()
 Whether the player's role feature has been activated.\
 *Realm:* Client and Server\
@@ -273,6 +308,17 @@ Whether the player is currently overriding a piece of scoreboard information.\
 *Returns:*
 - *isNameOverridden* - Whether the player name is currently overridden
 - *isRoleOverridden* - Whether the role color or icon is currently overridden
+
+### plymeta:IsShopPurchaseDisabled(...)
+Called to check whether a player's shop purchases are disabled.\
+*NOTE*: Calls `TTTIsShopPurchaseDisabled` hook to determine status if `plymeta:DisableShopPurchases` has not previously been called.\
+*NOTE*: Calls `plymeta:DisableShopPurchases` if `TTTIsShopPurchaseDisabled` hook is called and result is `true`.\
+*Realm:* Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *...* - Any parameters to be passed to the `TTTIsShopPurchaseDisabled` hook and `plymeta:DisableShopPurchases` method
+
+*Return:* `true` if the player's shop purchases are currently disabled, `false` otherwise
 
 ### plymeta:IsShopRole()
 Whether the player has a shop (see `plymeta:CanUseShop` for determining if it is openable).\

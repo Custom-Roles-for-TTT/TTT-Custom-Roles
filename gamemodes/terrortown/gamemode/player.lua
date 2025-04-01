@@ -650,7 +650,7 @@ local function CheckCreditAward(victim, attacker)
                     if CallHook("TTTRewardTraitorInnocentDeath", nil, p, victim, attacker, amt) then
                         return false
                     end
-                    if p:IsActiveTraitorTeam() and p:IsShopRole() then
+                    if p:IsActiveTraitorTeam() and p:IsShopRole() and not p:IsRoleAbilityDisabled() then
                         return not p:IsVampire() or vampire_kill_credits
                     end
                     return false
@@ -799,7 +799,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     -- Check for T killing D or vice versa
     if IsPlayer(attacker) then
         local reward = 0
-        if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() then
+        if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() and not attacker:IsRoleAbilityDisabled() then
             reward = math.ceil(GetConVar("ttt_credits_detectivekill"):GetInt())
         elseif (attacker:IsActiveDetectiveTeam() or (attacker:IsActiveDeputy() and attacker:IsRoleActive())) and ply:IsTraitorTeam() then
             reward = math.ceil(GetConVar("ttt_det_credits_traitorkill"):GetInt())
@@ -974,8 +974,8 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if ply:ShouldActLikeJester() and GetRoundState() == ROUND_ACTIVE then
-        -- Jester team don't take fall damage
+    if GetRoundState() == ROUND_ACTIVE and ply:ShouldActLikeJester() and (not ply:IsJesterTeam() or not ply:IsRoleAbilityDisabled()) then
+        -- Jester team don't take fall damage, unless their ability is disabled
         return
     else
         if in_water or speed < 450 or not IsValid(ply) then return end
@@ -1059,8 +1059,11 @@ function GM:EntityTakeDamage(ent, dmginfo)
         if ent:ShouldActLikeJester() and (not IsValid(att) or att:GetClass() ~= "trigger_hurt") and
               (dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or
                dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE)) then
-            dmginfo:ScaleDamage(0)
-            dmginfo:SetDamage(0)
+            -- Explosion and fall damage are blocked unless this player is a jester whose ability was disabled
+            if (not dmginfo:IsExplosionDamage() and not dmginfo:IsDamageType(DMG_BURN)) or not ent:IsJesterTeam() or not ent:IsRoleAbilityDisabled() then
+                dmginfo:ScaleDamage(0)
+                dmginfo:SetDamage(0)
+            end
         end
 
         -- Prevent damage from jesters

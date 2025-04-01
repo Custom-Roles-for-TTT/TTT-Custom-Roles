@@ -19,6 +19,8 @@ local scout_delay_intel = GetConVar("ttt_scout_delay_intel")
 local rolesToReveal = {}
 
 local function RevealRoles(ply, delay_intel)
+    if ply:IsRoleAbilityDisabled() then return end
+
     local sid64 = ply:SteamID64()
     if not rolesToReveal[sid64] then return end
     if #rolesToReveal[sid64] == 0 then

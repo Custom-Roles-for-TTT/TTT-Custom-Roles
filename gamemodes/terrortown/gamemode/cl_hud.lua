@@ -164,6 +164,8 @@ function CRHUD:PaintPowersHUD(client, powers, max_power, current_power, colors, 
         if current_power >= powers[i].cost then
             desc = powers[i].desc
             slotColor = ROLE_COLORS[client:GetRole()]
+            local new_col = CallHook("TTTHUDRoleColorOverride", nil, client, nil)
+            if new_col then slotColor = new_col end
         end
 
         draw.SimpleText(desc, "TabLarge", x + (padding * 2), y + height + padding, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
@@ -393,6 +395,9 @@ local function DrawBg(x, y, width, height, client)
         col = bg_colors.noround
     elseif hide_role:GetBool() then
         col = bg_colors.hidden
+    else
+        local new_col = CallHook("TTTHUDRoleColorOverride", nil, client, nil)
+        if new_col then col = new_col end
     end
 
     draw.RoundedBoxEx(8, x, y, tw, th, col, true, false, false, true)
@@ -563,6 +568,9 @@ local function InfoPaint(client)
             text = GetTranslation("hidden")
         else
             text = LANG.GetRawTranslation(client:GetRoleStringRaw()) or client:GetRoleString()
+
+            local new_text = CallHook("TTTHUDRoleNameOverride", nil, client, text)
+            if new_text then text = new_text end
         end
     else
         text = L[roundstate_string[round_state]]

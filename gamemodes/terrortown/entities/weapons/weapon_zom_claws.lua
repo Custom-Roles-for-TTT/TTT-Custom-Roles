@@ -208,7 +208,7 @@ function SWEP:PrimaryAttack()
                 owner:LagCompensation(false)
                 owner:FireBullets({ Num = 1, Src = spos, Dir = owner:GetAimVector(), Spread = vector_origin, Tracer = 0, Force = 1, Damage = 0 })
 
-                if SERVER and zombie_eat_enabled:GetBool() and hitEnt:GetClass() == "prop_ragdoll" then
+                if SERVER and zombie_eat_enabled:GetBool() and hitEnt:GetClass() == "prop_ragdoll" and not owner:IsRoleAbilityDisabled() then
                     local ply = GetPlayerFromBody(hitEnt)
                     if IsValid(ply) and not ply:Alive() then
                         self:Eat(hitEnt)

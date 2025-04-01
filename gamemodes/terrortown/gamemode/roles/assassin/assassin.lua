@@ -39,6 +39,11 @@ local function AssignAssassinTarget(ply, start, delay)
         not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false) or ply:GetNWBool("AssassinComplete", false)
     then
         return
+    elseif ply:IsRoleAbilityDisabled() then
+        timer.Remove(ply:Nick() .. "AssassinTarget")
+        ply:ClearQueuedMessage("asnTarget")
+        ply:SetNWString("AssassinTarget", "")
+        return
     end
 
     -- Reset the target to empty in case there are no valid targets
@@ -50,7 +55,7 @@ local function AssignAssassinTarget(ply, start, delay)
     local independents = {}
     local shopRolesLast = assassin_shop_roles_last:GetBool()
 
-    local function AddEnemy(p)
+    local function AddEnemy(p, enemyTbl)
         -- Don't add the former beggar or bodysnatcher to the list of enemies unless the "reveal" setting is enabled
         if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and ply:ShouldRevealBeggar(p) then return end
         if p:GetNWBool("WasBodysnatcher", false) and ply:ShouldRevealBodysnatcher(p) then return end
@@ -59,7 +64,7 @@ local function AssignAssassinTarget(ply, start, delay)
         if shopRolesLast and p:IsShopRole() then
             table.insert(shops, p:SteamID64())
         else
-            table.insert(enemies, p:SteamID64())
+            table.insert(enemyTbl, p:SteamID64())
         end
     end
 
@@ -75,12 +80,12 @@ local function AssignAssassinTarget(ply, start, delay)
                 table.insert(detectives, pSid64)
             -- Exclude Glitch from this list so they don't get discovered immediately
             elseif p:IsInnocentTeam() and not p:IsGlitch() then
-                AddEnemy(p)
+                AddEnemy(p, enemies)
             elseif p:IsMonsterTeam() then
-                AddEnemy(p)
+                AddEnemy(p, enemies)
             -- Exclude roles that have a passive win because they just want to survive
             elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
-                AddEnemy(p)
+                AddEnemy(p, independents)
             end
         end
     end
@@ -203,6 +208,14 @@ hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", functio
     end
 end)
 
+hook.Add("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsAssassin() then return end
+
+    if ply:SetNWString("AssassinTarget", "") == "" then
+        AssignAssassinTarget(ply, false, true)
+    end
+end)
+
 hook.Add("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", function(ply, traitor)
     if not IsPlayer(ply) then return end
 
@@ -285,7 +298,7 @@ hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgro
     local scale = 0
     if att:GetNWBool("AssassinFailed", false) then
         scale = -assassin_failed_damage_penalty:GetFloat()
-    elseif ply:SteamID64() == att:GetNWString("AssassinTarget", "") then
+    elseif ply:SteamID64() == att:GetNWString("AssassinTarget", "") and not att:IsRoleAbilityDisabled() then
         -- Get the active weapon, whether it's in the inflictor or it's from the attacker
         local active_weapon = dmginfo:GetInflictor()
         if not IsValid(active_weapon) or IsPlayer(active_weapon) then

@@ -175,6 +175,11 @@ local function IdentifyBody(ply, rag)
             end
         end
 
+        if ply:IsActiveDetectiveTeam() and ply:IsRoleAbilityDisabled() then
+            role_string = ROLE_STRINGS_EXT[ROLE_NONE]
+            color_role = ROLE_NONE
+        end
+
         LANG.Msg("body_found", {
             finder = finder,
             victim = name,
@@ -456,7 +461,11 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     for _, v in ipairs(eq) do
         net.WriteUInt(v, eq_bits)
     end
-    net.WriteInt(role, 8) -- ( 8 bits )
+    if ply:IsDetectiveTeam() and ply:IsRoleAbilityDisabled() then
+        net.WriteInt(-1, 8) -- ( 8 bits )
+    else
+        net.WriteInt(role, 8) -- ( 8 bits )
+    end
     net.WriteUInt(c4, bitsRequired(C4_WIRE_COUNT)) -- 0 -> 2^bits ( default c4: 3 bits )
     net.WriteUInt(dmg, 30) -- DMG_BUCKSHOT is the highest. ( 30 bits )
     net.WriteString(wep)

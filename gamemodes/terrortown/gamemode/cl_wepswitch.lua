@@ -4,11 +4,14 @@ include("shared.lua")
 
 local concommand = concommand
 local draw = draw
+local hook = hook
 local input = input
 local math = math
 local pairs = pairs
 local surface = surface
 local table = table
+
+local CallHook = hook.Call
 
 WSWITCH = {}
 
@@ -69,7 +72,7 @@ end
 
 -- Draw a bar in the style of the the weapon pickup ones
 local round = math.Round
-function WSWITCH:DrawBarBg(x, y, w, h, col)
+function WSWITCH:DrawBarBg(x, y, w, h, col, dark)
     local rx = round(x - 4)
     local ry = round(y - (h / 2) - 4)
     local rw = round(w + 9)
@@ -78,11 +81,15 @@ function WSWITCH:DrawBarBg(x, y, w, h, col)
     local b = 8 --bordersize
     local bh = b / 2
 
-    local role = LocalPlayer().GetDisplayedRole and LocalPlayer():GetDisplayedRole() or ROLE_INNOCENT
+    local client = LocalPlayer()
+    local role = client.GetDisplayedRole and client:GetDisplayedRole() or ROLE_INNOCENT
 
     local c = col.none
     if GAMEMODE.round_state == ROUND_ACTIVE and not hide_role:GetBool() then
         c = col.tip[role]
+
+        local new_col = CallHook("TTTHUDRoleColorOverride", nil, client, dark and "dark" or nil)
+        if new_col then c = new_col end
     end
 
     -- Draw the colour tip
@@ -166,13 +173,10 @@ function WSWITCH:Draw(client)
 
     local col
     for k, wep in pairs(weps) do
-        if self.Selected == k then
-            col = GetColors(false)
-        else
-            col = GetColors(true)
-        end
+        local dark = self.Selected ~= k
+        col = GetColors(dark)
 
-        self:DrawBarBg(x, y, width, height, col)
+        self:DrawBarBg(x, y, width, height, col, dark)
         if not self:DrawWeapon(x, y, col, wep) then
 
             self:UpdateWeaponCache()

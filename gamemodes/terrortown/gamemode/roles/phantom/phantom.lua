@@ -104,7 +104,7 @@ end)
 
 hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
-    if valid_kill and victim:IsPhantom() then
+    if valid_kill and victim:IsPhantom() and not victim:IsRoleAbilityDisabled() then
         local attacker_alive = attacker:IsActive()
         local will_posses = phantom_killer_haunt:GetBool() and not attacker:IsVictimChangingRole(victim) and attacker_alive
 

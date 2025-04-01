@@ -43,7 +43,7 @@ end)
 
 -- Show skull icon over the target's head
 hook.Add("TTTTargetIDPlayerTargetIcon", "Clown_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsClown() and cli:IsRoleActive() and clown_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) then
+    if cli:IsClown() and cli:IsRoleActive() and clown_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) and not cli:IsRoleAbilityDisabled() then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_CLOWN], "down"
     end
 end)
@@ -90,6 +90,99 @@ hook.Add("TTTPrepareRound", "Clown_RoleFeatures_PrepareRound", function()
     -- Disable traitor buttons for clown until they are activated (and the setting is enabled)
     TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = false
 end)
+
+----------------------------
+-- DISABLED HUD OVERRIDES --
+----------------------------
+
+hook.Add("TTTHUDRoleColorOverride", "Clown_RoleDisabled_TTTHUDRoleColorOverride", function(cli, colType)
+    if not IsPlayer(cli) or not cli:IsClown() then return end
+    if not cli:IsRoleActive() or not cli:IsRoleAbilityDisabled() then return end
+
+    return GetRoleTeamColor(ROLE_TEAM_JESTER, colType)
+end)
+
+hook.Add("TTTCrosshairColorOverride", "Clown_RoleDisabled_TTTCrosshairColorOverride", function(cli)
+    if not IsPlayer(cli) or not cli:IsClown() then return end
+    if not cli:IsRoleActive() or not cli:IsRoleAbilityDisabled() then return end
+
+    return GetRoleTeamColor(ROLE_TEAM_JESTER, "highlight")
+end)
+
+hook.Add("TTTScoringSummaryRender", "Clown_RoleDisabled_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) or not ply:IsClown() then return end
+    if not ply:IsRoleActive() or not ply:IsRoleAbilityDisabled() then return end
+
+    return false, false, GetRoleTeamColor(ROLE_TEAM_JESTER)
+end)
+
+hook.Add("TTTScoreboardPlayerRole", "Clown_RoleDisabled_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+    if not IsPlayer(cli) then return end
+    if not IsPlayer(ply) or not ply:IsClown() then return end
+    if not ply:IsRoleActive() or not ply:IsRoleAbilityDisabled() then return end
+
+    -- If the role-disabled clown is looking at themselves or their role should be revealed, then overwrite the viewed color
+    if ply == cli or ply:ShouldRevealRoleWhenActive() then
+        return GetRoleTeamColor(ROLE_TEAM_JESTER, "scoreboard")
+    end
+end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CLOWN] = function(ply, target)
+    if not IsPlayer(ply) then return end
+    if not IsPlayer(target) or not target:IsClown() then return end
+    if not target:IsRoleActive() or not target:IsRoleAbilityDisabled() then return end
+
+    -- If the role-disabled clown is looking at themselves or their role should be revealed, then overwrite the viewed color
+    if target == ply or target:ShouldRevealRoleWhenActive() then
+        ------ name,  role
+        return false, true
+    end
+end
+
+hook.Add("TTTTargetIDPlayerRoleIcon", "Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+    if not IsPlayer(cli) then return end
+    if not IsPlayer(ply) or not ply:IsClown() then return end
+    if not ply:IsRoleActive() or not ply:IsRoleAbilityDisabled() then return end
+
+    -- If the role-disabled clown is looking at themselves or their role should be revealed, then overwrite the viewed color
+    if ply == cli or ply:ShouldRevealRoleWhenActive() then
+        return role, noz, ROLE_JESTER
+    end
+end)
+
+hook.Add("TTTTargetIDPlayerRing", "Clown_RoleDisabled_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+    if not IsPlayer(cli) then return end
+    if not IsPlayer(ent) or not ent:IsClown() then return end
+    if not ent:IsRoleActive() or not ent:IsRoleAbilityDisabled() then return end
+
+    -- If the role-disabled clown is looking at themselves or their role should be revealed, then overwrite the viewed color
+    if ent == cli or ent:ShouldRevealRoleWhenActive() then
+        return ringVisible, GetRoleTeamColor(ROLE_TEAM_JESTER)
+    end
+end)
+
+hook.Add("TTTTargetIDPlayerText", "Clown_RoleDisabled_TTTTargetIDPlayerText", function(ent, cli, text, col)
+    if not IsPlayer(cli) then return end
+    if not IsPlayer(ent) or not ent:IsClown() then return end
+    if not ent:IsRoleActive() or not ent:IsRoleAbilityDisabled() then return end
+
+    -- If the role-disabled clown is looking at themselves or their role should be revealed, then overwrite the viewed color
+    if ent == cli or ent:ShouldRevealRoleWhenActive() then
+        return text, GetRoleTeamColor(ROLE_TEAM_JESTER)
+    end
+end)
+
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_CLOWN] = function(ply, target, showJester)
+    if not IsPlayer(ply) then return end
+    if not IsPlayer(target) or not target:IsClown() then return end
+    if not target:IsRoleActive() or not target:IsRoleAbilityDisabled() then return end
+
+    -- If the role-disabled clown is looking at themselves or their role should be revealed, then overwrite the viewed color
+    if target == ply or target:ShouldRevealRoleWhenActive() then
+        ------ icon, ring, text
+        return true, true, true
+    end
+end
 
 ----------------
 -- WIN CHECKS --

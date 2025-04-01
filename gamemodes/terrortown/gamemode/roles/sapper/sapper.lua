@@ -35,7 +35,7 @@ hook.Add("EntityTakeDamage", "Sapper_EntityTakeDamage", function(ent, dmginfo)
                 break
             end
         end
-        if IsPlayer(sapper) then
+        if IsPlayer(sapper) and not sapper:IsRoleAbilityDisabled() then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
 
@@ -52,5 +52,6 @@ hook.Add("TTTC4Disarm", "Sapper_TTTC4Disarm", function(bomb, result, ply)
     if not IsPlayer(ply) then return end
     if not ply:IsSapper() then return end
     if not sapper_c4_guaranteed_defuse:GetBool() then return end
+    if ply:IsRoleAbilityDisabled() then return end
     return true
 end)

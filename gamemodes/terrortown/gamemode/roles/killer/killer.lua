@@ -84,6 +84,7 @@ end
 timer.Create("KillerKillCheckTimer", 1, 0, function()
     local killer = player.GetLivingRole(ROLE_KILLER)
     if GetRoundState() == ROUND_ACTIVE and killer_smoke_enabled:GetBool() and killer ~= nil then
+        local roleDisabled = killer:IsRoleAbilityDisabled()
         killerSmokeTime = killerSmokeTime + 1
 
         -- Warn the killer that they need to kill at 1/2 time remaining, 1/4 time remaining, 10 seconds remaining, and 5 seconds remaining
@@ -91,10 +92,18 @@ timer.Create("KillerKillCheckTimer", 1, 0, function()
         local timer_remaining = smoke_timer - killerSmokeTime
         local timer_fraction = (timer_remaining / smoke_timer)
         -- Don't do the 1/2 and 1/4 checks if they represent < 10 seconds
-        if (timer_fraction == 0.5 and timer_remaining > 10) or
+        if ((timer_fraction == 0.5 and timer_remaining > 10) or
             (timer_fraction == 0.25 and timer_remaining > 10) or
-            timer_remaining == 10 or timer_remaining == 5 then
+            timer_remaining == 10 or timer_remaining == 5) and
+            not roleDisabled then
             killer:PrintMessage(HUD_PRINTTALK, "Your evil grows impatient. Kill someone in the next " .. timer_remaining .. " seconds or you will be revealed!")
+        end
+
+        -- If the killer's ability is disabled, we want the smoke to show immediately
+        -- Set the smoke time to the timer value so it does that
+        -- Just calling "HandleKillerSmokeTick" isn't enough because it checks the convar internally
+        if roleDisabled and killerSmokeTime < smoke_timer then
+            killerSmokeTime = smoke_timer
         end
 
         if killerSmokeTime >= smoke_timer then
@@ -213,13 +222,13 @@ hook.Add("ScalePlayerDamage", "Killer_ScalePlayerDamage", function(ply, hitgroup
     -- Only apply damage scaling after the round starts
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         -- Killers do less damage to encourage using the knife
-        if dmginfo:IsBulletDamage() and att:IsKiller() then
+        if dmginfo:IsBulletDamage() and att:IsKiller() and not att:IsRoleAbilityDisabled() then
             local penalty = killer_damage_penalty:GetFloat()
             dmginfo:ScaleDamage(1 - penalty)
         end
 
         -- Killers take less bullet damage
-        if dmginfo:IsBulletDamage() and ply:IsKiller() then
+        if dmginfo:IsBulletDamage() and ply:IsKiller() and not ply:IsRoleAbilityDisabled() then
             local reduction = killer_damage_reduction:GetFloat()
             dmginfo:ScaleDamage(1 - reduction)
         end
@@ -270,7 +279,7 @@ hook.Add("PlayerCanPickupWeapon", "Killer_Weapons_PlayerCanPickupWeapon", functi
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return end
 
-    if (wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar") then
+    if wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar" then
         return ply:IsKiller()
     end
 end)

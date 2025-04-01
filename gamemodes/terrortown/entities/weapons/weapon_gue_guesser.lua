@@ -98,6 +98,9 @@ function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
     if SERVER then
         local owner = self:GetOwner()
+        if not IsValid(owner) then return end
+        if owner:IsRoleAbilityDisabled() then return end
+
         local role = owner:GetNWInt("TTTGuesserSelection", ROLE_NONE)
         if role == ROLE_NONE then
             owner:QueueMessage(MSG_PRINTCENTER, "Select a role first!", 1)

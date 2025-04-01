@@ -1,9 +1,12 @@
 include("shared.lua")
 
+local hook = hook
 local math = math
 local pairs = pairs
 local surface = surface
 local table = table
+
+local CallHook = hook.Call
 
 local TryTranslation = LANG.TryTranslation
 local StringUpper = string.upper
@@ -22,6 +25,10 @@ local function GetPickupColor()
     local role = LocalPlayer().GetDisplayedRole and LocalPlayer():GetDisplayedRole() or ROLE_INNOCENT
 
     if GAMEMODE.round_state == ROUND_ACTIVE and not hide_role:GetBool() then
+        local new_col = CallHook("TTTHUDRoleColorOverride", nil, LocalPlayer(), nil)
+        if new_col then
+            return new_col
+        end
         return ROLE_COLORS[role]
     end
 

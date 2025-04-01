@@ -278,6 +278,8 @@ hook.Add("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", function(ply)
     local seance_max_info = medium_seance_max_info:GetInt()
     if seance_max_info == MEDIUM_SCANNED_NONE then return end
 
+    if ply:IsRoleAbilityDisabled() then return end
+
     local state = ply:GetNWInt("TTTMediumSeanceState", MEDIUM_SEANCE_IDLE)
     if state == MEDIUM_SEANCE_IDLE then
         local target = FindSeanceTarget(ply)

@@ -1,6 +1,7 @@
 local cam = cam
 local draw = draw
 local math = math
+local player = player
 local render = render
 local surface = surface
 local string = string
@@ -158,8 +159,32 @@ local function GetDetectiveIconRole(is_traitor)
 end
 
 local function GetGlitchedRole(p, glitchMode)
+    -- If this is the glitch but their role is disabled, don't show anything
+    if p:IsGlitch() and p:IsRoleAbilityDisabled() then
+        return nil, nil
+    end
+
     -- Use the player's role if they are a traitor, otherwise this is a glitch and we should use their fake role
-    local role = p:IsTraitorTeam() and p:GetRole() or p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    local role
+    if p:IsTraitorTeam() then
+        local allDisabled = true
+        for _, v in PlayerIterator() do
+            if v:IsGlitch() and not v:IsRoleAbilityDisabled() then
+                allDisabled = false
+                break
+            end
+        end
+
+        -- If all glitches have been disabled then we can show this player's true role as if there was no glitch
+        if allDisabled then
+            return p:GetRole(), nil
+        end
+
+        role = p:GetRole()
+    else
+        role = p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    end
+
     -- Only hide vanilla traitors
     if glitchMode == GLITCH_SHOW_AS_TRAITOR then
         if role == ROLE_TRAITOR then
@@ -488,7 +513,7 @@ function GM:HUDDrawTargetID()
                     elseif not hideBeggar and not hideBodysnatcher then
                         target_traitor = ent:IsTraitor()
                         target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
-                        target_glitch = ent:IsGlitch()
+                        target_glitch = ent:IsGlitch() and not ent:IsRoleAbilityDisabled()
 
                         if glitchRound and (target_traitor or target_special_traitor or (target_glitch and not GetGlobalBool("ttt_zombie_round", false))) then
                             local role, color_role = GetGlitchedRole(ent, glitchMode)

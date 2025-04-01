@@ -219,6 +219,20 @@
             <li><em>roleString</em> - The new string to use when building the role cheat sheet description translation</li>
         </ul>
 
+        <h3><a id="tttcrosshaircoloroverrideclient" href="#tttcrosshaircoloroverrideclient">TTTCrosshairColorOverride(client)</a></h3>
+        <p>
+            Allows overriding the color to use in place of the given player's normal crosshair color.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new crosshair color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
         <h3><a id="tttcupidshouldloversurviveply-lover" href="#tttcupidshouldloversurviveply-lover">TTTCupidShouldLoverSurvive(ply, lover)</a></h3>
         <p>
             Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.<br>
@@ -414,6 +428,35 @@
             <li><em>activeLabels</em> - The list of current active additional labels. Used to determine the labelY offset to use via: <code>labelY = labelY + (20 * #activeLabels)</code>. Be sure to insert an entry when you add your own label so other addons can space appropriately. <em>(Added in 1.6.11)</em></li>
         </ul>
 
+        <h3><a id="ttthudrolecoloroverrideclient-colortype" href="#ttthudrolecoloroverrideclient-colortype">TTTHUDRoleColorOverride(client, colorType)</a></h3>
+        <p>
+            Allows overriding the color to use in place of the given player's normal role color.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>colorType</em> - The color modification type to use (e.g. "dark", "highlight", "scoreboard", "sprite", "radar") (Defaults to <code>nil</code>)</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new role color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
+        <h3><a id="ttthudrolenameoverrideclient" href="#ttthudrolenameoverrideclient">TTTHUDRoleNameOverride(client)</a></h3>
+        <p>
+            Allows overriding the name to use in place of the given player's normal role name.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new role name to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
         <h3><a id="tttinformantdefaultscanstageply-oldrole-newrole" href="#tttinformantdefaultscanstageply-oldrole-newrole">TTTInformantDefaultScanStage(ply, oldRole, newRole)</a></h3>
         <p>
             Called when an Informant has scanned additional information from a target player.<br>
@@ -457,6 +500,39 @@
             <em>Return:</em> <code>true</code> if the player is currently respawning, <code>false</code> if they are not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
         </p>
 
+        <h3><a id="tttisroleabilitydisabled" href="#tttisroleabilitydisabled">TTTIsRoleAbilityDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called to check whether a player's role ability is disabled.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's role ability is disabled as long as is remains enabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player being queried for role ability disabled status</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableRoleAbility</code> or <code>plymeta:IsRoleAbilityDisabled</code></li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> if the player's role ability is currently disabled. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
+        <h3><a id="tttisshoppurchasedisabled" href="#tttisshoppurchasedisabled">TTTIsShopPurchaseDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called to check whether a player's shop purchases are disabled.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's shop purchases is disabled as long as they remain enabled.<br>
+            <em>NOTE</em>: If <code>true</code> is returned from this hook, the player's shop purchase will be silently blocked and they will have 1 credit removed.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player being queried for shop purchase disabled status</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableShopPurchases</code> or <code>plymeta:IsShopPurchaseDisabled</code></li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> if the player's shop purchases are currently blocked. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
         <h3><a id="tttkarmagiverewardply-reward-victim" href="#tttkarmagiverewardply-reward-victim">TTTKarmaGiveReward(ply, reward, victim)</a></h3>
         <p>
             Called before a player is rewarded with karma. Used to block a player's karma reward.<br>
@@ -498,6 +574,76 @@
         <ul>
             <li><em>ply</em> - The Mad Scientist doing the zombifying</li>
             <li><em>tgt</em> - The target being zombified</li>
+        </ul>
+
+        <h3><a id="tttonroleabilityblocked" href="#tttonroleabilityblocked">TTTOnRoleAbilityBlocked(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player tries to use their role ability but it's disabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose role ability is disabled</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:IsRoleAbilityDisabled</code></li>
+        </ul>
+
+        <h3><a id="tttonroleabilitydisabled" href="#tttonroleabilitydisabled">TTTOnRoleAbilityDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player's role ability is disabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose role ability is disabled</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableRoleAbility</code> or <code>plymeta:IsRoleAbilityDisabled</code></li>
+        </ul>
+
+        <h3><a id="tttonroleabilityenabled" href="#tttonroleabilityenabled">TTTOnRoleAbilityEnabled(ply)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player's role ability is re-enabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose role ability is being enabled</li>
+        </ul>
+
+        <h3><a id="tttonshoppurchaseblocked" href="#tttonshoppurchaseblocked">TTTOnShopPurchaseBlocked(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player tries to use the shop but their purchases are disabled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose shop purchases are disabled</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:IsShopPurchaseDisabled</code></li>
+        </ul>
+
+        <h3><a id="tttonshoppurchasedisabled" href="#tttonshoppurchasedisabled">TTTOnShopPurchaseDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player's shop purchases are disabled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose shop purchases are disabled</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableShopPurchases</code> or <code>plymeta:IsShopPurchaseDisabled</code></li>
+        </ul>
+
+        <h3><a id="tttonshoppurchaseenabled" href="#tttonshoppurchaseenabled">TTTOnShopPurchaseEnabled(ply)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player's shop purchases are enabled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose shop purchases are being enabled</li>
         </ul>
 
         <h3><a id="tttpaladinaurahealedply-tgt-healed" href="#tttpaladinaurahealedply-tgt-healed">TTTPaladinAuraHealed(ply, tgt, healed)</a></h3>

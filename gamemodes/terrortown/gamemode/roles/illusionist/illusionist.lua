@@ -90,7 +90,7 @@ end)
 ---------------
 
 hook.Add("TTTTeamChatTargets", "Illusionist_TTTTeamChatTargets", function(sender, msg, targets, from_chat)
-    if GetGlobalBool("ttt_illusionist_alive", false) and (sender:IsTraitorTeam() or (sender:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if IsIllusionistBlocking() and (sender:IsTraitorTeam() or (sender:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         sender:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_ILLUSIONIST] .. " is preventing you from communicating with your allies.")
         return false
     end
