@@ -9,9 +9,17 @@ local PlayerIterator = player.Iterator
 util.AddNetworkString("TTT_CannibalEaten")
 
 CANNIBAL = {
-    playerWeapons = {},
-    playerCollisionGroups = {}
+    playerWeapons = {}
 }
+
+-------------
+-- CONVARS --
+-------------
+
+CreateConVar("ttt_cannibal_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that a Cannibal was killed. Killer is notified unless \"ttt_cannibal_notify_killer\" is disabled", 0, 4)
+CreateConVar("ttt_cannibal_notify_killer", "1", FCVAR_NONE, "Whether to notify a Cannibal's killer", 0, 1)
+CreateConVar("ttt_cannibal_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a Cannibal is killed", 0, 1)
+CreateConVar("ttt_cannibal_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a Cannibal is a killed", 0, 1)
 
 --------------------
 -- PLAYER RESPAWN --
@@ -28,36 +36,41 @@ local function ReleaseEatenPlayers(ply)
             v:DrawViewModel(true)
             v:DrawWorldModel(true)
             v:SetNoDraw(false)
+            v:Spawn()
+            v:SetPos(ply:GetPos())
+            v:SetEyeAngles(Angle(0, ply:GetAngles().y, 0))
 
             local sID64 = v:SteamID64()
 
             for _, data in ipairs(CANNIBAL.playerWeapons[sID64]) do
-                local wep = ply:Give(data.class)
-                wep:SetClip1(data.clip1)
-                wep:SetClip2(data.clip2)
+                local wep = v:Give(data.class)
+                if not IsValid(wep) then continue end
 
-                if TTTPAP and data.PAPUpgrade and IsValid(wep) then
+                if wep.SetClip1 then
+                    wep:SetClip1(data.clip1)
+                end
+
+                if wep.SetClip2 then
+                    wep:SetClip2(data.clip2)
+                end
+
+                if TTTPAP and data.PAPUpgrade then
                     TTTPAP:ApplyUpgrade(wep, data.PAPUpgrade)
                 end
             end
             CANNIBAL.playerWeapons[sID64] = nil
 
-            timer.Create("TTTCannibalNoCollide" .. sID64, 0.5, 0, function()
-                local nearPlayer = false
-                for _, v2 in PlayerIterator() do
-                    if v ~= v2 and v:GetPos():DistToSqr(v2:GetPos()) <= 6400 then
-                        nearPlayer = true
-                        break
-                    end
-                end
-                if not nearPlayer and not (v:GetPhysicsObject() and v:GetPhysicsObject():IsPenetrating()) then
-                    v:SetCollisionGroup(CANNIBAL.playerCollisionGroups[sID64])
-                    CANNIBAL.playerCollisionGroups[sID64] = nil
-                    timer.Destroy("TTTCannibalNoCollide" .. sID64)
-                end
-            end)
+            v:QueueMessage(MSG_PRINTBOTH, ply:Nick() .. " died and you have escaped!")
         end
     end
+end
+
+local function CannibalKilledNotification(attacker, victim)
+    JesterTeamKilledNotification(attacker, victim,
+    -- getkillstring
+            function()
+                return attacker:Nick() .. " gutted the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. "!"
+            end)
 end
 
 AddHook("PlayerDeath", "Cannibal_PlayerDeath", function(victim, infl, attacker)
@@ -65,6 +78,11 @@ AddHook("PlayerDeath", "Cannibal_PlayerDeath", function(victim, infl, attacker)
     if not victim:IsCannibal() then return end
 
     ReleaseEatenPlayers(victim)
+
+    local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
+    if not valid_kill then return end
+
+    CannibalKilledNotification(attacker, victim)
 end)
 
 AddHook("PlayerDisconnected", "Cannibal_PlayerDisconnected", function(ply)
@@ -173,13 +191,4 @@ end)
 
 AddHook("TTTEndRound", "Cannibal_TTTEndRound", function()
     table.Empty(CANNIBAL.playerWeapons)
-
-    for _, v in pairs(CANNIBAL.playerCollisionGroups) do
-        local ply = player.GetBySteamID64(v)
-        if not IsPlayer(ply) then continue end
-
-        ply:SetCollisionGroup(CANNIBAL.playerCollisionGroups[v])
-        CANNIBAL.playerCollisionGroups[v] = nil
-        timer.Destroy("TTTCannibalNoCollide" .. v)
-    end
 end)

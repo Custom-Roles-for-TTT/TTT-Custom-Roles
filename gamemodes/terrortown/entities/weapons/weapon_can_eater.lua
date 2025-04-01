@@ -21,7 +21,6 @@ SWEP.Kind                   = WEAPON_ROLE
 SWEP.DeploySpeed            = 4
 SWEP.AllowDrop              = false
 SWEP.NoSights               = true
-SWEP.UseHands               = true
 SWEP.LimitedStock           = true
 SWEP.AmmoEnt                = nil
 
@@ -36,6 +35,19 @@ SWEP.Primary.Sound          = ""
 
 SWEP.InLoadoutFor           = {ROLE_CANNIBAL}
 SWEP.InLoadoutForDefault    = {ROLE_CANNIBAL}
+
+local eatSounds = {
+    "cannibal/eat1.wav",
+    "cannibal/eat2.wav",
+    "cannibal/eat3.wav"
+}
+
+function SWEP:Initialize()
+    if CLIENT then
+        self:AddHUDHelp("can_eater_help_pri", nil, true)
+    end
+    return self.BaseClass.Initialize(self)
+end
 
 function SWEP:OnDrop()
     self:Remove()
@@ -73,9 +85,6 @@ function SWEP:PrimaryAttack()
 
         local sID64 = hitEnt:SteamID64()
 
-        CANNIBAL.playerCollisionGroups[sID64] = hitEnt:GetCollisionGroup() or COLLISION_GROUP_PLAYER
-        hitEnt:SetCollisionGroup(COLLISION_GROUP_PASSABLE_DOOR)
-
         CANNIBAL.playerWeapons[sID64] = {}
 
         for _, v in pairs(hitEnt:GetWeapons()) do
@@ -92,6 +101,9 @@ function SWEP:PrimaryAttack()
         hitEnt:SetFOV(0, 0.2)
 
         hitEnt:SetProperty("TTTCannibalEaten", owner:SteamID64())
+        hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been eaten by " .. owner:Nick() .. "!")
+
+        owner:EmitSound(eatSounds[math.random(1, #eatSounds)], 100)
     end
 end
 

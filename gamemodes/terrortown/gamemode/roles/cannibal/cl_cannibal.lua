@@ -7,6 +7,15 @@ local AddHook = hook.Add
 ------------------
 
 AddHook("Initialize", "Cannibal_Translations_Initialize", function()
+    -- Scoreboard
+    LANG.AddToLanguage("english", "cannibal_eaten", "EATEN")
+
+    -- Scoreboard
+    LANG.AddToLanguage("english", "cannibal_swallowed", "SWALLOWED")
+
+    -- Weapons
+    LANG.AddToLanguage("english", "can_eater_help_pri", "{primaryfire} to eat a player.")
+
     -- Events
     LANG.AddToLanguage("english", "ev_cannibaleat", "{victim} was eaten by {source}")
 
@@ -79,18 +88,13 @@ end)
 
 local client
 
-AddHook("TTTScoreboardPlayerRole", "Cannibal_TTTScoreboardPlayerRole", function(ply, client, c, roleStr)
-    if (client:IsTraitorTeam() and ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false)) or IsLoverInfecting(client, ply) then
-        return c, roleStr, ROLE_PARASITE
-    end
-end)
-
 AddHook("TTTScoreboardPlayerName", "Cannibal_TTTScoreboardPlayerName", function(ply, cli, text)
     if not IsPlayer(ply) then return end
     if not ply.TTTCannibalEaten then return end
     if not cli:IsCannibal() then return end
+    if ply.TTTCannibalEaten ~= cli:SteamID64() then return end
 
-    return ply:Nick() .. " (" .. LANG.GetTranslation("target_infected") .. ")"
+    return ply:Nick() .. " (" .. LANG.GetTranslation("cannibal_eaten") .. ")"
 end)
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CANNIBAL] = function(ply, target)
@@ -99,7 +103,7 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CANNIBAL] = function(ply, target)
     if not ply:IsCannibal() then return end
 
     ------ name, role
-    return true, true
+    return true, false
 end
 
 AddHook("TTTScoreGroup", "Cannibal_TTTScoreGroup", function(ply)
@@ -113,5 +117,44 @@ AddHook("TTTScoreGroup", "Cannibal_TTTScoreGroup", function(ply)
 
     if client:IsSpec() or client:IsTraitorTeam() or client:IsMonsterTeam() or (client:IsIndependentTeam() and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_update_scoreboard", false)) then
         return GROUP_NOTFOUND
+    end
+end)
+
+---------
+-- HUD --
+---------
+
+AddHook("HUDDrawScoreBoard", "Cannibal_HUDDrawScoreBoard", function()
+    if not IsPlayer(client) then
+        client = LocalPlayer()
+    end
+
+    if not client.TTTCannibalEaten then return end
+
+    local bar_colors = {
+        border = COLOR_WHITE,
+        background = ROLE_COLORS_DARK[ROLE_CANNIBAL],
+        fill = ROLE_COLORS[ROLE_CANNIBAL]
+    }
+
+    CRHUD:PaintBar(8, 20, ScrH() - 59, 230, 25, bar_colors, 1)
+    draw.SimpleText(LANG.GetTranslation("cannibal_swallowed"), "HealthAmmo", 135, ScrH() - 59, Color(255, 255, 255, 200), TEXT_ALIGN_CENTER)
+end)
+
+--------------
+-- TUTORIAL --
+--------------
+
+AddHook("TTTTutorialRoleText", "Cannibal_TTTTutorialRoleText", function(role, titleLabel)
+    if role == ROLE_CANNIBAL then
+        local roleTeam = player.GetRoleTeam(ROLE_CANNIBAL, true)
+        local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
+        local html = "The " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role whose goal is to eat all other players."
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>Eaten players are not dead, but they are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>unable to do anything</span> except talk with other eaten players and spectate the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. ".</span>"
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " dies, all eaten players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>freed</span> at the position where the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " died.</span>"
+
+        return html
     end
 end)

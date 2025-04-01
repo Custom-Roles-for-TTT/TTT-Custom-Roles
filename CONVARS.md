@@ -750,6 +750,15 @@ ttt_guesser_notify_confetti                    0       // Whether to throw confe
 ttt_guesser_unguessable_roles                  "lootgoblin,Zombie" // Names of roles that cannot be guessed by the Guesser, separated with commas. Do not include spaces or capital letters.
 ttt_guesser_warn_all                           0       // Whether all players are warned when there's a Guesser in a round
 
+// Cannibal
+ttt_cannibal_is_independent                    0       // Whether Cannibals should be treated as members of the independent team (rather than the jester team)
+ttt_cannibal_notify_mode                       0       // The logic to use when notifying players that a Cannibal was killed. Killer is notified unless "ttt_cannibal_notify_killer" is disabled. 0 - Don't notify anyone. 1 - Only notify traitors and detectives. 2 - Only notify traitors. 3 - Only notify detectives. 4 - Notify everyone
+ttt_cannibal_notify_killer                     1       // Whether to notify a Cannibal's killer
+ttt_cannibal_notify_sound                      0       // Whether to play a cheering sound when a Cannibal is killed
+ttt_cannibal_notify_confetti                   0       // Whether to throw confetti when a Cannibal is a killed
+ttt_cannibal_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Cannibal
+ttt_cannibal_update_scoreboard                 0       // Whether the Cannibal shows dead players as missing in action
+
 // ----------------------------------------
 
 // INDEPENDENT TEAM SETTINGS
@@ -964,10 +973,6 @@ ttt_plaguemaster_dart_replace_timer            0       // How long (in seconds) 
 ttt_plaguemaster_body_search_mode              1       // Whether dead bodies reveal if they had the plague when searched. 0 - Don't show. 1 - Show if died from plague. 2 - Show if Infected with plague.
 ttt_plaguemaster_can_see_jesters               0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Plaguemaster
 ttt_plaguemaster_update_scoreboard             1       // Whether the Plaguemaster shows dead players as missing in action
-
-// Cannibal
-ttt_cannibal_can_see_jesters                   1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Cannibal
-ttt_cannibal_update_scoreboard                 1       // Whether the Cannibal shows dead players as missing in action
     
 // ----------------------------------------
 
