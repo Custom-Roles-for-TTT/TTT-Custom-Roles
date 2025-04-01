@@ -24,6 +24,7 @@ jobs:
         uses: leafo/gh-actions-lua@v9
         with:
           luaVersion: ${{ matrix.luaVersion }}
+          buildCache: false
 
       - name: Setup ‘luarocks’
         uses: leafo/gh-actions-luarocks@v4
