@@ -6,7 +6,7 @@
 ### Additions
 - Ported "TTT: Add crosshair customisation"
 - Added ability to disable scoreboard alternating row colors
-- Added scoreboard client setting to F1 Config menu
+- Added scoreboard client settings to F1 Config menu
 
 ### Fixes
 - Ported "Fixed a regression in TTT voice chat team colors"
