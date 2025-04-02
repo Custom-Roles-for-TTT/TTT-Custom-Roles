@@ -38,7 +38,7 @@ end)
 
 AddHook("TTTScoringWinTitle", "Cannibal_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_CANNIBAL then
-        return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[WIN_CANNIBAL]) }, c = ROLE_COLORS[WIN_CANNIBAL] }
+        return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_CANNIBAL]) }, c = ROLE_COLORS[ROLE_CANNIBAL] }
     end
 end)
 
@@ -48,13 +48,13 @@ end)
 
 AddHook("TTTEventFinishText", "Cannibal_TTTEventFinishText", function(e)
     if e.win == WIN_CANNIBAL then
-        return LANG.GetParamTranslation("ev_win_cannibal", { role = string.lower(ROLE_STRINGS[WIN_CANNIBAL]) })
+        return LANG.GetParamTranslation("ev_win_cannibal", { role = string.lower(ROLE_STRINGS[ROLE_CANNIBAL]) })
     end
 end)
 
 AddHook("TTTEventFinishIconText", "Cannibal_TTTEventFinishIconText", function(e, win_string, role_string)
     if e.win == WIN_CANNIBAL then
-        return win_string, ROLE_STRINGS[WIN_CANNIBAL]
+        return win_string, ROLE_STRINGS[ROLE_CANNIBAL]
     end
 end)
 

@@ -1209,6 +1209,9 @@ globals = {
     "CRHUD",
     "DEATHRADAR",
     "SYNC",
+    
+    -- TTTPAP Namespaces
+    "TTTPAP",
 
     -- Randomat Namespaces
     "Randomat",
