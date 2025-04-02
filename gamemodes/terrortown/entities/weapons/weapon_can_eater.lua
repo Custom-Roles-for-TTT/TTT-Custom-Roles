@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 if CLIENT then
-    SWEP.PrintName          = "Eater"
+    SWEP.PrintName          = "Cannibalizer"
     SWEP.Slot               = 8
 
     SWEP.ViewModelFOV        = 10
