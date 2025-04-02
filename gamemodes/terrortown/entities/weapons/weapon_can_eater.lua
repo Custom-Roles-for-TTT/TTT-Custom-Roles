@@ -36,6 +36,8 @@ SWEP.Primary.Sound          = ""
 SWEP.InLoadoutFor           = {ROLE_CANNIBAL}
 SWEP.InLoadoutForDefault    = {ROLE_CANNIBAL}
 
+SWEP.DeviceCooldownConVar = CreateConVar("ttt_cannibal_eat_cooldown", "10", FCVAR_REPLICATED, "The amount of time (in seconds) between uses of the Cannibal's Cannibalizer", 0, 60)
+
 local eatSounds = {
     "cannibal/eat1.wav",
     "cannibal/eat2.wav",
@@ -49,6 +51,13 @@ function SWEP:Initialize()
     return self.BaseClass.Initialize(self)
 end
 
+function SWEP:SetupDataTables()
+    self:NetworkVar("Float", 0, "DeviceCooldownEnd")
+    if SERVER then
+        self:SetDeviceCooldownEnd(CurTime())
+    end
+end
+
 function SWEP:OnDrop()
     self:Remove()
 end
@@ -56,6 +65,10 @@ end
 function SWEP:Deploy()
     if SERVER and IsValid(self:GetOwner()) then
         self:GetOwner():DrawViewModel(false)
+    end
+
+    if CLIENT then
+        self.DeployTime = CurTime()
     end
 
     self:DrawShadow(false)
@@ -66,8 +79,11 @@ end
 function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
+    if CurTime() < self:GetDeviceCooldownEnd() then return end
+
     local owner = self:GetOwner()
     if not IsValid(owner) then return end
+    if not owner:IsActiveCannibal() or owner:IsRoleAbilityDisabled() then return end
 
     local spos = owner:GetShootPos()
     local sdest = spos + (owner:GetAimVector() * 70)
@@ -104,6 +120,11 @@ function SWEP:PrimaryAttack()
         hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been eaten by " .. owner:Nick() .. "!")
 
         owner:EmitSound(eatSounds[math.random(1, #eatSounds)], 100)
+
+        local cooldown = self.DeviceCooldownConVar:GetInt()
+        if cooldown > 0 then
+            self:SetDeviceCooldownEnd(CurTime() + cooldown)
+        end
     end
 end
 
@@ -113,4 +134,30 @@ end
 
 function SWEP:DrawWorldModelTranslucent()
     return false
+end
+
+if CLIENT then
+    function SWEP:DrawHUD()
+        self.BaseClass.DrawHUD(self)
+
+        local cooldown = self.DeviceCooldownConVar:GetInt()
+        if cooldown == 0 then return end
+
+        local x = ScrW() / 2.0
+        local y = ScrH() / 2.0
+
+        y = y + (y / 3)
+
+        local w = 255
+
+        local cooldownLeft = self:GetDeviceCooldownEnd() - CurTime()
+        local progress = 1 - (cooldownLeft / cooldown)
+        if cooldownLeft > -3 or self.DeployTime > CurTime() - 3 then
+            if progress > 1 then
+                CRHUD:PaintProgressBar(x, y, w, Color(0, 255, 0, 155), "READY TO EAT", 1)
+            else
+                CRHUD:PaintProgressBar(x, y, w, Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155), "NOT HUNGRY", progress)
+            end
+        end
+    end
 end

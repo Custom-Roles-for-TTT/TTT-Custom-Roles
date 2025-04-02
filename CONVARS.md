@@ -106,6 +106,7 @@ ttt_lootgoblin_enabled                         0       // Whether or not the Loo
 ttt_cupid_enabled                              0       // Whether or not the Cupid should spawn
 ttt_sponge_enabled                             0       // Whether or not the Sponge should spawn
 ttt_guesser_enabled                            0       // Whether or not the Guesser should spawn
+ttt_cannibal_enabled                           0       // Whether or not the Cannibal should spawn
 ttt_drunk_enabled                              0       // Whether or not the Drunk should spawn
 ttt_oldman_enabled                             0       // Whether or not the Old Man should spawn
 ttt_killer_enabled                             0       // Whether or not the Killer should spawn
@@ -115,7 +116,6 @@ ttt_shadow_enabled                             0       // Whether or not the Sha
 ttt_arsonist_enabled                           0       // Whether or not the Arsonist should spawn
 ttt_hivemind_enabled                           0       // Whether or not the Hive Mind should spawn
 ttt_plaguemaster_enabled                       0       // Whether or not the Plaguemaster should spawn
-ttt_cannibal_enabled                           0       // Whether or not the Cannibal should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                     1       // The weight assigned to spawning the Hypnotist
@@ -155,6 +155,7 @@ ttt_lootgoblin_spawn_weight                    1       // The weight assigned to
 ttt_cupid_spawn_weight                         1       // The weight assigned to spawning the Cupid
 ttt_sponge_spawn_weight                        1       // The weight assigned to spawning the Sponge
 ttt_guesser_spawn_weight                       1       // The weight assigned to spawning the Guesser
+ttt_cannibal_spawn_weight                      1       // The weight assigned to spawning the Cannibal
 ttt_drunk_spawn_weight                         1       // The weight assigned to spawning the Drunk
 ttt_oldman_spawn_weight                        1       // The weight assigned to spawning the Old Man
 ttt_killer_spawn_weight                        1       // The weight assigned to spawning the Killer
@@ -164,7 +165,6 @@ ttt_shadow_spawn_weight                        1       // The weight assigned to
 ttt_arsonist_spawn_weight                      1       // The weight assigned to spawning the Arsonist
 ttt_hivemind_spawn_weight                      1       // The weight assigned to spawning the Hive Mind
 ttt_plaguemaster_spawn_weight                  1       // The weight assigned to spawning the Plaguemaster
-ttt_cannibal_spawn_weight                      1       // The weight assigned to spawning the Cannibal
 
 // (Note: Each role is limited to one player per round.)
 
@@ -206,6 +206,7 @@ ttt_lootgoblin_min_players                     0       // The minimum number of 
 ttt_cupid_min_players                          0       // The minimum number of players required to spawn the Cupid
 ttt_sponge_min_players                         0       // The minimum number of players required to spawn the Sponge
 ttt_guesser_min_players                        0       // The minimum number of players required to spawn the Guesser
+ttt_cannibal_min_players                       0       // The minimum number of players required to spawn the Cannibal
 ttt_drunk_min_players                          0       // The minimum number of players required to spawn the Drunk
 ttt_oldman_min_players                         0       // The minimum number of players required to spawn the Old Man
 ttt_killer_min_players                         0       // The minimum number of players required to spawn the Killer
@@ -215,7 +216,6 @@ ttt_shadow_min_players                         0       // The minimum number of 
 ttt_arsonist_min_players                       0       // The minimum number of players required to spawn the Arsonist
 ttt_hivemind_min_players                       0       // The minimum number of players required to spawn the Hive Mind
 ttt_plaguemaster_min_players                   0       // The minimum number of players required to spawn the Plaguemaster
-ttt_cannibal_min_players                       0       // The minimum number of players required to spawn the Cannibal
 
 // Grouped Role Spawn Settings
 ttt_twins_enabled                              0       // Whether or not the Twins should spawn
@@ -756,6 +756,7 @@ ttt_cannibal_notify_mode                       0       // The logic to use when 
 ttt_cannibal_notify_killer                     1       // Whether to notify a Cannibal's killer
 ttt_cannibal_notify_sound                      0       // Whether to play a cheering sound when a Cannibal is killed
 ttt_cannibal_notify_confetti                   0       // Whether to throw confetti when a Cannibal is a killed
+ttt_cannibal_eat_cooldown                      10      // The amount of time (in seconds) between uses of the Cannibal's Cannibalizer
 ttt_cannibal_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Cannibal
 ttt_cannibal_update_scoreboard                 0       // Whether the Cannibal shows dead players as missing in action
 
@@ -1141,6 +1142,7 @@ ttt_lootgoblin_starting_health                 50      // The amount of health t
 ttt_cupid_starting_health                      100     // The amount of health the Cupid starts with
 ttt_sponge_starting_health                     150     // The amount of health the Sponge starts with
 ttt_guesser_starting_health                    100     // The amount of health the Guesser starts with
+ttt_cannibal_starting_health                   100     // The amount of health the Cannibal starts with
 ttt_drunk_starting_health                      100     // The amount of health the Drunk starts with
 ttt_oldman_starting_health                     1       // The amount of health the Old Man starts with
 ttt_killer_starting_health                     150     // The amount of health the Killer starts with
@@ -1150,7 +1152,6 @@ ttt_shadow_starting_health                     100     // The amount of health t
 ttt_arsonist_starting_health                   100     // The amount of health the Arsonist starts with
 ttt_hivemind_starting_health                   100     // The amount of health the Hive Mind starts with
 ttt_plaguemaster_starting_health               100     // The amount of health the Plaguemaster starts with
-ttt_cannibal_starting_health                   100     // The amount of health the Cannibal starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                         100     // The maximum amount of health a Traitor can have
@@ -1195,6 +1196,7 @@ ttt_lootgoblin_max_health                      50      // The maximum amount of 
 ttt_cupid_max_health                           100     // The maximum amount of health the Cupid can have
 ttt_sponge_max_health                          150     // The maximum amount of health the Sponge can have
 ttt_guesser_max_health                         100     // The maximum amount of health the Guesser can have
+ttt_cannibal_max_health                        100     // The maximum amount of health the Cannibal can have
 ttt_drunk_max_health                           100     // The maximum amount of health the Drunk can have
 ttt_oldman_max_health                          1       // The maximum amount of health the Old Man can have
 ttt_killer_max_health                          150     // The maximum amount of health the Killer can have
@@ -1204,7 +1206,6 @@ ttt_shadow_max_health                          100     // The maximum amount of 
 ttt_arsonist_max_health                        100     // The maximum amount of health the Arsonist can have
 ttt_hivemind_max_health                        100     // The maximum amount of health the Hive Mind can have
 ttt_plaguemaster_max_health                    100     // The maximum amount of health the Plaguemaster can have
-ttt_cannibal_max_health                        100     // The maximum amount of health the Cannibal can have
 
 // Round Time
 ttt_roundtime_win_draw                         0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
