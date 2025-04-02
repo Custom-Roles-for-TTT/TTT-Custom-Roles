@@ -862,6 +862,7 @@ globals = {
     "EVENT_BODYFOUND",
     "EVENT_BODYSNATCH",
     "EVENT_BODYSNATCHERKILLED",
+    "EVENT_CANNIBALEAT",
     "EVENT_C4DISARM",
     "EVENT_C4EXPLODE",
     "EVENT_C4PLANT",
@@ -1060,6 +1061,7 @@ globals = {
     "WEAPON_CATEGORY_ROLE",
     "WINS_BY_ROLE",
     "WIN_ARSONIST",
+    "WIN_CANNIBAL",
     "WIN_CLOWN",
     "WIN_CUPID",
     "WIN_HIVEMIND",
@@ -1101,6 +1103,7 @@ globals = {
     "ROLE_ASSASSIN",
     "ROLE_BEGGAR",
     "ROLE_BODYSNATCHER",
+    "ROLE_CANNIBAL",
     "ROLE_CLOWN",
     "ROLE_CUPID",
     "ROLE_DEPUTY",
@@ -1202,9 +1205,13 @@ globals = {
     "UpdateRoleWeaponState",
 
     -- CR Namespaces
+    "CANNIBAL",
     "CRHUD",
     "DEATHRADAR",
     "SYNC",
+    
+    -- TTTPAP Namespaces
+    "TTTPAP",
 
     -- Randomat Namespaces
     "Randomat",
