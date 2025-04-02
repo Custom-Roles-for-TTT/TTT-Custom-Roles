@@ -25,7 +25,7 @@ CreateConVar("ttt_cannibal_notify_confetti", "0", FCVAR_NONE, "Whether to throw 
 -- PLAYER RESPAWN --
 --------------------
 
-local function ReleaseEatenPlayers(ply)
+local function ReleaseEatenPlayers(ply, message)
     local cannibalSID64 = ply:SteamID64()
     for _, v in PlayerIterator() do
         if v.TTTCannibalEaten and v.TTTCannibalEaten == cannibalSID64 then
@@ -61,7 +61,7 @@ local function ReleaseEatenPlayers(ply)
             end
             CANNIBAL.playerWeapons[sID64] = nil
 
-            v:QueueMessage(MSG_PRINTBOTH, ply:Nick() .. " died and you have escaped!")
+            v:QueueMessage(MSG_PRINTBOTH, message)
         end
     end
 end
@@ -78,7 +78,7 @@ AddHook("PlayerDeath", "Cannibal_PlayerDeath", function(victim, infl, attacker)
     if not IsPlayer(victim) then return end
     if not victim:IsCannibal() then return end
 
-    ReleaseEatenPlayers(victim)
+    ReleaseEatenPlayers(victim, victim:Nick() .. " died and you have escaped!")
 
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
@@ -89,16 +89,22 @@ end)
 AddHook("PlayerDisconnected", "Cannibal_PlayerDisconnected", function(ply)
     if not ply:IsCannibal() then return end
 
-    ReleaseEatenPlayers(ply)
+    ReleaseEatenPlayers(ply, ply:Nick() .. " disconnected and you have escaped!")
 end)
 
 AddHook("TTTPlayerRoleChanged", "Cannibal_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not IsPlayer(ply) then return end
     if oldRole ~= ROLE_CANNIBAL or newRole == ROLE_CANNIBAL then return end
 
-    ReleaseEatenPlayers(ply)
+    ReleaseEatenPlayers(ply, ply:Nick() .. " lost their appetite and spat you out!")
 end)
 
+AddHook("TTTOnRoleAbilityDisabled", "Cannibal_TTTOnRoleAbilityDisabled", function(ply)
+    if not IsPlayer(ply) then return end
+    if not ply:IsCannibal() then return end
+
+    ReleaseEatenPlayers(ply, ply:Nick() .. " felt unwell and spat you out!")
+end)
 -------------------------
 -- EATEN PLAYER BLOCKS --
 -------------------------
