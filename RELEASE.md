@@ -3,6 +3,9 @@
 ## 2.2.10 (Beta)
 **Released:**
 
+### Additions
+- Added new jester role: Cannibal
+
 ### Developer
 - Added ability to specify role by constant name (e.g. `"ROLE_JESTER"`) in `ttt_logic_role` and `ttt_filter_role`
 
