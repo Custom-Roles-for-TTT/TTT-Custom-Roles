@@ -348,9 +348,6 @@ local function ModifyColor(color, type)
         c = ColorAlpha(c, 130)
     elseif type == "radar" then
         c = ColorAlpha(c, 230)
-    -- HSLToColor doesn't apply the Color metatable so call ColorAlpha to ensure this is actually a "Color"
-    else
-        c = ColorAlpha(c, 255)
     end
 
     return c

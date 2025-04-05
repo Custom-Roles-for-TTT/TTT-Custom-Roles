@@ -10,6 +10,15 @@ function ENT:KeyValue(key, value)
         -- this is our output, so handle it as such
         self:StoreOutput(key, value)
     elseif key == "Role" then
+        if isstring(value) then
+            -- HACK: Let map makers specify they want the check to only work for jesters, but keep compatibility with base TTT where "ROLE_ANY" is 3 in this entity
+            if value == "ROLE_JESTER" then
+                value = -ROLE_JESTER
+            else
+                value = _G[value] or value
+            end
+        end
+
         self.Role = tonumber(value)
 
         if not self.Role then
