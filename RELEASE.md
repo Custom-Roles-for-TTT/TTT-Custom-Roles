@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.2.10 (Beta)
-**Released:**
+**Released: April 5th, 2025**
 
 ### Additions
 - Added new jester role: Cannibal
