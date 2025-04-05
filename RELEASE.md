@@ -1,12 +1,21 @@
 # Release Notes
 
+## 2.2.10 (Beta)
+**Released: April 5th, 2025**
+
+### Additions
+- Added new jester role: Cannibal
+
+### Developer
+- Added ability to specify role by constant name (e.g. `"ROLE_JESTER"`) in `ttt_logic_role` and `ttt_filter_role`
+
 ## 2.2.9 (Beta)
 **Released: April 1st, 2025**
 
 ### Additions
 - Ported "TTT: Add crosshair customisation"
 - Added ability to disable scoreboard alternating row colors
-- Added scoreboard client setting to F1 Config menu
+- Added scoreboard client settings to F1 Config menu
 
 ### Fixes
 - Ported "Fixed a regression in TTT voice chat team colors"

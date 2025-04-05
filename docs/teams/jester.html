@@ -513,6 +513,57 @@
                 </div>
             </div>
         </div>
+        <div id="cannibal" class="collapsible">
+            <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-cannibal"></i>Cannibal<span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-cannibal"></i><a href="#cannibal">Cannibal</a></span> can eat other players. They win by eating all other living players.</p>
+                <div class="expansion">
+                    <p>Eaten players are not dead, but they cannot take any actions and are forced to spectate the Cannibal that ate them. Additionally they are unable to communicate with any players other than players that were also eaten by the same Cannibal.</p>
+                    <p>After eating a player, the Cannibalizer goes on cooldown for an amount of time determined by <code>ttt_cannibal_eat_cooldown</code>. If <code>ttt_cannibal_eat_cooldown</code> is set to 0 there is no cooldown and the Cannibalizer can be used again instantly.</p>
+                    <p>If the Cannibal dies, all eaten players will reappear in the same state as when they were eaten at the location of the Cannibal's death.</p>
+                    <p>The Cannibal can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html">independent</a></span> instead of being a jester by enabling <code>ttt_cannibal_is_independent</code>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_cannibal_can_see_jesters</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Cannibal. <i>(Requires <code>ttt_cannibal_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_eat_cooldown</td>
+                            <td>10</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds between uses of the Cannibal's Cannibalizer.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_is_independent</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Cannibals should be treated as members of the independent team.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_update_scoreboard</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Cannibal shows dead players as missing in action. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
+            </div>
+        </div>
         <div id="clown" class="collapsible">
             <button class="header" style="background-color:var(--jester);"><i class="icon-clown"></i>Clown</button>
             <div class="content">
