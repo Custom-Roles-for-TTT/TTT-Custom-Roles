@@ -20,7 +20,7 @@
         <p><em><strong>NOTE:</strong></em> Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the <em>remaining hook instances to be completely skipped</em>. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.</p>
     </div>
     <div class="contentbody panel">
-        <h3><a id="tttbeggarconvertbeggar-wep" href="#tttbeggarconvertbeggar-wep">TTTBeggarConvert(beggar, wep)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttbeggarconvertbeggar-wep" href="#tttbeggarconvertbeggar-wep">TTTBeggarConvert(beggar, wep)</a></h3>
         <p>
             Called when a beggar is about to have their team changed from receiving an item.<br>
             <em>Realm:</em> Server<br>
@@ -500,7 +500,7 @@
             <em>Return:</em> <code>true</code> if the player is currently respawning, <code>false</code> if they are not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
         </p>
 
-        <h3><a id="tttisroleabilitydisabled" href="#tttisroleabilitydisabled">TTTIsRoleAbilityDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttisroleabilitydisabled" href="#tttisroleabilitydisabled">TTTIsRoleAbilityDisabled(ply, ...)</a></h3>
         <p>
             Called to check whether a player's role ability is disabled.<br>
             <em>NOTE</em>: This will be called every time something queries for whether a player's role ability is disabled as long as is remains enabled.<br>
@@ -516,7 +516,7 @@
             <em>Return:</em> <code>true</code> if the player's role ability is currently disabled. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
         </p>
 
-        <h3><a id="tttisshoppurchasedisabled" href="#tttisshoppurchasedisabled">TTTIsShopPurchaseDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttisshoppurchasedisabled" href="#tttisshoppurchasedisabled">TTTIsShopPurchaseDisabled(ply, ...)</a></h3>
         <p>
             Called to check whether a player's shop purchases are disabled.<br>
             <em>NOTE</em>: This will be called every time something queries for whether a player's shop purchases is disabled as long as they remain enabled.<br>
@@ -576,7 +576,7 @@
             <li><em>tgt</em> - The target being zombified</li>
         </ul>
 
-        <h3><a id="tttonroleabilityblocked" href="#tttonroleabilityblocked">TTTOnRoleAbilityBlocked(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttonroleabilityblocked" href="#tttonroleabilityblocked">TTTOnRoleAbilityBlocked(ply, ...)</a></h3>
         <p>
             Called when a player tries to use their role ability but it's disabled.<br>
             <em>Realm:</em> Client and Server<br>
@@ -588,7 +588,7 @@
             <li><em>...</em> - Any other parameters that are passed to <code>plymeta:IsRoleAbilityDisabled</code></li>
         </ul>
 
-        <h3><a id="tttonroleabilitydisabled" href="#tttonroleabilitydisabled">TTTOnRoleAbilityDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttonroleabilitydisabled" href="#tttonroleabilitydisabled">TTTOnRoleAbilityDisabled(ply, ...)</a></h3>
         <p>
             Called when a player's role ability is disabled.<br>
             <em>Realm:</em> Client and Server<br>
@@ -600,7 +600,7 @@
             <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableRoleAbility</code> or <code>plymeta:IsRoleAbilityDisabled</code></li>
         </ul>
 
-        <h3><a id="tttonroleabilityenabled" href="#tttonroleabilityenabled">TTTOnRoleAbilityEnabled(ply)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttonroleabilityenabled" href="#tttonroleabilityenabled">TTTOnRoleAbilityEnabled(ply)</a></h3>
         <p>
             Called when a player's role ability is re-enabled.<br>
             <em>Realm:</em> Client and Server<br>
@@ -611,7 +611,7 @@
             <li><em>ply</em> - The player whose role ability is being enabled</li>
         </ul>
 
-        <h3><a id="tttonshoppurchaseblocked" href="#tttonshoppurchaseblocked">TTTOnShopPurchaseBlocked(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttonshoppurchaseblocked" href="#tttonshoppurchaseblocked">TTTOnShopPurchaseBlocked(ply, ...)</a></h3>
         <p>
             Called when a player tries to use the shop but their purchases are disabled.<br>
             <em>Realm:</em> Server<br>
@@ -623,7 +623,7 @@
             <li><em>...</em> - Any other parameters that are passed to <code>plymeta:IsShopPurchaseDisabled</code></li>
         </ul>
 
-        <h3><a id="tttonshoppurchasedisabled" href="#tttonshoppurchasedisabled">TTTOnShopPurchaseDisabled(ply, ...)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttonshoppurchasedisabled" href="#tttonshoppurchasedisabled">TTTOnShopPurchaseDisabled(ply, ...)</a></h3>
         <p>
             Called when a player's shop purchases are disabled.<br>
             <em>Realm:</em> Server<br>
@@ -635,7 +635,7 @@
             <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableShopPurchases</code> or <code>plymeta:IsShopPurchaseDisabled</code></li>
         </ul>
 
-        <h3><a id="tttonshoppurchaseenabled" href="#tttonshoppurchaseenabled">TTTOnShopPurchaseEnabled(ply)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttonshoppurchaseenabled" href="#tttonshoppurchaseenabled">TTTOnShopPurchaseEnabled(ply)</a></h3>
         <p>
             Called when a player's shop purchases are enabled.<br>
             <em>Realm:</em> Server<br>
@@ -1998,7 +1998,7 @@
             <li><em>win</em> - The win type that the round is about to end with</li>
         </ul>
 
-        <h3><a id="tttzombiebodyeatenply-ent-healed" href="#tttzombiebodyeatenply-ent-healed">TTTZombieBodyEaten(ply, ent, healed)</a>  <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="tttzombiebodyeatenply-ent-healed" href="#tttzombiebodyeatenply-ent-healed">TTTZombieBodyEaten(ply, ent, healed)</a> </h3>
         <p>
             Called after a Zombie eats a body.<br>
             <em>Realm:</em> Server<br>
