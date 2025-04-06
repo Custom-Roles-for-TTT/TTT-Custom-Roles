@@ -11,7 +11,6 @@ local StringUpper = string.upper
 local guesser_show_team_threshold = GetConVar("ttt_guesser_show_team_threshold")
 local guesser_show_role_threshold = GetConVar("ttt_guesser_show_role_threshold")
 local guesser_can_guess_detectives = GetConVar("ttt_guesser_can_guess_detectives")
-local guesser_unguessable_roles = GetConVar("ttt_guesser_unguessable_roles")
 local guesser_warn_all = GetConVar("ttt_guesser_warn_all")
 local glitch_mode = GetConVar("ttt_glitch_mode")
 local hide_role = GetConVar("ttt_hide_role")
@@ -340,7 +339,7 @@ hook.Add("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, ti
         html = html .. "<span style='display: block; margin-top: 10px;'>After swapping roles, the new " .. ROLE_STRINGS[ROLE_GUESSER] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot guess</span> the roles of any players that were previously " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and must guess someone else's role instead.</span>"
 
         local unguessableRoles = {}
-        local unguessableRolesString = guesser_unguessable_roles:GetString()
+        local unguessableRolesString = GetConVar("ttt_guesser_unguessable_roles"):GetString()
         if #unguessableRolesString > 0 then
             unguessableRoles = string.Explode(",", unguessableRolesString)
         end

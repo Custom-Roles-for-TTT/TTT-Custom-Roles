@@ -104,7 +104,7 @@ end)
 
 hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
-    if valid_kill and victim:IsPhantom() then
+    if valid_kill and victim:IsPhantom() and not victim:IsRoleAbilityDisabled() then
         local attacker_alive = attacker:IsActive()
         local will_posses = phantom_killer_haunt:GetBool() and not attacker:IsVictimChangingRole(victim) and attacker_alive
 
@@ -136,7 +136,8 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
         if will_posses then
             victim:SetNWBool("PhantomPossessing", true)
             victim:SetNWInt("PhantomPossessingPower", phantom_killer_haunt_power_starting:GetInt())
-            timer.Create(victim:Nick() .. "PhantomPossessingPower", 1, 0, function()
+            local power_rate = phantom_killer_haunt_power_rate:GetInt()
+            timer.Create(victim:Nick() .. "PhantomPossessingPower", 1 / power_rate, 0, function()
                 -- If haunting without a body is disabled, check to make sure the body exists still
                 if not phantom_killer_haunt_without_body:GetBool() then
                     local phantomBody = victim.server_ragdoll or victim:GetRagdollEntity()
@@ -166,8 +167,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
                 end
 
                 local power = victim:GetNWInt("PhantomPossessingPower", 0)
-                local power_rate = phantom_killer_haunt_power_rate:GetInt()
-                local new_power = math.Clamp(power + power_rate, 0, phantom_killer_haunt_power_max:GetInt())
+                local new_power = math.Clamp(power + 1, 0, phantom_killer_haunt_power_max:GetInt())
                 victim:SetNWInt("PhantomPossessingPower", new_power)
             end)
 

@@ -86,8 +86,8 @@ local DISTANCE_UNIT_FEET = 2
 
 local distance_unit = CreateClientConVar("ttt_distance_unit", "1", true, false, "What unit to use when displaying distance. 0 - None (Source). 1 - Meters. 2 - Feet", DISTANCE_UNIT_SOURCE, DISTANCE_UNIT_FEET)
 
-local meters_per_unit = 1 / 52.6027397260274
-local feet_per_unit = 1 / 16.0427807486631
+local meters_per_unit = 1 / UNITS_PER_METER
+local feet_per_unit = 1 / UNITS_PER_FOOT
 
 local function GetReadableDistance(distance)
     local unit = distance_unit:GetInt()
@@ -239,9 +239,15 @@ function RADAR:Draw(client)
                 local hideSpecialTraitors = glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false)
                 local hideBeggar = tgt.was_beggar and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
                 local hideBodysnatcher = tgt.was_bodysnatcher and not (bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or bodysnatcherMode == BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER or (TRAITOR_ROLES[role] and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM))
-                local showJester = (tgt.should_act_like_jester or ((role == ROLE_TRAITOR or role == ROLE_INNOCENT) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
+                local showJester = (tgt.should_act_like_jester or
+                                    ((role == ROLE_TRAITOR or role == ROLE_INNOCENT) and hideBeggar and JESTER_ROLES[ROLE_BEGGAR]) or
+                                    (hideBodysnatcher and JESTER_ROLES[ROLE_BODYSNATCHER])) and
+                                        not client:ShouldHideJesters()
                 if showJester then
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_JESTER], alpha)
+                -- Hide these if we're told to but they aren't jesters
+                elseif hideBeggar or hideBodysnatcher then
+                    color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], alpha)
                 elseif (role == ROLE_TRAITOR or role == ROLE_GLITCH or (hideSpecialTraitors and TRAITOR_ROLES[role])) then
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_TRAITOR], alpha)
                 elseif TRAITOR_ROLES[role] then

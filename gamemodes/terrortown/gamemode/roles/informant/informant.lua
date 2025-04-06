@@ -33,7 +33,7 @@ local informant_scanner_monster_mult = GetConVar("ttt_informant_scanner_monster_
 -- Only allow the informant to pick up informant-specific weapons
 hook.Add("PlayerCanPickupWeapon", "Informant_Weapons_PlayerCanPickupWeapon", function(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
-    if ply:IsSpec() then return false end
+    if ply:IsSpec() then return end
 
     if wep:GetClass() == "weapon_inf_scanner" then
         return ply:IsInformant()
@@ -145,6 +145,8 @@ hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply,
             for _, v in PlayerIterator() do
                 -- Don't tell people about this role change if we're not revealing them
                 if hideRole then continue end
+                -- We don't need to tell the player who changed roles
+                if ply == v then continue end
 
                 if v:IsActiveInformant() then
                     v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
@@ -204,7 +206,9 @@ local function InRange(ply, target)
 
     local plyPos = ply:GetPos()
     local targetPos = target:GetPos()
-    if plyPos:Distance(targetPos) > informant_scanner_distance:GetInt() then return false end
+    local scanner_distance = informant_scanner_distance:GetInt()
+    local scannerDistanceSqr = scanner_distance * scanner_distance
+    if plyPos:DistToSqr(targetPos) > scannerDistanceSqr then return false end
 
     return ply:IsOnScreen(target, 0.35)
 end
@@ -292,7 +296,7 @@ end
 hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
-    if ply:IsInformant() then
+    if ply:IsInformant() and not ply:IsRoleAbilityDisabled() then
         local state = ply:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
         if state == INFORMANT_SCANNER_IDLE then
             local target = IsTargetingPlayer(ply)

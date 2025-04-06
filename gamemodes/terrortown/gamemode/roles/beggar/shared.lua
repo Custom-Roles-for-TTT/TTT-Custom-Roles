@@ -34,9 +34,9 @@ function plymeta:ShouldRevealBeggar(tgt)
 
     -- Use what role they changed to to determine which setting to use
     local beggarMode = nil
-    if tgt:IsTraitor() then
+    if tgt:IsTraitorTeam() then
         beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
-    elseif tgt:IsInnocent() then
+    elseif tgt:IsInnocentTeam() then
         beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
     end
 
@@ -94,13 +94,13 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_reveal_traitor",
     type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Traitors", "Innocents"},
+    choices = {"No one", "Everyone", "Traitors", "Innocents", "Roles that can see jesters"},
     isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_reveal_innocent",
     type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Traitors", "Innocents"},
+    choices = {"No one", "Everyone", "Traitors", "Innocents", "Roles that can see jesters"},
     isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
@@ -148,10 +148,6 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_transfer_ownership",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_can_see_jesters",
     type = ROLE_CONVAR_TYPE_BOOL
 })
@@ -166,6 +162,14 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_keep_begging",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_ignore_empty_weapons",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_ignore_empty_weapons_warning",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 

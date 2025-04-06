@@ -39,7 +39,7 @@
             <li><em>value</em> - The percent of the bar to be filled</li>
         </ul>
 
-        <h3><a id="crhudpaintpowershudpowers-max_power-current_power-colors-title-subtitle" href="#crhudpaintpowershudpowers-max_power-current_power-colors-title-subtitle">CRHUD:PaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)</a></h3>
+        <h3><a id="crhudpaintpowershudclient-powers-max_power-current_power-colors-title" href="#crhudpaintpowershudclient-powers-max_power-current_power-colors-title">CRHUD:PaintPowersHUD(client, powers, max_power, current_power, colors, title)</a></h3>
         <p>
             Paints a HUD for showing available powers and their associated costs. Used for roles such as the Phantom.<br>
             <em>Realm:</em> Client<br>
@@ -47,7 +47,15 @@
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>powers</em> - Table of key-value pairs where each key is the label for a power and the associated value is the cost of using it. The key can contain a <code>{num}</code> placeholder which will be replaced with the percentage of maximum power that the power costs</li>
+            <li><em>client</em> - The client player</li>
+            <li><em>powers</em> - A sequential table of objects containing information about each ability
+            <ul>
+                <li><em>name</em> - The name of this ability</li>
+                <li><em>key</em> - The key that is used for the icon of this ability. If a single character is provided (e.g. "W"), then that character will be used as the icon for this ability. If more than one character is provided (e.g. "tab"), then a .vmt file with that name must exist in "vgui/ttt/keys" to be used as the icon</li>
+                <li><em>cost</em> - The amount of power required to use this ability</li>
+                <li><em>desc</em> - The description of this ability</li>
+            </ul>
+            </li>
             <li><em>max_power</em> - The maximum amount of a power a player can have</li>
             <li><em>current_power</em> - The current amount of power a player has</li>
             <li><em>colors</em> - Object containing <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Colors</a> to be used when displaying the powers
@@ -57,12 +65,27 @@
             </ul>
             </li>
             <li><em>title</em> - Title text to show within the power level progress bar</li>
+        </ul>
+        <p>
+            <em>NOTE:</em> Prior to version 2.2.1 the following parameters were used instead:
+        </p>
+        <ul>
+            <li><em>powers</em> - Table of key-value pairs where each key is the label for a power and the associated value is the cost of using it. The key can contain a <code>{num}</code> placeholder which will be replaced with the percentage of maximum power that the power costs</li>
+            <li><em>max_power</em> - The maximum amount of a power a player can have</li>
+            <li><em>current_power</em> - The current amount of power a player has</li>
+            <li><em>colors</em> - Object containing <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Colors</a> to be used when displaying the powers
+                <ul>
+                    <li><em>background</em> - The background color of the progress bar used to show power level percentage</li>
+                    <li><em>fill</em> - The color to use for the current power level in the progress bar</li>
+                </ul>
+            </li>
+            <li><em>title</em> - Title text to show within the power level progress bar</li>
             <li><em>subtitle</em> - The sub-title text, used for hints, that is shown in small text above the power level progress bar</li>
         </ul>
 
         <h3><a id="crhudpaintprogressbarx-y-w-color-heading-progress-segments-titles-m" href="#crhudpaintprogressbarx-y-w-color-heading-progress-segments-titles-m">CRHUD:PaintProgressBar(x, y, w, color, heading, progress, segments, titles, m)</a></h3>
         <p>
-            Paints a HUD for showing a progress bar, optionally divided into multiple segments
+            Paints a HUD for showing a progress bar, optionally divided into multiple segments<br>
             <em>Realm:</em> Client<br>
             <em>Added in:</em> 1.6.19<br>
             <em>Parameters:</em>
@@ -77,6 +100,26 @@
             <li><em>segments</em> - The number of segments the progress bar should have (Defaults to 1)</li>
             <li><em>titles</em> - A table of strings containing the titles for each segment. Must have length equal to the number of segments. Ignored if segments is equal to 1 (Defaults to {})</li>
             <li><em>m</em> - The margin between each segment (Defaults to 10)</li>
+        </ul>
+
+        <h3><span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span> <a id="curhudpaintspectatorprogressbarmax_value-current_value-colors-title-subtitle" href="#curhudpaintspectatorprogressbarmax_value-current_value-colors-title-subtitle">CRHUD:PaintSpectatorProgressBar(max_value, current_value, colors, title, subtitle)</a></h3>
+        <p>
+            Paints a HUD for showing a progress bar to spectators, similar to that shown when possessing a prop<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>max_value</em> - The maximum value for the progress bar</li>
+            <li><em>current_value</em> - The current value of the progress bar</li>
+            <li><em>colors</em> - Object containing <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Colors</a> to be used for the progress bar
+                <ul>
+                    <li><em>background</em> - The background color of the progress bar</li>
+                    <li><em>fill</em> - The color to use for the current level of the progress bar</li>
+                </ul>
+            </li>
+            <li><em>title</em> - Title text to show within the progress bar</li>
+            <li><em>subtitle</em> - The sub-title text, used for hints, that is shown in small text above the progress bar</li>
         </ul>
 
         <h3><a id="crhudpaintstatuseffectshouldpaint-color-material-identifier" href="#crhudpaintstatuseffectshouldpaint-color-material-identifier">CRHUD:PaintStatusEffect(shouldPaint, color, material, identifier)</a></h3>

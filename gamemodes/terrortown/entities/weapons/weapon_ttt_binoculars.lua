@@ -22,8 +22,8 @@ end
 
 SWEP.Base                   = "weapon_tttbase"
 
-SWEP.ViewModel		        = "models/weapons/v_binoculars.mdl"
-SWEP.WorldModel		        = "models/weapons/w_binoculars.mdl"
+SWEP.ViewModel                = "models/weapons/v_binoculars.mdl"
+SWEP.WorldModel                = "models/weapons/w_binoculars.mdl"
 
 SWEP.Primary.ClipSize       = -1
 SWEP.Primary.DefaultClip    = -1
@@ -115,10 +115,10 @@ function SWEP:SetZoom(level)
 end
 
 function SWEP:GetViewModelPosition(pos, ang)
-	local forward = ang:Forward()
+    local forward = ang:Forward()
     -- Move the model away from the player camera so it doesn't take up half the screen
     local dist = Vector(-forward.x * self.ViewModelDistance, -forward.y * self.ViewModelDistance, -forward.z * self.ViewModelDistance)
-	return pos - dist, ang
+    return pos - dist, ang
 end
 
 function SWEP:CycleZoom()

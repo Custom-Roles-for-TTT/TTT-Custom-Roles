@@ -7,7 +7,6 @@ local table = table
 local string = string
 
 local StringSub = string.sub
-local TableInsert = table.insert
 
 ROLEBLOCKS = {}
 
@@ -131,87 +130,3 @@ function ROLEBLOCKS.GetBlockedRoles(excludeRolePack)
 
     return blocks
 end
-
-----------------------------
--- OLD ROLE BLOCK CONVARS --
-----------------------------
-
--- TODO: Deprecated - Remove after next major update
-
-local paired_role_blocks = {
-    {"deputy", "impersonator"},
-    {"doctor", "quack"},
-    {"paramedic", "hypnotist"},
-    {"phantom", "parasite"},
-    {"drunk", "clown"},
-    {"jester", "swapper"}
-}
-
-local function FloatToFraction(x)
-    local error = 0.001
-    local lowerN = 0
-    local lowerD = 1
-    local upperN = 1
-    local upperD = 1
-    for _ = 1, 100 do -- If we somehow haven't found a close enough answer after 100 iterations just use what we have
-        local middleN = lowerN + upperN
-        local middleD = lowerD + upperD
-        local middleF = middleN / middleD
-        if error < x - middleF then
-            lowerN = middleN
-            lowerD = middleD
-        elseif error < middleF - x then
-            upperN = middleN
-            upperD = middleD
-        else
-            return middleN, middleD
-        end
-    end
-    return lowerN + upperN, lowerD + upperD
-end
-
-local function GreatestCommonDivisor(a, b)
-    if b == 0 then
-        return a
-    else
-        return GreatestCommonDivisor(b, a % b)
-    end
-end
-
-hook.Add("TTTPrepareRound", "OldRoleBlocks_TTTPrepareRound", function()
-    local roleblocks = ROLEBLOCKS.GetBlockedRoles(true)
-    local changes = false
-    for _, v in ipairs(paired_role_blocks) do
-        local cvar_name = "ttt_single_" .. v[1] .. "_" .. v[2]
-        if cvars.Bool(cvar_name, false) then
-            local exists = false
-            for _, group in ipairs(roleblocks) do
-                if #group ~= 2 then continue end
-                if (group[1].role == v[1] and group[2].role == v[2]) or (group[1].role == v[2] and group[2].role == v[1]) then
-                    exists = true
-                    break
-                end
-            end
-
-            if not exists then
-                local weight = cvars.Number(cvar_name .. "_chance", 0.5)
-                local n, d = FloatToFraction(weight)
-                local gcd = GreatestCommonDivisor(n, d)
-                local weight1 = n / gcd
-                local weight2 = (d / gcd) - weight1
-                TableInsert(roleblocks, {{role = v[1], weight = weight1}, {role = v[2], weight = weight2}})
-                ErrorNoHalt("WARNING: ConVar \'" .. cvar_name .. "\' deprecated. Your configuration has been imported into the new role blocks configuration. Use \'ttt_roleblocks\' on an admin client to configure!\n")
-                changes = true
-            end
-        end
-    end
-
-    if changes then
-        local json = util.TableToJSON(roleblocks)
-        if json == nil then
-            ErrorNoHalt("Table encoding failed!\n")
-            return
-        end
-        file.Write("roleblocks.json", json)
-    end
-end)

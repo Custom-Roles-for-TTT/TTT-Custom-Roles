@@ -7,6 +7,7 @@ local AddHook = hook.Add
 -------------
 
 local illusionist_hides_monsters = GetConVar("ttt_illusionist_hides_monsters")
+local illusionist_traitor_credits = GetConVar("ttt_illusionist_traitor_credits")
 
 ------------------
 -- TRANSLATIONS --
@@ -29,7 +30,7 @@ end)
 ---------------
 
 AddHook("TTTTargetIDPlayerRoleIcon", "Illusionist_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
-    if GetGlobalBool("ttt_illusionist_alive", false) and ((cli:IsActiveTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsActiveMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if IsIllusionistBlocking() and ((cli:IsTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local icon_overridden, _, _ = cli:IsTargetIDOverridden(ply)
         if icon_overridden then return end
 
@@ -41,7 +42,7 @@ AddHook("TTTTargetIDPlayerRing", "Illusionist_TTTTargetIDPlayerRing", function(e
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
-    if GetGlobalBool("ttt_illusionist_alive", false) and ((cli:IsActiveTraitorTeam() and (ent:IsTraitorTeam() or ent:IsGlitch())) or (cli:IsActiveMonsterTeam() and ent:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if IsIllusionistBlocking() and ((cli:IsTraitorTeam() and (ent:IsTraitorTeam() or ent:IsGlitch())) or (cli:IsMonsterTeam() and ent:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local _, ring_overridden, _ = cli:IsTargetIDOverridden(ent)
         if ring_overridden then return end
 
@@ -53,7 +54,7 @@ AddHook("TTTTargetIDPlayerText", "Illusionist_TTTTargetIDPlayerText", function(e
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
-    if GetGlobalBool("ttt_illusionist_alive", false) and ((cli:IsActiveTraitorTeam() and (ent:IsTraitorTeam() or ent:IsGlitch())) or (cli:IsActiveMonsterTeam() and ent:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if IsIllusionistBlocking() and ((cli:IsTraitorTeam() and (ent:IsTraitorTeam() or ent:IsGlitch())) or (cli:IsMonsterTeam() and ent:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local _, _, text_overridden = cli:IsTargetIDOverridden(ent)
         if text_overridden then return end
 
@@ -66,11 +67,26 @@ end)
 ----------------
 
 AddHook("TTTScoreboardPlayerRole", "Illusionist_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
-    if GetGlobalBool("ttt_illusionist_alive", false) and ply ~= cli and ((cli:IsActiveTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsActiveMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if IsIllusionistBlocking() and ply ~= cli and ((cli:IsTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local _, role_overridden = cli:IsScoreboardInfoOverridden(ply)
         if role_overridden then return end
 
         return false, false
+    end
+end)
+
+-----------
+-- RADAR --
+-----------
+
+AddHook("TTTRadarPlayerRender", "Illusionist_TTTRadarPlayerRender", function(cli, tgt, color, hidden)
+    if hidden then return end
+    if cli == tgt then return end
+    if not IsIllusionistBlocking() then return end
+
+    if (cli:IsTraitorTeam() and (TRAITOR_ROLES[tgt.role] or tgt.role == ROLE_GLITCH)) or
+        (cli:IsMonsterTeam() and MONSTER_ROLES[tgt.role] and illusionist_hides_monsters:GetBool()) then
+        return ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], color.a)
     end
 end)
 
@@ -100,6 +116,25 @@ hook.Add("TTTTutorialRoleText", "Illusionist_TTTTutorialRoleText", function(role
         end
 
         html = html .. " will learn who is on their team.</span>"
+
+        local traitor_credits = illusionist_traitor_credits:GetInt()
+        if traitor_credits > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Traitors"
+
+            if hides_monsters then
+                html = html .. " and monsters"
+            end
+
+            html = html .. " will be given "
+
+            if traitor_credits == 1 then
+                html = html .. "an extra credit"
+            else
+                html = html .. tostring(traitor_credits) .. " extra credits"
+            end
+
+            html = html .. " at the start of the round if there is " .. ROLE_STRINGS_EXT[ROLE_ILLUSIONIST] .. " in play.</span>"
+        end
 
         return html
     end

@@ -7,6 +7,7 @@ local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local pairs = pairs
+local player = player
 local surface = surface
 local table = table
 local timer = timer
@@ -20,6 +21,18 @@ local MathMax = math.max
 local MathMin = math.min
 local MathRound = math.Round
 local MathSin = math.sin
+local PlayerIterator = player.Iterator
+
+local OpenedVoicePanels = {}
+local function HideVolumePanels()
+    for _, pnl in pairs(OpenedVoicePanels) do
+        if IsValid(pnl) then
+            pnl:Close()
+        end
+    end
+    table.Empty(OpenedVoicePanels)
+end
+hook.Add("ScoreboardHide", "TTT_HideVolumePanels", HideVolumePanels)
 
 SB_ROW_HEIGHT = 24 --16
 
@@ -131,8 +144,32 @@ function GM:TTTScoreboardColorForPlayer(ply)
 end
 
 local function GetGlitchedRole(p, glitchMode)
+    -- If this is the glitch but their role is disabled, don't show anything
+    if p:IsGlitch() and p:IsRoleAbilityDisabled() then
+        return nil, nil
+    end
+
     -- Use the player's role if they are a traitor, otherwise this is a glitch and we should use their fake role
-    local role = p:IsTraitorTeam() and p:GetRole() or p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    local role
+    if p:IsTraitorTeam() then
+        local allDisabled = true
+        for _, v in PlayerIterator() do
+            if v:IsGlitch() and not v:IsRoleAbilityDisabled() then
+                allDisabled = false
+                break
+            end
+        end
+
+        -- If all glitches have been disabled then we can show this player's true role as if there was no glitch
+        if allDisabled then
+            return p:GetRole(), nil
+        end
+
+        role = p:GetRole()
+    else
+        role = p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    end
+
     -- Only hide vanilla traitors
     if glitchMode == GLITCH_SHOW_AS_TRAITOR then
         if role == ROLE_TRAITOR then
@@ -156,16 +193,18 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
     if not IsValid(ply) or GetRoundState() == ROUND_WAIT or GetRoundState() == ROUND_PREP then return defaultcolor end
 
     local client = LocalPlayer()
-    if ShouldSpectatorSeeRoles(client) then
+    if client == ply or ShouldSpectatorSeeRoles(client) then
         return ply:GetRole()
     end
 
-    if ply.search_result and ply.search_result.role > ROLE_NONE then
+    -- If we have the role saved and it's not restricted to detectives only, show it
+    if ply.search_result and ply.search_result.role > ROLE_NONE and
+        (not cvars.Bool("ttt_detectives_search_only_role", false) or ply:GetNWBool("body_searched_det", false)) then
         return ply.search_result.role
     end
 
-    if ply == client or
-        (ply:GetNWBool("body_found", false) and GetConVar("ttt_corpse_search_not_shared"):GetBool()) then
+    -- If this client should know the player's role, show it
+    if ply.body_found_role then
         return ply:GetRole()
     end
 
@@ -177,16 +216,24 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
 
     local hideBeggar = ply:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ply)
     local hideBodysnatcher = ply:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ply)
-    local showJester = (ply:ShouldActLikeJester() or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
+    local showJester = (ply:ShouldActLikeJester() or
+                        ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar and JESTER_ROLES[ROLE_BEGGAR]) or
+                        (hideBodysnatcher and JESTER_ROLES[ROLE_BODYSNATCHER])) and
+                            not client:ShouldHideJesters()
 
     if client:IsTraitorTeam() then
         if showJester then
             return ROLE_JESTER
+        -- Hide these if we're told to but they aren't jesters
+        elseif hideBeggar or hideBodysnatcher then
+            return defaultcolor
         elseif ply:IsTraitorTeam() then
             return ply:GetRole()
         elseif ply:IsGlitch() then
             if client:IsZombie() then
                 return ROLE_ZOMBIE
+            elseif ply:IsRoleAbilityDisabled() then
+                return ROLE_NONE
             else
                 return ply:GetNWInt("GlitchBluff", ROLE_TRAITOR)
             end
@@ -285,17 +332,19 @@ function PANEL:Paint(width, height)
             end
         end
 
-        c = color or ROLE_COLORS_SCOREBOARD[role]
-        -- Show the question mark icon for jesters who haven't been searched
-        if role == ROLE_JESTER and not ply:GetNWBool("body_searched", false) then
-            roleStr = ROLE_STRINGS_SHORT[ROLE_NONE]
-        else
-            roleStr = ROLE_STRINGS_SHORT[role]
-        end
+        if role then
+            c = color or ROLE_COLORS_SCOREBOARD[role]
+            -- Show the question mark icon for jesters who haven't been searched
+            if role == ROLE_JESTER and not ply:GetNWBool("body_searched", false) then
+                roleStr = ROLE_STRINGS_SHORT[ROLE_NONE]
+            else
+                roleStr = ROLE_STRINGS_SHORT[role]
+            end
 
-        if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then
-            c = ROLE_COLORS_SCOREBOARD[role]
-            roleStr = ROLE_STRINGS_SHORT[role]
+            if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then
+                c = ROLE_COLORS_SCOREBOARD[role]
+                roleStr = ROLE_STRINGS_SHORT[role]
+            end
         end
     end
 
@@ -370,7 +419,9 @@ function PANEL:SetPlayer(ply)
 
     self.voice.DoRightClick = function()
         if IsValid(ply) and ply ~= LocalPlayer() then
-           self:ShowMicVolumeSlider()
+            HideVolumePanels()
+            local voiceSlider = self:ShowMicVolumeSlider()
+            table.insert(OpenedVoicePanels, voiceSlider)
         end
      end
 
@@ -528,7 +579,7 @@ function PANEL:ShowMicVolumeSlider()
     local sliderHeight = 16
     local sliderDisplayHeight = 8
 
-    local x = MathMax(gui.MouseX() - width, 0)
+    local x = MathMax(gui.MouseX() - width - padding, 0)
     local y = MathMin(gui.MouseY(), ScrH() - height)
 
     local currentPlayerVolume = self:GetPlayer():GetVoiceVolumeScale()
@@ -546,6 +597,7 @@ function PANEL:ShowMicVolumeSlider()
     frame.Paint = function(s, w, h)
         draw.RoundedBox(5, 0, 0, w, h, Color(24, 25, 28, 255))
     end
+    frame.Player = self:GetPlayer()
 
     -- Automatically close after 10 seconds (something may have gone wrong)
     timer.Simple(10, function() if IsValid(frame) then frame:Close() end end)
@@ -566,7 +618,7 @@ function PANEL:ShowMicVolumeSlider()
     slider:SetSlideX(currentPlayerVolume)
     slider:SetLockY(0.5)
     slider.TranslateValues = function(s, sx, sy)
-        if IsValid(self:GetPlayer()) then self:GetPlayer():SetVoiceVolumeScale(sx) end
+        if IsValid(frame.Player) then frame.Player:SetVoiceVolumeScale(x) end
         return sx, sy
     end
 
@@ -606,6 +658,8 @@ function PANEL:ShowMicVolumeSlider()
 
         draw.RoundedBox(100, 0, 0, sliderHeight, sliderHeight, COLOR_WHITE)
     end
- end
+
+    return frame
+end
 
 vgui.Register("TTTScorePlayerRow", PANEL, "DButton")

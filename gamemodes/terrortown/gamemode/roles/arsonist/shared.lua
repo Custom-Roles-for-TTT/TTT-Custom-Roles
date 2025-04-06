@@ -21,6 +21,7 @@ CreateConVar("ttt_arsonist_douse_time", "8", FCVAR_REPLICATED, "The amount of ti
 CreateConVar("ttt_arsonist_douse_notify_delay_min", "10", FCVAR_REPLICATED, "The minimum delay before a player is notified they've been doused", 0, 30)
 CreateConVar("ttt_arsonist_douse_notify_delay_max", "30", FCVAR_REPLICATED, "The delay delay before a player is notified they've been doused", 3, 60)
 CreateConVar("ttt_arsonist_douse_corpses", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_arsonist_warn_all", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_detectives_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_ARSONIST] = {}
@@ -105,4 +106,8 @@ table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
     cvar = "ttt_arsonist_ignite_on_death_timer",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_arsonist_warn_all",
+    type = ROLE_CONVAR_TYPE_BOOL
 })

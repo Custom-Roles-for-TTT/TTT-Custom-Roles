@@ -17,7 +17,7 @@ hook.Add("Initialize", "Quack_Translations_Initialize", function()
     LANG.AddToLanguage("english", "fake_cure_desc", "Use on a player to trick them into thinking you cured them.")
 
     LANG.AddToLanguage("english", "bstation_name", "Bomb Station")
-    LANG.AddToLanguage("english", "bstation_hint", "Press {usekey} to fake receiving health. Charge: {num}.")
+    LANG.AddToLanguage("english", "bstation_hint", "Hold {usekey} to fake receiving health. Charge: {num}.")
     LANG.AddToLanguage("english", "bstation_broken", "Your Bomb Station has been destroyed!")
     LANG.AddToLanguage("english", "bstation_help", "{primaryfire} places the Bomb Station.")
     LANG.AddToLanguage("english", "bstation_desc", [[

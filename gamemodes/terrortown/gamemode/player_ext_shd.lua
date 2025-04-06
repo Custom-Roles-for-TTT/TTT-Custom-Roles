@@ -27,6 +27,7 @@ function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
 function plymeta:SetupDataTables()
     self:NetworkVar("Bool", 0, "Sprinting")
     self:NetworkVar("Float", 0, "SprintStamina")
+    self:NetworkVar("Float", 1, "LastSprintTime")
 end
 
 AccessorFunc(plymeta, "role", "Role", FORCE_NUMBER)
@@ -156,6 +157,7 @@ function plymeta:CanUseTraitorButton(active_only)
 end
 function plymeta:CanLootCredits(active_only)
     if active_only and not self:IsActive() then return false end
+    if self:IsTraitorTeam() and self:IsRoleAbilityDisabled() then return false end
 
     local can_loot = CAN_LOOT_CREDITS_ROLES[self:GetRole()]
     -- If this is explicitly set, use it as-is
@@ -391,6 +393,45 @@ function plymeta:IsInvulnerable()
     return self:GetNWBool("CRTTT_Invulnerable", false)
 end
 
+local roleAbilityCache = {}
+function plymeta:IsRoleAbilityDisabled(...)
+    if roleAbilityCache[self:SteamID64()] then
+        CallHook("TTTOnRoleAbilityBlocked", nil, self, ...)
+        return true
+    end
+
+    local roleIsDisabled = CallHook("TTTIsRoleAbilityDisabled", nil, self, ...) == true
+    if roleIsDisabled then
+        self:DisableRoleAbility(...)
+        CallHook("TTTOnRoleAbilityBlocked", nil, self, ...)
+    end
+
+    return roleIsDisabled
+end
+
+function plymeta:DisableRoleAbility(...)
+    local sid64 = self:SteamID64()
+    if roleAbilityCache[sid64] then return end
+
+    roleAbilityCache[sid64] = true
+    CallHook("TTTOnRoleAbilityDisabled", nil, self, ...)
+end
+
+function plymeta:EnableRoleAbility()
+    local sid64 = self:SteamID64()
+    if not roleAbilityCache[sid64] then return end
+
+    roleAbilityCache[sid64] = nil
+    CallHook("TTTOnRoleAbilityEnabled", nil, self)
+end
+
+local function ClearRoleAbilityCache()
+    roleAbilityCache = {}
+end
+hook.Add("TTTPrepareRound", "RoleAbilityCache_TTTPrepareRound", ClearRoleAbilityCache)
+hook.Add("TTTBeginRound", "RoleAbilityCache_TTTBeginRound", ClearRoleAbilityCache)
+-- Don't clear on round end because we may need this for post-round summary stuff
+
 if CLIENT then
     local function GetMaxBoneZ(ply, pred)
         local max_bone_z = 0
@@ -605,7 +646,7 @@ if CLIENT then
         emitter:Finish()
     end
 
-    function plymeta:QueueMessage(message_type, message, time)
+    function plymeta:QueueMessage(message_type, message, time, id)
         if LocalPlayer() ~= self then
             ErrorNoHalt("`plymeta:QueueMessage` cannot be used to send messages to other players when called clientside.\n")
             return
@@ -615,6 +656,17 @@ if CLIENT then
         net.WriteUInt(message_type, 3)
         net.WriteString(message)
         net.WriteFloat(time)
+        net.WriteString(id or "")
+        net.SendToServer()
+    end
+
+    function plymeta:ClearQueuedMessage(id)
+        if LocalPlayer() ~= self then
+            ErrorNoHalt("`plymeta:QueueMessage` cannot be used to send messages to other players when called clientside.\n")
+            return
+        end
+        net.Start("TTT_ClearQueuedMessage")
+        net.WriteString(id)
         net.SendToServer()
     end
 else

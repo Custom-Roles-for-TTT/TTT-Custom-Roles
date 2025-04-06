@@ -40,13 +40,13 @@ end)
 ---------------
 
 hook.Add("TTTTargetIDPlayerTargetIcon", "Vindicator_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsVindicator() and  cli:GetNWString("VindicatorTarget") == ply:SteamID64() then
+    if cli:IsVindicator() and  cli:GetNWString("VindicatorTarget") == ply:SteamID64() and not cli:IsRoleAbilityDisabled() then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_VINDICATOR], "down"
     end
 end)
 
 hook.Add("TTTTargetIDPlayerText", "Vindicator_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
-    if IsPlayer(ent) and cli:IsVindicator() and ent:SteamID64() == cli:GetNWString("VindicatorTarget", "") then
+    if IsPlayer(ent) and cli:IsVindicator() and ent:SteamID64() == cli:GetNWString("VindicatorTarget", "") and not cli:IsRoleAbilityDisabled() then
         return LANG.GetTranslation("target_current_target"), ROLE_COLORS_RADAR[ROLE_VINDICATOR]
     end
 end)
@@ -54,6 +54,7 @@ end)
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_VINDICATOR] = function(ply, target, showJester)
     if not ply:IsVindicator() then return end
     if not IsPlayer(target) then return end
+    if not ply:IsRoleAbilityDisabled() then return end
 
     local show = (target:SteamID64() == ply:GetNWString("VindicatorTarget", ""))
 
@@ -66,13 +67,13 @@ end
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "Vindicator_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
-    if cli:IsVindicator() and ply:SteamID64() == cli:GetNWString("VindicatorTarget", "") then
+    if cli:IsVindicator() and ply:SteamID64() == cli:GetNWString("VindicatorTarget", "") and not cli:IsRoleAbilityDisabled() then
         return c, roleStr, ROLE_VINDICATOR
     end
 end)
 
 hook.Add("TTTScoreboardPlayerName", "Vindicator_TTTScoreboardPlayerName", function(ply, cli, text)
-    if cli:IsVindicator() and ply:SteamID64() == cli:GetNWString("VindicatorTarget", "") then
+    if cli:IsVindicator() and ply:SteamID64() == cli:GetNWString("VindicatorTarget", "") and not cli:IsRoleAbilityDisabled() then
         return ply:Nick() .. " (" .. LANG.GetTranslation("target_assassin_target") .. ")" -- We can reuse the assassin translations here
     end
 end)
@@ -80,6 +81,7 @@ end)
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_VINDICATOR] = function(ply, target)
     if not ply:IsVindicator() then return end
     if not IsPlayer(target) then return end
+    if not ply:IsRoleAbilityDisabled() then return end
 
     local show = target:SteamID64() == ply:GetNWString("VindicatorTarget", "")
 
@@ -127,7 +129,7 @@ end)
 hook.Add("Think", "Vindicator_Highlight_Think", function()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
-    if client:IsVindicator() then
+    if client:IsVindicator() and not client:IsRoleAbilityDisabled() then
         if not vision_enabled then
             EnableVindicatorTargetHighlights()
             vision_enabled = true
@@ -144,6 +146,7 @@ end)
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_VINDICATOR] = function(ply, target)
     if not ply:IsVindicator() then return end
     if not IsPlayer(target) then return end
+    if not ply:IsRoleAbilityDisabled() then return end
 
     local target_sid64 = ply:GetNWString("VindicatorTarget", "")
     if not target_sid64 or #target_sid64 == 0 then return end
@@ -284,6 +287,8 @@ end)
 local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suicide_success")
 local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
 local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
+local vindicator_reset_on_success = GetConVar("ttt_vindicator_reset_on_success")
+local vindicator_reset_win_on_success = GetConVar("ttt_vindicator_reset_win_on_success")
 
 hook.Add("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_VINDICATOR then
@@ -300,7 +305,18 @@ hook.Add("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", function(role,
         html = html .. "</span>"
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Once the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. "'s target has died, "
-        if vindicator_kill_on_fail:GetBool() and vindicator_kill_on_success:GetBool() then
+        if vindicator_reset_on_success:GetBool() then
+            html = html .. "if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " was the one to kill them then they will reset to the <span style='color: rgb(" .. innocentColor.r .. ", " .. innocentColor.g .. ", " .. innocentColor.b .. ")'>innocent team</span>."
+            if vindicator_reset_win_on_success:GetBool() then
+                html = html .. " They will win with the <span style='color: rgb(" .. innocentColor.r .. ", " .. innocentColor.g .. ", " .. innocentColor.b .. ")'>innocent team</span> once more."
+            else
+                html = html .. " They will win even if they die before the round ends."
+            end
+            if vindicator_kill_on_fail:GetBool() then
+                html = html .. " However if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " failed to kill their target then they are killed also."
+            end
+            html = html .. "</span>"
+        elseif vindicator_kill_on_fail:GetBool() and vindicator_kill_on_success:GetBool() then
             html = html .. "the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " is killed also. However they can still win, even if dead.</span>"
         elseif vindicator_kill_on_fail:GetBool() then
             html = html .. "if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " was the one to kill them then they are free to live out the rest of the round. They will win even if they die before the round ends. However if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " failed to kill their target then they are killed also.</span>"

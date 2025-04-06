@@ -96,6 +96,10 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_drop_bones",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_kill_credits",
     type = ROLE_CONVAR_TYPE_BOOL
 })

@@ -14,6 +14,7 @@ local PlayerIterator = player.Iterator
 -------------
 
 local assassin_shop_roles_last = CreateConVar("ttt_assassin_shop_roles_last", "0")
+local assassin_damage_penalty_complete = CreateConVar("ttt_assassin_damage_penalty_complete", "1", FCVAR_NONE, "Whether to apply the damage penalties after an assassin has completed their assignments", 0, 1)
 
 local assassin_show_target_icon = GetConVar("ttt_assassin_show_target_icon")
 local assassin_target_vision_enabled = GetConVar("ttt_assassin_target_vision_enabled")
@@ -22,6 +23,9 @@ local assassin_target_damage_bonus = GetConVar("ttt_assassin_target_damage_bonus
 local assassin_target_bonus_bought = GetConVar("ttt_assassin_target_bonus_bought")
 local assassin_wrong_damage_penalty = GetConVar("ttt_assassin_wrong_damage_penalty")
 local assassin_failed_damage_penalty = GetConVar("ttt_assassin_failed_damage_penalty")
+local assassin_allow_independents_kill = GetConVar("ttt_assassin_allow_independents_kill")
+local assassin_allow_jesters_kill = GetConVar("ttt_assassin_allow_jesters_kill")
+local assassin_allow_monsters_kill = GetConVar("ttt_assassin_allow_monsters_kill")
 
 -----------------------
 -- TARGET ASSIGNMENT --
@@ -35,6 +39,11 @@ local function AssignAssassinTarget(ply, start, delay)
         not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false) or ply:GetNWBool("AssassinComplete", false)
     then
         return
+    elseif ply:IsRoleAbilityDisabled() then
+        timer.Remove(ply:Nick() .. "AssassinTarget")
+        ply:ClearQueuedMessage("asnTarget")
+        ply:SetNWString("AssassinTarget", "")
+        return
     end
 
     -- Reset the target to empty in case there are no valid targets
@@ -46,7 +55,7 @@ local function AssignAssassinTarget(ply, start, delay)
     local independents = {}
     local shopRolesLast = assassin_shop_roles_last:GetBool()
 
-    local function AddEnemy(p)
+    local function AddEnemy(p, enemyTbl)
         -- Don't add the former beggar or bodysnatcher to the list of enemies unless the "reveal" setting is enabled
         if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and ply:ShouldRevealBeggar(p) then return end
         if p:GetNWBool("WasBodysnatcher", false) and ply:ShouldRevealBodysnatcher(p) then return end
@@ -55,23 +64,28 @@ local function AssignAssassinTarget(ply, start, delay)
         if shopRolesLast and p:IsShopRole() then
             table.insert(shops, p:SteamID64())
         else
-            table.insert(enemies, p:SteamID64())
+            table.insert(enemyTbl, p:SteamID64())
         end
     end
 
+    local assassinLover = ply:GetNWString("TTTCupidLover", "")
     for _, p in PlayerIterator() do
         if p:Alive() and not p:IsSpec() then
+            local pSid64 = p:SteamID64()
+            -- Don't add the assassin's lover as a target, if they have one
+            if #assassinLover > 0 and pSid64 == assassinLover then continue end
+
             -- Include all non-traitor detective-like players
             if p:IsDetectiveLike() and not p:IsTraitorTeam() then
-                table.insert(detectives, p:SteamID64())
+                table.insert(detectives, pSid64)
             -- Exclude Glitch from this list so they don't get discovered immediately
             elseif p:IsInnocentTeam() and not p:IsGlitch() then
-                AddEnemy(p)
+                AddEnemy(p, enemies)
             elseif p:IsMonsterTeam() then
-                AddEnemy(p)
+                AddEnemy(p, enemies)
             -- Exclude roles that have a passive win because they just want to survive
             elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
-                AddEnemy(p)
+                AddEnemy(p, independents)
             end
         end
     end
@@ -106,11 +120,12 @@ local function AssignAssassinTarget(ply, start, delay)
 
     if ply:Alive() and not ply:IsSpec() then
         if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
-        ply:QueueMessage(MSG_PRINTBOTH, targetMessage)
+        ply:ClearQueuedMessage("asnTarget")
+        ply:QueueMessage(MSG_PRINTBOTH, targetMessage, 5, "asnTarget")
     end
 end
 
-local function UpdateAssassinTargets(ply)
+local function UpdateAssassinTargets(ply, msgOverride, finalMsgOverride)
     for _, v in PlayerIterator() do
         local assassintarget = v:GetNWString("AssassinTarget", "")
         if v:IsAssassin() and ply:SteamID64() == assassintarget then
@@ -123,7 +138,8 @@ local function UpdateAssassinTargets(ply)
                 -- Delay giving the next target if we're configured to do so
                 if delay > 0 then
                     if v:IsActive() then
-                        v:QueueMessage(MSG_PRINTBOTH, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                        v:ClearQueuedMessage("asnTarget")
+                        v:QueueMessage(MSG_PRINTBOTH, (msgOverride or "Target eliminated.") .. " You will receive your next assignment in " .. tostring(delay) .. " seconds.", math.min(delay, 5))
                     end
                     timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
                         AssignAssassinTarget(v, false, true)
@@ -132,7 +148,8 @@ local function UpdateAssassinTargets(ply)
                     AssignAssassinTarget(v, false, false)
                 end
             else
-                v:QueueMessage(MSG_PRINTBOTH, "Final target eliminated.")
+                v:ClearQueuedMessage("asnTarget")
+                v:QueueMessage(MSG_PRINTBOTH, finalMsgOverride or "Final target eliminated.")
             end
         end
     end
@@ -191,11 +208,33 @@ hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", functio
     end
 end)
 
+hook.Add("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsAssassin() then return end
+
+    if ply:SetNWString("AssassinTarget", "") == "" then
+        AssignAssassinTarget(ply, false, true)
+    end
+end)
+
 hook.Add("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", function(ply, traitor)
     if not IsPlayer(ply) then return end
 
     -- Update any assassin targets since this player isn't a threat anymore
     UpdateAssassinTargets(ply)
+end)
+
+-- Handle an assassin becoming the lover of their target
+hook.Add("TTTCupidLoversChosen", "Assassin_TTTCupidLoversChosen", function(cupid, lover1, lover2)
+    if not IsPlayer(lover1) then return end
+    if not IsPlayer(lover2) then return end
+
+    -- If one of the lovers is an assassin and their target is the other lover, reassign
+    if lover1:IsAssassin() and lover1:GetNWString("AssassinTarget", "") == lover2:SteamID64() then
+        UpdateAssassinTargets(lover2, "You fell in love with your target.", "Final target seduced.")
+    end
+    if lover2:IsAssassin() and lover2:GetNWString("AssassinTarget", "") == lover1:SteamID64() then
+        UpdateAssassinTargets(lover1, "You fell in love with your target.", "Final target seduced.")
+    end
 end)
 
 hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmginfo)
@@ -204,10 +243,17 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
     if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker then
         local wasNotTarget = ply:SteamID64() ~= attackertarget and (#attackertarget > 0 or timer.Exists(attacker:Nick() .. "AssassinTarget"))
-        local convar = "ttt_assassin_allow_" .. ROLE_STRINGS_RAW[ply:GetRole()] .. "_kill"
-        local skipPenalty = cvars.Bool(convar, false) and ply:IsRoleActive()
+        local role = ply:GetRole()
+        -- The extra checks at the beginning are to handle cases of roles switching teams, just in case
+        local allowKill = (INDEPENDENT_ROLES[role] or JESTER_ROLES[role] or MONSTER_ROLES[role]) and
+                            ((INDEPENDENT_ROLES[role] and assassin_allow_independents_kill:GetBool()) or
+                             (JESTER_ROLES[role] and assassin_allow_jesters_kill:GetBool()) or
+                             (MONSTER_ROLES[role] and assassin_allow_monsters_kill:GetBool()) or
+                             cvars.Bool("ttt_assassin_allow_" .. ROLE_STRINGS_RAW[role] .. "_kill", false))
+        local skipPenalty = allowKill and ply:IsRoleActive()
         if wasNotTarget and not skipPenalty then
             timer.Remove(attacker:Nick() .. "AssassinTarget")
+            attacker:ClearQueuedMessage("asnTarget")
             attacker:QueueMessage(MSG_PRINTBOTH, "Contract failed. You killed the wrong player.")
             attacker:SetNWBool("AssassinFailed", true)
             attacker:SetNWString("AssassinTarget", "")
@@ -237,32 +283,39 @@ end)
 ------------
 
 hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
-    local att = dmginfo:GetAttacker()
-    -- Only apply damage scaling after the round starts
-    if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
-        -- Assassins deal extra damage to their target, less damage to other players, and less damage if they fail their contract
-        -- Don't apply the scaling to the Jester team to specifically allow doing 100% damage to the active killer clown
-        if att:IsAssassin() and ply ~= att and not ply:IsJesterTeam() then
-            local scale = 0
-            if att:GetNWBool("AssassinFailed", false) then
-                scale = -assassin_failed_damage_penalty:GetFloat()
-            elseif ply:SteamID64() == att:GetNWString("AssassinTarget", "") then
-                -- Get the active weapon, whather it's in the inflictor or it's from the attacker
-                local active_weapon = dmginfo:GetInflictor()
-                if not IsValid(active_weapon) or IsPlayer(active_weapon) then
-                    active_weapon = att:GetActiveWeapon()
-                end
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+    if not IsPlayer(ply) then return end
 
-                -- Only scale bought weapons if that is enabled
-                if (active_weapon.Spawnable or (not active_weapon.CanBuy or assassin_target_bonus_bought:GetBool())) then
-                    scale = assassin_target_damage_bonus:GetFloat()
-                end
-            else
-                scale = -assassin_wrong_damage_penalty:GetFloat()
-            end
-            dmginfo:ScaleDamage(1 + scale)
+    local att = dmginfo:GetAttacker()
+    if not IsPlayer(att) then return end
+    if not att:IsAssassin() then return end
+    if ply == att then return end
+
+    -- If the assassin has completed their contract successfully and we've disabled damage penalities in that case, let them do full damage
+    if att:GetNWBool("AssassinComplete", false) and not assassin_damage_penalty_complete:GetBool() then return end
+
+    -- Assassins deal extra damage to their target, less damage to other players, and less damage if they fail their contract
+    local scale = 0
+    if att:GetNWBool("AssassinFailed", false) then
+        scale = -assassin_failed_damage_penalty:GetFloat()
+    elseif ply:SteamID64() == att:GetNWString("AssassinTarget", "") and not att:IsRoleAbilityDisabled() then
+        -- Get the active weapon, whether it's in the inflictor or it's from the attacker
+        local active_weapon = dmginfo:GetInflictor()
+        if not IsValid(active_weapon) or IsPlayer(active_weapon) then
+            active_weapon = att:GetActiveWeapon()
         end
+
+        -- Only scale bought weapons if that is enabled
+        if (active_weapon.Spawnable or (not active_weapon.CanBuy or assassin_target_bonus_bought:GetBool())) then
+            scale = assassin_target_damage_bonus:GetFloat()
+        end
+    else
+        scale = -assassin_wrong_damage_penalty:GetFloat()
     end
+
+    if scale == 0 then return end
+
+    dmginfo:ScaleDamage(1 + scale)
 end)
 
 -----------------------

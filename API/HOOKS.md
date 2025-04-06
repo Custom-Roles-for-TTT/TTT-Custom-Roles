@@ -7,6 +7,16 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 ***NOTE:*** Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the *remaining hook instances to be completely skipped*. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.
 
+### TTTBeggarConvert(beggar, wep)
+Called when a beggar is about to have their team changed from receiving an item.\
+*Realm:* Server\
+*Added in:* 2.2.3\
+*Parameters:*
+- *beggar* - The beggar who is about to be converted
+- *wep* - The weapon the beggar received
+
+*Return:* Whether or not the beggar should be converted (Defaults to `true`).
+
 ### TTTBodyCreditsLooted(ply, deadPly, rag, credits)
 Called when a player loots credits off of a dead player's body.\
 *Realm:* Server\
@@ -62,6 +72,13 @@ Modified to allow changing the defusal result via the new return value.\
 *Return:*
 - *result* - The new result value to use or the original passed into the hook
 
+### TTTCanCureableRoleSpawn()
+Called to determine if a role can spawn that causes a state that can be cured.\
+*Realm:* Client and Server\
+*Added in:* 2.1.18
+
+*Return:* `true` if a role can spawn that causes a state that can be cured. Otherwise do not return anything.
+
 ### TTTCanIdentifyCorpse(ply, rag, wasTraitor)
 Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
@@ -82,12 +99,15 @@ Called when someone is attempting to use a cure on a player.\
 
 *Return:* Whether to allow using the cure on this player. (Defaults to `false`)
 
-### TTTCanCureableRoleSpawn()
-Called to determine if a role can spawn that causes a state that can be cured.\
-*Realm:* Client and Server\
-*Added in:* 2.1.18
+### TTTCanTransferWeaponOwnership(ply, wep)
+Called when determining if a player can have ownership of a specific weapon transferred to them.\
+*Realm:* Server\
+*Added in:* 2.2.8\
+*Parameters:*
+- *ply* - The target player who is potentially having ownership of a weapon transferred to them
+- *wep* - The target weapon whose ownership is potentially being transferred
 
-*Return:* `true` if a role can spawn that causes a state that can be cured. Otherwise do not return anything.
+*Return:* Whether to allow this player to have ownership of the weapon transferred to them. (Defaults to `true`)
 
 ### TTTCanUseTraitorVoice(ply)
 Called when a player is attempting to use traitor chat, both speaking and listening. Used to change the default behavior.\
@@ -108,6 +128,26 @@ Called when a player is using chat. Used to override the name shown.\
 
 *Return:* The player name to show, if it should be overridden. Otherwise do not return anything.
 
+### TTTCheatSheetRoleStringOverride(client, roleString)
+Called when the cheat sheet is displayed, allowing the target translation string to be changed.\
+*Realm:* Client\
+*Added in:* 2.2.4\
+*Parameters:*
+- *client* - The local player
+- *roleString* - The string representing role of the local player. Is normally used to build the role cheat sheet description translation
+
+*Return:*
+- *roleString* - The new string to use when building the role cheat sheet description translation
+
+### TTTCrosshairColorOverride(client)
+Allows overriding the color to use in place of the given player's normal crosshair color.\
+*Realm:* Client\
+*Added in:* 2.2.9\
+*Parameters:*
+- *client* - The local player
+
+*Return:* The new crosshair color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
 ### TTTCupidShouldLoverSurvive(ply, lover)
 Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.\
 *Realm:* Server\
@@ -117,6 +157,23 @@ Called before a player is killed because their lover (as set by Cupid's arrows) 
 - *lover* - The player's lover who is already dead
 
 *Return:* If `ply` should not be killed, return `true`. Otherwise do not return anything.
+
+### TTTCupidLoverChosen(cupid, lover)
+Called after a player has been chosen as a cupid's lover.\
+*Realm:* Server\
+*Added in:* 2.2.2\
+*Parameters:*
+- *cupid* - The cupid who has chosen a lover
+- *lover* - The lover that was chosen
+
+### TTTCupidLoversChosen(cupid, lover1, lover2)
+Called after both players have been chosen as a cupid's lovers.\
+*Realm:* Server\
+*Added in:* 2.2.2\
+*Parameters:*
+- *cupid* - The cupid who has chosen both lovers
+- *lover1* - The first lover that was chosen
+- *lover2* - The second lover that was chosen
 
 ### TTTCurePlayer(ply)
 Called when someone uses a cure on a player.\
@@ -218,6 +275,25 @@ Called after player information such as role, health, and ammo and equipment inf
 - *labelY* - The Y value representing the first clear space to add information
 - *activeLabels* - The list of current active additional labels. Used to determine the labelY offset to use via: `labelY = labelY + (20 * #activeLabels)`. Be sure to insert an entry when you add your own label so other addons can space appropriately. *(Added in 1.6.11)*
 
+### TTTHUDRoleColorOverride(client, colorType)
+Allows overriding the color to use in place of the given player's normal role color.\
+*Realm:* Client\
+*Added in:* 2.2.9\
+*Parameters:*
+- *client* - The local player
+- *colorType* - The color modification type to use (e.g. "dark", "highlight", "scoreboard", "sprite", "radar") (Defaults to `nil`).
+
+*Return:* The new role color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
+### TTTHUDRoleNameOverride(client)
+Allows overriding the name to use in place of the given player's normal role name.\
+*Realm:* Client\
+*Added in:* 2.2.9\
+*Parameters:*
+- *client* - The local player
+
+*Return:* The new role name to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
 ### TTTInformantDefaultScanStage(ply, oldRole, newRole)
 Called when an informant is trying to determine the default scan stage of a plyer. Used to override that value.\
 *Realm:* Server\
@@ -243,9 +319,32 @@ Called to check whether a player is currently respawning.\
 *Realm:* Client and Server\
 *Added in:* 2.1.12\
 *Parameters:*
-- *ply*</em>* - The player being queried for respawn status
+- *ply* - The player being queried for respawn status
 
 *Return:* `true` if the player is currently respawning, `false` if they are not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
+### TTTIsRoleAbilityDisabled(ply, ...)
+Called to check whether a player's role ability is disabled.\
+*NOTE*: This will be called every time something queries for whether a player's role ability is disabled as long as is remains enabled.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player being queried for role ability disabled status
+- *...* - Any other parameters that are passed to `plymeta:DisableRoleAbility` or `plymeta:IsRoleAbilityDisabled`
+
+*Return:* `true` if the player's role ability is currently disabled. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
+### TTTIsShopPurchaseDisabled(ply, ...)
+Called to check whether a player's shop purchases are disabled.\
+*NOTE*: This will be called every time something queries for whether a player's shop purchases is disabled as long as they remain enabled.\
+*NOTE*: If `true` is returned from this hook, the player's shop purchase will be silently blocked and they will have 1 credit removed.\
+*Realm:* Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player being queried for shop purchase disabled status
+- *...* - Any other parameters that are passed to `plymeta:DisableShopPurchases` or `plymeta:IsShopPurchaseDisabled`
+
+*Return:* `true` if the player's shop purchases are currently disabled. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
 
 ### TTTKarmaGiveReward(ply, reward, victim)
 Called before a player is rewarded with karma. Used to block a player's karma reward.\
@@ -275,6 +374,52 @@ Called when a mad scientist begins zombifying a target.\
 *Parameters:*
 - *ply* - The mad scientist doing the zombifying
 - *tgt* - The target being zombified
+
+### TTTOnRoleAbilityBlocked(ply, ...)
+Called when a player tries to use their role ability but it's disabled.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player whose role ability is disabled
+- *...* - Any other parameters that are passed to `plymeta:IsRoleAbilityDisabled`
+
+### TTTOnRoleAbilityDisabled(ply, ...)
+Called when a player's role ability is disabled.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player whose role ability is disabled
+- *...* - Any other parameters that are passed to `plymeta:DisableRoleAbility` or `plymeta:IsRoleAbilityDisabled`
+
+### TTTOnRoleAbilityEnabled(ply)
+Called when a player's role ability is re-enabled.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player whose role ability is being enabled
+
+### TTTOnShopPurchaseBlocked(ply, ...)
+Called when a player tries to use the shop but their purchases are disabled.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - TThe player whose shop purchases are disabled
+- *...* - Any other parameters that are passed to `plymeta:IsShopPurchaseDisabled`
+
+### TTTOnShopPurchaseDisabled(ply, ...)
+Called when a player's shop purchases are disabled.\
+*Realm:* Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player whose shop purchases are disabled
+- *...* - Any other parameters that are passed to `plymeta:DisableShopPurchases` or `plymeta:IsShopPurchaseDisabled`
+
+### TTTOnShopPurchaseEnabled(ply, ...)
+Called when a player's shop purchases are enabled.\
+*Realm:* Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *ply* - The player whose shop purchases are being enabled
 
 ### TTTPaladinAuraHealed(ply, tgt, healed)
 Called when a paladin heals a target.\
@@ -1192,3 +1337,12 @@ Called after a win condition has been set and right before the round eds. Used f
 *Added in:* 1.3.1\
 *Parameters:*
 - *win* - The win type that the round is about to end with
+
+### TTTZombieBodyEaten(ply, ent, healed)
+Called after a zombie eats a body.\
+*Realm:* Server\
+*Added in:* 2.2.4\
+*Parameters:*
+- *ply* - The zombie eating the body
+- *ent* - The target entity. Generally either a player or a ragdoll
+- *healed* - The amount of health the player gained from eating the body

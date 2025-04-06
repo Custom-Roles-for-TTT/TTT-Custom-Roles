@@ -64,26 +64,25 @@ hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
     new_prime:QueueMessage(MSG_PRINTBOTH, "The prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " has been lost and you've seized power in their absence!")
 end)
 
+-- Keep previous naming scheme for backwards compatibility
 function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
 
 -----------------
 -- ROLE STATUS --
 -----------------
 
-hook.Add("TTTBeginRound", "Zombie_RoleFeatures_BeginRound", function()
-    for _, v in PlayerIterator() do
-        if v:IsZombie() then
-            v:SetZombiePrime(true)
-        end
-    end
+hook.Add("TTTPlayerRoleChanged", "Zombie_RoleFeatures_TTTPlayerRoleChanged", function(ply, oldRole, role)
+    if role ~= ROLE_ZOMBIE then return end
+    if oldRole ~= ROLE_NONE then return end
+
+    ply:SetZombiePrime(true)
 end)
 
 hook.Add("TTTPrepareRound", "Zombie_RoleFeatures_PrepareRound", function()
     for _, v in PlayerIterator() do
         v.WasZombieColored = false
         v:SetNWBool("IsZombifying", false)
-        -- Keep previous naming scheme for backwards compatibility
-        v:SetNWBool("zombie_prime", false)
+        v:SetZombiePrime(false)
         timer.Remove("Zombify_" .. v:SteamID64())
     end
 end)
@@ -121,7 +120,7 @@ hook.Add("TTTCheckForWin", "Zombie_TTTCheckForWin", function()
         if v:IsActive() then
             if v:IsZombie() or v:IsMadScientist() then
                 zombie_alive = true
-            elseif not v:ShouldActLikeJester() then
+            elseif not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
                 other_alive = true
             end
         end
@@ -253,6 +252,7 @@ hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
                     ply:StripWeapon(weapclass)
                 end
             end
+            ply:SetFOV(0, 0)
         end
 
         -- If this zombie doesn't have claws, give them claws
@@ -277,7 +277,7 @@ end)
 -- Only allow the zombie to pick up zombie-specific weapons
 hook.Add("PlayerCanPickupWeapon", "Zombie_Weapons_PlayerCanPickupWeapon", function(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
-    if ply:IsSpec() then return false end
+    if ply:IsSpec() then return end
 
     if wep:GetClass() == "weapon_zom_claws" then
         return ply:IsZombie()
@@ -364,7 +364,7 @@ hook.Add("DoPlayerDeath", "Zombie_DoPlayerDeath", function(victim, attacker, dmg
     if not IsValid(inflictor) or WEPS.GetClass(inflictor) ~= "weapon_zom_claws" then return end
 
     -- If they were killed by a normal slash attack or spit conversion is enabled and they were killed by spitting, convert them
-    if dmginfo:IsDamageType(DMG_SLASH) or (zombie_spit_convert:GetBool() and dmginfo:IsDamageType(DMG_BULLET)) then
+    if (dmginfo:IsDamageType(DMG_SLASH) or (zombie_spit_convert:GetBool() and dmginfo:IsDamageType(DMG_BULLET))) and not attacker:IsRoleAbilityDisabled() then
         attacker:AddCredits(1)
         LANG.Msg(attacker, "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
         hook.Call("TTTPlayerRoleChangedByItem", nil, attacker, victim, inflictor)

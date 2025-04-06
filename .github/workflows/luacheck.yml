@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'Malivil/gluacheck'
           path: 'gluacheck'
@@ -24,6 +24,7 @@ jobs:
         uses: leafo/gh-actions-lua@v9
         with:
           luaVersion: ${{ matrix.luaVersion }}
+          buildCache: false
 
       - name: Setup ‘luarocks’
         uses: leafo/gh-actions-luarocks@v4

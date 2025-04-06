@@ -27,6 +27,7 @@ CreateConVar("ttt_killer_dna_range", "550")
 CreateConVar("ttt_killer_dna_basetime", "100")
 
 local player_set_color = CreateConVar("ttt_player_set_color", "1", FCVAR_NONE, "Whether to set the player's color when they spawn", 0, 1)
+local weapon_transfer_ownership = CreateConVar("ttt_weapon_transfer_ownership", "0", FCVAR_NONE, "Whether the ownership of a shop item should transfer each time its picked up", 0, 1)
 
 -- First spawn on the server
 function GM:PlayerInitialSpawn(ply)
@@ -649,7 +650,7 @@ local function CheckCreditAward(victim, attacker)
                     if CallHook("TTTRewardTraitorInnocentDeath", nil, p, victim, attacker, amt) then
                         return false
                     end
-                    if p:IsActiveTraitorTeam() and p:IsShopRole() then
+                    if p:IsActiveTraitorTeam() and p:IsShopRole() and not p:IsRoleAbilityDisabled() then
                         return not p:IsVampire() or vampire_kill_credits
                     end
                     return false
@@ -699,22 +700,19 @@ function FindRespawnLocation(pos)
 end
 
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
-    if ply:IsSpec() then return end
+    if ply:IsSpec() or IsValid(ply.dying_wep) then return end
 
-    -- Experimental: Fire a last shot if ironsighting and not headshot
+    -- Experimental: Fire a last shot if iron sighting and not headshot
     if GetConVar("ttt_dyingshot"):GetBool() then
         local wep = ply:GetActiveWeapon()
         if IsValid(wep) and wep.DyingShot and not ply.was_headshot and dmginfo:IsBulletDamage() then
-            local fired = wep:DyingShot()
-            if fired then
-                return
-            end
+            wep:DyingShot()
         end
 
         -- Note that funny things can happen here because we fire a gun while the
-        -- player is dead. Specifically, this DoPlayerDeath is run twice for
-        -- him. This is ugly, and we have to return the first one to prevent crazy
-        -- shit.
+        -- player is dead. Specifically, this DoPlayerDeath can run twice for
+        -- him. This is ugly, and we have to return if ply.dying_wep is set
+        -- to prevent crazy shit.
     end
 
     -- Store what non-droppable role weapons this player had when they died as this role
@@ -801,7 +799,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     -- Check for T killing D or vice versa
     if IsPlayer(attacker) then
         local reward = 0
-        if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() then
+        if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() and not attacker:IsRoleAbilityDisabled() then
             reward = math.ceil(GetConVar("ttt_credits_detectivekill"):GetInt())
         elseif (attacker:IsActiveDetectiveTeam() or (attacker:IsActiveDeputy() and attacker:IsRoleActive())) and ply:IsTraitorTeam() then
             reward = math.ceil(GetConVar("ttt_det_credits_traitorkill"):GetInt())
@@ -976,8 +974,8 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if ply:ShouldActLikeJester() and GetRoundState() == ROUND_ACTIVE then
-        -- Jester team don't take fall damage
+    if GetRoundState() == ROUND_ACTIVE and ply:ShouldActLikeJester() and (not ply:IsJesterTeam() or not ply:IsRoleAbilityDisabled()) then
+        -- Jester team don't take fall damage, unless their ability is disabled
         return
     else
         if in_water or speed < 450 or not IsValid(ply) then return end
@@ -1061,8 +1059,11 @@ function GM:EntityTakeDamage(ent, dmginfo)
         if ent:ShouldActLikeJester() and (not IsValid(att) or att:GetClass() ~= "trigger_hurt") and
               (dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or
                dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE)) then
-            dmginfo:ScaleDamage(0)
-            dmginfo:SetDamage(0)
+            -- Explosion and fall damage are blocked unless this player is a jester whose ability was disabled
+            if (not dmginfo:IsExplosionDamage() and not dmginfo:IsDamageType(DMG_BURN)) or not ent:IsJesterTeam() or not ent:IsRoleAbilityDisabled() then
+                dmginfo:ScaleDamage(0)
+                dmginfo:SetDamage(0)
+            end
         end
 
         -- Prevent damage from jesters
@@ -1372,6 +1373,18 @@ function GM:PlayerShouldTaunt(ply, actid)
     -- Disable taunts, we don't have a system for them (camera freezing etc).
     -- Mods/plugins that add such a system should override this.
     return false
+end
+
+function GM:PlayerDroppedWeapon(ply, wep)
+    if not IsValid(wep) or not IsPlayer(ply) then return end
+    if not wep.CanBuy or wep.AutoSpawnable then return end
+
+    -- If this weapon has already recorded who it was bought by and we're not allowing ownership transfer, block it
+    if IsPlayer(wep.BoughtBy) and not weapon_transfer_ownership:GetBool() then return end
+
+    if CallHook("TTTCanTransferWeaponOwnership", nil, ply, wep) ~= false then
+        wep.BoughtBy = ply
+    end
 end
 
 local function GetTargetPlayerByName(name, allow_dead)

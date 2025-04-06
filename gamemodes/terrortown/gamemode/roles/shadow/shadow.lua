@@ -29,7 +29,7 @@ local shadow_target_buff_role_copy = CreateConVar("ttt_shadow_target_buff_role_c
 local shadow_target_jester = CreateConVar("ttt_shadow_target_jester", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the jester team", 0, 1)
 local shadow_target_independent = CreateConVar("ttt_shadow_target_independent", "1", FCVAR_NONE, "Whether the shadow should be able to target an independent player", 0, 1)
 local shadow_target_traitor = CreateConVar("ttt_shadow_target_traitor", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the traitor team", 0, 1)
-local shadow_target_monster = CreateConVar("ttt_shadow_target_monster", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the mosnter team", 0, 1)
+local shadow_target_monster = CreateConVar("ttt_shadow_target_monster", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the monster team", 0, 1)
 local shadow_weaken_timer = CreateConVar("ttt_shadow_weaken_timer", "3", FCVAR_NONE, "How often (in seconds) to adjust the shadow's health when they are outside of the target circle", 1, 30)
 
 local shadow_start_timer = GetConVar("ttt_shadow_start_timer")
@@ -42,6 +42,7 @@ local shadow_target_buff = GetConVar("ttt_shadow_target_buff")
 local shadow_target_buff_delay = GetConVar("ttt_shadow_target_buff_delay")
 local shadow_soul_link = GetConVar("ttt_shadow_soul_link")
 local shadow_weaken_health_to = GetConVar("ttt_shadow_weaken_health_to")
+local shadow_weaken_health_to_death = GetConVar("ttt_shadow_weaken_health_to_death")
 local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
 local shadow_failure_mode = GetConVar("ttt_shadow_failure_mode")
 
@@ -98,7 +99,7 @@ local function FindNewTarget(shadow)
                 (shadow_target_independent:GetBool() or not p:IsIndependentTeam()) and
                 (shadow_target_traitor:GetBool() or not p:IsTraitorTeam()) and
                 (shadow_target_monster:GetBool() or not p:IsMonsterTeam()) then
-                local distance = shadow:GetPos():Distance(p:GetPos())
+                local distance = shadow:GetPos():DistToSqr(p:GetPos())
                 if closestDistance == -1 or distance < closestDistance then
                     closestTarget = p
                     closestDistance = distance
@@ -153,7 +154,7 @@ local function ClearShadowState(ply)
     timer.Remove("TTTShadowRegenTimer_" .. ply:SteamID64())
 
     -- Remove all buff timers that involve this player
-    for _, timerId in pairs(buffTimers) do
+    for timerId, _ in pairs(buffTimers) do
         if string.find(timerId, "_" .. ply:SteamID64()) then
             timer.Remove(timerId)
             buffTimers[timerId] = false
@@ -173,7 +174,8 @@ local function ClearBuffTimer(shadow, target, sendMessage)
             else
                 message = message .. "stopped buffing them!"
             end
-            shadow:QueueMessage(MSG_PRINTBOTH, message)
+            shadow:ClearQueuedMessage("shaBuffInfo")
+            shadow:QueueMessage(MSG_PRINTBOTH, message, 5, "shaBuffInfo")
         end
 
         target:SetNWBool("ShadowBuffActive", false)
@@ -211,7 +213,8 @@ local function SendBuffInfoMessage(shadow, time)
     else
         message = message .. "give them a buff!"
     end
-    shadow:QueueMessage(MSG_PRINTBOTH, message)
+    shadow:ClearQueuedMessage("shaBuffInfo")
+    shadow:QueueMessage(MSG_PRINTBOTH, message, 5, "shaBuffInfo")
 end
 
 local function CreateBuffTimer(shadow, target)
@@ -256,6 +259,7 @@ local function CreateBuffTimer(shadow, target)
                 role = ROLE_TRAITOR
             end
 
+            shadow:ClearQueuedMessage("shaBuffInfo")
             shadow:QueueMessage(MSG_PRINTBOTH, "You've stayed with your target long enough to join their team! You are now " .. ROLE_STRINGS_EXT[role])
 
             if shadow_target_buff_notify:GetBool() then
@@ -274,6 +278,7 @@ local function CreateBuffTimer(shadow, target)
             return
         elseif buff == SHADOW_BUFF_STEAL_ROLE then
             local role = target:GetRole()
+            shadow:ClearQueuedMessage("shaBuffInfo")
             shadow:QueueMessage(MSG_PRINTBOTH, "You've stayed with your target long enough to steal their role! You are now " .. ROLE_STRINGS_EXT[role])
 
             if shadow_target_buff_notify:GetBool() then
@@ -306,7 +311,8 @@ local function CreateBuffTimer(shadow, target)
             return
         end
 
-        shadow:QueueMessage(MSG_PRINTBOTH, "A buff is now active on your target. Stay with them to keep it up!")
+        shadow:ClearQueuedMessage("shaBuffInfo")
+        shadow:QueueMessage(MSG_PRINTBOTH, "A buff is now active on your target. Stay with them to keep it up!", 5, "shaBuffInfo")
 
         if shadow_target_buff_notify:GetBool() then
             target:QueueMessage(MSG_PRINTBOTH, "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " is buffing you. Stay with them to keep it up!")
@@ -350,6 +356,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
                 local target = player.GetBySteamID64(p:GetNWString("ShadowTarget", ""))
                 if IsPlayer(target) and target == ply then
                     p:Kill()
+                    p:ClearQueuedMessage("shaBuffInfo")
                     p:QueueMessage(MSG_PRINTBOTH, "Your target died!")
                 end
             end
@@ -396,6 +403,7 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
             SafeRemoveEntity(corpse)
 
             if IsValid(shadow) then
+                shadow:ClearQueuedMessage("shaBuffInfo")
                 shadow:QueueMessage(MSG_PRINTBOTH, "Your target has respawned!")
             end
         end)
@@ -427,11 +435,50 @@ hook.Add("TTTStopPlayerRespawning", "Shadow_TTTStopPlayerRespawning", function(p
     end
 end)
 
+local function HandleShadowFailure(shadow)
+    local message = "You didn't stay close to your target!"
+    local failure_mode = shadow_failure_mode:GetInt()
+    if failure_mode == SHADOW_FAILURE_JESTER or failure_mode == SHADOW_FAILURE_SWAPPER or failure_mode == SHADOW_FAILURE_BODYSNATCHER then
+        local target_role = ROLE_JESTER
+        if failure_mode == SHADOW_FAILURE_SWAPPER then
+            target_role = ROLE_SWAPPER
+        elseif failure_mode == SHADOW_FAILURE_BODYSNATCHER then
+            target_role = ROLE_BODYSNATCHER
+        end
+
+        message = message .. " As punishment, you have become " .. ROLE_STRINGS_EXT[target_role]
+        shadow:SetRole(target_role)
+        shadow:StripRoleWeapons()
+        RunHook("PlayerLoadout", shadow)
+
+        local maxhealth = shadow:GetMaxHealth()
+        local health = shadow:Health()
+        local healthscale = health / maxhealth
+        SetRoleMaxHealth(shadow)
+
+        -- Scale the player's health to match their new max
+        -- If they were at 100/100 before, they'll be at 150/150 now
+        local newmaxhealth = shadow:GetMaxHealth()
+        local newhealth = MathMax(MathMin(newmaxhealth, MathRound(newmaxhealth * healthscale, 0)), 1)
+        shadow:SetHealth(newhealth)
+
+        SendFullStateUpdate()
+    else
+        shadow:Kill()
+    end
+    shadow:SetNWBool("ShadowActive", false)
+    shadow:SetNWFloat("ShadowTimer", -1)
+    shadow:ClearQueuedMessage("shaBuffInfo")
+    shadow:QueueMessage(MSG_PRINTBOTH, message, 5, "shaBuffInfo")
+end
+
 local function CreateWeakenTimer(shadow, weakenTo, weakenTimer)
     if timer.Exists("TTTShadowWeakenTimer_" .. shadow:SteamID64()) then return end
 
     shadow.TTTShadowMaxHealth = shadow:GetMaxHealth()
     shadow.TTTShadowLastMaxHealth = shadow.TTTShadowMaxHealth
+
+    local weakenToDeath = shadow_weaken_health_to_death:GetBool()
     timer.Create("TTTShadowWeakenTimer_" .. shadow:SteamID64(), weakenTimer, 0, function()
         if not IsValid(shadow) or not shadow:Alive() or shadow:IsSpec() then return end
 
@@ -441,9 +488,16 @@ local function CreateWeakenTimer(shadow, weakenTo, weakenTimer)
             shadow.TTTShadowMaxHealth = currentMaxHealth
         end
 
+        local hp = shadow:Health()
+        -- Kill them if they are at 1HP, we are configured to lower them to 1HP and we are configured to kill them after they lower to 1HP
+        if currentMaxHealth == 1 and hp == 1 and weakenTo == 1 and weakenToDeath then
+            HandleShadowFailure(shadow)
+            timer.Remove("TTTShadowWeakenTimer_" .. shadow:SteamID64())
+            return
+        end
+
         if currentMaxHealth <= weakenTo then return end
 
-        local hp = shadow:Health()
         -- Don't kill them
         if hp > 0 then
             shadow:SetHealth(hp - 1)
@@ -472,7 +526,7 @@ local function CreateRegenTimer(shadow, weakenTimer)
             shadow.TTTShadowMaxHealth = currentMaxHealth
         end
 
-        -- If we've finished regenning, stop the timer
+        -- If we've finished regenerating, stop the timer
         if currentMaxHealth >= shadow.TTTShadowMaxHealth then
             timer.Remove("TTTShadowRegenTimer_" .. shadow:SteamID64())
             return
@@ -497,42 +551,15 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
 
             local t = v:GetNWFloat("ShadowTimer", -1)
             if t > 0 and CurTime() > t then
-                local message = "You didn't stay close to your target!"
                 if weakenTo > 0 then
-                    message = message .. " Return to them to slowly regain your lost health!"
+                    local message = "You didn't stay close to your target! Return to them to slowly regain your lost health!"
                     CreateWeakenTimer(v, weakenTo, weakenTimer)
                     v:SetNWFloat("ShadowTimer", SHADOW_FORCED_PROGRESS_BAR)
+                    v:ClearQueuedMessage("shaBuffInfo")
+                    v:QueueMessage(MSG_PRINTBOTH, message, 5, "shaBuffInfo")
                 else
-                    local failure_mode = shadow_failure_mode:GetInt()
-                    if failure_mode == SHADOW_FAILURE_JESTER or failure_mode == SHADOW_FAILURE_SWAPPER then
-                        local target_role = ROLE_JESTER
-                        if failure_mode == SHADOW_FAILURE_SWAPPER then
-                            target_role = ROLE_SWAPPER
-                        end
-
-                        message = message .. " As punishment, you have become " .. ROLE_STRINGS_EXT[target_role]
-                        v:SetRole(target_role)
-                        v:StripRoleWeapons()
-
-                        local maxhealth = v:GetMaxHealth()
-                        local health = v:Health()
-                        local healthscale = health / maxhealth
-                        SetRoleMaxHealth(v)
-
-                        -- Scale the player's health to match their new max
-                        -- If they were at 100/100 before, they'll be at 150/150 now
-                        local newmaxhealth = v:GetMaxHealth()
-                        local newhealth = MathMax(MathMin(newmaxhealth, MathRound(newmaxhealth * healthscale, 0)), 1)
-                        v:SetHealth(newhealth)
-
-                        SendFullStateUpdate()
-                    else
-                        v:Kill()
-                    end
-                    v:SetNWBool("ShadowActive", false)
-                    v:SetNWFloat("ShadowTimer", -1)
+                    HandleShadowFailure(v)
                 end
-                v:QueueMessage(MSG_PRINTBOTH, message)
                 v:SetNWFloat("ShadowBuffTimer", -1)
                 ClearBuffTimer(v, target)
             else
@@ -544,9 +571,8 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                     radius = shadow_dead_radius:GetFloat() * UNITS_PER_METER
                 end
 
-                if not IsValid(ent) then continue end
-
-                if v:GetPos():Distance(ent:GetPos()) <= radius then
+                local radiusSqr = radius * radius
+                if v:GetPos():DistToSqr(ent:GetPos()) <= radiusSqr and not v:IsRoleAbilityDisabled() then
                     if not v:GetNWBool("ShadowActive", false) then
                         v:SetNWBool("ShadowActive", true)
                     end
@@ -596,6 +622,7 @@ hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, a
 
     if victim:SteamID64() == attacker:GetNWString("ShadowTarget", "") then
         attacker:Kill()
+        attacker:ClearQueuedMessage("shaBuffInfo")
         attacker:QueueMessage(MSG_PRINTBOTH, "You killed your target!")
         attacker.TTTShadowKilledTarget = true
         ClearBuffTimer(attacker, victim)

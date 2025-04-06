@@ -58,7 +58,7 @@ local function RadarScan(ply, cmd, args)
                         })
                     end
                 end
-			end
+            end
 
             net.Start("TTT_Radar")
             net.WriteUInt(#targets, 8)

@@ -210,7 +210,11 @@ function ENT:PlayDelayedSound(snd, ampl, last)
             snd = TableRandom(snd)
         end
 
-        SoundPlay(snd, self:GetPos(), ampl)
+        if self.BroadcastSound then
+            self:BroadcastSound(snd, ampl)
+        else
+            SoundPlay(snd, self:GetPos(), ampl)
+        end
         self.Playing = not last
     end
 end
@@ -219,7 +223,11 @@ function ENT:PlaySound(snd)
     local pos = self:GetPos()
     local this = self
     if simplesounds[snd] then
-        SoundPlay(TableRandom(simplesounds[snd]), pos)
+        if self.BroadcastSound then
+            self:BroadcastSound(TableRandom(simplesounds[snd]))
+        else
+            SoundPlay(TableRandom(simplesounds[snd]), pos)
+        end
     elseif gunsounds[snd] then
         local gunsound = gunsounds[snd]
         local times = MathRandom(gunsound.times[1], gunsound.times[2])

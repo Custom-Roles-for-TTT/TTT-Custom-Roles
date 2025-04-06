@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
-SWEP.HoldType              = "pistol"
+SWEP.HoldType              = "revolver"
+SWEP.ReloadHoldType        = "pistol"
 
 if CLIENT then
    SWEP.PrintName          = "Plague Dart Gun"
@@ -22,12 +23,11 @@ SWEP.Primary.Automatic     = true
 SWEP.Primary.DefaultClip   = 1
 SWEP.Primary.ClipMax       = 1
 SWEP.Primary.Ammo          = "none"
-SWEP.Primary.Sound         = Sound("Weapon_USP.SilencedShot")
-SWEP.Primary.SoundLevel    = 50
 
 SWEP.Kind                  = WEAPON_ROLE
 SWEP.InLoadoutFor          = {ROLE_PLAGUEMASTER}
 
+SWEP.AllowDrop             = false
 SWEP.IsSilent              = true
 
 SWEP.UseHands              = true
@@ -62,26 +62,31 @@ function SWEP:PrimaryAttack()
     bullet.Force      = 2
     bullet.Damage     = self.Primary.Damage
     bullet.Callback   = function(attacker, tr, dmginfo)
+        if not SERVER then return end
         if not IsValid(owner) then return end
+        if not tr.Hit or not tr.HitNonWorld then return end
+        if not IsPlayer(tr.Entity) then return end
+        if owner:IsRoleAbilityDisabled() then return end
 
-        if SERVER and tr.Hit and tr.HitNonWorld and IsPlayer(tr.Entity) then
-            local victim = tr.Entity
+        local victim = tr.Entity
+        -- If the target already has the plague, don't try to give it to them again
+        if victim.TTTPlaguemasterStartTime then
+            owner:QueueMessage(MSG_PRINTBOTH, victim:Nick() .. " already has the plague, find someone new!")
+        else
             net.Start("TTT_PlaguemasterPlagued")
                 net.WriteString(victim:Nick())
                 net.WriteString(owner:Nick())
             net.Broadcast()
             victim:SetProperty("TTTPlaguemasterStartTime", CurTime())
+            victim.TTTPlaguemasterOriginalSource = owner:SteamID64()
             self:Remove()
         end
+
+        -- Disable effects so the victim doesn't know they got shot by something
+        return { effects = false, damage = false }
     end
 
     owner:FireBullets(bullet)
-
-    if not worldsnd then
-        self:EmitSound( self.Primary.Sound, self.Primary.SoundLevel )
-    elseif SERVER then
-        sound.Play(self.Primary.Sound, self:GetPos(), self.Primary.SoundLevel)
-    end
 
     if owner:IsNPC() or (not owner.ViewPunch) then return end
     owner:ViewPunch(Angle(util.SharedRandom(self:GetClass(), -0.2, -0.1, 0) * self.Primary.Recoil, util.SharedRandom(self:GetClass(), -0.1, 0.1, 1) * self.Primary.Recoil, 0))

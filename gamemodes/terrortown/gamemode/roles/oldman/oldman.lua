@@ -84,6 +84,10 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
     -- Only give the Old Man an adrenaline rush once
     if ent:GetNWBool("AdrenalineRushed", false) then return end
 
+    local customDamage = dmginfo:GetDamageCustom()
+    -- If this is set, assume that we're the ones that set it and don't check this damage info
+    if customDamage == DMG_DIRECT then return end
+
     -- If we're not already processing one of these events
     if not ent.damageHealth then
         -- Save their real health
@@ -104,6 +108,24 @@ hook.Add("TTTDrawHitMarker", "OldMan_TTTDrawHitMarker", function(victim, dmginfo
         return true, false, true, false
     end
 end)
+
+local function DoDamage(ply, dmg, damagetype, att, infl)
+    if not IsValid(infl) then
+        infl = att
+    end
+
+    -- Use TakeDamage instead of Kill so it properly applies karma
+    local dmginfo = DamageInfo()
+    dmginfo:SetDamageType(damagetype)
+    -- Set this so that we can check for it since it is not normally used in GMod
+    dmginfo:SetDamageCustom(DMG_DIRECT)
+    dmginfo:SetAttacker(att)
+    dmginfo:SetInflictor(infl)
+    dmginfo:SetDamage(dmg)
+    dmginfo:SetDamageForce(Vector(0, 0, 1))
+
+    ply:TakeDamageInfo(dmginfo)
+end
 
 hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dmginfo, took)
     -- Don't run this if adrenaline rush is disabled
@@ -135,8 +157,10 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
     -- If the damage would have killed them then...
     if damage >= health then
         local att = dmginfo:GetAttacker()
+        local inflictor = dmginfo:GetInflictor()
+        local damagetype = dmginfo:GetDamageType()
         -- If they are attacked by a player, enter an adrenaline rush
-        if IsPlayer(att) then
+        if IsPlayer(att) and not ent:IsRoleAbilityDisabled() then
             ent:SetNWBool("AdrenalineRush", true)
             -- Delay the health change here slightly so that any other damage events can fully clear first
             -- Without this delay, double damage events (from, e.g. a Holy Hand Grenade explosion) will cause the player to die
@@ -159,33 +183,24 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
                 ent:SelectWeapon("weapon_old_dbshotgun")
             end
 
-            local inflictor = dmginfo:GetInflictor()
-            local damagetype = dmginfo:GetDamageType()
             timer.Create(ent:Nick() .. "AdrenalineRush", adrenalineTime, 1, function()
                 ent:SetNWBool("AdrenalineRush", false)
                 ent:SetNWBool("AdrenalineRushed", true)
                 -- Only kill them if they are still the old man
                 if ent:IsActiveOldMan() then
-                    if not IsValid(inflictor) then
-                        inflictor = att
-                    end
-
-                    -- Use TakeDamage instead of Kill so it properly applies karma
-                    local dmg = DamageInfo()
-                    dmg:SetDamageType(damagetype)
-                    dmg:SetAttacker(att)
-                    dmg:SetInflictor(inflictor)
                     -- Use 10 so damage scaling doesn't mess with it. The worse damage factor (0.1) will still deal 1 damage after scaling a 10 down
                     -- Karma ignores excess damage anyway
-                    dmg:SetDamage(10)
-                    dmg:SetDamageForce(Vector(0, 0, 1))
-
-                    ent:TakeDamageInfo(dmg)
+                    DoDamage(ent, 10, damagetype, att, inflictor)
                 end
             end)
         -- Otherwise just let them die
         else
-            ent:Kill()
+            -- Delay the health change here slightly so that any other damage events can fully clear first
+            -- Without this delay, double damage events (from, e.g. a Holy Hand Grenade explosion) will cause the player to die
+            timer.Simple(0, function()
+                ent:SetHealth(health)
+                DoDamage(ent, damage, damagetype, att, inflictor)
+            end)
         end
     -- If this wasn't enough to kill the player, reduce their health by the damage amount
     else

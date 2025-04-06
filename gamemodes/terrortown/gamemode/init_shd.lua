@@ -88,3 +88,12 @@ local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, ROLE_STA
 for _, role in ipairs(shopless_credit_roles) do
     CreateCreditConVar(role)
 end
+
+-- Do this here so the convars are created early enough to be used by ULX
+for role = 0, ROLE_MAX do
+    -- Explicitly add vindicator here since they turn into an independent, but start as an innocent
+    if INDEPENDENT_ROLES[role] or JESTER_ROLES[role] or MONSTER_ROLES[role] or role == ROLE_VINDICATOR then
+        local default = (role == ROLE_LOOTGOBLIN or role == ROLE_CLOWN or role == ROLE_ZOMBIE or role == ROLE_VAMPIRE or role == ROLE_VINDICATOR) and "1" or "0"
+        CreateConVar("ttt_assassin_allow_" .. ROLE_STRINGS_RAW[role] .. "_kill", default, FCVAR_REPLICATED)
+    end
+end

@@ -185,7 +185,29 @@ table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
     cvar = "ttt_zombie_spit_convert",
     type = ROLE_CONVAR_TYPE_BOOL
 })
-
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_eat_enabled",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_eat_drop_bones",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_eat_timer",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_eat_heal",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_eat_overheal",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
 -------------------
 -- ROLE FEATURES --
 -------------------

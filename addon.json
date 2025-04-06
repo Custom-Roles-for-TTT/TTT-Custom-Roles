@@ -16,6 +16,8 @@
     "scripts*",
     "templates*",
     "images*",
-    "docs*"
+    "docs*",
+    "*.sw.vtx",
+    "*.xbox.vtx"
   ]
 }

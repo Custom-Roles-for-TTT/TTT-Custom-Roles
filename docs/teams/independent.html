@@ -134,6 +134,7 @@
                     <p>They can douse players in gasoline by standing near them and then set them on fire using their igniter weapon once all other players have all been doused. If <code>ttt_arsonist_early_ignite</code> is enabled, the igniter weapon can be used at any time, but keep in mind it can only be used once.</p>
                     <p>Players are notified when they are doused after a configurable delay (see <code>ttt_arsonist_douse_notify_delay_min</code> and <code>ttt_arsonist_douse_notify_delay_max</code> below). This is to encourage Arsonists to be sneaky or blend in with other players to disguise themselves.</p>
                     <p>Dead players' corpses can also be doused and will be ignited with living doused players. Dousing all corpses is not required to activate the igniter when <code>ttt_arsonist_early_ignite</code> is disabled.</p>
+                    <p>Players will be notified if there is an Arsonist at the start of the round if <code>ttt_arsonist_warn_all</code> is enabled.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -234,6 +235,12 @@
                             <td>1</td>
                             <td>Boolean</td>
                             <td>Whether the Arsonist shows dead players as missing in action.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_arsonist_warn_all</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether all players are warned when there's an Arsonist in a round.</td>
                         </tr>
                         <tr>
                             <td>ttt_detectives_search_only_arsonistdouse</td>
@@ -489,7 +496,7 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-killer"></i><a href="#killer">Killer</a></span> spawns with a knife and throwable crowbar. They win if they are the last player alive.</p>
                 <div class="expansion">
-                    <p>When <code>ttt_killer_warn_all</code> is enabled, all players are warned when there is Killer in the game.</p>
+                    <p>When <code>ttt_killer_warn</code> is enabled, players are warned when there is Killer in the game. If <code>ttt_killer_warn_all</code> is disabled, however, only <span style="color:var(--traitor)"><a href="../teams/traitor.html">traitors</a></span> are warned.</p>
                     <p>They are given a knife that does high damage to aid in their slaughter. This knife can be disabled by changing <code>ttt_killer_knife_enabled</code> and adjusted by <code>ttt_killer_knife_damage</code> and <code>ttt_killer_knife_delay</code>.</p>
                     <p>They have a special crowbar that can be thrown. It can be disabled by changing <code>ttt_killer_crowbar_enabled</code> and adjusted by <code>ttt_killer_crowbar_damage</code> and <code>ttt_killer_crowbar_thrown_damage</code>.</p>
                     <p>If they don't kill often enough they will begin to smoke, alerting the other players. The Killer will be warned in chat in advance of the smoke starting, and the smoke can be disabled by changing <code>ttt_killer_smoke_enabled</code>.</p>
@@ -627,6 +634,12 @@
                             <td>1</td>
                             <td>Boolean</td>
                             <td>Whether Killers have their special vision highlights enabled.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_killer_warn</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether to warn players if there is a Killer.</td>
                         </tr>
                         <tr>
                             <td>ttt_killer_warn_all</td>
@@ -807,6 +820,12 @@
                             <td>Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Plaguemaster.</td>
                         </tr>
                         <tr>
+                            <td>ttt_plaguemaster_dart_replace_timer</td>
+                            <td>0</td>
+                            <td>Integer</td>
+                            <td>How long (in seconds) after the plaguemaster's infection dies out before they should receive another dart gun. Set to 0 to disable.</td>
+                        </tr>
+                        <tr>
                             <td>ttt_plaguemaster_immune</td>
                             <td>1</td>
                             <td>Boolean</td>
@@ -832,7 +851,7 @@
                         </tr>
                         <tr>
                             <td>ttt_plaguemaster_spread_time</td>
-                            <td>10</td>
+                            <td>5</td>
                             <td>Integer</td>
                             <td>How long (in seconds) someone with the plague needs to be near someone else before it spreads.</td>
                         </tr>
@@ -880,7 +899,7 @@
                         <tbody>
                         <tr>
                             <td>ttt_shadow_alive_radius</td>
-                            <td>8</td>
+                            <td>10</td>
                             <td>Float</td>
                             <td>The radius in meters from the living target that the Shadow has to stay within.</td>
                         </tr>
@@ -898,7 +917,7 @@
                         </tr>
                         <tr>
                             <td>ttt_shadow_dead_radius</td>
-                            <td>3</td>
+                            <td>4</td>
                             <td>Float</td>
                             <td>The radius in meters from the death target that the Shadow has to stay within.</td>
                         </tr>
@@ -923,6 +942,7 @@
                                     <li>Kill them.</li>
                                     <li>Change them to be a Jester.</li>
                                     <li>Change them to be a Swapper.</li>
+                                    <li>Change them to be a Bodysnatcher.</li>
                                 </ol>
                             </td>
                         </tr>
@@ -1086,6 +1106,12 @@
                             <td>How low to reduce the Shadow's health to when they are outside of the target circle instead of their normal punishment. <i>(Setting to 0 will use <code>ttt_shadow_failure_mode</code> instead.)</i></td>
                         </tr>
                         <tr>
+                            <td>ttt_shadow_weaken_health_to_death</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether to kill the Shadow one tick after they reach 1HP when <code>ttt_shadow_weaken_health_to</code> is set to <code>1</code></td>
+                        </tr>
+                        <tr>
                             <td>ttt_shadow_weaken_timer</td>
                             <td>3</td>
                             <td>Integer</td>
@@ -1140,6 +1166,36 @@
                             <td>0</td>
                             <td>Float (0-1)</td>
                             <td>The fraction an attacker's bullet damage will be reduced by when they are shooting a Zombie. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_enabled</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies have the ability to eat a player's corpse.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_drop_bones</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether Zombies should drop bones when eating a player's corpse.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_timer</td>
+                            <td>5</td>
+                            <td>Integer</td>
+                            <td>The amount of time it takes to consume a player's corpse.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_heal</td>
+                            <td>50</td>
+                            <td>Integer</td>
+                            <td>The amount of health a Zombie will heal by when they consume a player's corpse.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_zombie_eat_overheal</td>
+                            <td>25</td>
+                            <td>Integer</td>
+                            <td>The amount over the Zombie's normal maximum health (e.g. 100 + this ConVar) that the Zombie can heal to by consuming a player's corpse.</td>
                         </tr>
                         <tr>
                             <td>ttt_zombie_friendly_fire</td>

@@ -16,7 +16,7 @@ ROLE_MAX_HEALTH[ROLE_SPONGE] = 150
 -- ROLE CONVARS --
 ------------------
 
-CreateConVar("ttt_sponge_aura_radius", "5", FCVAR_REPLICATED, "The radius of the sponge's aura in meters", 1, 30)
+CreateConVar("ttt_sponge_aura_radius", "6", FCVAR_REPLICATED, "The radius of the sponge's aura in meters", 1, 30)
 CreateConVar("ttt_sponge_aura_shrink", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_sponge_aura_mode", "0", FCVAR_REPLICATED, "The way in which the Sponge's aura redirects damage. 0 - Redirects unless all living players are inside, 1 - Redirects unless attacker and victim are both inside", 0, 1)
 

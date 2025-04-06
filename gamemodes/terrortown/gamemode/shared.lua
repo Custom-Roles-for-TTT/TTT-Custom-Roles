@@ -24,7 +24,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.2.0"
+CR_VERSION = "2.3.0"
 CR_BETA = false
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -183,8 +183,9 @@ ROLE_GOODTWIN = 47
 ROLE_EVILTWIN = 48
 ROLE_PLAGUEMASTER = 49
 ROLE_ILLUSIONIST = 50
+ROLE_CANNIBAL = 51
 
-ROLE_MAX = 50
+ROLE_MAX = 51
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(tbl, roles)
@@ -218,7 +219,7 @@ INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_TURNCOAT, ROLE_SAPPER, ROLE_MARSHAL, ROLE_INFECTED, ROLE_QUARTERMASTER, ROLE_VINDICATOR, ROLE_SCOUT, ROLE_GOODTWIN, ROLE_ILLUSIONIST})
 
 JESTER_ROLES = {}
-AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE, ROLE_GUESSER})
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE, ROLE_GUESSER, ROLE_CANNIBAL})
 
 INDEPENDENT_ROLES = {}
 AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST, ROLE_HIVEMIND, ROLE_PLAGUEMASTER})
@@ -331,10 +332,12 @@ local function ColorFromCustomConVars(name)
 end
 
 local function ModifyColor(color, type)
+    if not type then return color end
+
     local h, s, l = ColorToHSL(color)
     if type == "dark" then
         l = math.max(l - 0.125, 0.125)
-    elseif type == "highlight" or "radar" then
+    elseif type == "highlight" or type == "radar" then
         s = 1
     end
 
@@ -345,9 +348,6 @@ local function ModifyColor(color, type)
         c = ColorAlpha(c, 130)
     elseif type == "radar" then
         c = ColorAlpha(c, 230)
-    -- HSLToColor doesn't apply the Color metatable so call ColorAlpha to ensure this is actually a "Color"
-    else
-        c = ColorAlpha(c, 255)
     end
 
     return c
@@ -537,6 +537,7 @@ function UpdateRoleColours()
     FillRoleColors(ROLE_COLORS_RADAR, "radar")
     ROLE_COLOURS_RADAR = ROLE_COLORS_RADAR
 end
+UpdateRoleColors = UpdateRoleColours
 UpdateRoleColours()
 
 -- Role strings
@@ -591,7 +592,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_GOODTWIN] = "goodtwin",
     [ROLE_EVILTWIN] = "eviltwin",
     [ROLE_PLAGUEMASTER] = "plaguemaster",
-    [ROLE_ILLUSIONIST] = "illusionist"
+    [ROLE_ILLUSIONIST] = "illusionist",
+    [ROLE_CANNIBAL] = "cannibal"
 }
 
 ROLE_STRINGS = {
@@ -645,7 +647,8 @@ ROLE_STRINGS = {
     [ROLE_GOODTWIN] = "Good Twin",
     [ROLE_EVILTWIN] = "Evil Twin",
     [ROLE_PLAGUEMASTER] = "Plaguemaster",
-    [ROLE_ILLUSIONIST] = "Illusionist"
+    [ROLE_ILLUSIONIST] = "Illusionist",
+    [ROLE_CANNIBAL] = "Cannibal"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -699,7 +702,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_GOODTWIN] = "Good Twins",
     [ROLE_EVILTWIN] = "Evil Twins",
     [ROLE_PLAGUEMASTER] = "Plaguemasters",
-    [ROLE_ILLUSIONIST] = "Illusionists"
+    [ROLE_ILLUSIONIST] = "Illusionists",
+    [ROLE_CANNIBAL] = "Cannibals"
 }
 
 ROLE_STRINGS_EXT = {
@@ -754,7 +758,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_GOODTWIN] = "a Good Twin",
     [ROLE_EVILTWIN] = "an Evil Twin",
     [ROLE_PLAGUEMASTER] = "a Plaguemaster",
-    [ROLE_ILLUSIONIST] = "an Illusionist"
+    [ROLE_ILLUSIONIST] = "an Illusionist",
+    [ROLE_CANNIBAL] = "a Cannibal"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -809,7 +814,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_GOODTWIN] = "gtw",
     [ROLE_EVILTWIN] = "etw",
     [ROLE_PLAGUEMASTER] = "plm",
-    [ROLE_ILLUSIONIST] = "ill"
+    [ROLE_ILLUSIONIST] = "ill",
+    [ROLE_CANNIBAL] = "can"
 }
 
 function StartsWithVowel(word)
@@ -1322,8 +1328,9 @@ EVENT_VINDICATORACTIVE = 36
 EVENT_VINDICATORSUCCESS = 37
 EVENT_VINDICATORFAIL = 38
 EVENT_PLAGUEMASTERPLAGUED = 39
+EVENT_CANNIBALEAT = 40
 
-EVENT_MAX = EVENT_MAX or 39
+EVENT_MAX = EVENT_MAX or 40
 EVENTS_BY_ROLE = EVENTS_BY_ROLE or {}
 
 if SERVER then
@@ -1340,7 +1347,13 @@ if SERVER then
 
         -- Don't assign this event ID to a role we haven't found
         if role and role > ROLE_NONE and role <= ROLE_MAX then
-            EVENTS_BY_ROLE[role] = EVENT_MAX
+            if type(EVENTS_BY_ROLE[role]) == "number" then
+                EVENTS_BY_ROLE[role] = { EVENTS_BY_ROLE[role], EVENT_MAX }
+            elseif type(EVENTS_BY_ROLE[role]) == "table" then
+                table.insert(EVENTS_BY_ROLE[role], EVENT_MAX)
+            else
+                EVENTS_BY_ROLE[role] = EVENT_MAX
+            end
         end
 
         return EVENT_MAX
@@ -1383,8 +1396,9 @@ WIN_HIVEMIND = 17
 WIN_VINDICATOR = 18
 WIN_INFECTED = 19
 WIN_PLAGUEMASTER = 20
+WIN_CANNIBAL = 21
 
-WIN_MAX = WIN_MAX or 20
+WIN_MAX = WIN_MAX or 21
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
@@ -1478,8 +1492,10 @@ SPECIAL_DETECTIVE_HIDE_FOR_ALL = 1
 SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
 
 -- Misc. role constants
-UNITS_PER_METER = 52.49
+UNITS_PER_FOOT = 12
+UNITS_PER_METER = 39.37
 UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
+UNITS_PER_SIX_METERS = UNITS_PER_METER * 6
 
 -- Message queue modes
 MSG_PRINTBOTH = 1
@@ -1614,7 +1630,7 @@ function GM:Move(ply, mv)
     if ply:IsTerror() then
         local basemul = 1
         local slowed = false
-        -- Slow down ironsighters
+        -- Slow down iron sighters
         local wep = ply:GetActiveWeapon()
         if IsValid(wep) and wep.GetIronsights and wep:GetIronsights() then
             basemul = 120 / 220
@@ -1687,8 +1703,8 @@ end
 
 function ShouldShowTraitorExtraInfo()
     -- Don't display Parasite, Assassin, Informant or Spy information if there is a Glitch or an Illusionist that is distorting the role information
-    -- If the Illusionist is alive then dont reveal anything
-    if GetGlobalBool("ttt_illusionist_alive", false) then return false end
+    -- If the Illusionist is alive then don't reveal anything
+    if IsIllusionistBlocking() then return false end
     -- If the glitch mode is "Show as Special Traitor" then we don't want to show this because it reveals which of the traitors is real (because this doesn't show for glitches)
     -- If the glitch mode is "Hide Special Traitor Roles" then we don't want to show anything that reveals what role a traitor really is
     local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
@@ -1823,7 +1839,8 @@ end
 -- Add entries to this table in the form of: { "old_convar_name", "new_convar_name" }
 local deprecatedConVars = {
     { "ttt_parasite_cure_time", "ttt_doctor_cure_time" },
-    { "ttt_parasite_cure_mode", "ttt_doctor_cure_mode" }
+    { "ttt_parasite_cure_mode", "ttt_doctor_cure_mode" },
+    { "ttt_beggar_transfer_ownership", "ttt_weapon_transfer_ownership" }
 }
 
 for _, c in ipairs(deprecatedConVars) do

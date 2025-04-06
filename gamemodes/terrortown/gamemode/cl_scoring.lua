@@ -1157,6 +1157,14 @@ function CLSCORE:Toggle()
     end
 end
 
+hook.Add("OnPauseMenuShow", "Scoring_OnPauseMenuShow", function()
+    -- If we needed to hide the score screen, don't open the pause menu too
+    if IsValid(CLSCORE.Panel) and CLSCORE.Panel:IsVisible() then
+        CLSCORE.Panel:ToggleVisible()
+        return false
+    end
+end)
+
 local function SortEvents(a, b)
     return a.t < b.t
 end

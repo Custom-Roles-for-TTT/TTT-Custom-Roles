@@ -144,13 +144,29 @@ local sparkle = CLIENT and CreateConVar("ttt_crazy_sparks", "0", FCVAR_ARCHIVE)
 
 -- crosshair
 if CLIENT then
+    local hook = hook
+
+    local CallHook = hook.Call
+
     local sights_opacity = CreateConVar("ttt_ironsights_crosshair_opacity", "0.8", FCVAR_ARCHIVE)
     local crosshair_brightness = CreateConVar("ttt_crosshair_brightness", "1.0", FCVAR_ARCHIVE)
     local crosshair_size = CreateConVar("ttt_crosshair_size", "1.0", FCVAR_ARCHIVE)
     local disable_crosshair = CreateConVar("ttt_disable_crosshair", "0", FCVAR_ARCHIVE)
+
+    local enable_color_crosshair = CreateConVar("ttt_crosshair_color_enable", "0", FCVAR_ARCHIVE)
+    local crosshair_color_r = CreateConVar("ttt_crosshair_color_r", "255", FCVAR_ARCHIVE)
+    local crosshair_color_g = CreateConVar("ttt_crosshair_color_g", "255", FCVAR_ARCHIVE)
+    local crosshair_color_b = CreateConVar("ttt_crosshair_color_b", "255", FCVAR_ARCHIVE)
+
+    local crosshair_opacity = CreateConVar("ttt_crosshair_opacity", "1", FCVAR_ARCHIVE)
+    local crosshair_thickness = CreateConVar("ttt_crosshair_thickness", "1", FCVAR_ARCHIVE)
+    local crosshair_outlinethickness = CreateConVar("ttt_crosshair_outlinethickness", "0", FCVAR_ARCHIVE)
+
+    local mat_antialias = GetConVar("mat_antialias")
+
     local hide_role = GetConVar("ttt_hide_role")
 
-    function SWEP:DrawHUD()
+    function SWEP:DrawHUD(static, gap)
         if self.HUDHelp then
             self:DrawHelp()
         end
@@ -164,34 +180,96 @@ if CLIENT then
         local y = math.floor(ScrH() / 2.0)
         local scale = math.max(0.2, 10 * self:GetPrimaryCone())
 
-        local lastShootTime = self:LastShootTime()
-        scale = scale * (2 - math.Clamp((CurTime() - lastShootTime) * 5, 0.0, 1.0))
-
-        local alpha = sights and sights_opacity:GetFloat() or 1
-        local bright = crosshair_brightness:GetFloat() or 1
-
-        -- somehow it seems this can be called before my player metatable
-        -- additions have loaded
-        local color
-        if hide_role:GetBool() then
-            color = COLOR_WHITE
-        elseif client.IsTraitorTeam and client:IsTraitorTeam() then
-            color = ROLE_COLORS_HIGHLIGHT[ROLE_TRAITOR]
-        elseif client.IsJesterTeam and client:IsJesterTeam() then
-            color = ROLE_COLORS_HIGHLIGHT[ROLE_JESTER]
-        else
-            color = ROLE_COLORS_HIGHLIGHT[ROLE_INNOCENT]
+        if not static then
+            local lastShootTime = self:LastShootTime()
+            scale = scale * (2 - math.Clamp((CurTime() - lastShootTime) * 5, 0.0, 1.0))
         end
 
-        local r, g, b, _ = color:Unpack()
-        surface.SetDrawColor(Color(r * bright, g * bright, b * bright, 255 * alpha))
+        local alpha = sights and sights_opacity:GetFloat() or crosshair_opacity:GetFloat()
+        local bright = crosshair_brightness:GetFloat() or 1
 
-        local gap = math.floor(20 * scale * (sights and 0.8 or 1))
+        gap = gap or math.floor(20 * scale * (sights and 0.8 or 1))
         local length = math.floor(gap + (25 * crosshair_size:GetFloat()) * scale)
-        surface.DrawLine(x - length, y, x - gap, y)
-        surface.DrawLine(x + length, y, x + gap, y)
-        surface.DrawLine(x, y - length, x, y - gap)
-        surface.DrawLine(x, y + length, x, y + gap)
+
+        local thickness = math.max(1, crosshair_thickness:GetInt())
+        local rect = thickness > 1
+
+        -- lines are drawn with antialiasing when MSAA is enabled which makes them 1 pixel longer
+        local antialias = not rect and mat_antialias:GetInt() > 1
+
+        local offset, odd_offset = 0, 0
+        if rect then
+            offset = math.floor(thickness / 2)
+
+            -- ensures that high thickness levels don't cause the crosshair to overlap itself
+            gap = gap + offset
+            length = length + offset
+
+            -- prevents the distance between crosshair prongs from becoming uneven with odd thickness levels
+            odd_offset = thickness % 2
+        elseif not antialias then
+            odd_offset = 1
+        end
+
+        local outline = crosshair_outlinethickness:GetInt()
+        if outline > 0 then
+            surface.SetDrawColor(0, 0, 0, 255 * alpha)
+
+            local out_thick = thickness + outline * 2
+            local out_length = antialias and length + 1 or length
+            out_length = out_length - gap + outline * 2
+
+            local out_offset = offset + outline
+
+            local out_topleft = length + outline
+            local out_bottomright = gap - outline + odd_offset
+
+            surface.DrawRect(x - out_topleft, y - out_offset, out_length, out_thick)
+            surface.DrawRect(x + out_bottomright, y - out_offset, out_length, out_thick)
+            surface.DrawRect(x - out_offset, y - out_topleft, out_thick, out_length)
+            surface.DrawRect(x - out_offset, y + out_bottomright, out_thick, out_length)
+        end
+
+        if enable_color_crosshair:GetBool() then
+            surface.SetDrawColor(crosshair_color_r:GetInt() * bright,
+                                 crosshair_color_g:GetInt() * bright,
+                                 crosshair_color_b:GetInt() * bright,
+                                 255 * alpha)
+        else
+            -- somehow it seems this can be called before my player metatable
+            -- additions have loaded
+            local color
+            if hide_role:GetBool() then
+                color = COLOR_WHITE
+            elseif client.IsTraitorTeam and client:IsTraitorTeam() then
+                color = ROLE_COLORS_HIGHLIGHT[ROLE_TRAITOR]
+            elseif client.IsJesterTeam and client:IsJesterTeam() then
+                color = ROLE_COLORS_HIGHLIGHT[ROLE_JESTER]
+            else
+                color = ROLE_COLORS_HIGHLIGHT[ROLE_INNOCENT]
+            end
+
+            local new_col = CallHook("TTTCrosshairColorOverride", nil, client)
+            if new_col then color = new_col end
+
+            local r, g, b, _ = color:Unpack()
+            surface.SetDrawColor(Color(r * bright, g * bright, b * bright, 255 * alpha))
+        end
+
+        if rect then
+            local rect_length = length - gap
+            gap = gap + odd_offset
+
+            surface.DrawRect(x - length, y - offset, rect_length, thickness)
+            surface.DrawRect(x + gap, y - offset, rect_length, thickness)
+            surface.DrawRect(x - offset, y - length, thickness, rect_length)
+            surface.DrawRect(x - offset, y + gap, thickness, rect_length)
+        else
+            surface.DrawLine(x - length, y, x - gap, y)
+            surface.DrawLine(x + length, y, x + gap, y)
+            surface.DrawLine(x, y - length, x, y - gap)
+            surface.DrawLine(x, y + length, x, y + gap)
+        end
     end
 
     local GetPTranslation = LANG.GetParamTranslation
@@ -483,12 +561,33 @@ function SWEP:SetIronsightsTime(time) end
 function SWEP:GetIronsightsPredicted() return false end
 function SWEP:SetIronsightsPredicted(bool) end
 
--- Set up ironsights dt bool. Weapons using their own DT vars will have to make
+-- Set up iron sights dt bool. Weapons using their own DT vars will have to make
 -- sure they call this.
 function SWEP:SetupDataTables()
     self:NetworkVar("Bool", 3, "IronsightsPredicted")
     self:NetworkVar("Float", 3, "IronsightsTime")
 end
+
+local ReloadActIndex = {
+    ["pistol"]      = ACT_HL2MP_GESTURE_RELOAD_PISTOL,
+    ["smg"]         = ACT_HL2MP_GESTURE_RELOAD_SMG1,
+    ["grenade"]     = ACT_HL2MP_GESTURE_RELOAD_GRENADE,
+    ["ar2"]         = ACT_HL2MP_GESTURE_RELOAD_AR2,
+    ["shotgun"]     = ACT_HL2MP_GESTURE_RELOAD_SHOTGUN,
+    ["rpg"]         = ACT_HL2MP_GESTURE_RELOAD_RPG,
+    ["physgun"]     = ACT_HL2MP_GESTURE_RELOAD_PHYSGUN,
+    ["crossbow"]    = ACT_HL2MP_GESTURE_RELOAD_CROSSBOW,
+    ["melee"]       = ACT_HL2MP_GESTURE_RELOAD_MELEE,
+    ["slam"]        = ACT_HL2MP_GESTURE_RELOAD_SLAM,
+    ["fist"]        = ACT_HL2MP_GESTURE_RELOAD_FIST,
+    ["melee2"]      = ACT_HL2MP_GESTURE_RELOAD_MELEE2,
+    ["passive"]     = ACT_HL2MP_GESTURE_RELOAD_PASSIVE,
+    ["knife"]       = ACT_HL2MP_GESTURE_RELOAD_KNIFE,
+    ["duel"]        = ACT_HL2MP_GESTURE_RELOAD_DUEL,
+    ["camera"]      = ACT_HL2MP_GESTURE_RELOAD_CAMERA,
+    ["magic"]       = ACT_HL2MP_GESTURE_RELOAD_MAGIC,
+    ["revolver"]    = ACT_HL2MP_GESTURE_RELOAD_REVOLVER
+ }
 
 function SWEP:Initialize()
     if CLIENT and self:Clip1() == -1 then
@@ -504,6 +603,14 @@ function SWEP:Initialize()
     -- compat for gmod update
     if self.SetHoldType then
         self:SetHoldType(self.HoldType or "pistol")
+
+        if self.ReloadHoldType then
+            local act = ReloadActIndex[self.ReloadHoldType]
+            if act then
+               self.ActivityTranslate[ACT_MP_RELOAD_STAND] = act
+               self.ActivityTranslate[ACT_MP_RELOAD_CROUCH] = act
+            end
+         end
     end
 end
 

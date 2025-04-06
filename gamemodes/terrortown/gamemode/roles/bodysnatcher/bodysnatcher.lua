@@ -55,7 +55,7 @@ end)
 -- Only allow the bodysnatcher to pick up bodysnatcher-specific weapons
 hook.Add("PlayerCanPickupWeapon", "Bodysnatcher_Weapons_PlayerCanPickupWeapon", function(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
-    if ply:IsSpec() then return false end
+    if ply:IsSpec() then return end
 
     if wep:GetClass() == "weapon_bod_bodysnatch" then
         return ply:IsBodysnatcher()

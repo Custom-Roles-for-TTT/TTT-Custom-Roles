@@ -211,6 +211,7 @@ function plymeta:ResetRoundFlags()
     self:SetNWBool("det_called", false)
     self:SetNWBool("body_found", false)
     self:SetNWBool("body_searched", false)
+    self:ClearProperty("body_found_role")
     self:SetNWBool("body_searched_det", false)
 
     self.kills = {}
@@ -382,6 +383,7 @@ function plymeta:SpawnForRound(dead_only)
         -- Clear all search information for this resurrected player
         self:SetNWBool("det_called", false)
         self:SetNWBool("body_found", false)
+        self:ClearProperty("body_found_role")
         self:SetNWBool("body_searched", false)
         self:SetNWBool("body_searched_det", false)
 
@@ -593,22 +595,28 @@ local messageQueue = {}
 
 function plymeta:PrintMessageQueue()
     local sid = self:SteamID64()
+
+    if not messageQueue[sid] or #messageQueue[sid] == 0 then
+        self:PrintMessage(HUD_PRINTCENTER, "")
+        return
+    end
+
     local message = messageQueue[sid][1]
     -- Send this message as long as there is no predicate or it says this player is valid
     if not message.predicate or message.predicate(self) then
         self:PrintMessage(HUD_PRINTCENTER, message.message)
+    else
+        table.remove(messageQueue[sid], 1)
+        self:PrintMessageQueue()
+        return
     end
     if message.time <= 5 then
-        timer.Create("MessageQueue" .. sid, message.time, 0, function()
+        timer.Create("MessageQueue" .. sid, message.time, 1, function()
             table.remove(messageQueue[sid], 1)
-            if #messageQueue[sid] >= 1 then
-                self:PrintMessageQueue()
-            else
-                self:PrintMessage(HUD_PRINTCENTER, "")
-            end
+            self:PrintMessageQueue()
         end)
     else
-        timer.Create("MessageQueue" .. sid, 5, 0, function()
+        timer.Create("MessageQueue" .. sid, 5, 1, function()
             messageQueue[sid][1].time = messageQueue[sid][1].time - 5
             self:PrintMessageQueue()
         end)
@@ -622,8 +630,13 @@ function plymeta:ResetMessageQueue()
     self:PrintMessage(HUD_PRINTCENTER, "")
 end
 
-function plymeta:QueueMessage(message_type, message, time, predicate)
+function plymeta:QueueMessage(message_type, message, time, id, predicate)
     time = time or 5
+    if type(id) == "function" and predicate == nil then
+        predicate = id
+        id = nil
+    end
+
     local sid = self:SteamID64()
     if not messageQueue[sid] then
         messageQueue[sid] = {}
@@ -633,8 +646,8 @@ function plymeta:QueueMessage(message_type, message, time, predicate)
         self:PrintMessage(HUD_PRINTTALK, message)
     end
     if message_type == MSG_PRINTBOTH or message_type == MSG_PRINTCENTER then
-        table.insert(messageQueue[sid], {message=message, time=time, predicate=predicate})
-        if #messageQueue[sid] == 1 then
+        table.insert(messageQueue[sid], {message=message, time=time, predicate=predicate, id=id})
+        if #messageQueue[sid] == 1 and not timer.Exists("MessageQueue" .. sid) then
             self:PrintMessageQueue()
         end
     end
@@ -644,7 +657,41 @@ net.Receive("TTT_QueueMessage", function(len, ply)
     local message_type = net.ReadUInt(3)
     local message = net.ReadString()
     local time = net.ReadFloat()
-    ply:QueueMessage(message_type, message, time)
+    local id = net.ReadString()
+    if #id == 0 then
+        id = nil
+    end
+    ply:QueueMessage(message_type, message, time, id)
+end)
+
+function plymeta:ClearQueuedMessage(id)
+    local sid = self:SteamID64()
+
+    local skipCurrent = false
+    if messageQueue[sid] then
+        if messageQueue[sid][1] and messageQueue[sid][1].id == id then
+            skipCurrent = true
+        end
+
+        local i = 1
+        while i <= #messageQueue[sid] do
+            if messageQueue[sid][i].id == id then
+                table.remove(messageQueue[sid], i)
+            else
+                i = i + 1
+            end
+        end
+    end
+
+    if skipCurrent then
+        timer.Remove("MessageQueue" .. sid)
+        self:PrintMessageQueue()
+    end
+end
+
+net.Receive("TTT_ClearQueuedMessage", function(len, ply)
+    local id = net.ReadString()
+    ply:ClearQueuedMessage(id)
 end)
 
 function plymeta:ForceRoleNextRound(role)
@@ -681,6 +728,45 @@ function plymeta:ClearProperty(name, targets)
     SYNC:ClearPlayerProperty(self, name, targets)
 end
 
+local shopBlockedCache = {}
+function plymeta:IsShopPurchaseDisabled(...)
+    if shopBlockedCache[self:SteamID64()] then
+        CallHook("TTTOnShopPurchaseBlocked", nil, self, ...)
+        return true
+    end
+
+    local shopBlocked = CallHook("TTTIsShopPurchaseDisabled", nil, self, ...) == true
+    if shopBlocked then
+        self:DisableShopPurchases(...)
+        CallHook("TTTOnShopPurchaseBlocked", nil, self, ...)
+    end
+
+    return shopBlocked
+end
+
+function plymeta:DisableShopPurchases(...)
+    local sid64 = self:SteamID64()
+    if shopBlockedCache[sid64] then return end
+
+    shopBlockedCache[sid64] = true
+    CallHook("TTTOnShopPurchaseDisabled", nil, self, ...)
+end
+
+function plymeta:EnableShopPurchases()
+    local sid64 = self:SteamID64()
+    if not shopBlockedCache[sid64] then return end
+
+    shopBlockedCache[sid64] = nil
+    CallHook("TTTOnShopPurchaseEnabled", nil, self)
+end
+
+local function ClearShopBlockedCache()
+    shopBlockedCache = {}
+end
+hook.Add("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedCache)
+hook.Add("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
+-- Don't clear on round end because we may need this for post-round summary stuff
+
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
 hook.Add("TTTPrepareRound", "PostLoadOverride", function()
     -- Compatibility with Dead Ringer (810154456)
@@ -688,8 +774,11 @@ hook.Add("TTTPrepareRound", "PostLoadOverride", function()
         local oldDRuncloak = plymeta.DRuncloak
         -- Handle clearing search and corpse data when a Dead Ringer'd player uncloaks
         function plymeta:DRuncloak()
-            self:SetNWBool("body_searched", false)
             self:SetNWBool("det_called", false)
+            self:SetNWBool("body_found", false)
+            self:SetNWBool("body_searched", false)
+            self:ClearProperty("body_found_role")
+            self:SetNWBool("body_searched_det", false)
             oldDRuncloak(self)
 
             net.Start("TTT_RemoveCorpseCall")

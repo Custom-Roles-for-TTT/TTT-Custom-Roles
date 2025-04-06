@@ -103,6 +103,11 @@ function ENT:TakeFromStorage(amount)
     -- if we only have 5 healthpts in store, that is the amount we heal
     amount = math.min(amount, self:GetStoredHealth())
     self:SetStoredHealth(math.max(0, self:GetStoredHealth() - amount))
+
+    local placer = self:GetPlacer()
+    if IsPlayer(placer) and placer:IsDoctor() and placer:IsRoleAbilityDisabled() then
+        return 0
+    end
     return amount
 end
 
@@ -174,25 +179,25 @@ if SERVER then
 
     -- traditional equipment destruction effects
     function ENT:OnTakeDamage(dmginfo)
-        if dmginfo:GetAttacker() == self:GetPlacer() and not ttt_damage_own_healthstation:GetBool() then return end
+        local att = dmginfo:GetAttacker()
+        local placer = self:GetPlacer()
+        if att == placer and not ttt_damage_own_healthstation:GetBool() then return end
 
         self:TakePhysicsDamage(dmginfo)
 
         self:SetHealth(self:Health() - dmginfo:GetDamage())
 
-        local att = dmginfo:GetAttacker()
-        local placer = self:GetPlacer()
         if IsPlayer(att) then
             DamageLog(Format("DMG: \t %s [%s] damaged bomb station [%s] for %d dmg", att:Nick(), ROLE_STRINGS[att:GetRole()], IsPlayer(placer) and placer:Nick() or "<disconnected>", dmginfo:GetDamage()))
         end
 
-        if self:Health() < 0 then
+        if self:Health() <= 0 then
             self:Remove()
 
             util.EquipmentDestroyed(self:GetPos())
 
-            if IsValid(self:GetPlacer()) then
-                LANG.Msg(self:GetPlacer(), "hstation_broken")
+            if IsValid(placer) then
+                LANG.Msg(placer, "hstation_broken")
             end
         end
     end

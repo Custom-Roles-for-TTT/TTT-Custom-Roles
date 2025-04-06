@@ -20,6 +20,21 @@
         <p><em><strong>NOTE:</strong></em> Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the <em>remaining hook instances to be completely skipped</em>. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.</p>
     </div>
     <div class="contentbody panel">
+        <h3><a id="tttbeggarconvertbeggar-wep" href="#tttbeggarconvertbeggar-wep">TTTBeggarConvert(beggar, wep)</a></h3>
+        <p>
+            Called when a beggar is about to have their team changed from receiving an item.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>beggar</em> - The beggar who is about to be converted</li>
+            <li><em>wep</em> - The weapon the beggar received</li>
+        </ul>
+        <p>
+            <em>Return:</em> Whether or not the beggar should be converted (Defaults to <code>true</code>).
+        </p>
+
         <h3><a id="tttbodycreditslootedply-deadPly-rag-credits" href="#tttbodycreditslootedply-deadPly-rag-credits">TTTBodyCreditsLooted(ply, deadPly, rag, credits)</a></h3>
         <p>
             Called when a player loots credits off of a dead player's body.<br>
@@ -102,6 +117,16 @@
             <li><em>result</em> - The new result value to use or the original passed into the hook</li>
         </ul>
 
+        <h3><a id="tttcancureablerolespawn" href="#tttcancureablerolespawn">TTTCanCureableRoleSpawn()</a></h3>
+        <p>
+            Called to determine if a role can spawn that causes a state that can be cured.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.1.18<br>
+        </p>
+        <p>
+            <em>Return:</em> <code>true</code> if a role can spawn that causes a state that can be cured. Otherwise do not return anything.
+        </p>
+
         <h3><a id="tttcanidentifycorpseply-rag-wastraitor" href="#tttcanidentifycorpseply-rag-wastraitor">TTTCanIdentifyCorpse(ply, rag, wasTraitor)</a></h3>
         <p>
             Changed <code>was_traitor</code> parameter to be <code>true</code> for any member of the traitor team, rather than just the regular Traitor role.<br>
@@ -132,14 +157,19 @@
             <em>Return:</em> Whether to allow using the cure on this player. (Defaults to <code>false</code>)
         </p>
 
-        <h3><a id="tttcancureablerolespawn" href="#tttcancureablerolespawn">TTTCanCureableRoleSpawn()</a></h3>
+        <h3><a id="tttcantransferweaponownershipply-wep" href="#tttcantransferweaponownershipply-wep">TTTCanTransferWeaponOwnership(ply, wep)</a></h3>
         <p>
-            Called to determine if a role can spawn that causes a state that can be cured.<br>
-            <em>Realm:</em> Client and Server<br>
-            <em>Added in:</em> 2.1.18<br>
+            Called when determining if a player can have ownership of a specific weapon transferred to them.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.8<br>
+            <em>Parameters:</em>
         </p>
+        <ul>
+            <li><em>ply</em> - The target player who is potentially having ownership of a weapon transferred to them</li>
+            <li><em>wep</em> - The target weapon whose ownership is potentially being transferred</li>
+        </ul>
         <p>
-            <em>Return:</em> <code>true</code> if a role can spawn that causes a state that can be cured. Otherwise do not return anything.
+            <em>Return:</em> Whether to allow this player to have ownership of the weapon transferred to them. (Defaults to <code>true</code>)
         </p>
 
         <h3><a id="tttcanusetraitorvoiceply" href="#tttcanusetraitorvoiceply"></a>TTTCanUseTraitorVoice(ply)</a></h3>
@@ -171,6 +201,38 @@
             <em>Return:</em> The player name to show, if it should be overridden. Otherwise do not return anything.
         </p>
 
+        <h3><a id="tttcheatsheetrolestringoverrideclient-rolestring" href="#tttcheatsheetrolestringoverrideclient-rolestring">TTTCheatSheetRoleStringOverride(client, roleString)</a></h3>
+        <p>
+            Called when the cheat sheet is displayed, allowing the target translation string to be changed.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>roleString</em> - The string representing role of the local player. Is normally used to build the role cheat sheet description translation</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>roleString</em> - The new string to use when building the role cheat sheet description translation</li>
+        </ul>
+
+        <h3><a id="tttcrosshaircoloroverrideclient" href="#tttcrosshaircoloroverrideclient">TTTCrosshairColorOverride(client)</a></h3>
+        <p>
+            Allows overriding the color to use in place of the given player's normal crosshair color.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new crosshair color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
         <h3><a id="tttcupidshouldloversurviveply-lover" href="#tttcupidshouldloversurviveply-lover">TTTCupidShouldLoverSurvive(ply, lover)</a></h3>
         <p>
             Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.<br>
@@ -185,6 +247,31 @@
         <p>
             <em>Return:</em> If <code>ply</code> should not be killed, return <code>true</code>. Otherwise do not return anything.
         </p>
+
+        <h3><a id="tttcupidloverchosencupid-lover" href="#tttcupidloverchosencupid-lover">TTTCupidLoverChosen(cupid, lover)</a></h3>
+        <p>
+            Called after a player has been chosen as a cupid's lover.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>cupid</em> - The cupid who has chosen a lover</li>
+            <li><em>lover</em> - The lover that was chosen</li>
+        </ul>
+
+        <h3><a id="tttcupidloverschosencupid-lover1-lover2" href="#tttcupidloverschosencupid-lover1-lover2">TTTCupidLoversChosen(cupid, lover1, lover2)</a></h3>
+        <p>
+            Called after both players have been chosen as a cupid's lovers.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>cupid</em> - The cupid who has chosen both lovers</li>
+            <li><em>lover1</em> - The first lover that was chosen</li>
+            <li><em>lover2</em> - The second lover that was chosen</li>
+        </ul>
 
         <h3><a id="tttcureplayerply" href="#tttcureplayerply">TTTCurePlayer(ply)</a></h3>
         <p>
@@ -341,6 +428,35 @@
             <li><em>activeLabels</em> - The list of current active additional labels. Used to determine the labelY offset to use via: <code>labelY = labelY + (20 * #activeLabels)</code>. Be sure to insert an entry when you add your own label so other addons can space appropriately. <em>(Added in 1.6.11)</em></li>
         </ul>
 
+        <h3><a id="ttthudrolecoloroverrideclient-colortype" href="#ttthudrolecoloroverrideclient-colortype">TTTHUDRoleColorOverride(client, colorType)</a></h3>
+        <p>
+            Allows overriding the color to use in place of the given player's normal role color.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>colorType</em> - The color modification type to use (e.g. "dark", "highlight", "scoreboard", "sprite", "radar") (Defaults to <code>nil</code>)</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new role color to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
+        <h3><a id="ttthudrolenameoverrideclient" href="#ttthudrolenameoverrideclient">TTTHUDRoleNameOverride(client)</a></h3>
+        <p>
+            Allows overriding the name to use in place of the given player's normal role name.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new role name to use for the local player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
         <h3><a id="tttinformantdefaultscanstageply-oldrole-newrole" href="#tttinformantdefaultscanstageply-oldrole-newrole">TTTInformantDefaultScanStage(ply, oldRole, newRole)</a></h3>
         <p>
             Called when an Informant has scanned additional information from a target player.<br>
@@ -384,6 +500,39 @@
             <em>Return:</em> <code>true</code> if the player is currently respawning, <code>false</code> if they are not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
         </p>
 
+        <h3><a id="tttisroleabilitydisabled" href="#tttisroleabilitydisabled">TTTIsRoleAbilityDisabled(ply, ...)</a></h3>
+        <p>
+            Called to check whether a player's role ability is disabled.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's role ability is disabled as long as is remains enabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player being queried for role ability disabled status</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableRoleAbility</code> or <code>plymeta:IsRoleAbilityDisabled</code></li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> if the player's role ability is currently disabled. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
+        <h3><a id="tttisshoppurchasedisabled" href="#tttisshoppurchasedisabled">TTTIsShopPurchaseDisabled(ply, ...)</a></h3>
+        <p>
+            Called to check whether a player's shop purchases are disabled.<br>
+            <em>NOTE</em>: This will be called every time something queries for whether a player's shop purchases is disabled as long as they remain enabled.<br>
+            <em>NOTE</em>: If <code>true</code> is returned from this hook, the player's shop purchase will be silently blocked and they will have 1 credit removed.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player being queried for shop purchase disabled status</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableShopPurchases</code> or <code>plymeta:IsShopPurchaseDisabled</code></li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> if the player's shop purchases are currently blocked. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
         <h3><a id="tttkarmagiverewardply-reward-victim" href="#tttkarmagiverewardply-reward-victim">TTTKarmaGiveReward(ply, reward, victim)</a></h3>
         <p>
             Called before a player is rewarded with karma. Used to block a player's karma reward.<br>
@@ -425,6 +574,76 @@
         <ul>
             <li><em>ply</em> - The Mad Scientist doing the zombifying</li>
             <li><em>tgt</em> - The target being zombified</li>
+        </ul>
+
+        <h3><a id="tttonroleabilityblocked" href="#tttonroleabilityblocked">TTTOnRoleAbilityBlocked(ply, ...)</a></h3>
+        <p>
+            Called when a player tries to use their role ability but it's disabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose role ability is disabled</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:IsRoleAbilityDisabled</code></li>
+        </ul>
+
+        <h3><a id="tttonroleabilitydisabled" href="#tttonroleabilitydisabled">TTTOnRoleAbilityDisabled(ply, ...)</a></h3>
+        <p>
+            Called when a player's role ability is disabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose role ability is disabled</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableRoleAbility</code> or <code>plymeta:IsRoleAbilityDisabled</code></li>
+        </ul>
+
+        <h3><a id="tttonroleabilityenabled" href="#tttonroleabilityenabled">TTTOnRoleAbilityEnabled(ply)</a></h3>
+        <p>
+            Called when a player's role ability is re-enabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose role ability is being enabled</li>
+        </ul>
+
+        <h3><a id="tttonshoppurchaseblocked" href="#tttonshoppurchaseblocked">TTTOnShopPurchaseBlocked(ply, ...)</a></h3>
+        <p>
+            Called when a player tries to use the shop but their purchases are disabled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose shop purchases are disabled</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:IsShopPurchaseDisabled</code></li>
+        </ul>
+
+        <h3><a id="tttonshoppurchasedisabled" href="#tttonshoppurchasedisabled">TTTOnShopPurchaseDisabled(ply, ...)</a></h3>
+        <p>
+            Called when a player's shop purchases are disabled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose shop purchases are disabled</li>
+            <li><em>...</em> - Any other parameters that are passed to <code>plymeta:DisableShopPurchases</code> or <code>plymeta:IsShopPurchaseDisabled</code></li>
+        </ul>
+
+        <h3><a id="tttonshoppurchaseenabled" href="#tttonshoppurchaseenabled">TTTOnShopPurchaseEnabled(ply)</a></h3>
+        <p>
+            Called when a player's shop purchases are enabled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose shop purchases are being enabled</li>
         </ul>
 
         <h3><a id="tttpaladinaurahealedply-tgt-healed" href="#tttpaladinaurahealedply-tgt-healed">TTTPaladinAuraHealed(ply, tgt, healed)</a></h3>
@@ -1777,6 +1996,19 @@
         </p>
         <ul>
             <li><em>win</em> - The win type that the round is about to end with</li>
+        </ul>
+
+        <h3><a id="tttzombiebodyeatenply-ent-healed" href="#tttzombiebodyeatenply-ent-healed">TTTZombieBodyEaten(ply, ent, healed)</a> </h3>
+        <p>
+            Called after a Zombie eats a body.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The Zombie eating the body</li>
+            <li><em>ent</em> - The target entity. Generally either a player or a ragdoll</li>
+            <li><em>healed</em> - The amount of health the player gained from eating the body</li>
         </ul>
     </div>
     <div class="footerpadding panel"></div>

@@ -173,22 +173,6 @@ CreateConVar("ttt_deputy_impersonator_start_promoted", "0")
 CreateConVar("ttt_single_jester_independent", "1")
 CreateConVar("ttt_single_jester_independent_max_players", "0")
 
--- TODO: Deprecated - Remove after next major update
-local paired_role_blocks = {
-    {ROLE_DEPUTY, ROLE_IMPERSONATOR},
-    {ROLE_DOCTOR, ROLE_QUACK},
-    {ROLE_PARAMEDIC, ROLE_HYPNOTIST},
-    {ROLE_PHANTOM, ROLE_PARASITE},
-    {ROLE_DRUNK, ROLE_CLOWN},
-    {ROLE_JESTER, ROLE_SWAPPER}
-}
-
-for _, r in ipairs(paired_role_blocks) do
-    local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[r[1]] .. "_" .. ROLE_STRINGS_RAW[r[2]]
-    CreateConVar(cvar_name, "0")
-    CreateConVar(cvar_name .. "_chance", "0.5")
-end
-
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
 CreateConVar("ttt_credits_award_pct", "0.35")
@@ -293,6 +277,7 @@ util.AddNetworkString("TTT_LoadMonsterEquipment")
 util.AddNetworkString("TTT_UpdateRoleNames")
 util.AddNetworkString("TTT_ScoreboardUpdate")
 util.AddNetworkString("TTT_QueueMessage")
+util.AddNetworkString("TTT_ClearQueuedMessage")
 
 local function ClearAllFootsteps()
     net.Start("TTT_ClearPlayerFootsteps")
@@ -348,11 +333,7 @@ function GM:Initialize()
         RunConsoleCommand("sv_alltalk", "0")
     end
 
-    local cstrike = false
-    for _, g in ipairs(engine.GetGames()) do
-        if g.folder == "cstrike" then cstrike = true end
-    end
-    if not cstrike then
+    if not IsMounted("cstrike") then
         ErrorNoHalt("TTT WARNING: CS:S does not appear to be mounted by GMod. Things may break in strange ways. Server admin? Check the TTT readme for help.\n")
     end
 end
@@ -916,8 +897,8 @@ end
 function PrintResultMessage(type)
     ServerLog("Round ended.\n")
 
-    local overriden = CallHook("TTTPrintResultMessage", nil, type)
-    if overriden then return end
+    local overridden = CallHook("TTTPrintResultMessage", nil, type)
+    if overridden then return end
 
     if type == WIN_TIMELIMIT then
         if GetConVar("ttt_roundtime_win_draw"):GetBool() then
@@ -1563,7 +1544,7 @@ function SelectRoles()
         end
     end
 
-    if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) and TRAITOR_ROLES[ROLE_ZOMBIE] then
+    if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and choice_count >= cvars.Number("ttt_zombie_min_players", 0) and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) and TRAITOR_ROLES[ROLE_ZOMBIE] then
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_ZOMBIE)

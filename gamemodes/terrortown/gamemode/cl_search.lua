@@ -136,11 +136,14 @@ function PreprocSearch(raw)
             search[t].p = 1
             search[t].nick = d
         elseif t == "role" then
-            search[t].text = PT("search_role", { role = ROLE_STRINGS_EXT[d] })
-            search[t].color = ROLE_COLORS[d]
-            search[t].p = 2
+            -- ROLE_NONE means this data was specifically not sent from the client
+            if d ~= ROLE_NONE then
+                search[t].text = PT("search_role", { role = ROLE_STRINGS_EXT[d] })
+                search[t].color = ROLE_COLORS[d]
+                search[t].p = 2
+            end
 
-            -- Don't show team if we're already showing role
+            -- Don't show team if we're already showing role (even if it's disabled, as above)
             hasRole = true
             search["team"] = nil
         elseif t == "team" then
@@ -333,6 +336,16 @@ local function SearchInfoController(search, dback, dactive, dtext)
     end
 end
 
+local dframe = nil
+hook.Add("OnPauseMenuShow", "Search_OnPauseMenuShow", function()
+    -- If we needed to close the search menu, don't open the pause menu too
+    if IsValid(dframe) then
+        dframe:Close()
+        dframe = nil
+        return false
+    end
+end)
+
 local function ShowSearchScreen(search_raw)
     if not client then
         client = LocalPlayer()
@@ -362,7 +375,7 @@ local function ShowSearchScreen(search_raw)
     -- search is a table of tables that have an img and text key
     local search = PreprocSearch(search_raw)
 
-    local dframe = vgui.Create("DFrame")
+    dframe = vgui.Create("DFrame")
     dframe:SetSize(w, h)
     dframe:Center()
     dframe:SetTitle(T("search_title") .. " - " .. ((search.nick or {}).nick or "???"))
@@ -460,7 +473,12 @@ local function ShowSearchScreen(search_raw)
     -- Add the close button last
     table.insert(buttons, {
         text = T("close"),
-        doclick = function() dframe:Close() end,
+        doclick = function()
+            if IsValid(dframe) then
+                dframe:Close()
+                dframe = nil
+            end
+        end,
         rightjustify = true
     })
 

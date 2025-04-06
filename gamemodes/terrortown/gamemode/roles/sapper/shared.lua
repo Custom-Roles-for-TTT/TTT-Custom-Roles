@@ -5,7 +5,7 @@ AddCSLuaFile()
 ------------------
 
 local sapper_is_innocent = CreateConVar("ttt_sapper_is_innocent", "0", FCVAR_REPLICATED, "Whether the sapper should be treated as a special innocent", 0, 1)
-CreateConVar("ttt_sapper_aura_radius", "5", FCVAR_REPLICATED, "The radius of the sapper's aura in meters", 1, 30)
+CreateConVar("ttt_sapper_aura_radius", "6", FCVAR_REPLICATED, "The radius of the sapper's aura in meters", 1, 30)
 CreateConVar("ttt_sapper_protect_self", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_sapper_fire_immune", "0", FCVAR_REPLICATED)
 local sapper_can_see_c4 = CreateConVar("ttt_sapper_can_see_c4", "0", FCVAR_REPLICATED)

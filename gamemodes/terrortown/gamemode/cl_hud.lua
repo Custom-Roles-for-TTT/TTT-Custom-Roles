@@ -18,6 +18,7 @@ local MathCeil = math.ceil
 local MathRand = math.Rand
 local MathAbs = math.abs
 local TableCount = table.Count
+local StringLower = string.lower
 local interp = string.Interp
 local format = string.format
 
@@ -136,7 +137,77 @@ function CRHUD:PaintBar(r, x, y, w, h, colors, value)
     end
 end
 
-function CRHUD:PaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)
+local abilityBackgroundColor = Color(20, 20, 20, 200)
+local disabledAbilityColor = Color(90, 90, 90, 255)
+
+function CRHUD:PaintPowersHUD(client, powers, max_power, current_power, colors, title)
+    if not IsPlayer(client) then
+        CRHUD:OldPaintPowersHUD(client, powers, max_power, current_power, colors, title)
+        ErrorNoHalt("WARNING: Method 'PaintPowersHUD' has changed and the old method is deprecated. Please update your code to use the new version.")
+        return
+    end
+
+    local margin = 10
+    local padding = 2
+    local width = 300
+    local height = 28
+    local x = ScrW() - width - margin
+    local y = ScrH() + padding - margin
+
+    for i = #powers, 1, -1 do
+        y = y - height - margin - (padding * 5)
+        draw.RoundedBox(8, x, y, width, height + margin + (padding * 4), abilityBackgroundColor)
+        draw.SimpleText(powers[i].name .. " - " .. tostring(MathRound(100 * (powers[i].cost / max_power))) .. "%", "TimeLeft", x + height + (padding * 2), y + (height / 2), COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+        local desc = "Not enough " .. StringLower(title)
+        local slotColor = disabledAbilityColor
+        if current_power >= powers[i].cost then
+            desc = powers[i].desc
+            slotColor = ROLE_COLORS[client:GetRole()]
+            local new_col = CallHook("TTTHUDRoleColorOverride", nil, client, nil)
+            if new_col then slotColor = new_col end
+        end
+
+        draw.SimpleText(desc, "TabLarge", x + (padding * 2), y + height + padding, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+
+        draw.RoundedBoxEx(8, x, y, height, height, slotColor, true, false, false, true)
+        local key = powers[i].key
+        if #key == 1 then
+            CRHUD:ShadowedText(key, "Trebuchet22", x + (height / 2) - 1, y + (height / 2) - 1, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER) -- Shift the text here as it doesn't look centered due to the shadow
+        else
+            local tex = surface.GetTextureID("vgui/ttt/keys/" .. key)
+            surface.SetTexture(tex)
+            surface.SetDrawColor(0, 0, 0, 255)
+            surface.DrawTexturedRect(x + 8, y + 8, 16, 16)
+            surface.SetDrawColor(255, 255, 255, 255)
+            surface.DrawTexturedRect(x + 6, y + 6, 16, 16)
+        end
+    end
+
+    y = y - height - padding - 1 -- PaintBar adds a 1px border so we need to shift this up 1px to make things look consistent
+    CRHUD:PaintBar(8, x , y, width, height, colors, current_power / max_power)
+
+    local color = bg_colors.background_main
+    draw.SimpleText(title, "HealthAmmo", x + (width / 2), y + 1, color, TEXT_ALIGN_CENTER)
+end
+
+function CRHUD:PaintSpectatorProgressBar(max_value, current_value, colors, title, subtitle)
+    local margin = 10
+    local width, height = 200, 25
+    local x = ScrW() / 2 - width / 2
+    local y = margin / 2 + height
+
+    CRHUD:PaintBar(8, x, y, width, height, colors, current_value / max_value)
+
+    local color = bg_colors.background_main
+
+    draw.SimpleText(title, "HealthAmmo", ScrW() / 2, y, color, TEXT_ALIGN_CENTER)
+    if subtitle and #subtitle > 0 then
+        draw.SimpleText(subtitle, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+    end
+end
+
+function CRHUD:OldPaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)
     local margin = 10
     local width, height = 200, 25
     local x = ScrW() / 2 - width / 2
@@ -324,6 +395,9 @@ local function DrawBg(x, y, width, height, client)
         col = bg_colors.noround
     elseif hide_role:GetBool() then
         col = bg_colors.hidden
+    else
+        local new_col = CallHook("TTTHUDRoleColorOverride", nil, client, nil)
+        if new_col then col = new_col end
     end
 
     draw.RoundedBoxEx(8, x, y, tw, th, col, true, false, false, true)
@@ -494,6 +568,9 @@ local function InfoPaint(client)
             text = GetTranslation("hidden")
         else
             text = LANG.GetRawTranslation(client:GetRoleStringRaw()) or client:GetRoleString()
+
+            local new_text = CallHook("TTTHUDRoleNameOverride", nil, client, text)
+            if new_text then text = new_text end
         end
     else
         text = L[roundstate_string[round_state]]

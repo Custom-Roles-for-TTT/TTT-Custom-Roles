@@ -164,7 +164,7 @@ hook.Add("TTTSpectatorShowHUD", "Parasite_Infecting_TTTSpectatorShowHUD", functi
     }
     local current_power = cli:GetNWInt("ParasiteInfectionProgress", 0)
 
-    CRHUD:PaintPowersHUD(nil, max_power, current_power, infection_colors, L.infect_title, L.infect_help)
+    CRHUD:PaintSpectatorProgressBar(max_power, current_power, infection_colors, L.infect_title, L.infect_help)
 end)
 
 hook.Add("TTTShouldPlayerSmoke", "Parasite_Infecting_TTShouldPlayerSmoke", function(v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)

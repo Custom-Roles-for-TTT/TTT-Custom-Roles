@@ -198,7 +198,7 @@
                     <p>Roles without shops can optionally be given priority over roles with shops during the target selection process. Enabling <code>ttt_assassin_shop_roles_last</code> will make it so non-shop roles are selected as targets first, then once no valid non-shop roles remain shop roles will be selected. Detectives are always left for last regardless of if this feature is enabled or not.</p>
                     <p>The Assassin can see an icon above their target's head through walls and can optionally also have their target highlighted if <code>ttt_assassin_target_vision_enabled</code> is enabled.</p>
                     <p>If the Assassin kills a player other than their target, they will fail their contract and gain a damage penalty for the rest of the round. This penalty can be configured or disabled entirely with <code>ttt_assassin_failed_damage_penalty</code>.</p>
-                    <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="../teams/jester.html#loot-goblin">Loot Goblin</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="#vampire">Vampire</a></span>, and <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span> can be killed by the Assassin without causing the Assassin to fail their contract, even if they aren't the Assassin's current target. This can be disabled for each role with <code>ttt_assassin_allow_lootgoblin_kill</code>, <code>ttt_assassin_allow_vampire_kill</code>, and <code>ttt_assassin_allow_zombie_kill</code> respectively.</p>
+                    <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="../teams/jester.html#clown">Clown</a></span>, <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="../teams/jester.html#loot-goblin">Loot Goblin</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="#vampire">Vampire</a></span>, <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span>, and <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="../teams/innocent.html#vindicator">Vindicator</a></span> can be killed by the Assassin without causing the Assassin to fail their contract, even if they aren't the Assassin's current target. This can be disabled for each role with <code>ttt_assassin_allow_clown_kill</code>, <code>ttt_assassin_allow_lootgoblin_kill</code>, <code>ttt_assassin_allow_vampire_kill</code>, <code>ttt_assassin_allow_zombie_kill</code>, <code>ttt_assassin_allow_vindicator_kill</code> respectively.</p>
                     <p>The Assassin has access to a shop containing a small handful of useful items. However, if the <code>ttt_assassin_shop_sync</code> ConVar is enabled the Assassin will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
@@ -212,28 +212,40 @@
                         </thead>
                         <tbody>
                         <tr>
-                            <td>ttt_assassin_allow_lootgoblin_kill</td>
+                            <td>ttt_assassin_allow_jesters_kill</td>
                             <td>1</td>
                             <td>Boolean</td>
-                            <td>Whether the Assassin can kill a Loot Goblin without penalty, even if it is not their target.</td>
+                            <td>Whether the Assassin can kill a member of the jester team without damage penalty, even if it is not their target.</td>
                         </tr>
                         <tr>
-                            <td>ttt_assassin_allow_vampire_kill</td>
+                            <td>ttt_assassin_allow_independents_kill</td>
                             <td>1</td>
                             <td>Boolean</td>
-                            <td>Whether the Assassin can kill a Vampire without penalty, even if it is not their target.</td>
+                            <td>Whether the Assassin can kill an independent role without damage penalty, even if it is not their target.</td>
                         </tr>
                         <tr>
-                            <td>ttt_assassin_allow_zombie_kill</td>
+                            <td>ttt_assassin_allow_monsters_kill</td>
                             <td>1</td>
                             <td>Boolean</td>
-                            <td>Whether the Assassin can kill a Zombie without penalty, even if it is not their target.</td>
+                            <td>Whether the Assassin can kill a member of the monster team without damage penalty, even if it is not their target.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_allow_*_kill</td>
+                            <td>0 <i>(Clown, Loot Goblin, Vampire, Zombie, Vindicator: 1)</i></td>
+                            <td>Boolean</td>
+                            <td>Whether the assassin can kill a specific role without damage penalty, even if it is not their target. Replace * with the name of the role you want to configure without spaces or capital letters.</td>
                         </tr>
                         <tr>
                             <td>ttt_assassin_credits_starting</td>
                             <td>1</td>
                             <td>Integer</td>
                             <td>The number of credits an Assassin should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_damage_penalty_complete</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether to apply the damage penalty after an assassin has completed their assignments.</td>
                         </tr>
                         <tr>
                             <td>ttt_assassin_failed_damage_penalty</td>
@@ -290,7 +302,7 @@
             </div>
         </div>
         <div id="evil-twin" class="collapsible">
-            <button class="header" style="background-color:var(--special-traitor);"><i class="icon-evil-twin"></i>Evil Twin<span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></button>
+            <button class="header" style="background-color:var(--special-traitor);"><i class="icon-evil-twin"></i>Evil Twin</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-evil-twin"></i><a href="#evil-twin">Evil Twin</a></span> spawns with an <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-good-twin"></i><a href="../teams/innocent.html#good-twin">Good Twin</a></span> and they must trick everyone else into thinking that they are the Good Twin.</p>
@@ -983,6 +995,12 @@
                             <td>0</td>
                             <td>Boolean</td>
                             <td>Whether players being drained by a Vampire should be muted.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_drop_bones</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether vampires should drop bones when draining a player or a corpse</td>
                         </tr>
                         <tr>
                             <td>ttt_vampire_fang_dead_timer</td>

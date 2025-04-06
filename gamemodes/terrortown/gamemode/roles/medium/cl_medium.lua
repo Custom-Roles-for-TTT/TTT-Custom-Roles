@@ -60,8 +60,10 @@ local cacheTime = CurTime()
 local cacheLength = 5
 local lastResult = nil
 local function ShouldSeeSpirits(ply)
-    -- Mediums can always see spirits
-    if ply:IsActiveMedium() then return true end
+    -- Mediums can always see spirits as long as their ability isn't disabled
+    if ply:IsActiveMedium() then
+        return not ply:IsRoleAbilityDisabled()
+    end
     -- If spirit vision is disabled, non-Mediums can never see spirits
     if not spirit_vision then return false end
     -- If the player is alive, they can never see spirits
@@ -80,7 +82,7 @@ local function ShouldSeeSpirits(ply)
 
     -- Only allow dead people to see spirits if there is a medium
     for _, v in PlayerIterator() do
-        if v:IsMedium() then
+        if v:IsMedium() and not v:IsRoleAbilityDisabled() then
             lastResult = true
             return true
         end
@@ -108,7 +110,9 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
             if not ent.WispEmitter then ent.WispEmitter = ParticleEmitter(ent:GetPos()) end
             if not ent.WispNextPart then ent.WispNextPart = CurTime() end
             local pos = ent:GetPos() + Vector(0, 0, 64)
-            if ent.WispNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+            -- Use DistToSqr as it's more efficient and this is called very frequently
+            -- 9000000 = 3000^2
+            if ent.WispNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
                 ent.WispEmitter:SetPos(pos)
                 ent.WispNextPart = CurTime() + MathRand(0.003, 0.01)
                 local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
@@ -144,7 +148,7 @@ hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderable
     if not client then
         client = LocalPlayer()
     end
-    if not IsPlayer(client) or not client:IsActiveMedium() then return end
+    if not IsPlayer(client) or not client:IsActiveMedium() or client:IsRoleAbilityDisabled() then return end
 
     for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
         if ent:GetNWBool("MediumSpirit", false) then

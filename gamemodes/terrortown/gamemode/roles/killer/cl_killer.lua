@@ -12,6 +12,7 @@ local killer_crowbar_enabled = GetConVar("ttt_killer_crowbar_enabled")
 local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled")
 local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon")
 local killer_vision_enabled = GetConVar("ttt_killer_vision_enabled")
+local killer_warn = GetConVar("ttt_killer_warn")
 local killer_warn_all = GetConVar("ttt_killer_warn_all")
 local killer_can_see_jesters = GetConVar("ttt_killer_can_see_jesters")
 
@@ -70,7 +71,7 @@ local client = nil
 
 local function EnableKillerHighlights()
     hook.Add("PreDrawHalos", "Killer_Highlight_PreDrawHalos", function()
-        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, can_see_jesters, false, false)
+        OnPlayerHighlightEnabled(client, {}, can_see_jesters, false, false)
     end)
 end
 
@@ -90,7 +91,7 @@ end)
 hook.Add("Think", "Killer_Highlight_Think", function()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
-    if killer_vision and client:IsKiller() then
+    if killer_vision and client:IsKiller() and not client:IsRoleAbilityDisabled() then
         if not vision_enabled then
             EnableKillerHighlights()
             vision_enabled = true
@@ -158,8 +159,14 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
         roleColor = ROLE_COLORS[ROLE_TRAITOR]
 
         -- Warning
-        if killer_warn_all:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>All players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>warned</span> when there is "  .. ROLE_STRINGS_EXT[ROLE_KILLER] .. " in the game.</span>"
+        if killer_warn:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>"
+            if killer_warn_all:GetBool() then
+                html = html .. "All players"
+            else
+                html = html .. LANG.GetTranslation("traitors")
+            end
+            html = html .. " are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>warned</span> when there is "  .. ROLE_STRINGS_EXT[ROLE_KILLER] .. " in the game.</span>"
         end
 
         -- Knife

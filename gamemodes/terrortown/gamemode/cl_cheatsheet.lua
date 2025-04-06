@@ -198,7 +198,12 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
             desc:SetSize(descriptionWidth, iconSize - titleHeight)
             desc:SetWrap(true)
             desc:SetContentAlignment(7)
-            local text = GetRawTranslation("cheatsheet_desc_" .. ROLE_STRINGS_RAW[role])
+
+            local roleString = ROLE_STRINGS_RAW[role]
+            local newRoleString = hook.Call("TTTCheatSheetRoleStringOverride", nil, ply, roleString)
+            if type(newRoleString) == "string" then roleString = newRoleString end
+
+            local text = GetRawTranslation("cheatsheet_desc_" .. roleString)
             if text == nil then
                 desc:SetText("Role description not found.")
             else

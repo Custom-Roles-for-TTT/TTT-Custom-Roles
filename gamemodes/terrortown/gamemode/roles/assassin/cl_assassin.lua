@@ -14,9 +14,9 @@ local PlayerIterator = player.Iterator
 local assassin_show_target_icon = GetConVar("ttt_assassin_show_target_icon")
 local assassin_target_vision_enabled = GetConVar("ttt_assassin_target_vision_enabled")
 local assassin_next_target_delay = GetConVar("ttt_assassin_next_target_delay")
-local assassin_allow_lootgoblin_kill = GetConVar("ttt_assassin_allow_lootgoblin_kill")
-local assassin_allow_zombie_kill = GetConVar("ttt_assassin_allow_zombie_kill")
-local assassin_allow_vampire_kill = GetConVar("ttt_assassin_allow_vampire_kill")
+local assassin_allow_independents_kill = GetConVar("ttt_assassin_allow_independents_kill")
+local assassin_allow_jesters_kill = GetConVar("ttt_assassin_allow_jesters_kill")
+local assassin_allow_monsters_kill = GetConVar("ttt_assassin_allow_monsters_kill")
 local assassin_target_damage_bonus = GetConVar("ttt_assassin_target_damage_bonus")
 local assassin_target_bonus_bought = GetConVar("ttt_assassin_target_bonus_bought")
 local assassin_wrong_damage_penalty = GetConVar("ttt_assassin_wrong_damage_penalty")
@@ -55,13 +55,13 @@ end)
 
 -- Show skull icon over the target's head
 hook.Add("TTTTargetIDPlayerTargetIcon", "Assassin_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsAssassin() and assassin_show_target_icon:GetBool() and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester and not cli:IsSameTeam(ply) then
+    if cli:IsAssassin() and assassin_show_target_icon:GetBool() and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester and not cli:IsSameTeam(ply) and not cli:IsRoleAbilityDisabled() then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_ASSASSIN], "down"
     end
 end)
 
 hook.Add("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
-    if cli:IsAssassin() and IsPlayer(ent) and ent:SteamID64() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and IsPlayer(ent) and ent:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         if ent:GetNWBool("ParasiteInfected", false) and ShouldShowTraitorExtraInfo() then
             secondary_text = LANG.GetTranslation("target_infected")
         end
@@ -72,6 +72,7 @@ end)
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target, showJester)
     if not ply:IsAssassin() then return end
     if not IsPlayer(target) then return end
+    if ply:IsRoleAbilityDisabled() then return end
 
     -- Shared logic
     local show = (target:SteamID64() == ply:GetNWString("AssassinTarget", "")) and not showJester
@@ -86,13 +87,13 @@ end
 
 -- Flash the assassin target's row on the scoreboard
 hook.Add("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
-    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         return c, roleStr, ROLE_ASSASSIN
     end
 end)
 
 hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function(ply, cli, text)
-    if cli:IsAssassin() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         local newText = " ("
         if ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false) then
             newText = newText .. LANG.GetTranslation("target_infected") .. " | "
@@ -105,6 +106,7 @@ end)
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target)
     if not ply:IsAssassin() then return end
     if not IsPlayer(target) then return end
+    if ply:IsRoleAbilityDisabled() then return end
 
     -- Shared logic
     local show = target:SteamID64() == ply:GetNWString("AssassinTarget", "")
@@ -157,7 +159,7 @@ end)
 hook.Add("Think", "Assassin_Highlight_Think", function()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
-    if assassin_target_vision and client:IsAssassin() then
+    if assassin_target_vision and client:IsAssassin() and not client:IsRoleAbilityDisabled() then
         if not vision_enabled then
             EnableAssassinTargetHighlights()
             vision_enabled = true
@@ -174,6 +176,7 @@ end)
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_ASSASSIN] = function(ply, target)
     if not ply:IsAssassin() then return end
     if not IsPlayer(target) then return end
+    if ply:IsRoleAbilityDisabled() then return end
 
     local target_sid64 = ply:GetNWString("AssassinTarget", "")
     if not target_sid64 or #target_sid64 == 0 then return end
@@ -200,6 +203,16 @@ end)
 --------------
 -- TUTORIAL --
 --------------
+
+local function GetPunctuatedListString(tbl)
+    -- Build the table of allowed rules into a properly punctuated list with the last two elements joined by an "and"
+    local allowed_string = table.concat(tbl, ", ")
+    local allowed_replace = " and"
+    if #tbl > 2 then
+        allowed_replace  = "," .. allowed_replace
+    end
+    return string.gsub(allowed_string, "(.*),(.*)", "%1" .. allowed_replace .. "%2")
+end
 
 hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ASSASSIN then
@@ -230,30 +243,61 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
         end
 
-        local allow_lootgoblin_kill = assassin_allow_lootgoblin_kill:GetBool() and util.CanRoleSpawn(ROLE_LOOTGOBLIN)
-        local allow_zombie_kill = assassin_allow_zombie_kill:GetBool() and util.CanRoleSpawn(ROLE_ZOMBIE)
-        local allow_vampire_kill = assassin_allow_vampire_kill:GetBool() and util.CanRoleSpawn(ROLE_VAMPIRE)
-        if allow_lootgoblin_kill or allow_zombie_kill or allow_vampire_kill then
-            local allowed_roles = {}
-            if allow_lootgoblin_kill then
-                table.insert(allowed_roles, ROLE_STRINGS[ROLE_LOOTGOBLIN])
+        local allow_independents_kill = assassin_allow_independents_kill:GetBool()
+        local allow_jesters_kill = assassin_allow_jesters_kill:GetBool()
+        local allow_monsters_kill = assassin_allow_monsters_kill:GetBool()
+        local allowed_teams = {}
+        local allowed_roles = {}
+        if allow_independents_kill then
+            table.insert(allowed_teams, GetRoleTeamName(ROLE_TEAM_INDEPENDENT))
+        else
+            local independent_roles = GetTeamRoles(INDEPENDENT_ROLES)
+            -- Explicitly add vindicator here since they turn into an independent, but start as an innocent
+            if not table.HasValue(independent_roles, ROLE_VINDICATOR) then
+                table.insert(independent_roles, ROLE_VINDICATOR)
             end
-            if allow_zombie_kill then
-                table.insert(allowed_roles, ROLE_STRINGS[ROLE_ZOMBIE])
+            for _, r in ipairs(independent_roles) do
+                if not cvars.Bool("ttt_assassin_allow_" .. ROLE_STRINGS_RAW[r] .. "_kill", false) or not util.CanRoleSpawn(r) then continue end
+                table.insert(allowed_roles, r)
             end
-            if allow_vampire_kill then
-                table.insert(allowed_roles, ROLE_STRINGS[ROLE_VAMPIRE])
-            end
+        end
 
-            -- Build the table of allowed rules into a properly punctutated list with the last two elements joined by an "and"
-            local allowed_string = table.concat(allowed_roles, ", ")
-            local allowed_replace = " and"
-            if #allowed_roles > 2 then
-                allowed_replace  = "," .. allowed_replace
+        if allow_jesters_kill then
+            table.insert(allowed_teams, GetRoleTeamName(ROLE_TEAM_JESTER))
+        else
+            local jester_roles = GetTeamRoles(JESTER_ROLES)
+            for _, r in ipairs(jester_roles) do
+                if not cvars.Bool("ttt_assassin_allow_" .. ROLE_STRINGS_RAW[r] .. "_kill", false) or not util.CanRoleSpawn(r) then continue end
+                table.insert(allowed_roles, r)
             end
-            allowed_string = string.gsub(allowed_string, "(.*),(.*)", "%1" .. allowed_replace .. "%2")
+        end
 
-            html = html .. "<span style='display: block; margin-top: 10px;'>The following role(s) are still killable even if they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>aren't the " .. ROLE_STRINGS[ROLE_ASSASSIN] .. "'s target</span>: " .. allowed_string .. "</span>"
+        if allow_monsters_kill then
+            table.insert(allowed_teams, GetRoleTeamName(ROLE_TEAM_MONSTER))
+        else
+            local monster_roles = GetTeamRoles(MONSTER_ROLES)
+            for _, r in ipairs(monster_roles) do
+                if not cvars.Bool("ttt_assassin_allow_" .. ROLE_STRINGS_RAW[r] .. "_kill", false) or not util.CanRoleSpawn(r) then continue end
+                table.insert(allowed_roles, r)
+            end
+        end
+
+        if #allowed_teams > 0 then
+            local allowed_string = GetPunctuatedListString(allowed_teams)
+            html = html .. "<span style='display: block; margin-top: 10px;'>Members of the following team(s) can still be killed even if they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>aren't the " .. ROLE_STRINGS[ROLE_ASSASSIN] .. "'s target</span>: " .. allowed_string .. "</span>"
+        end
+
+        if #allowed_roles > 0 then
+            local allowed_role_strings = {}
+            for _, r in ipairs(allowed_roles) do
+                table.insert(allowed_role_strings, ROLE_STRINGS[r])
+            end
+            table.sort(allowed_role_strings, function(a, b)
+                return a < b
+            end)
+
+            local allowed_string = GetPunctuatedListString(allowed_role_strings)
+            html = html .. "<span style='display: block; margin-top: 10px;'>The following roles(s) can still be killed even if they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>aren't the " .. ROLE_STRINGS[ROLE_ASSASSIN] .. "'s target</span>: " .. allowed_string .. "</span>"
         end
 
         if assassin_target_damage_bonus:GetFloat() > 0 then

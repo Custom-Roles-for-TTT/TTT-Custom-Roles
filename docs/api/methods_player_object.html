@@ -91,6 +91,33 @@
             <li><em>targets</em> - The targets that should have this value cleared on their clients. <em>(Defaults to sending to all players)</em></li>
         </ul>
 
+        <h3><a id="plymetaclearqueuedmessageid" href="#plymetaclearqueuedmessageid">plymeta:ClearQueuedMessage(id)</a></h3>
+        <p>
+            Removes queued messages with the given ID from the queue and clears any currently displayed messages with the given ID.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>id</em> - The identifier of the message(s) you want to clear</li>
+        </ul>
+
+        <h3><a id="plymetadisableroleability" href="#plymetadisableroleability">plymeta:DisableRoleAbility()</a></h3>
+        <p>
+            Disables this player's role ability, if it isn't already.<br>
+            <em>NOTE</em>: If the player's role ability was not already disabled, this will also call the <code>TTTOnRoleAbilityDisabled</code> hook<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9
+        </p>
+
+        <h3><a id="plymetadisableshoppurchases" href="#plymetadisableshoppurchases">plymeta:DisableShopPurchases()</a></h3>
+        <p>
+            Blocks player's purchases from the equipment shop, if they weren't already.<br>
+            <em>NOTE</em>: If the player's purchases were not already blocked, this will also call the <code>TTTOnShopPurchaseDisabled</code> hook<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9
+        </p>
+
         <h3><a id="plymetadrunkjoinlosingteam" href="#plymetadrunkjoinlosingteam">plymeta:DrunkJoinLosingTeam()</a></h3>
         <p>
             Attempts to find the losing team and calls <code>self:SoberDrunk(team)</code> using the losing team as the <em>team</em> parameter.<br>
@@ -108,6 +135,22 @@
         <ul>
             <li><em>role</em> - Which role to set the Drunk to (see ROLE_* global enumeration)</li>
         </ul>
+
+        <h3><a id="plymetaenableroleability" href="#plymetaenableroleability">plymeta:EnableRoleAbility()</a></h3>
+        <p>
+            Enables this player's role ability, if it was previously disabled.<br>
+            <em>NOTE</em>: If the player's role ability was previously disabled, this will also call the <code>TTTOnRoleAbilityEnabled</code> hook<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9
+        </p>
+
+        <h3><a id="plymetaenableshoppurchases" href="#plymetaenableshoppurchases">plymeta:EnableShopPurchases()</a></h3>
+        <p>
+            Enables player's ability to purchase from the equipment shop, if it was previously disabled.<br>
+            <em>NOTE</em>: If the player's shop purchases were previously disabled, this will also call the <code>TTTOnShopPurchaseEnabled</code> hook.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.2.9
+        </p>
 
         <h3><a id="plymetaforcerolenextroundrole" href="#plymetaforcerolenextroundrole">plymeta:ForceRoleNextRound(role)</a></h3>
         <p>
@@ -231,7 +274,14 @@
 
         <h3><a id="plymetaisactivedetectivelike" href="#plymetaisactivedetectivelike">plymeta:IsActiveDetectiveLike()</a></h3>
         <p>
-            Whether <code>plymeta:IsActiveDetectiveLike</code> returns <code>true</code> and the player is active.<br>
+            Whether <code>plymeta:IsDetectiveLike</code> returns <code>true</code> and the player is active.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisactivedetectiveteam" href="#plymetaisactivedetectiveteam">plymeta:IsActiveDetectiveTeam()</a></h3>
+        <p>
+            Whether <code>plymeta:IsDetectiveTeam</code> returns <code>true</code> and the player is active.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
@@ -288,6 +338,13 @@
         <h3><a id="plymetaisdetectivelikeplymetagetdetectivelike" href="#plymetaisdetectivelikeplymetagetdetectivelike">plymeta:IsDetectiveLike()/plymeta:GetDetectiveLike()</a></h3>
         <p>
             Whether the player's role is like a detective (e.g. detective or promoted Deputy/Impersonator).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisdetectiveteam" href="#plymetaisdetectiveteam">plymeta:IsDetectiveTeam()</a></h3>
+        <p>
+            Whether the player is a detective role (e.g. detective or special detective).<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
@@ -353,6 +410,22 @@
             <em>Added in:</em> 2.1.12
         </p>
 
+        <h3><a id="plymetaisroleabilitydisabled" href="#plymetaisroleabilitydisabled">plymeta:IsRoleAbilityDisabled(...)</a></h3>
+        <p>
+            Called to check whether a player's role ability is disabled.<br>
+            <em>NOTE</em>: Calls <code>TTTIsRoleAbilityDisabled</code> hook to determine status if <code>plymeta:DisableRoleAbility</code> has not previously been called.<br>
+            <em>NOTE</em>: Calls <code>plymeta:DisableRoleAbility</code> if <code>TTTIsRoleAbilityDisabled</code> is called and result is <code>true</code>.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsRoleAbilityDisabled</code> hook and <code>plymeta:DisableRoleAbility</code> method</li>
+        </ul>
+        <p>
+            <em>Returns:</em> <code>true</code> if the player's role ability is currently disabled, <code>false</code> otherwise.
+        </p>
+
         <h3><a id="plymetaisroleactive" href="#plymetaisroleactive">plymeta:IsRoleActive()</a></h3>
         <p>
             Whether the player's role feature has been activated.<br>
@@ -388,6 +461,22 @@
             <li><em>isNameOverridden</em> - Whether the player name is currently overridden</li>
             <li><em>isRoleOverridden</em> - Whether the role color or icon is currently overridden</li>
         </ul>
+
+        <h3><a id="plymetaisshoppurchasedisabled" href="#plymetaisshoppurchasedisabled">plymeta:IsShopPurchaseDisabled(...)</a></h3>
+        <p>
+            Called to check whether a player's shop purchases are disabled.<br>
+            <em>NOTE</em>: Calls <code>TTTIsShopPurchaseDisabled</code> hook to determine status if <code>plymeta:DisableShopPurchases</code> has not previously been called.<br>
+            <em>NOTE</em>: Calls <code>plymeta:DisableShopPurchases</code> if <code>TTTIsShopPurchaseDisabled</code> hook is called and result is <code>true</code>.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.2.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>...</em> - Any parameters to be passed to the <code>TTTIsShopPurchaseDisabled</code> hook and <code>plymeta:DisableShopPurchases</code> method</li>
+        </ul>
+        <p>
+            <em>Returns:</em> <code>true</code> if the player's shop purchases are currently disabled, <code>false</code> otherwise.
+        </p>
 
         <h3><a id="plymetaisshoprole" href="#plymetaisshoprole">plymeta:IsShopRole()</a></h3>
         <p>
@@ -499,7 +588,7 @@
             <em>Added in:</em> 1.9.4<br>
         </p>
         
-        <h3><a id="plymetaqueuemessagemessage_type-message-time-predicate" href="#plymetaqueuemessagemessage_type-message-time-predicate">plymeta:QueueMessage(message_type, message, time, predicate)</a></h3>
+        <h3><a id="plymetaqueuemessagemessage_type-message-time-id-predicate" href="#plymetaqueuemessagemessage_type-message-time-id-predicate">plymeta:QueueMessage(message_type, message, time, id, predicate)</a></h3>
         <p>
             Queues a message to be shown to the player. Useful in situations where multiple center-screen messages could be shown at the same time and overlapped. This ensures each message is shown in order without overlap.<br>
             <em>Realm:</em> Server and Client<br>
@@ -509,7 +598,8 @@
         <ul>
             <li><em>message_type</em> - The <a href="global_enumerations.html#msg_print" target="_blank">MSG_PRINT*</a> value representing the display target for this message</li>
             <li><em>message</em> - The message being shown</li>
-            <li><em>time</em> - The amount of time to display the message in the center of the screen. Only used when <code>message_type</code> is <code>MSG_PRINTBOTH</code> or <code>MSG_PRINTCENTER</code></li>
+            <li><em>time</em> - The amount of time to display the message in the center of the screen. Only used when <code>message_type</code> is <code>MSG_PRINTBOTH</code> or <code>MSG_PRINTCENTER</code> (Optional. Defaults to 5 seconds if not provided)</li>
+            <li><em>id</em> - An identifier string that can be used to clear the message or remove it from the queue (Optional) <em>(Added in 2.2.1)</em></li>
             <li><em>predicate</em> - Predicate function called with the player as the sole parameter before the message is sent. Return <code>true</code> to allow the message or <code>false</code> to prevent it (Optional) <em>(Added in 2.0.5)</em> <em>(Only available on the server realm)</em></li>
         </ul>
 

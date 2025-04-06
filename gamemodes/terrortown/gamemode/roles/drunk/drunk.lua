@@ -189,7 +189,7 @@ function plymeta:DrunkJoinLosingTeam()
                 local rolePackJestersIndependents = 0
 
                 for _, slot in ipairs(rolePackTable.slots) do
-                    -- If the slot is empty then we dont need to do any calculations
+                    -- If the slot is empty then we don't need to do any calculations
                     if #slot == 0 then continue end
 
                     -- If we have already filled enough slots for each player then don't include later slots in the calculation
@@ -394,7 +394,7 @@ function plymeta:SoberDrunk(team)
 end
 
 function plymeta:DrunkRememberRole(role, hidecenter)
-    if not self:IsActiveDrunk() then return false end
+    if not self:IsActiveDrunk() or self:IsRoleAbilityDisabled() then return false end
 
     self:SetNWBool("WasDrunk", true)
     self:SetRole(role)
@@ -436,6 +436,24 @@ function plymeta:DrunkRememberRole(role, hidecenter)
     return true
 end
 
+local function StartDrunkRespawnTimer()
+    timer.Create("waitfordrunkrespawn", 0.1, 0, function()
+        local dead_drunk = false
+        for _, p2 in PlayerIterator() do
+            if p2:IsActiveDrunk() then
+                if drunk_join_losing_team:GetBool() then
+                    p2:DrunkJoinLosingTeam()
+                else
+                    p2:SoberDrunk()
+                end
+            elseif p2:IsDrunk() and not p2:Alive() then
+                dead_drunk = true
+            end
+        end
+        if timer.Exists("waitfordrunkrespawn") and not dead_drunk then timer.Remove("waitfordrunkrespawn") end
+    end)
+end
+
 ROLE_ON_ROLE_ASSIGNED[ROLE_DRUNK] = function(ply)
     SetGlobalFloat("ttt_drunk_remember", CurTime() + drunk_sober_time:GetInt())
     timer.Create("drunkremember", drunk_sober_time:GetInt(), 1, function()
@@ -447,25 +465,31 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_DRUNK] = function(ply)
                     p:SoberDrunk()
                 end
             elseif p:IsDrunk() and not p:Alive() and not timer.Exists("waitfordrunkrespawn") then
-                timer.Create("waitfordrunkrespawn", 0.1, 0, function()
-                    local dead_drunk = false
-                    for _, p2 in PlayerIterator() do
-                        if p2:IsActiveDrunk() then
-                            if drunk_join_losing_team:GetBool() then
-                                p2:DrunkJoinLosingTeam()
-                            else
-                                p2:SoberDrunk()
-                            end
-                        elseif p2:IsDrunk() and not p2:Alive() then
-                            dead_drunk = true
-                        end
-                    end
-                    if timer.Exists("waitfordrunkrespawn") and not dead_drunk then timer.Remove("waitfordrunkrespawn") end
-                end)
+                StartDrunkRespawnTimer()
             end
         end
     end)
 end
+
+hook.Add("TTTOnRoleAbilityEnabled", "Drunk_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsDrunk() then return end
+
+    -- If they are dead, make sure the respawn timer is running
+    if not ply:Alive() then
+        if timer.Exists("waitfordrunkrespawn") then return end
+        StartDrunkRespawnTimer()
+    -- Otherwise if the remember timer hasn't finished, let them just wait for that
+    elseif timer.Exists("drunkremember") and timer.TimeLeft("drunkremember") > 0 then
+        return
+    end
+
+    -- If they are alive and they should have remembered their role already, trigger that now
+    if drunk_join_losing_team:GetBool() then
+        ply:DrunkJoinLosingTeam()
+    else
+        ply:SoberDrunk()
+    end
+end)
 
 local function StopDrunkTimers()
     if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
@@ -475,7 +499,15 @@ end
 local function HandleDrunkWinBlock(win_type)
     if win_type == WIN_NONE then return win_type end
 
-    local drunk = player.GetLivingRole(ROLE_DRUNK)
+    local drunk
+    -- Iterate manually so we can skip disabled drunks and find the non-disabled ones
+    for _, v in PlayerIterator() do
+        if v:IsActiveDrunk() and not v:IsRoleAbilityDisabled() then
+            drunk = v
+            break
+        end
+    end
+
     if not IsPlayer(drunk) then return win_type end
 
     -- Make the drunk a clown

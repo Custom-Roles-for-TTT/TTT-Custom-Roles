@@ -70,11 +70,13 @@ hook.Add("Initialize", "Infected_RoleChange_Initialize", function()
 end)
 
 local function InfectedSuccumb(ply, respawn)
+    if ply:IsRoleAbilityDisabled(respawn) then return end
+
     local message = "You have succumbed to your disease and "
     if respawn then
-        message = message .. " respawned as "
+        message = message .. "respawned as "
     else
-        message = message .. " become "
+        message = message .. "become "
     end
     ply:QueueMessage(MSG_PRINTCENTER, message .. ROLE_STRINGS_EXT[ROLE_ZOMBIE])
 
@@ -157,6 +159,20 @@ hook.Add("TTTStopPlayerRespawning", "Infected_TTTStopPlayerRespawning", function
     end
 end)
 
+hook.Add("TTTOnRoleAbilityEnabled", "Infected_TTTOnRoleAbilityEnabled", function(ply)
+    if not IsPlayer(ply) or not ply:IsInfected() then return end
+    if timer.Exists("InfectedSuccumb") and timer.TimeLeft("InfectedSuccumb") > 0 then return end
+
+    ply:SetNWBool("InfectedIsZombifying", false)
+    if not ply:Alive() or ply:IsSpec() then
+        if infected_respawn_enabled:GetBool() then
+            InfectedSuccumb(ply, true)
+        end
+    else
+        InfectedSuccumb(ply, false)
+    end
+end)
+
 ----------------
 -- WIN CHECKS --
 ----------------
@@ -171,6 +187,7 @@ hook.Add("TTTWinCheckBlocks", "Infected_TTTWinCheckBlocks", function(win_blocks)
 
         for _, v in PlayerIterator() do
             if not v:IsActiveInfected() then continue end
+            if v:IsRoleAbilityDisabled() then continue end
 
             -- If this infected isn't already zombifying, start that
             if not v:GetNWBool("InfectedIsZombifying", false) then
@@ -193,7 +210,7 @@ hook.Add("TTTCheckForWin", "Infected_TTTCheckForWin", function()
         if v:IsActive() then
             if v:IsInfected() then
                 infected_alive = true
-            elseif not v:ShouldActLikeJester() then
+            elseif not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
                 other_alive = true
             end
         end

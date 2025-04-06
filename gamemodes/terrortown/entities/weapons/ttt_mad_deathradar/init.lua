@@ -24,6 +24,8 @@ local function DeathRadarScan(ply, cmd, args)
             return
         end
 
+        if ply:IsMadScientist() and ply:IsRoleAbilityDisabled() then return end
+
         ply.deathradar_charge = CurTime() + chargetime
 
         local targets = {}

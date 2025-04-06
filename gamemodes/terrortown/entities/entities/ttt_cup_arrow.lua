@@ -1,7 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
 local player = player
 
+local HookCall = hook.Call
 local PlayerIterator = player.Iterator
 
 ENT.Type      = "anim"
@@ -106,7 +108,7 @@ function ENT:Touch(ent)
         return
     end
 
-    if ent:IsNPC() or ent:IsPlayer() then
+    if (ent:IsNPC() or ent:IsPlayer()) and not owner:IsRoleAbilityDisabled() then
         if tr2.Entity == ent then sound.Play(table.Random(FleshSound), tr.HitPos) end
         if ent:IsPlayer() and ent:IsActive() then
             if ent == owner then
@@ -119,6 +121,7 @@ function ENT:Touch(ent)
                     owner:SetNWString("TTTCupidTarget1", ent:SteamID64())
                     owner:QueueMessage(MSG_PRINTBOTH, ent:Nick() .. " has been hit with your first arrow.")
                     ent:QueueMessage(MSG_PRINTBOTH, "You have been hit by cupid's arrow!")
+                    HookCall("TTTCupidLoverChosen", nil, owner, ent)
                 elseif #target2 == 0 then
                     if ent:SteamID64() == target1 then
                         owner:QueueMessage(MSG_PRINTCENTER, "You cannot make someone fall in love with themselves.")
@@ -133,6 +136,8 @@ function ENT:Touch(ent)
                         owner:QueueMessage(MSG_PRINTBOTH, ent:Nick() .. " has fallen in love with " .. ent2:Nick() .. ".")
                         ent2:QueueMessage(MSG_PRINTBOTH, "You have fallen in love with " .. ent:Nick() .. "!")
                         ent:QueueMessage(MSG_PRINTBOTH, "You have fallen in love with " .. ent2:Nick() .. "!")
+                        HookCall("TTTCupidLoverChosen", nil, owner, ent2)
+                        HookCall("TTTCupidLoversChosen", nil, owner, ent, ent2)
 
                         if ent:IsSameTeam(ent2) then
                             ent:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_CUPID] .. " will now win with your team!")

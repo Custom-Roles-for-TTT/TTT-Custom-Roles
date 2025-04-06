@@ -51,6 +51,25 @@ Clears the value of the property with the given `name` on this player then synch
 - *name* - The name of the property being cleared.
 - *targets* - The targets that should have this value cleared on their clients. *(Defaults to sending to all players)*
 
+### plymeta:ClearQueuedMessage(id)
+Removes queued messages with the given ID from the queue and clears any currently displayed messages with the given ID.\
+*Realm:* Client and Server\
+*Added in:* 2.2.1\
+*Parameters:*
+- *id* - The identifier of the message(s) you want to clear
+
+### plymeta:DisableRoleAbility()
+Disables this player's role ability, if it isn't already.\
+*NOTE*: If the player's role ability was not already disabled, this will also call the `TTTOnRoleAbilityDisabled` hook.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9
+
+### plymeta:DisableShopPurchases()
+Disables player's ability to purchase from the equipment shop, if it isn't already.\
+*NOTE*: If the player's purchases were not already disabled, this will also call the `TTTOnShopPurchaseDisabled` hook.\
+*Realm:* Server\
+*Added in:* 2.2.9
+
 ### plymeta:DrunkJoinLosingTeam()
 Attempts to find the losing team and calls `self:SoberDrunk(team)` using the losing team as the *team* parameter.\
 *Realm:* Server\
@@ -62,6 +81,18 @@ Sets the drunk's role and runs required checks for that role.\
 *Added in:* 1.1.9\
 *Parameters:*
 - *role* - Which role to set the drunk to (see ROLE_* global enumeration)
+
+### plymeta:EnableRoleAbility()
+Enables this player's role ability, if it was previously disabled.\
+*NOTE*: If the player's role ability was previously disabled, this will also call the `TTTOnRoleAbilityEnabled` hook.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9
+
+### plymeta:EnableShopPurchases()
+Enables player's ability to purchase from the equipment shop, if it was previously disabled.\
+*NOTE*: If the player's shop purchases were previously disabled, this will also call the `TTTOnShopPurchaseEnabled` hook.\
+*Realm:* Server\
+*Added in:* 2.2.9
 
 ### plymeta:ForceRoleNextRound(role)
 Forces a player to spawn as the specified role next round. Returns `true` if successful, `false` if that player has already been forced to be another role.\
@@ -147,7 +178,12 @@ Whether `plymeta:IsCustom` returns `true` and the player is active.\
 *Added in:* 1.0.0
 
 ### plymeta:IsActiveDetectiveLike()
-Whether `plymeta:IsActiveDetectiveLike` returns `true` and the player is active.\
+Whether `plymeta:IsDetectiveLike` returns `true` and the player is active.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+### plymeta:IsActiveDetectiveTeam()
+Whether `plymeta:IsDetectiveTeam` returns `true` and the player is active.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
@@ -196,6 +232,11 @@ Whether the player's role is an unpromoted detective-like role (deputy/impersona
 *Realm:* Client and Server\
 *Added in:* 1.2.5
 
+### plymeta:IsDetectiveTeam()
+Whether the player is a detective role (e.g. detective or special detective).\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
 ### plymeta:IsIndependentTeam()
 Whether the player is on the independent team.\
 *Realm:* Client and Server\
@@ -234,6 +275,17 @@ Whether this player is currently respawning.\
 *Realm:* Client and Server\
 *Added in:* 2.1.12
 
+### plymeta:IsRoleAbilityDisabled(...)
+Called to check whether a player's role ability is disabled.\
+*NOTE*: Calls `TTTIsRoleAbilityDisabled` hook to determine status if `plymeta:DisableRoleAbility` has not previously been called.\
+*NOTE*: Calls `plymeta:DisableRoleAbility` if `TTTIsRoleAbilityDisabled` is called and result is `true`.\
+*Realm:* Client and Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *...* - Any parameters to be passed to the `TTTIsRoleAbilityDisabled` hook and `plymeta:DisableRoleAbility` method
+
+*Return:* `true` if the player's role ability is currently disabled, `false` otherwise
+
 ### plymeta:IsRoleActive()
 Whether the player's role feature has been activated.\
 *Realm:* Client and Server\
@@ -256,6 +308,17 @@ Whether the player is currently overriding a piece of scoreboard information.\
 *Returns:*
 - *isNameOverridden* - Whether the player name is currently overridden
 - *isRoleOverridden* - Whether the role color or icon is currently overridden
+
+### plymeta:IsShopPurchaseDisabled(...)
+Called to check whether a player's shop purchases are disabled.\
+*NOTE*: Calls `TTTIsShopPurchaseDisabled` hook to determine status if `plymeta:DisableShopPurchases` has not previously been called.\
+*NOTE*: Calls `plymeta:DisableShopPurchases` if `TTTIsShopPurchaseDisabled` hook is called and result is `true`.\
+*Realm:* Server\
+*Added in:* 2.2.9\
+*Parameters:*
+- *...* - Any parameters to be passed to the `TTTIsShopPurchaseDisabled` hook and `plymeta:DisableShopPurchases` method
+
+*Return:* `true` if the player's shop purchases are currently disabled, `false` otherwise
 
 ### plymeta:IsShopRole()
 Whether the player has a shop (see `plymeta:CanUseShop` for determining if it is openable).\
@@ -332,14 +395,15 @@ Begins printing messages from the message queue if it's not already. Automatical
 *Realm:* Server\
 *Added in:* 1.9.4
 
-### plymeta:QueueMessage(message_type, message, time, predicate)
+### plymeta:QueueMessage(message_type, message, time, id, predicate)
 Queues a message to be shown to the player. Useful in situations where multiple center-screen messages could be shown at the same time and overlapped. This ensures each message is shown in order without overlap.\
-*Realm:* Server and Client\
+*Realm:* Client and Server\
 *Added in:* 1.9.4\
 *Parameters:*
 - *message_type* - The [MSG_PRINT*](GLOBAL_ENUMERATIONS.md#msg_print) value representing the display target for this message
 - *message* - The message being shown
-- *time* - The amount of time to display the message in the center of the screen. Only used when *message_type* is *MSG_PRINTBOTH* or *MSG_PRINTCENTER*
+- *time* - The amount of time to display the message in the center of the screen. Only used when *message_type* is *MSG_PRINTBOTH* or *MSG_PRINTCENTER* (Optional. Defaults to 5 seconds if not provided)
+- *id* - An identifier string that can be used to clear the message or remove it from the queue (Optional) *(Added in 2.2.1)*
 - *predicate* - Predicate function called with the player as the sole parameter before the message is sent. Return *true* to allow the message or *false* to prevent it (Optional) *(Added in 2.0.5)* *(Only available on the server realm)*
 
 ### plymeta:RemoveEquipmentItem(item_id)
