@@ -1,5 +1,13 @@
 # Release Notes
 
+## 2.3.0
+**Released: April 6th, 2025**\
+Includes beta updates [2.2.1](#221-beta) to [2.2.10](#2210-beta).
+
+### Fixes
+- Fixed player searching body originally searched by a detective-team member with their ability disabled still being able to see the dead player's role when `ttt_detectives_search_only` or `ttt_detectives_search_only_role` was enabled
+- Fixed sending role pack weapon messages more often then needed in a specific circumstance
+
 ## 2.2.10 (Beta)
 **Released: April 5th, 2025**
 
