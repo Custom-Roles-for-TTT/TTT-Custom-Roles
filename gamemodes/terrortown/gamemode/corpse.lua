@@ -448,7 +448,25 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     end
 
     local round_state = GetRoundState()
+
+    -- Specifically skip the check for the detective search here
+    -- since the role information is hidden for a role-disabled detective
+    -- and we need to know the difference in a couple cases
+    local nonDetectiveKnowsRole = not ply:IsDetectiveLike() and AnnounceBodyRole(ply, round_state, nil)
+
+    -- Keep track who searched this ragdoll
+    if not IsPlayer(rag.searched_by) then
+        rag.searched_by = ply
+    -- If role information is known by everyone or the searcher is a detective-like player (who can see everything)
+    -- and this was previously searched by a role-disabled detective then use the NEW searcher for the record going forward
+    -- since the previous searcher couldn't know their role and the new one can
+    elseif (nonDetectiveKnowsRole or ply:IsDetectiveLike()) and rag.searched_by ~= ply and IsPlayer(rag.searched_by) and rag.searched_by:IsDetectiveTeam() and rag.searched_by:IsRoleAbilityDisabled() then
+        rag.searched_by = ply
+    end
+
     local sendName = AnnounceBodyName(ply, round_state, ownerEnt)
+    -- If any player should be able to see this role information or it was searched by a person who isn't a detective with their role ability disabled, then show the role
+    local sendRole = nonDetectiveKnowsRole or (IsPlayer(rag.searched_by) and (not rag.searched_by:IsDetectiveTeam() or not rag.searched_by:IsRoleAbilityDisabled()))
 
     -- Send a message with basic info
     net.Start("TTT_RagdollSearch")
@@ -461,10 +479,10 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     for _, v in ipairs(eq) do
         net.WriteUInt(v, eq_bits)
     end
-    if ply:IsDetectiveTeam() and ply:IsRoleAbilityDisabled() then
-        net.WriteInt(-1, 8) -- ( 8 bits )
-    else
+    if sendRole then
         net.WriteInt(role, 8) -- ( 8 bits )
+    else
+        net.WriteInt(-1, 8) -- ( 8 bits )
     end
     net.WriteUInt(c4, bitsRequired(C4_WIRE_COUNT)) -- 0 -> 2^bits ( default c4: 3 bits )
     net.WriteUInt(dmg, 30) -- DMG_BUCKSHOT is the highest. ( 30 bits )
