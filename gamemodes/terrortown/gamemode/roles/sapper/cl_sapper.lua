@@ -69,7 +69,7 @@ net.Receive("Sapper_ShowDamageAura", function()
 end)
 
 hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
-    if ply:GetDisplayedRole() == ROLE_SAPPER then
+    if ply:GetDisplayedRole() == ROLE_SAPPER and ply:GetObserverMode() == OBS_MODE_NONE then
         if not ply.SapAuraEmitter then ply.SapAuraEmitter = ParticleEmitter(ply:GetPos()) end
         if not ply.SapAuraNextPart then ply.SapAuraNextPart = CurTime() end
         if not ply.SapAuraDir then ply.SapAuraDir = 0 end
@@ -104,7 +104,7 @@ hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
     local radius = (sapper_aura_radius:GetInt() * UNITS_PER_METER)
     local radiusSqr = radius * radius
     for _, p in PlayerIterator() do
-        if p:IsActive() and p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr then
+        if p:IsActive() and p:GetDisplayedRole() == ROLE_SAPPER and p:GetObserverMode() == OBS_MODE_NONE and client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr then
             inside = true
             break
         end

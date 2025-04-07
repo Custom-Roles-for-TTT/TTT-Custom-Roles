@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.3.1
+**Released:**
+
+### Fixes
+- Fixed entities that were being spectated by living players showing role/target icons and other in-world visual elements as if they were the player spectating them
+
 ## 2.3.0
 **Released: April 6th, 2025**\
 Includes beta updates [2.2.1](#221-beta) to [2.2.10](#2210-beta).
