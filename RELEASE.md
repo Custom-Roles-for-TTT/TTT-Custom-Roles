@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.3.1
+## 2.3.1 (Beta)
 **Released:**
 
 ### Additions
