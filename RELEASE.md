@@ -3,6 +3,9 @@
 ## 2.3.1
 **Released:**
 
+### Additions
+- Added option to reduce any damage dealt by the Cannibal (disabled by default)
+- 
 ### Fixes
 - Fixed entities that were being spectated by living players showing role/target icons and other in-world visual elements as if they were the player spectating them
 
