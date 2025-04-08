@@ -11,6 +11,7 @@
 - Changed Veteran activation message to not say there's one one innocent remaining when multiple Veterans are activated at the same time
 
 ### Fixes
+- Ported "[TTT] fix players sometimes being revealed as dead when they chat/voicechat right as they die (again)"
 - Fixed entities that were being spectated by living players showing role/target icons and other in-world visual elements as if they were the player spectating them
 - Fixed error opening the F1 menu too quickly after loading in to the game
 - Fixed vindicator not winning when `ttt_vindicator_reset_on_success` was disabled
