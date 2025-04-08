@@ -152,10 +152,10 @@ if SERVER then
                     if owner:Crouching() then
                         ply:SetProperty("TTTBodysnatcherForceDuck", true, ply)
                         net.Start("TTT_BodysnatcherForceDuck")
-                        net.ReadBool(true)
+                        net.WriteBool(true)
                         net.Send(ply)
                         net.Start("TTT_BodysnatcherForceDuck")
-                        net.ReadBool(false)
+                        net.WriteBool(false)
                         net.Send(owner)
                     end
 
