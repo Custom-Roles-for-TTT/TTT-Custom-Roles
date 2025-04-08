@@ -8,6 +8,7 @@
 
 ### Fixes
 - Fixed entities that were being spectated by living players showing role/target icons and other in-world visual elements as if they were the player spectating them
+- Fixed error opening the F1 menu too quickly after loading in to the game
 
 ## 2.3.0
 **Released: April 6th, 2025**\
