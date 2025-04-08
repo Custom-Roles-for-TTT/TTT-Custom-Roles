@@ -514,7 +514,7 @@
             </div>
         </div>
         <div id="cannibal" class="collapsible">
-            <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-cannibal"></i>Cannibal<span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></button>
+            <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-cannibal"></i>Cannibal</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-cannibal"></i><a href="#cannibal">Cannibal</a></span> can eat other players. They win by eating all other living players.</p>
@@ -539,6 +539,12 @@
                             <td>0</td>
                             <td>Boolean</td>
                             <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Cannibal. <i>(Requires <code>ttt_cannibal_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_damage_penalty<span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>0</td>
+                            <td>Float</td>
+                            <td>The fraction a Cannibal's damage will be scaled by when they are attacking. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
                         </tr>
                         <tr>
                             <td>ttt_cannibal_eat_cooldown</td>

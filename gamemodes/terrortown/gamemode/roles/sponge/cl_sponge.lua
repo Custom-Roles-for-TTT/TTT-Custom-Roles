@@ -46,7 +46,7 @@ end)
 
 hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
     local shouldDraw = false
-    if ply:GetRole() == ROLE_SPONGE then
+    if ply:GetRole() == ROLE_SPONGE and ply:GetObserverMode() == OBS_MODE_NONE then
         local ply_pos = ply:GetPos()
         if not ply.SpongeAuraEmitter then ply.SpongeAuraEmitter = ParticleEmitter(ply_pos) end
         if not ply.SpongeAuraNextPart then ply.SpongeAuraNextPart = CurTime() end
@@ -81,7 +81,7 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
         local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
         local radiusSqr = radius * radius
         for _, p in PlayerIterator() do
-            if p:IsActiveSponge() then
+            if p:IsActiveSponge() and p:GetObserverMode() == OBS_MODE_NONE then
                 if sponge_aura_mode:GetInt() == SPONGE_ATTACKER_AND_VICTIM then
                     local cliAuraEndTime = client:GetNWFloat("SpongeAuraEndTime", -1)
                     if client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr or (cliAuraEndTime ~= -1 and cliAuraEndTime > CurTime()) then
@@ -142,7 +142,7 @@ hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
     local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
     local radiusSqr = radius * radius
     for _, p in PlayerIterator() do
-        if p:IsActiveSponge() then
+        if p:IsActiveSponge() and p:GetObserverMode() == OBS_MODE_NONE then
             local auraEndTime = client:GetNWFloat("SpongeAuraEndTime", -1)
             if client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr or (auraEndTime ~= -1 and auraEndTime > CurTime()) then
                 inside = true
