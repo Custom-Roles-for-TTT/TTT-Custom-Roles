@@ -6,6 +6,9 @@
 ### Additions
 - Added option to reduce any damage dealt by the Cannibal (disabled by default)
 
+### Changes
+- Changed Veteran activation message to not say there's one one innocent remaining when multiple Veterans are activated at the same time
+
 ### Fixes
 - Fixed entities that were being spectated by living players showing role/target icons and other in-world visual elements as if they were the player spectating them
 - Fixed error opening the F1 menu too quickly after loading in to the game
