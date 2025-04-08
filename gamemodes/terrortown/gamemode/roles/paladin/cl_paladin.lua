@@ -36,7 +36,7 @@ end)
 -------------------
 
 hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
-    if ply:GetDisplayedRole() == ROLE_PALADIN then
+    if ply:GetDisplayedRole() == ROLE_PALADIN and ply:GetObserverMode() == OBS_MODE_NONE then
         if not ply.AuraEmitter then ply.AuraEmitter = ParticleEmitter(ply:GetPos()) end
         if not ply.AuraNextPart then ply.AuraNextPart = CurTime() end
         if not ply.AuraDir then ply.AuraDir = 0 end
@@ -81,7 +81,7 @@ hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
     local radius = (paladin_aura_radius:GetFloat() * UNITS_PER_METER)
     local radiusSqr = radius * radius
     for _, p in PlayerIterator() do
-        if p:IsActive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr then
+        if p:IsActive() and p:GetDisplayedRole() == ROLE_PALADIN and p:GetObserverMode() == OBS_MODE_NONE and client:GetPos():DistToSqr(p:GetPos()) <= radiusSqr then
             inside = true
             break
         end
