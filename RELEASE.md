@@ -14,6 +14,7 @@
 - Fixed error opening the F1 menu too quickly after loading in to the game
 - Fixed vindicator not winning when `ttt_vindicator_reset_on_success` was disabled
 - Fixed bodysnatcher forced duck/unduck logic not working
+- Fixed transfer window label using role name instead of team name
 
 ## 2.3.0
 **Released: April 6th, 2025**\
