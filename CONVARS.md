@@ -251,6 +251,7 @@ ttt_hypnotist_device_shop_rebuyable            0       // Whether the Hypnotist'
 ttt_hypnotist_convert_detectives               0       // Whether to convert detectives and Deputies (only if ttt_deputy_use_detective_icon is enabled) to Impersonator instead of just a regular Traitor. Target will be automatically promoted to appear as a detective if appropriate
 ttt_hypnotist_device_time                      8       // The amount of time (in seconds) the Hypnotist's device takes to use
 ttt_hypnotist_brainwash_muted                  0       // Whether players brainwashed by the Hypnotist should be muted
+ttt_hypnotist_brainwash_credits                0       // How many credits a hypnotized player should get
 ttt_single_paramedic_hypnotist                 0       // Whether only a single Paramedic or Hypnotist should spawn in a round
 ttt_single_paramedic_hypnotist_chance          0.5     // The chance that a Paramedic should have an opportunity to spawn instead of a Hypnotist (e.g. 0.7 = 70% chance for Paramedic, 30% chance for Hypnotist. Only applies if ttt_single_paramedic_hypnotist is enabled)
 

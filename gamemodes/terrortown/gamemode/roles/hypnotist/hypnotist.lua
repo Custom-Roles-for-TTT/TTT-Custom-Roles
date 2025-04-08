@@ -6,6 +6,9 @@ local player = player
 
 local PlayerIterator = player.Iterator
 
+CreateConVar("ttt_hypnotist_brainwash_credits", 0, FCVAR_NONE, "How many credits a hypnotized player should get", 0, 5)
+local hypnotist_brainwash_muted = CreateConVar("ttt_hypnotist_brainwash_muted", 0, FCVAR_NONE, "Whether players brainwashed by the hypnotist should be muted", 0, 1)
+
 ------------------
 -- ROLE WEAPONS --
 ------------------
@@ -23,8 +26,6 @@ end)
 -------------------
 -- ROLE FEATURES --
 -------------------
-
-local hypnotist_brainwash_muted = CreateConVar("ttt_hypnotist_brainwash_muted", 0, FCVAR_NONE, "Whether players brainwashed by the hypnotist should be muted", 0, 1)
 
 hook.Add("PlayerCanHearPlayersVoice", "Hypnotist_PlayerCanHearPlayersVoice", function(listener, speaker)
     if GetRoundState() ~= ROUND_ACTIVE then return end

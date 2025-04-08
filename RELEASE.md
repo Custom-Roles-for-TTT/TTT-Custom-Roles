@@ -5,6 +5,7 @@
 
 ### Additions
 - Added option to reduce any damage dealt by the Cannibal (disabled by default)
+- Added ability for a player brainwashed by a Hypnotist to be given credits (disabled by default)
 
 ### Changes
 - Changed Veteran activation message to not say there's one one innocent remaining when multiple Veterans are activated at the same time
@@ -15,6 +16,7 @@
 - Fixed vindicator not winning when `ttt_vindicator_reset_on_success` was disabled
 - Fixed bodysnatcher forced duck/unduck logic not working
 - Fixed transfer window label using role name instead of team name
+- Fixed `ttt_hypnotist_brainwash_muted` not showing in ULX menu
 
 ## 2.3.0
 **Released: April 6th, 2025**\
