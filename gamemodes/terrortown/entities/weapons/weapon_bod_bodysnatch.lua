@@ -151,9 +151,12 @@ if SERVER then
                     -- Include whether the player is crouching
                     if owner:Crouching() then
                         ply:SetProperty("TTTBodysnatcherForceDuck", true, ply)
+                        ply:ConCommand("+duck")
                         net.Start("TTT_BodysnatcherForceDuck")
                         net.WriteBool(true)
                         net.Send(ply)
+
+                        owner:ConCommand("-duck")
                         net.Start("TTT_BodysnatcherForceDuck")
                         net.WriteBool(false)
                         net.Send(owner)
@@ -221,6 +224,7 @@ if SERVER then
         if not ply:Alive() or ply:IsSpec() then return end
         if not ply.TTTBodysnatcherForceDuck then return end
 
+        ply:ConCommand("-duck")
         ply:ClearProperty("TTTBodysnatcherForceDuck", ply)
     end)
 end
@@ -290,7 +294,6 @@ if CLIENT then
     net.Receive("TTT_BodysnatcherForceDuck", function()
         local ply = LocalPlayer()
         if not IsPlayer(ply) then return end
-        if not ply:Alive() or ply:IsSpec() then return end
 
         local state = net.ReadBool()
         ply:ConCommand((state and "+" or "-") .. "duck")
