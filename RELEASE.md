@@ -18,6 +18,7 @@
 - Fixed bodysnatcher forced duck/unduck logic not working
 - Fixed transfer window label using role name instead of team name
 - Fixed `ttt_hypnotist_brainwash_muted` not showing in ULX menu
+- Fixed players who were swallowed and released by a Cannibal getting their role weapons back even if they used them already
 
 ## 2.3.0
 **Released: April 6th, 2025**\

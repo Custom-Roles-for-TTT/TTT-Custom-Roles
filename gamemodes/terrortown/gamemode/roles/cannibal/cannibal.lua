@@ -30,6 +30,8 @@ local function ReleaseEatenPlayers(ply, message)
     local cannibalSID64 = ply:SteamID64()
     for _, v in PlayerIterator() do
         if v.TTTCannibalEaten and v.TTTCannibalEaten == cannibalSID64 then
+            -- Set this to prevent the player from getting their loadout back
+            v.Resurrecting = true
             v:ClearProperty("TTTCannibalEaten")
             v:SetParent(nil)
             v:SpectateEntity(nil)
