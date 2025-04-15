@@ -16,7 +16,7 @@
 - Fixed error opening the F1 menu too quickly after loading in to the game
 - Fixed vindicator not winning when `ttt_vindicator_reset_on_success` was disabled
 - Fixed bodysnatcher forced duck/unduck logic not working
-- Fixed transfer window label using role name instead of team name
+- Fixed credit transfer window label using role name instead of team name
 - Fixed `ttt_hypnotist_brainwash_muted` not showing in ULX menu
 - Fixed players who were swallowed and released by a Cannibal getting their role weapons back even if they used them already
 
