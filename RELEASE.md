@@ -8,7 +8,7 @@
 - Added ability for a player brainwashed by a Hypnotist to be given credits (disabled by default)
 
 ### Changes
-- Changed Veteran activation message to not say there's one one innocent remaining when multiple Veterans are activated at the same time
+- Changed Veteran activation message to not say there's one innocent remaining when multiple Veterans are activated at the same time
 
 ### Fixes
 - Ported "[TTT] fix players sometimes being revealed as dead when they chat/voicechat right as they die (again)"
