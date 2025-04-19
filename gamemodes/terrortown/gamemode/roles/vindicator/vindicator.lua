@@ -91,7 +91,8 @@ local function ActivateVindicator(vindicator, target)
 end
 
 local function OnVindicatorSuccess(vindicator, target, msg)
-    if vindicator_reset_on_success:GetBool() and not vindicator_reset_win_on_success:GetBool() then
+    -- Mark the vindicator as winning if they aren't resetting or they are resetting but they aren't resetting their win state
+    if not vindicator_reset_on_success:GetBool() or not vindicator_reset_win_on_success:GetBool() then
         vindicator:SetNWBool("VindicatorSuccess", true)
     end
     vindicator:QueueMessage(MSG_PRINTBOTH, msg)

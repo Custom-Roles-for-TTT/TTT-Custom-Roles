@@ -72,7 +72,8 @@ function CreateTransferMenu(parent)
     dform:AddItem(dpick)
     dform:AddItem(dsubmit)
 
-    dform:Help(LANG.GetParamTranslation("xfer_help", { role = LocalPlayer():GetRoleString() }))
+    local roleTeam = LocalPlayer():GetRoleTeam(true)
+    dform:Help(LANG.GetParamTranslation("xfer_help", { role = GetRoleTeamName(roleTeam) }))
 
     return dform
 end

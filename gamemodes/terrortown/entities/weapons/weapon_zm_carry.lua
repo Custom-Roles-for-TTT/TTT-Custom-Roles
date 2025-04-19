@@ -264,18 +264,18 @@ function SWEP:DoAttack(pickup)
     self:SetNextSecondaryFire( CurTime() + self.Secondary.Delay )
 
     if IsValid(self.EntHolding) then
-            self:SendWeaponAnim( ACT_VM_MISSCENTER )
+        self:SendWeaponAnim( ACT_VM_MISSCENTER )
 
-            if (not pickup) and self.EntHolding:GetClass() == "prop_ragdoll" then
-                -- see if we can pin this ragdoll to a wall in front of us
-                self:PinRagdoll()
-            end
+        if (not pickup) and self.EntHolding:GetClass() == "prop_ragdoll" then
+            -- see if we can pin this ragdoll to a wall in front of us
+            self:PinRagdoll()
+        end
 
-            -- else just drop it as usual
-            self:Drop()
+        -- else just drop it as usual
+        self:Drop()
 
-            self:SetNextSecondaryFire(CurTime() + 0.3)
-            return
+        self:SetNextSecondaryFire(CurTime() + 0.3)
+        return
     end
 
     local ply = self:GetOwner()

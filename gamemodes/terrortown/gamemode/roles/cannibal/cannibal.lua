@@ -16,6 +16,7 @@ CANNIBAL = {
 -- CONVARS --
 -------------
 
+local cannibal_damage_penalty = CreateConVar("ttt_cannibal_damage_penalty", "0", FCVAR_NONE, "The fraction a Cannibal's damage will be scaled by when they are attacking", 0, 1)
 CreateConVar("ttt_cannibal_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that a Cannibal was killed. Killer is notified unless \"ttt_cannibal_notify_killer\" is disabled", 0, 4)
 CreateConVar("ttt_cannibal_notify_killer", "1", FCVAR_NONE, "Whether to notify a Cannibal's killer", 0, 1)
 CreateConVar("ttt_cannibal_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a Cannibal is killed", 0, 1)
@@ -29,6 +30,8 @@ local function ReleaseEatenPlayers(ply, message)
     local cannibalSID64 = ply:SteamID64()
     for _, v in PlayerIterator() do
         if v.TTTCannibalEaten and v.TTTCannibalEaten == cannibalSID64 then
+            -- Set this to prevent the player from getting their loadout back
+            v.Resurrecting = true
             v:ClearProperty("TTTCannibalEaten")
             v:SetParent(nil)
             v:SpectateEntity(nil)
@@ -134,6 +137,21 @@ AddHook("PlayerCanHearPlayersVoice", "Cannibal_PlayerCanHearPlayersVoice", funct
 
     if ShouldBlockCommunications(listener, speaker) then
         return false, false
+    end
+end)
+
+------------
+-- DAMAGE --
+------------
+
+hook.Add("ScalePlayerDamage", "Cannibal_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+    local att = dmginfo:GetAttacker()
+
+    if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
+        if att:IsCannibal() then
+            local penalty = cannibal_damage_penalty:GetFloat()
+            dmginfo:ScaleDamage(1 - penalty)
+        end
     end
 end)
 
