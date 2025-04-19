@@ -1,13 +1,24 @@
 # Release Notes
 
 ## 2.3.1 (Beta)
-**Released:**
+**Released: April 19th, 2025**
 
 ### Additions
 - Added option to reduce any damage dealt by the Cannibal (disabled by default)
+- Added ability for a player brainwashed by a Hypnotist to be given credits (disabled by default)
+
+### Changes
+- Changed Veteran activation message to not say there's one innocent remaining when multiple Veterans are activated at the same time
 
 ### Fixes
+- Ported "[TTT] fix players sometimes being revealed as dead when they chat/voicechat right as they die (again)"
 - Fixed entities that were being spectated by living players showing role/target icons and other in-world visual elements as if they were the player spectating them
+- Fixed error opening the F1 menu too quickly after loading in to the game
+- Fixed vindicator not winning when `ttt_vindicator_reset_on_success` was disabled
+- Fixed bodysnatcher forced duck/unduck logic not working
+- Fixed credit transfer window label using role name instead of team name
+- Fixed `ttt_hypnotist_brainwash_muted` not showing in ULX menu
+- Fixed players who were swallowed and released by a Cannibal getting their role weapons back even if they used them already
 
 ## 2.3.0
 **Released: April 6th, 2025**\

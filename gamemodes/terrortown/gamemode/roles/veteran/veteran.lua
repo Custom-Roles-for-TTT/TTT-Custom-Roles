@@ -36,7 +36,11 @@ hook.Add("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", function(victim, inf
                 v:SetNWBool("VeteranActive", true)
                 v:AddCredits(veteran_activation_credits:GetInt())
 
-                v:QueueMessage(MSG_PRINTBOTH, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
+                if innocents_alive == 1 then
+                    v:QueueMessage(MSG_PRINTBOTH, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
+                else
+                    v:QueueMessage(MSG_PRINTBOTH, "Only " .. ROLE_STRINGS_PLURAL[ROLE_VETERAN] .. " remain alive from the " .. ROLE_STRINGS[ROLE_INNOCENT] .. " team!")
+                end
                 if veteran_announce:GetBool() then
                     for _, p in PlayerIterator() do
                         if p ~= v and p:IsActive() then

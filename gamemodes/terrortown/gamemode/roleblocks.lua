@@ -16,7 +16,7 @@ util.AddNetworkString("TTT_RequestRoleBlocks")
 util.AddNetworkString("TTT_ReadRoleBlocks")
 util.AddNetworkString("TTT_ReadRoleBlocks_Part")
 
--- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte) - 1 (terminanting byte)
+-- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte) - 1 (terminating byte)
 local maxStreamLength = 65528
 
 local function SendStreamToClient(ply, json, networkString, byte)
