@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.3.1 (Beta)
+## 2.3.1
 **Released: April 19th, 2025**
 
 ### Additions
