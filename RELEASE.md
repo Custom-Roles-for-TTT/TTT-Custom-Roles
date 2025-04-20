@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.3.1
-**Released: April 19th, 2025**
+**Released: April 20th, 2025**
 
 ### Additions
 - Added option to reduce any damage dealt by the Cannibal (disabled by default)
