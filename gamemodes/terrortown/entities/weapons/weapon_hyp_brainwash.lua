@@ -91,7 +91,7 @@ if SERVER then
         net.Broadcast()
 
         ply:SpawnForRound(true)
-        ply:SetCredits(credits)
+        ply:SetCredits(credits + GetConVar("ttt_hypnotist_brainwash_credits"):GetInt())
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
         ply:SetNWBool("WasHypnotised", true)

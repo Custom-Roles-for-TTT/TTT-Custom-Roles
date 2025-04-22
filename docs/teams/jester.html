@@ -514,7 +514,7 @@
             </div>
         </div>
         <div id="cannibal" class="collapsible">
-            <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-cannibal"></i>Cannibal<span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></button>
+            <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-cannibal"></i>Cannibal</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-cannibal"></i><a href="#cannibal">Cannibal</a></span> can eat other players. They win by eating all other living players.</p>
@@ -539,6 +539,12 @@
                             <td>0</td>
                             <td>Boolean</td>
                             <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Cannibal. <i>(Requires <code>ttt_cannibal_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_damage_penalty</td>
+                            <td>0</td>
+                            <td>Float</td>
+                            <td>The fraction a Cannibal's damage will be scaled by when they are attacking. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
                         </tr>
                         <tr>
                             <td>ttt_cannibal_eat_cooldown</td>
@@ -677,18 +683,6 @@
                             <td>0</td>
                             <td>Boolean</td>
                             <td>Whether the Clown can see and use traitor traps when they are activated.</td>
-                        </tr>
-                        <tr>
-                            <td>ttt_single_drunk_clown</td>
-                            <td>0</td>
-                            <td>Boolean</td>
-                            <td>Whether only a single Drunk or Clown should spawn in a round.</td>
-                        </tr>
-                        <tr>
-                            <td>ttt_single_drunk_clown_chance</td>
-                            <td>0.5</td>
-                            <td>Float (0-1)</td>
-                            <td>The chance that a Drunk should have an opportunity to spawn instead of a Clown. <i>(e.g. 0.7 = 70% chance forDrunk, 30% chance for Clown. Requires <code>ttt_single_drunk_clown</code> to be enabled.)</i></td>
                         </tr>
                         </tbody>
                     </table>
@@ -896,18 +890,6 @@
                             <td>1</td>
                             <td>Boolean</td>
                             <td>Whether the jester winning causes the round to end.</td>
-                        </tr>
-                        <tr>
-                            <td>ttt_single_jester_swapper</td>
-                            <td>0</td>
-                            <td>Boolean</td>
-                            <td>Whether only a single jester or Swapper should spawn in a round.</td>
-                        </tr>
-                        <tr>
-                            <td>ttt_single_jester_swapper_chance</td>
-                            <td>0.5</td>
-                            <td>Float (0-1)</td>
-                            <td>The chance that a jester should have an opportunity to spawn instead of a Swapper. <i>(e.g. 0.7 = 70% chance for jester, 30% chance for Swapper. Requires <code>ttt_single_jester_swapper</code> to be enabled.)</i></td>
                         </tr>
                         </tbody>
                     </table>
@@ -1232,18 +1214,6 @@
                                     <li>Swap all weapons.</li>
                                 </ol>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>ttt_single_jester_swapper</td>
-                            <td>0</td>
-                            <td>Boolean</td>
-                            <td>Whether only a single jester or Swapper should spawn in a round.</td>
-                        </tr>
-                        <tr>
-                            <td>ttt_single_jester_swapper_chance</td>
-                            <td>0.5</td>
-                            <td>Float (0-1)</td>
-                            <td>The chance that a jester should have an opportunity to spawn instead of a Swapper. <i>(e.g. 0.7 = 70% chance for jester, 30% chance for Swapper. Requires <code>ttt_single_jester_swapper</code> to be enabled.)</i></td>
                         </tr>
                         </tbody>
                     </table>

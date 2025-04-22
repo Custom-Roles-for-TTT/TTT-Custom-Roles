@@ -37,6 +37,11 @@ table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_damage_penalty",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
     cvar = "ttt_cannibal_can_see_jesters",
     type = ROLE_CONVAR_TYPE_BOOL
 })

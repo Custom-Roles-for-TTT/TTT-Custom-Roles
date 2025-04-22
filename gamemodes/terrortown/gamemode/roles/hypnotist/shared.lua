@@ -51,25 +51,35 @@ CreateConVar("ttt_hypnotist_device_loadout", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_hypnotist_device_shop", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_hypnotist_device_shop_rebuyable", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_HYPNOTIST] = {}
-table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
-    cvar = "ttt_hypnotist_device_loadout",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
-    cvar = "ttt_hypnotist_device_shop",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
-    cvar = "ttt_hypnotist_device_shop_rebuyable",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
-    cvar = "ttt_hypnotist_convert_detectives",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
-    cvar = "ttt_hypnotist_device_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
+ROLE_CONVARS[ROLE_HYPNOTIST] = {
+    {
+        cvar = "ttt_hypnotist_device_loadout",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_hypnotist_device_shop",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_hypnotist_device_shop_rebuyable",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_hypnotist_convert_detectives",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_hypnotist_device_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_hypnotist_brainwash_muted",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_hypnotist_brainwash_credits",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    }
+}

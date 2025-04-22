@@ -218,7 +218,8 @@ function GM:PostDrawTranslucentRenderables()
     for _, v in PlayerIterator() do
         -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
         local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead()) or v:GetNWBool("PD_Disguised", false)
-        if v:IsActive() and v ~= client and (not hidden or spectatorOverride) and not CallHook("TTTTargetIDPlayerBlockIcon", nil, v, client) then
+        if v:IsActive() and v ~= client and (not hidden or spectatorOverride) and v:GetObserverMode() == OBS_MODE_NONE
+                and not CallHook("TTTTargetIDPlayerBlockIcon", nil, v, client) then
             pos = v:GetPos()
             pos.z = pos.z + v:GetHeight() + 15
 

@@ -238,8 +238,6 @@ ttt_impersonator_use_detective_icon            1       // Whether a promoted Imp
 ttt_impersonator_without_detective             0       // Whether an Impersonator can spawn without a detective in the round. Will automatically promote the Impersonator when they spawn
 ttt_impersonator_activation_credits            0       // The number of credits to give the Impersonator when they are activated
 ttt_impersonator_detective_chance              0       // The chance that a detective will spawn as a promoted Impersonator instead (e.g. 0.5 = 50% chance)
-ttt_single_deputy_impersonator                 0       // Whether only a single Deputy or Impersonator should spawn in a round
-ttt_single_deputy_impersonator_chance          0.5     // The chance that a Deputy should have an opportunity to spawn instead of an Impersonator (e.g. 0.7 = 70% chance for Deputy, 30% chance for Impersonator. Only applies if ttt_single_deputy_impersonator is enabled)
 ttt_deputy_impersonator_promote_any_death      0       // Whether Deputy/Impersonator should be promoted when any detective dies rather than only after all detectives have died
 ttt_deputy_impersonator_start_promoted         0       // Whether Deputy/Impersonator should start the round promoted
 
@@ -251,8 +249,7 @@ ttt_hypnotist_device_shop_rebuyable            0       // Whether the Hypnotist'
 ttt_hypnotist_convert_detectives               0       // Whether to convert detectives and Deputies (only if ttt_deputy_use_detective_icon is enabled) to Impersonator instead of just a regular Traitor. Target will be automatically promoted to appear as a detective if appropriate
 ttt_hypnotist_device_time                      8       // The amount of time (in seconds) the Hypnotist's device takes to use
 ttt_hypnotist_brainwash_muted                  0       // Whether players brainwashed by the Hypnotist should be muted
-ttt_single_paramedic_hypnotist                 0       // Whether only a single Paramedic or Hypnotist should spawn in a round
-ttt_single_paramedic_hypnotist_chance          0.5     // The chance that a Paramedic should have an opportunity to spawn instead of a Hypnotist (e.g. 0.7 = 70% chance for Paramedic, 30% chance for Hypnotist. Only applies if ttt_single_paramedic_hypnotist is enabled)
+ttt_hypnotist_brainwash_credits                0       // How many credits a hypnotized player should get
 
 // Assassin
 ttt_assassin_show_target_icon                  0       // Whether Assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
@@ -268,25 +265,26 @@ ttt_assassin_credits_starting                  1       // The number of credits 
 ttt_assassin_allow_jesters_kill                1       // Whether the Assassin can kill a member of the jester team without damage penalty, even if it is not their target
 ttt_assassin_allow_independents_kill           1       // Whether the Assassin can kill an independent role without damage penalty, even if it is not their target
 ttt_assassin_allow_monsters_kill               1       // Whether the Assassin can kill a member of the monster team without damage penalty, even if it is not their target
-ttt_assassin_allow_jester_kill                 1       // Whether the Assassin can kill a Jester without damage penalty, even if it is not their target
-ttt_assassin_allow_swapper_kill                1       // Whether the Assassin can kill a Swapper without damage penalty, even if it is not their target
+ttt_assassin_allow_jester_kill                 0       // Whether the Assassin can kill a Jester without damage penalty, even if it is not their target
+ttt_assassin_allow_swapper_kill                0       // Whether the Assassin can kill a Swapper without damage penalty, even if it is not their target
 ttt_assassin_allow_clown_kill                  1       // Whether the Assassin can kill a Clown without damage penalty, even if it is not their target
-ttt_assassin_allow_beggar_kill                 1       // Whether the Assassin can kill a Beggar without damage penalty, even if it is not their target
-ttt_assassin_allow_bodysnatcher_kill           1       // Whether the Assassin can kill a Bodysnatcher without damage penalty, even if it is not their target
+ttt_assassin_allow_beggar_kill                 0       // Whether the Assassin can kill a Beggar without damage penalty, even if it is not their target
+ttt_assassin_allow_bodysnatcher_kill           0       // Whether the Assassin can kill a Bodysnatcher without damage penalty, even if it is not their target
 ttt_assassin_allow_lootgoblin_kill             1       // Whether the Assassin can kill a Loot Goblin without damage penalty, even if it is not their target
-ttt_assassin_allow_cupid_kill                  1       // Whether the Assassin can kill a Cupid without damage penalty, even if it is not their target
-ttt_assassin_allow_sponge_kill                 1       // Whether the Assassin can kill a Sponge without damage penalty, even if it is not their target
-ttt_assassin_allow_guesser_kill                1       // Whether the Assassin can kill a Guesser without damage penalty, even if it is not their target
-ttt_assassin_allow_oldman_kill                 1       // Whether the Assassin can kill an Old Man without damage penalty, even if it is not their target
-ttt_assassin_allow_killer_kill                 1       // Whether the Assassin can kill a Killer without damage penalty, even if it is not their target
-ttt_assassin_allow_zombie_kill                 1       // Whether the Assassin can kill a Zombie without damage penalty, even if it is not their target
-ttt_assassin_allow_madscientist_kill           1       // Whether the Assassin can kill a Mad Scientist without damage penalty, even if it is not their target
-ttt_assassin_allow_shadow_kill                 1       // Whether the Assassin can kill a Shadow without damage penalty, even if it is not their target
-ttt_assassin_allow_arsonist_kill               1       // Whether the Assassin can kill an Arsonist without damage penalty, even if it is not their target
-ttt_assassin_allow_hivemind_kill               1       // Whether the Assassin can kill a member of the Hive Mind without damage penalty, even if it is not their target
-ttt_assassin_allow_plaguemaster_kill           1       // Whether the Assassin can kill a Plaguemaster without damage penalty, even if it is not their target
-ttt_assassin_allow_cannibal_kill               1       // Whether the Assassin can kill a Cannibal without damage penalty, even if it is not their target
+ttt_assassin_allow_cupid_kill                  0       // Whether the Assassin can kill a Cupid without damage penalty, even if it is not their target
+ttt_assassin_allow_sponge_kill                 0       // Whether the Assassin can kill a Sponge without damage penalty, even if it is not their target
+ttt_assassin_allow_guesser_kill                0       // Whether the Assassin can kill a Guesser without damage penalty, even if it is not their target
+ttt_assassin_allow_oldman_kill                 0       // Whether the Assassin can kill an Old Man without damage penalty, even if it is not their target
+ttt_assassin_allow_killer_kill                 0       // Whether the Assassin can kill a Killer without damage penalty, even if it is not their target
+ttt_assassin_allow_zombie_kill                 1       // Whether the Assassin can kill a Zombie without damage penalty, even if it is not their target (only created and used when "ttt_zombie_is_monster" is enabled or "ttt_zombie_is_traitor" is disabled)
+ttt_assassin_allow_madscientist_kill           0       // Whether the Assassin can kill a Mad Scientist without damage penalty, even if it is not their target
+ttt_assassin_allow_shadow_kill                 0       // Whether the Assassin can kill a Shadow without damage penalty, even if it is not their target
+ttt_assassin_allow_arsonist_kill               0       // Whether the Assassin can kill an Arsonist without damage penalty, even if it is not their target
+ttt_assassin_allow_hivemind_kill               0       // Whether the Assassin can kill a member of the Hive Mind without damage penalty, even if it is not their target
+ttt_assassin_allow_plaguemaster_kill           0       // Whether the Assassin can kill a Plaguemaster without damage penalty, even if it is not their target
+ttt_assassin_allow_cannibal_kill               0       // Whether the Assassin can kill a Cannibal without damage penalty, even if it is not their target
 ttt_assassin_allow_vindicator_kill             1       // Whether the Assassin can kill a Vindicator without damage penalty, even if it is not their target
+ttt_assassin_allow_vampire_kill                1       // Whether the Assassin can kill a Vampire without damage penalty, even if it is not their target (only created and used when "ttt_vampire_is_monster" or "ttt_vampire_is_independent" is enabled)
 
 // Vampire
 ttt_vampire_is_monster                         0       // Whether Vampires should be treated as members of the monster team (rather than the traitor team)
@@ -326,8 +324,6 @@ ttt_quack_fake_cure_rebuyable                  0       // Whether the fake cure 
 ttt_quack_phantom_cure                         0       // Whether to allow the Quack to buy the Phantom exorcism device which can remove a haunting Phantom. Server must be restarted for changes to take effect
 ttt_quack_station_bomb                         0       // Whether the Quack should be able to buy a device which converts a health station to a bomb station
 ttt_quack_station_bomb_time                    4       // The amount of time (in seconds) the station bomb takes to plant
-ttt_single_doctor_quack                        0       // Whether only a single Doctor or Quack should spawn in a round
-ttt_single_doctor_quack_chance                 0.5     // The chance that a Doctor should have an opportunity to spawn instead of a Quack (e.g. 0.7 = 70% chance for Doctor, 30% chance for Quack. Only applies if ttt_single_doctor_quack is enabled)
 
 // Parasite
 ttt_parasite_is_monster                        0       // Whether the Parasite should be treated as a member of the monster team (rather than the traitor team)
@@ -344,8 +340,6 @@ ttt_parasite_infection_saves_lover             1       // Whether the Parasite's
 ttt_parasite_killer_smoke                      0       // Whether to show smoke on the player who killed the Parasite
 ttt_parasite_killer_footstep_time              0       // The amount of time a Parasite's killer's footsteps should show before fading. Set to 0 to disable
 ttt_parasite_credits_starting                  1       // The number of credits a Parasite should start with
-ttt_single_phantom_parasite                    0       // Whether only a single Phantom or Parasite should spawn in a round
-ttt_single_phantom_parasite_chance             0.5     // The chance that a Phantom should have an opportunity to spawn instead of a Parasite (e.g. 0.7 = 70% chance for Phantom, 30% chance for Parasite. Only applies if ttt_single_phantom_parasite is enabled)
 
 // Informant
 ttt_informant_share_scans                      1       // Whether the Informant should automatically share their information with fellow traitors or not
@@ -588,8 +582,6 @@ ttt_jester_notify_sound                        0       // Whether to play a chee
 ttt_jester_notify_confetti                     0       // Whether to throw confetti when a Jester is a killed
 ttt_jester_credits_starting                    0       // The number of credits a Jester should start with
 ttt_jester_healthstation_reduce_max            1       // Whether the Jester's max health should be reduced to match their current health when using a health station, instead of being healed
-ttt_single_jester_swapper                      0       // Whether only a single Jester or Swapper should spawn in a round (Only applies if ttt_multiple_jesters_independents is enabled)
-ttt_single_jester_swapper_chance               0.5     // The chance that a Jester should have an opportunity to spawn instead of a Swapper (e.g. 0.7 = 70% chance for Jester, 30% chance for Swapper. Only applies if ttt_single_jester_swapper is enabled)
 
 // Swapper
 ttt_swapper_respawn_health                     100     // What amount of health to give the Swapper when they are killed and respawned
@@ -619,8 +611,6 @@ ttt_clown_shop_delay                           0       // Whether the Clown's pu
 ttt_clown_credits_starting                     0       // The number of credits a Clown should start with
 ttt_clown_can_see_jesters                      1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Clown after they activate
 ttt_clown_update_scoreboard                    1       // Whether the Clown shows dead players as missing in action after they activate
-ttt_single_drunk_clown                         0       // Whether only a single Drunk or Clown should spawn in a round (Only applies if ttt_single_jester_independent is disabled)
-ttt_single_drunk_clown_chance                  0.5     // The chance that a Drunk should have an opportunity to spawn instead of a Clown (e.g. 0.7 = 70% chance for Drunk, 30% chance for Clown. Only applies if ttt_single_drunk_clown is enabled)
 
 // Beggar
 ttt_beggar_is_independent                      0       // Whether Beggars should be treated as members of the independent team (rather than the jester team)
@@ -733,8 +723,8 @@ ttt_sponge_device_for_jester                   0       // Whether the Jester sho
 ttt_sponge_device_for_jester_heal              0       // Whether the Jester should be fully healed when using the spongifier
 ttt_sponge_device_for_lootgoblin               0       // Whether the lootgoblin should get the spongifier
 ttt_sponge_device_for_lootgoblin_heal          0       // Whether the lootgoblin should be fully healed when using the spongifier
-ttt_sponge_device_for_shadow                   0       // Whether the Shadow should get the spongifier
-ttt_sponge_device_for_shadow_heal              0       // Whether the Shadow should be fully healed when using the spongifier
+ttt_sponge_device_for_shadow                   0       // Whether the Shadow should get the spongifier (only created and used when "ttt_shadow_is_jester" is enabled)
+ttt_sponge_device_for_shadow_heal              0       // Whether the Shadow should be fully healed when using the spongifier (only created and used when "ttt_shadow_is_jester" is enabled)
 ttt_sponge_device_for_swapper                  0       // Whether the Swapper should get the spongifier
 ttt_sponge_device_for_swapper_heal             0       // Whether the Swapper should be fully healed when using the spongifier
 
@@ -757,8 +747,9 @@ ttt_cannibal_notify_killer                     1       // Whether to notify a Ca
 ttt_cannibal_notify_sound                      0       // Whether to play a cheering sound when a Cannibal is killed
 ttt_cannibal_notify_confetti                   0       // Whether to throw confetti when a Cannibal is a killed
 ttt_cannibal_eat_cooldown                      10      // The amount of time (in seconds) between uses of the Cannibal's Cannibalizer
-ttt_cannibal_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Cannibal
-ttt_cannibal_update_scoreboard                 0       // Whether the Cannibal shows dead players as missing in action
+ttt_cannibal_damage_penalty                    0       // The fraction a Cannibal's damage will be scaled by when they are attacking (Only applies if ttt_cannibal_is_independent is enabled)
+ttt_cannibal_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Cannibal (Only applies if ttt_cannibal_is_independent is enabled)
+ttt_cannibal_update_scoreboard                 0       // Whether the Cannibal shows dead players as missing in action (Only applies if ttt_cannibal_is_independent is enabled)
 
 // ----------------------------------------
 
@@ -1491,7 +1482,7 @@ Role blocks are configured using the UI, accessible by admins using the `ttt_rol
 
 ![Blank Role Blocks Window](docs/tutorials/img/RoleBlocks_Blank.png)
 
-By default, your role blocks window should be mostly empty. (If you were previously using ConVars such as `ttt_single_paramedic_hypnotist`, you will see those options have already copied over.)
+By default, your role blocks window should be mostly empty. (If you were previously using ConVars such as `ttt_single_paramedic_hypnotist` prior to Beta 2.1.4 or Release 2.3.0, you will see those options have already copied over.)
 
 Here you will be able to create "blocking groups" which determine which roles cannot spawn together. Roles that are in the same blocking group will be unable to spawn together at the start of a round, but will still have the ability to appear later in the round through other means. (e.g. Marshal deputizing, Drunk sobering, etc.) Each role within a blocking group can have a weight assigned to it, making it more likely to block other roles in the same blocking group from spawning.
 

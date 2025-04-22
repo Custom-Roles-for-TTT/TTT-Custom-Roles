@@ -151,11 +151,15 @@ if SERVER then
                     -- Include whether the player is crouching
                     if owner:Crouching() then
                         ply:SetProperty("TTTBodysnatcherForceDuck", true, ply)
+                        ply:ConCommand("+duck")
                         net.Start("TTT_BodysnatcherForceDuck")
-                        net.ReadBool(true)
+                        net.WriteBool(true)
                         net.Send(ply)
+
+                        owner:SetProperty("TTTBodysnatcherForceDuck", true, owner)
+                        owner:ConCommand("-duck")
                         net.Start("TTT_BodysnatcherForceDuck")
-                        net.ReadBool(false)
+                        net.WriteBool(false)
                         net.Send(owner)
                     end
 
@@ -221,6 +225,7 @@ if SERVER then
         if not ply:Alive() or ply:IsSpec() then return end
         if not ply.TTTBodysnatcherForceDuck then return end
 
+        ply:ConCommand("-duck")
         ply:ClearProperty("TTTBodysnatcherForceDuck", ply)
     end)
 end
@@ -286,11 +291,13 @@ if CLIENT then
         return disguiseName
     end)
 
+    local forceDuckTime = nil
     -- If the server tells us this player should be ducking, do it
     net.Receive("TTT_BodysnatcherForceDuck", function()
         local ply = LocalPlayer()
         if not IsPlayer(ply) then return end
-        if not ply:Alive() or ply:IsSpec() then return end
+
+        forceDuckTime = CurTime()
 
         local state = net.ReadBool()
         ply:ConCommand((state and "+" or "-") .. "duck")
@@ -301,9 +308,18 @@ if CLIENT then
         if not IsPlayer(ply) then return end
         if not ply:Alive() or ply:IsSpec() then return end
         if not ply.TTTBodysnatcherForceDuck then return end
+        -- Force them to stay ducked (or standing) for a bit
+        if forceDuckTime and (forceDuckTime + 0.5) < CurTime() then
+            forceDuckTime = nil
+            return
+        end
 
         local key = input.LookupKeyBinding(button)
         if key == "+duck" then
+            -- Set this on the client right now so we don't run this hook more than we need
+            -- The net call will set it on the server as well
+            ply.TTTBodysnatcherForceDuck = false
+
             ply:ConCommand("-duck")
 
             net.Start("TTT_BodysnatcherUnforceDuck")

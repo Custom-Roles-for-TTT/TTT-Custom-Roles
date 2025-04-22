@@ -102,6 +102,7 @@ function HELPSCRN:Show()
     dbut:SetPos(w - bw - margin, h - bh - margin / 2)
     dbut:SetText(GetTranslation("close"))
     dbut.DoClick = function()
+        if not IsValid(dframe) then return end
         dframe:Close()
         dframe = nil
     end
