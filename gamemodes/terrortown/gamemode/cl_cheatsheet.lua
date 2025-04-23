@@ -23,7 +23,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     UpdateRoleColours()
 
     if table.IsEmpty(ROLE_STARTING_TEAM) then
-        LocalPlayer():PrintMessage(HUD_PRINTTALK, "Cheat sheet teams and colors may display incorrectly before the first round starts.")
+        ply:PrintMessage(HUD_PRINTTALK, "Cheat sheet teams and colors may display incorrectly before the first round starts.")
     end
 
     local function AddRolesFromTeam(tbl, team)
