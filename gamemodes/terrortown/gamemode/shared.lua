@@ -1644,8 +1644,6 @@ function GM:Move(ply, mv)
 end
 
 function UpdateRoleWeaponState()
-    CallHook("TTTUpdateRoleState", nil)
-
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")
         net.Broadcast()
@@ -1673,6 +1671,8 @@ function UpdateRoleState()
             end
         end
     end
+
+    CallHook("TTTUpdateRoleState", nil)
 
     -- Update which weapons are available based on role state
     UpdateRoleWeaponState()
