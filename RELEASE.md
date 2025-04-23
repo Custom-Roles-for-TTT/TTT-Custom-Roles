@@ -1,6 +1,12 @@
 # Release Notes
 
 ## 2.3.1
+**Released: **
+
+### Fixes
+- Fixed role cheat sheet and Guessing Device sorting roles by the team that role ended the last round on
+
+## 2.3.1
 **Released: April 20th, 2025**
 
 ### Additions

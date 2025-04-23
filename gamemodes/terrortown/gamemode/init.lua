@@ -667,9 +667,7 @@ function PrepareRound()
 
     -- Tell hooks and map we started prep
     RunHook("TTTPrepareRound")
-    for role = 0, ROLE_MAX do
-        ROLE_STARTING_TEAM[role] = player.GetRoleTeam(role, false)
-    end
+
     ClearAllFootsteps()
     ents.TTT.TriggerRoundStateOutputs(ROUND_PREP)
 end
@@ -890,6 +888,9 @@ function BeginRound()
     GAMEMODE:UpdatePlayerLoadouts() -- needs to happen when round_active
 
     RunHook("TTTBeginRound")
+    for role = 0, ROLE_MAX do
+        ROLE_STARTING_TEAM[role] = player.GetRoleTeam(role, false)
+    end
 
     ents.TTT.TriggerRoundStateOutputs(ROUND_BEGIN)
 end
