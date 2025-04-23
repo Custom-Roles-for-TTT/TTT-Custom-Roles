@@ -24,7 +24,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.3.1"
+CR_VERSION = "2.3.2"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -1644,8 +1644,6 @@ function GM:Move(ply, mv)
 end
 
 function UpdateRoleWeaponState()
-    CallHook("TTTUpdateRoleState", nil)
-
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")
         net.Broadcast()
@@ -1673,6 +1671,8 @@ function UpdateRoleState()
             end
         end
     end
+
+    CallHook("TTTUpdateRoleState", nil)
 
     -- Update which weapons are available based on role state
     UpdateRoleWeaponState()
