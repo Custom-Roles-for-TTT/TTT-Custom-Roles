@@ -3,14 +3,11 @@
 ## 2.3.2
 **Released:**
 
-### Developer
-- Fixed `TTTUpdateRoleState` being called every time role weapons were updated
-
-## 2.3.1
-**Released: **
-
 ### Fixes
 - Fixed role cheat sheet and Guessing Device sorting roles by the team that role ended the last round on
+
+### Developer
+- Fixed `TTTUpdateRoleState` being called every time role weapons were updated
 
 ## 2.3.1
 **Released: April 20th, 2025**
