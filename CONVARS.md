@@ -851,7 +851,7 @@ ttt_killer_credits_award_repeat                1       // Whether the credit awa
 // Zombie
 ttt_zombie_is_monster                          0       // Whether Zombies should be treated as members of the monster team (rather than the independent team)
 ttt_zombie_is_traitor                          0       // Whether Zombies should be treated as members of the traitors team (rather than the independent team)
-ttt_zombie_round_chance                        0.1     // The chance that a "Zombie round" will occur where all players who would have been traitors are made Zombies instead. Only usable when "ttt_zombie_is_traitor" is set to "1"
+ttt_zombie_round_chance                        0.1     // The chance that a "Zombie round" will occur where all players who would have been traitors are made Zombies instead. If set to 0, zombies will spawn alongside other traitor roles. Only usable when "ttt_zombie_is_traitor" is set to "1".
 ttt_zombie_vision_enabled                      0       // Whether Zombies have their special vision highlights enabled
 ttt_zombie_spit_enabled                        1       // Whether Zombies have their spit attack enabled
 ttt_zombie_spit_convert                        0       // Whether players killed by a spitting Zombie will be converted to be a Zombie themselves

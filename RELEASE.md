@@ -1,7 +1,10 @@
 # Release Notes
 
-## 2.3.2
+## 2.3.2 (Beta)
 **Released:**
+
+### Additions
+- Added ability for zombies on the traitor team to spawn with other traitor roles when `ttt_zombie_round_chance` is `0`
 
 ### Fixes
 - Fixed role cheat sheet and Guessing Device sorting roles by the team that role ended the last round on
