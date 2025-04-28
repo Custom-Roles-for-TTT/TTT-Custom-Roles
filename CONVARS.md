@@ -1478,7 +1478,7 @@ The ConVars tab allows you to specify configuration values to set only when the 
 ## Role Blocks
 Role blocks let you prevent specific roles from spawning together in the same round. Previously this functionality was only available to a few select pairs of roles using ConVars such as `ttt_single_paramedic_hypnotist`, but these have been removed as role blocks can achieve everything these ConVars could, and more.
 
-Role blocks are configured using the UI, accessible by admins using the `ttt_roleblocks` command. Role blocks are saved in the *data/rolepacks.json* file so that they can then be backed up or copied from server-to-server just by transferring that file.
+Role blocks are configured using the UI, accessible by admins using the `ttt_roleblocks` command. Role blocks are saved in the *data/rolepacks.json* file so that they can then be backed up or copied from server-to-server just by transferring that file. Once a role block is created and saved, it automatically takes effect.
 
 ![Blank Role Blocks Window](docs/tutorials/img/RoleBlocks_Blank.png)
 
