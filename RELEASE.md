@@ -12,6 +12,7 @@
 ### Developer
 - Fixed `TTTUpdateRoleState` being called every time role weapons were updated
 - Added Attacker and upcoming Inflictor property to Bullet structure in `weapon_tttbase` for compatibility
+- Added missing information to the developer documentation
 
 ## 2.3.1
 **Released: April 20th, 2025**
