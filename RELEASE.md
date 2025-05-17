@@ -9,6 +9,7 @@
 ### Fixes
 - Fixed role cheat sheet and Guessing Device sorting roles by the team that role ended the last round on
 - Fixed role cheat sheet revealing your role when `ttt_hide_role` was enabled
+- Fixed potential errors when vampire fangs and zombie claws are used on fake ragdolls
 
 ### Developer
 - Fixed `TTTUpdateRoleState` being called every time role weapons were updated
