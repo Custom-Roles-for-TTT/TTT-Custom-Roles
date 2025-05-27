@@ -439,10 +439,11 @@ your DNA.]]
 
 -- Defuser
 L.defuser_name = "Defuser"
-L.defuser_help = "{primaryfire} defuses targeted C4."
+L.defuser_help = "{primaryfire} defuses targeted device."
 
 L.defuser_desc = [[
-Instantly defuse a C4 explosive.
+Instantly defuse an explosive or
+disable a harmful device.
 
 Unlimited uses. C4 will be easier to
 notice if you carry this.]]

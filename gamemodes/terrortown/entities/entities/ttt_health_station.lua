@@ -192,9 +192,9 @@ if SERVER then
         end
 
         if self:Health() <= 0 then
-            self:Remove()
-
             util.EquipmentDestroyed(self:GetPos())
+
+            self:Remove()
 
             if IsValid(placer) then
                 LANG.Msg(placer, "hstation_broken")

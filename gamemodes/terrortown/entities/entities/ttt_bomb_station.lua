@@ -28,6 +28,7 @@ ENT.ExplosionRange = 400
 ENT.ExplosionTime = 1
 
 ENT.Triggered = false
+ENT.Defusable = true
 
 AccessorFuncDT(ENT, "StoredHealth", "StoredHealth")
 
@@ -51,7 +52,7 @@ function ENT:Explode()
         damage = 0
     end
 
-    util.BlastDamage(self, self:GetPlacer(), pos, radius, damage)
+    util.BlastDamage(self, placer, pos, radius, damage)
     local effect = EffectData()
         effect:SetStart(pos)
         effect:SetOrigin(pos)
@@ -181,6 +182,20 @@ function ENT:Use(ply)
     end
 end
 
+local function DoDestroy(station)
+    util.EquipmentDestroyed(station:GetPos())
+
+    station:Remove()
+
+    if IsValid(station:GetPlacer()) then
+        LANG.Msg(station:GetPlacer(), "bstation_broken")
+    end
+end
+
+function ENT:Disarm()
+    DoDestroy(self)
+end
+
 function ENT:OnTakeDamage(dmginfo)
     local att = dmginfo:GetAttacker()
     local placer = self:GetPlacer()
@@ -195,12 +210,6 @@ function ENT:OnTakeDamage(dmginfo)
     end
 
     if self:Health() <= 0 then
-        self:Remove()
-
-        util.EquipmentDestroyed(self:GetPos())
-
-        if IsValid(placer) then
-            LANG.Msg(placer, "bstation_broken")
-        end
+        DoDestroy(self)
     end
 end

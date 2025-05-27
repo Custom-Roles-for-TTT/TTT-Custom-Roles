@@ -19,7 +19,6 @@ local TableInsert = table.insert
 local TableRandom = table.Random
 local TableRemove = table.remove
 local TimerSimple = timer.Simple
-local UtilEffect = util.Effect
 
 if CLIENT then
    -- this entity can be DNA-sampled so we need some display info
@@ -34,6 +33,7 @@ ENT.CanUseKey = true
 ENT.CanHavePrints = false
 ENT.SoundLimit = 5
 ENT.SoundDelay = 0.5
+ENT.Defusable = true
 
 function ENT:Initialize()
     self:SetModel(self.Model)
@@ -77,22 +77,26 @@ function ENT:UseOverride(activator)
     end
 end
 
-local zapsound = Sound("npc/assassin/ball_zap1.wav")
+local function DoDestroy(radio)
+    util.EquipmentDestroyed(radio:GetPos())
+
+    radio:Remove()
+
+    if IsValid(radio:GetOwner()) then
+        LANG.Msg(radio:GetOwner(), "radio_broken")
+    end
+end
+
+function ENT:Disarm()
+    DoDestroy(self)
+end
+
 function ENT:OnTakeDamage(dmginfo)
     self:TakePhysicsDamage(dmginfo)
 
     self:SetHealth(self:Health() - dmginfo:GetDamage())
     if self:Health() < 0 then
-        self:Remove()
-
-        local effect = EffectData()
-        effect:SetOrigin(self:GetPos())
-        UtilEffect("cball_explode", effect)
-        SoundPlay(zapsound, self:GetPos())
-
-        if IsValid(self:GetOwner()) then
-            LANG.Msg(self:GetOwner(), "radio_broken")
-        end
+        DoDestroy(self)
     end
 end
 
