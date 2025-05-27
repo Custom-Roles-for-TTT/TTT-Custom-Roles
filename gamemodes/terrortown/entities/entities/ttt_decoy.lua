@@ -52,26 +52,28 @@ function ENT:UseOverride(activator)
     end
 end
 
-local function DoDestroy(decoy)
-    util.EquipmentDestroyed(decoy:GetPos())
+if SERVER then
+    local function DoDestroy(decoy)
+        util.EquipmentDestroyed(decoy:GetPos())
 
-    decoy:Remove()
+        decoy:Remove()
 
-    if IsValid(decoy:GetOwner()) then
-        LANG.Msg(decoy:GetOwner(), "decoy_broken")
+        if IsValid(decoy:GetOwner()) then
+            LANG.Msg(decoy:GetOwner(), "decoy_broken")
+        end
     end
-end
 
-function ENT:Disarm()
-    DoDestroy(self)
-end
-
-function ENT:OnTakeDamage(dmginfo)
-    self:TakePhysicsDamage(dmginfo)
-
-    self:SetHealth(self:Health() - dmginfo:GetDamage())
-    if self:Health() < 0 then
+    function ENT:Disarm()
         DoDestroy(self)
+    end
+
+    function ENT:OnTakeDamage(dmginfo)
+        self:TakePhysicsDamage(dmginfo)
+
+        self:SetHealth(self:Health() - dmginfo:GetDamage())
+        if self:Health() < 0 then
+            DoDestroy(self)
+        end
     end
 end
 

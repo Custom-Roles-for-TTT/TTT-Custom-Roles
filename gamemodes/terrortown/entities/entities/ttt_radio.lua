@@ -77,26 +77,28 @@ function ENT:UseOverride(activator)
     end
 end
 
-local function DoDestroy(radio)
-    util.EquipmentDestroyed(radio:GetPos())
+if SERVER then
+    local function DoDestroy(radio)
+        util.EquipmentDestroyed(radio:GetPos())
 
-    radio:Remove()
+        radio:Remove()
 
-    if IsValid(radio:GetOwner()) then
-        LANG.Msg(radio:GetOwner(), "radio_broken")
+        if IsValid(radio:GetOwner()) then
+            LANG.Msg(radio:GetOwner(), "radio_broken")
+        end
     end
-end
 
-function ENT:Disarm()
-    DoDestroy(self)
-end
-
-function ENT:OnTakeDamage(dmginfo)
-    self:TakePhysicsDamage(dmginfo)
-
-    self:SetHealth(self:Health() - dmginfo:GetDamage())
-    if self:Health() < 0 then
+    function ENT:Disarm()
         DoDestroy(self)
+    end
+
+    function ENT:OnTakeDamage(dmginfo)
+        self:TakePhysicsDamage(dmginfo)
+
+        self:SetHealth(self:Health() - dmginfo:GetDamage())
+        if self:Health() < 0 then
+            DoDestroy(self)
+        end
     end
 end
 
