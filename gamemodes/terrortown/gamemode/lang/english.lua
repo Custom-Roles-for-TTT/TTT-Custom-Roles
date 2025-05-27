@@ -397,6 +397,7 @@ L.c4_arm_seconds = "Seconds until detonation:"
 L.c4_arm_attempts = "In disarm attempts, {num} of the 6 wires will cause instant detonation when cut."
 
 L.c4_remove_title = "Removal"
+L.c4_defuser_disarm = "Use Defuser"
 L.c4_remove_pickup = "Pick up C4"
 L.c4_remove_destroy1 = "Destroy C4"
 L.c4_remove_destroy2 = "Confirm: destroy"
