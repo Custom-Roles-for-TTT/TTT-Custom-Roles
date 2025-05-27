@@ -7,9 +7,12 @@
 - Added ability for zombies on the traitor team to spawn with other traitor roles when `ttt_zombie_round_chance` is `0`
 - Added ability for the defuser to disable the bomb station, radio, and decoy
 - Added button to the C4 defuse UI to use the defuser if you have one
+- Added ability to allow a player to damage their own bomb station (disabled by default)
+  - This adds parity with a similar convar that exists for health stations
 
 ### Changes
 - Changed C4 defuse logic to automatically succeed when you have the defuser, regardless of which wire is cut
+- Changed the bomb station to explode when it is destroyed (this can be disabled by changing the new `ttt_bombstation_explode_on_destroy` convar)
 
 ### Fixes
 - Fixed role cheat sheet and Guessing Device sorting roles by the team that role ended the last round on

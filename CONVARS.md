@@ -1255,6 +1255,9 @@ ttt_corpse_search_team_text_jester             0       // Whether corpse searche
 ttt_color_mode_override                        "none"  // Forces all players to have a certain role color setting. none (let user decide), default, simple, protan, deutan, tritan
 ttt_spectators_see_roles                       0       // Whether spectators (not dead players) should be able to see the roles of all players
 ttt_weapon_transfer_ownership                  0       // Whether the ownership of a shop item should transfer each time its picked up
+ttt_damage_own_healthstation                   0       // Whether the player who places a health station can damage it
+ttt_damage_own_bombstation                     0       // Whether the player who places a bomb station can damage it
+ttt_bombstation_explode_on_destroy             1       // Whether a bomb station explodes when it is destroyed
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for their original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
