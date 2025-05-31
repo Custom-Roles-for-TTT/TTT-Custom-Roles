@@ -26,7 +26,7 @@ local revenger_damage_bonus = GetConVar("ttt_revenger_damage_bonus")
 -- KARMA --
 -----------
 
--- If the attacker is a revenger, don't reduce thier karma if they killed the person who killed their target
+-- If the attacker is a revenger, don't reduce their karma if they killed the person who killed their target
 hook.Add("TTTKarmaShouldGivePenalty", "Revenger_TTTKarmaShouldGivePenalty", function(attacker, victim)
     if attacker:IsRevenger() and victim:SteamID64() == attacker:GetNWString("RevengerKiller", "") then
         return false
