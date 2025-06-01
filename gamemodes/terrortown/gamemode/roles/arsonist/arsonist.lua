@@ -264,6 +264,18 @@ hook.Add("PostPlayerDeath", "Arsonist_PostPlayerDeath", function(ply)
     ply.ignite_info = nil
 end)
 
+hook.Add("TTTPlayerRoleChanged", "Arsonist_ClearNotifications_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if not ply:Alive() or ply:IsSpec() then return end
+
+    -- If we no longer have an arsonist, clear any notification delays that remain
+    if oldRole == ROLE_ARSONIST and oldRole ~= newRole then
+        for _, v in PlayerIterator() do
+            print(v)
+            timer.Remove("TTTArsonistNotifyDelay_" .. v:SteamID64())
+        end
+    end
+end)
+
 hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v.DouseDisabled = false
@@ -350,6 +362,7 @@ hook.Add("TTTBeginRound", "Arsonist_Announce_TTTBeginRound", function()
         for _, v in PlayerIterator() do
             if v:IsArsonist() then
                 hasArsonist = true
+                break
             end
         end
 
