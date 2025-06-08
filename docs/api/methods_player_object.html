@@ -603,6 +603,22 @@
             <li><em>predicate</em> - Predicate function called with the player as the sole parameter before the message is sent. Return <code>true</code> to allow the message or <code>false</code> to prevent it (Optional) <em>(Added in 2.0.5)</em> <em>(Only available on the server realm)</em></li>
         </ul>
 
+        <h3><a id="plymetaragdolllen-transfer_damage-leave_role_weaps" href="#plymetaragdolllen-transfer_damage-leave_role_weaps">plymeta:Ragdoll(len, transfer_damage, leave_role_weaps)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Creates a ragdoll representation of this player and forces the player to spectate it.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>len</em> - The length of time to ragdoll this player for. If &lt;0 or not provided, ragdoll lasts indefinitely</li>
+            <li><em>transfer_damage</em> - Whether to transfer damage from the created ragdoll to the player it represents</li>
+            <li><em>leave_role_weaps</em> - Whether to leave role weapons on the player while they are ragdolled</li>
+        </ul>
+        <p>
+            <em>Returns:</em> The created ragdoll entity.
+        </p>
+
         <h3><a id="plymetaremoveequipmentitemitem_id" href="#plymetaremoveequipmentitemitem_id">plymeta:RemoveEquipmentItem(item_id)</a></h3>
         <p>
             Removes the equipment item with given ID from this player.<br>
@@ -842,6 +858,13 @@
             Strips all weapons from the player whose <code>Category</code> property matches the global <code>WEAPON_CATEGORY_ROLE</code> value.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.5
+        </p>
+
+        <h3><a id="plymetaunragdoll" href="#plymetaunragdoll">plymeta:UnRagdoll()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Removes the ragdoll representation of this player created by <code>plymeta:Ragdoll</code> and restores the player state.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2
         </p>
     </div>
     <div class="footerpadding panel"></div>

@@ -753,6 +753,18 @@
             <li><em>newHealth</em> - The player's new health</li>
         </ul>
 
+        <h3><a id="tttplayerragdolledply-ragdoll" href="#tttplayerragdolledply-ragdoll">TTTPlayerRagdolled(ply, ragdoll)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called after a player is ragdolled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who was ragdolled</li>
+            <li><em>ragdoll</em> - The ragdoll that was created</li>
+        </ul>
+
         <h3><a id="tttplayerrolechangedply-oldrole-newrole" href="#tttplayerrolechangedply-oldrole-newrole">TTTPlayerRoleChanged(ply, oldRole, newRole)</a></h3>
         <p>
             Called after a player's role has changed.<br>
@@ -789,6 +801,18 @@
         <ul>
             <li><em>ply</em> - The player who is being spawned or respawned</li>
             <li><em>deadOnly</em> - Whether this call is specifically targeted at dead players</li>
+        </ul>
+
+        <h3><a id="tttplayerunragdolledply-ragdoll" href="#tttplayerunragdolledply-ragdoll">TTTPlayerUnRagdolled(ply, ragdoll)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called after a player is un-ragdolled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who was un-ragdolled</li>
+            <li><em>ragdoll</em> - The ragdoll that was removed</li>
         </ul>
 
         <h3><a id="tttplayerusedhealthstationply-station-healed-should_reduce" href="#tttplayerusedhealthstationply-station-healed-should_reduce">TTTPlayerUsedHealthStation(ply, station, healed, should_reduce)</a></h3>

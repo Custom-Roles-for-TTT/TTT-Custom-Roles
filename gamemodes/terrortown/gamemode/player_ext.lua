@@ -24,6 +24,8 @@ local timer = timer
 local weapons = weapons
 
 local CallHook = hook.Call
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 
 function plymeta:SetRagdollSpec(s)
     if s then
@@ -237,6 +239,17 @@ function plymeta:ResetRoundFlags()
     if not self:GetCleanRounds() then
         self:SetCleanRounds(1)
     end
+
+    -- ragdoll
+    SafeRemoveEntity(self.ragdoll_ent)
+    self.in_ragdoll = false
+    self.last_ragdoll = -1
+    self.ragdoll_info = nil
+    self.ragdoll_ent = nil
+    self:ClearProperty("ragdoll_ent_idx", self)
+
+    RemoveHook("Think", "UnragdollTimer_" .. self:SteamID64())
+    RemoveHook("PostEntityTakeDamage", "PlayerRagdollDamageTransfer_" .. self:SteamID64())
 
     self:Freeze(false)
 end
@@ -763,12 +776,12 @@ end
 local function ClearShopBlockedCache()
     shopBlockedCache = {}
 end
-hook.Add("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedCache)
-hook.Add("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
+AddHook("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedCache)
+AddHook("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
 -- Don't clear on round end because we may need this for post-round summary stuff
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
-hook.Add("TTTPrepareRound", "PostLoadOverride", function()
+AddHook("TTTPrepareRound", "PostLoadOverride", function()
     -- Compatibility with Dead Ringer (810154456)
     if plymeta.DRuncloak then
         local oldDRuncloak = plymeta.DRuncloak
@@ -789,5 +802,5 @@ hook.Add("TTTPrepareRound", "PostLoadOverride", function()
     end
 
     -- These overrides are set, no reason to check every round
-    hook.Remove("TTTPrepareRound", "PostLoadOverride")
+    RemoveHook("TTTPrepareRound", "PostLoadOverride")
 end)

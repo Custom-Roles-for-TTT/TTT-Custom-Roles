@@ -6,10 +6,13 @@ if not plymeta then return end
 local entmeta = FindMetaTable("Entity")
 if not entmeta then return end
 
+local ents = ents
+local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
 local net = net
+local pairs = pairs
 local player = player
 local string = string
 local table = table
@@ -17,9 +20,13 @@ local timer = timer
 local util = util
 
 local CallHook = hook.Call
-local PlayerIterator = player.Iterator
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local MathAbs = math.abs
 local MathAcos = math.acos
+local PlayerIterator = player.Iterator
+local StartBleeding = util.StartBleeding
+local TraceEntity = util.TraceEntity
 
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
 function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
@@ -705,6 +712,409 @@ else
         end)
     end
 end
+
+--- Ragdoll
+
+if SERVER then
+    local function TransferRagdollDamage(rag, dmginfo)
+        if not IsRagdoll(rag) then return end
+
+        local ply = rag.ragdolled_ply
+        if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
+
+        -- Keep track of how much health they have left
+        local damage = dmginfo:GetDamage()
+        -- Apply damage resistance, if it's provided
+        if rag.damage_resist and rag.damage_resist > 0 then
+            damage = damage - (damage * rag.damage_resist)
+        end
+        rag.player_health = rag.player_health - damage
+
+        StartBleeding(rag, damage, 5)
+
+        -- Kill the player if they run out of health
+        if rag.player_health <= 0 then
+            ply:UnRagdoll()
+
+            local att = dmginfo:GetAttacker()
+            local inflictor = dmginfo:GetInflictor()
+            if not IsValid(inflictor) then
+                inflictor = att
+            end
+            local dmg_type = dmginfo:GetDamageType()
+
+            -- Use TakeDamage instead of Kill so it properly applies karma
+            local dmg = DamageInfo()
+            dmg:SetDamageType(dmg_type)
+            dmg:SetAttacker(att)
+            dmg:SetInflictor(inflictor)
+            -- Use 10 so damage scaling doesn't mess with it. The worse damage factor (0.1) will still deal 1 damage after scaling a 10 down
+            -- Karma ignores excess damage anyway
+            dmg:SetDamage(10)
+            dmg:SetDamageForce(Vector(0, 0, 1))
+
+            ply:SetHealth(1)
+            ply:TakeDamageInfo(dmg)
+        else
+            ply:SetHealth(rag.player_health)
+        end
+    end
+
+    function plymeta:Ragdoll(len, transfer_damage, leave_role_weaps)
+        if self.in_ragdoll then return end
+
+        -- Save a local reference to use in the hook below
+        local ply = self
+        ply.in_ragdoll = true
+        ply.last_ragdoll = CurTime()
+        ply.ragdoll_info = {}
+
+        if ply:InVehicle() then
+            ply:ExitVehicle()
+        end
+
+        local weps = {}
+        for _, wep in ipairs(ply:GetWeapons()) do
+            if leave_role_weaps and wep.Category == WEAPON_CATEGORY_ROLE then continue end
+
+            local wep_class = WEPS.GetClass(wep)
+            weps[wep_class] = {}
+            weps[wep_class].Clip = wep:Clip1()
+            weps[wep_class].Reserve = ply:GetAmmoCount(wep:GetPrimaryAmmoType())
+            weps[wep_class].PAPUpgrade = wep.PAPUpgrade
+        end
+
+        local equipment = {}
+        -- Keep track of what equipment the player had
+        local idx = 1
+        while idx <= EQUIP_MAX do
+            equipment[idx] = ply:HasEquipmentItem(idx)
+            idx = idx + 1
+        end
+
+        ply.ragdoll_info = {
+            weps = weps,
+            activeWeapon = WEPS.GetClass(ply:GetActiveWeapon()),
+            health = ply:Health(),
+            maxhealth = ply:GetMaxHealth(),
+            model = ply:GetModel(),
+            credits = ply:GetCredits(),
+            equipment = equipment,
+            playerColor = ply:GetPlayerColor(),
+            -- Save Dead Ringer state
+            deadRinger = {
+                status = ply:GetNWInt("DRStatus", 0),
+                charge = ply:GetNWInt("DRCharge", 8)
+            }
+        }
+
+        local ragdoll = ents.Create("prop_ragdoll")
+        ragdoll.ragdolled_ply = ply
+        ragdoll.player_health = self:Health()
+        -- Don't let the red matter bomb destroy this ragdoll
+        ragdoll.WYOZIBHDontEat = true
+        ragdoll:SetNWBool("RdmtRagdollRagdoll", true)
+        local velocity = ply:GetVelocity()
+        ragdoll:SetPos(ply:GetPos())
+        ragdoll:SetModel(ply.ragdoll_info.model)
+        ragdoll:SetSkin(ply:GetSkin())
+        for _, value in pairs(ply:GetBodyGroups()) do
+            ragdoll:SetBodygroup(value.id, ply:GetBodygroup(value.id))
+        end
+        ragdoll:SetAngles(ply:GetAngles())
+        ragdoll:SetColor(ply:GetColor())
+        CORPSE.SetPlayerNick(ragdoll, ply)
+        ragdoll:Spawn()
+        ragdoll:Activate()
+
+        local rag_collide = GetConVar("ttt_ragdoll_collide")
+        ragdoll:SetCollisionGroup(rag_collide:GetBool() and COLLISION_GROUP_WEAPON or COLLISION_GROUP_DEBRIS_TRIGGER)
+
+        ply:SetParent(ragdoll)
+        -- Set velocity for each piece of the ragdoll
+        for i = 1, ragdoll:GetPhysicsObjectCount() do
+            local phys_obj = ragdoll:GetPhysicsObjectNum(i)
+            if phys_obj then
+                phys_obj:SetVelocity(velocity)
+            end
+        end
+
+        ply:Spectate(OBS_MODE_CHASE)
+        ply:SpectateEntity(ragdoll)
+        -- Don't remove everything if we're leaving role weapons
+        if leave_role_weaps then
+            for _, wep in ipairs(ply:GetWeapons()) do
+                if wep.Category == WEAPON_CATEGORY_ROLE then continue end
+
+                local wep_class = WEPS.GetClass(wep)
+                ply:StripWeapon(wep_class)
+            end
+        else
+            ply:StripWeapons()
+        end
+
+        -- Just in case they have some undroppable/unremoveable weapon
+        ply:DrawViewModel(false)
+        ply:DrawWorldModel(false)
+
+        if ragdoll.DisallowDeleting then
+            ragdoll:DisallowDeleting(true, function(old, new)
+                if IsValid(ply) then ply.ragdoll = new end
+            end)
+        end
+
+        -- If there is a barnacle holding this player, tell it to let go
+        -- We do this so the player doesn't get stuck in a partial capture state
+        -- where they are taking damage from the barnacle even they have revived
+        -- and moved away
+        for _, b in ipairs(ents.FindByClass("npc_barnacle")) do
+            if not IsValid(b) then continue end
+            if b:GetEnemy() ~= ply then continue end
+            b:Fire("LetGo", nil, 0, ply, ply)
+        end
+
+        ply.ragdoll_ent = ragdoll
+        ply:SetProperty("ragdoll_ent_idx", ragdoll:EntIndex())
+
+        if type(len) == "number" and len > 0 then
+            local hookId = "PlayerRagdollTimer_" .. ply:SteamID64()
+            AddHook("Think", hookId, function()
+                if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
+
+                ply:DrawViewModel(false)
+                ply:DrawWorldModel(false)
+
+                local doll = ply.ragdoll_ent
+                if not IsValid(doll) then return end
+
+                local physObj = doll:GetPhysicsObjectNum(1)
+                if not IsValid(physObj) then return end
+
+                -- Turn a ragdoll back into a player if they have essentially stopped moving and have been a ragdoll "long enough"
+                if physObj:GetVelocity():Length() <= 10 and (CurTime() - ply.last_ragdoll) > len then
+                    RemoveHook("Think", hookId)
+                    ply:UnRagdoll()
+                end
+            end)
+        end
+
+        if transfer_damage then
+            AddHook("PostEntityTakeDamage", "PlayerRagdollDamageTransfer_" .. ply:SteamID64(), function(ent, dmginfo, taken)
+                if not taken then return end
+                if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
+
+                local att = dmginfo:GetAttacker()
+                if not IsPlayer(att) then return end
+                if att == ply then return end
+
+                -- Don't transfer damage from jester-like players
+                if att:ShouldActLikeJester() then return end
+
+                local rag = ent
+                if IsPlayer(ent) then
+                    rag = ent.ragdoll_ent
+                end
+
+                if not IsRagdoll(rag) then return end
+
+                -- Make sure the damaged ragdoll belongs to our target player
+                if rag.ragdolled_ply ~= ply then return end
+
+                -- Transfer damage from the ragdoll to the real player
+                TransferRagdollDamage(rag, dmginfo)
+            end)
+        end
+
+        CallHook("TTTPlayerRagdolled", nil, ply, ragdoll)
+        return ragdoll
+    end
+
+    -- Thanks to SunRed on GitHub for the unstuck script
+    local function PlayerNotStuck(ply)
+        local pos = ply:GetPos()
+        local t = {
+            start = pos,
+            endpos = pos,
+            mask = MASK_PLAYERSOLID,
+            filter = ply
+        }
+        return TraceEntity(t, ply).StartSolid == false
+    end
+
+    local function FindPassableSpace(ply, direction, step)
+        local i = 0
+        while (i < 100) do
+            local origin = ply:GetPos()
+            origin = origin + step * direction
+
+            ply:SetPos(origin)
+            if PlayerNotStuck(ply) then
+                return true, ply:GetPos()
+            end
+            i = i + 1
+        end
+        return false, nil
+    end
+
+    --
+    --    Purpose: Unstucks player
+    --    Note: Very expensive to call, you have been warned!
+    --
+    local function UnstuckPlayer(ply)
+        if not PlayerNotStuck(ply) then
+            local oldPos = ply:GetPos()
+            local angle = ply:GetAngles()
+            local forward = angle:Forward()
+            local right = angle:Right()
+            local up = angle:Up()
+
+            local searchScale = 1 -- Increase and it will unstuck you from even harder places but with lost accuracy. Please, don't try higher values than 12
+            -- Forward
+            local success, pos = FindPassableSpace(ply, forward, searchScale)
+            if not success then success, pos = FindPassableSpace(ply, right, searchScale) end -- Right
+            if not success then success, pos = FindPassableSpace(ply, right, -searchScale) end -- Left
+            if not success then success, pos = FindPassableSpace(ply, up, searchScale) end -- Up
+            if not success then success, pos = FindPassableSpace(ply, up, -searchScale) end -- Down
+            if not success then success, pos = FindPassableSpace(ply, forward, -searchScale) end -- Back
+            if not success then
+                return false
+            end
+
+            -- Not stuck?
+            if oldPos == pos then
+                return true
+            else
+                ply:SetPos(pos)
+                if IsValid(ply) and IsValid(ply:GetPhysicsObject()) then
+                    if ply:IsPlayer() then
+                        ply:SetVelocity(vector_origin)
+                    end
+                    ply:GetPhysicsObject():SetVelocity(vector_origin) -- prevents bugs :s
+                end
+
+                return true
+            end
+        end
+    end
+
+    local function HandleWeaponPAP(weap, upgrade)
+        -- If PAP is installed, this weapon was given successfully, and the old one was PAP'd, then PAP the new one too
+        if not TTTPAP then return end
+        if not upgrade then return end
+        if not IsValid(weap) then return end
+
+        TTTPAP:ApplyUpgrade(weap, upgrade)
+    end
+
+    function plymeta:UnRagdoll()
+        -- Save a local reference to use in the timer below
+        local ply = self
+        ply:SetParent()
+
+        -- These are reset in Spawn so save them first
+        local ragdoll = ply.ragdoll_ent
+        local ragdoll_info = ply.ragdoll_info
+
+        -- Save these things in case something like a Randomat has changed them
+        -- We'll restore them later since the `Spawn` call resets these flags to their default
+        local jumpPower = ply:GetJumpPower()
+        local walkSpeed = ply:GetWalkSpeed()
+        local maxHealth = ply:GetMaxHealth()
+
+        -- Set these so players don't get their role weapons given back if they've already used them
+        ply.Resurrecting = true
+        ply.DeathRoleWeapons = nil
+        ply:Spawn()
+
+        if IsValid(ragdoll) then
+            local pos = ragdoll:GetPos()
+            pos.z = pos.z + 10
+            ply:SetPos(pos)
+            ply:SetVelocity(ragdoll:GetVelocity())
+            local yaw = ragdoll:GetAngles().yaw
+            ply:SetAngles(Angle(0, yaw, 0))
+            if ragdoll.DisallowDeleting then
+                ragdoll:DisallowDeleting(false)
+            end
+            SafeRemoveEntity(ragdoll)
+        end
+
+        for i, _ in pairs(ragdoll_info.weps) do
+            local wep = ply:Give(i)
+            if not IsValid(wep) then continue end
+
+            if ragdoll_info.weps[i].Clip then
+                wep:SetClip1(ragdoll_info.weps[i].Clip)
+            end
+            ply:SetAmmo(ragdoll_info.weps[i].Reserve, wep:GetPrimaryAmmoType())
+            HandleWeaponPAP(wep, ragdoll_info.weps[i].PAPUpgrade)
+        end
+
+        if ragdoll_info.activeWeapon then
+            ply:SelectWeapon(ragdoll_info.activeWeapon)
+        end
+
+        ply:SetCredits(ragdoll_info.credits)
+        ply:SetModel(ragdoll_info.model)
+        ply:SetPlayerColor(ragdoll_info.playerColor)
+        ply:DrawViewModel(true)
+        ply:DrawWorldModel(true)
+
+        -- Re-set Dead Ringer state
+        ply:SetNWInt("DRStatus", ragdoll_info.deadRinger.status)
+        ply:SetNWInt("DRCharge", ragdoll_info.deadRinger.charge)
+
+        for i, j in pairs(ragdoll_info.equipment) do
+            if j then
+                ply:GiveEquipmentItem(i)
+            end
+        end
+
+        -- Restore potentially-changed values
+        ply:SetWalkSpeed(walkSpeed)
+        ply:SetJumpPower(jumpPower)
+        ply:SetMaxHealth(maxHealth)
+
+        ply:SetMaxHealth(ragdoll_info.maxhealth)
+        ply:SetHealth(math.max(0, ragdoll_info.health))
+        if ply:Health() <= 0 then
+            ply:Kill()
+        else
+            timer.Simple(0.1, function()
+                if not IsPlayer(ply) then return end
+                if not ply:Alive() or ply:IsSpec() then return end
+                if ply:IsInWorld() then
+                    UnstuckPlayer(ply)
+                end
+            end)
+        end
+
+        CallHook("TTTPlayerUnRagdolled", nil, ply, ragdoll)
+    end
+
+    local function ClearRagdolls()
+        for _, ply in PlayerIterator() do
+            if ply.in_ragdoll then
+                ply:UnRagdoll()
+            end
+        end
+    end
+    AddHook("TTTEndRound", "Ragdoll_Clear_TTTEndRound", ClearRagdolls)
+    AddHook("TTTPrepareRound", "Ragdoll_Clear_TTTPrepareRound", ClearRagdolls)
+else
+    -- Don't show the target ID for our own ragdoll
+    local function BlockTargetID(ent, client, text, color)
+        if not IsValid(ent) then return end
+        if ent:EntIndex() ~= client.ragdoll_ent_idx then return end
+
+        return false
+    end
+    AddHook("TTTTargetIDRagdollName", "Ragdoll_BlockTargetID_TTTTargetIDRagdollName", BlockTargetID)
+    AddHook("TTTTargetIDEntityHintLabel", "Ragdoll_BlockTargetID_TTTTargetIDEntityHintLabel", BlockTargetID)
+    AddHook("TTTTargetIDPlayerHintText", "Ragdoll_BlockTargetID_TTTTargetIDPlayerHintText", BlockTargetID)
+end
+
+--- Static methods
 
 function player.GetRoleTeam(role, detectivesAreInnocent)
     if TRAITOR_ROLES[role] then
