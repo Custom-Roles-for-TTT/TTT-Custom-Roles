@@ -270,6 +270,11 @@ Whether the entity or position given is on screen for the player, within the giv
 - *ent_or_pos* - The entity or position vector that is being checked
 - *limit* - The maximum value limit before a player is determined to be "off screen" (Defaults to 1)
 
+### plymeta:IsRagdolled()
+Whether this player has been ragdolled by `plymeta:Ragdoll`.\
+*Realm*: Client and Server\
+*Added in*: 2.3.2 
+
 ### plymeta:IsRespawning()
 Whether this player is currently respawning.\
 *Realm:* Client and Server\
@@ -578,6 +583,6 @@ Strips all weapons from the player whose `Category` property matches the global 
 *Added in:* 1.0.5
 
 ### plymeta:UnRagdoll()
-Removes the ragdoll representation of this player created by plymeta:Ragdoll and restores the player state.\
+Removes the ragdoll representation of this player created by `plymeta:Ragdoll` and restores the player state.\
 *Realm*: Server\
 *Added in*: 2.3.2

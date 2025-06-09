@@ -242,11 +242,11 @@ function plymeta:ResetRoundFlags()
 
     -- ragdoll
     SafeRemoveEntity(self.ragdoll_ent)
-    self.in_ragdoll = false
+    self:ClearProperty("in_ragdoll")
     self.last_ragdoll = -1
     self.ragdoll_info = nil
     self.ragdoll_ent = nil
-    self:ClearProperty("ragdoll_ent_idx", self)
+    self:ClearProperty("ragdoll_ent_idx")
 
     RemoveHook("Think", "UnragdollTimer_" .. self:SteamID64())
     RemoveHook("PostEntityTakeDamage", "PlayerRagdollDamageTransfer_" .. self:SteamID64())

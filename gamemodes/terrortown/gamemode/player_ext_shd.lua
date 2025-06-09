@@ -765,7 +765,7 @@ if SERVER then
 
         -- Save a local reference to use in the hook below
         local ply = self
-        ply.in_ragdoll = true
+        ply:SetProperty("in_ragdoll", true)
         ply.last_ragdoll = CurTime()
         ply.ragdoll_info = {}
 
@@ -1112,6 +1112,10 @@ else
     AddHook("TTTTargetIDRagdollName", "Ragdoll_BlockTargetID_TTTTargetIDRagdollName", BlockTargetID)
     AddHook("TTTTargetIDEntityHintLabel", "Ragdoll_BlockTargetID_TTTTargetIDEntityHintLabel", BlockTargetID)
     AddHook("TTTTargetIDPlayerHintText", "Ragdoll_BlockTargetID_TTTTargetIDPlayerHintText", BlockTargetID)
+end
+
+function plymeta:IsRagdolled()
+    return self.in_ragdoll or false
 end
 
 --- Static methods
