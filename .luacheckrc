@@ -1019,6 +1019,7 @@ globals = {
     "ROLE_TEAM_MONSTER",
     "ROLE_TEAM_TRAITOR",
     "ROLE_TRANSLATIONS",
+    "ROLE_USES_SPECTATOR",
     "ROLE_VICTIM_CHANGING_ROLE",
     "ROLE_PACK_ROLES",
     "ROLEBLOCKS",
@@ -1209,7 +1210,7 @@ globals = {
     "CRHUD",
     "DEATHRADAR",
     "SYNC",
-    
+
     -- TTTPAP Namespaces
     "TTTPAP",
 
