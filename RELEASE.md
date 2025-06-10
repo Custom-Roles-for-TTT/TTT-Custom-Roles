@@ -26,6 +26,9 @@
 - Added missing information to the developer documentation
 - Added `plymeta:Ragdoll`, `plymeta:UnRagdoll`, and `plymeta:IsRagdolled` to make it easier for roles that want to temporarily ragdoll their players
 - Added `TTTPlayerRagdolled` and `TTTPlayerUnRagdolled` hooks that are called after `plymeta:Ragdoll` and `plymeta:UnRagdoll`, respectively
+- Added `ROLE.usesspectator` external role property and `ROLE_USES_SPECTATOR` global table to enable creating a following entity on dead players
+- Added `TTTSpectatorSpiritCreated` hook for when a following entity is created on a dead player
+- Added `SYNC:SetEntityProperty`, `SYNC:ClearEntityProperty`, `entmeta:SetProperty`, and `entmeta:ClearProperty` to allow doing an on-demand sync of property values for entities
 
 ## 2.3.1
 **Released: April 20th, 2025**

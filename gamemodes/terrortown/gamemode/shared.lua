@@ -939,12 +939,18 @@ ROLE_IS_ACTIVE = {}
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
 ROLE_IS_TARGETID_OVERRIDDEN = {}
 ROLE_IS_TARGET_HIGHLIGHTED = {}
+
 ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
+
 ROLE_SHOULD_ACT_LIKE_JESTER = {}
 ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE = {}
 ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
+
+ROLE_USES_SPECTATOR = {}
+
 ROLE_VICTIM_CHANGING_ROLE = {}
+
 ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
@@ -1091,6 +1097,10 @@ function RegisterRole(tbl)
 
     if type(tbl.blockshopconvars) == "boolean" then
         ROLE_BLOCK_SHOP_CONVARS[roleID] = tbl.blockshopconvars
+    end
+
+    if type(tbl.usesspectator) == "boolean" then
+        ROLE_USES_SPECTATOR[roleID] = tbl.usesspectator
     end
 
     -- Equipment

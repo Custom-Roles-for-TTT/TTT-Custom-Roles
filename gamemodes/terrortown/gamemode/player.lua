@@ -1,6 +1,8 @@
 ---- Player spawning/dying
 
 local concommand = concommand
+local ents = ents
+local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
@@ -12,6 +14,7 @@ local table = table
 local timer = timer
 local util = util
 
+local AddHook = hook.Add
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
@@ -19,6 +22,8 @@ local PlayerIterator = player.Iterator
 local CreateEntity = ents.Create
 local FindEntsInBox = ents.FindInBox
 local FindEntsByClass = ents.FindByClass
+local TableHasValue = table.HasValue
+local TableInsert = table.insert
 
 CreateConVar("ttt_bots_are_spectators", "0", FCVAR_ARCHIVE)
 CreateConVar("ttt_dyingshot", "0")
@@ -97,6 +102,10 @@ function GM:PlayerSpawn(ply)
     net.Start("TTT_PlayerSpawned")
     net.WriteBit(ply:IsSpec())
     net.Send(ply)
+
+    -- Remove the spirit entity for this player, if there is one
+    SafeRemoveEntity(ply.SpiritEnt)
+    ply.SpiritEnt = nil
 
     if ply:IsSpec() then
         ply:StripAll()
@@ -178,7 +187,7 @@ function GetSpawnEnts(shuffled, force_all)
     for k, classname in ipairs(SpawnTypes) do
         for _, e in ipairs(FindEntsByClass(classname)) do
             if IsValid(e) and (not e.BeingRemoved) then
-                table.insert(tbl, e)
+                TableInsert(tbl, e)
             end
         end
     end
@@ -189,7 +198,7 @@ function GetSpawnEnts(shuffled, force_all)
     if force_all or #tbl == 0 then
         for _, e in ipairs(FindEntsByClass("info_player_start")) do
             if IsValid(e) and (not e.BeingRemoved) then
-                table.insert(tbl, e)
+                TableInsert(tbl, e)
             end
         end
     end
@@ -515,6 +524,9 @@ function GM:PlayerDisconnected(ply)
         ply:SetRole(ROLE_NONE)
         -- And clear their message queue
         ply:ResetMessageQueue()
+        -- Remove the spirit entity for this player, if there is one
+        SafeRemoveEntity(ply.SpiritEnt)
+        ply.SpiritEnt = nil
     end
 
     if GetRoundState() ~= ROUND_PREP then
@@ -529,6 +541,16 @@ function GM:PlayerDisconnected(ply)
         KARMA.Remember(ply)
     end
 end
+
+AddHook("FinishMove", "SpiritEntity_FinishMove", function(ply, mv)
+    if not IsValid(ply) or not ply:IsSpec() then return end
+    if not IsValid(ply.SpiritEnt) then return end
+
+    ply.SpiritEnt:SetPos(ply:GetPos())
+
+    local show = ply:GetObserverMode() == OBS_MODE_ROAMING
+    ply.SpiritEnt:SetProperty("SpiritVisible", show)
+end)
 
 ---- Death affairs
 
@@ -673,7 +695,7 @@ end
 local offsets = {}
 
 for i = 0, 360, 15 do
-    table.insert(offsets, Vector(math.sin(i), math.cos(i), 0))
+    TableInsert(offsets, Vector(math.sin(i), math.cos(i), 0))
 end
 
 function FindRespawnLocation(pos)
@@ -722,7 +744,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     local role_weapons = {}
     for _, w in ipairs(ply:GetWeapons()) do
         if w.Category == WEAPON_CATEGORY_ROLE and not w.AllowDrop then
-            table.insert(role_weapons, WEPS.GetClass(w))
+            TableInsert(role_weapons, WEPS.GetClass(w))
         end
     end
     ply.DeathRoleWeapons[ply:GetRole()] = role_weapons
@@ -843,6 +865,44 @@ function GM:PlayerDeath(victim, infl, attacker)
 
     net.Start("TTT_PlayerDied")
     net.Send(victim)
+
+    local create_spirit = false
+    local uses_spectator = {}
+    for role, uses in pairs(ROLE_USES_SPECTATOR) do
+        if not uses then continue end
+        -- If this role can spawn, create the spirit just in case
+        if util.CanRoleSpawn(role) then
+            create_spirit = true
+            break
+        -- Otherwise keep track of the role
+        else
+            TableInsert(uses_spectator, role)
+        end
+    end
+
+    -- If we don't have something spawnable that requires the spirit, we'll check
+    -- if any player is one of these roles and create the spirit at that point
+    if not create_spirit and #uses_spectator > 0 then
+        for _, p in PlayerIterator() do
+            if TableHasValue(uses_spectator, p:GetRole()) then
+                create_spirit = true
+                break
+            end
+        end
+    end
+
+    if create_spirit then
+        local spirit = CreateEntity("npc_kleiner")
+        spirit:SetPos(victim:GetPos())
+        spirit:SetRenderMode(RENDERMODE_NONE)
+        spirit:SetNotSolid(true)
+        spirit:DrawShadow(false)
+        spirit:AddFlags(FL_NOTARGET)
+        spirit:SetNWString("SpiritOwner", victim:SteamID64())
+        spirit:Spawn()
+        victim.SpiritEnt = spirit
+        CallHook("TTTSpectatorSpiritCreated", nil, victim, spirit)
+    end
 
     if HasteMode() and GetRoundState() == ROUND_ACTIVE then
         IncRoundEnd(GetConVar("ttt_haste_minutes_per_death"):GetFloat() * 60)
@@ -1410,7 +1470,7 @@ local function PlayerAutoComplete(cmd, args)
     for _, v in ipairs(string.Explode("\"", args, false)) do
         local trimmed = string.Trim(v)
         if #trimmed > 0 then
-            table.insert(arg_split, trimmed)
+            TableInsert(arg_split, trimmed)
         end
     end
 
@@ -1428,7 +1488,7 @@ local function PlayerAutoComplete(cmd, args)
     local options = {}
     for _, v in PlayerIterator() do
         if #name == 0 or string.find(string.lower(v:Nick()), name) then
-            table.insert(options, cmd .. other_args .. " \"" .. v:Nick() .. "\"")
+            TableInsert(options, cmd .. other_args .. " \"" .. v:Nick() .. "\"")
         end
     end
     return options

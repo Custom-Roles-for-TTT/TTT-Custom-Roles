@@ -741,6 +741,14 @@ function plymeta:ClearProperty(name, targets)
     SYNC:ClearPlayerProperty(self, name, targets)
 end
 
+function entmeta:SetProperty(name, value, targets)
+    SYNC:SetEntityProperty(self, name, value, targets)
+end
+
+function entmeta:ClearProperty(name, targets)
+    SYNC:ClearEntityProperty(self, name, targets)
+end
+
 local shopBlockedCache = {}
 function plymeta:IsShopPurchaseDisabled(...)
     if shopBlockedCache[self:SteamID64()] then

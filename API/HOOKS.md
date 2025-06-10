@@ -989,6 +989,14 @@ Called when a player should be shown a role-specific spectator HUD, allowing tha
 - *client* - The local player
 - *tgt* - The target playing being spectated
 
+### TTTSpectatorSpiritCreated(ply, spirit)
+Called when a player dies and a spirit entity is created to follow them.\
+*Realm*: Server\
+*Added in*: 2.3.2\
+*Parameters*:
+- *ply* - The player that died
+- *spirit* - The spirit entity that was created to follow the player
+
 ### TTTSpeedMultiplier(ply, mults, sprinting)
 Called when determining what speed the player should be moving at.\
 *NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
