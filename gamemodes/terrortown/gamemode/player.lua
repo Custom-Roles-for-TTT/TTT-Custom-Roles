@@ -104,8 +104,7 @@ function GM:PlayerSpawn(ply)
     net.Send(ply)
 
     -- Remove the spirit entity for this player, if there is one
-    SafeRemoveEntity(ply.SpiritEnt)
-    ply.SpiritEnt = nil
+    ply:RemoveSpectatorSpirit()
 
     if ply:IsSpec() then
         ply:StripAll()
@@ -525,8 +524,7 @@ function GM:PlayerDisconnected(ply)
         -- And clear their message queue
         ply:ResetMessageQueue()
         -- Remove the spirit entity for this player, if there is one
-        SafeRemoveEntity(ply.SpiritEnt)
-        ply.SpiritEnt = nil
+        ply:RemoveSpectatorSpirit()
     end
 
     if GetRoundState() ~= ROUND_PREP then
@@ -892,16 +890,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     if create_spirit then
-        local spirit = CreateEntity("npc_kleiner")
-        spirit:SetPos(victim:GetPos())
-        spirit:SetRenderMode(RENDERMODE_NONE)
-        spirit:SetNotSolid(true)
-        spirit:DrawShadow(false)
-        spirit:AddFlags(FL_NOTARGET)
-        spirit:SetNWString("SpiritOwner", victim:SteamID64())
-        spirit:Spawn()
-        victim.SpiritEnt = spirit
-        CallHook("TTTSpectatorSpiritCreated", nil, victim, spirit)
+        victim:CreateSpectatorSpirit()
     end
 
     if HasteMode() and GetRoundState() == ROUND_ACTIVE then

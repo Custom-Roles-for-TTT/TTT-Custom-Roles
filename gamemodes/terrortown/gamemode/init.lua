@@ -593,8 +593,7 @@ function PrepareRound()
         -- Clear the message queue so any messages from the previous round don't show update
         v:ResetMessageQueue()
         -- Remove the spirit entity for this player, if there is one
-        SafeRemoveEntity(v.SpiritEnt)
-        v.SpiritEnt = nil
+        v:RemoveSpectatorSpirit()
     end
 
     -- Check playercount

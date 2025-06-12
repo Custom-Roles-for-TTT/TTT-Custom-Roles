@@ -58,6 +58,11 @@ Removes queued messages with the given ID from the queue and clears any currentl
 *Parameters:*
 - *id* - The identifier of the message(s) you want to clear
 
+### plymeta:CreateSpectatorSpirit()
+Creates an invisible entity that follows this dead player. Useful for tracking their position as a spectator more accurately due to the low network rate for spectator players.\
+*Realm*: Server\
+*Added in*: 2.3.2 
+
 ### plymeta:DisableRoleAbility()
 Disables this player's role ability, if it isn't already.\
 *NOTE*: If the player's role ability was not already disabled, this will also call the `TTTOnRoleAbilityDisabled` hook.\
@@ -428,6 +433,11 @@ Removes the equipment item with given ID from this player.\
 *Added in:* 2.1.1\
 *Parameters:*
 - *item_id* - The ID of the item being removed from this player
+
+### plymeta:RemoveSpectatorSpirit()
+Removes the invisible following entity for this player.\
+*Realm*: Server\
+*Added in*: 2.3.2 
 
 ### plymeta:ResetMessageQueue()
 Clears the message queue for the player.\

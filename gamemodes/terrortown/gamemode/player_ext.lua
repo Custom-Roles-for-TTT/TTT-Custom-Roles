@@ -788,6 +788,31 @@ AddHook("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedC
 AddHook("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
 -- Don't clear on round end because we may need this for post-round summary stuff
 
+function plymeta:CreateSpectatorSpirit()
+    if IsValid(self.SpiritEnt) then return end
+    if self:Alive() or not self:IsSpec() then return end
+
+    local spirit = CreateEntity("npc_kleiner")
+    spirit:SetPos(self:GetPos())
+    spirit:SetRenderMode(RENDERMODE_NONE)
+    spirit:SetNotSolid(true)
+    spirit:DrawShadow(false)
+    spirit:AddFlags(FL_NOTARGET)
+    spirit:SetNWString("SpiritOwner", self:SteamID64())
+    spirit:Spawn()
+
+    self.SpiritEnt = spirit
+
+    CallHook("TTTSpectatorSpiritCreated", nil, self, spirit)
+end
+
+function plymeta:RemoveSpectatorSpirit()
+    if not IsValid(self.SpiritEnt) then return end
+
+    SafeRemoveEntity(self.SpiritEnt)
+    self.SpiritEnt = nil
+end
+
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
 AddHook("TTTPrepareRound", "PostLoadOverride", function()
     -- Compatibility with Dead Ringer (810154456)
