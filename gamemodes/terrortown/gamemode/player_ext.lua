@@ -13,6 +13,7 @@ if not entmeta then
 end
 
 local concommand = concommand
+local ents = ents
 local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
@@ -26,6 +27,7 @@ local weapons = weapons
 local CallHook = hook.Call
 local AddHook = hook.Add
 local RemoveHook = hook.Remove
+local CreateEntity = ents.Create
 
 function plymeta:SetRagdollSpec(s)
     if s then
