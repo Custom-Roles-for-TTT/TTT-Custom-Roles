@@ -865,7 +865,7 @@ if SERVER then
 
         -- If there is a barnacle holding this player, tell it to let go
         -- We do this so the player doesn't get stuck in a partial capture state
-        -- where they are taking damage from the barnacle even they have revived
+        -- where they are taking damage from the barnacle even though they have revived
         -- and moved away
         for _, b in ipairs(ents.FindByClass("npc_barnacle")) do
             if not IsValid(b) then continue end
