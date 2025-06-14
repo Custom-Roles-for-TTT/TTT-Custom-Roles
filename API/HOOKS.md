@@ -931,6 +931,16 @@ Called when a player buys a random item from the shop.\
 - *client* - The player who is buying a random item
 - *item* - The random item that was selected
 
+### TTTShouldHideFromHighlight(ply, client)
+Called when a player is about to be highlighted, allowing you to block that from happening.\
+*Realm*: Client\
+*Added in*: 2.3.3\
+*Parameters:*
+- *ply* - The target player being highlighted
+- *client* - The local player
+
+*Return*: `true` to stop this player from being highlighted 
+
 ### TTTShouldPlayerSmoke(ply, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
 Called when during a player's `Think`, allowing a player to emit smoke with different visual effects.\
 *Realm:* Client\

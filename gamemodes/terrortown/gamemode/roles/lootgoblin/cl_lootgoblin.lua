@@ -66,6 +66,16 @@ hook.Add("TTTSettingsRolesTabSections", "LootGoblin_TTTSettingsRolesTabSections"
     return true
 end)
 
+------------------
+-- HIGHLIGHTING --
+------------------
+
+hook.Add("TTTShouldHideFromHighlight", "LootGoblin_TTTShouldHideFromHighlight", function(ply, cli)
+    if ply:IsLootGoblin() and ply:IsRoleActive() then
+        return true
+    end
+end)
+
 -----------
 -- RADAR --
 -----------

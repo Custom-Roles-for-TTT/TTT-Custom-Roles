@@ -82,11 +82,41 @@ net.Receive("TTT_CannibalEaten", function(len)
     })
 end)
 
+------------------
+-- HIGHLIGHTING --
+------------------
+
+AddHook("TTTShouldHideFromHighlight", "Cannibal_TTTShouldHideFromHighlight", function(ply, cli)
+    if ply:IsCannibal() then
+        return true
+    end
+end)
+
+---------------
+-- TARGET ID --
+---------------
+
+AddHook("TTTTargetIDPlayerBlockIcon", "Cannibal_TTTTargetIDPlayerBlockIcon", function(ply, cli)
+    if ply:IsCannibal() then
+        return true
+    end
+end)
+
+AddHook("TTTTargetIDPlayerBlockInfo", "Cannibal_TTTTargetIDPlayerBlockInfo", function(ply, cli)
+    if ply:IsCannibal() then
+        return true
+    end
+end)
+
 ----------------
 -- SCOREBOARD --
 ----------------
 
-local client
+AddHook("TTTScoreboardPlayerRole", "Cannibal_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+    if ply:IsCannibal() then
+        return false, false
+    end
+end)
 
 AddHook("TTTScoreboardPlayerName", "Cannibal_TTTScoreboardPlayerName", function(ply, cli, text)
     if not IsPlayer(ply) then return end
@@ -105,6 +135,8 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CANNIBAL] = function(ply, target)
     ------ name, role
     return true, false
 end
+
+local client
 
 AddHook("TTTScoreGroup", "Cannibal_TTTScoreGroup", function(ply)
     if GetRoundState() < ROUND_ACTIVE then return end

@@ -1,5 +1,14 @@
 # Release Notes
 
+## 2.3.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed cannibal being revealed to anyone who can see jesters
+
+### Developer
+- Added `TTTShouldHideFromHighlight` hook to allow blocking a player from being highlighted
+
 ## 2.3.2 (Beta)
 **Released: June 14th, 2025**
 

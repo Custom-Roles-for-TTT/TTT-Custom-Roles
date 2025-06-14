@@ -572,7 +572,7 @@ end
 -- Player highlights
 
 local function ShouldHideFromHighlight(ply, client)
-    return ply:IsLootGoblin() and ply:IsRoleActive()
+    return CallHook("TTTShouldHideFromHighlight", nil, ply, client) == true
 end
 
 function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)
