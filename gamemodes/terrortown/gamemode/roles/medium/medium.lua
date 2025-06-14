@@ -2,13 +2,10 @@ AddCSLuaFile()
 
 local hook = hook
 local IsValid = IsValid
-local pairs = pairs
 local player = player
-local table = table
 local ents = ents
 
 local PlayerIterator = player.Iterator
-local CreateEntity = ents.Create
 local FindEntsByClass = ents.FindByClass
 
 -------------
@@ -29,40 +26,8 @@ local medium_hide_killer_role = GetConVar("ttt_medium_hide_killer_role")
 -- ROLE FEATURES --
 -------------------
 
-local spirits = {}
-hook.Add("TTTPrepareRound", "Medium_Spirits_TTTPrepareRound", function()
-    for _, ent in pairs(spirits) do
-        SafeRemoveEntity(ent)
-    end
-    table.Empty(spirits)
-end)
-
-hook.Add("PlayerSpawn", "Medium_Spirits_PlayerSpawn", function(ply)
-    local sid = ply:SteamID64()
-    SafeRemoveEntity(spirits[sid])
-    spirits[sid] = nil
-end)
-
-hook.Add("PlayerDisconnected", "Medium_Spirits_PlayerDisconnected", function(ply)
-    local sid = ply:SteamID64()
-    SafeRemoveEntity(spirits[sid])
-    spirits[sid] = nil
-end)
-
-hook.Add("FinishMove", "Medium_Spirits_FinishMove", function(ply, mv)
-    if not IsValid(ply) or not ply:IsSpec() then return end
-
-    local spirit = spirits[ply:SteamID64()]
-    if not IsValid(spirit) then return end
-
-    spirit:SetPos(ply:GetPos())
-
-    local show = ply:GetObserverMode() == OBS_MODE_ROAMING
-    spirit:SetNWBool("MediumSpirit", show)
-end)
-
-hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, attacker)
-    -- Create spirit for the medium
+local spiritColor = Vector(1, 1, 1)
+hook.Add("TTTSpectatorSpiritCreated", "Medium_TTTSpectatorSpiritCreated", function(ply, spirit)
     local mediumCount = 0
     for _, v in PlayerIterator() do
         if v:IsMedium() then
@@ -70,32 +35,19 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
         end
     end
 
-    -- If there is a medium or a medium can spawn we want to create the spirits
-    if mediumCount > 0 or util.CanRoleSpawn(ROLE_MEDIUM) then
-        local spirit = CreateEntity("npc_kleiner")
-        spirit:SetPos(victim:GetPos())
-        spirit:SetRenderMode(RENDERMODE_NONE)
-        spirit:SetNotSolid(true)
-        spirit:DrawShadow(false)
-        spirit:SetNWBool("MediumSpirit", false)
-        spirit:AddFlags(FL_NOTARGET)
-        local col = Vector(1, 1, 1)
-        if medium_spirit_color:GetBool() then
-            col = victim:GetNWVector("PlayerColor", Vector(1, 1, 1))
-        end
-        spirit:SetNWVector("SpiritColor", col)
-        spirit:SetNWString("SpiritOwner", victim:SteamID64())
-        spirit:Spawn()
-        spirits[victim:SteamID64()] = spirit
-
-        -- If there is a medium in the round, let the player who died know there is a medium as long as this player isn't the only medium and they are not respawning
-        if medium_dead_notify:GetBool() and mediumCount > 0 and (mediumCount > 1 or not victim:IsMedium()) and not victim:IsRespawning() then
-            victim:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
-        end
-
-        -- Reset the Medium's scans on this player if they were killed then revived and killed again
-        victim:SetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE)
+    local col = spiritColor
+    if medium_spirit_color:GetBool() then
+        col = ply:GetNWVector("PlayerColor", col)
     end
+    spirit:SetNWVector("SpiritColor", col)
+
+    -- If there is a medium in the round, let the player who died know there is a medium as long as this player isn't the only medium and they are not respawning
+    if medium_dead_notify:GetBool() and mediumCount > 0 and (mediumCount > 1 or not ply:IsMedium()) and not ply:IsRespawning() then
+        ply:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
+    end
+
+    -- Reset the Medium's scans on this player if they were killed then revived and killed again
+    ply:SetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE)
 end)
 
 -- Hide the role of the player that killed the victim if there is a medium in the round and that feature is enabled
@@ -138,7 +90,7 @@ local function FindSeanceTarget(medium)
     local closest_player
     local closest_dist = -1
     for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
-        if not ent:GetNWBool("MediumSpirit", false) then continue end
+        if not ent.SpiritVisible then continue end
 
         local sid64 = ent:GetNWString("SpiritOwner", "")
         local ply = player.GetBySteamID64(sid64)
@@ -173,7 +125,7 @@ end
 local function InRange(ply, target)
     if not IsValid(ply) or not IsValid(target) then return false end
 
-    if not target:GetNWBool("MediumSpirit", false) then return false end
+    if not target.SpiritVisible then return false end
 
     local plyPos = ply:GetPos()
     local targetPos = target:GetPos()
@@ -300,7 +252,7 @@ hook.Add("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", function(ply)
     elseif state == MEDIUM_SEANCE_LOCKED then
         local sid64 = ply:GetNWString("TTTMediumSeanceTarget", "")
         local targetPlayer = player.GetBySteamID64(sid64)
-        local targetSpirit = spirits[sid64]
+        local targetSpirit = targetPlayer.SpiritEnt
         if not targetPlayer:IsActive() then
             if not InRange(ply, targetSpirit) then
                 ply:SetNWInt("TTTMediumSeanceState", MEDIUM_SEANCE_SEARCHING)
@@ -318,7 +270,7 @@ hook.Add("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", function(ply)
     elseif state == MEDIUM_SEANCE_SEARCHING then
         local sid64 = ply:GetNWString("TTTMediumSeanceTarget", "")
         local targetPlayer = player.GetBySteamID64(sid64)
-        local targetSpirit = spirits[sid64]
+        local targetSpirit = targetPlayer.SpiritEnt
         if not targetPlayer:IsActive() then
             if (CurTime() - ply:GetNWInt("TTTMediumSeanceTargetLostTime", -1)) >= medium_seance_float_time:GetInt() then
                 TargetLost(ply)

@@ -1,5 +1,36 @@
 # Release Notes
 
+## 2.3.2 (Beta)
+**Released: June 14th, 2025**
+
+### Additions
+- Added ability for zombies on the traitor team to spawn with other traitor roles when `ttt_zombie_round_chance` is `0`
+- Added ability for the defuser to disable the bomb station, radio, and decoy
+- Added button to the C4 defuse UI to use the defuser if you have one
+- Added ability to allow a player to damage their own bomb station (disabled by default)
+  - This adds parity with a similar convar that exists for health stations
+
+### Changes
+- Changed C4 defuse logic to automatically succeed when you have the defuser, regardless of which wire is cut
+- Changed the bomb station to explode when it is destroyed (this can be disabled by changing the new `ttt_bombstation_explode_on_destroy` convar)
+
+### Fixes
+- Fixed role cheat sheet and Guessing Device sorting roles by the team that role ended the last round on
+- Fixed role cheat sheet revealing your role when `ttt_hide_role` was enabled
+- Fixed potential errors when vampire fangs and zombie claws are used on fake ragdolls
+- Fixed arsonist's delayed notifications not being cancelled if their role is changed after a target is doused but before they are notified
+
+### Developer
+- Fixed `TTTUpdateRoleState` being called every time role weapons were updated
+- Added Attacker and upcoming Inflictor property to Bullet structure in `weapon_tttbase` for compatibility
+- Added missing information to the developer documentation
+- Added `plymeta:Ragdoll`, `plymeta:UnRagdoll`, and `plymeta:IsRagdolled` to make it easier for roles that want to temporarily ragdoll their players
+- Added `TTTPlayerRagdolled` and `TTTPlayerUnRagdolled` hooks that are called after `plymeta:Ragdoll` and `plymeta:UnRagdoll`, respectively
+- Added `plymeta:CreateSpectatorSpirit` and `plymeta:RemoveSpectatorSpirit` for creating and removing a following entity for dead players
+- Added `ROLE.usesspectator` external role property and `ROLE_USES_SPECTATOR` global table to enable creating a following entity on dead players
+- Added `TTTSpectatorSpiritCreated` hook for when a following entity is created on a dead player
+- Added `SYNC:SetEntityProperty`, `SYNC:ClearEntityProperty`, `entmeta:SetProperty`, and `entmeta:ClearProperty` to allow doing an on-demand sync of property values for entities
+
 ## 2.3.1
 **Released: April 20th, 2025**
 

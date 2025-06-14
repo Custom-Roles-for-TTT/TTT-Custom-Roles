@@ -10,6 +10,8 @@ local MathSin = math.sin
 local hotkey = CreateClientConVar("ttt_cheatsheat_hotkey", "h", true, false, "Hotkey for opening the cheat sheet")
 local panel
 
+local hide_role = GetConVar("ttt_hide_role")
+
 local function ClosePanel()
     panel:Close()
     panel = nil
@@ -21,6 +23,10 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     if panel ~= nil then return end
 
     UpdateRoleColours()
+
+    if table.IsEmpty(ROLE_STARTING_TEAM) then
+        ply:PrintMessage(HUD_PRINTTALK, "Cheat sheet teams and colors may display incorrectly before the first round starts.")
+    end
 
     local function AddRolesFromTeam(tbl, team)
         local roles = {}
@@ -147,6 +153,11 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         local currentColumn = 0
         local currentRow = 0
 
+        local ply_role = ply:GetRole()
+        if hide_role:GetBool() then
+            ply_role = ROLE_NONE
+        end
+
         for _, role in pairs(roleTable) do
             local icon = vgui.Create("SimpleIcon", dteam)
 
@@ -170,7 +181,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
                 ClosePanel()
             end
 
-            if role == ply:GetRole() and ply:IsActive() then
+            if role == ply_role and ply:IsActive() then
                 local r1, g1, b1, _ = color:Unpack()
                 local r2, g2, b2, _ = dark_color:Unpack()
                 local rd = r2 - r1
@@ -187,7 +198,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
             title:SetPos(iconSize + m + (currentColumn * (iconSize + descriptionWidth + (m * 2))), currentRow * (iconSize + m))
             title:SetSize(descriptionWidth, titleHeight)
             title:SetContentAlignment(7)
-            if role == ply:GetRole() and ply:IsActive() then
+            if role == ply_role and ply:IsActive() then
                 title:SetText(ROLE_STRINGS[role] .. " (CURRENT ROLE)")
             else
                 title:SetText(ROLE_STRINGS[role])

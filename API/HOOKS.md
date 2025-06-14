@@ -494,6 +494,14 @@ Called when a player's health changes.\
 - *oldHealth* - The player's old health
 - *newHealth* - The player's new health
 
+### TTTPlayerRagdolled(ply, ragdoll)
+Called after a player is ragdolled.\
+*Realm*: Server\
+*Added in*: 2.3.2\
+*Parameters*:
+- *ply* - The player who was ragdolled
+- *ragdoll* - The ragdoll that was created
+
 ### TTTPlayerRoleChanged(ply, oldRole, newRole)
 Called after a player's role has changed.\
 *Realm:* Client and Server\
@@ -519,6 +527,14 @@ Called before a player is spawned for a round. Also used when reviving a player 
 *Parameters:*
 - *ply* - The player who is being spawned or respawned
 - *deadOnly* - Whether this call is specifically targeted at dead players
+
+### TTTPlayerUnRagdolled(ply, ragdoll)
+Called after a player is un-ragdolled.\
+*Realm*: Server\
+*Added in*: 2.3.2\
+*Parameters*:
+- *ply* - The player who was un-ragdolled
+- *ragdoll* - The ragdoll that was removed
 
 ### TTTPlayerUsedHealthStation(ply, station, healed, should_reduce)
 Called after a player uses a health station. Added `should_reduce` parameter which is not present in vanilla TTT.\
@@ -972,6 +988,14 @@ Called when a player should be shown a role-specific spectator HUD, allowing tha
 *Parameters:*
 - *client* - The local player
 - *tgt* - The target playing being spectated
+
+### TTTSpectatorSpiritCreated(ply, spirit)
+Called when a player dies and a spirit entity is created to follow them.\
+*Realm*: Server\
+*Added in*: 2.3.2\
+*Parameters*:
+- *ply* - The player that died
+- *spirit* - The spirit entity that was created to follow the player
 
 ### TTTSpeedMultiplier(ply, mults, sprinting)
 Called when determining what speed the player should be moving at.\

@@ -14,6 +14,7 @@ These documents aim to explain the things that we have added to Custom Roles for
 1. [Map Entities](API/MAP_ENTITIES.md)
 1. Methods
    1. [CORPSE](API/METHODS_CORPSE.md)
+   1. [Entity Object](API/METHODS_ENTITY_OBJECT.md)
    1. [HUD](API/METHODS_HUD.md)
    1. [Global](API/METHODS_GLOBAL.md)
    1. [Player Object](API/METHODS_PLAYER_OBJECT.md)
