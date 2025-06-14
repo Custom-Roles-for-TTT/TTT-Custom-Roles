@@ -857,9 +857,10 @@ if SERVER then
         ply:DrawViewModel(false)
         ply:DrawWorldModel(false)
 
+        -- Compatibility with something (which, honestly, I forget what it is...)
         if ragdoll.DisallowDeleting then
             ragdoll:DisallowDeleting(true, function(old, new)
-                if IsValid(ply) then ply.ragdoll = new end
+                if IsValid(ply) then ply.ragdoll_ent = new end
             end)
         end
 
