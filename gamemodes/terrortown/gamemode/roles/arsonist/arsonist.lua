@@ -270,7 +270,6 @@ hook.Add("TTTPlayerRoleChanged", "Arsonist_ClearNotifications_TTTPlayerRoleChang
     -- If we no longer have an arsonist, clear any notification delays that remain
     if oldRole == ROLE_ARSONIST and oldRole ~= newRole then
         for _, v in PlayerIterator() do
-            print(v)
             timer.Remove("TTTArsonistNotifyDelay_" .. v:SteamID64())
         end
     end
