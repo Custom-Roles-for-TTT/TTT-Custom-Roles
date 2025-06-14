@@ -813,7 +813,6 @@ if SERVER then
         ragdoll.player_health = self:Health()
         -- Don't let the red matter bomb destroy this ragdoll
         ragdoll.WYOZIBHDontEat = true
-        ragdoll:SetNWBool("RdmtRagdollRagdoll", true)
         local velocity = ply:GetVelocity()
         ragdoll:SetPos(ply:GetPos())
         ragdoll:SetModel(ply.ragdoll_info.model)
