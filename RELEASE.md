@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.3.2 (Beta)
-**Released:**
+**Released: June 14th, 2025**
 
 ### Additions
 - Added ability for zombies on the traitor team to spawn with other traitor roles when `ttt_zombie_round_chance` is `0`
