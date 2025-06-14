@@ -13,6 +13,7 @@ if not entmeta then
 end
 
 local concommand = concommand
+local ents = ents
 local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
@@ -24,6 +25,9 @@ local timer = timer
 local weapons = weapons
 
 local CallHook = hook.Call
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+local CreateEntity = ents.Create
 
 function plymeta:SetRagdollSpec(s)
     if s then
@@ -237,6 +241,17 @@ function plymeta:ResetRoundFlags()
     if not self:GetCleanRounds() then
         self:SetCleanRounds(1)
     end
+
+    -- ragdoll
+    SafeRemoveEntity(self.ragdoll_ent)
+    self:ClearProperty("in_ragdoll")
+    self.last_ragdoll = -1
+    self.ragdoll_info = nil
+    self.ragdoll_ent = nil
+    self:ClearProperty("ragdoll_ent_idx")
+
+    RemoveHook("Think", "UnragdollTimer_" .. self:SteamID64())
+    RemoveHook("PostEntityTakeDamage", "PlayerRagdollDamageTransfer_" .. self:SteamID64())
 
     self:Freeze(false)
 end
@@ -728,6 +743,14 @@ function plymeta:ClearProperty(name, targets)
     SYNC:ClearPlayerProperty(self, name, targets)
 end
 
+function entmeta:SetProperty(name, value, targets)
+    SYNC:SetEntityProperty(self, name, value, targets)
+end
+
+function entmeta:ClearProperty(name, targets)
+    SYNC:ClearEntityProperty(self, name, targets)
+end
+
 local shopBlockedCache = {}
 function plymeta:IsShopPurchaseDisabled(...)
     if shopBlockedCache[self:SteamID64()] then
@@ -763,12 +786,37 @@ end
 local function ClearShopBlockedCache()
     shopBlockedCache = {}
 end
-hook.Add("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedCache)
-hook.Add("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
+AddHook("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedCache)
+AddHook("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
 -- Don't clear on round end because we may need this for post-round summary stuff
 
+function plymeta:CreateSpectatorSpirit()
+    if IsValid(self.SpiritEnt) then return end
+    if self:Alive() or not self:IsSpec() then return end
+
+    local spirit = CreateEntity("npc_kleiner")
+    spirit:SetPos(self:GetPos())
+    spirit:SetRenderMode(RENDERMODE_NONE)
+    spirit:SetNotSolid(true)
+    spirit:DrawShadow(false)
+    spirit:AddFlags(FL_NOTARGET)
+    spirit:SetNWString("SpiritOwner", self:SteamID64())
+    spirit:Spawn()
+
+    self.SpiritEnt = spirit
+
+    CallHook("TTTSpectatorSpiritCreated", nil, self, spirit)
+end
+
+function plymeta:RemoveSpectatorSpirit()
+    if not IsValid(self.SpiritEnt) then return end
+
+    SafeRemoveEntity(self.SpiritEnt)
+    self.SpiritEnt = nil
+end
+
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
-hook.Add("TTTPrepareRound", "PostLoadOverride", function()
+AddHook("TTTPrepareRound", "PostLoadOverride", function()
     -- Compatibility with Dead Ringer (810154456)
     if plymeta.DRuncloak then
         local oldDRuncloak = plymeta.DRuncloak
@@ -789,5 +837,5 @@ hook.Add("TTTPrepareRound", "PostLoadOverride", function()
     end
 
     -- These overrides are set, no reason to check every round
-    hook.Remove("TTTPrepareRound", "PostLoadOverride")
+    RemoveHook("TTTPrepareRound", "PostLoadOverride")
 end)

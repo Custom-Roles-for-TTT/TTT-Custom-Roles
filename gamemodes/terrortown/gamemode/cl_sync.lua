@@ -15,3 +15,21 @@ net.Receive("TTT_ClearPlayerProperty", function()
     local propertyName = net.ReadString()
     ply[propertyName] = nil
 end)
+
+net.Receive("TTT_SetEntityProperty", function()
+    local ent = net.ReadEntity()
+    if not IsValid(ent) then return end
+
+    local propertyName = net.ReadString()
+    local propertyValue = net.ReadType()
+
+    ent[propertyName] = propertyValue
+end)
+
+net.Receive("TTT_ClearEntityProperty", function()
+    local ent = net.ReadEntity()
+    if not IsValid(ent) then return end
+
+    local propertyName = net.ReadString()
+    ent[propertyName] = nil
+end)

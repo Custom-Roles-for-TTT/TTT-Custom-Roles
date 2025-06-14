@@ -14,12 +14,14 @@ local function ShootBullet(weap, dmg, onPlayerShot)
     if not IsFirstTimePredicted() then return end
 
     local bullet = {}
-    bullet.Num    = 1
-    bullet.Src    = owner:GetShootPos()
-    bullet.Dir    = owner:GetAimVector()
-    bullet.Spread = Vector( 0.02, 0.02, 0 )
-    bullet.Force  = 0
-    bullet.Damage = dmg
+    bullet.Attacker  = owner
+    bullet.Inflictor = weap
+    bullet.Num       = 1
+    bullet.Src       = owner:GetShootPos()
+    bullet.Dir       = owner:GetAimVector()
+    bullet.Spread    = Vector( 0.02, 0.02, 0 )
+    bullet.Force     = 0
+    bullet.Damage    = dmg
     if SERVER then
         bullet.Callback = function(atk, tr, d)
             local ent = tr.Entity

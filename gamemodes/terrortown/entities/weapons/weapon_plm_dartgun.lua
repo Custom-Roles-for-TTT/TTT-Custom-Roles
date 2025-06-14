@@ -55,6 +55,8 @@ function SWEP:PrimaryAttack()
 
     local cone = self.Primary.Cone
     local bullet      = {}
+    bullet.Attacker   = owner
+    bullet.Inflictor  = self
     bullet.Num        = 1
     bullet.Src        = owner:GetShootPos()
     bullet.Dir        = owner:GetAimVector()

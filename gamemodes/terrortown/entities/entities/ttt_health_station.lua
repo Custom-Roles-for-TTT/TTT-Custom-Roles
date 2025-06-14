@@ -175,7 +175,7 @@ if SERVER then
         end
     end
 
-    local ttt_damage_own_healthstation = CreateConVar("ttt_damage_own_healthstation", "0") -- 0 as detective cannot damage their own health station
+    local ttt_damage_own_healthstation = CreateConVar("ttt_damage_own_healthstation", "0") -- 0 as player cannot damage their own health station
 
     -- traditional equipment destruction effects
     function ENT:OnTakeDamage(dmginfo)
@@ -192,9 +192,9 @@ if SERVER then
         end
 
         if self:Health() <= 0 then
-            self:Remove()
-
             util.EquipmentDestroyed(self:GetPos())
+
+            self:Remove()
 
             if IsValid(placer) then
                 LANG.Msg(placer, "hstation_broken")

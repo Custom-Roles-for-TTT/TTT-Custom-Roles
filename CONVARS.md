@@ -851,7 +851,7 @@ ttt_killer_credits_award_repeat                1       // Whether the credit awa
 // Zombie
 ttt_zombie_is_monster                          0       // Whether Zombies should be treated as members of the monster team (rather than the independent team)
 ttt_zombie_is_traitor                          0       // Whether Zombies should be treated as members of the traitors team (rather than the independent team)
-ttt_zombie_round_chance                        0.1     // The chance that a "Zombie round" will occur where all players who would have been traitors are made Zombies instead. Only usable when "ttt_zombie_is_traitor" is set to "1"
+ttt_zombie_round_chance                        0.1     // The chance that a "Zombie round" will occur where all players who would have been traitors are made Zombies instead. If set to 0, zombies will spawn alongside other traitor roles. Only usable when "ttt_zombie_is_traitor" is set to "1"
 ttt_zombie_vision_enabled                      0       // Whether Zombies have their special vision highlights enabled
 ttt_zombie_spit_enabled                        1       // Whether Zombies have their spit attack enabled
 ttt_zombie_spit_convert                        0       // Whether players killed by a spitting Zombie will be converted to be a Zombie themselves
@@ -1255,6 +1255,9 @@ ttt_corpse_search_team_text_jester             0       // Whether corpse searche
 ttt_color_mode_override                        "none"  // Forces all players to have a certain role color setting. none (let user decide), default, simple, protan, deutan, tritan
 ttt_spectators_see_roles                       0       // Whether spectators (not dead players) should be able to see the roles of all players
 ttt_weapon_transfer_ownership                  0       // Whether the ownership of a shop item should transfer each time its picked up
+ttt_damage_own_healthstation                   0       // Whether the player who places a health station can damage it
+ttt_damage_own_bombstation                     0       // Whether the player who places a bomb station can damage it
+ttt_bombstation_explode_on_destroy             1       // Whether a bomb station explodes when it is destroyed
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for their original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
@@ -1478,7 +1481,7 @@ The ConVars tab allows you to specify configuration values to set only when the 
 ## Role Blocks
 Role blocks let you prevent specific roles from spawning together in the same round. Previously this functionality was only available to a few select pairs of roles using ConVars such as `ttt_single_paramedic_hypnotist`, but these have been removed as role blocks can achieve everything these ConVars could, and more.
 
-Role blocks are configured using the UI, accessible by admins using the `ttt_roleblocks` command. Role blocks are saved in the *data/rolepacks.json* file so that they can then be backed up or copied from server-to-server just by transferring that file.
+Role blocks are configured using the UI, accessible by admins using the `ttt_roleblocks` command. Role blocks are saved in the *data/rolepacks.json* file so that they can then be backed up or copied from server-to-server just by transferring that file. Once a role block is created and saved, it automatically takes effect.
 
 ![Blank Role Blocks Window](docs/tutorials/img/RoleBlocks_Blank.png)
 

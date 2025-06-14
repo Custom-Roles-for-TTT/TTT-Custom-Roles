@@ -592,6 +592,8 @@ function PrepareRound()
         v.ignite_info = nil
         -- Clear the message queue so any messages from the previous round don't show update
         v:ResetMessageQueue()
+        -- Remove the spirit entity for this player, if there is one
+        v:RemoveSpectatorSpirit()
     end
 
     -- Check playercount
@@ -1362,7 +1364,9 @@ function SelectRoles()
     local monsterRoles = {}
     local detectives = {}
     local traitors = {}
+
     local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
+    local zombie_round_chance = GetConVar("ttt_zombie_round_chance"):GetFloat()
 
     -- Special rules for role spawning
     -- Role exclusion logic also needs to be copied into the drunk role selection logic in drunk.lua -> plymeta:SoberDrunk
@@ -1417,8 +1421,8 @@ function SelectRoles()
     for r = ROLE_DETECTIVE + 1, ROLE_MAX do
         if not delayedCheckRoles[r] and IsRoleAvailable(r) then
             for _ = 1, cvars.Number("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight", 1) do
-                -- Don't include zombies in the traitor list since they will spawn as a special "zombie round" sometimes if they are traitors
-                if TRAITOR_ROLES[r] and r ~= ROLE_ZOMBIE then
+                -- Don't include traitor zombies in the traitor role list if the special "zombie round" is enabled since their spawning is handled separately
+                if TRAITOR_ROLES[r] and (r ~= ROLE_ZOMBIE or zombie_round_chance == 0) then
                     table.insert(specialTraitorRoles, r)
                 elseif DETECTIVE_ROLES[r] then
                     table.insert(specialDetectiveRoles, r)
@@ -1545,7 +1549,8 @@ function SelectRoles()
         end
     end
 
-    if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and choice_count >= cvars.Number("ttt_zombie_min_players", 0) and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) and TRAITOR_ROLES[ROLE_ZOMBIE] then
+    -- If zombie rounds are enabled, check the RNG to see if this is one of those rounds
+    if TRAITOR_ROLES[ROLE_ZOMBIE] and zombie_round_chance > 0 and ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= zombie_round_chance and choice_count >= cvars.Number("ttt_zombie_min_players", 0) and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) then
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_ZOMBIE)

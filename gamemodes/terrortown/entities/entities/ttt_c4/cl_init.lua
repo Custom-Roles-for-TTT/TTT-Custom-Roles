@@ -287,6 +287,8 @@ surface.CreateFont("C4Timer", {
 local disarm_success, disarm_fail
 
 local function ShowC4Disarm(bomb)
+    local client = LocalPlayer()
+
     local dframe = vgui.Create("DFrame")
     local w, h = 420, 340
     dframe:SetSize(w, h)
@@ -348,6 +350,17 @@ local function ShowC4Disarm(bomb)
     dstatus:SetPos(m, m * 2 + 30)
     dstatus:CenterHorizontal()
 
+    local ddisarm = vgui.Create("DButton", dright)
+    ddisarm:SetPos(m, right_h - m * 3 - bh * 3)
+    ddisarm:SetSize(bw, bh)
+    ddisarm:CenterHorizontal()
+    ddisarm:SetText(T("c4_defuser_disarm"))
+    ddisarm:SetDisabled(not client:HasWeapon("weapon_ttt_defuser"))
+    ddisarm.DoClick = function()
+        if not LocalPlayer():Alive() then return end
+        RunConsoleCommand("ttt_c4_disarm", bomb:EntIndex(), "-1")
+    end
+
     local dgrab = vgui.Create("DButton", dright)
     dgrab:SetPos(m, right_h - m * 2 - bh * 2)
     dgrab:SetSize(bw, bh)
@@ -355,7 +368,7 @@ local function ShowC4Disarm(bomb)
     dgrab:SetText(T("c4_remove_pickup"))
     dgrab:SetDisabled(true)
     dgrab.DoClick = function()
-        if (not LocalPlayer():Alive()) then return end
+        if not LocalPlayer():Alive() then return end
         RunConsoleCommand("ttt_c4_pickup", bomb:EntIndex())
         dframe:Close()
     end
@@ -386,9 +399,9 @@ local function ShowC4Disarm(bomb)
     ddesc:SetFont("DermaDefaultBold")
     ddesc:SetSize(256, desc_h)
     ddesc:SetWrap(true)
-    if LocalPlayer():IsTraitorTeam() then
+    if client:IsTraitorTeam() then
         ddesc:SetText(PT("c4_disarm_t", { traitor = ROLE_STRINGS_EXT[ROLE_TRAITOR], innocent = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] }))
-    elseif LocalPlayer() == bomb:GetOwner() then
+    elseif client == bomb:GetOwner() then
         ddesc:SetText(T("c4_disarm_owned"))
     else
         ddesc:SetText(T("c4_disarm_other"))

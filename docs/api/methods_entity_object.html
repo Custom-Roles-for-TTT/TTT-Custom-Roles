@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Roles for TTT - API - Entity Object Methods</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>Entity Object Methods <span id="betaswitch"></span></h1>
+        <p>Methods available when called from an Entity object (within the defined realm)</p>
+    </div>
+    <div class="contentbody panel">
+        <h3><a id="entmetaclearpropertyname-targets" href="#entmetaclearpropertyname-targets">entmeta:ClearProperty(name, targets)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Clears the value of the property with the given <code>name</code> on this entity and then synchronizes that value to all <code>targets</code>. Wrapper around <a href="methods_sync.html#syncclearentitypropertyent-propertyname-targets">SYNC:ClearEntityProperty</a>.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>name</em> - The name of the property being cleared.</li>
+            <li><em>targets</em> - The targets that should have this value cleared on their clients. <em>(Defaults to sending to all players)</em></li>
+        </ul>
+
+        <h3><a id="entmetasetpropertyname-value-targets" href="#entmetasetpropertyname-value-targets">entmeta:SetProperty(name, value, targets)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Sets the value of the property with the given <code>name</code> on this entity to equal <code>value</code> and then synchronizes that value to all <code>targets</code>. Wrapper around <a href="methods_sync.html#syncsetentitypropertyent-propertyname-propertyvalue-targets">SYNC:SetEntityProperty</a>.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>name</em> - The name of the property being set.</li>
+            <li><em>value</em> - The value the property is being set to.</li>
+            <li><em>targets</em> - The targets that should have this value available on their clients. <em>(Defaults to sending to all players)</em></li>
+        </ul>
+    </div>
+    <div class="footerpadding panel"></div>
+</body>
+<html>

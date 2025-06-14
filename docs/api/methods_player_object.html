@@ -102,6 +102,13 @@
             <li><em>id</em> - The identifier of the message(s) you want to clear</li>
         </ul>
 
+        <h3><a id="plymetacreatespectatorspirit" href="#plymetacreatespectatorspirit">plymeta:CreateSpectatorSpirit()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Creates an invisible entity that follows this dead player. Useful for tracking their position as a spectator more accurately due to the low network rate for spectator players.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2
+        </p>
+
         <h3><a id="plymetadisableroleability" href="#plymetadisableroleability">plymeta:DisableRoleAbility()</a></h3>
         <p>
             Disables this player's role ability, if it isn't already.<br>
@@ -403,6 +410,13 @@
             <li><em>limit</em> - The maximum value limit before a player is determined to be "off screen" (Defaults to 1)</li>
         </ul>
 
+        <h3><a id="plymetaisisragdolled" href="#plymetaisisragdolled">plymeta:IsRagdolled()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Whether this player has been ragdolled by <code>plymeta:Ragdoll</code>.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.3.2
+        </p>
+
         <h3><a id="plymetaisrespawning" href="#plymetaisrespawning">plymeta:IsRespawning()</a></h3>
         <p>
             Whether this player is currently respawning.<br>
@@ -603,6 +617,22 @@
             <li><em>predicate</em> - Predicate function called with the player as the sole parameter before the message is sent. Return <code>true</code> to allow the message or <code>false</code> to prevent it (Optional) <em>(Added in 2.0.5)</em> <em>(Only available on the server realm)</em></li>
         </ul>
 
+        <h3><a id="plymetaragdolllen-transfer_damage-leave_role_weaps" href="#plymetaragdolllen-transfer_damage-leave_role_weaps">plymeta:Ragdoll(len, transfer_damage, leave_role_weaps)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Creates a ragdoll representation of this player and forces the player to spectate it.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>len</em> - The length of time to ragdoll this player for. If &lt;0 or not provided, ragdoll lasts indefinitely</li>
+            <li><em>transfer_damage</em> - Whether to transfer damage from the created ragdoll to the player it represents</li>
+            <li><em>leave_role_weaps</em> - Whether to leave role weapons on the player while they are ragdolled</li>
+        </ul>
+        <p>
+            <em>Returns:</em> The created ragdoll entity.
+        </p>
+
         <h3><a id="plymetaremoveequipmentitemitem_id" href="#plymetaremoveequipmentitemitem_id">plymeta:RemoveEquipmentItem(item_id)</a></h3>
         <p>
             Removes the equipment item with given ID from this player.<br>
@@ -613,6 +643,14 @@
         <ul>
             <li><em>item_id</em> - The ID of the item being removed from this player</li>
         </ul>
+
+        
+        <h3><a id="plymetaremovespectatorspirit" href="#plymetaremovespectatorspirit">plymeta:RemoveSpectatorSpirit()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Removes the invisible following entity for this player.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2
+        </p>
         
         <h3><a id="plymetaresetmessagequeue" href="#plymetaresetmessagequeue">plymeta:ResetMessageQueue()</a></h3>
         <p>
@@ -842,6 +880,13 @@
             Strips all weapons from the player whose <code>Category</code> property matches the global <code>WEAPON_CATEGORY_ROLE</code> value.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.5
+        </p>
+
+        <h3><a id="plymetaunragdoll" href="#plymetaunragdoll">plymeta:UnRagdoll()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Removes the ragdoll representation of this player created by <code>plymeta:Ragdoll</code> and restores the player state.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2
         </p>
     </div>
     <div class="footerpadding panel"></div>

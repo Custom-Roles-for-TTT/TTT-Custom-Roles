@@ -13,6 +13,8 @@ MEDIUM_SEANCE_LOCKED = 1
 MEDIUM_SEANCE_SEARCHING = 2
 MEDIUM_SEANCE_LOST = 3
 
+ROLE_USES_SPECTATOR[ROLE_MEDIUM] = true
+
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_MEDIUM] = {
