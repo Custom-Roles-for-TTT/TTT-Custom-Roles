@@ -19,6 +19,7 @@
 - Fixed role cheat sheet revealing your role when `ttt_hide_role` was enabled
 - Fixed potential errors when vampire fangs and zombie claws are used on fake ragdolls
 - Fixed arsonist's delayed notifications not being cancelled if their role is changed after a target is doused but before they are notified
+- Fixed cannibal being revealed to anyone who can see jesters
 
 ### Developer
 - Fixed `TTTUpdateRoleState` being called every time role weapons were updated
@@ -30,6 +31,7 @@
 - Added `ROLE.usesspectator` external role property and `ROLE_USES_SPECTATOR` global table to enable creating a following entity on dead players
 - Added `TTTSpectatorSpiritCreated` hook for when a following entity is created on a dead player
 - Added `SYNC:SetEntityProperty`, `SYNC:ClearEntityProperty`, `entmeta:SetProperty`, and `entmeta:ClearProperty` to allow doing an on-demand sync of property values for entities
+- Added `TTTShouldHideFromHighlight` hook to allow blocking a player from being highlighted
 
 ## 2.3.1
 **Released: April 20th, 2025**

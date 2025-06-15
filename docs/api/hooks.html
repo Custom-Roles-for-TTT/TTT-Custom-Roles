@@ -1403,6 +1403,21 @@
             <li><em>item</em> - The random item that was selected</li>
         </ul>
 
+        <h3><a id="tttshouldhidefromhighlightply-client" href="#tttshouldhidefromhighlightply-client">TTTShouldHideFromHighlight(ply, client)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a player is about to be highlighted, allowing you to block that from happening.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being highlighted</li>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to stop this player from being highlighted
+        </p>
+
         <h3><a id="tttshouldplayersmokeply-client-shouldsmoke-smokecolor-smokeparticle-smokeoffset" href="#tttshouldplayersmokeply-client-shouldsmoke-smokecolor-smokeparticle-smokeoffset">TTTShouldPlayerSmoke(ply, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)</a></h3>
         <p>
             Called when during a player's `Think`, allowing a player to emit smoke with different visual effects.<br>
