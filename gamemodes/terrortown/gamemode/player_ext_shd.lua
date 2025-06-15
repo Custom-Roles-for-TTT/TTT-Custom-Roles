@@ -728,12 +728,12 @@ if SERVER then
         if rag.damage_resist and rag.damage_resist > 0 then
             damage = damage - (damage * rag.damage_resist)
         end
-        rag.player_health = rag.player_health - damage
+        ply.ragdoll_info.health = ply.ragdoll_info.health - damage
 
         StartBleeding(rag, damage, 5)
 
         -- Kill the player if they run out of health
-        if rag.player_health <= 0 then
+        if ply.ragdoll_info.health <= 0 then
             ply:UnRagdoll()
 
             local att = dmginfo:GetAttacker()
@@ -756,7 +756,7 @@ if SERVER then
             ply:SetHealth(1)
             ply:TakeDamageInfo(dmg)
         else
-            ply:SetHealth(rag.player_health)
+            ply:SetHealth(ply.ragdoll_info.health)
         end
     end
 
@@ -796,7 +796,6 @@ if SERVER then
             weps = weps,
             activeWeapon = WEPS.GetClass(ply:GetActiveWeapon()),
             health = ply:Health(),
-            maxhealth = ply:GetMaxHealth(),
             model = ply:GetModel(),
             credits = ply:GetCredits(),
             equipment = equipment,
@@ -1073,9 +1072,8 @@ if SERVER then
         -- Restore potentially-changed values
         ply:SetWalkSpeed(walkSpeed)
         ply:SetJumpPower(jumpPower)
-        ply:SetMaxHealth(maxHealth)
 
-        ply:SetMaxHealth(ragdoll_info.maxhealth)
+        ply:SetMaxHealth(maxHealth)
         ply:SetHealth(math.max(0, ragdoll_info.health))
         if ply:Health() <= 0 then
             ply:Kill()
