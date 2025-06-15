@@ -934,7 +934,7 @@ Called when a player buys a random item from the shop.\
 ### TTTShouldHideFromHighlight(ply, client)
 Called when a player is about to be highlighted, allowing you to block that from happening.\
 *Realm*: Client\
-*Added in*: 2.3.3\
+*Added in*: 2.3.2\
 *Parameters:*
 - *ply* - The target player being highlighted
 - *client* - The local player
