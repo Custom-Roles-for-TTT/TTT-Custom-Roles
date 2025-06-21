@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.3.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed Plaguemaster's gun not being removed when it drops because they are killed
+
 ## 2.3.2 (Beta)
 **Released: June 14th, 2025**
 
