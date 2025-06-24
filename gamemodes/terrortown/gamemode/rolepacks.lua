@@ -180,7 +180,7 @@ net.Receive("TTT_RequestRolePackWeapons", function(len, ply)
     end
 
     local name = net.ReadString()
-    local role = net.ReadUInt(8)
+    local role = net.ReadUInt(util.RoleBits())
     local json = file.Read("rolepacks/" .. name .. "/weapons/" .. ROLE_STRINGS_RAW[role] .. ".json", "DATA")
     if not json then return end
     SendStreamToClient(ply, json, "TTT_ReadRolePackWeapons", role)
@@ -362,8 +362,9 @@ function ROLEPACKS.SendRolePackRoleList(ply)
     end
 
     net.WriteUInt(#roles, 8)
+    local roleBits = util.RoleBits()
     for _, role in pairs(roles) do
-        net.WriteUInt(role, 8)
+        net.WriteUInt(role, roleBits)
         ROLE_PACK_ROLES[role] = true
     end
     if ply then

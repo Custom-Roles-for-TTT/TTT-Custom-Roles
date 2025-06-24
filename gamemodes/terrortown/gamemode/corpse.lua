@@ -471,9 +471,9 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         net.WriteUInt(v, eq_bits)
     end
     if sendRole then
-        net.WriteInt(role, 8) -- ( 8 bits )
+        net.WriteInt(role, util.RoleBits()) -- ( 8 bits )
     else
-        net.WriteInt(-1, 8) -- ( 8 bits )
+        net.WriteInt(-1, util.RoleBits()) -- ( 8 bits )
     end
     net.WriteUInt(c4, util.BitsRequired(C4_WIRE_COUNT)) -- 0 -> 2^bits ( default c4: 3 bits )
     net.WriteUInt(dmg, 30) -- DMG_BUCKSHOT is the highest. ( 30 bits )

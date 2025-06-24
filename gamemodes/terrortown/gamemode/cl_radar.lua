@@ -361,8 +361,9 @@ local function ReceiveRadarScan()
     local num_targets = net.ReadUInt(8)
 
     RADAR.targets = {}
+    local roleBits = util.RoleBits()
     for _ = 1, num_targets do
-        local role = net.ReadInt(8)
+        local role = net.ReadInt(roleBits)
 
         local pos = Vector()
         pos.x = net.ReadInt(15)

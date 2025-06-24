@@ -557,6 +557,11 @@ function util.BitsRequired(num)
     return bits
 end
 
+function util.RoleBits()
+    -- Add a bit to the required for this since we're sending it as signed to support ROLE_NONE (-1)
+    return math.max(8, util.BitsRequired(ROLE_MAX) + 1)
+end
+
 ----------------------------
 -- ADAPTED FROM FLARE GUN --
 ----------------------------

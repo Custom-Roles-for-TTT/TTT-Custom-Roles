@@ -643,7 +643,7 @@ local function ReceiveRagdollSearch()
     search.eq_regen = table.HasValue(eq, EQUIP_REGEN)
 
     -- Traitor things
-    search.role = net.ReadInt(8)
+    search.role = net.ReadInt(util.RoleBits())
     search.team = player.GetRoleTeam(search.role)
     search.c4 = net.ReadUInt(util.BitsRequired(C4_WIRE_COUNT))
 

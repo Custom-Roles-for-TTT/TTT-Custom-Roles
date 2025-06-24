@@ -63,3 +63,8 @@ Gets the path to a role's icon of the given type.\
 - *typ* - The type of icon whose path is being found
 - *ext* - The file extension to use in the role icon path
 - *file_name_override* - The file name to use, appended to `{typ}_` when the path is built (Optional, defaults to the `{role_str}` value)
+
+### util.RoleBits()
+Returns how many bits are required to transmit a role ID over the network.\
+*Realm:* Client and Server\
+*Added in:* 2.3.3

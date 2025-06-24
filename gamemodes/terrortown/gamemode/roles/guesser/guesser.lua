@@ -31,7 +31,7 @@ local guesser_warn_all = GetConVar("ttt_guesser_warn_all")
 
 net.Receive("TTT_GuesserSelectRole", function(_, ply)
     if ply:IsActiveGuesser() then
-        local role = net.ReadInt(8)
+        local role = net.ReadInt(util.RoleBits())
         ply:SetNWInt("TTTGuesserSelection", role)
     end
 end)

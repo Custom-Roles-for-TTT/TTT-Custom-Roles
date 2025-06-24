@@ -57,7 +57,7 @@
         </p>
         <ul>
             <li><em>String</em> - The player's SteamID64 value</li>
-            <li><em>UInt (Versions &lt;= 1.1.1), Int (Versions &gt;= 1.1.2)</em> - The player's new role number</li>
+            <li><em>UInt(8) (Versions &lt;= 1.1.1), Int (Versions(8) &gt;= 1.1.2)</em> - The player's new role number. <em>(NOTE: Starting in 2.3.3, the number of bits this uses dynamically increases from 8 based on how many role are registered. Use <a href="./methods_util.html#utilrolebits">util.RoleBits</a> to determine the correct value to use.)</em></li>
         </ul>
 
         <h3><a id="ttt_updaterolenames" href="#ttt_updaterolenames">TTT_UpdateRoleNames</a></h3>

@@ -8,6 +8,8 @@
 
 ### Developer
 - Added `util.BitsRequired` helper method to calculate how many bits are required to transmit the given numerical value over the network
+- Added `util.RoleBits` helper method to calculate how many bits are required to transmit a role ID over the network
+- Changed role transmission over the network to use a dynamically increasing number of bits, starting at 8, to allow for more custom roles to be installed simultaneously
 
 ## 2.3.2 (Beta)
 **Released: June 14th, 2025**

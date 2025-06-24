@@ -25,7 +25,7 @@ end)
 net.Receive("TTT_ClientDeathNotify", function()
     -- Read the variables from the message
     local name = net.ReadString()
-    local role = net.ReadInt(8)
+    local role = net.ReadInt(util.RoleBits())
     local reason = net.ReadString()
 
     -- Format the reason for their death

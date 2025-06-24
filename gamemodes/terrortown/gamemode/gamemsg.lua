@@ -83,7 +83,7 @@ local function RoleChatMsg(sender, msg)
     if not targets then return end
 
     net.Start("TTT_RoleChat")
-        net.WriteInt(sender:GetRole(), 8)
+        net.WriteInt(sender:GetRole(), util.RoleBits())
         net.WritePlayer(sender)
         net.WriteString(msg)
     net.Send(targets)
