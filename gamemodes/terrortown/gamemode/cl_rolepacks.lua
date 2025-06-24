@@ -1671,8 +1671,10 @@ net.Receive("TTT_SendRolePackRoleList", function()
 
     local count = net.ReadUInt(8)
     if count <= 0 then return end
+
+    local roleBits = util.RoleBits()
     for _ = 1, count do
-        local role = net.ReadUInt(util.RoleBits())
+        local role = net.ReadUInt(roleBits)
         ROLE_PACK_ROLES[role] = true
     end
 end)
