@@ -334,16 +334,7 @@ local function CallDetective(ply, cmd, args)
 end
 concommand.Add("ttt_call_detective", CallDetective)
 
-local function bitsRequired(num)
-    local bits, max = 0, 1
-    while max <= num do
-        bits = bits + 1
-        max = max + max
-    end
-    return bits
-end
-
-local plyBits = bitsRequired(game.MaxPlayers()) -- first game.MaxPlayers() of entities are for players.
+local plyBits = util.BitsRequired(game.MaxPlayers()) -- first game.MaxPlayers() of entities are for players.
 
 function GM:TTTCanSearchCorpse(ply, corpse, is_covert, is_long_range, was_traitor)
     -- return true to allow corpse search, false to disallow.
@@ -474,7 +465,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     net.WriteUInt(owner, plyBits) -- 128 max players. ( 8 bits )
     net.WriteString(sendName and nick or "<Unknown>")
     -- Equipment table
-    local eq_bits = bitsRequired(EQUIP_MAX)
+    local eq_bits = util.BitsRequired(EQUIP_MAX)
     net.WriteUInt(#eq, eq_bits)
     for _, v in ipairs(eq) do
         net.WriteUInt(v, eq_bits)
@@ -484,7 +475,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     else
         net.WriteInt(-1, 8) -- ( 8 bits )
     end
-    net.WriteUInt(c4, bitsRequired(C4_WIRE_COUNT)) -- 0 -> 2^bits ( default c4: 3 bits )
+    net.WriteUInt(c4, util.BitsRequired(C4_WIRE_COUNT)) -- 0 -> 2^bits ( default c4: 3 bits )
     net.WriteUInt(dmg, 30) -- DMG_BUCKSHOT is the highest. ( 30 bits )
     net.WriteString(wep)
     net.WriteBool(hshot) -- ( 1 bit )

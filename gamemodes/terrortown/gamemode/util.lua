@@ -548,6 +548,15 @@ function util.FormattedList(tbl, formatting)
     return result
 end
 
+function util.BitsRequired(num)
+    local bits, max = 0, 1
+    while max <= num do
+        bits = bits + 1
+        max = max + max
+    end
+    return bits
+end
+
 ----------------------------
 -- ADAPTED FROM FLARE GUN --
 ----------------------------

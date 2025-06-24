@@ -1,6 +1,13 @@
 # Utility Methods
 Utility methods created to help with various common scenarios
 
+### util.BitsRequired(num)
+Returns how many bits are required to transmit the given number over the network.\
+*Realm:* Client and Server\
+*Added in:* 2.3.3\
+*Parameters:*
+- *num* - The number being transmitted
+
 ### util.BurnRagdoll(rag, burn_time, scorch)
 Burns a player ragdoll, shows scorch marks, and automatically destroys the ragdoll unless it's been extinguished by water.\
 *Realm:* Server\

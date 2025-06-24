@@ -6,6 +6,9 @@
 ### Fixes
 - Fixed Plaguemaster's gun not being removed when it drops because they are killed
 
+### Developer
+- Added `util.BitsRequired` helper method to calculate how many bits are required to transmit the given numerical value over the network
+
 ## 2.3.2 (Beta)
 **Released: June 14th, 2025**
 
