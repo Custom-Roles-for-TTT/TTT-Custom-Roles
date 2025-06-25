@@ -761,7 +761,7 @@ if SERVER then
     end
 
     function plymeta:Ragdoll(len, transfer_damage, leave_role_weaps)
-        if self.in_ragdoll then return end
+        if self:IsRagdolled() then return end
 
         -- Save a local reference to use in the hook below
         local ply = self
@@ -1006,6 +1006,8 @@ if SERVER then
     end
 
     function plymeta:UnRagdoll()
+        if not self:IsRagdolled() then return end
+
         -- Save a local reference to use in the timer below
         local ply = self
         ply:SetParent()
