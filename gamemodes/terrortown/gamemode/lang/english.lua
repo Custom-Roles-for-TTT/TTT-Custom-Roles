@@ -1264,3 +1264,7 @@ L.roleblocks_delete_group = "Delete group"
 
 -- Player name disguising
 L.player_name_disguised = "{name} (Disguised as {disguise})"
+
+-- Cheat Sheet
+L.cheatsheet_current_role = "{role} (CURRENT ROLE)"
+L.cheatsheet_rolepack = "Role Pack: {name}"

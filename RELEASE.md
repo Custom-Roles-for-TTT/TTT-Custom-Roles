@@ -3,6 +3,9 @@
 ## 2.3.3 (Beta)
 **Released:**
 
+### Additions
+- Added role pack name to the top of the cheat sheet if one is enabled
+
 ### Fixes
 - Fixed Plaguemaster's gun not being removed when it drops because they are killed
 
