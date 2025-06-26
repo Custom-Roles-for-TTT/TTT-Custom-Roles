@@ -10,6 +10,7 @@
 - Fixed Plaguemaster's gun not being removed when it drops because they are killed
 - Fixed error when trying to unragdoll a player that was not ragdolled
 - Fixed invisible `npc_kleiner` being spawned when a player died even if there wasn't a role that needed spectator positions (like the medium) in the round
+- Fixed player ragdolls created by `plymeta:Ragdoll` not being removed when a player died
 
 ### Developer
 - Added `util.BitsRequired` helper method to calculate how many bits are required to transmit the given numerical value over the network

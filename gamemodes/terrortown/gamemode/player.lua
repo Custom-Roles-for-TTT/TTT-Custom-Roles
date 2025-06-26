@@ -769,6 +769,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         end
     end
 
+    -- Clear the non-death ragdoll
+    ply:UnRagdoll()
+
     -- Create ragdoll and hook up marking effects
     local rag = CORPSE.Create(ply, attacker, dmginfo)
     ply.server_ragdoll = rag -- nil if clientside
