@@ -26,6 +26,7 @@ local MathAbs = math.abs
 local MathAcos = math.acos
 local PlayerIterator = player.Iterator
 local StartBleeding = util.StartBleeding
+local TableHasValue = table.HasValue
 local TraceEntity = util.TraceEntity
 
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
@@ -43,6 +44,36 @@ local oldSetRole = plymeta.SetRole
 function plymeta:SetRole(role)
     local oldRole = self:GetRole()
     oldSetRole(self, role)
+
+    if SERVER and oldRole ~= role and ROLE_USES_SPECTATOR[oldRole] ~= ROLE_USES_SPECTATOR[role] then
+        -- If we're changing FROM a role that used spectator spirits
+        if ROLE_USES_SPECTATOR[oldRole] then
+            local create_spirit = false
+            local uses_spectator = GetTeamRoles(ROLE_USES_SPECTATOR)
+            -- See if someone else still needs them
+            for _, p in PlayerIterator() do
+                if TableHasValue(uses_spectator, p:GetRole()) then
+                    create_spirit = true
+                    break
+                end
+            end
+
+            -- If not, delete them
+            if not create_spirit then
+                for _, p in PlayerIterator() do
+                    p:RemoveSpectatorSpirit()
+                end
+            end
+        -- If we're changing TO a role that uses spectator spirits
+        elseif ROLE_USES_SPECTATOR[role] then
+            -- Create them for each dead player
+            -- (The alive check is handled by the function already)
+            for _, p in PlayerIterator() do
+                p:CreateSpectatorSpirit()
+            end
+        end
+    end
+
     CallHook("TTTPlayerRoleChanged", nil, self, oldRole, role)
 
     -- Role checks only run on the server
