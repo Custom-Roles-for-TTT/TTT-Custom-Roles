@@ -17,7 +17,6 @@ local string = string
 local table = table
 local timer = timer
 local weapons = weapons
-local hook = hook
 
 local FileExists = file.Exists
 local FileRead = file.Read
