@@ -4,10 +4,12 @@ if not util then return end
 
 local cvars = cvars
 local file = file
+local hook = hook
 local input = input
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
+local net = net
 local pairs = pairs
 local player = player
 local scripted_ents = scripted_ents
@@ -27,6 +29,7 @@ local StringStartsWith = string.StartsWith
 local StringTrim = string.Trim
 local StringTrimLeft = string.TrimLeft
 local HookCall = hook.Call
+local HookAdd = hook.Add
 
 -- attempts to get the weapon used from a DamageInfo instance needed because the
 -- GetAmmoType value is useless and inflictor isn't properly set (yet)
@@ -557,10 +560,20 @@ function util.BitsRequired(num)
     return bits
 end
 
+local roleBits = nil
 function util.RoleBits()
-    -- Add a bit to the required for this since we're sending it as signed to support ROLE_NONE (-1)
-    return math.max(8, util.BitsRequired(ROLE_MAX) + 1)
+    if not roleBits then
+        -- Add a bit to the required for this since we're sending it as signed to support ROLE_NONE (-1)
+        roleBits = math.max(8, util.BitsRequired(ROLE_MAX) + 1)
+    end
+
+    return roleBits
 end
+
+-- Bust the cache each round just in case something screwed up
+HookAdd("TTTPrepareRound", "RoleBits_Cache_TTTPrepareRound", function()
+    roleBits = nil
+end)
 
 ----------------------------
 -- ADAPTED FROM FLARE GUN --
