@@ -1109,10 +1109,11 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     end
 
     local function ReadRolePackWeaponTables(name)
+        local roleBits = util.RoleBits()
         for r = ROLE_INNOCENT, ROLE_MAX do
             net.Start("TTT_RequestRolePackWeapons")
             net.WriteString(name)
-            net.WriteUInt(r, 8)
+            net.WriteUInt(r, roleBits)
             net.SendToServer()
         end
     end
@@ -1670,8 +1671,10 @@ net.Receive("TTT_SendRolePackRoleList", function()
 
     local count = net.ReadUInt(8)
     if count <= 0 then return end
+
+    local roleBits = util.RoleBits()
     for _ = 1, count do
-        local role = net.ReadUInt(8)
+        local role = net.ReadUInt(roleBits)
         ROLE_PACK_ROLES[role] = true
     end
 end)

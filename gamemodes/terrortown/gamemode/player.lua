@@ -769,6 +769,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         end
     end
 
+    -- Clear the non-death ragdoll
+    ply:UnRagdoll()
+
     -- Create ragdoll and hook up marking effects
     local rag = CORPSE.Create(ply, attacker, dmginfo)
     ply.server_ragdoll = rag -- nil if clientside
@@ -865,22 +868,10 @@ function GM:PlayerDeath(victim, infl, attacker)
     net.Send(victim)
 
     local create_spirit = false
-    local uses_spectator = {}
-    for role, uses in pairs(ROLE_USES_SPECTATOR) do
-        if not uses then continue end
-        -- If this role can spawn, create the spirit just in case
-        if util.CanRoleSpawn(role) then
-            create_spirit = true
-            break
-        -- Otherwise keep track of the role
-        else
-            TableInsert(uses_spectator, role)
-        end
-    end
+    local uses_spectator = GetTeamRoles(ROLE_USES_SPECTATOR)
 
-    -- If we don't have something spawnable that requires the spirit, we'll check
-    -- if any player is one of these roles and create the spirit at that point
-    if not create_spirit and #uses_spectator > 0 then
+    -- Check if any player is one of these roles and create the spirit at that point
+    if #uses_spectator > 0 then
         for _, p in PlayerIterator() do
             if TableHasValue(uses_spectator, p:GetRole()) then
                 create_spirit = true

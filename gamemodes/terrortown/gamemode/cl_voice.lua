@@ -52,7 +52,7 @@ net.Receive("TTT_LastWordsMsg", LastWordsRecv)
 
 local function RoleChatRecv()
     -- virtually always our role, but future equipment might allow listening in
-    local role = net.ReadInt(8)
+    local role = net.ReadInt(util.RoleBits())
     local sender = net.ReadPlayer()
     if not IsValid(sender) then return end
 

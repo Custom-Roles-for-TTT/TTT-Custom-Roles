@@ -120,7 +120,7 @@ end)
 
 net.Receive("TTT_UpdateBuyableWeapons", function()
     local id = net.ReadString()
-    local role = net.ReadInt(8)
+    local role = net.ReadInt(util.RoleBits())
     local includeSelected = net.ReadBool()
     local excludeSelected = net.ReadBool()
     local noRandomSelected = net.ReadBool()

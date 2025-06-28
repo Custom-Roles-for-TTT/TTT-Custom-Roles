@@ -102,12 +102,16 @@
             <li><em>id</em> - The identifier of the message(s) you want to clear</li>
         </ul>
 
-        <h3><a id="plymetacreatespectatorspirit" href="#plymetacreatespectatorspirit">plymeta:CreateSpectatorSpirit()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <h3><a id="plymetacreatespectatorspiritallow_spectators" href="#plymetacreatespectatorspiritallow_spectators">plymeta:CreateSpectatorSpirit(allow_spectators)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
         <p>
             Creates an invisible entity that follows this dead player. Useful for tracking their position as a spectator more accurately due to the low network rate for spectator players.<br>
             <em>Realm:</em> Server<br>
-            <em>Added in:</em> 2.3.2
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
         </p>
+        <ul>
+            <li><em>allow_spectators</em> - Whether to create spirits for players who are true spectators (players who did not participate in this round). (Defaults to <code>false</code>) <em>(Added in 2.3.3)</em></li>
+        </ul>
 
         <h3><a id="plymetadisableroleability" href="#plymetadisableroleability">plymeta:DisableRoleAbility()</a></h3>
         <p>

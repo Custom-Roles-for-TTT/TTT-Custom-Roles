@@ -303,7 +303,7 @@ function SWEP:SecondaryAttack()
             dlist.OnActivePanelChanged = function(_, _, new)
                 if new.enabled then
                     net.Start("TTT_GuesserSelectRole")
-                    net.WriteInt(new.role, 8)
+                    net.WriteInt(new.role, util.RoleBits())
                     net.SendToServer()
                     dframe:Close()
                 end

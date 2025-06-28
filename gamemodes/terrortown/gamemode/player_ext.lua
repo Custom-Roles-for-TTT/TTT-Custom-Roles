@@ -790,9 +790,10 @@ AddHook("TTTPrepareRound", "ShopBlockedCache_TTTPrepareRound", ClearShopBlockedC
 AddHook("TTTBeginRound", "ShopBlockedCache_TTTBeginRound", ClearShopBlockedCache)
 -- Don't clear on round end because we may need this for post-round summary stuff
 
-function plymeta:CreateSpectatorSpirit()
+function plymeta:CreateSpectatorSpirit(allow_spectators)
     if IsValid(self.SpiritEnt) then return end
     if self:Alive() or not self:IsSpec() then return end
+    if not allow_spectators and self:GetRole() == ROLE_NONE then return end
 
     local spirit = CreateEntity("npc_kleiner")
     spirit:SetPos(self:GetPos())

@@ -1,4 +1,5 @@
 local GetRawTranslation = LANG.GetRawTranslation
+local GetParamTranslation = LANG.GetParamTranslation
 local StringLower = string.lower
 local TableInsert = table.insert
 local TableSort = table.sort
@@ -67,8 +68,14 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     local titleHeight       = 14
     local descriptionWidth  = 256
     local labelHeight       = 16
+    local rolePackHeight    = 32
     local scrollbarWidth    = 15
     local m                 = 5
+
+    local packName = GetConVar("ttt_role_pack"):GetString()
+    if #packName == 0 then
+        rolePackHeight = 0
+    end
 
     local w, h, detectivesHeight, innocentsHeight, traitorsHeight, jestersHeight, independentsHeight, monstersHeight
 
@@ -99,7 +106,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         monstersHeight      = MathMax((iconSize + m) * monsterRows, 0)
 
         w = (iconSize + descriptionWidth + (m * 3)) * columns
-        h = detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight + (labelHeight * labels) + m
+        h = rolePackHeight + detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight + (labelHeight * labels) + m
 
         if needsScrollbar then -- If we know we need a scrollbar then add it
             w = w + scrollbarWidth
@@ -131,9 +138,23 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     dbackground:SetPos(0, 0)
     dbackground:SetBackgroundColor(COLOR_GRAY)
 
+    if rolePackHeight > 0 then
+        local drolepackframe = vgui.Create("DPanel", dframe)
+        drolepackframe:SetSize(w, rolePackHeight)
+        drolepackframe:SetPos(0, 0)
+        drolepackframe:SetBackgroundColor(COLOR_GRAY)
+
+        local drolepack = vgui.Create("DLabel", drolepackframe)
+        drolepack:SetFont("TabLarge")
+        drolepack:SetText(GetParamTranslation("cheatsheet_rolepack", {name = packName}))
+        drolepack:SetContentAlignment(1)
+        drolepack:SetWidth(w)
+        drolepack:SetPos(m + 3, 3)
+    end
+
     local dlist = vgui.Create("DScrollPanel", dbackground)
     dlist:SetSize(w, h)
-    dlist:SetPos(0, 0)
+    dlist:SetPos(0, rolePackHeight)
 
     local dcanvas = dlist:GetCanvas()
 
@@ -199,7 +220,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
             title:SetSize(descriptionWidth, titleHeight)
             title:SetContentAlignment(7)
             if role == ply_role and ply:IsActive() then
-                title:SetText(ROLE_STRINGS[role] .. " (CURRENT ROLE)")
+                title:SetText(GetParamTranslation("cheatsheet_current_role", {role = ROLE_STRINGS[role]}))
             else
                 title:SetText(ROLE_STRINGS[role])
             end

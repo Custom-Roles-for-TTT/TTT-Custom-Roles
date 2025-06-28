@@ -24,7 +24,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.3.2"
+CR_VERSION = "2.3.3"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -959,13 +959,6 @@ ROLE_CONVAR_TYPE_TEXT = 2
 ROLE_CONVAR_TYPE_DROPDOWN = 3
 
 function RegisterRole(tbl)
-    -- Unsigned 8-bit max
-    local maximum_role_count = (2^7) - 1
-    if ROLE_MAX == maximum_role_count then
-        error("Too many roles (more than " .. maximum_role_count .. ") have been defined.")
-        return
-    end
-
     if table.HasValue(ROLE_STRINGS_RAW, tbl.nameraw) then
         error("Attempting to define role with a duplicate raw name value: " .. tbl.nameraw)
         return

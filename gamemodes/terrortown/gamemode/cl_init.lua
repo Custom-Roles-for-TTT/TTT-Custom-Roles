@@ -230,7 +230,7 @@ local function ReceiveRole()
     -- Wait until now to update the teams so we know the globals have been synced
     UpdateRoleState()
 
-    local role = net.ReadInt(8)
+    local role = net.ReadInt(util.RoleBits())
 
     -- after a mapswitch, server might have sent us this before we are even done
     -- loading our code
@@ -257,7 +257,7 @@ end
 net.Receive("TTT_Role", ReceiveRole)
 
 local function ReceiveRoleList()
-    local role = net.ReadInt(8)
+    local role = net.ReadInt(util.RoleBits())
     local num_ids = net.ReadUInt(8)
 
     for _ = 1, num_ids do
