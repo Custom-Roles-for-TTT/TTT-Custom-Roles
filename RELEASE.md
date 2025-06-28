@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.3.3 (Beta)
-**Released:**
+**Released: June 28th, 2025**
 
 ### Additions
 - Added role pack name to the top of the cheat sheet if one is enabled
