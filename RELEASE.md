@@ -1,5 +1,27 @@
 # Release Notes
 
+## 2.3.3 (Beta)
+**Released: June 28th, 2025**
+
+### Additions
+- Added role pack name to the top of the cheat sheet if one is enabled
+
+### Changes
+- Changed invisible `npc_kleiner` spawning logic so they are automatically created when a role that needs them (like the medium) is used and removed when one is not
+  - This is an improvement over the previous logic which always created the invisible NPC even when it wasn't being used by anyone
+
+### Fixes
+- Fixed Plaguemaster's gun not being removed when it drops because they are killed
+- Fixed error when trying to unragdoll a player that was not ragdolled
+- Fixed player ragdolls created by `plymeta:Ragdoll` not being removed when a player died
+
+### Developer
+- Added `util.BitsRequired` helper method to calculate how many bits are required to transmit the given numerical value over the network
+- Added `util.RoleBits` helper method to calculate how many bits are required to transmit a role ID over the network
+- Changed role transmission over the network to use a dynamically increasing number of bits, starting at 8, to allow for more custom roles to be installed simultaneously
+- Changed `plymeta:CreateSpectatorSpirit` to not create spirits for players who were not in the round (ROLE_NONE) by default
+  - Added new `allow_spectator` parameter to change to previous behavior of creating spirits for everyone who is not alive
+
 ## 2.3.2 (Beta)
 **Released: June 14th, 2025**
 

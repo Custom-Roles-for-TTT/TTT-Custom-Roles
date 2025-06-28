@@ -58,10 +58,12 @@ Removes queued messages with the given ID from the queue and clears any currentl
 *Parameters:*
 - *id* - The identifier of the message(s) you want to clear
 
-### plymeta:CreateSpectatorSpirit()
+### plymeta:CreateSpectatorSpirit(allow_spectators)
 Creates an invisible entity that follows this dead player. Useful for tracking their position as a spectator more accurately due to the low network rate for spectator players.\
 *Realm*: Server\
-*Added in*: 2.3.2 
+*Added in*: 2.3.2 \
+*Parameters:*
+- *allow_spectators* - Whether to create spirits for players who are true spectators (players who did not participate in this round). (Defaults to `false`) *(Added in 2.3.3)*
 
 ### plymeta:DisableRoleAbility()
 Disables this player's role ability, if it isn't already.\
