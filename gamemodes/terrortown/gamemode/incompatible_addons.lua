@@ -52,6 +52,7 @@ local incompatible = {
     ["2553413816"] = { reason = "Overwrites core files required for Custom Roles for TTT" }, -- Emzatins TTT Weapon Balance Mod (Innocents Buffed)
     ["3022749770"] = { reason = "Overwrites core files required for Custom Roles for TTT" }, -- TTT Base Traitor Items Reworked by Emzatin
     ["693582992"] = { reason = "Overwrites core files required for Custom Roles for TTT", alt = "3025019026"}, -- TTT M9K Weapons Pack (With icon) by LittlEpande
+    ["3232212951"] = { reason = "Overwrites core files required for Custom Roles for TTT" }, -- Thaye's Enhanced TTT Weapon Base by tha.ye
 
     -- Damage Logs
     ["663328966"] = { reason = "Damage logs are not compatible with any non-default roles.", alt = "2306802961" }, -- TTT RDM Manager With Damage Logs by Schmatty
@@ -78,6 +79,10 @@ local incompatible = {
     ["2209392671"] = { reason = "Breaks the weapon switch HUD (and possibly others)."}, -- TTT SimpleHUD by Suphax
     ["1256344426"] = { reason = "Breaks body searching and role-specific features" }, -- TTT Bots 2.0 by immortal man
     ["2797209031"] = { convars = { { name = "ttt_roundend_slowmo", value = "1", reason = "Breaks roles which use the TTTWinCheckComplete hook for their win logic", alt = "686457995" } } }, -- Misc TTT tweaks and fixes by wget
+    ["2863673270"] = { reason = "Breaks 'ttt_smokegrenade_extinguish' functionality by overwriting core files" }, -- TTT Base Grenade Fix & Rework by Emzatin
+    ["3427539653"] = { reason = "Causes health station to not be buyable by some custom roles (e.g. Quack and Doctor) by default, but can be worked around using the Role Weapons system" }, -- Wget's TTT Weapon Rework Tweaked by SvveetMavis
+    ["3428114964"] = { reason = "Replaces client keybind handling which breaks traitor team voice chat for non-vanilla traitors, weapon switch bug fixes, sprinting/traitor voice button switching (which allows us to use \"shift\" for sprinting)" }, -- TTT Use Key Cooldown (door spam fix) by SvveetMavis
+    ["3442032398"] = { reason = "Breaks 'ttt_smokegrenade_extinguish' functionality by overwriting core files" }, -- TTT Base Grenade Fix & Rework Tweaked by SvveetMavis
 
     -- COD Zombie Perk Bottles
     ["842302491"] = { reason = "Incompatible with equipment item changes", alt = "2243578658"}, -- [TTT/2] Zombie Perk Bottles by Hagen
