@@ -1,5 +1,14 @@
 # Release Notes
 
+## 2.3.4 (Beta)
+**Released:**
+
+### Changes
+- Updated incompatible addons list to add a few more addons causing issues
+
+### Fixes
+- Fixed `ttt_phantom_killer_footstep_time` not being disable-able
+
 ## 2.3.3 (Beta)
 **Released: June 28th, 2025**
 
