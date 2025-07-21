@@ -4,6 +4,7 @@
 **Released:**
 
 ### Changes
+- Changed "Useful Keys" tutorial screen to hide the sprint button when sprint is disabled
 - Updated incompatible addons list to add a few more addons causing issues
 
 ### Fixes
