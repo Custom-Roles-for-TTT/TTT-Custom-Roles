@@ -107,14 +107,14 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- Add all the hooks in TTTPrepareRound so addons which remove them to disable sprinting (e.g. Randomats) are undone in each new round
 
     AddHook("Move", "TTTSprintMove", function(ply, _)
+        if GetRoundState() == ROUND_WAIT then return end
+        if CLIENT and ply ~= LocalPlayer() then return end
         if not sprintEnabled then
             if ply:GetSprinting() then
                 ply:SetSprinting(false)
             end
             return
         end
-        if GetRoundState() == ROUND_WAIT then return end
-        if CLIENT and ply ~= LocalPlayer() then return end
         if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
 
         local forwardKey = CallHook("TTTSprintKey", nil, ply) or IN_FORWARD
