@@ -347,8 +347,8 @@ ttt_informant_can_scan_jesters                 0       // Whether the Informant 
 ttt_informant_can_scan_glitches                0       // Whether the Informant should be able to scan Glitches
 ttt_informant_requires_scanner                 0       // Whether the Informant needs to hold the scanner item to be able to scan players
 ttt_informant_scanner_time                     8       // The amount of time (in seconds) the Informant's scanner takes to use
-ttt_informant_scanner_float_time               1       // The amount of time (in seconds) it takes for the Informant's scanner to lose it's target without line of sight
-ttt_informant_scanner_cooldown                 3       // The amount of time (in seconds) the Informant's tracker goes on cooldown for after losing it's target
+ttt_informant_scanner_float_time               1       // The amount of time (in seconds) it takes for the Informant's scanner to lose its target without line of sight
+ttt_informant_scanner_cooldown                 3       // The amount of time (in seconds) the Informant's tracker goes on cooldown for after losing its target
 ttt_informant_scanner_distance                 2500    // The maximum distance away the scanner target can be
 ttt_informant_scanner_innocent_mult            1       // The multiplier to use with the scanner time when the target is an innocent (e.g. 0.5 = 50% scanner time)
 ttt_informant_scanner_traitor_mult             1       // The multiplier to use with the scanner time when the target is a traitor (e.g. 0.5 = 50% scanner time)
@@ -530,8 +530,8 @@ ttt_medium_spirit_color                        1       // Whether players' spiri
 ttt_medium_spirit_vision                       1       // Whether players' spirits should be able to see each other
 ttt_medium_dead_notify                         1       // Whether player should be notified that there is a Medium when they die
 ttt_medium_seance_time                         8       // The amount of time (in seconds) it takes for the Medium to finish a seance
-ttt_medium_seance_float_time                   1       // The amount of time (in seconds) it takes for the Medium's seance to lose it's target after getting out of range
-ttt_medium_seance_cooldown                     3       // The amount of time (in seconds) the Medium's seance goes on cooldown for after losing it's target
+ttt_medium_seance_float_time                   1       // The amount of time (in seconds) it takes for the Medium's seance to lose its target after getting out of range
+ttt_medium_seance_cooldown                     3       // The amount of time (in seconds) the Medium's seance goes on cooldown for after losing its target
 ttt_medium_seance_distance                     150     // The maximum distance away the seance target can be
 ttt_medium_seance_max_info                     0       // The maximum amount of information the Medium can learn from performing a seance. 0 - None, 1 - Name, 2 - Team, 3 - Role
 ttt_medium_hide_killer_role                    0       // Whether to hide the role of a player's killer when there is a Medium in the round
@@ -626,8 +626,8 @@ ttt_beggar_notify_sound                        0       // Whether to play a chee
 ttt_beggar_notify_confetti                     0       // Whether to throw confetti when a Beggar is a killed
 ttt_beggar_scan                                0       // Whether the Beggar can scan players to see if they are traitors. 0 - Disabled. 1 - Can only scan traitors. 2 - Can scan any role that has a shop.
 ttt_beggar_scan_time                           15      // The amount of time (in seconds) the Beggar's scanner takes to use
-ttt_beggar_scan_float_time                     1       // The amount of time (in seconds) it takes for the Beggar's scanner to lose it's target without line of sight
-ttt_beggar_scan_cooldown                       3       // The amount of time (in seconds) the Beggar's tracker goes on cooldown for after losing it's target
+ttt_beggar_scan_float_time                     1       // The amount of time (in seconds) it takes for the Beggar's scanner to lose its target without line of sight
+ttt_beggar_scan_cooldown                       3       // The amount of time (in seconds) the Beggar's tracker goes on cooldown for after losing its target
 ttt_beggar_scan_distance                       2500    // The maximum distance away the scanner target can be
 ttt_beggar_can_see_jesters                     0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Beggar (Only applies if ttt_beggar_is_independent is enabled)
 ttt_beggar_update_scoreboard                   0       // Whether the Beggar shows dead players as missing in action (Only applies if ttt_beggar_is_independent is enabled)

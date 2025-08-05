@@ -71,7 +71,7 @@ local function GatherIntel(ply)
     if delay_intel == 0 then
         RevealRoles(ply, 0)
     else
-        ply:QueueMessage(MSG_PRINTBOTH, "Your intel is on it's way. You will learn which roles are in play in " .. delay_intel .. " seconds.")
+        ply:QueueMessage(MSG_PRINTBOTH, "Your intel is on its way. You will learn which roles are in play in " .. delay_intel .. " seconds.")
         timer.Create("Scout_RevealRoles_" .. sid64, delay_intel, 1, function()
             RevealRoles(ply, delay_intel)
         end)

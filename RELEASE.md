@@ -10,6 +10,7 @@
 ### Fixes
 - Fixed `ttt_phantom_killer_footstep_time` not being disable-able
 - Fixed crosshair changing size when pressing the sprint button even with sprint is disabled
+- Fixed a few typos
 
 ## 2.3.3 (Beta)
 **Released: June 28th, 2025**
