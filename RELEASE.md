@@ -10,6 +10,7 @@
 ### Fixes
 - Fixed `ttt_phantom_killer_footstep_time` not being disable-able
 - Fixed crosshair changing size when pressing the sprint button even with sprint is disabled
+- Fixed shop randomization not applying to passive items
 - Fixed a few typos
 
 ## 2.3.3 (Beta)

@@ -314,7 +314,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
             end
         end
 
-        -- Lastly, go through the excludes to make sure things are removed that should be, if it's not blocked
+        -- Then, go through the excludes to make sure things are removed that should be, if it's not blocked
         if not block_exclusion then
             local mergedExcludeWeapons = TableCopy(WEPS.ExcludeWeapons[role])
             for _, v in pairs(rolepack_weps.Excludes) do
@@ -340,6 +340,45 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
 
                         available[equip.id] = false
                     end
+                end
+            end
+        end
+
+        -- Lastly, apply randomization to passive items
+        -- Weapons have randomization applied in WEPS.HandleCanBuyOverrides
+        local random_cvar_enabled = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_enabled", false)
+        if not block_randomization and random_cvar_enabled then
+            local mergedNoRandomWeapons = TableCopy(WEPS.BypassRandomWeapons[role])
+            for _, v in pairs(rolepack_weps.NoRandoms) do
+                if not TableHasValue(mergedNoRandomWeapons, v) then
+                    TableInsert(mergedNoRandomWeapons, v)
+                end
+            end
+
+            local random_cvar_percent_global = GetConVar("ttt_shop_random_percent"):GetInt()
+            local random_cvar_percent = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_percent"):GetInt()
+            -- Use the global value if the per-role override isn't set
+            if random_cvar_percent == 0 then
+                random_cvar_percent = random_cvar_percent_global
+            end
+
+            -- Loop backwards so removing something from the table doesn't mess up our loop
+            for idx = #tbl[role], 1, -1 do
+                local equip = tbl[role][idx]
+                -- Make sure this is a valid equipment item
+                if equip == nil then continue end
+                if ItemIsWeapon(equip) then continue end
+
+                -- That can be randomized away
+                if not available[equip.id] then continue end
+                if equip.norandom then continue end
+                if TableHasValue(mergedNoRandomWeapons, equip.name) then continue end
+
+                -- Check if the random value is less than the randomization percent
+                if math.random() < (random_cvar_percent / 100.0) then
+                    -- If it is, remove it from the table
+                    table.remove(tbl[role], idx)
+                    available[equip.id] = false
                 end
             end
         end

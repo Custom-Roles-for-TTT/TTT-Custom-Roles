@@ -25,7 +25,8 @@ local function InitializeEquipment()
                 type = "item_active",
                 material = "vgui/ttt/icon_death_radar",
                 name = "item_death_radar",
-                desc = "item_death_radar_desc"
+                desc = "item_death_radar_desc",
+                norandom = true
             })
         end
     end
