@@ -11,8 +11,8 @@ local CallHook = hook.Call
 -- CONVARS --
 -------------
 
-local informant_scanner_float_time = CreateConVar("ttt_informant_scanner_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight", 0, 60)
-local informant_scanner_cooldown = CreateConVar("ttt_informant_scanner_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target", 0, 60)
+local informant_scanner_float_time = CreateConVar("ttt_informant_scanner_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the informant's scanner to lose its target without line of sight", 0, 60)
+local informant_scanner_cooldown = CreateConVar("ttt_informant_scanner_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the informant's tracker goes on cooldown for after losing its target", 0, 60)
 local informant_scanner_distance = CreateConVar("ttt_informant_scanner_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
 
 local informant_share_scans = GetConVar("ttt_informant_share_scans")

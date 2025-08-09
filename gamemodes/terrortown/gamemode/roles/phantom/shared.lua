@@ -22,7 +22,7 @@ CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50", FCVAR_REPLICATED, "The 
 CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75", FCVAR_REPLICATED, "The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable", 0, 100)
 CreateConVar("ttt_phantom_weaker_each_respawn", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_phantom_announce_death", "0", FCVAR_REPLICATED)
-CreateConVar("ttt_phantom_killer_footstep_time", "0", FCVAR_REPLICATED, "The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable", 1, 60)
+CreateConVar("ttt_phantom_killer_footstep_time", "0", FCVAR_REPLICATED, "The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable", 0, 60)
 CreateConVar("ttt_phantom_respawn", "1", FCVAR_REPLICATED, "Whether the phantom should respawn when their killer is killed", 0, 1)
 
 ROLE_CONVARS[ROLE_PHANTOM] = {}

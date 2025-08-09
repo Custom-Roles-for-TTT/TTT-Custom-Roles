@@ -399,6 +399,7 @@ local function TutorialUsefulKeys(pnl, lbl)
         htmlData = htmlData .. "</div>"
 
     -- Sixth line
+    if GetConVar("ttt_sprint_enabled"):GetBool() then
         htmlData = htmlData .. "<div style='height: 40px;'>"
             key = Key("+speed", "Shift")
             htmlData = htmlData .. "<span style='" .. fontStyle .. keyMappingStyles .. "'>" .. key .. "</span>"
@@ -407,6 +408,7 @@ local function TutorialUsefulKeys(pnl, lbl)
             htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>sprint</span>"
             htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> while you have the stamina.</span>"
         htmlData = htmlData .. "</div>"
+    end
 
     -- Close the page
     htmlData = htmlData .. "</div>"
