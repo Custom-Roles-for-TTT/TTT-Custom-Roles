@@ -12,8 +12,8 @@ local FindEntsByClass = ents.FindByClass
 -- CONVARS --
 -------------
 
-local medium_seance_float_time = CreateConVar("ttt_medium_seance_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the Medium's seance to lose it's target after getting out of range", 0, 60)
-local medium_seance_cooldown = CreateConVar("ttt_medium_seance_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the Medium's seance goes on cooldown for after losing it's target", 0, 60)
+local medium_seance_float_time = CreateConVar("ttt_medium_seance_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the Medium's seance to lose its target after getting out of range", 0, 60)
+local medium_seance_cooldown = CreateConVar("ttt_medium_seance_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the Medium's seance goes on cooldown for after losing its target", 0, 60)
 local medium_seance_distance = CreateConVar("ttt_medium_seance_distance", "250", FCVAR_NONE, "The maximum distance away the seance target can be", 50, 1000)
 
 local medium_spirit_color = GetConVar("ttt_medium_spirit_color")

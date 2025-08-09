@@ -231,7 +231,8 @@ local function InitializeEquipment()
               type = "item_passive",
               material = mat_dir .. "icon_speed",
               name = "item_speed",
-              desc = "item_speed_desc"
+              desc = "item_speed_desc",
+              norandom = true
             },
 
             -- passive regen
@@ -239,7 +240,8 @@ local function InitializeEquipment()
               type = "item_passive",
               material = mat_dir .. "icon_regen",
               name = "item_regen",
-              desc = "item_regen_desc"
+              desc = "item_regen_desc",
+              norandom = true
             }
         }
     end

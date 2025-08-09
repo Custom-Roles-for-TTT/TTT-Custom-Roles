@@ -337,7 +337,7 @@ function CRHUD:PaintStatusEffect(shouldPaint, color, material, identifier)
                 statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y = GenerateStatusEffectParticlePos(i)
             end
             statusEffects[identifier].particles[i].y = statusEffects[identifier].particles[i].y - 0.25 -- Particles slowly move up over time
-            local alpha = (1 - MathAbs(1 - statusEffects[identifier].particles[i].lifetime)) * statusEffects[identifier].alpha * 255 -- The alpha value of each particle fades in and out depending on remaining lifetime and reaches it's peak when lifetime is equal to 1. This is also scaled by the overall alpha value of the effect.
+            local alpha = (1 - MathAbs(1 - statusEffects[identifier].particles[i].lifetime)) * statusEffects[identifier].alpha * 255 -- The alpha value of each particle fades in and out depending on remaining lifetime and reaches its peak when lifetime is equal to 1. This is also scaled by the overall alpha value of the effect.
             surface.SetDrawColor(color.r, color.g, color.b, alpha)
             surface.SetMaterial(material)
             surface.DrawTexturedRect(statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y, 50, 50)
