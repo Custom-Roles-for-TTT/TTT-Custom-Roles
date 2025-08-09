@@ -6,6 +6,7 @@
 ### Changes
 - Changed "Useful Keys" tutorial screen to hide the sprint button when sprint is disabled
 - Updated incompatible addons list to add a few more addons causing issues
+- Removed warning that CS:S isn't installed when starting now that the content is shipped with GMod
 
 ### Fixes
 - Fixed `ttt_phantom_killer_footstep_time` not being disable-able
