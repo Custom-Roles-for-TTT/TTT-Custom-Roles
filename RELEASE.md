@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.3.4 (Beta)
-**Released:**
+**Released: August 9th, 2025**
 
 ### Changes
 - Changed "Useful Keys" tutorial screen to hide the sprint button when sprint is disabled
