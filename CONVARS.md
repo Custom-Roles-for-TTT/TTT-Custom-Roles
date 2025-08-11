@@ -300,7 +300,7 @@ ttt_vampire_show_target_icon                   0       // Whether Vampires have 
 ttt_vampire_damage_reduction                   0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Vampire
 ttt_vampire_fang_timer                         5       // The amount of time fangs must be used to fully drain a target's blood
 ttt_vampire_fang_dead_timer                    0       // The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as "ttt_vampire_fang_timer"
-ttt_vampire_fang_heal                          50      // The amount of health a vVampire will heal by when they fully drain a target's blood
+ttt_vampire_fang_heal                          50      // The amount of health a Vampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                      25      // The amount over the Vampire's normal maximum health (e.g. 100 + this ConVar) that the Vampire can heal to by drinking blood.
 ttt_vampire_fang_overheal_living               -1      // The amount of overheal (see "ttt_vampire_fang_overheal") to give if the Vampire's target is living. Set to -1 to use the same amount as "ttt_vampire_fang_overheal" instead
 ttt_vampire_fang_unfreeze_delay                2       // The number of seconds before players who were frozen in place by the fangs should be released if the Vampire stops using the fangs on them
