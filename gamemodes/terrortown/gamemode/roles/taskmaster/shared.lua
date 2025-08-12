@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 ROLE_STARTING_CREDITS[ROLE_TASKMASTER] = 1
-ROLE_HAS_PASSIVE_WIN[ROLE_TASKMASTER] = true
+ROLE_HAS_PASSIVE_WIN[ROLE_TASKMASTER] = false
 cvars.AddChangeCallback("ttt_taskmaster_is_passive", function(_, _, newValue)
     ROLE_HAS_PASSIVE_WIN[ROLE_TASKMASTER] = util.tobool(newValue)
 end)
@@ -16,7 +16,7 @@ CreateConVar("ttt_taskmaster_completion_bonus", "1", FCVAR_REPLICATED, "How many
 CreateConVar("ttt_taskmaster_blocks_team_wins", "1", FCVAR_REPLICATED, "Whether the Taskmaster should block teams (innocent, traitor, monster) from winning if they are alive and haven't finished their tasks.")
 CreateConVar("ttt_taskmaster_win_block_length", "60", FCVAR_REPLICATED, "How long (in seconds) the Taskmaster should block teams (innocent, traitor, monster) from winning for (if 'ttt_taskmaster_blocks_team_wins' is enabled). Set to 0 to block until time runs out", 0, 300)
 CreateConVar("ttt_taskmaster_wins_with_others", "1", FCVAR_REPLICATED, "If the Taskmaster should be allowed to win alongside other teams/players")
-CreateConVar("ttt_taskmaster_is_passive", "1", FCVAR_REPLICATED, "Whether the Taskmaster should count as a 'passive' role for roles that need to kill other players, allowing them to win while the Taskmaster is still alive (if 'ttt_taskmaster_wins_with_others' is enabled)")
+CreateConVar("ttt_taskmaster_is_passive", "0", FCVAR_REPLICATED, "Whether the Taskmaster should count as a 'passive' role for roles that need to kill other players, allowing them to win while the Taskmaster is still alive (if 'ttt_taskmaster_wins_with_others' is enabled)")
 
 ROLE_CONVARS[ROLE_TASKMASTER] = {}
 

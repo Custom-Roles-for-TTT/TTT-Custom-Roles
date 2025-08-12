@@ -37,6 +37,26 @@ function plymeta:AssignTask(isKillTask, index)
 
     for _, id in ipairs(taskIds) do
         if taskList[id].CanAssignTask(self) then
+            local blockedByFeature = false
+            for _, feature in pairs(taskList[id].RequiredFeatures) do
+                for _, killTaskId in pairs(self.taskmasterKillTasks) do
+                    if table.HasValue(TASKMASTER.killTasks[killTaskId].RequiredFeatures, feature) then
+                        blockedByFeature = true
+                        break
+                    end
+                end
+                if blockedByFeature then break end
+
+                for _, miscTaskId in pairs(self.taskmasterMiscTasks) do
+                    if table.HasValue(TASKMASTER.miscTasks[miscTaskId].RequiredFeatures, feature) then
+                        blockedByFeature = true
+                        break
+                    end
+                end
+                if blockedByFeature then break end
+            end
+            if blockedByFeature then continue end
+
             taskList[id].OnTaskAssigned(self)
 
             if index then
