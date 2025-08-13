@@ -280,11 +280,12 @@ end)
 -- PARTICLES --
 ---------------
 
-local function DrawRadius(ply, ent, r)
+local function DrawRadius(ply, ent, radius)
     if not ent.RadiusEmitter then ent.RadiusEmitter = ParticleEmitter(ent:GetPos()) end
     if not ent.RadiusNextPart then ent.RadiusNextPart = CurTime() end
     if not ent.RadiusDir then ent.RadiusDir = 0 end
     local pos = ent:GetPos() + Vector(0, 0, 30)
+    local radiusSqr = radius * radius
 
     -- Use DistToSqr as it's more efficient and this is called very frequently
     -- 9000000 = 3000^2
@@ -293,7 +294,7 @@ local function DrawRadius(ply, ent, r)
             ent.RadiusEmitter:SetPos(pos)
             ent.RadiusNextPart = CurTime() + 0.02
             ent.RadiusDir = ent.RadiusDir + MathPi / 12
-            local vec = Vector(MathSin(ent.RadiusDir) * r, MathCos(ent.RadiusDir) * r, 10)
+            local vec = Vector(MathSin(ent.RadiusDir) * radius, MathCos(ent.RadiusDir) * radius, 10)
             local particle = ent.RadiusEmitter:Add("particle/wisp.vmt", ent:GetPos() + vec)
             particle:SetVelocity(Vector(0, 0, 80))
             particle:SetDieTime(0.5)
@@ -304,7 +305,7 @@ local function DrawRadius(ply, ent, r)
             particle:SetRoll(MathRand(0, MathPi))
             particle:SetRollDelta(0)
             local color = ROLE_COLORS[ROLE_TRAITOR]
-            if ply:GetPos():DistToSqr(ent:GetPos()) <= (r * r) then
+            if ply:GetPos():DistToSqr(ent:GetPos()) <= radiusSqr then
                 color = ROLE_COLORS[ROLE_INNOCENT]
             end
             particle:SetColor(color.r, color.g, color.b)

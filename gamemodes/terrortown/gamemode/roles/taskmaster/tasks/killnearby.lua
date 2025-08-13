@@ -1,3 +1,15 @@
+local CurTime = CurTime
+local cvars = cvars
+local hook = hook
+local math = math
+local net = net
+local table = table
+
+local MathCos = math.cos
+local MathPi = math.pi
+local MathRand = math.Rand
+local MathSin = math.sin
+
 local TASK = {}
 
 TASK.id = "killnearby"
@@ -29,7 +41,13 @@ TASK.Description = function(ply)
             description = description .. "s"
         end
     elseif unit == 2 then
-        description = description .. math.ceil(range / UNITS_PER_FOOT) .. " feet"
+        local convertedRange = math.ceil(range * FEET_PER_METER)
+        description = description .. convertedRange
+        if convertedRange == 1 then
+            description = description .. " foot"
+        else
+            description = description .. " feet"
+        end
     else
         local convertedRange = math.ceil(range * UNITS_PER_METER)
         description = description .. convertedRange .. " unit"
@@ -62,7 +80,7 @@ if SERVER then
             local range = taskmaster_killnearby_range:GetInt() * UNITS_PER_METER
             local rangeSqr = range * range
 
-            if (distanceSqr <= rangeSqr) then
+            if distanceSqr <= rangeSqr then
                 ply:CompleteTask(TASK.id)
             end
         end)
@@ -77,24 +95,19 @@ if SERVER then
         net.Send(ply)
     end
 
-    TASK.OnTaskComplete = function(ply)
-        hook.Remove("PlayerDeath", "Taskmaster_KillNearby_PlayerDeath_" .. ply:SteamID64())
-        net.Start("TTT_Taskmaster_KillNearby_Cleanup")
-        net.Send(ply)
-    end
+    TASK.OnTaskComplete = TASK.OnTaskRemoved
 end
 
 if CLIENT then
     net.Receive("TTT_Taskmaster_KillNearby_Assigned", function()
         local sid64 = LocalPlayer():SteamID64()
+        local range = taskmaster_killnearby_range:GetInt() * UNITS_PER_METER
+        local rangeSqr = range * range
 
         hook.Add("TTTTargetIDPlayerText", "Taskmaster_KillNearby_TTTTargetIDPlayerText_" .. sid64, function(ent, cli, text, col, secondaryText)
             if not cli:IsActiveTaskmaster() or not IsPlayer(ent) then return end
 
             local distanceSqr = ent:GetPos():DistToSqr(cli:GetPos())
-            local range = taskmaster_killnearby_range:GetInt() * UNITS_PER_METER
-            local rangeSqr = range * range
-
             if distanceSqr <= rangeSqr then
                 return "IN RANGE", ROLE_COLORS_RADAR[ROLE_INNOCENT]
             else
@@ -102,9 +115,9 @@ if CLIENT then
             end
         end)
 
-        hook.Add("TTTPlayerAliveClientThink", "Taskmaster_KillNearby_TTTPlayerAliveClientThink_" .. sid64, function(client, ply)
+        hook.Add("TTTPlayerAliveClientThink", "Taskmaster_KillNearby_TTTPlayerAliveClientThink_" .. sid64, function(cli, ply)
             local shouldDraw = false
-            if ply == client and client:IsActiveTaskmaster() then
+            if ply == cli and cli:IsActiveTaskmaster() then
                 local pos = ply:GetPos()
                 if not ply.TaskmasterRadiusEmitter then ply.TaskmasterRadiusEmitter = ParticleEmitter(pos) end
                 if not ply.TaskmasterRadiusNextPart then ply.TaskmasterRadiusNextPart = CurTime() end
@@ -113,9 +126,8 @@ if CLIENT then
                     for _ = 1, 24 do
                         ply.TaskmasterRadiusEmitter:SetPos(pos)
                         ply.TaskmasterRadiusNextPart = CurTime() + 0.02
-                        ply.TaskmasterRadiusDir = ply.TaskmasterRadiusDir + math.pi / 12
-                        local radius = taskmaster_killnearby_range:GetInt() * UNITS_PER_METER
-                        local vec = Vector(math.sin(ply.TaskmasterRadiusDir) * radius, math.cos(ply.TaskmasterRadiusDir) * radius, 10)
+                        ply.TaskmasterRadiusDir = ply.TaskmasterRadiusDir + MathPi / 12
+                        local vec = Vector(MathSin(ply.TaskmasterRadiusDir) * range, MathCos(ply.TaskmasterRadiusDir) * range, 10)
                         local particle = ply.TaskmasterRadiusEmitter:Add("particle/wisp.vmt", pos + vec)
                         particle:SetVelocity(Vector(0, 0, 40))
                         particle:SetDieTime(0.25)
@@ -123,7 +135,7 @@ if CLIENT then
                         particle:SetEndAlpha(0)
                         particle:SetStartSize(3)
                         particle:SetEndSize(2)
-                        particle:SetRoll(math.Rand(0, math.pi))
+                        particle:SetRoll(MathRand(0, MathPi))
                         particle:SetRollDelta(0)
                         particle:SetColor(255, 255, 255)
                     end
@@ -146,7 +158,7 @@ if CLIENT then
         local sid64 = client:SteamID64()
         hook.Remove("TTTTargetIDPlayerText", "Taskmaster_KillNearby_TTTTargetIDPlayerText_"  .. sid64)
         hook.Remove("TTTPlayerAliveClientThink", "Taskmaster_KillNearby_TTTPlayerAliveClientThink_" .. sid64)
-    
+
         if client.TaskmasterRadiusEmitter then
             client.TaskmasterRadiusEmitter:Finish()
             client.TaskmasterRadiusEmitter = nil

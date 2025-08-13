@@ -40,7 +40,6 @@ hook.Add("TTTSettingsRolesTabSections", "Taskmaster_TTTSettingsRolesTabSections"
     return true
 end)
 
-
 ----------------
 -- WIN CHECKS --
 ----------------
@@ -217,8 +216,8 @@ hook.Add("HUDPaint", "Taskmaster_HUDPaint", function()
     maxHeight = height - yOffset:GetInt()
 end)
 
-hook.Add("TTTHUDInfoPaint", "Taskmaster_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
-    if client:IsActiveTaskmaster() then
+hook.Add("TTTHUDInfoPaint", "Taskmaster_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
+    if cli:IsActiveTaskmaster() then
         local blockEnd = GetGlobalFloat("taskmaster_block_end", 0)
         if blockEnd > 0 then
             surface.SetFont("TabLarge")
