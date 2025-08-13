@@ -40,32 +40,37 @@ function plymeta:AssignTask(isKillTask, index)
             local blockedByFeature = false
             for _, feature in pairs(taskList[id].RequiredFeatures) do
                 for _, killTaskId in pairs(self.taskmasterKillTasks) do
-                    if table.HasValue(TASKMASTER.killTasks[killTaskId].RequiredFeatures, feature) then
-                        blockedByFeature = true
-                        break
+                    if not table.HasValue(self.taskmasterCompletedTasks, killTaskId) and not table.HasValue(self.taskmasterRerolledTasks, killTaskId) then
+                        if table.HasValue(TASKMASTER.killTasks[killTaskId].RequiredFeatures, feature) then
+                            blockedByFeature = true
+                            break
+                        end
                     end
                 end
                 if blockedByFeature then break end
 
                 for _, miscTaskId in pairs(self.taskmasterMiscTasks) do
-                    if table.HasValue(TASKMASTER.miscTasks[miscTaskId].RequiredFeatures, feature) then
-                        blockedByFeature = true
-                        break
+                    if not table.HasValue(self.taskmasterCompletedTasks, miscTaskId) and not table.HasValue(self.taskmasterRerolledTasks, miscTaskId) then
+                        if table.HasValue(TASKMASTER.miscTasks[miscTaskId].RequiredFeatures, feature) then
+                            blockedByFeature = true
+                            break
+                        end
                     end
                 end
                 if blockedByFeature then break end
             end
-            if blockedByFeature then continue end
 
-            taskList[id].OnTaskAssigned(self)
+            if not blockedByFeature then
+                taskList[id].OnTaskAssigned(self)
 
-            if index then
-                table.insert(self[activeTasksName], index, id)
-            else
-                table.insert(self[activeTasksName], id)
+                if index then
+                    table.insert(self[activeTasksName], index, id)
+                else
+                    table.insert(self[activeTasksName], id)
+                end
+                self:SetProperty(activeTasksName, self[activeTasksName], self)
+                return taskList[id]
             end
-            self:SetProperty(activeTasksName, self[activeTasksName], self)
-            return taskList[id]
         end
     end
     -- TODO: Handle edge case where there are no valid tasks. Maybe we need to change their role? Or just have a free fallback task?
@@ -73,8 +78,6 @@ function plymeta:AssignTask(isKillTask, index)
 end
 
 function plymeta:RemoveTask(taskId)
-    if not self:IsTaskmaster() then return end
-
     local isKillTask = TASKMASTER.killTasks[taskId] and true or false
     local taskList = isKillTask and TASKMASTER.killTasks or TASKMASTER.miscTasks
     local activeTasksName = isKillTask and "taskmasterKillTasks" or "taskmasterMiscTasks"
@@ -148,6 +151,8 @@ function plymeta:CompleteTask(taskId)
                 num = bonus
             })
         end
+
+        -- TODO: Play a sound and/or send a message when a task is completed
 
         return true
     end
@@ -244,6 +249,18 @@ end)
 -------------
 
 local function CleanupTasks(ply)
+    if ply.taskmasterKillTasks then
+        for _, id in pairs(ply.taskmasterKillTasks) do
+            ply:RemoveTask(id)
+        end
+    end
+
+    if ply.taskmasterMiscTasks then
+        for _, id in pairs(ply.taskmasterMiscTasks) do
+            ply:RemoveTask(id)
+        end
+    end
+
     ply:ClearProperty("taskmasterKillTasks", ply)
     ply:ClearProperty("taskmasterMiscTasks", ply)
     ply:ClearProperty("taskmasterCompletedTasks", ply)
