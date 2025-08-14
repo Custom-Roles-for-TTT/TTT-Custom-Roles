@@ -255,8 +255,6 @@ local dtasksHeight = 0
 local scrollBarWidth = 15
 local creditsIconSize = 32
 
-local CreateTaskList
-
 local function CreateTaskReroll(task, dscrollpanel)
     if table.HasValue(client.taskmasterCompletedTasks, task.id) then return false end
 
@@ -323,7 +321,7 @@ local function CreateTaskReroll(task, dscrollpanel)
     return dpanel, dline
 end
 
-function CreateTaskList(dscrollpanel)
+local function CreateTaskList(dscrollpanel)
     if not dscrollpanel:IsValid() then return end
 
     for _, dtask in ipairs(dtasks) do
