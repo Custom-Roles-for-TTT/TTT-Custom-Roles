@@ -20,11 +20,11 @@ end
 
 TASK.Description = function(ply)
     local times = taskmaster_jump_times:GetInt()
-    local name = "Jump in the air " .. times .. " time"
+    local desc = "Jump in the air " .. times .. " time"
     if times ~= 1 then
-        name = name .. "s"
+        desc = desc .. "s"
     end
-    return name
+    return desc
 end
 
 if SERVER then

@@ -18,6 +18,7 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     -- Tasks
     LANG.AddToLanguage("english", "taskmaster_stayneartarget", "STAY NEAR TARGET - {time}")
     LANG.AddToLanguage("english", "taskmaster_crouchnearbody", "CROUCH NEAR BODY - {time}")
+    LANG.AddToLanguage("english", "taskmaster_crouch", "STAY CROUCHING - {time}")
 
     -- Win conditions
     LANG.AddToLanguage("english", "win_taskmaster", "The {role} finished off their list!")
