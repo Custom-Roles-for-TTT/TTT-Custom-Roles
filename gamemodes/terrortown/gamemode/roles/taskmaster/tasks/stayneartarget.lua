@@ -17,8 +17,8 @@ local TASK = {}
 
 TASK.id = "stayneartarget"
 
-local taskmaster_stayneartarget_range = CreateConVar("ttt_taskmaster_stayneartarget_range", "5", FCVAR_REPLICATED, "The distance (in meters) away a player must stay within to count for the 'Stay Near Target' task", 0, 100)
-local taskmaster_stayneartarget_time = CreateConVar("ttt_taskmaster_stayneartarget_time", "30", FCVAR_REPLICATED, "The time (in seconds) a player must stay near their target to count for the 'Stay Near Target' task", 0, 240)
+local taskmaster_stayneartarget_range = CreateConVar("ttt_taskmaster_stayneartarget_range", "5", FCVAR_REPLICATED, "The distance (in meters) away a player must stay within to count for the 'Stay Near Target' task", 1, 100)
+local taskmaster_stayneartarget_time = CreateConVar("ttt_taskmaster_stayneartarget_time", "30", FCVAR_REPLICATED, "The time (in seconds) a player must stay near their target to count for the 'Stay Near Target' task", 1, 240)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_stayneartarget_range",
     type = ROLE_CONVAR_TYPE_NUM,
@@ -118,14 +118,14 @@ if SERVER then
             if ply:GetPos():DistToSqr(target:GetPos()) <= rangeSqr then
                 -- Just starting
                 if not ply.StayNearTargetStart then
-                    ply:SetProperty("StayNearTargetStart", CurTime())
+                    ply:SetProperty("StayNearTargetStart", CurTime(), ply)
                 -- Long enough
                 elseif CurTime() > ply.StayNearTargetStart + time then
                     ply:CompleteTask(TASK.id)
                 end
             -- Not within range
             else
-                ply:ClearProperty("StayNearTargetStart")
+                ply:ClearProperty("StayNearTargetStart", ply)
             end
         end)
 
@@ -136,8 +136,8 @@ if SERVER then
     TASK.OnTaskRemoved = function(ply)
         timer.Remove("TTTTaskmasterStayNearTargetTimer")
 
-        ply:ClearProperty("StayNearTargetPlayer")
-        ply:ClearProperty("StayNearTargetStart")
+        ply:ClearProperty("StayNearTargetPlayer", ply)
+        ply:ClearProperty("StayNearTargetStart", ply)
 
         net.Start("TTT_Taskmaster_StayNearTarget_Cleanup")
         net.Send(ply)
