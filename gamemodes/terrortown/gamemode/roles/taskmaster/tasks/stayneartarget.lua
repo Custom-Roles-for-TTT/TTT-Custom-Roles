@@ -5,8 +5,10 @@ local math = math
 local net = net
 local player = player
 local table = table
+local util = util
 
 local MathCos = math.cos
+local MathMax = math.max
 local MathPi = math.pi
 local MathRand = math.Rand
 local MathSin = math.sin
@@ -116,7 +118,7 @@ if SERVER then
             if ply:GetPos():DistToSqr(target:GetPos()) <= rangeSqr then
                 -- Just starting
                 if not ply.StayNearTargetStart then
-                    ply.StayNearTargetStart = CurTime()
+                    ply:SetProperty("StayNearTargetStart", CurTime())
                 -- Long enough
                 elseif CurTime() > ply.StayNearTargetStart + time then
                     ply:CompleteTask(TASK.id)
@@ -146,9 +148,11 @@ end
 
 if CLIENT then
     net.Receive("TTT_Taskmaster_StayNearTarget_Assigned", function()
-        local sid64 = LocalPlayer():SteamID64()
+        local client = LocalPlayer()
+        local sid64 = client:SteamID64()
         local range = taskmaster_stayneartarget_range:GetInt() * UNITS_PER_METER
         local rangeSqr = range * range
+        local time = taskmaster_stayneartarget_time:GetInt()
 
         hook.Add("TTTTargetIDPlayerTargetIcon", "Taskmaster_StayNearTarget_TTTTargetIDPlayerTargetIcon_" .. sid64, function(ply, cli, showJester)
             if cli:IsActiveTaskmaster() and ply == cli.StayNearTargetPlayer then
@@ -174,12 +178,12 @@ if CLIENT then
                     for _ = 1, 48 do
                         ply.TaskmasterRadiusEmitter:SetPos(pos)
                         ply.TaskmasterRadiusNextPart = CurTime() + 0.005
-                        ply.TaskmasterRadiusDir = ply.TaskmasterRadiusDir + MathPi / 24
+                        ply.TaskmasterRadiusDir = ply.TaskmasterRadiusDir + MathPi / 12
                         local vec = Vector(MathSin(ply.TaskmasterRadiusDir) * range, MathCos(ply.TaskmasterRadiusDir) * range, 10)
                         local particle = ply.TaskmasterRadiusEmitter:Add("particle/wisp.vmt", pos + vec)
-                        particle:SetVelocity(Vector(0, 0, 80))
-                        particle:SetDieTime(0.5)
-                        particle:SetStartAlpha(200)
+                        particle:SetVelocity(Vector(0, 0, 40))
+                        particle:SetDieTime(0.25)
+                        particle:SetStartAlpha(60)
                         particle:SetEndAlpha(0)
                         particle:SetStartSize(3)
                         particle:SetEndSize(2)
@@ -203,6 +207,31 @@ if CLIENT then
                 ply.TaskmasterRadiusNextPart = nil
             end
         end)
+
+        hook.Add("HUDPaint", "Taskmaster_StayNearTarget_HUDPaint_" .. sid64, function()
+            if not client:IsActiveTaskmaster() then return end
+
+            local target = client.StayNearTargetPlayer
+            if not IsPlayer(target) then return end
+
+            local startTime = client.StayNearTargetStart
+            if not startTime then return end
+
+            local PT = LANG.GetParamTranslation
+            local elapsed = MathMax(0, CurTime() - startTime)
+            local remaining = time - elapsed
+            local message = PT("taskmaster_stayneartarget", { time = util.SimpleTime(remaining, "%02i:%02i") })
+            local color = Color(25, 200, 25, 155)
+
+            local x = ScrW() / 2.0
+            local y = ScrH() / 2.0
+            y = y + (y / 3)
+
+            local w = 300
+            local progress = 1 - (elapsed / time)
+
+            CRHUD:PaintProgressBar(x, y, w, color, message, progress)
+        end)
     end)
 
     net.Receive("TTT_Taskmaster_StayNearTarget_Cleanup", function()
@@ -210,6 +239,7 @@ if CLIENT then
         local sid64 = client:SteamID64()
         hook.Remove("TTTTargetIDPlayerTargetIcon", "Taskmaster_StayNearTarget_TTTTargetIDPlayerTargetIcon_"  .. sid64)
         hook.Remove("TTTPlayerAliveClientThink", "Taskmaster_StayNearTarget_TTTPlayerAliveClientThink_" .. sid64)
+        hook.Remove("HUDPaint", "Taskmaster_StayNearTarget_HUDPaint_" .. sid64)
 
         if client.TaskmasterRadiusEmitter then
             client.TaskmasterRadiusEmitter:Finish()

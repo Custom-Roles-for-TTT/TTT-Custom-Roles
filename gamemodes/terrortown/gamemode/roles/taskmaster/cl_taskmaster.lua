@@ -15,6 +15,10 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     -- Bonus credit popup
     LANG.AddToLanguage("english", "taskmaster_credit_bonus", "{role}, you have been awarded {num} credit(s) for completing a task.")
 
+    -- Tasks
+    -- Stay Near Target
+    LANG.AddToLanguage("english", "taskmaster_stayneartarget", "STAY NEAR TARGET - {time}")
+
     -- Win conditions
     LANG.AddToLanguage("english", "win_taskmaster", "The {role} finished off their list!")
     LANG.AddToLanguage("english", "ev_win_taskmaster", "The methodical {role} has won the round!")
