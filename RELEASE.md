@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.3.5 (Beta)
+**Released:**
+
+### Developer
+- Added `TTTDetectiveCalledToBody` hook which is called when a player calls a detective to a body
+
 ## 2.3.4 (Beta)
 **Released: August 9th, 2025**
 
