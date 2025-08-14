@@ -1270,6 +1270,7 @@ Called before a team voice state message is sent. Used to modify the targets of 
 *Parameters:*
 - *speaker* - The player trying to send their team voice state message
 - *targets* - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients
+- *state* - Whether the speaker is speaking globally (`true`) or only to their team (`false`) *(Added in 2.3.5)*
 
 *Return:* Whether or not this team voice state message should be sent (Defaults to `true`)
 

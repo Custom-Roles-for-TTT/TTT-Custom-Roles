@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.3.5 (Beta)
+**Released:**
+
+### Developer
+- Added `state` parameter to `TTTTeamVoiceChatTargets` hook
+
 ## 2.3.4 (Beta)
 **Released: August 9th, 2025**
 
