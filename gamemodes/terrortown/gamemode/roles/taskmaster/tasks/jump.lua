@@ -3,6 +3,11 @@ local TASK = {}
 TASK.id = "jump"
 
 local taskmaster_jump_times = CreateConVar("ttt_taskmaster_jump_times", "25", FCVAR_REPLICATED, "The jump of times a player must jump to complete the 'Jump X Times' task", 1, 100)
+table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
+    cvar = "ttt_taskmaster_jump_times",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
 
 TASK.Name = function(ply)
     local times = taskmaster_jump_times:GetInt()
