@@ -16,6 +16,7 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     LANG.AddToLanguage("english", "taskmaster_credit_bonus", "{role}, you have been awarded {num} credit(s) for completing a task.")
 
     -- Tasks
+    LANG.AddToLanguage("english", "taskmaster_carrycorpse", "CARRY CORPSE - {time}")
     LANG.AddToLanguage("english", "taskmaster_crouchnearbody", "CROUCH NEAR BODY - {time}")
     LANG.AddToLanguage("english", "taskmaster_crouch", "STAY CROUCHING - {time}")
     LANG.AddToLanguage("english", "taskmaster_healthunder", "DON'T HEAL - {time}")
