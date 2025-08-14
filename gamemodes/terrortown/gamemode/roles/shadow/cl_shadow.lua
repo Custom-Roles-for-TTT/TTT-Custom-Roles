@@ -280,6 +280,7 @@ end)
 -- PARTICLES --
 ---------------
 
+local radiusVelocity = Vector(0, 0, 80)
 local function DrawRadius(ply, ent, radius)
     if not ent.RadiusEmitter then ent.RadiusEmitter = ParticleEmitter(ent:GetPos()) end
     if not ent.RadiusNextPart then ent.RadiusNextPart = CurTime() end
@@ -296,7 +297,7 @@ local function DrawRadius(ply, ent, radius)
             ent.RadiusDir = ent.RadiusDir + MathPi / 12
             local vec = Vector(MathSin(ent.RadiusDir) * radius, MathCos(ent.RadiusDir) * radius, 10)
             local particle = ent.RadiusEmitter:Add("particle/wisp.vmt", ent:GetPos() + vec)
-            particle:SetVelocity(Vector(0, 0, 80))
+            particle:SetVelocity(radiusVelocity)
             particle:SetDieTime(0.5)
             particle:SetStartAlpha(200)
             particle:SetEndAlpha(0)

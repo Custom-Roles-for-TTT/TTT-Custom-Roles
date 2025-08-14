@@ -44,6 +44,7 @@ end)
 -- ROLE FEATURES --
 -------------------
 
+local particleVelocity = Vector(0, 0, 20)
 hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
     local shouldDraw = false
     if ply:GetRole() == ROLE_SPONGE and ply:GetObserverMode() == OBS_MODE_NONE then
@@ -61,7 +62,7 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
             local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
             local vec = Vector(MathSin(ply.SpongeAuraDir) * radius, MathCos(ply.SpongeAuraDir) * radius, 10)
             local particle = ply.SpongeAuraEmitter:Add("particle/sponge.vmt", ply_pos + vec)
-            particle:SetVelocity(Vector(0, 0, 20))
+            particle:SetVelocity(particleVelocity)
             particle:SetDieTime(1)
             particle:SetStartAlpha(200)
             particle:SetEndAlpha(0)
@@ -104,7 +105,7 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
                         local auraRadius = 20
                         local vec = Vector(MathSin(ply.SpongeAuraDir) * auraRadius, MathCos(ply.SpongeAuraDir) * auraRadius, 10)
                         local particle = ply.SpongeAuraEmitter:Add("particle/sponge.vmt", ply_pos + vec)
-                        particle:SetVelocity(Vector(0, 0, 20))
+                        particle:SetVelocity(particleVelocity)
                         particle:SetDieTime(1)
                         particle:SetStartAlpha(200)
                         particle:SetEndAlpha(0)

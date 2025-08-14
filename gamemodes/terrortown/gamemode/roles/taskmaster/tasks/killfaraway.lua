@@ -115,6 +115,7 @@ if CLIENT then
             end
         end)
 
+        local particleVelocity = Vector(0, 0, 80)
         hook.Add("TTTPlayerAliveClientThink", "Taskmaster_KillFaraway_TTTPlayerAliveClientThink_" .. sid64, function(cli, ply)
             local shouldDraw = false
             if ply == cli and cli:IsActiveTaskmaster() then
@@ -129,7 +130,7 @@ if CLIENT then
                         ply.TaskmasterRadiusDir = ply.TaskmasterRadiusDir + MathPi / 24
                         local vec = Vector(MathSin(ply.TaskmasterRadiusDir) * range, MathCos(ply.TaskmasterRadiusDir) * range, 10)
                         local particle = ply.TaskmasterRadiusEmitter:Add("particle/wisp.vmt", pos + vec)
-                        particle:SetVelocity(Vector(0, 0, 80))
+                        particle:SetVelocity(particleVelocity)
                         particle:SetDieTime(0.5)
                         particle:SetStartAlpha(200)
                         particle:SetEndAlpha(0)
