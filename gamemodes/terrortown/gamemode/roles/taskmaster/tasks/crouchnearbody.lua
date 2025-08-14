@@ -87,8 +87,8 @@ if SERVER then
         timer.Create("TTTTaskmasterCrouchNearBodyTimer", 0.1, 0, function()
             if not IsPlayer(ply) then return end
             if not ply:Crouching() then
-                if ply.CrouchNearBodyStart then
-                    ply:ClearProperty("CrouchNearBodyStart", ply)
+                if ply.Task_CrouchNearBodyStart then
+                    ply:ClearProperty("Task_CrouchNearBodyStart", ply)
                 end
                 return
             end
@@ -101,15 +101,15 @@ if SERVER then
                 -- Within range
                 if ply:GetPos():DistToSqr(corpse:GetPos()) <= rangeSqr then
                     -- Just starting
-                    if not ply.CrouchNearBodyStart then
-                        ply:SetProperty("CrouchNearBodyStart", CurTime(), ply)
+                    if not ply.Task_CrouchNearBodyStart then
+                        ply:SetProperty("Task_CrouchNearBodyStart", CurTime(), ply)
                     -- Long enough
-                    elseif CurTime() > ply.CrouchNearBodyStart + time then
+                    elseif CurTime() > ply.Task_CrouchNearBodyStart + time then
                         ply:CompleteTask(TASK.id)
                     end
                 -- Not within range
                 else
-                    ply:ClearProperty("CrouchNearBodyStart", ply)
+                    ply:ClearProperty("Task_CrouchNearBodyStart", ply)
                 end
             end
         end)
@@ -121,7 +121,7 @@ if SERVER then
     TASK.OnTaskRemoved = function(ply)
         timer.Remove("TTTTaskmasterCrouchNearBodyTimer")
 
-        ply:ClearProperty("CrouchNearBodyStart", ply)
+        ply:ClearProperty("Task_CrouchNearBodyStart", ply)
 
         net.Start("TTT_Taskmaster_CrouchNearBody_Cleanup")
         net.Send(ply)
@@ -139,7 +139,7 @@ if CLIENT then
         hook.Add("HUDPaint", "Taskmaster_CrouchNearBody_HUDPaint_" .. sid64, function()
             if not client:IsActiveTaskmaster() then return end
 
-            local startTime = client.CrouchNearBodyStart
+            local startTime = client.Task_CrouchNearBodyStart
             if not startTime then return end
 
             local PT = LANG.GetParamTranslation

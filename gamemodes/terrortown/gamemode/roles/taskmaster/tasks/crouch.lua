@@ -55,15 +55,15 @@ if SERVER then
 
             if ply:Crouching() then
                 -- Just starting
-                if not ply.CrouchStart then
-                    ply:SetProperty("CrouchStart", CurTime(), ply)
+                if not ply.Task_CrouchStart then
+                    ply:SetProperty("Task_CrouchStart", CurTime(), ply)
                 -- Long enough
-                elseif CurTime() > ply.CrouchStart + time then
+                elseif CurTime() > ply.Task_CrouchStart + time then
                     ply:CompleteTask(TASK.id)
                 end
             -- Not crouching anymore
             else
-                ply:ClearProperty("CrouchStart", ply)
+                ply:ClearProperty("Task_CrouchStart", ply)
             end
         end)
 
@@ -74,7 +74,7 @@ if SERVER then
     TASK.OnTaskRemoved = function(ply)
         timer.Remove("TTTTaskmasterCrouchTimer")
 
-        ply:ClearProperty("CrouchStart", ply)
+        ply:ClearProperty("Task_CrouchStart", ply)
 
         net.Start("TTT_Taskmaster_Crouch_Cleanup")
         net.Send(ply)
@@ -92,7 +92,7 @@ if CLIENT then
         hook.Add("HUDPaint", "Taskmaster_Crouch_HUDPaint_" .. sid64, function()
             if not client:IsActiveTaskmaster() then return end
 
-            local startTime = client.CrouchStart
+            local startTime = client.Task_CrouchStart
             if not startTime then return end
 
             local PT = LANG.GetParamTranslation

@@ -32,8 +32,8 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local name = "Player"
-    if IsPlayer(ply.StayNearTargetPlayer) then
-        name = ply.StayNearTargetPlayer:Nick()
+    if IsPlayer(ply.Task_StayNearTargetPlayer) then
+        name = ply.Task_StayNearTargetPlayer:Nick()
     end
     return "Stay Near " .. name
 end
@@ -69,8 +69,8 @@ TASK.Description = function(ply)
     end
 
     local name = "Target"
-    if IsPlayer(ply.StayNearTargetPlayer) then
-        name = ply.StayNearTargetPlayer:Nick()
+    if IsPlayer(ply.Task_StayNearTargetPlayer) then
+        name = ply.Task_StayNearTargetPlayer:Nick()
     end
 
     local time = taskmaster_stayneartarget_time:GetInt()
@@ -105,7 +105,7 @@ if SERVER then
             break
         end
 
-        ply:SetProperty("StayNearTargetPlayer", target, ply)
+        ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
 
         local range = taskmaster_stayneartarget_range:GetInt() * UNITS_PER_METER
         local rangeSqr = range * range
@@ -117,15 +117,15 @@ if SERVER then
             -- Within range
             if ply:GetPos():DistToSqr(target:GetPos()) <= rangeSqr then
                 -- Just starting
-                if not ply.StayNearTargetStart then
-                    ply:SetProperty("StayNearTargetStart", CurTime(), ply)
+                if not ply.Task_StayNearTargetStart then
+                    ply:SetProperty("Task_StayNearTargetStart", CurTime(), ply)
                 -- Long enough
-                elseif CurTime() > ply.StayNearTargetStart + time then
+                elseif CurTime() > ply.Task_StayNearTargetStart + time then
                     ply:CompleteTask(TASK.id)
                 end
             -- Not within range
             else
-                ply:ClearProperty("StayNearTargetStart", ply)
+                ply:ClearProperty("Task_StayNearTargetStart", ply)
             end
         end)
 
@@ -136,8 +136,8 @@ if SERVER then
     TASK.OnTaskRemoved = function(ply)
         timer.Remove("TTTTaskmasterStayNearTargetTimer")
 
-        ply:ClearProperty("StayNearTargetPlayer", ply)
-        ply:ClearProperty("StayNearTargetStart", ply)
+        ply:ClearProperty("Task_StayNearTargetPlayer", ply)
+        ply:ClearProperty("Task_StayNearTargetStart", ply)
 
         net.Start("TTT_Taskmaster_StayNearTarget_Cleanup")
         net.Send(ply)
@@ -155,7 +155,7 @@ if CLIENT then
         local time = taskmaster_stayneartarget_time:GetInt()
 
         hook.Add("TTTTargetIDPlayerTargetIcon", "Taskmaster_StayNearTarget_TTTTargetIDPlayerTargetIcon_" .. sid64, function(ply, cli, showJester)
-            if cli:IsActiveTaskmaster() and ply == cli.StayNearTargetPlayer then
+            if cli:IsActiveTaskmaster() and ply == cli.Task_StayNearTargetPlayer then
                 local iconColor = ROLE_COLORS_SPRITE[ROLE_TRAITOR]
                 if cli:GetPos():DistToSqr(ply:GetPos()) <= rangeSqr then
                     iconColor = ROLE_COLORS_SPRITE[ROLE_INNOCENT]
@@ -167,7 +167,7 @@ if CLIENT then
         local particleVelocity = Vector(0, 0, 40)
         hook.Add("TTTPlayerAliveClientThink", "Taskmaster_StayNearTarget_TTTPlayerAliveClientThink_" .. sid64, function(cli, ply)
             local shouldDraw = false
-            local target = cli.StayNearTargetPlayer
+            local target = cli.Task_StayNearTargetPlayer
             if ply == cli and cli:IsActiveTaskmaster() and IsPlayer(target) then
                 local pos = target:GetPos()
                 if not ply.TaskmasterRadiusEmitter then ply.TaskmasterRadiusEmitter = ParticleEmitter(pos) end
@@ -212,10 +212,10 @@ if CLIENT then
         hook.Add("HUDPaint", "Taskmaster_StayNearTarget_HUDPaint_" .. sid64, function()
             if not client:IsActiveTaskmaster() then return end
 
-            local target = client.StayNearTargetPlayer
+            local target = client.Task_StayNearTargetPlayer
             if not IsPlayer(target) then return end
 
-            local startTime = client.StayNearTargetStart
+            local startTime = client.Task_StayNearTargetStart
             if not startTime then return end
 
             local PT = LANG.GetParamTranslation
