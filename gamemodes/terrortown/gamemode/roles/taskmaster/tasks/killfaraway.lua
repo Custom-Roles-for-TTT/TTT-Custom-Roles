@@ -67,8 +67,8 @@ if SERVER then
     end
 
     TASK.RequiredFeatures = {
-        "TargetIDPlayerText",
-        "ParticleRadius"
+        TASKMASTER_TF_TARGETID_PLAYERTEXT,
+        TASKMASTER_TF_PARTICLERADIUS
     }
 
     TASK.OnTaskAssigned = function(ply)

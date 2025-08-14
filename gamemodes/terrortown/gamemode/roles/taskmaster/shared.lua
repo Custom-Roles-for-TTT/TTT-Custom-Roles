@@ -1,9 +1,15 @@
 AddCSLuaFile()
 
+-- Task Features
+TASKMASTER_TF_TARGETID_PLAYERICON = 0
+TASKMASTER_TF_TARGETID_PLAYERTEXT = 1
+TASKMASTER_TF_PROGRESSBAR = 2
+TASKMASTER_TF_PARTICLERADIUS = 3
+
 ROLE_STARTING_CREDITS[ROLE_TASKMASTER] = 1
 ROLE_HAS_PASSIVE_WIN[ROLE_TASKMASTER] = false
 cvars.AddChangeCallback("ttt_taskmaster_is_passive", function(_, _, newValue)
-    ROLE_HAS_PASSIVE_WIN[ROLE_TASKMASTER] = util.tobool(newValue)
+    ROLE_HAS_PASSIVE_WIN[ROLE_TASKMASTER] = tobool(newValue)
 end)
 
 ------------------

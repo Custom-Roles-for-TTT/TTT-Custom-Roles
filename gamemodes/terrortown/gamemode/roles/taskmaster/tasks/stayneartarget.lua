@@ -90,9 +90,9 @@ if SERVER then
     end
 
     TASK.RequiredFeatures = {
-        "TargetIDPlayerTargetIcon",
-        "ProgressBar",
-        "ParticleRadius"
+        TASKMASTER_TF_TARGETID_PLAYERICON,
+        TASKMASTER_TF_PROGRESSBAR,
+        TASKMASTER_TF_PARTICLERADIUS
     }
 
     TASK.OnTaskAssigned = function(ply)

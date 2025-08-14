@@ -16,9 +16,9 @@ if SERVER then
     end
 
     TASK.RequiredFeatures = {
-        --"TargetIDPlayerText",
-        --"TargetIDPlayerTargetIcon",
-        --"ProgressBar"
+        --TASKMASTER_TF_TARGETID_PLAYERTEXT,
+        --TASKMASTER_TF_TARGETID_PLAYERICON,
+        --TASKMASTER_TF_PROGRESSBAR
     }
 
     TASK.OnTaskAssigned = function(ply)
