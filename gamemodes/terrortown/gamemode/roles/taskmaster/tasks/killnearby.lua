@@ -15,7 +15,7 @@ local TASK = {}
 TASK.id = "killnearby"
 TASK.isKillTask = true
 
-local taskmaster_killnearby_range = CreateConVar("ttt_taskmaster_killnearby_range", "5", FCVAR_REPLICATED, "The maximum distance (in meters) away a player can be to count for the 'Kill Nearby Player' task", 0, 10)
+local taskmaster_killnearby_range = CreateConVar("ttt_taskmaster_killnearby_range", "5", FCVAR_REPLICATED, "The maximum distance (in meters) away a player can be to count for the 'Kill a Nearby Player' task", 0, 10)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_killnearby_range",
     type = ROLE_CONVAR_TYPE_NUM,
@@ -23,7 +23,7 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 })
 
 TASK.Name = function(ply)
-    return "Kill Nearby Player"
+    return "Kill a Nearby Player"
 end
 
 TASK.Description = function(ply)
@@ -34,7 +34,7 @@ TASK.Description = function(ply)
         unit = cvars.Number("ttt_distance_unit", 1)
     end
     local range = taskmaster_killnearby_range:GetInt()
-    local description = "Kill a player from within "
+    local description = "Kill another player from within "
     if unit == 1 then
         description = description .. range .. " meter"
         if range ~= 1 then

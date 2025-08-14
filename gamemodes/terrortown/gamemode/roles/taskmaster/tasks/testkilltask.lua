@@ -16,11 +16,7 @@ if SERVER then
         return false
     end
 
-    TASK.RequiredFeatures = {
-        --TASKMASTER_TF_TARGETID_PLAYERTEXT,
-        --TASKMASTER_TF_TARGETID_PLAYERICON,
-        --TASKMASTER_TF_PROGRESSBAR
-    }
+    TASK.RequiredFeatures = {}
 
     TASK.OnTaskAssigned = function(ply)
         ply:QueueMessage(MSG_PRINTBOTH, "Task Assigned: " .. TASK.Name(ply))
