@@ -95,15 +95,18 @@ if SERVER then
         TASKMASTER_TF_PARTICLERADIUS
     }
 
-    TASK.OnTaskAssigned = function(ply)
-        local target
+    local function GetRandomTarget(ply)
         -- Find the first random living player
         for _, p in RandomPairs(player.GetAll()) do
             if not p:Alive() or p:IsSpec() then continue end
             if p == ply then continue end
-            target = p
-            break
+            return p
         end
+        return nil
+    end
+
+    TASK.OnTaskAssigned = function(ply)
+        local target = GetRandomTarget(ply)
 
         ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
 
@@ -129,6 +132,17 @@ if SERVER then
             end
         end)
 
+        hook.Add("PostPlayerDeath", "Taskmaster_StayNearTarget_PostPlayerDeath_" .. ply:SteamID64(), function(victim)
+            if ply.Task_StayNearTargetPlayer ~= victim then return end
+
+            local newTarget = GetRandomTarget(ply)
+            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! Your new target is " .. newTarget:Nick())
+
+            -- Overwrite the previous target
+            target = newTarget
+            ply:SetProperty("Task_StayNearTargetPlayer", newTarget, ply)
+        end)
+
         net.Start("TTT_Taskmaster_StayNearTarget_Assigned")
         net.Send(ply)
     end
@@ -138,6 +152,8 @@ if SERVER then
 
         ply:ClearProperty("Task_StayNearTargetPlayer", ply)
         ply:ClearProperty("Task_StayNearTargetStart", ply)
+
+        hook.Remove("PostPlayerDeath", "Taskmaster_StayNearTarget_PostPlayerDeath_" .. ply:SteamID64())
 
         net.Start("TTT_Taskmaster_StayNearTarget_Cleanup")
         net.Send(ply)
