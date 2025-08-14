@@ -3,6 +3,9 @@
 ## 2.3.5 (Beta)
 **Released:**
 
+### Fixes
+- Fixed illusionist not blocking traitor team voice chat
+
 ### Developer
 - Added `state` parameter to `TTTTeamVoiceChatTargets` hook
 
