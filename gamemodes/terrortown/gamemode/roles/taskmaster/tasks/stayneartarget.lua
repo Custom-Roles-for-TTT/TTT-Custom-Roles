@@ -143,6 +143,17 @@ if SERVER then
             ply:SetProperty("Task_StayNearTargetPlayer", newTarget, ply)
         end)
 
+        hook.Add("PlayerDisconnected", "Taskmaster_StayNearTarget_PlayerDisconnected_" .. ply:SteamID64(), function(leaver)
+            if ply.Task_StayNearTargetPlayer ~= leaver then return end
+
+            local newTarget = GetRandomTarget(ply)
+            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. newTarget:Nick())
+
+            -- Overwrite the previous target
+            target = newTarget
+            ply:SetProperty("Task_StayNearTargetPlayer", newTarget, ply)
+        end)
+
         net.Start("TTT_Taskmaster_StayNearTarget_Assigned")
         net.Send(ply)
     end
