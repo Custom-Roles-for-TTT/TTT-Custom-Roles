@@ -19,6 +19,7 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     LANG.AddToLanguage("english", "taskmaster_crouchnearbody", "CROUCH NEAR BODY - {time}")
     LANG.AddToLanguage("english", "taskmaster_crouch", "STAY CROUCHING - {time}")
     LANG.AddToLanguage("english", "taskmaster_healthunder", "DON'T HEAL - {time}")
+    LANG.AddToLanguage("english", "taskmaster_holstered", "STAY HOLSTERED - {time}")
     LANG.AddToLanguage("english", "taskmaster_stayneartarget", "STAY NEAR TARGET - {time}")
 
     -- Win conditions
