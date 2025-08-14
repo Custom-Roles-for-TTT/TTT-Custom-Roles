@@ -11,7 +11,7 @@ local TASK = {}
 
 TASK.id = "holstered"
 
-local taskmaster_holstered_time = CreateConVar("ttt_taskmaster_holstered_time", "60", FCVAR_REPLICATED, "The time (in seconds) a player must stay under the target health to complete the 'Health Under' task", 1, 240)
+local taskmaster_holstered_time = CreateConVar("ttt_taskmaster_holstered_time", "60", FCVAR_REPLICATED, "The time (in seconds) a player must stay holstered to complete the 'Holstered' task", 1, 240)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_holstered_time",
     type = ROLE_CONVAR_TYPE_NUM,
