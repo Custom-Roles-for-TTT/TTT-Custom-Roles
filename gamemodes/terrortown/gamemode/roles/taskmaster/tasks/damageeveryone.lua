@@ -2,6 +2,7 @@ local hook = hook
 local net = net
 local player = player
 local table = table
+local timer = timer
 local util = util
 
 local PlayerIterator = player.Iterator

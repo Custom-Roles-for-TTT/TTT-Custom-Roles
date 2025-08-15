@@ -5,6 +5,7 @@ local hook = hook
 local math = math
 local net = net
 local table = table
+local timer = timer
 local util = util
 
 local EntsFindByClass = ents.FindByClass

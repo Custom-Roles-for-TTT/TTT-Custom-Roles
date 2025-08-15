@@ -4,6 +4,7 @@ local math = math
 local net = net
 local player = player
 local table = table
+local timer = timer
 local util = util
 
 local MathMax = math.max
