@@ -165,6 +165,7 @@ if SERVER then
         ply:ClearProperty("Task_StayNearTargetStart", ply)
 
         hook.Remove("PostPlayerDeath", "Taskmaster_StayNearTarget_PostPlayerDeath_" .. ply:SteamID64())
+        hook.Remove("PlayerDisconnected", "Taskmaster_StayNearTarget_PlayerDisconnected_" .. ply:SteamID64())
 
         net.Start("TTT_Taskmaster_StayNearTarget_Cleanup")
         net.Send(ply)
