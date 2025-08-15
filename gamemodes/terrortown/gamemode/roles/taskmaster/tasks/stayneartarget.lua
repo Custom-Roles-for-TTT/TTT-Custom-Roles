@@ -194,15 +194,16 @@ if CLIENT then
         local particleVelocity = Vector(0, 0, 40)
         hook.Add("TTTPlayerAliveClientThink", "Taskmaster_StayNearTarget_TTTPlayerAliveClientThink_" .. sid64, function(cli, ply)
             local shouldDraw = false
-            local target = cli.Task_StayNearTargetPlayer
-            if ply == cli and cli:IsActiveTaskmaster() and IsPlayer(target) then
+            local target = ply.Task_StayNearTargetPlayer
+            if ply == cli and ply:IsActiveTaskmaster() and IsPlayer(target) then
                 local pos = target:GetPos()
                 if not ply.TaskmasterRadiusEmitter then ply.TaskmasterRadiusEmitter = ParticleEmitter(pos) end
                 if not ply.TaskmasterRadiusNextPart then ply.TaskmasterRadiusNextPart = CurTime() end
                 if not ply.TaskmasterRadiusDir then ply.TaskmasterRadiusDir = 0 end
                 -- Use DistToSqr as it's more efficient and this is called very frequently
+                local distance = ply:GetPos():DistToSqr(pos)
                 -- 9000000 = 3000^2
-                if ply.TaskmasterRadiusNextPart < CurTime() and cli:GetPos():DistToSqr(pos) <= 9000000 then
+                if ply.TaskmasterRadiusNextPart < CurTime() and distance <= 9000000 then
                     for _ = 1, 48 do
                         ply.TaskmasterRadiusEmitter:SetPos(pos)
                         ply.TaskmasterRadiusNextPart = CurTime() + 0.005
@@ -218,7 +219,7 @@ if CLIENT then
                         particle:SetRoll(MathRand(0, MathPi))
                         particle:SetRollDelta(0)
                         local color = ROLE_COLORS[ROLE_TRAITOR]
-                        if ply:GetPos():DistToSqr(target:GetPos()) <= rangeSqr then
+                        if distance <= rangeSqr then
                             color = ROLE_COLORS[ROLE_INNOCENT]
                         end
                         particle:SetColor(color.r, color.g, color.b)
