@@ -24,6 +24,7 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     LANG.AddToLanguage("english", "taskmaster_standonplayer", "STAY ON PLAYER - {time}")
     LANG.AddToLanguage("english", "taskmaster_stayneartarget", "STAY NEAR TARGET - {time}")
     LANG.AddToLanguage("english", "taskmaster_stayhigher", "STAY HIGHEST - {time}")
+    LANG.AddToLanguage("english", "taskmaster_stayinarea", "STAY IN AREA - {time}")
     LANG.AddToLanguage("english", "taskmaster_staylower", "STAY LOWEST - {time}")
 
     -- Win conditions
