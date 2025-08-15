@@ -91,10 +91,9 @@ end
 if CLIENT then
     net.Receive("TTT_Taskmaster_HealthUnder_Assigned", function()
         local client = LocalPlayer()
-        local sid64 = client:SteamID64()
         local time = taskmaster_healthunder_time:GetInt()
 
-        hook.Add("HUDPaint", "Taskmaster_HealthUnder_HUDPaint_" .. sid64, function()
+        hook.Add("HUDPaint", "Taskmaster_HealthUnder_HUDPaint_" .. client:SteamID64(), function()
             if not client:IsActiveTaskmaster() then return end
 
             local startTime = client.Task_HealthUnderStart
@@ -119,8 +118,7 @@ if CLIENT then
 
     net.Receive("TTT_Taskmaster_HealthUnder_Cleanup", function()
         local client = LocalPlayer()
-        local sid64 = client:SteamID64()
-        hook.Remove("HUDPaint", "Taskmaster_HealthUnder_HUDPaint_" .. sid64)
+        hook.Remove("HUDPaint", "Taskmaster_HealthUnder_HUDPaint_" .. client:SteamID64())
     end)
 end
 

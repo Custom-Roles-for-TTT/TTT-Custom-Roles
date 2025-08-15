@@ -29,6 +29,7 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     LANG.AddToLanguage("english", "taskmaster_stayhigher", "STAY HIGHEST - {time}")
     LANG.AddToLanguage("english", "taskmaster_stayinarea", "STAY IN AREA - {time}")
     LANG.AddToLanguage("english", "taskmaster_staylower", "STAY LOWEST - {time}")
+    LANG.AddToLanguage("english", "taskmaster_takedamage", "AVOID DAMAGE - {time}")
 
     -- Win conditions
     LANG.AddToLanguage("english", "win_taskmaster", "The {role} finished off their list!")
