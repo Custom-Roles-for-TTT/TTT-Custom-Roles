@@ -63,6 +63,13 @@ if SERVER then
         return nil
     end
 
+    local function IsTargetInView(ply)
+        if not IsValid(ply) then return false end
+
+        local tr = ply:GetEyeTrace(MASK_SHOT)
+        return tr.Entity == ply.Task_LookAtPlayerPlayer
+    end
+
     TASK.OnTaskAssigned = function(ply)
         ply:SetProperty("Task_LookAtPlayerPlayer", GetRandomTarget(ply), ply)
 
@@ -71,7 +78,8 @@ if SERVER then
             if not IsPlayer(ply) then return end
             if not IsPlayer(ply.Task_LookAtPlayerPlayer) then return end
 
-            if ply:Alive() and not ply:IsSpec() and ply:IsLineOfSightClear(ply.Task_LookAtPlayerPlayer) then
+            -- Check IsOnScreen first because math is more efficient then sending traces this often
+            if ply:Alive() and not ply:IsSpec() and ply:IsOnScreen(ply.Task_LookAtPlayerPlayer, 0.35) and IsTargetInView(ply) then
                 -- Just starting
                 if not ply.Task_LookAtPlayerStart then
                     ply:SetProperty("Task_LookAtPlayerStart", CurTime(), ply)
