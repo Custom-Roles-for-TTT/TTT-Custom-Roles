@@ -88,7 +88,7 @@ if SERVER then
                 elseif CurTime() > ply.Task_LookAtPlayerStart + time then
                     ply:CompleteTask(TASK.id)
                 end
-            -- Not within range
+            -- Not looking at the player
             else
                 ply:ClearProperty("Task_LookAtPlayerStart", ply)
             end
