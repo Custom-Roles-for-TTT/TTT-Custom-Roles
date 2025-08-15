@@ -73,6 +73,7 @@ if SERVER then
     TASK.OnTaskAssigned = function(ply)
         ply:SetProperty("Task_LookAtPlayerPlayer", GetRandomTarget(ply), ply)
 
+        local sid64 = ply:SteamID64()
         local time = taskmaster_lookatplayer_time:GetInt()
         timer.Create("TTTTaskmasterLookAtPlayerTimer", 0.1, 0, function()
             if not IsPlayer(ply) then return end
@@ -93,13 +94,13 @@ if SERVER then
             end
         end)
 
-        hook.Add("PlayerDeath", "Taskmaster_LookAtPlayer_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
+        hook.Add("PlayerDeath", "Taskmaster_LookAtPlayer_PlayerDeath_" .. sid64, function(victim, inflictor, attacker)
             if ply.Task_LookAtPlayerPlayer ~= victim then return end
             if attacker == ply then return end
             ply:CompleteTask(TASK.id)
         end)
 
-        hook.Add("PlayerDisconnected", "Taskmaster_LookAtPlayer_PlayerDisconnected_" .. ply:SteamID64(), function(leaver)
+        hook.Add("PlayerDisconnected", "Taskmaster_LookAtPlayer_PlayerDisconnected_" .. sid64, function(leaver)
             if ply.Task_LookAtPlayerPlayer ~= leaver then return end
 
             local target = GetRandomTarget(ply)
@@ -114,8 +115,9 @@ if SERVER then
     TASK.OnTaskRemoved = function(ply)
         timer.Remove("TTTTaskmasterLookAtPlayerTimer")
 
-        hook.Remove("PlayerDeath", "Taskmaster_LookAtPlayer_PlayerDeath_" .. ply:SteamID64())
-        hook.Remove("PlayerDisconnected", "Taskmaster_LookAtPlayer_PlayerDisconnected_" .. ply:SteamID64())
+        local sid64 = ply:SteamID64()
+        hook.Remove("PlayerDeath", "Taskmaster_LookAtPlayer_PlayerDeath_" .. sid64)
+        hook.Remove("PlayerDisconnected", "Taskmaster_LookAtPlayer_PlayerDisconnected_" .. sid64)
 
         ply:ClearProperty("Task_LookAtPlayerStart", ply)
         ply:ClearProperty("Task_LookAtPlayerPlayer", ply)
