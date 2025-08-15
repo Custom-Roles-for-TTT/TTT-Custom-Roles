@@ -53,7 +53,7 @@ if SERVER then
         timer.Create("TTTTaskmasterCrouchTimer", 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
-            if ply:Crouching() then
+            if ply:Alive() and not ply:IsSpec() and ply:Crouching() then
                 -- Just starting
                 if not ply.Task_CrouchStart then
                     ply:SetProperty("Task_CrouchStart", CurTime(), ply)

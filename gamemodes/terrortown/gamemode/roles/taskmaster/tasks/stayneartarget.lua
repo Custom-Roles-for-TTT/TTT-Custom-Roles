@@ -118,7 +118,7 @@ if SERVER then
             if not IsPlayer(target) then return end
 
             -- Within range
-            if ply:GetPos():DistToSqr(target:GetPos()) <= rangeSqr then
+            if ply:Alive() and not ply:IsSpec() and ply:GetPos():DistToSqr(target:GetPos()) <= rangeSqr then
                 -- Just starting
                 if not ply.Task_StayNearTargetStart then
                     ply:SetProperty("Task_StayNearTargetStart", CurTime(), ply)

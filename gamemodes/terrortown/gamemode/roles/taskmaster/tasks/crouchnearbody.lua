@@ -86,10 +86,8 @@ if SERVER then
         local time = taskmaster_crouchnearbody_time:GetInt()
         timer.Create("TTTTaskmasterCrouchNearBodyTimer", 0.1, 0, function()
             if not IsPlayer(ply) then return end
-            if not ply:Crouching() then
-                if ply.Task_CrouchNearBodyStart then
-                    ply:ClearProperty("Task_CrouchNearBodyStart", ply)
-                end
+            if not ply:Alive() or ply:IsSpec() or not ply:Crouching() then
+                ply:ClearProperty("Task_CrouchNearBodyStart", ply)
                 return
             end
 

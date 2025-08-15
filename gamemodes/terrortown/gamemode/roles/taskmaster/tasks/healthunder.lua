@@ -57,7 +57,7 @@ if SERVER then
         timer.Create("TTTTaskmasterHealthUnderTimer", 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
-            if ply:Health() < amount then
+            if ply:Alive() and not ply:IsSpec() and ply:Health() < amount then
                 -- Just starting
                 if not ply.Task_HealthUnderStart then
                     ply:SetProperty("Task_HealthUnderStart", CurTime(), ply)

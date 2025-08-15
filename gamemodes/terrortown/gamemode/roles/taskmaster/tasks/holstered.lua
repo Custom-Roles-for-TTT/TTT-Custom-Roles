@@ -52,6 +52,10 @@ if SERVER then
         local time = taskmaster_holstered_time:GetInt()
         timer.Create("TTTTaskmasterHolsteredTimer", 0.1, 0, function()
             if not IsPlayer(ply) then return end
+            if not ply:Alive() or ply:IsSpec() then
+                ply:ClearProperty("Task_HolsteredStart", ply)
+                return
+            end
 
             local wepClass = WEPS.GetClass(ply:GetActiveWeapon())
             if wepClass == "weapon_ttt_unarmed" then

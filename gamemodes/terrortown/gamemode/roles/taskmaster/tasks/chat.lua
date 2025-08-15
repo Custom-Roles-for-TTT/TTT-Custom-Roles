@@ -40,6 +40,8 @@ if SERVER then
         hook.Add("PlayerSay", "Taskmaster_Chat_PlayerSay_" .. ply:SteamID64(), function(sender, text, teamChat)
             if not IsPlayer(sender) then return end
             if sender ~= ply then return end
+            if not ply:Alive() or ply:IsSpec() then return end
+
             count = count + 1
             if count >= times then
                 ply:CompleteTask(TASK.id)

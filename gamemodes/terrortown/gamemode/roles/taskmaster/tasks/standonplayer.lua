@@ -53,7 +53,7 @@ if SERVER then
         timer.Create("TTTTaskmasterStandOnPlayerTimer", 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
-            if IsPlayer(ply:GetGroundEntity()) then
+            if ply:Alive() and not ply:IsSpec() and IsPlayer(ply:GetGroundEntity()) then
                 -- Just starting
                 if not ply.Task_StandOnPlayerStart then
                     ply:SetProperty("Task_StandOnPlayerStart", CurTime(), ply)
