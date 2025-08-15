@@ -20,7 +20,7 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local time = taskmaster_crouch_time:GetInt()
-    local name = "Crouch For " .. time .. " Second"
+    local name = "Crouch for " .. time .. " Second"
     if time ~= 1 then
         name = name .. "s"
     end

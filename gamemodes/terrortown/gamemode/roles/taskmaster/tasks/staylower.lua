@@ -22,7 +22,7 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local time = taskmaster_staylower_time:GetInt()
-    local name = "Lowest For " .. time .. " Second"
+    local name = "Lowest for " .. time .. " Second"
     if time ~= 1 then
         name = name .. "s"
     end
