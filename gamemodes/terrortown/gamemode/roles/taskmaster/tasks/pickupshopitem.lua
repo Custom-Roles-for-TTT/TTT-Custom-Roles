@@ -3,7 +3,7 @@ local TASK = {}
 TASK.id = "pickupshopitem"
 
 TASK.Name = function(ply)
-    return "Pick Up Shop Item"
+    return "Pick up Shop Item"
 end
 
 TASK.Description = function(ply)

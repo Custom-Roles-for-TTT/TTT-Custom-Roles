@@ -13,7 +13,7 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local count = taskmaster_weaponpickups_count:GetInt()
-    local name = "Pick Up " .. count .. " Weapon"
+    local name = "Pick up " .. count .. " Weapon"
     if count ~= 1 then
         name = name .. "s"
     end
