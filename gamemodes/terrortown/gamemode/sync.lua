@@ -20,6 +20,8 @@ function SYNC:SetPlayerProperty(ply, propertyName, propertyValue, targets)
 end
 
 function SYNC:ClearPlayerProperty(ply, propertyName, targets)
+    if ply[propertyName] == nil then return end
+
     ply[propertyName] = nil
 
     net.Start("TTT_ClearPlayerProperty")
@@ -47,6 +49,8 @@ function SYNC:SetEntityProperty(ent, propertyName, propertyValue, targets)
 end
 
 function SYNC:ClearEntityProperty(ent, propertyName, targets)
+    if ent[propertyName] == nil then return end
+
     ent[propertyName] = nil
 
     net.Start("TTT_ClearEntityProperty")

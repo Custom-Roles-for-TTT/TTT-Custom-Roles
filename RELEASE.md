@@ -5,6 +5,7 @@
 
 ### Developer
 - Added `TTTDetectiveCalledToBody` hook which is called when a player calls a detective to a body
+- Changed `SYNC` methods to not clear values that are already `nil`
 
 ## 2.3.4 (Beta)
 **Released: August 9th, 2025**
