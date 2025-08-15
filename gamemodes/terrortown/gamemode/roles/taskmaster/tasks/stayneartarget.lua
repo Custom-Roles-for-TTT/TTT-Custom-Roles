@@ -31,7 +31,7 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 })
 
 TASK.Name = function(ply)
-    local name = "Player"
+    local name = "Target"
     if IsPlayer(ply.Task_StayNearTargetPlayer) then
         name = ply.Task_StayNearTargetPlayer:Nick()
     end
@@ -68,7 +68,7 @@ TASK.Description = function(ply)
         end
     end
 
-    local name = "Target"
+    local name = "target"
     if IsPlayer(ply.Task_StayNearTargetPlayer) then
         name = ply.Task_StayNearTargetPlayer:Nick()
     end

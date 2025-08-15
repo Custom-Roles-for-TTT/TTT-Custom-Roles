@@ -16,7 +16,7 @@ TASK.Name = function(ply)
 end
 
 TASK.Description = function(ply)
-    local name = "Target"
+    local name = "target"
     if IsPlayer(ply.Task_GetPlayerToKillPlayer) then
         name = ply.Task_GetPlayerToKillPlayer:Nick()
     end
