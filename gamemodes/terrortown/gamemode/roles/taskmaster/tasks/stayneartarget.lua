@@ -106,6 +106,7 @@ if SERVER then
     end
 
     TASK.OnTaskAssigned = function(ply)
+        local sid64 = ply:SteamID64()
         local target = GetRandomTarget(ply)
 
         ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
@@ -132,7 +133,7 @@ if SERVER then
             end
         end)
 
-        hook.Add("PostPlayerDeath", "Taskmaster_StayNearTarget_PostPlayerDeath_" .. ply:SteamID64(), function(victim)
+        hook.Add("PostPlayerDeath", "Taskmaster_StayNearTarget_PostPlayerDeath_" .. sid64, function(victim)
             if ply.Task_StayNearTargetPlayer ~= victim then return end
 
             local newTarget = GetRandomTarget(ply)
@@ -143,7 +144,7 @@ if SERVER then
             ply:SetProperty("Task_StayNearTargetPlayer", newTarget, ply)
         end)
 
-        hook.Add("PlayerDisconnected", "Taskmaster_StayNearTarget_PlayerDisconnected_" .. ply:SteamID64(), function(leaver)
+        hook.Add("PlayerDisconnected", "Taskmaster_StayNearTarget_PlayerDisconnected_" .. sid64, function(leaver)
             if ply.Task_StayNearTargetPlayer ~= leaver then return end
 
             local newTarget = GetRandomTarget(ply)
