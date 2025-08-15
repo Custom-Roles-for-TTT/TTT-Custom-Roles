@@ -47,9 +47,7 @@ if SERVER then
     end
 
     TASK.OnTaskAssigned = function(ply)
-        local target = GetRandomTarget(ply)
-
-        ply:SetProperty("Task_GetPlayerKilledPlayer", target, ply)
+        ply:SetProperty("Task_GetPlayerKilledPlayer", GetRandomTarget(ply), ply)
 
         hook.Add("PlayerDeath", "Taskmaster_GetPlayerKilled_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
             if ply.Task_GetPlayerKilledPlayer ~= victim then return end
@@ -60,12 +58,9 @@ if SERVER then
         hook.Add("PlayerDisconnected", "Taskmaster_GetPlayerKilled_PlayerDisconnected_" .. ply:SteamID64(), function(leaver)
             if ply.Task_GetPlayerKilledPlayer ~= leaver then return end
 
-            local newTarget = GetRandomTarget(ply)
-            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. newTarget:Nick())
-
-            -- Overwrite the previous target
-            target = newTarget
-            ply:SetProperty("Task_GetPlayerKilledPlayer", newTarget, ply)
+            local target = GetRandomTarget(ply)
+            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. target:Nick())
+            ply:SetProperty("Task_GetPlayerKilledPlayer", target, ply)
         end)
 
         net.Start("TTT_Taskmaster_GetPlayerKilled_Assigned")

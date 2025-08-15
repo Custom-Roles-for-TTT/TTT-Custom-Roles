@@ -107,19 +107,18 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local sid64 = ply:SteamID64()
-        local target = GetRandomTarget(ply)
-
-        ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
-
         local range = taskmaster_stayneartarget_range:GetInt() * UNITS_PER_METER
         local rangeSqr = range * range
         local time = taskmaster_stayneartarget_time:GetInt()
+
+        ply:SetProperty("Task_StayNearTargetPlayer", GetRandomTarget(ply), ply)
+
         timer.Create("TTTTaskmasterStayNearTargetTimer", 0.1, 0, function()
             if not IsPlayer(ply) then return end
-            if not IsPlayer(target) then return end
+            if not IsPlayer(ply.Task_StayNearTargetPlayer) then return end
 
             -- Within range
-            if ply:Alive() and not ply:IsSpec() and ply:GetPos():DistToSqr(target:GetPos()) <= rangeSqr then
+            if ply:Alive() and not ply:IsSpec() and ply:GetPos():DistToSqr(ply.Task_StayNearTargetPlayer:GetPos()) <= rangeSqr then
                 -- Just starting
                 if not ply.Task_StayNearTargetStart then
                     ply:SetProperty("Task_StayNearTargetStart", CurTime(), ply)
@@ -136,23 +135,17 @@ if SERVER then
         hook.Add("PostPlayerDeath", "Taskmaster_StayNearTarget_PostPlayerDeath_" .. sid64, function(victim)
             if ply.Task_StayNearTargetPlayer ~= victim then return end
 
-            local newTarget = GetRandomTarget(ply)
-            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! Your new target is " .. newTarget:Nick())
-
-            -- Overwrite the previous target
-            target = newTarget
-            ply:SetProperty("Task_StayNearTargetPlayer", newTarget, ply)
+            local target = GetRandomTarget(ply)
+            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! Your new target is " .. target:Nick())
+            ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
         end)
 
         hook.Add("PlayerDisconnected", "Taskmaster_StayNearTarget_PlayerDisconnected_" .. sid64, function(leaver)
             if ply.Task_StayNearTargetPlayer ~= leaver then return end
 
-            local newTarget = GetRandomTarget(ply)
-            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. newTarget:Nick())
-
-            -- Overwrite the previous target
-            target = newTarget
-            ply:SetProperty("Task_StayNearTargetPlayer", newTarget, ply)
+            local target = GetRandomTarget(ply)
+            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. target:Nick())
+            ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
         end)
 
         net.Start("TTT_Taskmaster_StayNearTarget_Assigned")
