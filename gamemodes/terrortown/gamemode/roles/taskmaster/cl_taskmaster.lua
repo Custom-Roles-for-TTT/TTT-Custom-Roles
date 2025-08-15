@@ -23,6 +23,8 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     LANG.AddToLanguage("english", "taskmaster_holstered", "STAY HOLSTERED - {time}")
     LANG.AddToLanguage("english", "taskmaster_standonplayer", "STAY ON PLAYER - {time}")
     LANG.AddToLanguage("english", "taskmaster_stayneartarget", "STAY NEAR TARGET - {time}")
+    LANG.AddToLanguage("english", "taskmaster_stayhigher", "STAY HIGHEST - {time}")
+    LANG.AddToLanguage("english", "taskmaster_staylower", "STAY LOWEST - {time}")
 
     -- Win conditions
     LANG.AddToLanguage("english", "win_taskmaster", "The {role} finished off their list!")
