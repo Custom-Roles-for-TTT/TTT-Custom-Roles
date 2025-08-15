@@ -100,11 +100,20 @@ function plymeta:RerollTask(taskId, free)
     table.insert(self.taskmasterRerolledTasks, taskId)
     self:SetProperty("taskmasterRerolledTasks", self.taskmasterRerolledTasks, self)
 
-    self:AssignTask(isKillTask, index)
+    local newTask = self:AssignTask(isKillTask, index)
     self:RemoveTask(taskId)
 
     if not free then
         self:SubtractCredits(1)
+    end
+
+    -- Reset their win state if they rerolled.
+    -- If they have already "won" and they are re-rolling, that means
+    -- they only had tasks left that don't block a win condition.
+    -- Rerolling one of those tasks no longer guarantees that they are winning,
+    -- unless the newly rolled task ALSO does not block a win condition.
+    if not newTask.allowRoundEnd and self.taskmasterShouldWin then
+        self:SetProperty("taskmasterShouldWin", false)
     end
 
     net.Start("TTT_TaskmasterUpdateTaskList")
@@ -135,7 +144,24 @@ function plymeta:CompleteTask(taskId)
                 break
             end
         end
-        if #activeTasksList == 0 then
+
+        local tasksRemaining = #activeTasksList
+        for _, id in pairs(activeTasksList) do
+            local task = TASKMASTER.killTasks[id]
+            if not task then
+                task = TASKMASTER.miscTasks[id]
+            end
+
+            if not task then continue end
+
+            -- Tasks that allow the round to end should not count for this check
+            -- since the Taskmaster wins even if they are still active
+            if task.allowRoundEnd then
+                tasksRemaining = tasksRemaining - 1
+            end
+        end
+
+        if tasksRemaining <= 0 then
             self:SetProperty("taskmasterShouldWin", true)
             -- TODO: Alert the player that they have finished all their tasks
         end
