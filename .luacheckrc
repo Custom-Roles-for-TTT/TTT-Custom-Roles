@@ -1250,6 +1250,7 @@ std = {
                 EqualValues = {},
                 ExcludedKeys = {},
                 GetKeys = {},
+                GetFirstItemWithPropertyValue = {},
                 HasItemWithPropertyValue = {},
                 HasTable = {},
                 HasValue = {},
