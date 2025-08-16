@@ -2,6 +2,20 @@ AddCSLuaFile()
 
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+-- Create this here since it has a different default value
+CreateConVar("ttt_mercenary_shop_mode", "2", FCVAR_REPLICATED)
+local mercenary_armor_loadout = CreateConVar("ttt_mercenary_armor_loadout", "1", FCVAR_REPLICATED, "Whether the mercenary should get body armor as part of their loadout", 0, 1)
+
+ROLE_CONVARS[ROLE_MERCENARY] = {}
+table.insert(ROLE_CONVARS[ROLE_MERCENARY], {
+    cvar = "ttt_mercenary_armor_loadout",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+
 -- Initialize role features
 ROLE_STARTING_CREDITS[ROLE_MERCENARY] = 1
 ROLE_HAS_SHOP_MODE[ROLE_MERCENARY] = true
@@ -64,11 +78,9 @@ hook.Add("Initialize", "Mercenary_Shared_Initialize", function()
 end)
 hook.Add("TTTPrepareRound", "Mercenary_Shared_TTTPrepareRound", function()
     InitializeEquipment()
+
+    -- Update the loadout state here because "Initialize" is called before the convar value is loaded
+    -- so we can't do it in InitializeEquipment
+    local armor = table.GetFirstItemWithPropertyValue(EquipmentItems[ROLE_MERCENARY], "id", EQUIP_ARMOR)
+    armor.loadout = mercenary_armor_loadout:GetBool()
 end)
-
--------------
--- CONVARS --
--------------
-
--- Create this here since it has a different default value
-CreateConVar("ttt_mercenary_shop_mode", "2", FCVAR_REPLICATED)

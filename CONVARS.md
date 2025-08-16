@@ -411,6 +411,7 @@ ttt_deputy_activation_credits                  0       // The number of credits 
 
 // Mercenary
 ttt_mercenary_credits_starting                 1       // The number of credits a Mercenary should start with
+ttt_mercenary_armor_loadout                    1       // Whether the mercenary should get body armor as part of their loadout
 
 // Veteran
 ttt_veteran_damage_bonus                       0.5     // Damage bonus that the Veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)

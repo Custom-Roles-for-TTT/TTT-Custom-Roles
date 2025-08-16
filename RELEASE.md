@@ -3,6 +3,9 @@
 ## 2.3.5 (Beta)
 **Released:**
 
+### Additions
+- Added ability to control whether the mercenary gets body armor as part of their loadout (defaults to `true`)
+
 ### Fixes
 - Fixed illusionist not blocking traitor team voice chat
 - Fixed promoted impersonator and deputy who are searched by a detective not always showing their true role on the scoreboard
