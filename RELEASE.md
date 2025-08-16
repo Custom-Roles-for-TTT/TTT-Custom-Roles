@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed illusionist not blocking traitor team voice chat
+- Fixed promoted impersonator and deputy who are searched by a detective not always showing their true role on the scoreboard
 
 ### Developer
 - Added `state` parameter to `TTTTeamVoiceChatTargets` hook
