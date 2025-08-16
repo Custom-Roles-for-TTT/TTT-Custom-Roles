@@ -73,6 +73,7 @@ if SERVER then
     CreateConVar("ttt_vampire_fang_dead_timer", "0", FCVAR_NONE, "The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as \"ttt_vampire_fang_timer\"", 0, 30)
     CreateConVar("ttt_vampire_fang_timer", "5", FCVAR_NONE, "The amount of time fangs must be used to fully drain a target's blood", 0, 30)
     CreateConVar("ttt_vampire_fang_heal", "50", FCVAR_NONE, "The amount of health a vampire will heal by when they fully drain a target's blood", 0, 100)
+    CreateConVar("ttt_vampire_fang_overheal_mode", "0", FCVAR_NONE, "How to handle healing a vampire over their maximum health. 0 - Increase health. 1 - Increase max health. 2 - Do both", 0, 2)
     CreateConVar("ttt_vampire_fang_overheal", "25", FCVAR_NONE, "The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood", 0, 100)
     CreateConVar("ttt_vampire_fang_overheal_living", "-1", FCVAR_NONE, "The amount of overheal (see \"ttt_vampire_fang_overheal\") to give if the vampire's target is living. Set to -1 to use the same amount as \"ttt_vampire_fang_overheal\" instead", -1, 100)
     CreateConVar("ttt_vampire_fang_unfreeze_delay", "2", FCVAR_NONE, "The number of seconds before players who were frozen in place by the fangs should be released if the vampire stops using the fangs on them", 0, 15)
@@ -364,16 +365,37 @@ function SWEP:DoKill()
 end
 
 function SWEP:DoHeal(living)
+    local mode = GetConVar("ttt_vampire_fang_overheal_mode"):GetInt()
+    local vamheal = GetConVar("ttt_vampire_fang_heal"):GetInt()
     local vamoverheal = GetConVar("ttt_vampire_fang_overheal_living"):GetInt()
     if not living or vamoverheal < 0 then
         vamoverheal = GetConVar("ttt_vampire_fang_overheal"):GetInt()
     end
 
-    local vamheal = GetConVar("ttt_vampire_fang_heal"):GetInt()
     local owner = self:GetOwner()
-    local health = math.min(owner:Health() + vamheal, owner:GetMaxHealth() + vamoverheal)
-    hook.Call("TTTVampireBodyEaten", nil, owner, self.TargetEntity, living, health - owner:Health())
-    owner:SetHealth(health)
+    local health = owner:Health()
+    local maxhealth = owner:GetMaxHealth()
+    local newhealth = math.min(health + vamheal, maxhealth + vamoverheal)
+    local maxchange = 0
+
+    -- If we've exceeded the max health and we're set to not actually overheal, update max health instead
+    if newhealth > maxhealth and mode > VAMPIRE_OVERHEAL_MODE_HEALTH then
+        -- Count how much the max health is about to change
+        maxchange = newhealth - maxhealth
+        owner:SetMaxHealth(newhealth)
+
+        -- If we're only changing the max health, reduce the amount we're healing to the previous max health
+        if mode == VAMPIRE_OVERHEAL_MODE_MAX_HEALTH then
+            newhealth = maxhealth
+        -- Otherwise heal them by the amount their max health changed
+        else
+            newhealth = health + maxchange
+        end
+    end
+
+    local healed = newhealth - owner:Health()
+    owner:SetHealth(newhealth)
+    hook.Call("TTTVampireBodyEaten", nil, owner, self.TargetEntity, living, healed, maxchange)
 end
 
 function SWEP:UnfreezeTarget()

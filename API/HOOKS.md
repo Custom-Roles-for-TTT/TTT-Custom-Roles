@@ -1341,7 +1341,7 @@ Called after globals are synced but but before role colors and strings are set. 
 *Realm:* Client and Server\
 *Added in:* 1.2.7
 
-### TTTVampireBodyEaten(ply, ent, living, healed)
+### TTTVampireBodyEaten(ply, ent, living, healed, maxchange)
 Called after a vampire eats a body.\
 *Realm:* Server\
 *Added in:* 1.6.16\
@@ -1350,6 +1350,7 @@ Called after a vampire eats a body.\
 - *ent* - The target entity. Generally either a player or a ragdoll
 - *living* - Whether the target entity was living at the time they were eaten
 - *healed* - The amount of health the player gained from eating the body
+- *maxchange* - The amount of maximum health the player gained from eating the body *(Added in 2.3.5)*
 
 ### TTTVampireInvisibilityChange(ply, invisible)
 Called when a vampire starts or ends their invisibility.\

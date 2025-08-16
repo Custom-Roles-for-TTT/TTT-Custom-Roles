@@ -5,6 +5,7 @@
 
 ### Additions
 - Added ability to control whether the mercenary gets body armor as part of their loadout (defaults to `true`)
+- Added ability to change vampire's fang drain overheal to overheal (default), increase max health, or do both
 
 ### Fixes
 - Fixed illusionist not blocking traitor team voice chat
@@ -13,6 +14,7 @@
 ### Developer
 - Added `state` parameter to `TTTTeamVoiceChatTargets` hook
 - Added `table.GetFirstItemWithPropertyValue` static method
+- Added `maxchange` parameter to `TTTVampireBodyEaten` hook
 
 ## 2.3.4 (Beta)
 **Released: August 9th, 2025**
