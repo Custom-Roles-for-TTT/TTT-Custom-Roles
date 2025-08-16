@@ -9,6 +9,7 @@
 
 ### Developer
 - Added `state` parameter to `TTTTeamVoiceChatTargets` hook
+- Added `table.GetFirstItemWithPropertyValue` static method
 
 ## 2.3.4 (Beta)
 **Released: August 9th, 2025**

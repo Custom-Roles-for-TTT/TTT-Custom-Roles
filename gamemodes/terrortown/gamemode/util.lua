@@ -223,12 +223,16 @@ function table.HasValue(tbl, val)
 end
 
 function table.HasItemWithPropertyValue(tbl, key, val)
-    if not tbl or not key then return end
+    return table.GetFirstItemWithPropertyValue(tbl, key, val) ~= nil
+end
+
+function table.GetFirstItemWithPropertyValue(tbl, key, val)
+    if not tbl or not key then return nil end
 
     for _, v in pairs(tbl) do
-        if v[key] and v[key] == val then return true end
+        if v[key] == val then return v end
     end
-    return false
+    return nil
 end
 
 -- Value equality for tables
