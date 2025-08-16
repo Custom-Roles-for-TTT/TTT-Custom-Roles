@@ -447,7 +447,8 @@ local function ShowSearchScreen(search_raw)
                 btn:SetDisabled(true)
             end,
             disabled = function()
-                return client:IsSpec() or not client:KeyDownLast(IN_WALK) or CORPSE.GetFound(rag, false)
+                local covert = client:KeyDownLast(IN_WALK) or not GetConVar("ttt_corpse_search_auto_confirm"):GetBool()
+                return client:IsSpec() or not covert or CORPSE.GetFound(rag, false)
             end
         })
 

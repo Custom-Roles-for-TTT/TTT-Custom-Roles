@@ -1242,7 +1242,8 @@ ttt_dna_scan_detectives_loadout                0       // Whether all detectives
 ttt_dna_scan_on_dialog                         1       // Whether to show a button to open the DNA scanner on the body search dialog
 ttt_dna_scan_only_drop_on_death                0       // Whether the DNA scanner should only be droppable when the holder dies
 ttt_spectator_corpse_search                    1       // Whether spectators can search bodies (not shared with other players)
-ttt_corpse_search_not_shared                   0       // Whether corpse searches are not shared with other players (only affects non-detective-like searchers)
+ttt_corpse_search_auto_confirm                 1       // Whether corpse searches are not shared with other players (only affects non-detective-like searchers)
+ttt_corpse_search_not_shared                   0       // Whether corpse searches automatically confirm the death of the player
 ttt_corpse_search_killer_team_text_traitor     0       // Whether corpse searches should include flavor text hinting at the team of their traitor team killer
 ttt_corpse_search_killer_team_text_innocent    0       // Whether corpse searches should include flavor text hinting at the team of their innocent team killer
 ttt_corpse_search_killer_team_text_monster     0       // Whether corpse searches should include flavor text hinting at the team of their monster team killer

@@ -6,6 +6,7 @@
 ### Additions
 - Added ability to control whether the mercenary gets body armor as part of their loadout (defaults to `true`)
 - Added ability to change vampire's fang drain overheal to overheal (default), increase max health, or do both
+- Added ability to disable automatically confirming a players death when searching their body (disabled by default)
 
 ### Fixes
 - Fixed illusionist not blocking traitor team voice chat
