@@ -2,15 +2,15 @@ local hook = hook
 
 local TASK = {}
 
-TASK.id = "killwithpistol"
+TASK.id = "killaiming"
 TASK.isKillTask = true
 
 TASK.Name = function(ply)
-    return "Kill a Player With a Pistol"
+    return "Kill a Player While Aiming"
 end
 
 TASK.Description = function(ply)
-    return "Kill another player using a pistol"
+    return "Kill another player while aiming down sights"
 end
 
 if SERVER then
@@ -21,18 +21,18 @@ if SERVER then
     TASK.RequiredFeatures = {}
 
     TASK.OnTaskAssigned = function(ply)
-        hook.Add("PlayerDeath", "Taskmaster_KillWithPistol_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
+        hook.Add("PlayerDeath", "Taskmaster_KillAiming_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
             if not IsPlayer(victim) then return end
             if not IsPlayer(attacker) or not attacker:IsActiveTaskmaster() or attacker ~= ply then return end
 
-            if IsValid(inflictor) and inflictor:IsWeapon() and inflictor.Kind == WEAPON_PISTOL then
+            if IsValid(inflictor) and inflictor:IsWeapon() and inflictor.GetIronsights and inflictor:GetIronsights() then
                 ply:CompleteTask(TASK.id)
             end
         end)
     end
 
     TASK.OnTaskRemoved = function(ply)
-        hook.Remove("PlayerDeath", "Taskmaster_KillWithPistol_PlayerDeath_" .. ply:SteamID64())
+        hook.Remove("PlayerDeath", "Taskmaster_KillAiming_PlayerDeath_" .. ply:SteamID64())
     end
 
     TASK.OnTaskComplete = TASK.OnTaskRemoved
