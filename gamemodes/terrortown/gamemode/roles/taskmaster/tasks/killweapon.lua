@@ -6,8 +6,6 @@ local math = math
 local MathRandom = math.random
 local TableInsert = table.insert
 
-local TryTranslation = LANG.TryTranslation
-
 local TASK = {}
 
 TASK.id = "killweapon"
@@ -15,10 +13,10 @@ TASK.isKillTask = true
 
 TASK.Name = function(ply)
     local weapon = "Specific Weapon"
-    if ply.Task_KillWeaponClass then
+    if CLIENT and ply.Task_KillWeaponClass then
         for _, wep in ipairs(weapons.GetList()) do
             if ply.Task_KillWeaponClass == WEPS.GetClass(wep) then
-                weapon = TryTranslation(wep.PrintName)
+                weapon = LANG.TryTranslation(wep.PrintName)
                 break
             end
         end
@@ -28,10 +26,10 @@ end
 
 TASK.Description = function(ply)
     local weapon = "specific weapon"
-    if ply.Task_KillWeaponClass then
+    if CLIENT and ply.Task_KillWeaponClass then
         for _, wep in ipairs(weapons.GetList()) do
             if ply.Task_KillWeaponClass == WEPS.GetClass(wep) then
-                weapon = TryTranslation(wep.PrintName)
+                weapon = LANG.TryTranslation(wep.PrintName)
                 break
             end
         end
