@@ -3,11 +3,11 @@ local net = net
 
 local TASK = {}
 
-TASK.id = "killairbourne"
+TASK.id = "killairborne"
 TASK.isKillTask = true
 
 TASK.Name = function(ply)
-    return "Kill an Airbourne Player"
+    return "Kill an Airborne Player"
 end
 
 TASK.Description = function(ply)
@@ -15,8 +15,8 @@ TASK.Description = function(ply)
 end
 
 if SERVER then
-    util.AddNetworkString("TTT_Taskmaster_KillAirbourne_Assigned")
-    util.AddNetworkString("TTT_Taskmaster_KillAirbourne_Cleanup")
+    util.AddNetworkString("TTT_Taskmaster_KillAirborne_Assigned")
+    util.AddNetworkString("TTT_Taskmaster_KillAirborne_Cleanup")
 
     TASK.CanAssignTask = function(ply)
         return true
@@ -27,7 +27,7 @@ if SERVER then
     }
 
     TASK.OnTaskAssigned = function(ply)
-        hook.Add("PlayerDeath", "Taskmaster_KillAirbourne_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
+        hook.Add("PlayerDeath", "Taskmaster_KillAirborne_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
             if not IsPlayer(victim) then return end
             if not IsPlayer(attacker) or not attacker:IsActiveTaskmaster() or attacker ~= ply then return end
 
@@ -36,13 +36,13 @@ if SERVER then
             end
         end)
 
-        net.Start("TTT_Taskmaster_KillAirbourne_Assigned")
+        net.Start("TTT_Taskmaster_KillAirborne_Assigned")
         net.Send(ply)
     end
 
     TASK.OnTaskRemoved = function(ply)
-        hook.Remove("PlayerDeath", "Taskmaster_KillAirbourne_PlayerDeath_" .. ply:SteamID64())
-        net.Start("TTT_Taskmaster_KillAirbourne_Cleanup")
+        hook.Remove("PlayerDeath", "Taskmaster_KillAirborne_PlayerDeath_" .. ply:SteamID64())
+        net.Start("TTT_Taskmaster_KillAirborne_Cleanup")
         net.Send(ply)
     end
 
@@ -50,8 +50,8 @@ if SERVER then
 end
 
 if CLIENT then
-    net.Receive("TTT_Taskmaster_KillAirbourne_Assigned", function()
-        hook.Add("TTTTargetIDPlayerText", "Taskmaster_KillAirbourne_TTTTargetIDPlayerText_" .. LocalPlayer():SteamID64(), function(ent, cli, text, col, secondaryText)
+    net.Receive("TTT_Taskmaster_KillAirborne_Assigned", function()
+        hook.Add("TTTTargetIDPlayerText", "Taskmaster_KillAirborne_TTTTargetIDPlayerText_" .. LocalPlayer():SteamID64(), function(ent, cli, text, col, secondaryText)
             if not cli:IsActiveTaskmaster() or not IsPlayer(ent) then return end
 
             if ent:OnGround() then
@@ -62,8 +62,8 @@ if CLIENT then
         end)
     end)
 
-    net.Receive("TTT_Taskmaster_KillAirbourne_Cleanup", function()
-        hook.Remove("TTTTargetIDPlayerText", "Taskmaster_KillAirbourne_TTTTargetIDPlayerText_"  .. LocalPlayer():SteamID64())
+    net.Receive("TTT_Taskmaster_KillAirborne_Cleanup", function()
+        hook.Remove("TTTTargetIDPlayerText", "Taskmaster_KillAirborne_TTTTargetIDPlayerText_"  .. LocalPlayer():SteamID64())
     end)
 end
 
