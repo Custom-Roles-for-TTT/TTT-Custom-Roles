@@ -246,7 +246,7 @@ if CLIENT then
             local elapsed = MathMax(0, CurTime() - startTime)
             local remaining = time - elapsed
             local message = PT("taskmaster_stayneartarget", { time = util.SimpleTime(remaining, "%02i:%02i") })
-            local color = Color(25, 200, 25, 155)
+            local color = Color(0, 255, 0, 155)
 
             local x = ScrW() / 2.0
             local y = ScrH() / 2.0

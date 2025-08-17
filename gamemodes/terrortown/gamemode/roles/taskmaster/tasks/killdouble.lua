@@ -14,7 +14,7 @@ TASK.isKillTask = true
 
 local taskmaster_killdouble_time = CreateConVar("ttt_taskmaster_killdouble_time", "5", FCVAR_REPLICATED, "The time (in seconds) the taskmaster has between kills to complete the 'Get a Double Kill' task", 0, 30)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_stayneartarget_time",
+    cvar = "ttt_taskmaster_killdouble_time",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
@@ -25,7 +25,6 @@ end
 
 TASK.Description = function(ply)
     local description =  "Kill two players within "
-
     local time = taskmaster_killdouble_time:GetInt()
     description = description .. time .. " second"
     if time ~= 1 then
@@ -89,7 +88,7 @@ if CLIENT then
             local elapsed = MathMax(0, CurTime() - startTime)
             local remaining = time - elapsed
             local message = PT("taskmaster_killdouble", { time = util.SimpleTime(remaining, "%02i:%02i") })
-            local color = Color(25, 200, 25, 155)
+            local color = Color(0, 255, 0, 155)
 
             local x = ScrW() / 2.0
             local y = ScrH() / 2.0

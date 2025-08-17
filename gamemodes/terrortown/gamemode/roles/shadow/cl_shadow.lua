@@ -492,7 +492,7 @@ AddHook("HUDPaint", "Shadow_HUDPaint", function()
 
             message = PT("shadow_buff_progress", { time = util.SimpleTime(remaining, "%02i:%02i") })
             total = shadow_target_buff_delay:GetInt()
-            color = Color(25, 200, 25, 155)
+            color = Color(0, 255, 0, 155)
         end
 
         -- If we didn't get everything set, forget it
