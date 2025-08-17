@@ -3,6 +3,10 @@
 ## 2.3.5 (Beta)
 **Released:**
 
+### Changes
+- Updated weapon switch and pickup HUD elements to use the same logic for getting weapon names
+  - Fixes very rare cases where they would say different things
+
 ### Additions
 - Added ability to control whether the mercenary gets body armor as part of their loadout (defaults to `true`)
 - Added ability to change vampire's fang drain overheal to overheal (default), increase max health, or do both
