@@ -29,7 +29,7 @@ if SERVER then
     util.AddNetworkString("TTT_Taskmaster_GetPlayerKilled_Cleanup")
 
     local function GetRandomTarget(ply)
-        local passive
+        local passive = nil
         -- Find the first random living player
         for _, p in RandomPairs(player.GetAll()) do
             if p == ply then continue end
