@@ -35,7 +35,7 @@ if SERVER then
             if not IsPlayer(victim) then return end
             if not IsPlayer(attacker) or not attacker:IsActiveTaskmaster() or attacker ~= ply then return end
 
-            if not victim.Task_KillOneHitAttacked or victim.Task_KillOneHitAttacked + 0.1 > CurTime() then -- Allow for a very small delay to account for things such as shotgun pellets
+            if not victim.Task_KillOneHitAttacked or CurTime() < victim.Task_KillOneHitAttacked + 0.1 then -- Allow for a very small delay to account for things such as shotgun pellets
                 ply:CompleteTask(TASK.id)
             end
         end)
