@@ -7,6 +7,7 @@ local timer = timer
 local util = util
 
 local MathMax = math.max
+local MathFloor = math.floor
 
 local TASK = {}
 
@@ -20,12 +21,23 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 })
 
 TASK.Name = function(ply)
-    return "Take Damage"
+    local time = taskmaster_takedamage_time:GetInt()
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = time
+    else
+        local startTime = ply.Task_TakeDamageStart
+        if startTime then
+            progress = MathFloor(MathMax(0, CurTime() - startTime))
+        end
+    end
+
+    return "Take Damage and Survive (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
     local time = taskmaster_takedamage_time:GetInt()
-    local desc = "Take damage and survive for " .. time .. " second"
+    local desc = "Get another player to deal damage to you and survive for " .. time .. " second"
     if time ~= 1 then
         desc = desc .. "s"
     end
@@ -58,6 +70,10 @@ if SERVER then
         hook.Add("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64(), function(entity, dmginfo, wasDamageTaken)
             if not wasDamageTaken then return end
             if entity ~= ply then return end
+
+            local attacker = dmginfo:GetAttacker()
+            if not IsPlayer(attacker) or attacker == entity then return end
+
             ply:SetProperty("Task_TakeDamageStart", CurTime(), ply)
         end)
 

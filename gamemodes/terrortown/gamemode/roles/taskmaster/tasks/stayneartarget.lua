@@ -13,6 +13,7 @@ local MathMax = math.max
 local MathPi = math.pi
 local MathRand = math.Rand
 local MathSin = math.sin
+local MathFloor = math.floor
 
 local TASK = {}
 
@@ -36,7 +37,19 @@ TASK.Name = function(ply)
     if IsPlayer(ply.Task_StayNearTargetPlayer) then
         name = ply.Task_StayNearTargetPlayer:Nick()
     end
-    return "Stay Near " .. name
+
+    local time = taskmaster_stayneartarget_time:GetInt()
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = time
+    else
+        local startTime = ply.Task_StayNearTargetStart
+        if startTime then
+            progress = MathFloor(MathMax(0, CurTime() - startTime))
+        end
+    end
+
+    return "Stay Near " .. name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
@@ -86,16 +99,6 @@ if SERVER then
     util.AddNetworkString("TTT_Taskmaster_StayNearTarget_Assigned")
     util.AddNetworkString("TTT_Taskmaster_StayNearTarget_Cleanup")
 
-    TASK.CanAssignTask = function(ply)
-        return true
-    end
-
-    TASK.RequiredFeatures = {
-        TASKMASTER_TF_TARGETID_PLAYERICON,
-        TASKMASTER_TF_PROGRESSBAR,
-        TASKMASTER_TF_PARTICLERADIUS
-    }
-
     local function GetRandomTarget(ply)
         -- Find the first random living player
         for _, p in RandomPairs(player.GetAll()) do
@@ -105,6 +108,16 @@ if SERVER then
         end
         return nil
     end
+
+    TASK.CanAssignTask = function(ply)
+        return GetRandomTarget(ply) ~= nil
+    end
+
+    TASK.RequiredFeatures = {
+        TASKMASTER_TF_TARGETID_PLAYERICON,
+        TASKMASTER_TF_PROGRESSBAR,
+        TASKMASTER_TF_PARTICLERADIUS
+    }
 
     TASK.OnTaskAssigned = function(ply)
         local sid64 = ply:SteamID64()
@@ -137,26 +150,33 @@ if SERVER then
             if ply.Task_StayNearTargetPlayer ~= victim then return end
 
             local target = GetRandomTarget(ply)
-            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! Your new target is " .. target:Nick())
-            ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
+            if target then
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! Your new target is " .. target:Nick())
+                ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
+            else
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! There are no new valid targets and you must reroll.")
+            end
         end)
 
         hook.Add("PlayerDisconnected", "Taskmaster_StayNearTarget_PlayerDisconnected_" .. sid64, function(leaver)
             if ply.Task_StayNearTargetPlayer ~= leaver then return end
 
             local target = GetRandomTarget(ply)
-            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. target:Nick())
-            ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
+            if target then
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. target:Nick())
+                ply:SetProperty("Task_StayNearTargetPlayer", target, ply)
+            else
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared!  There are no new valid targets and you must reroll.")
+            end
         end)
 
         net.Start("TTT_Taskmaster_StayNearTarget_Assigned")
         net.Send(ply)
     end
 
-    TASK.OnTaskRemoved = function(ply)
+    TASK.OnTaskComplete = function(ply)
         timer.Remove("TTTTaskmasterStayNearTargetTimer")
 
-        ply:ClearProperty("Task_StayNearTargetPlayer", ply)
         ply:ClearProperty("Task_StayNearTargetStart", ply)
 
         hook.Remove("PostPlayerDeath", "Taskmaster_StayNearTarget_PostPlayerDeath_" .. ply:SteamID64())
@@ -166,7 +186,10 @@ if SERVER then
         net.Send(ply)
     end
 
-    TASK.OnTaskComplete = TASK.OnTaskRemoved
+    TASK.OnTaskRemoved = function(ply)
+        TASK.OnTaskComplete(ply)
+        ply:ClearProperty("Task_StayNearTargetPlayer", ply) -- Don't clear the player name if the task was completed so it still shows up in the task name/description
+    end
 end
 
 if CLIENT then

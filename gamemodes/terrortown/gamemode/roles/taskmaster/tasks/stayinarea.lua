@@ -11,6 +11,7 @@ local MathMax = math.max
 local MathPi = math.pi
 local MathRand = math.Rand
 local MathSin = math.sin
+local MathFloor = math.floor
 
 local TASK = {}
 
@@ -35,7 +36,18 @@ TASK.Name = function(ply)
     if time ~= 1 then
         name = name .. "s"
     end
-    return name
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = time
+    else
+        local startTime = ply.Task_StayInAreaStart
+        if startTime then
+            progress = MathFloor(MathMax(0, CurTime() - startTime))
+        end
+    end
+
+    return name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
@@ -155,6 +167,8 @@ if CLIENT then
                 ply.TaskmasterRadiusNextPart = nil
             end
         end)
+
+        -- TODO: Needs a visual to help locate the area if you can't immediately see it. Maybe copy the same thing we have for the shadow?
 
         hook.Add("HUDPaint", "Taskmaster_StayInArea_HUDPaint_" .. sid64, function()
             if not client:IsActiveTaskmaster() then return end

@@ -7,6 +7,7 @@ local timer = timer
 local util = util
 
 local MathMax = math.max
+local MathFloor = math.floor
 
 local TASK = {}
 
@@ -27,13 +28,25 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local amount = taskmaster_healthunder_amount:GetInt()
-    return "Stay Under " .. amount .. " HP"
+    local time = taskmaster_healthunder_time:GetInt()
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = time
+    else
+        local startTime = ply.Task_HealthUnderStart
+        if startTime then
+            progress = MathFloor(MathMax(0, CurTime() - startTime))
+        end
+    end
+
+    return "Survive Under " .. amount .. " Health (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
     local time = taskmaster_healthunder_time:GetInt()
     local amount = taskmaster_healthunder_amount:GetInt()
-    local desc = "Stay under " .. amount .. " health for " .. time .. " second"
+    local desc = "Survive under " .. amount .. " health for " .. time .. " second"
     if time ~= 1 then
         desc = desc .. "s"
     end

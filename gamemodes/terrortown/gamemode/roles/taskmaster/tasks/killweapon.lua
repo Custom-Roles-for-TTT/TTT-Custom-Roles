@@ -15,9 +15,11 @@ TASK.isKillTask = true
 TASK.Name = function(ply)
     local weapon = "Specific Weapon"
     if ply.Task_KillWeaponClass then
-        local wep = util.WeaponForClass(wep)
-        if IsValid(wep) then
-            weapon = TryTranslation(wep.GetPrintName and wep:GetPrintName() or wep.PrintName)
+        for _, wep in ipairs(weapons.GetList()) do
+            if ply.Task_KillWeaponClass == WEPS.GetClass(wep) then
+                weapon = TryTranslation(wep.PrintName)
+                break
+            end
         end
     end
     return "Kill a Player With a " .. weapon
@@ -26,9 +28,11 @@ end
 TASK.Description = function(ply)
     local weapon = "specific weapon"
     if ply.Task_KillWeaponClass then
-        local wep = util.WeaponForClass(wep)
-        if IsValid(wep) then
-            weapon = TryTranslation(wep.GetPrintName and wep:GetPrintName() or wep.PrintName)
+        for _, wep in ipairs(weapons.GetList()) do
+            if ply.Task_KillWeaponClass == WEPS.GetClass(wep) then
+                weapon = TryTranslation(wep.PrintName)
+                break
+            end
         end
     end
     return "Kill another player using a " .. weapon

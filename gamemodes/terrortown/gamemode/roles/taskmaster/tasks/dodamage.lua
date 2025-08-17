@@ -11,12 +11,20 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local amount = taskmaster_dodamage_amount:GetInt()
-    return "Do " .. amount .. " Damage"
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = amount
+    else
+        progress = ply.Task_DoDamageTotal
+    end
+
+    return "Deal " .. amount .. " Damage (" .. progress .. "/" .. amount .. ")"
 end
 
 TASK.Description = function(ply)
     local amount = taskmaster_dodamage_amount:GetInt()
-    return "Do " .. amount .. " damage to props and other players"
+    return "Deal " .. amount .. " damage to props and other players"
 end
 
 if SERVER then
@@ -28,7 +36,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local amount = taskmaster_dodamage_amount:GetInt()
-        local total = 0
+        ply:SetProperty("Task_DoDamageTotal", 0, ply)
         hook.Add("PostEntityTakeDamage", "Taskmaster_DoDamage_PostEntityTakeDamage_" .. ply:SteamID64(), function(entity, dmginfo, wasDamageTaken)
             if not wasDamageTaken then return end
             if entity == ply then return end
@@ -36,8 +44,8 @@ if SERVER then
             local attacker = dmginfo:GetAttacker()
             if not IsPlayer(attacker) or attacker ~= ply then return end
 
-            total = total + dmginfo:GetDamage()
-            if total >= amount then
+            ply:SetProperty("Task_DoDamageTotal", ply.Task_DoDamageTotal + dmginfo:GetDamage(), ply)
+            if ply.Task_DoDamageTotal >= amount then
                 ply:CompleteTask(TASK.id)
             end
         end)
@@ -45,6 +53,8 @@ if SERVER then
 
     TASK.OnTaskRemoved = function(ply)
         hook.Remove("PostEntityTakeDamage", "Taskmaster_DoDamage_PostEntityTakeDamage_" .. ply:SteamID64())
+
+        ply:ClearProperty("Task_DoDamageTotal", ply)
     end
 
     TASK.OnTaskComplete = TASK.OnTaskRemoved

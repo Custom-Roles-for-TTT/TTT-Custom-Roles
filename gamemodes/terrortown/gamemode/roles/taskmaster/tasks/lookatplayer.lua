@@ -7,6 +7,7 @@ local timer = timer
 local util = util
 
 local MathMax = math.max
+local MathFloor = math.floor
 
 local TASK = {}
 
@@ -24,7 +25,19 @@ TASK.Name = function(ply)
     if IsPlayer(ply.Task_LookAtPlayerPlayer) then
         name = ply.Task_LookAtPlayerPlayer:Nick()
     end
-    return "Look at " .. name
+
+    local time = taskmaster_lookatplayer_time:GetInt()
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = time
+    else
+        local startTime = ply.Task_LookAtPlayerStart
+        if startTime then
+            progress = MathFloor(MathMax(0, CurTime() - startTime))
+        end
+    end
+
+    return "Look at " .. name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
@@ -44,15 +57,6 @@ if SERVER then
     util.AddNetworkString("TTT_Taskmaster_LookAtPlayer_Assigned")
     util.AddNetworkString("TTT_Taskmaster_LookAtPlayer_Cleanup")
 
-    TASK.CanAssignTask = function(ply)
-        return true
-    end
-
-    TASK.RequiredFeatures = {
-        TASKMASTER_TF_TARGETID_PLAYERICON,
-        TASKMASTER_TF_PROGRESSBAR
-    }
-
     local function GetRandomTarget(ply)
         -- Find the first random living player
         for _, p in RandomPairs(player.GetAll()) do
@@ -62,6 +66,15 @@ if SERVER then
         end
         return nil
     end
+
+    TASK.CanAssignTask = function(ply)
+        return GetRandomTarget(ply) ~= nil
+    end
+
+    TASK.RequiredFeatures = {
+        TASKMASTER_TF_TARGETID_PLAYERICON,
+        TASKMASTER_TF_PROGRESSBAR
+    }
 
     local function IsTargetInView(ply)
         if not IsValid(ply) then return false end
@@ -96,23 +109,33 @@ if SERVER then
 
         hook.Add("PlayerDeath", "Taskmaster_LookAtPlayer_PlayerDeath_" .. sid64, function(victim, inflictor, attacker)
             if ply.Task_LookAtPlayerPlayer ~= victim then return end
-            if attacker == ply then return end
-            ply:CompleteTask(TASK.id)
+
+            local target = GetRandomTarget(ply)
+            if target then
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! Your new target is " .. target:Nick())
+                ply:SetProperty("Task_LookAtPlayerPlayer", target, ply)
+            else
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! There are no new valid targets and you must reroll.")
+            end
         end)
 
         hook.Add("PlayerDisconnected", "Taskmaster_LookAtPlayer_PlayerDisconnected_" .. sid64, function(leaver)
             if ply.Task_LookAtPlayerPlayer ~= leaver then return end
 
             local target = GetRandomTarget(ply)
-            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. target:Nick())
-            ply:SetProperty("Task_LookAtPlayerPlayer", target, ply)
+            if target then
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. target:Nick())
+                ply:SetProperty("Task_LookAtPlayerPlayer", target, ply)
+            else
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared!  There are no new valid targets and you must reroll.")
+            end
         end)
 
         net.Start("TTT_Taskmaster_LookAtPlayer_Assigned")
         net.Send(ply)
     end
 
-    TASK.OnTaskRemoved = function(ply)
+    TASK.OnTaskComplete = function(ply)
         timer.Remove("TTTTaskmasterLookAtPlayerTimer")
 
         local sid64 = ply:SteamID64()
@@ -120,13 +143,15 @@ if SERVER then
         hook.Remove("PlayerDisconnected", "Taskmaster_LookAtPlayer_PlayerDisconnected_" .. sid64)
 
         ply:ClearProperty("Task_LookAtPlayerStart", ply)
-        ply:ClearProperty("Task_LookAtPlayerPlayer", ply)
 
         net.Start("TTT_Taskmaster_LookAtPlayer_Cleanup")
         net.Send(ply)
     end
 
-    TASK.OnTaskComplete = TASK.OnTaskRemoved
+    TASK.OnTaskRemoved = function(ply)
+        TASK.OnTaskComplete(ply)
+        ply:ClearProperty("Task_LookAtPlayerPlayer", ply) -- Don't clear the player name if the task was completed so it still shows up in the task name/description
+    end
 end
 
 if CLIENT then

@@ -7,6 +7,7 @@ local timer = timer
 local util = util
 
 local MathMax = math.max
+local MathFloor = math.floor
 
 local TASK = {}
 
@@ -21,16 +22,27 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local time = taskmaster_carrycorpse_time:GetInt()
-    local name = "Carry Corpse for " .. time .. " Second"
+    local name = "Carry a Corpse for " .. time .. " Second"
     if time ~= 1 then
         name = name .. "s"
     end
-    return name
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = time
+    else
+        local startTime = ply.Task_CarryCorpseStart
+        if startTime then
+            progress = MathFloor(MathMax(0, CurTime() - startTime))
+        end
+    end
+
+    return name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
     local time = taskmaster_carrycorpse_time:GetInt()
-    local desc = "Carry a player corpse for " .. time .. " second"
+    local desc = "Carry a dead player's corpse for " .. time .. " second"
     if time ~= 1 then
         desc = desc .. "s consecutively"
     end

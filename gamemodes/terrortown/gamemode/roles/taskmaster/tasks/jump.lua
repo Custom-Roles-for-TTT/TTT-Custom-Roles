@@ -2,7 +2,7 @@ local TASK = {}
 
 TASK.id = "jump"
 
-local taskmaster_jump_times = CreateConVar("ttt_taskmaster_jump_times", "25", FCVAR_REPLICATED, "The jump of times a player must jump to complete the 'Jump X Times' task", 1, 100)
+local taskmaster_jump_times = CreateConVar("ttt_taskmaster_jump_times", "100", FCVAR_REPLICATED, "The jump of times a player must jump to complete the 'Jump X Times' task", 1, 500)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_jump_times",
     type = ROLE_CONVAR_TYPE_NUM,
@@ -15,7 +15,15 @@ TASK.Name = function(ply)
     if times ~= 1 then
         name = name .. "s"
     end
-    return name
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = times
+    else
+        progress = ply.Task_CrowbarCount
+    end
+
+    return name .. " (" .. progress .. "/" .. times .. ")"
 end
 
 TASK.Description = function(ply)
@@ -36,12 +44,12 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local times = taskmaster_jump_times:GetInt()
-        local count = 0
+        ply:SetProperty("Task_JumpCount", 0, ply)
         hook.Add("OnPlayerJump", "Taskmaster_Jump_OnPlayerJump_" .. ply:SteamID64(), function(caller)
             if not IsPlayer(caller) then return end
             if caller ~= ply then return end
-            count = count + 1
-            if count >= times then
+            ply:SetProperty("Task_JumpCount", ply.Task_JumpCount + 1, ply)
+            if ply.Task_JumpCount >= times then
                 ply:CompleteTask(TASK.id)
             end
         end)
@@ -49,6 +57,8 @@ if SERVER then
 
     TASK.OnTaskRemoved = function(ply)
         hook.Remove("OnPlayerJump", "Taskmaster_Jump_OnPlayerJump_" .. ply:SteamID64())
+
+        ply:ClearProperty("Task_JumpCount", ply)
     end
 
     TASK.OnTaskComplete = TASK.OnTaskRemoved

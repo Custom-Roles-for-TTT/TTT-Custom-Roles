@@ -3,11 +3,11 @@ local TASK = {}
 TASK.id = "pickupshopitem"
 
 TASK.Name = function(ply)
-    return "Pick up Shop Item"
+    return "Pick up a Shop Item"
 end
 
 TASK.Description = function(ply)
-    return "Pick up a shop item dropped on the ground"
+    return "Pick up a shop item that another player dropped on the ground"
 end
 
 if SERVER then

@@ -15,7 +15,15 @@ TASK.Name = function(ply)
     if times ~= 1 then
         name = name .. "s"
     end
-    return name
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = times
+    else
+        progress = ply.Task_FireBulletsCount
+    end
+
+    return name .. " (" .. progress .. "/" .. times .. ")"
 end
 
 TASK.Description = function(ply)
@@ -36,12 +44,12 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local times = taskmaster_firebullets_times:GetInt()
-        local count = 0
+        ply:SetProperty("Task_FireBulletsCount", 0, ply)
         hook.Add("PostEntityFireBullets", "Taskmaster_FireBullets_PostEntityFireBullets_" .. ply:SteamID64(), function(entity, data)
             if not IsPlayer(entity) then return end
             if entity ~= ply then return end
-            count = count + 1
-            if count >= times then
+            ply:SetProperty("Task_FireBulletsCount", ply.Task_FireBulletsCount + 1, ply)
+            if ply.Task_FireBulletsCount >= times then
                 ply:CompleteTask(TASK.id)
             end
         end)
@@ -49,6 +57,8 @@ if SERVER then
 
     TASK.OnTaskRemoved = function(ply)
         hook.Remove("PostEntityFireBullets", "Taskmaster_FireBullets_PostEntityFireBullets_" .. ply:SteamID64())
+
+        ply:ClearProperty("Task_FireBulletsCount", ply)
     end
 
     TASK.OnTaskComplete = TASK.OnTaskRemoved

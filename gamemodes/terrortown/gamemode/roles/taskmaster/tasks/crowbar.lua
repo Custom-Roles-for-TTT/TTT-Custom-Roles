@@ -13,16 +13,24 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local times = taskmaster_crowbar_times:GetInt()
-    local name = "Swing Crowbar " .. times .. " Time"
+    local name = "Swing a Crowbar " .. times .. " Time"
     if times ~= 1 then
         name = name .. "s"
     end
-    return name
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = times
+    else
+        progress = ply.Task_CrowbarCount
+    end
+
+    return name .. " (" .. progress .. "/" .. times .. ")"
 end
 
 TASK.Description = function(ply)
     local times = taskmaster_crowbar_times:GetInt()
-    local desc = "Use the crowbar weapon " .. times .. " time"
+    local desc = "Attack with a crowbar " .. times .. " time"
     if times ~= 1 then
         desc = desc .. "s"
     end
@@ -40,12 +48,12 @@ if SERVER then
         if wep.Task_CrowbarPrimaryAttack then return end
 
         local times = taskmaster_crowbar_times:GetInt()
-        local total = 0
+        ply:SetProperty("Task_CrowbarCount", 0, ply)
         wep.Task_CrowbarPrimaryAttack = wep.PrimaryAttack
         wep.PrimaryAttack = function(this, worldsnd)
             wep.Task_CrowbarPrimaryAttack(wep, worldsnd)
-            total = total + 1
-            if total >= times then
+            ply:SetProperty("Task_CrowbarCount", ply.Task_CrowbarCount + 1, ply)
+            if ply.Task_CrowbarCount >= times then
                 ply:CompleteTask(TASK.id)
             end
         end
@@ -83,6 +91,8 @@ if SERVER then
         local sid64 = ply:SteamID64()
         hook.Remove("WeaponEquip", "Taskmaster_Crowbar_WeaponEquip_" .. sid64)
         hook.Remove("PlayerDroppedWeapon", "Taskmaster_Crowbar_PlayerDroppedWeapon_" .. sid64)
+
+        ply:ClearProperty("Task_CrowbarCount", ply)
     end
 
     TASK.OnTaskComplete = TASK.OnTaskRemoved

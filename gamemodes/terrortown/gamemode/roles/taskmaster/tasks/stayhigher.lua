@@ -8,6 +8,7 @@ local timer = timer
 local util = util
 
 local MathMax = math.max
+local MathFloor = math.floor
 local PlayerIterator = player.Iterator
 
 local TASK = {}
@@ -23,11 +24,22 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local time = taskmaster_stayhigher_time:GetInt()
-    local name = "Highest for " .. time .. " Second"
+    local name = "Be Highest for " .. time .. " Second"
     if time ~= 1 then
         name = name .. "s"
     end
-    return name
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = time
+    else
+        local startTime = ply.Task_StayHigherStart
+        if startTime then
+            progress = MathFloor(MathMax(0, CurTime() - startTime))
+        end
+    end
+
+    return name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)

@@ -17,7 +17,15 @@ TASK.Name = function(ply)
     if count ~= 1 then
         name = name .. "s"
     end
-    return name
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = count
+    else
+        progress = ply.Task_WeaponPickupsCount
+    end
+
+    return name .. " (" .. progress .. "/" .. count .. ")"
 end
 
 TASK.Description = function(ply)
@@ -38,14 +46,14 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local count = taskmaster_weaponpickups_count:GetInt()
-        local total = 0
+        ply:SetProperty("Task_WeaponPickupsCount", 0, ply)
         hook.Add("WeaponEquip", "Taskmaster_WeaponPickup_WeaponEquip_" .. ply:SteamID64(), function(wep, owner)
             if owner ~= ply then return end
             if not IsValid(wep) then return end
             if wep.Task_WeaponPickupsUsed then return end
             wep.Task_WeaponPickupsUsed = true
-            total = total + 1
-            if total >= count then
+            ply:SetProperty("Task_WeaponPickupsCount", ply.Task_WeaponPickupsCount + 1, ply)
+            if ply.Task_WeaponPickupsCount >= count then
                 ply:CompleteTask(TASK.id)
             end
         end)
@@ -53,6 +61,8 @@ if SERVER then
 
     TASK.OnTaskRemoved = function(ply)
         hook.Remove("WeaponEquip", "Taskmaster_WeaponPickup_WeaponEquip_" .. ply:SteamID64())
+
+        ply:ClearProperty("Task_WeaponPickupsCount", ply)
     end
 
     TASK.OnTaskComplete = TASK.OnTaskRemoved

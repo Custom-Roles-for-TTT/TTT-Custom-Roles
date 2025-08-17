@@ -10,13 +10,14 @@ local util = util
 
 local EntsFindByClass = ents.FindByClass
 local MathMax = math.max
+local MathFloor = math.floor
 
 local TASK = {}
 
 TASK.id = "crouchnearbody"
 
 local taskmaster_crouchnearbody_range = CreateConVar("ttt_taskmaster_crouchnearbody_range", "1", FCVAR_REPLICATED, "The distance (in meters) away a player must stay within to count for the 'Crouch Near Body' task", 1, 100)
-local taskmaster_crouchnearbody_time = CreateConVar("ttt_taskmaster_crouchnearbody_time", "30", FCVAR_REPLICATED, "The time (in seconds) a player must stay near a body to count for the 'Crouch Near Body' task", 1, 240)
+local taskmaster_crouchnearbody_time = CreateConVar("ttt_taskmaster_crouchnearbody_time", "20", FCVAR_REPLICATED, "The time (in seconds) a player must stay near a body to count for the 'Crouch Near Body' task", 1, 240)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_crouchnearbody_range",
     type = ROLE_CONVAR_TYPE_NUM,
@@ -29,7 +30,19 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 })
 
 TASK.Name = function(ply)
-    return "Crouch Near Body"
+    local time = taskmaster_crouchnearbody_time:GetInt()
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = time
+    else
+        local startTime = ply.Task_CrouchNearBodyStart
+        if startTime then
+            progress = MathFloor(MathMax(0, CurTime() - startTime))
+        end
+    end
+
+    return "Crouch Near a Body (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
@@ -62,7 +75,7 @@ TASK.Description = function(ply)
         end
     end
     local time = taskmaster_crouchnearbody_time:GetInt()
-    description = description .. " of a body for " .. time .. " second"
+    description = description .. " of a dead body for " .. time .. " second"
     if time == 1 then
         return description
     end

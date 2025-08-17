@@ -14,11 +14,27 @@ local TASK = {}
 TASK.id = "damageeveryone"
 
 TASK.Name = function(ply)
-    return "Damage All Players"
+    local damaged = ply.Task_DamageEveryoneDamaged or {}
+    local total = 0
+    local progress = 0
+    for _, p in PlayerIterator() do
+        if ply == p then continue end
+        if not p:Alive() or p:IsSpec() then continue end
+        total = total + 1
+        if TableHasValue(damaged, p:SteamID64()) then
+            progress = progress + 1
+        end
+    end
+
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = total
+    end
+
+    return "Damage Everyone Else (" .. progress .. "/" .. total .. ")"
 end
 
 TASK.Description = function(ply)
-    return "Damage all other living players"
+    return "Deal damage to all other living players"
 end
 
 if SERVER then
@@ -86,8 +102,8 @@ if CLIENT then
         local client = LocalPlayer()
         hook.Add("TTTTargetIDPlayerTargetIcon", "Taskmaster_DamageEveryone_TTTTargetIDPlayerTargetIcon_" .. client:SteamID64(), function(ply, cli, showJester)
             if cli:IsActiveTaskmaster() and not TableHasValue(cli.Task_DamageEveryoneDamaged, ply:SteamID64()) then
-                local iconColor = ROLE_COLORS_SPRITE[ROLE_TRAITOR]
-                return "task", true, iconColor, "up"
+                local iconColor = ROLE_COLORS_SPRITE[ROLE_TASKMASTER]
+                return "task", true, iconColor, "down"
             end
         end)
     end)

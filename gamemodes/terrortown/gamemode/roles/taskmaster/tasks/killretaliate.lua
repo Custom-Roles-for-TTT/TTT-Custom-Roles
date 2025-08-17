@@ -9,11 +9,11 @@ TASK.id = "killretaliate"
 TASK.isKillTask = true
 
 TASK.Name = function(ply)
-    return "Kill a Player Who Attacked First"
+    return "Kill a Player That Attacked First"
 end
 
 TASK.Description = function(ply)
-    return "Kill another player who attacked you first"
+    return "Kill another player that attacked you first"
 end
 
 local TASK_KILLRETALIATE_NONE = 0

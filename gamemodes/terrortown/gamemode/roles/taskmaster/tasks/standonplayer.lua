@@ -7,12 +7,13 @@ local timer = timer
 local util = util
 
 local MathMax = math.max
+local MathFloor = math.floor
 
 local TASK = {}
 
 TASK.id = "standonplayer"
 
-local taskmaster_standonplayer_time = CreateConVar("ttt_taskmaster_standonplayer_time", "30", FCVAR_REPLICATED, "The time (in seconds) a player must stay stand on top of another player to complete the 'Stand On Player' task", 1, 240)
+local taskmaster_standonplayer_time = CreateConVar("ttt_taskmaster_standonplayer_time", "15", FCVAR_REPLICATED, "The time (in seconds) a player must stay stand on top of another player to complete the 'Stand On Player' task", 1, 240)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_standonplayer_time",
     type = ROLE_CONVAR_TYPE_NUM,
@@ -21,11 +22,22 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local time = taskmaster_standonplayer_time:GetInt()
-    local name = "Stand on Player for " .. time .. " Second"
+    local name = "Stand on a Player for " .. time .. " Second"
     if time ~= 1 then
         name = name .. "s"
     end
-    return name
+
+    local progress = 0
+    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+        progress = time
+    else
+        local startTime = ply.Task_StandOnPlayerStart
+        if startTime then
+            progress = MathFloor(MathMax(0, CurTime() - startTime))
+        end
+    end
+
+    return name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)

@@ -12,18 +12,18 @@ local MathSin = math.sin
 
 local TASK = {}
 
-TASK.id = "killfaraway"
+TASK.id = "killdistant"
 TASK.isKillTask = true
 
-local taskmaster_killfaraway_range = CreateConVar("ttt_taskmaster_killfaraway_range", "25", FCVAR_REPLICATED, "The minimum distance (in meters) away a player can be to count for the 'Kill a Faraway Player' task", 0, 100)
+local taskmaster_killdistant_range = CreateConVar("ttt_taskmaster_killdistant_range", "25", FCVAR_REPLICATED, "The minimum distance (in meters) away a player can be to count for the 'Kill a Distant Player' task", 0, 100)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_killfaraway_range",
+    cvar = "ttt_taskmaster_killdistant_range",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
 
 TASK.Name = function(ply)
-    return "Kill a Faraway Player"
+    return "Kill a Distant Player"
 end
 
 TASK.Description = function(ply)
@@ -33,7 +33,7 @@ TASK.Description = function(ply)
     else
         unit = cvars.Number("ttt_distance_unit", 1)
     end
-    local range = taskmaster_killfaraway_range:GetInt()
+    local range = taskmaster_killdistant_range:GetInt()
     local description = "Kill another player from outside "
     if unit == 1 then
         description = description .. range .. " meter"
@@ -59,8 +59,8 @@ TASK.Description = function(ply)
 end
 
 if SERVER then
-    util.AddNetworkString("TTT_Taskmaster_KillFaraway_Assigned")
-    util.AddNetworkString("TTT_Taskmaster_KillFaraway_Cleanup")
+    util.AddNetworkString("TTT_Taskmaster_KillDistant_Assigned")
+    util.AddNetworkString("TTT_Taskmaster_KillDistant_Cleanup")
 
     TASK.CanAssignTask = function(ply)
         return true
@@ -72,12 +72,12 @@ if SERVER then
     }
 
     TASK.OnTaskAssigned = function(ply)
-        hook.Add("PlayerDeath", "Taskmaster_KillFaraway_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
+        hook.Add("PlayerDeath", "Taskmaster_KillDistant_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
             if not IsPlayer(victim) then return end
             if not IsPlayer(attacker) or not attacker:IsActiveTaskmaster() or attacker ~= ply then return end
 
             local distanceSqr = victim:GetPos():DistToSqr(attacker:GetPos())
-            local range = taskmaster_killfaraway_range:GetInt() * UNITS_PER_METER
+            local range = taskmaster_killdistant_range:GetInt() * UNITS_PER_METER
             local rangeSqr = range * range
 
             if distanceSqr >= rangeSqr then
@@ -85,13 +85,13 @@ if SERVER then
             end
         end)
 
-        net.Start("TTT_Taskmaster_KillFaraway_Assigned")
+        net.Start("TTT_Taskmaster_KillDistant_Assigned")
         net.Send(ply)
     end
 
     TASK.OnTaskRemoved = function(ply)
-        hook.Remove("PlayerDeath", "Taskmaster_KillFaraway_PlayerDeath_" .. ply:SteamID64())
-        net.Start("TTT_Taskmaster_KillFaraway_Cleanup")
+        hook.Remove("PlayerDeath", "Taskmaster_KillDistant_PlayerDeath_" .. ply:SteamID64())
+        net.Start("TTT_Taskmaster_KillDistant_Cleanup")
         net.Send(ply)
     end
 
@@ -99,12 +99,12 @@ if SERVER then
 end
 
 if CLIENT then
-    net.Receive("TTT_Taskmaster_KillFaraway_Assigned", function()
+    net.Receive("TTT_Taskmaster_KillDistant_Assigned", function()
         local sid64 = LocalPlayer():SteamID64()
-        local range = taskmaster_killfaraway_range:GetInt() * UNITS_PER_METER
+        local range = taskmaster_killdistant_range:GetInt() * UNITS_PER_METER
         local rangeSqr = range * range
 
-        hook.Add("TTTTargetIDPlayerText", "Taskmaster_KillFaraway_TTTTargetIDPlayerText_" .. sid64, function(ent, cli, text, col, secondaryText)
+        hook.Add("TTTTargetIDPlayerText", "Taskmaster_KillDistant_TTTTargetIDPlayerText_" .. sid64, function(ent, cli, text, col, secondaryText)
             if not cli:IsActiveTaskmaster() or not IsPlayer(ent) then return end
 
             local distanceSqr = ent:GetPos():DistToSqr(cli:GetPos())
@@ -116,7 +116,7 @@ if CLIENT then
         end)
 
         local particleVelocity = Vector(0, 0, 80)
-        hook.Add("TTTPlayerAliveClientThink", "Taskmaster_KillFaraway_TTTPlayerAliveClientThink_" .. sid64, function(cli, ply)
+        hook.Add("TTTPlayerAliveClientThink", "Taskmaster_KillDistant_TTTPlayerAliveClientThink_" .. sid64, function(cli, ply)
             local shouldDraw = false
             if ply == cli and cli:IsActiveTaskmaster() then
                 local pos = ply:GetPos()
@@ -154,11 +154,11 @@ if CLIENT then
         end)
     end)
 
-    net.Receive("TTT_Taskmaster_KillFaraway_Cleanup", function()
+    net.Receive("TTT_Taskmaster_KillDistant_Cleanup", function()
         local client = LocalPlayer()
         local sid64 = client:SteamID64()
-        hook.Remove("TTTTargetIDPlayerText", "Taskmaster_KillFaraway_TTTTargetIDPlayerText_"  .. sid64)
-        hook.Remove("TTTPlayerAliveClientThink", "Taskmaster_KillFaraway_TTTPlayerAliveClientThink_" .. sid64)
+        hook.Remove("TTTTargetIDPlayerText", "Taskmaster_KillDistant_TTTTargetIDPlayerText_"  .. sid64)
+        hook.Remove("TTTPlayerAliveClientThink", "Taskmaster_KillDistant_TTTPlayerAliveClientThink_" .. sid64)
 
         if client.TaskmasterRadiusEmitter then
             client.TaskmasterRadiusEmitter:Finish()

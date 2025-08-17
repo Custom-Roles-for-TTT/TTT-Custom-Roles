@@ -21,20 +21,12 @@ TASK.Description = function(ply)
         name = ply.Task_GetPlayerToKillPlayer:Nick()
     end
 
-    return "Get " .. name .. " to kill another player"
+    return "Get " .. name .. " to kill another player (not you)"
 end
 
 if SERVER then
     util.AddNetworkString("TTT_Taskmaster_GetPlayerToKill_Assigned")
     util.AddNetworkString("TTT_Taskmaster_GetPlayerToKill_Cleanup")
-
-    TASK.CanAssignTask = function(ply)
-        return true
-    end
-
-    TASK.RequiredFeatures = {
-        TASKMASTER_TF_TARGETID_PLAYERICON
-    }
 
     local function GetRandomTarget(ply)
         -- Find the first random living player
@@ -46,31 +38,50 @@ if SERVER then
         return nil
     end
 
+    TASK.CanAssignTask = function(ply)
+        return GetRandomTarget(ply) ~= nil
+    end
+
+    TASK.RequiredFeatures = {
+        TASKMASTER_TF_TARGETID_PLAYERICON
+    }
+
     TASK.OnTaskAssigned = function(ply)
         ply:SetProperty("Task_GetPlayerToKillPlayer", GetRandomTarget(ply), ply)
 
         hook.Add("PlayerDeath", "Taskmaster_GetPlayerToKill_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
-            if ply.Task_GetPlayerToKillPlayer ~= attacker then return end
-            if victim == ply then return end
-            ply:CompleteTask(TASK.id)
+            if ply.Task_GetPlayerToKillPlayer == attacker and attacker ~= victim then
+                if victim == ply then return end
+                ply:CompleteTask(TASK.id)
+            elseif ply.Task_GetPlayerToKillPlayer == victim then
+                local target = GetRandomTarget(ply)
+                if target then
+                    ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! Your new target is " .. target:Nick())
+                    ply:SetProperty("Task_GetPlayerToKillPlayer", target, ply)
+                else
+                    ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has died! There are no new valid targets and you must reroll.")
+                end
+            end
         end)
 
         hook.Add("PlayerDisconnected", "Taskmaster_GetPlayerToKill_PlayerDisconnected_" .. ply:SteamID64(), function(leaver)
             if ply.Task_GetPlayerToKillPlayer ~= leaver then return end
 
             local target = GetRandomTarget(ply)
-            ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. target:Nick())
-            ply:SetProperty("Task_GetPlayerToKillPlayer", target, ply)
+            if target then
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared! Your new target is " .. target:Nick())
+                ply:SetProperty("Task_GetPlayerToKillPlayer", target, ply)
+            else
+                ply:QueueMessage(MSG_PRINTBOTH, "Your target for the '" .. TASK.Name(ply) .. "' task has disappeared!  There are no new valid targets and you must reroll.")
+            end
         end)
 
         net.Start("TTT_Taskmaster_GetPlayerToKill_Assigned")
         net.Send(ply)
     end
 
-    TASK.OnTaskRemoved = function(ply)
+    TASK.OnTaskComplete = function(ply)
         timer.Remove("TTTTaskmasterGetPlayerToKillTimer")
-
-        ply:ClearProperty("Task_GetPlayerToKillPlayer", ply)
 
         hook.Remove("PlayerDeath", "Taskmaster_GetPlayerToKill_PlayerDeath_" .. ply:SteamID64())
         hook.Remove("PlayerDisconnected", "Taskmaster_GetPlayerToKill_PlayerDisconnected_" .. ply:SteamID64())
@@ -79,7 +90,10 @@ if SERVER then
         net.Send(ply)
     end
 
-    TASK.OnTaskComplete = TASK.OnTaskRemoved
+    TASK.OnTaskRemoved = function(ply)
+        TASK.OnTaskComplete(ply)
+        ply:ClearProperty("Task_GetPlayerToKillPlayer", ply) -- Don't clear the player name if the task was completed so it still shows up in the task name/description
+    end
 end
 
 if CLIENT then
@@ -87,7 +101,7 @@ if CLIENT then
         local client = LocalPlayer()
         hook.Add("TTTTargetIDPlayerTargetIcon", "Taskmaster_GetPlayerToKill_TTTTargetIDPlayerTargetIcon_" .. client:SteamID64(), function(ply, cli, showJester)
             if cli:IsActiveTaskmaster() and ply == cli.Task_GetPlayerToKillPlayer then
-                local iconColor = ROLE_COLORS_SPRITE[ROLE_TRAITOR]
+                local iconColor = ROLE_COLORS_SPRITE[ROLE_TASKMASTER]
                 return "task", true, iconColor, "up"
             end
         end)

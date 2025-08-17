@@ -3,7 +3,7 @@ local TASK = {}
 TASK.id = "calldetective"
 
 TASK.Name = function(ply)
-    return "Call Detective to Body"
+    return "Call a Detective to a Body"
 end
 
 TASK.Description = function(ply)
