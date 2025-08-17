@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: 'impulsh/gluacheck'
+          repository: 'Malivil/gluacheck'
           path: 'gluacheck'
 
       - name: Setup ‘lua’
