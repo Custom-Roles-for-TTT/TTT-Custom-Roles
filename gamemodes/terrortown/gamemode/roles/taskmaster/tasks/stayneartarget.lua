@@ -40,7 +40,7 @@ TASK.Name = function(ply)
     end
 
     local time = taskmaster_stayneartarget_time:GetInt()
-    local progress
+    local progress = 0
     if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = time
     else

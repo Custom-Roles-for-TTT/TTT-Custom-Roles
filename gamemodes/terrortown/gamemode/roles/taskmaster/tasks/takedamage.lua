@@ -23,7 +23,7 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local time = taskmaster_takedamage_time:GetInt()
-    local progress
+    local progress = 0
     if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = time
     else

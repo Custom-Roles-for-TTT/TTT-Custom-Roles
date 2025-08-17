@@ -16,7 +16,7 @@ TASK.id = "damageeveryone"
 TASK.Name = function(ply)
     local damaged = ply.Task_DamageEveryoneDamaged or {}
     local total = 0
-    local progress
+    local progress = 0
     for _, p in PlayerIterator() do
         if ply == p then continue end
         if not p:Alive() or p:IsSpec() then continue end
