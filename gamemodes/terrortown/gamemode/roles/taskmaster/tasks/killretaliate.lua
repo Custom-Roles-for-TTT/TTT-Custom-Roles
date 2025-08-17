@@ -94,11 +94,11 @@ if CLIENT then
             local state = ent.Task_KillRetaliateAttacked
 
             if state == TASK_KILLRETALIATE_THEYATTACKED then
-                return "THEY ATTACKED FIRST", ROLE_COLORS_RADAR[ROLE_INNOCENT]
+                return "AGGRESSIVE", ROLE_COLORS_RADAR[ROLE_INNOCENT]
             elseif state == TASK_KILLRETALIATE_YOUATTACKED then
-                return "YOU ATTACKED FIRST", ROLE_COLORS_RADAR[ROLE_TRAITOR]
+                return "DEFENSIVE", ROLE_COLORS_RADAR[ROLE_TRAITOR]
             else
-                return "HASN'T ATTACKED", ROLE_COLORS_RADAR[ROLE_TRAITOR]
+                return "PASSIVE", ROLE_COLORS_RADAR[ROLE_TRAITOR]
             end
         end)
     end)
