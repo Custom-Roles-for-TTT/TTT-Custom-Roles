@@ -297,7 +297,11 @@ local function CreateTaskReroll(task, dscrollpanel)
     ddesc:SetPos(margin, (margin * 1.5) + nameHeight)
     ddesc:SetWidth(width - (margin * 2) - buttonWidth - scrollBarWidth)
     ddesc:SetWrap(true)
-    ddesc:SetAutoStretchVertical(true)
+    -- This text has wrapped to another line, increase the height so it doesn't get cut off
+    -- SizeToContents and SetAutoStretchVertical both weren't working, so here we are...
+    if #desc > 55 then
+        ddesc:SetHeight(ddesc:GetTall() + 20)
+    end
 
     local _, descHeight = ddesc:GetSize()
     local height = (margin * 2.5) + nameHeight + descHeight
