@@ -1,5 +1,7 @@
 local hook = hook
+local net = net
 local player = player
+local util = util
 
 local PlayerIterator = player.Iterator
 
@@ -33,7 +35,6 @@ if SERVER then
     }
 
     TASK.OnTaskAssigned = function(ply)
-
         for _, p in PlayerIterator() do
             if ply == p then continue end
             p:SetProperty("Task_KillRetaliateAttacked", TASK_KILLRETALIATE_NONE, ply)

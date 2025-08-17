@@ -1,4 +1,7 @@
+local hook = hook
 local table = table
+
+local TableHasValue = table.HasValue
 
 local TASK = {}
 
@@ -18,8 +21,8 @@ TASK.Name = function(ply)
         name = name .. "s"
     end
 
-    local progress = 0
-    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+    local progress
+    if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = count
     else
         progress = ply.Task_WeaponPickupsCount

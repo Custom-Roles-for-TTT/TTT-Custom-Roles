@@ -26,7 +26,7 @@ TASK.Name = function(ply)
         end
     end
 
-    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+    if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = total
     end
 

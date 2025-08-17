@@ -31,9 +31,9 @@ if SERVER then
     local function GetRandomTarget(ply)
         -- Find the first random living player
         for _, p in RandomPairs(player.GetAll()) do
+            if p == ply then continue end
             if not p:Alive() or p:IsSpec() then continue end
             if p:ShouldActLikeJester() then continue end
-            if p == ply then continue end
             return p
         end
         return nil

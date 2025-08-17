@@ -12,6 +12,7 @@ local MathPi = math.pi
 local MathRand = math.Rand
 local MathSin = math.sin
 local MathFloor = math.floor
+local TableHasValue = table.HasValue
 
 local TASK = {}
 
@@ -38,7 +39,7 @@ TASK.Name = function(ply)
     end
 
     local progress = 0
-    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+    if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = time
     else
         local startTime = ply.Task_StayInAreaStart

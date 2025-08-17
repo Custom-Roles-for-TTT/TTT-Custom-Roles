@@ -1,5 +1,7 @@
 local hook = hook
 local math = math
+local table = table
+local util = util
 
 local MathAbs = math.abs
 local MathMax = math.max

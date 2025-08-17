@@ -11,6 +11,7 @@ local util = util
 local EntsFindByClass = ents.FindByClass
 local MathMax = math.max
 local MathFloor = math.floor
+local TableHasValue = table.HasValue
 
 local TASK = {}
 
@@ -33,7 +34,7 @@ TASK.Name = function(ply)
     local time = taskmaster_crouchnearbody_time:GetInt()
 
     local progress = 0
-    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+    if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = time
     else
         local startTime = ply.Task_CrouchNearBodyStart

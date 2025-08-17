@@ -29,13 +29,22 @@ if SERVER then
     util.AddNetworkString("TTT_Taskmaster_GetPlayerKilled_Cleanup")
 
     local function GetRandomTarget(ply)
+        local passive = nil
         -- Find the first random living player
         for _, p in RandomPairs(player.GetAll()) do
-            if not p:Alive() or p:IsSpec() then continue end
             if p == ply then continue end
+            if not p:Alive() or p:IsSpec() then continue end
+            if p:ShouldActLikeJester() then continue end
+            -- They just want live, leave them alone
+            if ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
+                passive = p
+                continue
+            end
             return p
         end
-        return nil
+
+        -- Return the passive winner (if we have one) as a last resort
+        return passive
     end
 
     TASK.CanAssignTask = function(ply)

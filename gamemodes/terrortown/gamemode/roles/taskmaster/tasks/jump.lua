@@ -1,3 +1,8 @@
+local hook = hook
+local table = table
+
+local TableHasValue = table.HasValue
+
 local TASK = {}
 
 TASK.id = "jump"
@@ -17,7 +22,7 @@ TASK.Name = function(ply)
     end
 
     local progress = 0
-    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+    if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = times
     else
         progress = ply.Task_CrowbarCount

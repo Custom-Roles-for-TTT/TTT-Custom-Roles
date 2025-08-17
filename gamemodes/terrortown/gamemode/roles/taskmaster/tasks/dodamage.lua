@@ -1,3 +1,8 @@
+local hook = hook
+local table = table
+
+local TableHasValue = table.HasValue
+
 local TASK = {}
 
 TASK.id = "dodamage"
@@ -13,7 +18,7 @@ TASK.Name = function(ply)
     local amount = taskmaster_dodamage_amount:GetInt()
 
     local progress = 0
-    if (table.HasValue(ply.taskmasterCompletedTasks, TASK.id)) then
+    if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = amount
     else
         progress = ply.Task_DoDamageTotal

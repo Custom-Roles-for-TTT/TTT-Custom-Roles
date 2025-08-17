@@ -1,9 +1,10 @@
 local hook = hook
+local ipairs = ipairs
 local table = table
 local math = math
 
-local TableInsert = table.insert
 local MathRandom = math.random
+local TableInsert = table.insert
 
 local TryTranslation = LANG.TryTranslation
 
@@ -55,7 +56,8 @@ if SERVER then
         ply:SetProperty("Task_KillWeaponClass", weps[MathRandom(#weps)].ClassName, ply)
 
         local equipped = false
-        if ply:GetActiveWeapon().Kind == WEAPON_HEAVY then
+        local active = ply:GetActiveWeapon()
+        if active and active.Kind == WEAPON_HEAVY then
             equipped = true
         end
 
