@@ -117,6 +117,60 @@ if SERVER then
 end
 
 if CLIENT then
+
+    local function DrawLink(ply, targetPos)
+        if not ply.TaskmasterStayInAreaLinkEmitter then ply.TaskmasterStayInAreaLinkEmitter = ParticleEmitter(targetPos) end
+        if not ply.TaskmasterStayInAreaLinkNextPart then ply.TaskmasterStayInAreaLinkNextPart = CurTime() end
+        if not ply.TaskmasterStayInAreaLinkOffset then ply.TaskmasterStayInAreaLinkOffset = 0 end
+        local startPos = ply:GetPos() + Vector(0, 0, 30)
+        local endPos = targetPos + Vector(0, 0, 30)
+        local dir = endPos - startPos
+        dir = dir:GetNormalized() * 50
+        if ply.TaskmasterStayInAreaLinkNextPart < CurTime() then
+            local pos = startPos + (dir * ply.TaskmasterStayInAreaLinkOffset)
+            -- Use DistToSqr as it's more efficient and this is called very frequently
+            -- 9000000 = 3000^2
+            while startPos:DistToSqr(pos) <= 9000000 and startPos:DistToSqr(pos) <= startPos:DistToSqr(endPos) do
+                ply.TaskmasterStayInAreaLinkEmitter:SetPos(pos)
+                ply.TaskmasterStayInAreaLinkNextPart = CurTime() + 0.02
+                local particle = ply.TaskmasterStayInAreaLinkEmitter:Add("particle/wisp.vmt", pos)
+                particle:SetVelocity(vector_origin)
+                particle:SetDieTime(0.25)
+                particle:SetStartAlpha(200)
+                particle:SetEndAlpha(0)
+                particle:SetStartSize(3)
+                particle:SetEndSize(2)
+                particle:SetRoll(MathRand(0, MathPi))
+                particle:SetRollDelta(0)
+                local color = ROLE_COLORS[ROLE_TRAITOR]
+                particle:SetColor(color.r, color.g, color.b)
+                pos:Add(dir)
+            end
+            ply.TaskmasterStayInAreaLinkOffset = ply.TaskmasterStayInAreaLinkOffset + 0.04
+            if ply.TaskmasterStayInAreaLinkOffset > 1 then
+                ply.TaskmasterStayInAreaLinkOffset = 0
+            end
+        end
+    end
+
+    local function RemoveLink(ply)
+        if ply.TaskmasterStayInAreaLinkEmitter then
+            ply.TaskmasterStayInAreaLinkEmitter:Finish()
+            ply.TaskmasterStayInAreaLinkEmitter = nil
+            ply.TaskmasterStayInAreaLinkNextPart = nil
+            ply.TaskmasterStayInAreaLinkOffset = nil
+        end
+    end
+
+    local function RemoveRadius(ply)
+        if ply.TaskmasterRadiusEmitter then
+            ply.TaskmasterRadiusEmitter:Finish()
+            ply.TaskmasterRadiusEmitter = nil
+            ply.TaskmasterRadiusNextPart = nil
+            ply.TaskmasterRadiusDir = nil
+        end
+    end
+
     net.Receive("TTT_Taskmaster_StayInArea_Assigned", function()
         local client = LocalPlayer()
         local sid64 = client:SteamID64()
@@ -158,18 +212,20 @@ if CLIENT then
                     end
                     ply.TaskmasterRadiusDir = ply.TaskmasterRadiusDir + 0.02
                 end
+
+                if distance > rangeSqr then
+                    DrawLink(ply, pos)
+                else
+                    RemoveLink(ply)
+                end
                 shouldDraw = true
             end
 
-            if not shouldDraw and ply.TaskmasterRadiusEmitter then
-                ply.TaskmasterRadiusEmitter:Finish()
-                ply.TaskmasterRadiusEmitter = nil
-                ply.TaskmasterRadiusDir = nil
-                ply.TaskmasterRadiusNextPart = nil
+            if not shouldDraw then
+                RemoveRadius(ply)
+                RemoveLink(ply)
             end
         end)
-
-        -- TODO: Needs a visual to help locate the area if you can't immediately see it. Maybe copy the same thing we have for the shadow?
 
         hook.Add("HUDPaint", "Taskmaster_StayInArea_HUDPaint_" .. sid64, function()
             if not client:IsActiveTaskmaster() then return end
@@ -200,12 +256,8 @@ if CLIENT then
         hook.Remove("TTTPlayerAliveClientThink", "Taskmaster_StayInArea_TTTPlayerAliveClientThink_" .. sid64)
         hook.Remove("HUDPaint", "Taskmaster_StayInArea_HUDPaint_" .. sid64)
 
-        if client.TaskmasterRadiusEmitter then
-            client.TaskmasterRadiusEmitter:Finish()
-            client.TaskmasterRadiusEmitter = nil
-            client.TaskmasterRadiusDir = nil
-            client.TaskmasterRadiusNextPart = nil
-        end
+        RemoveRadius(client)
+        RemoveLink(client)
     end)
 end
 
