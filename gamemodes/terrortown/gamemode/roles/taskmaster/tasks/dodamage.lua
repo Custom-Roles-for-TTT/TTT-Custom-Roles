@@ -17,7 +17,7 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 TASK.Name = function(ply)
     local amount = taskmaster_dodamage_amount:GetInt()
 
-    local progress = 0
+    local progress
     if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = amount
     else

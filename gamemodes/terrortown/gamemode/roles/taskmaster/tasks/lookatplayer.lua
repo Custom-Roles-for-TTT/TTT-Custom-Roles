@@ -28,7 +28,7 @@ TASK.Name = function(ply)
     end
 
     local time = taskmaster_lookatplayer_time:GetInt()
-    local progress = 0
+    local progress
     if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = time
     else

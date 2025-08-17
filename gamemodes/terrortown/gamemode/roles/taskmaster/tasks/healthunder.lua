@@ -31,7 +31,7 @@ TASK.Name = function(ply)
     local amount = taskmaster_healthunder_amount:GetInt()
     local time = taskmaster_healthunder_time:GetInt()
 
-    local progress = 0
+    local progress
     if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = time
     else

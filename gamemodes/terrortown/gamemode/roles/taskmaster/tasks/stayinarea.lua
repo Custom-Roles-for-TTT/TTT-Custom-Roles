@@ -38,7 +38,7 @@ TASK.Name = function(ply)
         name = name .. "s"
     end
 
-    local progress = 0
+    local progress
     if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = time
     else
