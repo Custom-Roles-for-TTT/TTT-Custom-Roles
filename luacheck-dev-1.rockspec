@@ -76,7 +76,7 @@ build = {
    },
    install = {
       bin = {
-         luacheck = "bin/luacheck.lua"
+         luacheck = "gluacheck/bin/luacheck.lua"
       }
    }
 }
