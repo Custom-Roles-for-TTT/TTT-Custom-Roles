@@ -48,8 +48,8 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 -----------------------
 
 TASKMASTER = {
-    killTasks = {},
-    miscTasks = {}
+    KillTasks = {},
+    MiscTasks = {}
 }
 
 function TASKMASTER.RegisterTask(task)
