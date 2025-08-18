@@ -49,9 +49,11 @@ end)
 -- CONVARS --
 -------------
 
-local taskmaster_wins_with_others = GetConVar("ttt_taskmaster_wins_with_others")
 local taskmaster_kill_tasks = GetConVar("ttt_taskmaster_kill_tasks")
 local taskmaster_misc_tasks = GetConVar("ttt_taskmaster_misc_tasks")
+local taskmaster_repeat_rerolls = GetConVar("ttt_taskmaster_repeat_rerolls")
+local taskmaster_wins_with_others = GetConVar("ttt_taskmaster_wins_with_others")
+local taskmaster_blocks_team_wins = GetConVar("ttt_taskmaster_blocks_team_wins")
 local taskmaster_win_block_length = GetConVar("ttt_taskmaster_win_block_length")
 
 local xOffset = CreateClientConVar("ttt_taskmaster_list_x_pos", "10", true, false, "The X (horizontal) position of the Taskmaster's task list HUD", 0, ScrW())
@@ -490,17 +492,22 @@ hook.Add("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role,
         end
 
         -- Win block
-        local block_length = taskmaster_win_block_length:GetInt()
-        if block_length > 0 then
-            local plural = ""
-            if block_length ~= 1 then
-                plural = "s"
+        if taskmaster_blocks_team_wins:GetBool() then
+            local block_length = taskmaster_win_block_length:GetInt()
+            if block_length > 0 then
+                local plural = ""
+                if block_length ~= 1 then
+                    plural = "s"
+                end
+                html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " has not completed all tasks by the time another team wins, the round will be extended by " .. block_length .. " second" .. plural .. ", giving them extra time to finish.</span>"
             end
-            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " has not completed all tasks by the time another team wins, the round will be extended by " .. block_length .. " second" .. plural .. ", giving them extra time to finish.</span>"
         end
 
         -- Reroll
-        html = html .. "<span style='display: block; margin-top: 10px;'>Undesired or uncompletable tasks can be rerolled by spending a credit in the equipment menu (press '" .. Key("+menu_context", "C") .. "')</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>Undesired or uncompletable tasks can be rerolled by spending a credit in the equipment menu (press '" .. Key("+menu_context", "C") .. "').</span>"
+        if taskmaster_repeat_rerolls:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Note, however, that tasks that have previously been rerolled can appear again when rerolling other tasks in the future.</span>"
+        end
 
         -- Show all enabled tasks
         local tasks = {}

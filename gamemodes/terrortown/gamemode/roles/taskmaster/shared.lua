@@ -25,11 +25,12 @@ end)
 
 CreateConVar("ttt_taskmaster_kill_tasks", "1", FCVAR_REPLICATED, "The number of kill tasks assigned to the Taskmaster", 0, 10)
 CreateConVar("ttt_taskmaster_misc_tasks", "2", FCVAR_REPLICATED, "The number of miscellaneous tasks assigned to the Taskmaster", 0, 10)
-CreateConVar("ttt_taskmaster_completion_bonus", "1", FCVAR_REPLICATED, "How many credits the Taskmaster should get whenever they complete a task", 0, 10)
+CreateConVar("ttt_taskmaster_completion_bonus", "1", FCVAR_NONE, "How many credits the Taskmaster should get whenever they complete a task", 0, 10)
+CreateConVar("ttt_taskmaster_repeat_rerolls", "1", FCVAR_REPLICATED, "Whether the Taskmaster can be assigned tasks they previously rerolled away from", 0, 1)
 CreateConVar("ttt_taskmaster_blocks_team_wins", "1", FCVAR_REPLICATED, "Whether the Taskmaster should block teams (innocent, traitor, monster) from winning if they are alive and haven't finished their tasks.")
 CreateConVar("ttt_taskmaster_win_block_length", "60", FCVAR_REPLICATED, "How long (in seconds) the Taskmaster should block teams (innocent, traitor, monster) from winning for (if 'ttt_taskmaster_blocks_team_wins' is enabled). Set to 0 to block until time runs out", 0, 300)
 CreateConVar("ttt_taskmaster_wins_with_others", "1", FCVAR_REPLICATED, "If the Taskmaster should be allowed to win alongside other teams/players")
-CreateConVar("ttt_taskmaster_is_passive", "0", FCVAR_REPLICATED, "Whether the Taskmaster should count as a 'passive' role for roles that need to kill other players, allowing them to win while the Taskmaster is still alive (if 'ttt_taskmaster_wins_with_others' is enabled)")
+CreateConVar("ttt_taskmaster_is_passive", "0", FCVAR_NONE, "Whether the Taskmaster should count as a 'passive' role for roles that need to kill other players, allowing them to win while the Taskmaster is still alive (if 'ttt_taskmaster_wins_with_others' is enabled)")
 
 ROLE_CONVARS[ROLE_TASKMASTER] = {}
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {

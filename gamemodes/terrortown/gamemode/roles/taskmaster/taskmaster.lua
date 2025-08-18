@@ -21,6 +21,7 @@ util.AddNetworkString("TTT_TaskmasterUpdateTaskList")
 
 local taskmaster_kill_tasks = GetConVar("ttt_taskmaster_kill_tasks")
 local taskmaster_misc_tasks = GetConVar("ttt_taskmaster_misc_tasks")
+local taskmaster_repeat_rerolls = GetConVar("ttt_taskmaster_repeat_rerolls")
 local taskmaster_completion_bonus = GetConVar("ttt_taskmaster_completion_bonus")
 local taskmaster_blocks_team_wins = GetConVar("ttt_taskmaster_blocks_team_wins")
 local taskmaster_win_block_length = GetConVar("ttt_taskmaster_win_block_length")
@@ -107,8 +108,11 @@ function plymeta:RerollTask(taskId, free)
     local index = table.KeyFromValue(self[activeTasksName], taskId)
     if not index then return end
 
-    table.insert(self.TaskmasterRerolledTasks, taskId)
-    self:SetProperty("TaskmasterRerolledTasks", self.TaskmasterRerolledTasks, self)
+    -- Don't track what we rerolled if we allow the player to reroll back to the same tasks
+    if not taskmaster_repeat_rerolls:GetBool() then
+        table.insert(self.TaskmasterRerolledTasks, taskId)
+        self:SetProperty("TaskmasterRerolledTasks", self.TaskmasterRerolledTasks, self)
+    end
 
     self:AssignTask(isKillTask, index)
     self:RemoveTask(taskId)
