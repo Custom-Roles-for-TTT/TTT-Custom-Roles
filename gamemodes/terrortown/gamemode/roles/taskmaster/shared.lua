@@ -29,7 +29,6 @@ CreateConVar("ttt_taskmaster_wins_with_others", "1", FCVAR_REPLICATED, "If the T
 CreateConVar("ttt_taskmaster_is_passive", "0", FCVAR_REPLICATED, "Whether the Taskmaster should count as a 'passive' role for roles that need to kill other players, allowing them to win while the Taskmaster is still alive (if 'ttt_taskmaster_wins_with_others' is enabled)")
 
 ROLE_CONVARS[ROLE_TASKMASTER] = {}
-
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_kill_tasks",
     type = ROLE_CONVAR_TYPE_NUM,
