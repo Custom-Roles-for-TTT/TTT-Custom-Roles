@@ -112,7 +112,7 @@ function plymeta:RerollTask(taskId, free)
     -- they only had tasks left that don't block a win condition.
     -- Rerolling one of those tasks no longer guarantees that they are winning,
     -- unless the newly rolled task ALSO does not block a win condition.
-    if not newTask.allowRoundEnd and self.taskmasterShouldWin then
+    if newTask and not newTask.allowRoundEnd and self.taskmasterShouldWin then
         self:SetProperty("taskmasterShouldWin", false)
     end
 
