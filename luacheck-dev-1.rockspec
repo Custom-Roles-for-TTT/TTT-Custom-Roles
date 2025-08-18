@@ -1,51 +1,29 @@
-local package_name = "gluacheck"
-local package_version = "dev"
-local rockspec_revision = "1"
-local github_account_name = "Malivil"
-local github_repo_name = package_name
-
-rockspec_format = "3.0"
-package = package_name
-version = package_version .. "-" .. rockspec_revision
-
+package = "luacheck"
+version = "dev-1"
 source = {
-   url = "git+https://github.com/" .. github_account_name .. "/" .. github_repo_name .. ".git"
+   url = "git+https://github.com/mpeterv/luacheck.git"
 }
-
-if package_version == "dev" then source.branch = "master" else source.tag = "v" .. package_version end
-
 description = {
    summary = "A static analyzer and a linter for Lua",
    detailed = [[
-      Luacheck is a command-line tool for linting and static analysis of Lua
-      code. It is able to spot usage of undefined global variables, unused
-      local variables and a few other typical problems within Lua programs.
-   ]],
-   homepage = "https://github.com/lunarmodules/luacheck",
+Luacheck is a command-line tool for linting and static analysis of Lua code.
+It is able to spot usage of undefined global variables, unused local variables and
+a few other typical problems within Lua programs.
+]],
+   homepage = "https://github.com/mpeterv/luacheck",
    license = "MIT"
 }
-
 dependencies = {
-   "lua >= 5.1",
+   "lua >= 5.1, < 5.4",
    "argparse >= 0.6.0",
    "luafilesystem >= 1.6.3"
 }
-
-test_dependencies = {
-   "busted",
-}
-
-test = {
-   type = "busted",
-}
-
 build = {
    type = "builtin",
    modules = {
       luacheck = "gluacheck/src/luacheck/init.lua",
       ["luacheck.builtin_standards"] = "gluacheck/src/luacheck/builtin_standards/init.lua",
       ["luacheck.builtin_standards.love"] = "gluacheck/src/luacheck/builtin_standards/love.lua",
-      ["luacheck.builtin_standards.playdate"] = "gluacheck/src/luacheck/builtin_standards/playdate.lua",
       ["luacheck.builtin_standards.ngx"] = "gluacheck/src/luacheck/builtin_standards/ngx.lua",
       ["luacheck.cache"] = "gluacheck/src/luacheck/cache.lua",
       ["luacheck.check"] = "gluacheck/src/luacheck/check.lua",
@@ -68,7 +46,6 @@ build = {
       ["luacheck.serializer"] = "gluacheck/src/luacheck/serializer.lua",
       ["luacheck.stages"] = "gluacheck/src/luacheck/stages/init.lua",
       ["luacheck.stages.detect_bad_whitespace"] = "gluacheck/src/luacheck/stages/detect_bad_whitespace.lua",
-      ["luacheck.stages.detect_compound_operators"] = "gluacheck/src/luacheck/stages/detect_compound_operators.lua",
       ["luacheck.stages.detect_cyclomatic_complexity"] = "gluacheck/src/luacheck/stages/detect_cyclomatic_complexity.lua",
       ["luacheck.stages.detect_empty_blocks"] = "gluacheck/src/luacheck/stages/detect_empty_blocks.lua",
       ["luacheck.stages.detect_empty_statements"] = "gluacheck/src/luacheck/stages/detect_empty_statements.lua",
@@ -90,8 +67,8 @@ build = {
       ["luacheck.unicode_printability_boundaries"] = "gluacheck/src/luacheck/unicode_printability_boundaries.lua",
       ["luacheck.utils"] = "gluacheck/src/luacheck/utils.lua",
       ["luacheck.vendor.sha1"] = "gluacheck/src/luacheck/vendor/sha1/init.lua",
-      ["luacheck.vendor.sha1.bit32_ops"] = "gluacheck/src/luacheck/vendor/sha1/bit32_ops.lua",
       ["luacheck.vendor.sha1.bit_ops"] = "gluacheck/src/luacheck/vendor/sha1/bit_ops.lua",
+      ["luacheck.vendor.sha1.bit32_ops"] = "gluacheck/src/luacheck/vendor/sha1/bit32_ops.lua",
       ["luacheck.vendor.sha1.common"] = "gluacheck/src/luacheck/vendor/sha1/common.lua",
       ["luacheck.vendor.sha1.lua53_ops"] = "gluacheck/src/luacheck/vendor/sha1/lua53_ops.lua",
       ["luacheck.vendor.sha1.pure_lua_ops"] = "gluacheck/src/luacheck/vendor/sha1/pure_lua_ops.lua",
