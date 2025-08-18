@@ -50,6 +50,9 @@ end)
 -------------
 
 local taskmaster_wins_with_others = GetConVar("ttt_taskmaster_wins_with_others")
+local taskmaster_kill_tasks = GetConVar("ttt_taskmaster_kill_tasks")
+local taskmaster_misc_tasks = GetConVar("ttt_taskmaster_misc_tasks")
+local taskmaster_win_block_length = GetConVar("ttt_taskmaster_win_block_length")
 
 local xOffset = CreateClientConVar("ttt_taskmaster_list_x_pos", "10", true, false, "The X (horizontal) position of the Taskmaster's task list HUD", 0, ScrW())
 local yOffset = CreateClientConVar("ttt_taskmaster_list_y_pos", "10", true, false, "The Y (vertical) position of the Taskmaster's task list HUD", 0, ScrH())
@@ -465,6 +468,36 @@ hook.Add("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role,
     if role == ROLE_TASKMASTER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to complete a series of tasks before the round ends."
+
+        -- Task counts
+        local kill_count = taskmaster_kill_tasks:GetInt()
+        local kill_plural = ""
+        if kill_count ~= 1 then
+            kill_plural = "s"
+        end
+        local misc_count = taskmaster_misc_tasks:GetInt()
+        local misc_plural = ""
+        if misc_count ~= 1 then
+            misc_plural = "s"
+        end
+        html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " must complete " .. kill_count .. " task" .. kill_plural .. " that require killing a player (or multiple) and " .. misc_count .. " other task" .. misc_plural .. ".</span>"
+
+        -- Win condition
+        if taskmaster_wins_with_others:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>If another team wins after the " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " finishes their tasks, they will share the win.</span>"
+        else
+            html = html .. "<span style='display: block; margin-top: 10px;'>In addition to completing all tasks, the " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " must also eliminate all other players.</span>"
+        end
+
+        -- Win block
+        local block_length = taskmaster_win_block_length:GetInt()
+        if block_length > 0 then
+            local plural = ""
+            if block_length ~= 1 then
+                plural = "s"
+            end
+            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " has not completed all tasks by the time another team wins, the round will be extended by " .. block_length .. " second" .. plural .. ", giving them extra time to finish.</span>"
+        end
 
         -- Reroll
         html = html .. "<span style='display: block; margin-top: 10px;'>Undesired or uncompletable tasks can be rerolled by spending a credit in the equipment menu (press '" .. Key("+menu_context", "C") .. "')</span>"
