@@ -20,7 +20,6 @@ TASK.Description = function(ply)
     if IsPlayer(ply.Task_GetPlayerToKillPlayer) then
         name = ply.Task_GetPlayerToKillPlayer:Nick()
     end
-
     return "Get " .. name .. " to kill another player (not you)"
 end
 

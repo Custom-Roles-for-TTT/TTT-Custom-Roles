@@ -5,6 +5,7 @@ local math = math
 local net = net
 local table = table
 
+local MathCeil = math.ceil
 local MathCos = math.cos
 local MathPi = math.pi
 local MathRand = math.Rand
@@ -41,7 +42,7 @@ TASK.Description = function(ply)
             description = description .. "s"
         end
     elseif unit == 2 then
-        local convertedRange = math.ceil(range * FEET_PER_METER)
+        local convertedRange = MathCeil(range * FEET_PER_METER)
         description = description .. convertedRange
         if convertedRange == 1 then
             description = description .. " foot"
@@ -49,7 +50,7 @@ TASK.Description = function(ply)
             description = description .. " feet"
         end
     else
-        local convertedRange = math.ceil(range * UNITS_PER_METER)
+        local convertedRange = MathCeil(range * UNITS_PER_METER)
         description = description .. convertedRange .. " unit"
         if convertedRange ~= 1 then
             description = description .. "s"
