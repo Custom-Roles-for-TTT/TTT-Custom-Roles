@@ -163,6 +163,18 @@ function plymeta:CompleteTask(taskId)
     local taskList = isKillTask and TASKMASTER.KillTasks or TASKMASTER.MiscTasks
     local activeTasksName = isKillTask and "TaskmasterKillTasks" or "TaskmasterMiscTasks"
     if table.HasValue(self[activeTasksName], taskId) then
+        -- If our role ability was disabled, keep track of which tasks were completed
+        -- so we can instantly complete them if/when we become un-disabled
+        if self:IsRoleAbilityDisabled() then
+            if not self.TaskmasterCompletedButBlocked then
+                self.TaskmasterCompletedButBlocked = {}
+            end
+            if not table.HasValue(self.TaskmasterCompletedButBlocked, taskId) then
+                table.insert(self.TaskmasterCompletedButBlocked, taskId)
+            end
+            return false
+        end
+
         taskList[taskId].OnTaskComplete(self)
         table.insert(self.TaskmasterCompletedTasks, taskId)
         self:SetProperty("TaskmasterCompletedTasks", self.TaskmasterCompletedTasks, self)
@@ -191,6 +203,16 @@ function plymeta:CompleteTask(taskId)
     end
     return false
 end
+
+hook.Add("TTTOnRoleAbilityEnabled", "Taskmaster_TTTOnRoleAbilityEnabled", function(ply)
+    if not ply:IsTaskmaster() then return end
+    if not ply.TaskmasterCompletedButBlocked then return end
+
+    for _, taskId in ipairs(ply.TaskmasterCompletedButBlocked) do
+        ply:CompleteTask(taskId)
+    end
+    ply.TaskmasterCompletedButBlocked = nil
+end)
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_TASKMASTER] = function(ply)
     ply:SetProperty("TaskmasterKillTasks", {}, ply)
@@ -302,6 +324,7 @@ local function CleanupTasks(ply)
     ply:ClearProperty("TaskmasterCompletedTasks", ply)
     ply:ClearProperty("TaskmasterRerolledTasks", ply)
     ply:ClearProperty("TaskmasterShouldWin")
+    ply.TaskmasterCompletedButBlocked = nil
 end
 
 hook.Add("TTTPrepareRound", "Taskmaster_TTTPrepareRound", function()
