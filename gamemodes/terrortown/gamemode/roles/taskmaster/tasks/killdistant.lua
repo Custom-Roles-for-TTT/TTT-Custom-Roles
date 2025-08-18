@@ -14,7 +14,7 @@ local MathSin = math.sin
 local TASK = {}
 
 TASK.id = "killdistant"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 local taskmaster_killdistant_range = CreateConVar("ttt_taskmaster_killdistant_range", "25", FCVAR_REPLICATED, "The minimum distance (in meters) away a player can be to count for the 'Kill a Distant Player' task", 0, 100)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {

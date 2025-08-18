@@ -9,7 +9,7 @@ local TableInsert = table.insert
 local TASK = {}
 
 TASK.id = "killweapon"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 TASK.Name = function(ply)
     local weapon = "Specific Weapon"

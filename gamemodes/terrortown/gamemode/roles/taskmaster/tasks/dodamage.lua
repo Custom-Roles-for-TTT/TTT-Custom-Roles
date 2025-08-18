@@ -21,7 +21,7 @@ TASK.Name = function(ply)
     if not ply then return name end
 
     local progress
-    if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
+    if TableHasValue(ply.TaskmasterCompletedTasks, TASK.id) then
         progress = amount
     else
         progress = ply.Task_DoDamageTotal

@@ -9,7 +9,7 @@ local MathMax = math.max
 local TASK = {}
 
 TASK.id = "kill360"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 local taskmaster_kill360_time = CreateConVar("ttt_taskmaster_kill360_time", "3", FCVAR_REPLICATED, "The time (in seconds) a player has after completing a 360 to kill a player for the  'Kill a Player After a 360' task", 1, 10)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {

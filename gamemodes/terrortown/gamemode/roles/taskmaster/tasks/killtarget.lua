@@ -6,7 +6,7 @@ local util = util
 local TASK = {}
 
 TASK.id = "killtarget"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 TASK.Name = function(ply)
     local name = "Target"

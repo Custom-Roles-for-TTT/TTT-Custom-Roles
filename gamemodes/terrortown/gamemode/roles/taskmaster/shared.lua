@@ -55,7 +55,7 @@ TASKMASTER = {
 function TASKMASTER.RegisterTask(task)
     task.id = task.id or task.Id or task.ID
 
-    if TASKMASTER.killTasks[task.id] or TASKMASTER.miscTasks[task.id] then
+    if TASKMASTER.KillTasks[task.id] or TASKMASTER.MiscTasks[task.id] then
         ErrorNoHalt("ERROR: Attempted to register Taskmaster task '" .. task.id .. "' with duplicate task ID.\n")
         return
     end
@@ -70,10 +70,10 @@ function TASKMASTER.RegisterTask(task)
         type = ROLE_CONVAR_TYPE_BOOL
     })
 
-    if task.isKillTask then
-        TASKMASTER.killTasks[task.id] = task
+    if task.IsKillTask then
+        TASKMASTER.KillTasks[task.id] = task
     else
-        TASKMASTER.miscTasks[task.id] = task
+        TASKMASTER.MiscTasks[task.id] = task
     end
 end
 
@@ -89,12 +89,12 @@ AddTaskFiles("terrortown/gamemode/roles/taskmaster/tasks/") -- Internal tasks
 AddTaskFiles("taskmastertasks/") -- External tasks
 
 hook.Add("Initialize", "Taskmaster_Task_Initialize", function()
-    for _, t in pairs(TASKMASTER.killTasks) do
+    for _, t in pairs(TASKMASTER.KillTasks) do
         if t.Initialize then
             t.Initialize()
         end
     end
-    for _, t in pairs(TASKMASTER.miscTasks) do
+    for _, t in pairs(TASKMASTER.MiscTasks) do
         if t.Initialize then
             t.Initialize()
         end

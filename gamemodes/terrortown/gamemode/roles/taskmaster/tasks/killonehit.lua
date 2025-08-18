@@ -6,7 +6,7 @@ local PlayerIterator = player.Iterator
 local TASK = {}
 
 TASK.id = "killonehit"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 TASK.Name = function(ply)
     return "Kill a Player in One Hit"

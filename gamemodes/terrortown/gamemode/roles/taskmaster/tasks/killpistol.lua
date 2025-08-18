@@ -3,7 +3,7 @@ local hook = hook
 local TASK = {}
 
 TASK.id = "killpistol"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 TASK.Name = function(ply)
     return "Kill a Player With a Pistol"

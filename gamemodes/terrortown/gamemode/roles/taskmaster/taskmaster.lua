@@ -33,14 +33,14 @@ local taskmaster_wins_with_others = GetConVar("ttt_taskmaster_wins_with_others")
 function plymeta:AssignTask(isKillTask, index)
     if not self:IsTaskmaster() then return end
 
-    local taskList = isKillTask and TASKMASTER.killTasks or TASKMASTER.miscTasks
+    local taskList = isKillTask and TASKMASTER.KillTasks or TASKMASTER.MiscTasks
     local taskIds = table.GetKeys(taskList)
-    local activeTasksName = isKillTask and "taskmasterKillTasks" or "taskmasterMiscTasks"
+    local activeTasksName = isKillTask and "TaskmasterKillTasks" or "TaskmasterMiscTasks"
 
     for _, activeId in ipairs(self[activeTasksName]) do
         table.RemoveByValue(taskIds, activeId)
     end
-    for _, rerolledId in ipairs(self.taskmasterRerolledTasks) do
+    for _, rerolledId in ipairs(self.TaskmasterRerolledTasks) do
         table.RemoveByValue(taskIds, rerolledId)
     end
     table.Shuffle(taskIds)
@@ -49,9 +49,9 @@ function plymeta:AssignTask(isKillTask, index)
         if taskList[id].CanAssignTask(self) then
             local blockedByFeature = false
             for _, feature in pairs(taskList[id].RequiredFeatures) do
-                for _, killTaskId in pairs(self.taskmasterKillTasks) do
-                    if not table.HasValue(self.taskmasterCompletedTasks, killTaskId) and not table.HasValue(self.taskmasterRerolledTasks, killTaskId) then
-                        if table.HasValue(TASKMASTER.killTasks[killTaskId].RequiredFeatures, feature) then
+                for _, killTaskId in pairs(self.TaskmasterKillTasks) do
+                    if not table.HasValue(self.TaskmasterCompletedTasks, killTaskId) and not table.HasValue(self.TaskmasterRerolledTasks, killTaskId) then
+                        if table.HasValue(TASKMASTER.KillTasks[killTaskId].RequiredFeatures, feature) then
                             blockedByFeature = true
                             break
                         end
@@ -59,9 +59,9 @@ function plymeta:AssignTask(isKillTask, index)
                 end
                 if blockedByFeature then break end
 
-                for _, miscTaskId in pairs(self.taskmasterMiscTasks) do
-                    if not table.HasValue(self.taskmasterCompletedTasks, miscTaskId) and not table.HasValue(self.taskmasterRerolledTasks, miscTaskId) then
-                        if table.HasValue(TASKMASTER.miscTasks[miscTaskId].RequiredFeatures, feature) then
+                for _, miscTaskId in pairs(self.TaskmasterMiscTasks) do
+                    if not table.HasValue(self.TaskmasterCompletedTasks, miscTaskId) and not table.HasValue(self.TaskmasterRerolledTasks, miscTaskId) then
+                        if table.HasValue(TASKMASTER.MiscTasks[miscTaskId].RequiredFeatures, feature) then
                             blockedByFeature = true
                             break
                         end
@@ -88,9 +88,9 @@ function plymeta:AssignTask(isKillTask, index)
 end
 
 function plymeta:RemoveTask(taskId)
-    local isKillTask = TASKMASTER.killTasks[taskId] and true or false
-    local taskList = isKillTask and TASKMASTER.killTasks or TASKMASTER.miscTasks
-    local activeTasksName = isKillTask and "taskmasterKillTasks" or "taskmasterMiscTasks"
+    local isKillTask = TASKMASTER.KillTasks[taskId] and true or false
+    local taskList = isKillTask and TASKMASTER.KillTasks or TASKMASTER.MiscTasks
+    local activeTasksName = isKillTask and "TaskmasterKillTasks" or "TaskmasterMiscTasks"
 
     taskList[taskId].OnTaskRemoved(self)
 
@@ -102,13 +102,13 @@ function plymeta:RerollTask(taskId, free)
     if not self:IsTaskmaster() then return end
     if not free and self:GetCredits() == 0 then return end
 
-    local isKillTask = TASKMASTER.killTasks[taskId] and true or false
-    local activeTasksName = isKillTask and "taskmasterKillTasks" or "taskmasterMiscTasks"
+    local isKillTask = TASKMASTER.KillTasks[taskId] and true or false
+    local activeTasksName = isKillTask and "TaskmasterKillTasks" or "TaskmasterMiscTasks"
     local index = table.KeyFromValue(self[activeTasksName], taskId)
     if not index then return end
 
-    table.insert(self.taskmasterRerolledTasks, taskId)
-    self:SetProperty("taskmasterRerolledTasks", self.taskmasterRerolledTasks, self)
+    table.insert(self.TaskmasterRerolledTasks, taskId)
+    self:SetProperty("TaskmasterRerolledTasks", self.TaskmasterRerolledTasks, self)
 
     local newTask = self:AssignTask(isKillTask, index)
     self:RemoveTask(taskId)
@@ -122,8 +122,9 @@ function plymeta:RerollTask(taskId, free)
     -- they only had tasks left that don't block a win condition.
     -- Rerolling one of those tasks no longer guarantees that they are winning,
     -- unless the newly rolled task ALSO does not block a win condition.
-    if newTask and not newTask.allowRoundEnd and self.taskmasterShouldWin then
-        self:SetProperty("taskmasterShouldWin", false)
+    if newTask and not newTask.AllowRoundEnd and self.TaskmasterShouldWin then
+        self:SetProperty("TaskmasterShouldWin", false)
+        -- TODO: Alert the player that they have more tasks to do again
     end
 
     net.Start("TTT_TaskmasterUpdateTaskList")
@@ -137,17 +138,17 @@ end)
 function plymeta:CompleteTask(taskId)
     if not self:IsActiveTaskmaster() then return end
 
-    local isKillTask = TASKMASTER.killTasks[taskId] and true or false
-    local taskList = isKillTask and TASKMASTER.killTasks or TASKMASTER.miscTasks
-    local activeTasksName = isKillTask and "taskmasterKillTasks" or "taskmasterMiscTasks"
+    local isKillTask = TASKMASTER.KillTasks[taskId] and true or false
+    local taskList = isKillTask and TASKMASTER.KillTasks or TASKMASTER.MiscTasks
+    local activeTasksName = isKillTask and "TaskmasterKillTasks" or "TaskmasterMiscTasks"
     if table.HasValue(self[activeTasksName], taskId) then
         taskList[taskId].OnTaskComplete(self)
-        table.insert(self.taskmasterCompletedTasks, taskId)
-        self:SetProperty("taskmasterCompletedTasks", self.taskmasterCompletedTasks, self)
+        table.insert(self.TaskmasterCompletedTasks, taskId)
+        self:SetProperty("TaskmasterCompletedTasks", self.TaskmasterCompletedTasks, self)
 
-        local activeTasksList = table.Copy(self.taskmasterKillTasks)
-        table.Add(activeTasksList, self.taskmasterMiscTasks)
-        for _, id in ipairs(self.taskmasterCompletedTasks) do
+        local activeTasksList = table.Copy(self.TaskmasterKillTasks)
+        table.Add(activeTasksList, self.TaskmasterMiscTasks)
+        for _, id in ipairs(self.TaskmasterCompletedTasks) do
             if table.HasValue(activeTasksList, id) then
                 table.RemoveByValue(activeTasksList, id)
             else
@@ -157,22 +158,22 @@ function plymeta:CompleteTask(taskId)
 
         local tasksRemaining = #activeTasksList
         for _, id in pairs(activeTasksList) do
-            local task = TASKMASTER.killTasks[id]
+            local task = TASKMASTER.KillTasks[id]
             if not task then
-                task = TASKMASTER.miscTasks[id]
+                task = TASKMASTER.MiscTasks[id]
             end
 
             if not task then continue end
 
             -- Tasks that allow the round to end should not count for this check
             -- since the Taskmaster wins even if they are still active
-            if task.allowRoundEnd then
+            if task.AllowRoundEnd then
                 tasksRemaining = tasksRemaining - 1
             end
         end
 
         if tasksRemaining <= 0 then
-            self:SetProperty("taskmasterShouldWin", true)
+            self:SetProperty("TaskmasterShouldWin", true)
             -- TODO: Alert the player that they have finished all their tasks
         end
 
@@ -196,10 +197,10 @@ function plymeta:CompleteTask(taskId)
 end
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_TASKMASTER] = function(ply)
-    ply:SetProperty("taskmasterKillTasks", {}, ply)
-    ply:SetProperty("taskmasterMiscTasks", {}, ply)
-    ply:SetProperty("taskmasterCompletedTasks", {}, ply)
-    ply:SetProperty("taskmasterRerolledTasks", {}, ply)
+    ply:SetProperty("TaskmasterKillTasks", {}, ply)
+    ply:SetProperty("TaskmasterMiscTasks", {}, ply)
+    ply:SetProperty("TaskmasterCompletedTasks", {}, ply)
+    ply:SetProperty("TaskmasterRerolledTasks", {}, ply)
     for _ = 1, taskmaster_kill_tasks:GetInt() do
         ply:AssignTask(true)
     end
@@ -219,7 +220,7 @@ hook.Add("TTTWinCheckBlocks", "Taskmaster_TTTWinCheckBlocks", function(win_block
         local taskmaster = player.GetLivingRole(ROLE_TASKMASTER)
         if not IsPlayer(taskmaster) then return win_type end
 
-        if taskmaster.taskmasterShouldWin then return win_type end
+        if taskmaster.TaskmasterShouldWin then return win_type end
 
         if not taskmaster_blocks_team_wins:GetBool() then return win_type end
 
@@ -259,7 +260,7 @@ hook.Add("TTTCheckForWin", "Taskmaster_TTTCheckForWin", function()
     local other_alive = false
     for _, v in player.Iterator() do
         if v:IsActive() then
-            if v:IsTaskmaster() and v.taskmasterShouldWin then
+            if v:IsTaskmaster() and v.TaskmasterShouldWin then
                 winning_taskmaster_alive = true
             elseif not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
                 other_alive = true
@@ -285,23 +286,23 @@ end)
 -------------
 
 local function CleanupTasks(ply)
-    if ply.taskmasterKillTasks then
-        for _, id in pairs(ply.taskmasterKillTasks) do
+    if ply.TaskmasterKillTasks then
+        for _, id in pairs(ply.TaskmasterKillTasks) do
             ply:RemoveTask(id)
         end
     end
 
-    if ply.taskmasterMiscTasks then
-        for _, id in pairs(ply.taskmasterMiscTasks) do
+    if ply.TaskmasterMiscTasks then
+        for _, id in pairs(ply.TaskmasterMiscTasks) do
             ply:RemoveTask(id)
         end
     end
 
-    ply:ClearProperty("taskmasterKillTasks", ply)
-    ply:ClearProperty("taskmasterMiscTasks", ply)
-    ply:ClearProperty("taskmasterCompletedTasks", ply)
-    ply:ClearProperty("taskmasterRerolledTasks", ply)
-    ply:ClearProperty("taskmasterShouldWin")
+    ply:ClearProperty("TaskmasterKillTasks", ply)
+    ply:ClearProperty("TaskmasterMiscTasks", ply)
+    ply:ClearProperty("TaskmasterCompletedTasks", ply)
+    ply:ClearProperty("TaskmasterRerolledTasks", ply)
+    ply:ClearProperty("TaskmasterShouldWin")
 end
 
 hook.Add("TTTPrepareRound", "Taskmaster_TTTPrepareRound", function()

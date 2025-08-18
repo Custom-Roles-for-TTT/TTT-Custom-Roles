@@ -8,7 +8,7 @@ local PlayerIterator = player.Iterator
 local TASK = {}
 
 TASK.id = "killretaliate"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 TASK.Name = function(ply)
     return "Kill a Player That Attacked First"

@@ -10,7 +10,7 @@ local MathMax = math.max
 local TASK = {}
 
 TASK.id = "killdouble"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 local taskmaster_killdouble_time = CreateConVar("ttt_taskmaster_killdouble_time", "5", FCVAR_REPLICATED, "The time (in seconds) the taskmaster has between kills to complete the 'Get a Double Kill' task", 0, 30)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {

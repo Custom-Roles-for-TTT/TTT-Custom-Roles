@@ -30,7 +30,7 @@ TASK.Name = function(ply)
         end
     end
 
-    if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
+    if TableHasValue(ply.TaskmasterCompletedTasks, TASK.id) then
         progress = total
     end
 

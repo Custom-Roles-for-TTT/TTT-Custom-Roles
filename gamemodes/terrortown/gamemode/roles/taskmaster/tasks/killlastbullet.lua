@@ -4,7 +4,7 @@ local timer = timer
 local TASK = {}
 
 TASK.id = "killlastbullet"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 TASK.Name = function(ply)
     return "Kill a Player With Your Last Bullet"

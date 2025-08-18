@@ -4,7 +4,7 @@ local net = net
 local TASK = {}
 
 TASK.id = "killairborne"
-TASK.isKillTask = true
+TASK.IsKillTask = true
 
 TASK.Name = function(ply)
     return "Kill an Airborne Player"

@@ -82,7 +82,7 @@ hook.Add("TTTScoringSecondaryWins", "Taskmaster_TTTScoringSecondaryWins", functi
 
     for _, ply in player.Iterator() do
         if not ply:IsTaskmaster() then continue end
-        if ply.taskmasterShouldWin then
+        if ply.TaskmasterShouldWin then
             table.insert(secondary_wins, ROLE_TASKMASTER)
             break
         end
@@ -135,7 +135,7 @@ local function DrawTask(task, height, isShadow)
         progress = task.Progress(client)
         desc = desc .. " " .. progress
     end
-    local completed = table.HasValue(client.taskmasterCompletedTasks, task.id)
+    local completed = table.HasValue(client.TaskmasterCompletedTasks, task.id)
 
     -- The checkboxes don't naturally align with the text, thus the '+2's everywhere to make it line up
     surface.DrawRect(xPos + margin + 2 + offset, height + 2 + offset, 2, checkboxSize)
@@ -228,14 +228,14 @@ hook.Add("HUDPaint", "Taskmaster_HUDPaint", function()
 
     local height = yOffset:GetInt() + margin
 
-    for _, id in ipairs(client.taskmasterKillTasks) do
-        DrawTask(TASKMASTER.killTasks[id], height, true)
-        height = DrawTask(TASKMASTER.killTasks[id], height)
+    for _, id in ipairs(client.TaskmasterKillTasks) do
+        DrawTask(TASKMASTER.KillTasks[id], height, true)
+        height = DrawTask(TASKMASTER.KillTasks[id], height)
     end
 
-    for _, id in ipairs(client.taskmasterMiscTasks) do
-        DrawTask(TASKMASTER.miscTasks[id], height, true)
-        height = DrawTask(TASKMASTER.miscTasks[id], height)
+    for _, id in ipairs(client.TaskmasterMiscTasks) do
+        DrawTask(TASKMASTER.MiscTasks[id], height, true)
+        height = DrawTask(TASKMASTER.MiscTasks[id], height)
     end
 
     maxHeight = height - yOffset:GetInt()
@@ -275,7 +275,7 @@ local scrollBarWidth = 15
 local creditsIconSize = 32
 
 local function CreateTaskReroll(task, dscrollpanel)
-    if table.HasValue(client.taskmasterCompletedTasks, task.id) then return false end
+    if table.HasValue(client.TaskmasterCompletedTasks, task.id) then return false end
 
     local name = task.Name(client)
     local desc = task.Description(client)
@@ -353,16 +353,16 @@ local function CreateTaskList(dscrollpanel)
     dtasks = {}
     dtasksHeight = 0
 
-    for _, id in ipairs(client.taskmasterKillTasks) do
-        local dtask, dline = CreateTaskReroll(TASKMASTER.killTasks[id], dscrollpanel)
+    for _, id in ipairs(client.TaskmasterKillTasks) do
+        local dtask, dline = CreateTaskReroll(TASKMASTER.KillTasks[id], dscrollpanel)
         if dtask then
             table.insert(dtasks, dtask)
             table.insert(dtasks, dline)
         end
     end
 
-    for _, id in ipairs(client.taskmasterMiscTasks) do
-        local dtask, dline = CreateTaskReroll(TASKMASTER.miscTasks[id], dscrollpanel)
+    for _, id in ipairs(client.TaskmasterMiscTasks) do
+        local dtask, dline = CreateTaskReroll(TASKMASTER.MiscTasks[id], dscrollpanel)
         if dtask then
             table.insert(dtasks, dtask)
             table.insert(dtasks, dline)
@@ -504,11 +504,11 @@ hook.Add("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role,
 
         -- Show all enabled tasks
         local tasks = {}
-        for _, t in pairs(TASKMASTER.killTasks) do
+        for _, t in pairs(TASKMASTER.KillTasks) do
             if not t.Enabled() then continue end
             table.insert(tasks, { name = t.Name(), desc = t.Description() })
         end
-        for _, t in pairs(TASKMASTER.miscTasks) do
+        for _, t in pairs(TASKMASTER.MiscTasks) do
             if not t.Enabled() then continue end
             table.insert(tasks, { name = t.Name(), desc = t.Description() })
         end
