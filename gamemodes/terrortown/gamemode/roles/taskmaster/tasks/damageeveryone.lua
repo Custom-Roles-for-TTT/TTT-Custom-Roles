@@ -57,6 +57,7 @@ if SERVER then
         hook.Add("PostEntityTakeDamage", "Taskmaster_DamageEveryone_PostEntityTakeDamage_" .. ply:SteamID64(), function(entity, dmginfo, wasDamageTaken)
             if not wasDamageTaken then return end
             if entity == ply then return end
+            if not IsPlayer(entity) then return end
 
             local attacker = dmginfo:GetAttacker()
             if not IsPlayer(attacker) or attacker ~= ply then return end
