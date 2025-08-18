@@ -32,6 +32,9 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local time = taskmaster_crouchnearbody_time:GetInt()
+    local name = "Crouch Near a Body"
+
+    if not ply then return name end
 
     local progress = 0
     if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
@@ -43,7 +46,7 @@ TASK.Name = function(ply)
         end
     end
 
-    return "Crouch Near a Body (" .. progress .. "/" .. time .. ")"
+    return name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)

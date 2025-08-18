@@ -36,10 +36,13 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     LANG.AddToLanguage("english", "taskmaster_hud", "You will lose in: {time}")
 
     -- Cheat Sheet
-    LANG.AddToLanguage("english", "cheatsheet_desc_taskmaster", "TODO")
+    LANG.AddToLanguage("english", "cheatsheet_desc_taskmaster", "Has a list of tasks that they must complete before the end of the round.")
 
     -- Popup
-    LANG.AddToLanguage("english", "info_popup_taskmaster", [[You are {role}! TODO]])
+    LANG.AddToLanguage("english", "info_popup_taskmaster", [[You are {role}! Complete your tasks
+before the end of the round!
+
+Press {menukey} to pay a credit to replace a task you don't like!]])
 end)
 
 -------------
@@ -459,7 +462,32 @@ end)
 --------------
 
 hook.Add("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role, titleLabel)
-    --if role == ROLE_TASKMASTER then
-    --    -- TODO
-    --end
+    if role == ROLE_TASKMASTER then
+        local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
+        local html = "The " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to complete a series of tasks before the round ends."
+
+        -- Reroll
+        html = html .. "<span style='display: block; margin-top: 10px;'>Undesired or uncompletable tasks can be rerolled by spending a credit in the equipment menu (press '" .. Key("+menu_context", "C") .. "')</span>"
+
+        -- Show all enabled tasks
+        local tasks = {}
+        for _, t in pairs(TASKMASTER.killTasks) do
+            if not t.Enabled() then continue end
+            table.insert(tasks, { name = t.Name(), desc = t.Description() })
+        end
+        for _, t in pairs(TASKMASTER.miscTasks) do
+            if not t.Enabled() then continue end
+            table.insert(tasks, { name = t.Name(), desc = t.Description() })
+        end
+        table.SortByMember(tasks, "name", true)
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>Available tasks:"
+        html = html .. "<ul>"
+        for _, t in ipairs(tasks) do
+            html = html .. "<li><strong>" .. t.name .. "</strong> - <span style='font-weight: 400;'>" .. t.desc .. "</span></li>"
+        end
+        html = html .. "</ul>"
+
+        return html
+    end
 end)

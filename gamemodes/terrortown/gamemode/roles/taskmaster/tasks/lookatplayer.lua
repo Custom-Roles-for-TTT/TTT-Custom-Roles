@@ -22,10 +22,14 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 })
 
 TASK.Name = function(ply)
-    local name = "Target"
-    if IsPlayer(ply.Task_LookAtPlayerPlayer) then
-        name = ply.Task_LookAtPlayerPlayer:Nick()
+    local name = "Look at "
+    if ply and IsPlayer(ply.Task_LookAtPlayerPlayer) then
+        name = name .. ply.Task_LookAtPlayerPlayer:Nick()
+    else
+        name = name .. "Target"
     end
+
+    if not ply then return name end
 
     local time = taskmaster_lookatplayer_time:GetInt()
     local progress = 0
@@ -38,12 +42,12 @@ TASK.Name = function(ply)
         end
     end
 
-    return "Look at " .. name .. " (" .. progress .. "/" .. time .. ")"
+    return name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
     local name = "target"
-    if IsPlayer(ply.Task_LookAtPlayerPlayer) then
+    if ply and IsPlayer(ply.Task_LookAtPlayerPlayer) then
         name = ply.Task_LookAtPlayerPlayer:Nick()
     end
     local time = taskmaster_lookatplayer_time:GetInt()

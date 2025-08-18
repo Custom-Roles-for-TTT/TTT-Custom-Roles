@@ -21,6 +21,8 @@ TASK.Name = function(ply)
         name = name .. "s"
     end
 
+    if not ply then return name end
+
     local progress
     if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = count

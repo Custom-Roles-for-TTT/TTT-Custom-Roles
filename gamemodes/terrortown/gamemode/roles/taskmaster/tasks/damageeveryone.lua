@@ -14,6 +14,10 @@ local TASK = {}
 TASK.id = "damageeveryone"
 
 TASK.Name = function(ply)
+    local name = "Damage Everyone Else"
+
+    if not ply then return name end
+
     local damaged = ply.Task_DamageEveryoneDamaged or {}
     local total = 0
     local progress = 0
@@ -30,7 +34,7 @@ TASK.Name = function(ply)
         progress = total
     end
 
-    return "Damage Everyone Else (" .. progress .. "/" .. total .. ")"
+    return name .. " (" .. progress .. "/" .. total .. ")"
 end
 
 TASK.Description = function(ply)

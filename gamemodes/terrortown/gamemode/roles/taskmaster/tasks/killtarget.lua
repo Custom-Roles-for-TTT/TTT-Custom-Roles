@@ -10,7 +10,7 @@ TASK.isKillTask = true
 
 TASK.Name = function(ply)
     local name = "Target"
-    if IsPlayer(ply.Task_KillTargetPlayer) then
+    if ply and IsPlayer(ply.Task_KillTargetPlayer) then
         name = ply.Task_KillTargetPlayer:Nick()
     end
     return "Kill " .. name
@@ -18,7 +18,7 @@ end
 
 TASK.Description = function(ply)
     local name = "target"
-    if IsPlayer(ply.Task_KillTargetPlayer) then
+    if ply and IsPlayer(ply.Task_KillTargetPlayer) then
         name = ply.Task_KillTargetPlayer:Nick()
     end
     return "Kill " .. name .. " by any means necessary"

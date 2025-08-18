@@ -34,10 +34,14 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 })
 
 TASK.Name = function(ply)
-    local name = "Target"
-    if IsPlayer(ply.Task_StayNearTargetPlayer) then
-        name = ply.Task_StayNearTargetPlayer:Nick()
+    local name = "Stay Near "
+    if ply and IsPlayer(ply.Task_StayNearTargetPlayer) then
+        name = name .. ply.Task_StayNearTargetPlayer:Nick()
+    else
+        name = name .. "Target"
     end
+
+    if not ply then return name end
 
     local time = taskmaster_stayneartarget_time:GetInt()
     local progress = 0
@@ -50,7 +54,7 @@ TASK.Name = function(ply)
         end
     end
 
-    return "Stay Near " .. name .. " (" .. progress .. "/" .. time .. ")"
+    return name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
@@ -84,7 +88,7 @@ TASK.Description = function(ply)
     end
 
     local name = "target"
-    if IsPlayer(ply.Task_StayNearTargetPlayer) then
+    if ply and IsPlayer(ply.Task_StayNearTargetPlayer) then
         name = ply.Task_StayNearTargetPlayer:Nick()
     end
 

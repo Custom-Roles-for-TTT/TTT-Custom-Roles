@@ -13,7 +13,7 @@ TASK.isKillTask = true
 
 TASK.Name = function(ply)
     local weapon = "Specific Weapon"
-    if CLIENT and ply.Task_KillWeaponClass then
+    if CLIENT and ply and ply.Task_KillWeaponClass then
         for _, wep in ipairs(weapons.GetList()) do
             if ply.Task_KillWeaponClass == WEPS.GetClass(wep) then
                 weapon = LANG.TryTranslation(wep.PrintName)
@@ -26,7 +26,7 @@ end
 
 TASK.Description = function(ply)
     local weapon = "specific weapon"
-    if CLIENT and ply.Task_KillWeaponClass then
+    if CLIENT and ply and ply.Task_KillWeaponClass then
         for _, wep in ipairs(weapons.GetList()) do
             if ply.Task_KillWeaponClass == WEPS.GetClass(wep) then
                 weapon = LANG.TryTranslation(wep.PrintName)

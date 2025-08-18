@@ -9,7 +9,7 @@ TASK.id = "getplayerkilled"
 
 TASK.Name = function(ply)
     local name = "Target"
-    if IsPlayer(ply.Task_GetPlayerKilledPlayer) then
+    if ply and IsPlayer(ply.Task_GetPlayerKilledPlayer) then
         name = ply.Task_GetPlayerKilledPlayer:Nick()
     end
     return "Get " .. name .. " Killed"
@@ -17,7 +17,7 @@ end
 
 TASK.Description = function(ply)
     local name = "target"
-    if IsPlayer(ply.Task_GetPlayerKilledPlayer) then
+    if ply and IsPlayer(ply.Task_GetPlayerKilledPlayer) then
         name = ply.Task_GetPlayerKilledPlayer:Nick()
     end
     return "Get " .. name .. " killed by another player (not you)"

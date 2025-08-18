@@ -23,6 +23,10 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local time = taskmaster_takedamage_time:GetInt()
+    local name = "Take Damage and Survive"
+
+    if not ply then return name end
+
     local progress = 0
     if TableHasValue(ply.taskmasterCompletedTasks, TASK.id) then
         progress = time
@@ -33,7 +37,7 @@ TASK.Name = function(ply)
         end
     end
 
-    return "Take Damage and Survive (" .. progress .. "/" .. time .. ")"
+    return name .. " (" .. progress .. "/" .. time .. ")"
 end
 
 TASK.Description = function(ply)
