@@ -110,21 +110,11 @@ function plymeta:RerollTask(taskId, free)
     table.insert(self.TaskmasterRerolledTasks, taskId)
     self:SetProperty("TaskmasterRerolledTasks", self.TaskmasterRerolledTasks, self)
 
-    local newTask = self:AssignTask(isKillTask, index)
+    self:AssignTask(isKillTask, index)
     self:RemoveTask(taskId)
 
     if not free then
         self:SubtractCredits(1)
-    end
-
-    -- Reset their win state if they rerolled.
-    -- If they have already "won" and they are re-rolling, that means
-    -- they only had tasks left that don't block a win condition.
-    -- Rerolling one of those tasks no longer guarantees that they are winning,
-    -- unless the newly rolled task ALSO does not block a win condition.
-    if newTask and not newTask.AllowRoundEnd and self.TaskmasterShouldWin then
-        self:SetProperty("TaskmasterShouldWin", false)
-        -- TODO: Alert the player that they have more tasks to do again
     end
 
     net.Start("TTT_TaskmasterUpdateTaskList")
@@ -134,6 +124,33 @@ end
 net.Receive("TTT_TaskmasterRerollTask", function(len, ply)
     ply:RerollTask(net.ReadString())
 end)
+
+function plymeta:GetActiveTasks(roundEnd)
+    local activeTasksList = table.Copy(self.TaskmasterKillTasks)
+    table.Add(activeTasksList, self.TaskmasterMiscTasks)
+    for _, id in ipairs(self.TaskmasterCompletedTasks) do
+        if table.HasValue(activeTasksList, id) then
+            table.RemoveByValue(activeTasksList, id)
+        end
+    end
+
+    if roundEnd then
+        -- Loop backwards so removing something from this list doesn't mess us up
+        for i = #activeTasksList, 1, -1 do
+            local id = activeTasksList[i]
+            local task = TASKMASTER.KillTasks[id]
+            if not task then
+                task = TASKMASTER.MiscTasks[id]
+            end
+
+            if task and task.CompleteOnRoundEnd then
+                table.RemoveByValue(activeTasksList, id)
+            end
+        end
+    end
+
+    return activeTasksList
+end
 
 function plymeta:CompleteTask(taskId)
     if not self:IsActiveTaskmaster() then return end
@@ -146,33 +163,8 @@ function plymeta:CompleteTask(taskId)
         table.insert(self.TaskmasterCompletedTasks, taskId)
         self:SetProperty("TaskmasterCompletedTasks", self.TaskmasterCompletedTasks, self)
 
-        local activeTasksList = table.Copy(self.TaskmasterKillTasks)
-        table.Add(activeTasksList, self.TaskmasterMiscTasks)
-        for _, id in ipairs(self.TaskmasterCompletedTasks) do
-            if table.HasValue(activeTasksList, id) then
-                table.RemoveByValue(activeTasksList, id)
-            else
-                break
-            end
-        end
-
-        local tasksRemaining = #activeTasksList
-        for _, id in pairs(activeTasksList) do
-            local task = TASKMASTER.KillTasks[id]
-            if not task then
-                task = TASKMASTER.MiscTasks[id]
-            end
-
-            if not task then continue end
-
-            -- Tasks that allow the round to end should not count for this check
-            -- since the Taskmaster wins even if they are still active
-            if task.AllowRoundEnd then
-                tasksRemaining = tasksRemaining - 1
-            end
-        end
-
-        if tasksRemaining <= 0 then
+        local activeTasksList = self:GetActiveTasks()
+        if #activeTasksList == 0 then
             self:SetProperty("TaskmasterShouldWin", true)
             -- TODO: Alert the player that they have finished all their tasks
         end
@@ -221,6 +213,8 @@ hook.Add("TTTWinCheckBlocks", "Taskmaster_TTTWinCheckBlocks", function(win_block
         if not IsPlayer(taskmaster) then return win_type end
 
         if taskmaster.TaskmasterShouldWin then return win_type end
+        -- If we only have tasks remaining that complete on round end, let the round end as normal
+        if #taskmaster:GetActiveTasks(true) == 0 then return win_type end
 
         if not taskmaster_blocks_team_wins:GetBool() then return win_type end
 
@@ -260,7 +254,8 @@ hook.Add("TTTCheckForWin", "Taskmaster_TTTCheckForWin", function()
     local other_alive = false
     for _, v in player.Iterator() do
         if v:IsActive() then
-            if v:IsTaskmaster() and v.TaskmasterShouldWin then
+            -- If they have won or the only active tasks they have remaining complete on round end, they win
+            if v:IsTaskmaster() and (v.TaskmasterShouldWin or #v:GetActiveTasks(true) == 0) then
                 winning_taskmaster_alive = true
             elseif not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
                 other_alive = true

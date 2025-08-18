@@ -3,7 +3,7 @@ local hook = hook
 local TASK = {}
 
 TASK.id = "survive"
-TASK.AllowRoundEnd = true
+TASK.CompleteOnRoundEnd = true
 
 TASK.Name = function(ply)
     return "Survive"
