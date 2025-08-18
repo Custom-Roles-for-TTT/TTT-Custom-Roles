@@ -1,3 +1,16 @@
+local CurTime = CurTime
+local draw = draw
+local hook = hook
+local ipairs = ipairs
+local math = math
+local net = net
+local player = player
+local string = string
+local surface = surface
+local table = table
+local util = util
+local vgui = vgui
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -15,31 +28,18 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     -- Bonus credit popup
     LANG.AddToLanguage("english", "taskmaster_credit_bonus", "{role}, you have been awarded {num} credit(s) for completing a task.")
 
-    -- Tasks
-    -- TODO: Create init method for tasks and move these into task files
-    LANG.AddToLanguage("english", "taskmaster_carrycorpse", "CARRY CORPSE - {time}")
-    LANG.AddToLanguage("english", "taskmaster_crouchnearbody", "CROUCH NEAR BODY - {time}")
-    LANG.AddToLanguage("english", "taskmaster_crouch", "STAY CROUCHING - {time}")
-    LANG.AddToLanguage("english", "taskmaster_healthunder", "DON'T HEAL - {time}")
-    LANG.AddToLanguage("english", "taskmaster_holstered", "STAY HOLSTERED - {time}")
-    LANG.AddToLanguage("english", "taskmaster_kill360", "KILL SOMEONE - {time}")
-    LANG.AddToLanguage("english", "taskmaster_killdouble", "KILL ANOTHER - {time}")
-    LANG.AddToLanguage("english", "taskmaster_lookatplayer", "KEEP LOOKING - {time}")
-    LANG.AddToLanguage("english", "taskmaster_standonplayer", "STAY ON PLAYER - {time}")
-    LANG.AddToLanguage("english", "taskmaster_stayaway", "STAY AWAY - {time}")
-    LANG.AddToLanguage("english", "taskmaster_stayneartarget", "STAY NEAR TARGET - {time}")
-    LANG.AddToLanguage("english", "taskmaster_stayhidden", "STAY HIDDEN - {time}")
-    LANG.AddToLanguage("english", "taskmaster_stayhigher", "STAY HIGHEST - {time}")
-    LANG.AddToLanguage("english", "taskmaster_stayinarea", "STAY IN AREA - {time}")
-    LANG.AddToLanguage("english", "taskmaster_staylower", "STAY LOWEST - {time}")
-    LANG.AddToLanguage("english", "taskmaster_takedamage", "AVOID DAMAGE - {time}")
-
     -- Win conditions
     LANG.AddToLanguage("english", "win_taskmaster", "The {role} finished off their list!")
     LANG.AddToLanguage("english", "ev_win_taskmaster", "The methodical {role} has won the round!")
 
     -- HUD
     LANG.AddToLanguage("english", "taskmaster_hud", "You will lose in: {time}")
+
+    -- Cheat Sheet
+    LANG.AddToLanguage("english", "cheatsheet_desc_taskmaster", "TODO")
+
+    -- Popup
+    LANG.AddToLanguage("english", "info_popup_taskmaster", [[You are {role}! TODO]])
 end)
 
 -------------
@@ -452,4 +452,14 @@ hook.Add("TTTEquipmentTabs", "Taskmaster_TTTEquipmentTabs", function(dsheet, dfr
         dsheet:AddSheet(LANG.GetTranslation("taskmaster_reroll_name"), dscrollpanel, "icon16/table_edit.png", false, false, LANG.GetTranslation("equip_tooltip_taskmaster_reroll"))
         return true
     end
+end)
+
+--------------
+-- TUTORIAL --
+--------------
+
+hook.Add("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role, titleLabel)
+    --if role == ROLE_TASKMASTER then
+    --    -- TODO
+    --end
 end)

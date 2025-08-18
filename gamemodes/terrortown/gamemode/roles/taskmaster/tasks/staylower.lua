@@ -122,6 +122,10 @@ if SERVER then
 end
 
 if CLIENT then
+    TASK.Initialize = function()
+        LANG.AddToLanguage("english", "taskmaster_staylower", "STAY LOWEST - {time}")
+    end
+
     net.Receive("TTT_Taskmaster_StayLower_Assigned", function()
         local client = LocalPlayer()
         local sid64 = client:SteamID64()

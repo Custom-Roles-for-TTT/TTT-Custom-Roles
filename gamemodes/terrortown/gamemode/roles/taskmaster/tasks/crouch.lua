@@ -98,6 +98,10 @@ if SERVER then
 end
 
 if CLIENT then
+    TASK.Initialize = function()
+        LANG.AddToLanguage("english", "taskmaster_crouch", "STAY CROUCHING - {time}")
+    end
+
     net.Receive("TTT_Taskmaster_Crouch_Assigned", function()
         local client = LocalPlayer()
         local time = taskmaster_crouch_time:GetInt()

@@ -74,6 +74,10 @@ if SERVER then
 end
 
 if CLIENT then
+    TASK.Initialize = function()
+        LANG.AddToLanguage("english", "taskmaster_killdouble", "KILL ANOTHER - {time}")
+    end
+
     net.Receive("TTT_Taskmaster_KillDouble_Assigned", function()
         local client = LocalPlayer()
         local time = taskmaster_killdouble_time:GetInt()

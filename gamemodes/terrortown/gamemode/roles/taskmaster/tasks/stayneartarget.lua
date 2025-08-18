@@ -194,6 +194,10 @@ if SERVER then
 end
 
 if CLIENT then
+    TASK.Initialize = function()
+        LANG.AddToLanguage("english", "taskmaster_stayneartarget", "STAY NEAR TARGET - {time}")
+    end
+
     net.Receive("TTT_Taskmaster_StayNearTarget_Assigned", function()
         local client = LocalPlayer()
         local sid64 = client:SteamID64()

@@ -156,6 +156,10 @@ if SERVER then
 end
 
 if CLIENT then
+    TASK.Initialize = function()
+        LANG.AddToLanguage("english", "taskmaster_lookatplayer", "KEEP LOOKING - {time}")
+    end
+
     net.Receive("TTT_Taskmaster_LookAtPlayer_Assigned", function()
         local client = LocalPlayer()
         local sid64 = client:SteamID64()

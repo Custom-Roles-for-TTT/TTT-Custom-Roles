@@ -103,6 +103,10 @@ if SERVER then
 end
 
 if CLIENT then
+    TASK.Initialize = function()
+        LANG.AddToLanguage("english", "taskmaster_healthunder", "DON'T HEAL - {time}")
+    end
+
     net.Receive("TTT_Taskmaster_HealthUnder_Assigned", function()
         local client = LocalPlayer()
         local time = taskmaster_healthunder_time:GetInt()

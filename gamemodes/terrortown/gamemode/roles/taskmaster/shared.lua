@@ -1,5 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
+local ipairs = ipairs
+local table = table
+
 -- Task Features
 TASKMASTER_TF_TARGETID_PLAYERICON = 0
 TASKMASTER_TF_TARGETID_PLAYERTEXT = 1
@@ -81,3 +85,16 @@ end
 
 AddTaskFiles("terrortown/gamemode/roles/taskmaster/tasks/") -- Internal tasks
 AddTaskFiles("taskmastertasks/") -- External tasks
+
+hook.Add("Initialize", "Taskmaster_Task_Initialize", function()
+    for _, t in pairs(TASKMASTER.killTasks) do
+        if t.Initialize then
+            t.Initialize()
+        end
+    end
+    for _, t in pairs(TASKMASTER.miscTasks) do
+        if t.Initialize then
+            t.Initialize()
+        end
+    end
+end)

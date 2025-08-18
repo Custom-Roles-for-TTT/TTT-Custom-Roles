@@ -117,6 +117,9 @@ if SERVER then
 end
 
 if CLIENT then
+    TASK.Initialize = function()
+        LANG.AddToLanguage("english", "taskmaster_stayinarea", "STAY IN AREA - {time}")
+    end
 
     local function DrawLink(ply, targetPos)
         if not ply.TaskmasterStayInAreaLinkEmitter then ply.TaskmasterStayInAreaLinkEmitter = ParticleEmitter(targetPos) end

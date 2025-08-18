@@ -97,6 +97,10 @@ if SERVER then
 end
 
 if CLIENT then
+    TASK.Initialize = function()
+        LANG.AddToLanguage("english", "taskmaster_takedamage", "AVOID DAMAGE - {time}")
+    end
+
     net.Receive("TTT_Taskmaster_TakeDamage_Assigned", function()
         local client = LocalPlayer()
         local time = taskmaster_takedamage_time:GetInt()

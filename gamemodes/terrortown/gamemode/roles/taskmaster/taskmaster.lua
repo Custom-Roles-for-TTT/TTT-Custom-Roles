@@ -1,5 +1,15 @@
 AddCSLuaFile()
 
+local CurTime = CurTime
+local hook = hook
+local ipairs = ipairs
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local table = table
+local util = util
+
 local plymeta = FindMetaTable("Player")
 
 util.AddNetworkString("TTT_TaskmasterRerollTask")
