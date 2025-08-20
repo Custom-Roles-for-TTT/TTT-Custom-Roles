@@ -19,10 +19,11 @@ util.AddNetworkString("TTT_TaskmasterUpdateTaskList")
 -- CONVARS --
 -------------
 
+local taskmaster_completion_bonus = CreateConVar("ttt_taskmaster_completion_bonus", "1", FCVAR_NONE, "How many credits the Taskmaster should get whenever they complete a task", 0, 10)
+
 local taskmaster_kill_tasks = GetConVar("ttt_taskmaster_kill_tasks")
 local taskmaster_misc_tasks = GetConVar("ttt_taskmaster_misc_tasks")
 local taskmaster_repeat_rerolls = GetConVar("ttt_taskmaster_repeat_rerolls")
-local taskmaster_completion_bonus = GetConVar("ttt_taskmaster_completion_bonus")
 local taskmaster_blocks_team_wins = GetConVar("ttt_taskmaster_blocks_team_wins")
 local taskmaster_win_block_length = GetConVar("ttt_taskmaster_win_block_length")
 local taskmaster_wins_with_others = GetConVar("ttt_taskmaster_wins_with_others")
