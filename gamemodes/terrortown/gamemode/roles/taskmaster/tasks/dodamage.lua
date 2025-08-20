@@ -7,7 +7,7 @@ local TASK = {}
 
 TASK.id = "dodamage"
 
-local taskmaster_dodamage_amount = CreateConVar("ttt_taskmaster_dodamage_amount", "200", FCVAR_REPLICATED, "The amount of damage a player must do to complete the 'Do X Damage' task", 1, 1000)
+local taskmaster_dodamage_amount = CreateConVar("ttt_taskmaster_dodamage_amount", "200", FCVAR_REPLICATED, "The amount of damage a player must do to complete the 'Deal X Damage' task", 1, 1000)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_dodamage_amount",
     type = ROLE_CONVAR_TYPE_NUM,

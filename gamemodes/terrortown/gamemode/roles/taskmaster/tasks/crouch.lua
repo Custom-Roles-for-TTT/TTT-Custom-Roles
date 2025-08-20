@@ -14,7 +14,7 @@ local TASK = {}
 
 TASK.id = "crouch"
 
-local taskmaster_crouch_time = CreateConVar("ttt_taskmaster_crouch_time", "40", FCVAR_REPLICATED, "The time (in seconds) a player must stay crouched to complete the 'Crouch Near Body' task", 1, 240)
+local taskmaster_crouch_time = CreateConVar("ttt_taskmaster_crouch_time", "40", FCVAR_REPLICATED, "The time (in seconds) a player must stay crouched to complete the 'Crouch' task", 1, 240)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_crouch_time",
     type = ROLE_CONVAR_TYPE_NUM,

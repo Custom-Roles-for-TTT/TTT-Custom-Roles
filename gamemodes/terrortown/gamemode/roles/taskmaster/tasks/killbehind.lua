@@ -11,7 +11,7 @@ local TASK = {}
 TASK.id = "killbehind"
 TASK.IsKillTask = true
 
-local taskmaster_killbehind_angle = CreateConVar("ttt_taskmaster_killbehind_view_angle", "75", FCVAR_REPLICATED, "The angle (in degrees) from a player's eye angle within which the Taskmaster is 'spotted'  for the 'Kill a Player From Behind' task", 0, 180)
+local taskmaster_killbehind_angle = CreateConVar("ttt_taskmaster_killbehind_view_angle", "75", FCVAR_REPLICATED, "The angle (in degrees) from a player's eye angle within which the Taskmaster is 'spotted' for the 'Kill a Player From Behind' task", 0, 180)
 table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
     cvar = "ttt_taskmaster_killbehind_view_angle",
     type = ROLE_CONVAR_TYPE_NUM,
