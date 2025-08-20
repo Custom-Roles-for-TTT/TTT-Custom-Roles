@@ -21,7 +21,12 @@ TASK.Name = function(ply)
             end
         end
     end
-    return "Kill a Player With a " .. weapon
+
+    local article = "a"
+    if StartsWithVowel(weapon) then
+        article = article .. "n"
+    end
+    return "Kill a Player With " .. article .. " " .. weapon
 end
 
 TASK.Description = function(ply)

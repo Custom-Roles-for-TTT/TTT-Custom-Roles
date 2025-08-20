@@ -24,7 +24,7 @@ TASK.Name = function(ply)
     if TableHasValue(ply.TaskmasterCompletedTasks, TASK.id) then
         progress = amount
     else
-        progress = ply.Task_DoDamageTotal
+        progress = ply.Task_DoDamageTotal or 0
     end
 
     return name .. " (" .. progress .. "/" .. amount .. ")"

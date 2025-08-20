@@ -27,7 +27,7 @@ TASK.Name = function(ply)
     if TableHasValue(ply.TaskmasterCompletedTasks, TASK.id) then
         progress = times
     else
-        progress = ply.Task_FireBulletsCount
+        progress = ply.Task_FireBulletsCount or 0
     end
 
     return name .. " (" .. progress .. "/" .. times .. ")"
