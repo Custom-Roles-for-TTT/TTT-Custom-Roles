@@ -85,11 +85,19 @@ local function PrintRoleCvars(ply, cmd, args)
             local desc = convar:GetHelpText()
             if cvar.type == ROLE_CONVAR_TYPE_DROPDOWN then
                 desc = desc .. ":"
-                desc = desc .. "\r\n        <ol start=\"0\">"
-                for _, choice in ipairs(cvar.choices) do
-                    desc = desc .. "\r\n            <li>" .. choice .. ".</li>"
+                if cvar.isNumeric then
+                    desc = desc .. "\r\n        <ol start=\"" .. (convar:GetMin() or 0) .. "\">"
+                    for _, choice in ipairs(cvar.choices) do
+                        desc = desc .. "\r\n            <li>" .. choice .. ".</li>"
+                    end
+                    desc = desc .. "\r\n        </ol>\r\n    "
+                else
+                    desc = desc .. "\r\n        <ul>"
+                    for _, choice in ipairs(cvar.choices) do
+                        desc = desc .. "\r\n            <li>" .. choice .. ".</li>"
+                    end
+                    desc = desc .. "\r\n        </ul>\r\n    "
                 end
-                desc = desc .. "\r\n        </ol>\r\n    "
             end
 
             return desc
