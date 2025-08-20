@@ -119,7 +119,7 @@ local function PrintRoleCvars(ply, cmd, args)
     end
 end
 
-function PrintRoleCvarsComplete(cmd, argStr, args)
+local function PrintRoleCvarsComplete(cmd, argStr, args)
     if #args == 1 then
         local filtered = {}
         for _, r in ipairs(ROLE_STRINGS_RAW) do
