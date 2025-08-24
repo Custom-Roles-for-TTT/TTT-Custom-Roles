@@ -176,14 +176,19 @@ function plymeta:CompleteTask(taskId)
             return false
         end
 
-        taskList[taskId].OnTaskComplete(self)
+        local task = taskList[taskId]
+        task.OnTaskComplete(self)
         table.insert(self.TaskmasterCompletedTasks, taskId)
         self:SetProperty("TaskmasterCompletedTasks", self.TaskmasterCompletedTasks, self)
 
         local activeTasksList = self:GetActiveTasks()
         if #activeTasksList == 0 then
             self:SetProperty("TaskmasterShouldWin", true)
-            -- TODO: Alert the player that they have finished all their tasks
+            -- TODO: Play a sound
+            self:QueueMessage(MSG_PRINTBOTH, "All tasks complete!", nil, "tskTaskComplete")
+        else
+            -- TODO: Play a sound
+            self:QueueMessage(MSG_PRINTBOTH, "'" .. task.Name(self) .. "' complete!", nil, "tskTaskComplete")
         end
 
         net.Start("TTT_TaskmasterUpdateTaskList")
@@ -197,8 +202,6 @@ function plymeta:CompleteTask(taskId)
                 num = bonus
             })
         end
-
-        -- TODO: Play a sound and/or send a message when a task is completed
 
         return true
     end
