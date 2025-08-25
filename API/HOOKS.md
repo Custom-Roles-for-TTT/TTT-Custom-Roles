@@ -1263,7 +1263,7 @@ Called before a team chat message is sent. Used to modify the targets of the tea
 
 *Return:* Whether or not this team chat message should be sent (Defaults to `true`)
 
-### TTTTeamVoiceChatTargets(speaker, targets)
+### TTTTeamVoiceChatTargets(speaker, targets, state)
 Called before a team voice state message is sent. Used to modify the targets of the team voice state message.\
 *Realm:* Server\
 *Added in:* 2.0.7\
