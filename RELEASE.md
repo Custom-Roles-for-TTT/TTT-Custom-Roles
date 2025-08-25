@@ -3,6 +3,9 @@
 ## 2.3.5 (Beta)
 **Released:**
 
+### Additions
+- Added new independent role: Taskmaster
+
 ### Developer
 - Added `TTTDetectiveCalledToBody` hook which is called when a player calls a detective to a body
 - Changed `SYNC` methods to not clear values that are already `nil`
