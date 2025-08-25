@@ -46,7 +46,7 @@ if SERVER then
     }
 
     TASK.OnTaskAssigned = function(ply)
-        hook.Add("PlayerDeath", "Taskmaster_KillPistol_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
+        hook.Add("PlayerDeath", "Taskmaster_KillDouble_PlayerDeath_" .. ply:SteamID64(), function(victim, inflictor, attacker)
             if not IsPlayer(victim) then return end
             if not IsPlayer(attacker) or not attacker:IsActiveTaskmaster() or attacker ~= ply then return end
 
@@ -64,7 +64,7 @@ if SERVER then
     TASK.OnTaskRemoved = function(ply)
         ply:ClearProperty("Task_KillDoubleLastKill", ply)
 
-        hook.Remove("PlayerDeath", "Taskmaster_KillPistol_PlayerDeath_" .. ply:SteamID64())
+        hook.Remove("PlayerDeath", "Taskmaster_KillDouble_PlayerDeath_" .. ply:SteamID64())
 
         net.Start("TTT_Taskmaster_KillDouble_Cleanup")
         net.Send(ply)
