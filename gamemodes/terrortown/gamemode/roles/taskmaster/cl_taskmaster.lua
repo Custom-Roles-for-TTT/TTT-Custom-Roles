@@ -531,3 +531,11 @@ hook.Add("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role,
         return html
     end
 end)
+
+------------
+-- SOUNDS --
+------------
+
+net.Receive("TTT_TaskmasterTaskComplete", function(len, ply)
+    surface.PlaySound("buttons/bell1.wav")
+end)

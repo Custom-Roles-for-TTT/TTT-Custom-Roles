@@ -14,6 +14,7 @@ local plymeta = FindMetaTable("Player")
 
 util.AddNetworkString("TTT_TaskmasterRerollTask")
 util.AddNetworkString("TTT_TaskmasterUpdateTaskList")
+util.AddNetworkString("TTT_TaskmasterTaskComplete")
 
 -------------
 -- CONVARS --
@@ -31,6 +32,20 @@ local taskmaster_wins_with_others = GetConVar("ttt_taskmaster_wins_with_others")
 ---------------------
 -- TASK ASSIGNMENT --
 ---------------------
+
+local function CheckTaskmasterWin(ply)
+    local activeTasksList = ply:GetActiveTasks()
+    if #activeTasksList == 0 then
+        ply:SetProperty("TaskmasterShouldWin", true)
+        local message = "All tasks complete!"
+        if taskmaster_wins_with_others then
+            message = message .. " You will win at the end of the round."
+        end
+        ply:QueueMessage(MSG_PRINTBOTH, message, nil, "tskTaskComplete")
+        return true
+    end
+    return false
+end
 
 function plymeta:AssignTask(isKillTask, index)
     if not self:IsTaskmaster() then return end
@@ -85,7 +100,6 @@ function plymeta:AssignTask(isKillTask, index)
             end
         end
     end
-    -- TODO: Handle edge case where there are no valid tasks. Maybe we need to change their role? Or just have a free fallback task?
     return false
 end
 
@@ -115,7 +129,7 @@ function plymeta:RerollTask(taskId, free)
         self:SetProperty("TaskmasterRerolledTasks", self.TaskmasterRerolledTasks, self)
     end
 
-    self:AssignTask(isKillTask, index)
+    local rerolled = self:AssignTask(isKillTask, index)
     self:RemoveTask(taskId)
 
     if not free then
@@ -124,6 +138,11 @@ function plymeta:RerollTask(taskId, free)
 
     net.Start("TTT_TaskmasterUpdateTaskList")
     net.Send(self)
+
+    if not rerolled then
+        self:QueueMessage(MSG_PRINTTALK, "Ran out of valid tasks to assign! You can have this one for free.", nil, "tskTaskRerollFailed")
+        CheckTaskmasterWin(self)
+    end
 end
 
 net.Receive("TTT_TaskmasterRerollTask", function(len, ply)
@@ -181,15 +200,11 @@ function plymeta:CompleteTask(taskId)
         table.insert(self.TaskmasterCompletedTasks, taskId)
         self:SetProperty("TaskmasterCompletedTasks", self.TaskmasterCompletedTasks, self)
 
-        local activeTasksList = self:GetActiveTasks()
-        if #activeTasksList == 0 then
-            self:SetProperty("TaskmasterShouldWin", true)
-            -- TODO: Play a sound
-            self:QueueMessage(MSG_PRINTBOTH, "All tasks complete!", nil, "tskTaskComplete")
-        else
-            -- TODO: Play a sound
-            self:QueueMessage(MSG_PRINTBOTH, "'" .. task.Name(self) .. "' complete!", nil, "tskTaskComplete")
-        end
+        net.Start("TTT_TaskmasterTaskComplete")
+        net.Send(self)
+        self:QueueMessage(MSG_PRINTTALK, "'" .. task.Name(self) .. "' complete!", nil, "tskTaskComplete")
+
+        CheckTaskmasterWin(self)
 
         net.Start("TTT_TaskmasterUpdateTaskList")
         net.Send(self)
