@@ -38,7 +38,7 @@ local function CheckTaskmasterWin(ply)
     if #activeTasksList == 0 then
         ply:SetProperty("TaskmasterShouldWin", true)
         local message = "All tasks complete!"
-        if taskmaster_wins_with_others then
+        if taskmaster_wins_with_others:GetBool() then
             message = message .. " You will win at the end of the round."
         end
         ply:QueueMessage(MSG_PRINTBOTH, message, nil, "tskTaskComplete")
