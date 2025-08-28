@@ -14,6 +14,11 @@ VAMPIRE_THRALL_FF_MODE_NONE = 0
 VAMPIRE_THRALL_FF_MODE_REFLECT = 1
 VAMPIRE_THRALL_FF_MODE_IMMUNE = 2
 
+-- Vampire overheal mode
+VAMPIRE_OVERHEAL_MODE_HEALTH = 0
+VAMPIRE_OVERHEAL_MODE_MAX_HEALTH = 1
+VAMPIRE_OVERHEAL_MODE_BOTH = 2
+
 -- Initialize role features
 ROLE_CAN_SEE_JESTERS[ROLE_VAMPIRE] = true
 ROLE_CAN_SEE_MIA[ROLE_VAMPIRE] = true
@@ -126,6 +131,12 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_fang_overheal",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_fang_overheal_mode",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Health", "Max health", "Both"},
+    isNumeric = true
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_fang_overheal_living",

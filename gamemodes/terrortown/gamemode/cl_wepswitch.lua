@@ -118,7 +118,7 @@ local TryTranslation = LANG.TryTranslation
 function WSWITCH:DrawWeapon(x, y, c, wep)
     if not IsValid(wep) then return false end
 
-    local name = TryTranslation(wep:GetPrintName() or wep.PrintName or "...")
+    local name = TryTranslation(wep.GetPrintName and wep:GetPrintName() or wep.PrintName or wep:GetClass() or "...")
     local cl1 = wep.Clip1 and IsValid(wep:GetOwner()) and wep:Clip1() or -1
     local am1 = wep.Ammo1 and IsValid(wep:GetOwner()) and wep:Ammo1() or false
     local ammo = false

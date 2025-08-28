@@ -1,6 +1,7 @@
 ---- Corpse functions
 
 CreateConVar("ttt_corpse_search_not_shared", "0", FCVAR_NONE, "Whether corpse searches are not shared with other players (only affects non-detective-like searchers)", 0, 1)
+CreateConVar("ttt_corpse_search_auto_confirm", "1", FCVAR_REPLICATED, "Whether corpse searches automatically confirm the death of the player", 0, 1)
 
 -- namespaced because we have no ragdoll metatable
 CORPSE = CORPSE or {}
@@ -505,7 +506,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     else
         net.Broadcast()
 
-        -- Let detctives know that this body has already been searched
+        -- Let detectives know that this body has already been searched
         net.Start("TTT_RemoveCorpseCall")
             net.WriteString(rag.sid)
         net.Send(GetExtendedDetectiveFilter(true))

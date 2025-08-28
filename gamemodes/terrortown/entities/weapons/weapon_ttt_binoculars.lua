@@ -165,7 +165,7 @@ local confirm = Sound("npc/turret_floor/click1.wav")
 function SWEP:IdentifyCorpse()
     if SERVER then
         local tr = self:GetOwner():GetEyeTrace(MASK_SHOT)
-        CORPSE.ShowSearch(self:GetOwner(), tr.Entity, false, true)
+        CORPSE.ShowSearch(self:GetOwner(), tr.Entity, not GetConVar("ttt_corpse_search_auto_confirm"):GetBool(), true)
     elseif IsFirstTimePredicted() then
         LocalPlayer():EmitSound(confirm)
     end

@@ -189,6 +189,12 @@ local function ShouldSpectatorSeeRoles(cli)
     return cli:GetRole() == ROLE_NONE and cli:IsSpec() and GetConVar("ttt_spectators_see_roles"):GetBool()
 end
 
+local function IsSearchedRoleKnown(ply)
+    -- If we have the role saved and it's not restricted to detectives only, show it
+    return ply.search_result and ply.search_result.role > ROLE_NONE and
+        (not cvars.Bool("ttt_detectives_search_only_role", false) or ply:GetNWBool("body_searched_det", false))
+end
+
 function GM:TTTScoreboardRowColorForPlayer(ply)
     if not IsValid(ply) or GetRoundState() == ROUND_WAIT or GetRoundState() == ROUND_PREP then return defaultcolor end
 
@@ -197,9 +203,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         return ply:GetRole()
     end
 
-    -- If we have the role saved and it's not restricted to detectives only, show it
-    if ply.search_result and ply.search_result.role > ROLE_NONE and
-        (not cvars.Bool("ttt_detectives_search_only_role", false) or ply:GetNWBool("body_searched_det", false)) then
+    if IsSearchedRoleKnown(ply) then
         return ply.search_result.role
     end
 
@@ -315,7 +319,7 @@ function PANEL:Paint(width, height)
 
         -- Swap the deputy/impersonator icons depending on which settings are enabled
         -- Only do this if we haven't set a value above
-        if not color and ply:IsDetectiveLike() then
+        if not IsSearchedRoleKnown(ply) and not color and ply:IsDetectiveLike() then
             if ply:IsDetectiveTeam() then
                 local disp_role, changed = ply:GetDisplayedRole()
                 -- If the displayed role was changed, use it for the color but use the question mark for the icon
