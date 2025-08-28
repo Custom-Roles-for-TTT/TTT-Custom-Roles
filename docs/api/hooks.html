@@ -1889,7 +1889,7 @@
             <em>Return:</em> Whether or not this team chat message should be sent (Defaults to <code>true</code>).
         </p>
 
-        <h3><a id="tttteamvoicechattargetsspeaker-targetsfrom_chat" href="#tttteamvoicechattargetsspeaker-targetsfrom_chat">TTTTeamVoiceChatTargets(speaker, targets)</a></h3>
+        <h3><a id="tttteamvoicechattargetsspeaker-targets-state" href="#tttteamvoicechattargetsspeaker-targets-state">TTTTeamVoiceChatTargets(speaker, targets, state)</a></h3>
         <p>
             Called before a team voice state message is sent. Used to modify the targets of the team voice state message.<br>
             <em>Realm:</em> Server<br>
@@ -1899,6 +1899,7 @@
         <ul>
             <li><em>speaker</em> - The player trying to send their team voice state message</li>
             <li><em>targets</em> - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients</li>
+            <li><em>state</em> - Whether the speaker is speaking globally (<code>true</code>) or only to their team (<code>false</code>) <em>(Added in 2.3.5)</em></li>
         </ul>
         <p>
             <em>Return:</em> Whether or not this team voice state message should be sent (Defaults to <code>true</code>).
@@ -2001,7 +2002,7 @@
             <em>Added in:</em> 1.2.7
         </p>
 
-        <h3><a id="tttvampirebodyeatenply-ent-living-healed" href="#tttvampirebodyeatenply-ent-living-healed">TTTVampireBodyEaten(ply, ent, living, healed)</a></h3>
+        <h3><a id="tttvampirebodyeatenply-ent-living-healed-maxchange" href="#tttvampirebodyeatenply-ent-living-healed-maxchange">TTTVampireBodyEaten(ply, ent, living, healed, maxchange)</a></h3>
         <p>
             Called after a Vampire eats a body.<br>
             <em>Realm:</em> Server<br>
@@ -2013,6 +2014,7 @@
             <li><em>ent</em> - The target entity. Generally either a player or a ragdoll</li>
             <li><em>living</em> - Whether the target entity was living at the time they were eaten</li>
             <li><em>healed</em> - The amount of health the player gained from eating the body</li>
+            <li><em>maxchange</em> - The amount of maximum health the player gained from eating the body <em>(Added in 2.3.5)</em> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></li>
         </ul>
 
         <h3><a id="tttvampireinvisibilitychangeply-invisible" href="#tttvampireinvisibilitychangeply-invisible">TTTVampireInvisibilityChange(ply, invisible)</a></h3>

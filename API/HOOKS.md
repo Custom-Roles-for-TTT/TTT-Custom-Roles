@@ -1263,13 +1263,14 @@ Called before a team chat message is sent. Used to modify the targets of the tea
 
 *Return:* Whether or not this team chat message should be sent (Defaults to `true`)
 
-### TTTTeamVoiceChatTargets(speaker, targets)
+### TTTTeamVoiceChatTargets(speaker, targets, state)
 Called before a team voice state message is sent. Used to modify the targets of the team voice state message.\
 *Realm:* Server\
 *Added in:* 2.0.7\
 *Parameters:*
 - *speaker* - The player trying to send their team voice state message
 - *targets* - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients
+- *state* - Whether the speaker is speaking globally (`true`) or only to their team (`false`) *(Added in 2.3.5)*
 
 *Return:* Whether or not this team voice state message should be sent (Defaults to `true`)
 
@@ -1340,7 +1341,7 @@ Called after globals are synced but but before role colors and strings are set. 
 *Realm:* Client and Server\
 *Added in:* 1.2.7
 
-### TTTVampireBodyEaten(ply, ent, living, healed)
+### TTTVampireBodyEaten(ply, ent, living, healed, maxchange)
 Called after a vampire eats a body.\
 *Realm:* Server\
 *Added in:* 1.6.16\
@@ -1349,6 +1350,7 @@ Called after a vampire eats a body.\
 - *ent* - The target entity. Generally either a player or a ragdoll
 - *living* - Whether the target entity was living at the time they were eaten
 - *healed* - The amount of health the player gained from eating the body
+- *maxchange* - The amount of maximum health the player gained from eating the body *(Added in 2.3.5)*
 
 ### TTTVampireInvisibilityChange(ply, invisible)
 Called when a vampire starts or ends their invisibility.\
