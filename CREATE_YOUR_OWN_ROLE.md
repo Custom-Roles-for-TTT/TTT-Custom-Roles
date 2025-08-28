@@ -56,7 +56,7 @@ In order to create your own role you will need to make sure you have downloaded 
 - **.lua** - This can be done in Notepad in a pinch but at the very least we would recommend [Notepad++](https://notepad-plus-plus.org/).
 - **.vmt and .vtf** - [VTFEdit Reloaded](https://github.com/Sky-rym/VTFEdit-Reloaded/releases) is the best way to edit these files but if you know what you are doing there are plugins for other apps.
 
-In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using [here](/templates).
+In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using [here](/templates/role).
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:
 
