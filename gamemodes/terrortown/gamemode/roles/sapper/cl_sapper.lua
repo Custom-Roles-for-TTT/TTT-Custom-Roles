@@ -36,10 +36,11 @@ end)
 -- ROLE FEATURES --
 -------------------
 
+local particleVelocity = Vector(0, 0, 20)
 local function CreateParticle(auraDir, pos, radius, emitter)
     local vec = Vector(MathSin(auraDir) * radius, MathCos(auraDir) * radius, 10)
     local particle = emitter:Add("particle/sap_barrel.vmt", pos + vec)
-    particle:SetVelocity(Vector(0, 0, 20))
+    particle:SetVelocity(particleVelocity)
     particle:SetDieTime(1)
     particle:SetStartAlpha(200)
     particle:SetEndAlpha(0)

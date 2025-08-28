@@ -199,6 +199,15 @@ Called before the name and role of a player's killer is shown to the victim. Use
 - *killerName* - The new killerName value to use or the original passed into the hook
 - *role* - The new role value to use or the original passed into the hook. Use `ROLE_NONE` to hide the attacker's role from the victim
 
+### TTTDetectiveCalledToBody(ply, owner, rag)
+Called when a player calls a detective to a player ragdoll.\
+*Realm:* Server\
+*Added in:* 2.3.5\
+*Parameters:*
+- *ply* - The player who is calling for a detective
+- *owner* - The player who owns the corpse the detective is being called to
+- *rag* - The ragdoll representing the corpse being called to
+
 ### TTTDetectiveLikePromoted(ply)
 Called when a detective-like (deputy, impersonator, etc.) player is promoted.\
 *Realm:* Server\

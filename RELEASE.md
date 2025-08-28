@@ -3,14 +3,15 @@
 ## 2.3.5 (Beta)
 **Released:**
 
-### Changes
-- Updated weapon switch and pickup HUD elements to use the same logic for getting weapon names
-  - Fixes very rare cases where they would say different things
-
 ### Additions
+- Added new independent role: Taskmaster
 - Added ability to control whether the mercenary gets body armor as part of their loadout (defaults to `true`)
 - Added ability to change vampire's fang drain overheal to overheal (default), increase max health, or do both
 - Added ability to disable automatically confirming a players death when searching their body (disabled by default)
+
+### Changes
+- Updated weapon switch and pickup HUD elements to use the same logic for getting weapon names
+  - Fixes very rare cases where they would say different things
 
 ### Fixes
 - Fixed illusionist not blocking traitor team voice chat
@@ -20,6 +21,8 @@
 - Added `state` parameter to `TTTTeamVoiceChatTargets` hook
 - Added `table.GetFirstItemWithPropertyValue` static method
 - Added `maxchange` parameter to `TTTVampireBodyEaten` hook
+- Added `TTTDetectiveCalledToBody` hook which is called when a player calls a detective to a body
+- Changed `SYNC` methods to not clear values that are already `nil`
 
 ## 2.3.4 (Beta)
 **Released: August 9th, 2025**

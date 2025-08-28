@@ -317,6 +317,7 @@ local function CallDetective(ply, cmd, args)
         rag.last_detective_call = CurTime()
 
         if CORPSE.GetFound(rag, false) then
+            hook.Call("TTTDetectiveCalledToBody", nil, ply, owner, rag)
             -- show indicator to detectives
             net.Start("TTT_CorpseCall")
                 net.WriteVector(rag:GetPos())
@@ -390,6 +391,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         elseif IsValid(ownerEnt) and not ply:IsSpec() and not ownerEnt:GetNWBool("det_called", false) and not ownerEnt:GetNWBool("body_searched", false) then
             if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then
                 hook.Call("TTTBodyFound", GAMEMODE, ply, ownerEnt, rag)
+                hook.Call("TTTDetectiveCalledToBody", nil, ply, ownerEnt, rag)
                 net.Start("TTT_CorpseCall")
                     net.WriteVector(rag:GetPos())
                     net.WriteString(rag.sid)
