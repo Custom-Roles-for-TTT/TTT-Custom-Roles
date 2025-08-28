@@ -187,22 +187,22 @@ end</code></pre></div>
             </thead>
             <tbody>
                 <tr>
-                    <td>TASKMASTER_TF_TARGETID_PLAYERICON</td>
+                    <td><code>TASKMASTER_TF_TARGETID_PLAYERICON</code></td>
                     <td>This task adds an icon over the head of a targeted player</td>
                     <td>2.3.5</td>
                 </tr>
                 <tr>
-                    <td>TASKMASTER_TF_TARGETID_PLAYERTEXT</td>
+                    <td><code></code>TASKMASTER_TF_TARGETID_PLAYERTEXT</code></td>
                     <td>This task adds text to the mouseover text of a targeted player</td>
                     <td>2.3.5</td>
                 </tr>
                 <tr>
-                    <td>TASKMASTER_TF_PROGRESSBAR</td>
+                    <td><code></code>TASKMASTER_TF_PROGRESSBAR</code></td>
                     <td>This task displays a progress bar on the player's screen</td>
                     <td>2.3.5</td>
                 </tr>
                 <tr>
-                    <td>TASKMASTER_TF_PARTICLERADIUS</td>
+                    <td><code></code>TASKMASTER_TF_PARTICLERADIUS</code></td>
                     <td>This task draws a radius around some entity or location using particles</td>
                     <td>2.3.5</td>
                 </tr>
@@ -313,7 +313,7 @@ end)</code></pre></div>
     TASKMASTER_TF_PROGRESSBAR
 }
 </code></pre></div>
-        <p>The progress bar itself has to be handled in the client logic, so we'll want to set up a <code>net</code> message to tell the client to start doing that and call it inside <code>TASK.OnTaskAssigned</code></p>
+        <p>The progress bar itself has to be handled in the client logic, so we'll want to set up a <code>net</code> message to tell the client to start doing that and call it inside <code>TASK.OnTaskAssigned</code>.</p>
         <div><pre><code class="language-lua">if SERVER then
     util.AddNetworkString("TTT_Taskmaster_TakeDamage_Assigned")
 
@@ -416,7 +416,7 @@ end</code></pre></div>
         <div><pre><code class="language-lua">TASKMASTER.RegisterTask(TASK)</code></pre></div>
 
         <h3><a id="example-file" href="#example-file">Example File</a></h3>
-        <p>Once you have done that you are finished with coding. You can close your file and move on to creating your workshop icon. One last time before moving on to that, here is the full takedamage.lua file for reference after some consolidation and cleanup:</p>
+        <p>Once you have done that you are finished with coding. You can close your file and move on to creating your workshop icon. One last time before moving on to that, here is the full <code>takedamage.lua</code> file for reference after some consolidation and cleanup:</p>
         <div><pre><code class="language-lua">local TASK = {}
 
 TASK.id = "takedamage"
