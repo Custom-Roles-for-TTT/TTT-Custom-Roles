@@ -29,11 +29,11 @@ table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
 
 TASK.Name = function(ply)
     local amount = taskmaster_healthunder_amount:GetInt()
-    local time = taskmaster_healthunder_time:GetInt()
     local name = "Survive Under " .. amount .. " Health"
 
     if not ply then return name end
 
+    local time = taskmaster_healthunder_time:GetInt()
     local progress = 0
     if TableHasValue(ply.TaskmasterCompletedTasks, TASK.id) then
         progress = time
