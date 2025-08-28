@@ -1,0 +1,612 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Roles for TTT - Tutorials - Creating Custom Taskmaster Tasks</title>
+    <link rel="stylesheet" href="../fonts/roleicons.css">
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark-dimmed.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+</head>
+<body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#tutorials" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>Creating Custom Taskmaster Tasks <span id="betaswitch"></span></h1>
+        <p>This tutorial aims to provide the step-by-step instructions that a developer would need to create custom tasks for the <span class="inline-icon" style="color:var(--independent);"><i class="icon-taskmaster"></i><a href="../teams/independent.html#taskmaster">Taskmaster</a></span> task. It covers creation of the task's basic features, what options are available for preset advanced features to choose from, all the way through creating publishing to the workshop.</p>
+        <p>This tutorial assumes you have some programming experience, even if it's not directly in Lua itself. Lua is a pretty straight-forward language, so knowledge of its specifics are not necessary as long as you are good at googling. Of course, if you have any questions about how to do more advanced things, feel free to join our Discord server to ask.</p>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
+        <ol>
+            <li><a href="#before-you-start">Before You Start</a></li>
+            <li><a href="#code">Code</a>
+                <ol>
+                    <li><a href="#task-table">Task Table</a></li>
+                    <li><a href="#task-properties">Task Properties</a></li>
+                    <li><a href="#name">Name</a></li>
+                    <li><a href="#description">Description</a></li>
+                    <li><a href="#initialize">Initialize</a></li>
+                    <li><a href="#server-side">Server-Side</a></li>
+                    <ol>
+                        <li><a href="#canassigntask">CanAssignTask</a></li>
+                        <li><a href="#requiredfeatures">RequiredFeatures</a></li>
+                        <li><a href="#ontaskassigned">OnTaskAssigned</a></li>
+                        <li><a href="#ontaskremoved">OnTaskRemoved</a></li>
+                        <li><a href="#ontaskcomplete">OnTaskComplete</a></li>
+                    </ol>
+                    <li><a href="#task-registration">Task Registration</a></li>
+                    <li><a href="#example-file">Example File</a></li>
+                </ol>
+            </li>
+            <li><a href="#uploading-your-addon">Uploading Your Addon</a>
+                <ol>
+                    <li><a href="#addonjson">addon.json</a></li>
+                    <li><a href="#workshop-icon">Workshop Icon</a></li>
+                    <li><a href="#folder-name">Folder Name</a></li>
+                    <li><a href="#final-checks">Final Checks</a></li>
+                    <li><a href="#uploading">Uploading</a></li>
+                </ol>
+            </li>
+            <li><a href="#wrapping-up">Wrapping Up</a></li>
+        </ol>
+        
+        <h2><a id="before-you-start" href="#before-you-start">Before You Start</a></h2>
+        <p>In order to create your own tasks you will need to make sure you have downloaded tools to edit the following file types:</p>
+        <ul>
+            <li><strong>.psd</strong> - For this guide we will be using Photoshop but <a href="https://www.gimp.org/" target="_blank">GIMP</a> is a great free alternative.</li>
+            <li><strong>.lua</strong> - This can be done in Notepad in a pinch but at the very least we would recommend <a href="https://notepad-plus-plus.org/" target="_blank">Notepad++</a>.</li>
+        </ul>
+        <p>In this guide we will be walking through how to make a basic task and you can download all the templates we are using <a href="https://github.com/Custom-Tasks-for-TTT/TTT-Custom-Tasks/blob/release/templates/taskmaster">here</a>.</p>
+        <p>Last thing to do before you are ready to get started is to unzip that file which should give you 1 .psd file and a folder like this:</p>
+        <p><img src="https://i.imgur.com/W9Z00s1.png" style="max-width: 100%;" /></p>
+
+        <h2><a id="code" href="#code">Code</a></h2>
+        <p>Open up 'Task Addon Template' &gt; 'lua' &gt; 'taskmastertasks' and rename '%TASKNAME%.lua' to whatever you want the name of your task to be. In this case we will be creating a task to have a player take damage and survive, so we'll rename it to 'takedamage.lua'.</p>
+        <p>Open up that file and you should see something like this:</p>
+        <div><pre><code class="language-lua">local TASK = {}
+
+TASK.id = ""
+TASK.IsKillTask = false
+TASK.CompleteOnRoundEnd = false
+
+TASK.Name = function(ply)
+    return ""
+end
+
+TASK.Description = function(ply)
+    return ""
+end
+
+TASK.Initialize = function()
+end
+
+if SERVER then
+    TASK.CanAssignTask = function(ply)
+        return true
+    end
+
+    TASK.RequiredFeatures = {}
+
+    TASK.OnTaskAssigned = function(ply)
+    end
+
+    TASK.OnTaskRemoved = function(ply)
+    end
+
+    TASK.OnTaskComplete = function(ply)
+    end
+end
+
+TASKMASTER.RegisterTask(TASK)
+        </code></pre></div>
+
+        <p>Lets break that down piece by piece.</p>
+
+        <h3><a id="task-table" href="#task-table">Task Table</a></h3>
+        <p>First we have this line here:</p>
+        <div><pre><code class="language-lua">local TASK = {}</code></pre></div>
+        <p>You don't need to touch this line. The TASK table will store everything CR for TTT needs to understand your task.</p>
+
+        <h3><a id="task-properties" href="#task-properties">Task Properties</a></h3>
+        <p>The next chunk here is all about the properties of your task:</p>
+        <div><pre><code class="language-lua">TASK.id = ""  
+TASK.IsKillTask = false
+TASK.CompleteOnRoundEnd = false</code></pre></div>
+
+        <p><code>id</code> is the unique identifier for the task and is used to create the the necessary ConVars for the task. It should only contain lowercase characters a-z, without spaces or punctuation.</p>
+        <p><code>IsKillTask</code> marks this task as to whether this task requires the Taskmaster to kill another player themselves.</p>
+        <p><code>CompleteOnRoundEnd</code> determines whether this task automatically completes when the round ends. Tasks with this set will not stop the round from ending to give the Taskmaster additional time to complete their tasks (if it is configured to do so).</p>
+        <p>For our task that block of code will now look like this.</p>
+
+        <div><pre><code class="language-lua">TASK.id = "takedamage"
+TASK.IsKillTask = false
+TASK.CompleteOnRoundEnd = false</code></pre></div>
+
+        <h3><a id="name" href="#name">Name</a></h3>
+        <p>The first function in the task file is defining the task's name. This is shown in multiple places in the Taskmaster's UI and is generally used as a quick way of tracking task progress.</p>
+        <p>For the task we are creating, we'll start with a basic name and update it with progress later. For now, it should look something like this:</p>
+        <div><pre><code class="language-lua">TASK.Name = function(ply)
+    return "Take Damage and Survive"
+end</code></pre></div>
+
+        <h3><a id="description" href="#description">Description</a></h3>
+        <p>The next function cares about the description of your task that shows up on the Taskmaster's UI. The description should give information on how the complete the task. Try to keep the length of the description under 75 characters so it doesn't take up too much space.</p>
+        <p>The description, much like the task, will start out with a basic sentence and will be updated with progress and more info later. Let's start with just this:</p>
+        <div><pre><code class="language-lua">TASK.Description = function(ply)
+    return "Get another player to deal damage to you and survive"
+end</code></pre></div>
+
+        <h3><a id="initialize" href="#initialize">Initialize</a></h3>
+        <p>This function is used to set up code for the task that needs to run before it has been assigned. The most common usage for this function is creating translation strings on the client side for use in UI displays.</p>
+        <p>At this point we're not using an UIs so we'll just leave this empty for now:</p>
+        <div><pre><code class="language-lua">TASK.Initialize = function()
+end</code></pre></div>
+
+        <h3><a id="server-side" href="#server-side">Server-Side</a></h3>
+        <p>The next group of lines only run in server-side code, so they are defined within a <code>if SERVER then</code> block:</p>
+        <div><pre><code class="language-lua">if SERVER then
+    TASK.CanAssignTask = function(ply)
+        return true
+    end
+
+    TASK.RequiredFeatures = {}
+
+    TASK.OnTaskAssigned = function(ply)
+    end
+
+    TASK.OnTaskRemoved = function(ply)
+    end
+
+    TASK.OnTaskComplete = function(ply)
+    end
+end</code></pre></div>
+
+        <h4><a id="canassigntask" href="#canassigntask">CanAssignTask</a></h4>
+        <p>The first function is used to determine whether our task can be be assigned to the target player. Some examples of things that could be checked for is the presence of a particular role in the round, the number of living players, or whether the current map has the correct features (props, traitor traps, etc.).</p>
+        <p>This task does not have any restrictions, so we'll just leave it as-is:</p>
+        <div><pre><code class="language-lua">TASK.CanAssignTask = function(ply)
+    return true
+end</code></pre></div>
+
+        <h4><a id="requiredfeatures" href="#requiredfeatures">RequiredFeatures</a></h4>
+        <p>The <code>TASK.RequiredFeatures</code> property represents a table of values indicating which shared task features are being used by this task. Only one task with a specific feature can be active at any given time so this table is used by the task assignment logic to accomplish that.</p>
+        <p>See below for the current supported features:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Option</th>
+                    <th>Description</th>
+                    <th>Added in</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>TASKMASTER_TF_TARGETID_PLAYERICON</td>
+                    <td>This task adds an icon over the head of a targeted player</td>
+                    <td>2.3.5</td>
+                </tr>
+                <tr>
+                    <td>TASKMASTER_TF_TARGETID_PLAYERTEXT</td>
+                    <td>This task adds text to the mouseover text of a targeted player</td>
+                    <td>2.3.5</td>
+                </tr>
+                <tr>
+                    <td>TASKMASTER_TF_PROGRESSBAR</td>
+                    <td>This task displays a progress bar on the player's screen</td>
+                    <td>2.3.5</td>
+                </tr>
+                <tr>
+                    <td>TASKMASTER_TF_PARTICLERADIUS</td>
+                    <td>This task draws a radius around some entity or location using particles</td>
+                    <td>2.3.5</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>For now we are not using any features so we'll leave this empty:</p>
+        <div><pre><code class="language-lua">TASK.RequiredFeatures = {}</code></pre></div>
+
+        <h4><a id="ontaskassigned" href="#ontaskassigned">OnTaskAssigned</a></h4>
+        <p>The majority of the logic for a task is set up in this function, called when this task is assigned to a particular player. This method is often used for setting up hooks and timers which track progress and handle task completion.</p>
+        <p>As mentioned earlier, this task is for a player to take damage and then survive some number of seconds. With that in mind, our logic can be split into this parts:</p>
+        <ol>
+            <li>Keep track of when this player takes damage</li>
+            <li>If the player is still alive after some number of seconds, mark the task as complete</li>
+        </ol>
+        <p>To accomplish this, we will be adding a hook to track damage to this player and a timer to track survival time. Be sure to name the hook with the player's Steam ID so it is unique across different players (just in case):</p>
+        <div><pre><code class="language-lua">TASK.OnTaskAssigned = function(ply)
+    timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+        if not IsPlayer(ply) then return end
+        if not ply:Alive() or ply:IsSpec() then return end
+    end)
+
+    hook.Add("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64(), function(entity, dmginfo, wasDamageTaken)
+        if not wasDamageTaken then return end
+        if entity ~= ply then return end
+
+        local attacker = dmginfo:GetAttacker()
+        if not IsPlayer(attacker) or attacker == entity then return end
+    end)
+end</code></pre></div>
+
+        <p>We need to know how long they have survived so we will also be tracking when that damage occurred using the <a href="../api/methods_sync.html">SYNC</a> system.</p>
+        <div><pre><code class="language-lua">TASK.OnTaskAssigned = function(ply)
+    local time = 30
+    timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+        if not IsPlayer(ply) then return end
+        if not ply:Alive() or ply:IsSpec() then return end
+        if not ply.Task_TakeDamageStart then return end
+        if CurTime() <= ply.Task_TakeDamageStart + time then return end
+
+        ply:CompleteTask(TASK.id)
+    end)
+
+    hook.Add("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64(), function(entity, dmginfo, wasDamageTaken)
+        if not wasDamageTaken then return end
+        if entity ~= ply then return end
+
+        local attacker = dmginfo:GetAttacker()
+        if not IsPlayer(attacker) or attacker == entity then return end
+
+        ply:SetProperty("Task_TakeDamageStart", CurTime(), ply)
+    end)
+end</code></pre></div>
+
+        <p>Now that we have the basics of the logic in place, let's make the survival time configurable instead of a hardcoded 30 seconds. To do that we'll create a ConVar and then we can use it in the timer as well as our <code>TASK.Name</code> and <code>TASK.Description</code> functions from before.</p>
+        <p>First things first, we'll create the ConVar and add it to the Taskmaster's ConVars table to show on ULX. Back toward the top of the file, we'll add these lines:</p>
+        <div><pre><code class="language-lua">local taskmaster_takedamage_time = CreateConVar("ttt_taskmaster_takedamage_time", "60", FCVAR_REPLICATED, "The time (in seconds) a player must survive without taking further damage to complete the 'Take Damage' task", 1, 240)
+table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
+    cvar = "ttt_taskmaster_takedamage_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})</code></pre></div>
+        <p>Note how the ConVar has the ID of the task in it, to differentiate between the possible tasks.</p>
+        <p>Now that the ConVar exists, let's update the <code>TASK.Name</code> and <code>TASK.Description</code> functions to use it. The <code>TASK.Name</code> function will be a little bit more complicated because we're also going to add progress tracking:</p>
+        <div><pre><code class="language-lua">TASK.Name = function(ply)
+    local name = "Take Damage and Survive"
+
+    -- If this function is being used without a player (like in the tutorial screen, for example) don't show progress
+    if not ply then return name end
+
+    local time = taskmaster_takedamage_time:GetInt()
+    local progress = 0
+    -- If this task is already completed, just show the total time instead of "0/30" in case the tracking variable is cleared
+    if table.HasValue(ply.TaskmasterCompletedTasks, TASK.id) then
+        progress = time
+    else
+        -- If we have a start time saved, use that to determine the total progress
+        local startTime = ply.Task_TakeDamageStart
+        if startTime then
+            progress = math.floor(math.max(0, CurTime() - startTime))
+        end
+    end
+
+    return name .. " (" .. progress .. "/" .. time .. ")"
+end
+
+TASK.Description = function(ply)
+    local time = taskmaster_takedamage_time:GetInt()
+    local desc = "Get another player to deal damage to you and survive for " .. time .. " second"
+    if time ~= 1 then
+        desc = desc .. "s"
+    end
+    return desc
+end</code></pre></div>
+        <p>And of course, we should update the timer to use the ConVar for tracking survival length as well:</p>
+        <div><pre><code class="language-lua">local time = taskmaster_takedamage_time:GetInt()
+timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+    if not IsPlayer(ply) then return end
+    if not ply:Alive() or ply:IsSpec() then return end
+    if not ply.Task_TakeDamageStart then return end
+    if CurTime() <= ply.Task_TakeDamageStart + time then return end
+
+    ply:CompleteTask(TASK.id)
+end)</code></pre></div>
+
+        <p>A nice quality-of-life feature would be to show the player a progress bar of how much longer they need to survive, so we'll add that too. Since the progress bar is a shared feature, we first need to update <code>TASK.RequiredFeatures</code>:</p>
+        <div><pre><code class="language-lua">TASK.RequiredFeatures = {
+    TASKMASTER_TF_PROGRESSBAR
+}
+</code></pre></div>
+        <p>The progress bar itself has to be handled in the client logic, so we'll want to set up a <code>net</code> message to tell the client to start doing that and call it inside <code>TASK.OnTaskAssigned</code></p>
+        <div><pre><code class="language-lua">if SERVER then
+    util.AddNetworkString("TTT_Taskmaster_TakeDamage_Assigned")
+
+    TASK.OnTaskAssigned = function(ply)
+        local time = taskmaster_takedamage_time:GetInt()
+        timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+            if not IsPlayer(ply) then return end
+            if not ply:Alive() or ply:IsSpec() then return end
+            if not ply.Task_TakeDamageStart then return end
+            if CurTime() <= ply.Task_TakeDamageStart + time then return end
+
+            ply:CompleteTask(TASK.id)
+        end)
+
+        hook.Add("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64(), function(entity, dmginfo, wasDamageTaken)
+            if not wasDamageTaken then return end
+            if entity ~= ply then return end
+
+            local attacker = dmginfo:GetAttacker()
+            if not IsPlayer(attacker) or attacker == entity then return end
+
+            ply:SetProperty("Task_TakeDamageStart", CurTime(), ply)
+        end)
+
+        net.Start("TTT_Taskmaster_TakeDamage_Assigned")
+        net.Send(ply)
+    end
+end</code></pre></div>
+        <p>In the client code, we need to receive the <code>net</code> message and add a hook to show the UI elements. We also need to modify the <code>TASK.Initialize</code> function to add a translation to show on the UI inside client code. Something like this:</p>
+        <div><pre><code class="language-lua">TASK.Initialize = function()
+    if CLIENT then
+        LANG.AddToLanguage("english", "taskmaster_takedamage", "AVOID DAMAGE - {time}")
+    end
+end
+
+if CLIENT then
+    net.Receive("TTT_Taskmaster_TakeDamage_Assigned", function()
+        local client = LocalPlayer()
+        local time = taskmaster_takedamage_time:GetInt()
+
+        hook.Add("HUDPaint", "Taskmaster_TakeDamage_HUDPaint_" .. client:SteamID64(), function()
+            if not client:IsActiveTaskmaster() then return end
+
+            local startTime = client.Task_TakeDamageStart
+            if not startTime then return end
+
+            local PT = LANG.GetParamTranslation
+            local elapsed = math.max(0, CurTime() - startTime)
+            local remaining = time - elapsed
+            local message = PT("taskmaster_takedamage", { time = util.SimpleTime(remaining, "%02i:%02i") })
+            local color = Color(0, 255, 0, 155)
+
+            local x = ScrW() / 2.0
+            local y = ScrH() / 2.0
+            y = y + (y / 3)
+
+            local w = 300
+            local progress = elapsed / time
+
+            CRHUD:PaintProgressBar(x, y, w, color, message, progress)
+        end)
+    end)
+end</code></pre></div>
+
+        <p>With that, our main logic for the task is done! We just have to clean things up, and that's where the next two functions come into play.</p>
+
+        <h4><a id="ontaskremoved" href="#ontaskremoved">OnTaskRemoved</a></h4>
+        <p>This function is called when a task is removed, whether it's from the round ending, a player's role changing, or that player rerolling a task. It is used to stop any timers, remove any hooks, and cleanup and tracking variables that were used.</p>
+        <p>In the case of this task, we have a timer, a hook, a tracking variable, and some client code that also needs to be cleaned up so we'll be sending another <code>net</code> message. All told, that looks something like this:</p>
+        <div><pre><code class="language-lua">if SERVER then
+    util.AddNetworkString("TTT_Taskmaster_TakeDamage_Cleanup")
+
+    TASK.OnTaskRemoved = function(ply)
+        timer.Remove("TTTTaskmasterTakeDamageTimer")
+
+        hook.Remove("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64())
+
+        ply:ClearProperty("Task_TakeDamageStart", ply)
+
+        net.Start("TTT_Taskmaster_TakeDamage_Cleanup")
+        net.Send(ply)
+    end
+end
+
+if CLIENT then
+    net.Receive("TTT_Taskmaster_TakeDamage_Cleanup", function()
+        local client = LocalPlayer()
+        hook.Remove("HUDPaint", "Taskmaster_TakeDamage_HUDPaint_" .. client:SteamID64())
+    end)
+end</code></pre></div>
+
+        <h4><a id="ontaskcomplete" href="#ontaskcomplete">OnTaskComplete</a></h4>
+        <p>As compared to <code>TASK.OnTaskRemoved</code>, this function is called when a task has been completed successfully. In a majority of cases the logic when a task is complete will be the same as when it is removed so you can just piggy-back on <code>TASK.OnTaskRemoved</code> like this:</p>
+        <div><pre><code class="language-lua">if SERVER then
+    TASK.OnTaskComplete = TASK.OnTaskRemoved
+end</code></pre></div>
+
+        <h3><a id="task-registration" href="#task-registration">Task Registration</a></h3>
+        <p>The last line simply tells CR for TTT to register your task and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically creates an "enabled" convar for your task in the form of <code>ttt_taskmaster_%TASKNAME%_enabled</code>.</p>
+        <div><pre><code class="language-lua">TASKMASTER.RegisterTask(TASK)</code></pre></div>
+
+        <h3><a id="example-file" href="#example-file">Example File</a></h3>
+        <p>Once you have done that you are finished with coding. You can close your file and move on to creating your workshop icon. One last time before moving on to that, here is the full takedamage.lua file for reference after some consolidation and cleanup:</p>
+        <div><pre><code class="language-lua">local TASK = {}
+
+TASK.id = "takedamage"
+TASK.IsKillTask = false
+TASK.CompleteOnRoundEnd = false
+
+local taskmaster_takedamage_time = CreateConVar("ttt_taskmaster_takedamage_time", "60", FCVAR_REPLICATED, "The time (in seconds) a player must survive without taking further damage to complete the 'Take Damage' task", 1, 240)
+table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
+    cvar = "ttt_taskmaster_takedamage_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+
+TASK.Name = function(ply)
+    local name = "Take Damage and Survive"
+
+    -- If this function is being used without a player (like in the tutorial screen, for example) don't show progress
+    if not ply then return name end
+
+    local time = taskmaster_takedamage_time:GetInt()
+    local progress = 0
+    -- If this task is already completed, just show the total time instead of "0/30" in case the tracking variable is cleared
+    if table.HasValue(ply.TaskmasterCompletedTasks, TASK.id) then
+        progress = time
+    else
+        -- If we have a start time saved, use that to determine the total progress
+        local startTime = ply.Task_TakeDamageStart
+        if startTime then
+            progress = math.floor(math.max(0, CurTime() - startTime))
+        end
+    end
+
+    return name .. " (" .. progress .. "/" .. time .. ")"
+end
+
+TASK.Description = function(ply)
+    local time = taskmaster_takedamage_time:GetInt()
+    local desc = "Get another player to deal damage to you and survive for " .. time .. " second"
+    if time ~= 1 then
+        desc = desc .. "s"
+    end
+    return desc
+end
+
+TASK.Initialize = function()
+    if CLIENT then
+        LANG.AddToLanguage("english", "taskmaster_takedamage", "AVOID DAMAGE - {time}")
+    end
+end
+
+if SERVER then
+    util.AddNetworkString("TTT_Taskmaster_TakeDamage_Assigned")
+    util.AddNetworkString("TTT_Taskmaster_TakeDamage_Cleanup")
+
+    TASK.CanAssignTask = function(ply)
+        return true
+    end
+
+    TASK.RequiredFeatures = {
+        TASKMASTER_TF_PROGRESSBAR
+    }
+
+    TASK.OnTaskAssigned = function(ply)
+        local time = taskmaster_takedamage_time:GetInt()
+        timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+            if not IsPlayer(ply) then return end
+            if not ply:Alive() or ply:IsSpec() then return end
+            if not ply.Task_TakeDamageStart then return end
+            if CurTime() <= ply.Task_TakeDamageStart + time then return end
+
+            ply:CompleteTask(TASK.id)
+        end)
+
+        hook.Add("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64(), function(entity, dmginfo, wasDamageTaken)
+            if not wasDamageTaken then return end
+            if entity ~= ply then return end
+
+            local attacker = dmginfo:GetAttacker()
+            if not IsPlayer(attacker) or attacker == entity then return end
+
+            ply:SetProperty("Task_TakeDamageStart", CurTime(), ply)
+        end)
+
+        net.Start("TTT_Taskmaster_TakeDamage_Assigned")
+        net.Send(ply)
+    end
+
+    TASK.OnTaskRemoved = function(ply)
+        timer.Remove("TTTTaskmasterTakeDamageTimer")
+
+        hook.Remove("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64())
+
+        ply:ClearProperty("Task_TakeDamageStart", ply)
+
+        net.Start("TTT_Taskmaster_TakeDamage_Cleanup")
+        net.Send(ply)
+    end
+
+    TASK.OnTaskComplete = TASK.OnTaskRemoved
+end
+
+if CLIENT then
+    net.Receive("TTT_Taskmaster_TakeDamage_Assigned", function()
+        local client = LocalPlayer()
+        local time = taskmaster_takedamage_time:GetInt()
+
+        hook.Add("HUDPaint", "Taskmaster_TakeDamage_HUDPaint_" .. client:SteamID64(), function()
+            if not client:IsActiveTaskmaster() then return end
+
+            local startTime = client.Task_TakeDamageStart
+            if not startTime then return end
+
+            local PT = LANG.GetParamTranslation
+            local elapsed = math.max(0, CurTime() - startTime)
+            local remaining = time - elapsed
+            local message = PT("taskmaster_takedamage", { time = util.SimpleTime(remaining, "%02i:%02i") })
+            local color = Color(0, 255, 0, 155)
+
+            local x = ScrW() / 2.0
+            local y = ScrH() / 2.0
+            y = y + (y / 3)
+
+            local w = 300
+            local progress = elapsed / time
+
+            CRHUD:PaintProgressBar(x, y, w, color, message, progress)
+        end)
+    end)
+
+    net.Receive("TTT_Taskmaster_TakeDamage_Cleanup", function()
+        local client = LocalPlayer()
+        hook.Remove("HUDPaint", "Taskmaster_TakeDamage_HUDPaint_" .. client:SteamID64())
+    end)
+end
+
+TASKMASTER.RegisterTask(TASK)</code></pre></div>
+
+<h2><a id="uploading-your-addon" href="#uploading-your-addon">Uploading Your Addon</a></h2>
+        <p>Your task is almost ready to go! The last thing you need to do is upload your addon to the steam workshop. Before you can do that there are 2 more files you need to make: 'addon.json' and your workshop icon.</p>
+
+        <h3><a id="addonjson" href="#addonjson">addon.json</a></h3>
+        <p>'addon.json' is found inside the 'Task Addon Template' folder. Open it up and set <code>%TASKNAME%</code> to whatever the name of your role is.</p>
+        <p>For example 'addon.json' for the Summoner role looks like this:</p>
+        <div><pre><code>{
+  "title": "'Take Damage and Survive' Task for Taskmaster (CR for TTT)",
+  "type": "ServerContent",
+  "ignore": []
+}
+        </code></pre></div>
+
+        <h3><a id="workshop-icon" href="#workshop-icon">Workshop Icon</a></h3>
+        <p>Now is the time to open the last template. This step is completely optional, you can use whatever workshop icon you want! However, if you want to keep it consistent with CR for TTT roles and related addons open up 'Workshop Icon Template.psd'.</p>
+        <p>The icon is already set up to have the Taskmaster icon and team color set, so all you have to do is add text with your task name.</p>
+
+        <p>In the case of the task we're working on it will look something like this:</p>
+        <p><img src="https://i.imgur.com/WQHTBGZ.png" style="max-width: 100%;"/></p>
+        <p>Once you have done that you are ready to hit save. You want to put your icon in the same folder as 'Task Addon Template', not inside it! Steam workshop needs the icon file to be a .jpg so make sure you save it as the right format.</p>
+
+        <p>Here is my finalised 'TakeDamageTask.jpg':</p>
+        <p><img src="https://i.imgur.com/97JWCED.png" style="max-width: 100%;"/></p>
+
+        <h3><a id="folder-name" href="#folder-name">Folder Name</a></h3>
+        <p>While we are at it now is a good time to rename 'Task Addon Template' because it's not a template anymore, it's yours! Name it the same thing as whatever you named your workshop icon.</p>
+        <p>Before you get to uploading now is a great time to test your addon. In Steam right click on Garry's Mod and click 'Manage' &gt; 'Browse local files'. A folder should open up which contains your GMod files. Open 'garrysmod' &gt; 'addons' and paste the folder you just renamed in here. When you next boot up GMod your addon should load and you can test it out before uploading to the workshop.</p>
+
+        <h3><a id="final-checks" href="#final-checks">Final Checks</a></h3>
+        <p>Before you upload your addon, now is a great time to check that your file structure is all correct! For reference here is the file structure of my completed task addon:</p>
+        <div><pre><code class="language-plaintext">├─ TakeDamageTask.jpg
+└─ TakeDamageTask
+   ├─ addon.json
+   └─ lua
+      └─ taskmastertasks
+         └─ takedamage.lua
+        </code></pre></div>
+
+        <h3><a id="uploading" href="#uploading">Uploading</a></h3>
+        <p>Now you are ready to upload your addon. In Steam right click on Garry's Mod and click 'Manage' &gt; 'Browse local files'. A folder should open up which contains your GMod files. Open 'bin' and you should see a file called 'gmad.exe'. Drag and drop your addon folder onto 'gmad.exe'. You should see a new file appear next to your addon folder. It should have the same name as your folder but with the file extension '.gma'. In my case we now have a new file called 'TakeDamageTask.gma'.</p>
+        <p>Go back to the same folder where you found 'gmad.exe'. Click on the address bar up the top and type 'cmd'. This should open up the command prompt where you need to type this command to upload your addon.</p>
+        <div><pre><code class="language-plaintext">gmpublish.exe create -addon %PATHTOGMA% -icon %PATHTOJPG%</code></pre></div>
+
+        <p>Replace <code>%PATHTOGMA%</code> and <code>%PATHTOJPG%</code> with the file paths to your .gma addon file and .jpg workshop icon respectively.</p>
+        <p>For my Summoner addon it looks like this:</p>
+        <div><pre><code class="language-plaintext">gmpublish.exe create -addon "C:\Development\GMod\TakeDamageTask.gma" -icon "C:\Development\GMod\TakeDamageTask.jpg"</code></pre></div>
+
+        <p>Hit enter and you should see your addon upload to Steam! Once it is done you can view your addon by opening steam, hovering over your name up the top and clicking 'Content'. Click the 'Workshop Items' tab and your addon should be there! Here you can give your addon a description and then change its visibility to public. <em>(Note: If you ever need to update a pre-existing addon you can read how to do that <a href="https://wiki.facepunch.com/gmod/Workshop_Addon_Updating" target="_blank">here</a>.)</em></p>
+        <p>Once you have made your addon public, we would love to hear about it! Jump into <a href="https://discord.gg/BAPZrykC3F" target="_blank">our discord server</a> and show us what you have made!</p>
+
+        <h2><a id="wrapping-up" href="#wrapping-up">Wrapping Up</a></h2>
+        <p>If you have any problems or questions please jump into the <a href="https://discord.gg/BAPZrykC3F" target="_blank">Custom Roles for TTT Discord Server</a>! We love to see what everyone has making and there are almost always people online willing to help out if you need a hand.</p>
+    </div>
+    <div class="footerpadding panel"></div>
+</body>
+</html>
