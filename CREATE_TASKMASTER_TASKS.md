@@ -598,12 +598,12 @@ Now is the time to open the last template. This step is completely optional, you
 
 The icon is already set up to have the Taskmaster icon and team color set, so all you have to do is add text with your task name.
 
-In the case of the task we're working on it will look something like this:
+In the case of the task we're working on it will look something like this:  
 ![TakeDamageTaskLayers.png](https://i.imgur.com/WQHTBGZ.png)
 
 Once you have done that you are ready to hit save. You want to put your icon in the same folder as 'Task Addon Template', not inside it! Steam workshop needs the icon file to be a .jpg so make sure you save it as the right format.
 
-Here is my finalised 'TakeDamageTask.jpg':
+Here is my finalised 'TakeDamageTask.jpg':  
 ![TakeDamageTask.png](https://i.imgur.com/97JWCED.png)
 
 ### Folder Name
