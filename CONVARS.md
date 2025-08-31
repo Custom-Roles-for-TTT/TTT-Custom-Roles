@@ -525,6 +525,7 @@ ttt_paladin_heal_self                          1       // Whether the Paladin's 
 ttt_paladin_credits_starting                   1       // The number of credits a Paladin should start with
 
 // Tracker
+ttt_tracker_is_innocent                        0       // Whether the Tracker should be treated as a special innocent
 ttt_tracker_footstep_time                      15      // The amount of time players' footsteps should show to the Tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                     1       // Whether players' footsteps should have different colors
 ttt_tracker_credits_starting                   1       // The number of credits a Tracker should start with

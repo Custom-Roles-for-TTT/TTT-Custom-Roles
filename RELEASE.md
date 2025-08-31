@@ -8,6 +8,7 @@
 - Added ability to control whether the mercenary gets body armor as part of their loadout (defaults to `true`)
 - Added ability to change vampire's fang drain overheal to overheal (default), increase max health, or do both
 - Added ability to disable automatically confirming a players death when searching their body (disabled by default)
+- Added ability for the Tracker to be a special innocent instead of a special detective (disabled by default)
 
 ### Changes
 - Updated weapon switch and pickup HUD elements to use the same logic for getting weapon names
