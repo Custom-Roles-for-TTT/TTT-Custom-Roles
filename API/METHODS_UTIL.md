@@ -1,7 +1,7 @@
 # Utility Methods
 Utility methods created to help with various common scenarios
 
-### util.BitsRequired(nu, signed)
+### util.BitsRequired(num, signed)
 Returns how many bits are required to transmit the given number over the network.\
 *Realm:* Client and Server\
 *Added in:* 2.3.3\
