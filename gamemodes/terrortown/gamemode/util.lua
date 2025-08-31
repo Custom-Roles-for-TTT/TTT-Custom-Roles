@@ -472,6 +472,21 @@ function util.SimpleTime(seconds, fmt)
     return StringFormat(fmt, m, s, ms)
 end
 
+-- Returns the number of bits required to network an integer
+function util.BitsRequired(num, signed)
+    local bits, max = 0, 1
+    while max <= num do
+        bits = bits + 1
+        max = max + max
+    end
+
+    if signed then
+        bits = bits + 1
+    end
+
+    return bits
+end
+
 if SERVER then
     function util.ExecFile(filePath, errorIfMissing)
         if not FileExists(filePath, "GAME") then
@@ -554,20 +569,10 @@ function util.FormattedList(tbl, formatting)
     return result
 end
 
-function util.BitsRequired(num)
-    local bits, max = 0, 1
-    while max <= num do
-        bits = bits + 1
-        max = max + max
-    end
-    return bits
-end
-
 local roleBits = nil
 function util.RoleBits()
     if not roleBits then
-        -- Add a bit to the required for this since we're sending it as signed to support ROLE_NONE (-1)
-        roleBits = math.max(8, util.BitsRequired(ROLE_MAX) + 1)
+        roleBits = math.max(8, util.BitsRequired(ROLE_MAX, true))
     end
 
     return roleBits
