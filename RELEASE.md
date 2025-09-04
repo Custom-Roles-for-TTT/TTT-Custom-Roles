@@ -13,12 +13,14 @@
 ### Changes
 - Updated weapon switch and pickup HUD elements to use the same logic for getting weapon names
   - Fixes very rare cases where they would say different things
+- Ported "TTT: Add custom T Radio sound support and extra default sounds" from base TTT
 
 ### Fixes
 - Fixed illusionist not blocking traitor team voice chat
 - Fixed promoted impersonator and deputy who are searched by a detective not always showing their true role on the scoreboard
 
 ### Developer
+- Ported "signed" parameter added to `util.BitsRequired` from base TTT
 - Added `state` parameter to `TTTTeamVoiceChatTargets` hook
 - Added `table.GetFirstItemWithPropertyValue` static method
 - Added `maxchange` parameter to `TTTVampireBodyEaten` hook
