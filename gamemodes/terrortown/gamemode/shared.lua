@@ -1553,6 +1553,7 @@ COLOR_CYAN = Color(0, 255, 255, 255)
 
 include("lang_shd.lua") -- uses some of util
 include("equip_items_shd.lua")
+include("radio_shd.lua")
 
 function DetectiveMode() return GetGlobalBool("ttt_detective", false) end
 function HasteMode() return GetGlobalBool("ttt_haste", false) end
