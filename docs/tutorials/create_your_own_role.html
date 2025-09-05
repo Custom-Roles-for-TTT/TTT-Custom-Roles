@@ -94,7 +94,7 @@
             <li><strong>.lua</strong> - This can be done in Notepad in a pinch but at the very least we would recommend <a href="https://notepad-plus-plus.org/" target="_blank">Notepad++</a>.</li>
             <li><strong>.vmt and .vtf</strong> - <a href="https://github.com/Sky-rym/VTFEdit-Reloaded/releases" target="_blank">VTFEdit Reloaded</a> is the best way to edit these files but if you know what you are doing there are plugins for other apps.</li>
         </ul>
-        <p>In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using <a href="https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/release/templates">here</a>.</p>
+        <p>In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using <a href="https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/release/templates/role">here</a>.</p>
         <p>Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:</p>
         <p><img src="https://i.imgur.com/UCyxklx.png" style="max-width: 100%;" /></p>
 
@@ -265,6 +265,7 @@ Press {menukey} to receive your special equipment!]]</code></pre></div>
         <p>Along with the full role description, you need a short description that is no longer than two sentences that will be displayed in the cheat sheet. This is just to convey a general idea of what you role does and does not need to convey much detail. Keep it short and sweet.</p>
         <p>The short description for the Summoner will look like this:</p>
         <div><pre><code class="language-lua">ROLE.shortdesc = "Can buy items that summon minions."</code></pre></div>
+
         <h3><a id="team" href="#team">Team</a></h3>
         <p>Next we have the team. You can set which team your role is a member of by using the the following values</p>
         <table>
@@ -669,8 +670,7 @@ ttt_%NAMERAW%_shop_random_percent (The percent chance that each weapon in the ro
 ttt_%NAMERAW%_shop_mode (Whether the role should have access to traitor and/or detective shop items) [INDEPENDENT ONLY]
 </code></pre></div>
 
-        <!--TODO: Replace this link with the HTML version-->
-        <p>For more information on the specifics of these ConVars you can read the full list of ConVars <a href="https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations">here</a>.</p>
+        <p>For more information on the specifics of these ConVars you can read the full list of ConVars <a href="configuring_convars.html">here</a>.</p>
         <p>If you would like to add your own ConVars that aren't automatically created you can do so here. First create the ConVars as you would normally with <code>CreateConVar</code>. <em>(Note: Please try to keep your ConVars as consistently named as possible. The recommended naming scheme for role specific convars is <code>ttt_%NAMERAW%_...</code>.)</em></p>
         <p>Once you have defined your ConVar you can add it to the <code>convars</code> table to get it to show up inside ULX menus. Each entry in the <code>convars</code> table needs two properties. <code>cvar</code> is the name of the ConVar you want to add and <code>type</code> is one of three values depending on if you want your ConVar to show up as a slider, checkbox or textbox.</p>
         <table>
@@ -1078,7 +1078,7 @@ end</pre></code></div>
         </code></pre></div>
 
         <h2><a id="uploading-your-addon" href="#uploading-your-addon">Uploading Your Addon</a></h2>
-        <p>Your role is almost ready to go! The last thing you need to do is upload your addon to the steam workshop. Before you can do that there are 2 more files you need to make 'addon.json' and your workshop icon.</p>
+        <p>Your role is almost ready to go! The last thing you need to do is upload your addon to the steam workshop. Before you can do that there are 2 more files you need to make: 'addon.json' and your workshop icon.</p>
 
         <h3><a id="addonjson" href="#addonjson">addon.json</a></h3>
         <p>'addon.json' is found inside the 'Role Addon Template' folder. Open it up and set <code>%NAME%</code> to whatever the name of your role is.</p>
@@ -1092,7 +1092,7 @@ end</pre></code></div>
 
         <h3><a id="workshop-icon" href="#workshop-icon">Workshop Icon</a></h3>
         <p>Now is the time to open the last template. This step is completely optional, you can use whatever workshop icon you want! However, if you want to keep it consistent with other CR for TTT roles open up 'Workshop Icon Template.psd'.</p>
-        <p>Right about now you should be getting a feeling of déjà vu because out friend the white dashed outline is back. Copy your role icon onto the 'Icon' layer and this time instead of a shadow you should see a thick coloured outline. Resize your icon so the white all fits within the guide, it doesn't matter if the coloured outline spills outside the guide. Hide the 'Icon Guide' layer and you are almost good to go.</p>
+        <p>Right about now you should be getting a feeling of déjà vu because our friend the white dashed outline is back. Copy your role icon onto the 'Icon' layer and this time instead of a shadow you should see a thick coloured outline. Resize your icon so the white all fits within the guide, it doesn't matter if the coloured outline spills outside the guide. Hide the 'Icon Guide' layer and you are almost good to go.</p>
         <p>Each team in CR for TTT has it's own colour it is identified by and this template works best if you switch out the background to match that colour. In the layers window you should see four different background colours. Hide all the ones that don't match your roles team. You should also see four different stroke outline effects on the 'Role Icon' layer. Hide all the ones that don't match the colour of the background.</p>
 
         <p>In the case of the Summoner or another traitor role it should look like this:</p>

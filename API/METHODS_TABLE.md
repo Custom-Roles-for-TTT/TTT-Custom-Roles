@@ -9,8 +9,17 @@ Returns new table that contains the keys not present as values in in the given e
 - *tbl* - The table whose keys are being inspected
 - *excludes* - Table of values to exclude
 
+### table.GetFirstItemWithPropertyValue(tbl, key, val)
+Returns the first item in the given table that has an item whose property specified by the provided `key` has a value that matches the given `val`.\
+*Realm:* Client and Server\
+*Added in:* 2.3.5\
+*Parameters:*
+- *tbl* - The table whose values are being inspected
+- *key* - The property name whose value is being compared
+- *val* - The value to find in the given property
+
 ### table.HasItemWithPropertyValue(tbl, key, val)
-Returns whether the given table has an item whose property specified by the provided `key` has a value that makes the given `val`.\
+Returns whether the given table has an item whose property specified by the provided `key` has a value that matches the given `val`.\
 *Realm:* Client and Server\
 *Added in:* 1.8.7\
 *Parameters:*

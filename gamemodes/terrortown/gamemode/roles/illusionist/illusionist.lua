@@ -90,7 +90,14 @@ end)
 ---------------
 
 hook.Add("TTTTeamChatTargets", "Illusionist_TTTTeamChatTargets", function(sender, msg, targets, from_chat)
-    if IsIllusionistBlocking() and (sender:IsTraitorTeam() or (sender:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
+    if (sender:IsTraitorTeam() or (sender:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) and IsIllusionistBlocking() then
+        sender:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_ILLUSIONIST] .. " is preventing you from communicating with your allies.")
+        return false
+    end
+end)
+
+hook.Add("TTTTeamVoiceChatTargets", "Illusionist_TTTTeamVoiceChatTargets", function(sender, targets, state)
+    if not state and (sender:IsTraitorTeam() or (sender:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) and IsIllusionistBlocking() then
         sender:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_ILLUSIONIST] .. " is preventing you from communicating with your allies.")
         return false
     end

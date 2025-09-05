@@ -11,9 +11,9 @@ for role = 0, ROLE_MAX do
 
     if INDEPENDENT_ROLES[role] then
         local jesterVisible = ROLE_CAN_SEE_JESTERS[role] and "1" or "0"
-        CreateConVar("ttt_" .. rolestring .. "_can_see_jesters", jesterVisible, FCVAR_REPLICATED)
+        CreateConVar("ttt_" .. rolestring .. "_can_see_jesters", jesterVisible, FCVAR_REPLICATED, "Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to this role", 0, 1)
         local miaVisible = ROLE_CAN_SEE_MIA[role] and "1" or "0"
-        CreateConVar("ttt_" .. rolestring .. "_update_scoreboard", miaVisible, FCVAR_REPLICATED)
+        CreateConVar("ttt_" .. rolestring .. "_update_scoreboard", miaVisible, FCVAR_REPLICATED, "Whether this role shows dead players as missing in action", 0, 1)
     end
 end
 

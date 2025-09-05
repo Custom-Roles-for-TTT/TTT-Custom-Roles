@@ -483,7 +483,7 @@ function GM:KeyRelease(ply, key)
                     return true
                 end
             elseif tr.Entity.player_ragdoll then
-                CORPSE.ShowSearch(ply, tr.Entity, ply:KeyDown(IN_WALK) or ply:KeyDownLast(IN_WALK))
+                CORPSE.ShowSearch(ply, tr.Entity, ply:KeyDown(IN_WALK) or ply:KeyDownLast(IN_WALK) or not GetConVar("ttt_corpse_search_auto_confirm"):GetBool())
                 return true
             end
         end
@@ -504,7 +504,7 @@ local function SpecUseKey(ply, cmd, arg)
                     ply:Spectate(OBS_MODE_IN_EYE)
                     ply:SpectateEntity(tr.Entity)
                 else
-                    CORPSE.ShowSearch(ply, tr.Entity)
+                    CORPSE.ShowSearch(ply, tr.Entity, not GetConVar("ttt_corpse_search_auto_confirm"):GetBool())
                 end
             elseif tr.Entity:IsPlayer() and tr.Entity:IsActive() then
                 ply:Spectate(ply.spec_mode or OBS_MODE_CHASE)

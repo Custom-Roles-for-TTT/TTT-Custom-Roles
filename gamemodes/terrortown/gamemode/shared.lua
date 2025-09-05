@@ -24,7 +24,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.3.4"
+CR_VERSION = "2.3.5"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -184,8 +184,9 @@ ROLE_EVILTWIN = 48
 ROLE_PLAGUEMASTER = 49
 ROLE_ILLUSIONIST = 50
 ROLE_CANNIBAL = 51
+ROLE_TASKMASTER = 52
 
-ROLE_MAX = 51
+ROLE_MAX = 52
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(tbl, roles)
@@ -222,7 +223,7 @@ JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE, ROLE_GUESSER, ROLE_CANNIBAL})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST, ROLE_HIVEMIND, ROLE_PLAGUEMASTER})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST, ROLE_HIVEMIND, ROLE_PLAGUEMASTER, ROLE_TASKMASTER})
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
@@ -487,7 +488,7 @@ function CreateShopConVars(role)
     CreateCreditConVar(role)
 
     CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
-    CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring, 0, 1)
 
     local hassync = (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or ROLE_HAS_SHOP_SYNC[role]
     if hassync then
@@ -593,7 +594,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_EVILTWIN] = "eviltwin",
     [ROLE_PLAGUEMASTER] = "plaguemaster",
     [ROLE_ILLUSIONIST] = "illusionist",
-    [ROLE_CANNIBAL] = "cannibal"
+    [ROLE_CANNIBAL] = "cannibal",
+    [ROLE_TASKMASTER] = "taskmaster"
 }
 
 ROLE_STRINGS = {
@@ -648,7 +650,8 @@ ROLE_STRINGS = {
     [ROLE_EVILTWIN] = "Evil Twin",
     [ROLE_PLAGUEMASTER] = "Plaguemaster",
     [ROLE_ILLUSIONIST] = "Illusionist",
-    [ROLE_CANNIBAL] = "Cannibal"
+    [ROLE_CANNIBAL] = "Cannibal",
+    [ROLE_TASKMASTER] = "Taskmaster"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -703,7 +706,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_EVILTWIN] = "Evil Twins",
     [ROLE_PLAGUEMASTER] = "Plaguemasters",
     [ROLE_ILLUSIONIST] = "Illusionists",
-    [ROLE_CANNIBAL] = "Cannibals"
+    [ROLE_CANNIBAL] = "Cannibals",
+    [ROLE_TASKMASTER] = "Taskmasters"
 }
 
 ROLE_STRINGS_EXT = {
@@ -759,7 +763,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_EVILTWIN] = "an Evil Twin",
     [ROLE_PLAGUEMASTER] = "a Plaguemaster",
     [ROLE_ILLUSIONIST] = "an Illusionist",
-    [ROLE_CANNIBAL] = "a Cannibal"
+    [ROLE_CANNIBAL] = "a Cannibal",
+    [ROLE_TASKMASTER] = "a Taskmaster"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -815,7 +820,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_EVILTWIN] = "etw",
     [ROLE_PLAGUEMASTER] = "plm",
     [ROLE_ILLUSIONIST] = "ill",
-    [ROLE_CANNIBAL] = "can"
+    [ROLE_CANNIBAL] = "can",
+    [ROLE_TASKMASTER] = "tsk"
 }
 
 function StartsWithVowel(word)
@@ -1400,8 +1406,9 @@ WIN_VINDICATOR = 18
 WIN_INFECTED = 19
 WIN_PLAGUEMASTER = 20
 WIN_CANNIBAL = 21
+WIN_TASKMASTER = 22
 
-WIN_MAX = WIN_MAX or 21
+WIN_MAX = WIN_MAX or 22
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
@@ -1500,6 +1507,8 @@ UNITS_PER_METER = 39.37
 UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
 UNITS_PER_SIX_METERS = UNITS_PER_METER * 6
 
+FEET_PER_METER = 3.28084
+
 -- Message queue modes
 MSG_PRINTBOTH = 1
 MSG_PRINTTALK = 3 -- Keep this the same value as HUD_PRINTTALK just in case
@@ -1544,6 +1553,7 @@ COLOR_CYAN = Color(0, 255, 255, 255)
 
 include("lang_shd.lua") -- uses some of util
 include("equip_items_shd.lua")
+include("radio_shd.lua")
 
 function DetectiveMode() return GetGlobalBool("ttt_detective", false) end
 function HasteMode() return GetGlobalBool("ttt_haste", false) end

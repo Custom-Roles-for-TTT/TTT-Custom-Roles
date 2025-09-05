@@ -1,6 +1,7 @@
 ---- Corpse functions
 
 CreateConVar("ttt_corpse_search_not_shared", "0", FCVAR_NONE, "Whether corpse searches are not shared with other players (only affects non-detective-like searchers)", 0, 1)
+CreateConVar("ttt_corpse_search_auto_confirm", "1", FCVAR_REPLICATED, "Whether corpse searches automatically confirm the death of the player", 0, 1)
 
 -- namespaced because we have no ragdoll metatable
 CORPSE = CORPSE or {}
@@ -316,6 +317,7 @@ local function CallDetective(ply, cmd, args)
         rag.last_detective_call = CurTime()
 
         if CORPSE.GetFound(rag, false) then
+            hook.Call("TTTDetectiveCalledToBody", nil, ply, owner, rag)
             -- show indicator to detectives
             net.Start("TTT_CorpseCall")
                 net.WriteVector(rag:GetPos())
@@ -389,6 +391,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         elseif IsValid(ownerEnt) and not ply:IsSpec() and not ownerEnt:GetNWBool("det_called", false) and not ownerEnt:GetNWBool("body_searched", false) then
             if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then
                 hook.Call("TTTBodyFound", GAMEMODE, ply, ownerEnt, rag)
+                hook.Call("TTTDetectiveCalledToBody", nil, ply, ownerEnt, rag)
                 net.Start("TTT_CorpseCall")
                     net.WriteVector(rag:GetPos())
                     net.WriteString(rag.sid)
@@ -503,7 +506,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     else
         net.Broadcast()
 
-        -- Let detctives know that this body has already been searched
+        -- Let detectives know that this body has already been searched
         net.Start("TTT_RemoveCorpseCall")
             net.WriteString(rag.sid)
         net.Send(GetExtendedDetectiveFilter(true))
