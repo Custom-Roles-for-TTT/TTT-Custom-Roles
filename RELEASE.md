@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.3.5 (Beta)
-**Released:**
+**Released: September 5th, 2025**
 
 ### Additions
 - Added new independent role: Taskmaster
