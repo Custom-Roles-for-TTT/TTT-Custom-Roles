@@ -76,6 +76,7 @@ if SERVER then
     local function IsHidden(ply)
         for _, p in PlayerIterator() do
             if ply == p then continue end
+            if not p:Alive() or p:IsSpec() then continue end
 
             -- Check IsOnScreen first because math is more efficient then sending traces this often
             if p:IsOnScreen(ply, 0.35) and IsTargetInView(p, ply) then
