@@ -12,6 +12,7 @@ CreateConVar("ttt_corpse_search_killer_team_text_monster", "0", FCVAR_REPLICATED
 CreateConVar("ttt_corpse_search_killer_team_text_independent", "0", FCVAR_REPLICATED, "Whether corpse searches should include flavor text hinting at the team of their independent killer", 0, 1)
 CreateConVar("ttt_corpse_search_killer_team_text_jester", "0", FCVAR_REPLICATED, "Whether corpse searches should include flavor text hinting at the team of their jester team killer", 0, 1)
 CreateConVar("ttt_corpse_search_killer_team_text_plain", "0", FCVAR_REPLICATED, "Whether corpse searches should include plain text showing the team of their killer. Only used alongside the \"ttt_corpse_search_killer_team_text_*\" convars", 0, 1)
+CreateConVar("ttt_corpse_search_auto_confirm", "1", FCVAR_REPLICATED, "Whether corpse searches automatically confirm the death of the player", 0, 1)
 
 CORPSE = CORPSE or {}
 
