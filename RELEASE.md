@@ -15,6 +15,7 @@ Includes beta updates [2.3.1](#231-beta) to [2.3.5](#235-beta).
 
 ### Fixes
 - Fixed spectators counting against the Taskmaster in the "Stay Hidden" task
+- Ported "TTT: Fixed font warnings (no visual changes)"
 
 ## 2.3.5 (Beta)
 **Released: September 5th, 2025**

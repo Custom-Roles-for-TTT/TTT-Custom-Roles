@@ -17,7 +17,7 @@ local GetPTranslation = LANG.GetParamTranslation
 local HookCall = hook.Call
 
 surface.CreateFont("TutorialTitle", {
-    font = "Trebuchet MS",
+    font = "Tahoma",
     size = 30,
     weight = 900 })
 

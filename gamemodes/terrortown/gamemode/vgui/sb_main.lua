@@ -39,7 +39,7 @@ surface.CreateFont("cool_large", {
     weight = 400
 })
 surface.CreateFont("treb_small", {
-    font = "Trebuchet18",
+    font = "Tahoma",
     size = 14,
     weight = 700
 })

@@ -279,7 +279,7 @@ end
 vgui.Register("DisarmPanel", PANEL, "DPanel")
 
 surface.CreateFont("C4Timer", {
-    font = "TabLarge",
+    font = "Tahoma",
     size = 30,
     weight = 750
 })
