@@ -1,5 +1,19 @@
 # Release Notes
 
+## 2.4.0
+**Released:**\
+Includes beta updates [2.3.1](#231-beta) to [2.3.5](#235-beta).
+
+### Additions
+- Added completed task count to Taskmaster on the round summary screen
+
+### Changes
+- Changed Taskmaster's "Stay Hidden" task to be a bit less lenient
+- Ported "TTT: Reduce Healing sound repetition count in Radio"
+
+### Fixes
+- Fixed spectators counting against the Taskmaster in the "Stay Hidden" task
+
 ## 2.3.5 (Beta)
 **Released: September 5th, 2025**
 
