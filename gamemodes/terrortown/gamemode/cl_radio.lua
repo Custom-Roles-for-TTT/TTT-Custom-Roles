@@ -4,6 +4,7 @@ local math = math
 local vgui = vgui
 
 local GetTranslation = LANG.GetTranslation
+local GetPTranslation = LANG.GetParamTranslation
 local TryTranslation = LANG.TryTranslation
 
 TRADIO.SoundOrder = {
@@ -47,7 +48,15 @@ local function CreateSoundBoard(parent)
     for ri, snd in ipairs(sorder) do
         local but = grid:Add("DButton")
         but:SetSize(bw, bh)
-        but:SetText(TryTranslation(TRADIO.Sounds[snd].name))
+
+        local name = TRADIO.Sounds[snd].name
+        local name_params = TRADIO.Sounds[snd].name_params
+        local translated = TryTranslation(name)
+        if name_params and name ~= translated then
+            translated = GetPTranslation(name, name_params)
+        end
+        but:SetText(translated)
+
         but.snd = snd
         but.DoClick = ButtonClickPlay
     end
