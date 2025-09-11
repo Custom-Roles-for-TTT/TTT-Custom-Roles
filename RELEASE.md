@@ -13,6 +13,7 @@ Includes beta updates [2.3.1](#231-beta) to [2.3.5](#235-beta).
 - Ported "TTT: Reduce Healing sound repetition count in Radio"
 - Ported "TTT: Do not stack round start popups"
   - There is no change in functionality, we just adjusted our implementation of this feature to match the base
+- Ported "TTT: make Radio buttons a bit wider"
 
 ### Fixes
 - Fixed spectators counting against the Taskmaster in the "Stay Hidden" task
