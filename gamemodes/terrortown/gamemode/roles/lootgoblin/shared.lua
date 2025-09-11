@@ -172,3 +172,19 @@ hook.Add("TTTSpeedMultiplier", "LootGoblin_TTTSpeedMultiplier", function(ply, mu
         TableInsert(mults, lootgoblin_speed_mult:GetFloat())
     end
 end)
+
+-- Initialize role features
+hook.Add("TTTPrepareRound", "LootGoblin_Shared_TTTPrepareRound", function()
+    -- Add radio sounds
+    if not TRADIO.Sounds.lgobcackle and util.CanRoleSpawn(ROLE_LOOTGOBLIN) then
+        TRADIO.AddNewSound("lgobcackle", {
+            name = "radio_lgob_cackle",
+            name_params = { goblin = ROLE_STRINGS[ROLE_LOOTGOBLIN] },
+            sound = {
+                Sound("lootgoblin/cackle1.wav"),
+                Sound("lootgoblin/cackle2.wav"),
+                Sound("lootgoblin/cackle3.wav")
+            }
+        })
+    end
+end)

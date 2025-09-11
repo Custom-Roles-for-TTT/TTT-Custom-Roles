@@ -6,6 +6,7 @@ Includes beta updates [2.3.1](#231-beta) to [2.3.5](#235-beta).
 
 ### Additions
 - Added completed task count to Taskmaster on the round summary screen
+- Added radio sounds for Clown activate, Jester celebrate, Loot Goblin cackle, Old Man ramble, Vampire fade, and Zombie leap
 
 ### Changes
 - Changed Taskmaster's "Stay Hidden" task to be a bit less lenient

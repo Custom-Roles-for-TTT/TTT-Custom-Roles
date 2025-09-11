@@ -27,6 +27,9 @@ hook.Add("Initialize", "Clown_Translations_Initialize", function()
     LANG.AddToLanguage("english", "win_clown", "The {role} has murdered you all!")
     LANG.AddToLanguage("english", "ev_win_clown", "The vicious {role} won the round!")
 
+    -- Radio
+    LANG.AddToLanguage("english", "radio_clo_activate", "{clown} Activate")
+
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_clown", "Pretends to be a Jester until someone is about to win, then they become an independent and must kill everyone else to win.")
 
