@@ -10,6 +10,7 @@ Includes beta updates [2.3.1](#231-beta) to [2.3.5](#235-beta).
 
 ### Changes
 - Changed Taskmaster's "Stay Hidden" task to be a bit less lenient
+- Updated Phantom tutorial to show the maximum number of respawns they have, if that setting is enabled
 - Ported "TTT: Reduce Healing sound repetition count in Radio"
 - Ported "TTT: Do not stack round start popups"
   - There is no change in functionality, we just adjusted our implementation of this feature to match the base

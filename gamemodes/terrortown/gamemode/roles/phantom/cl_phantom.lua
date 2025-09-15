@@ -16,6 +16,7 @@ local phantom_weaker_each_respawn = GetConVar("ttt_phantom_weaker_each_respawn")
 local phantom_announce_death = GetConVar("ttt_phantom_announce_death")
 local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time")
 local phantom_respawn = GetConVar("ttt_phantom_respawn")
+local phantom_respawn_limit = GetConVar("ttt_phantom_respawn_limit")
 
 ------------------
 -- TRANSLATIONS --
@@ -230,7 +231,15 @@ hook.Add("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", function(role, ti
 
         -- Respawn
         if phantom_respawn:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is killed, they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>be resurrected</span> if the person that killed them then dies.</span>"
+            local respawn_limit = phantom_respawn_limit:GetInt()
+
+            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is killed, they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>be resurrected</span> if the person that killed them then dies"
+            if respawn_limit > 1 then
+                html = html .. ", up to " .. respawn_limit .. " times"
+            elseif respawn_limit == 1 then
+                html = html .. ", but only once"
+            end
+            html = html .. ".</span>"
 
             -- Weaker each respawn
             if phantom_weaker_each_respawn:GetBool() then
