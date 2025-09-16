@@ -1,8 +1,7 @@
 # Release Notes
 
-## 2.4.0
-**Released:**\
-Includes beta updates [2.3.1](#231-beta) to [2.3.5](#235-beta).
+## 2.3.6 (Beta)
+**Released:**
 
 ### Additions
 - Added completed task count to Taskmaster on the round summary screen
