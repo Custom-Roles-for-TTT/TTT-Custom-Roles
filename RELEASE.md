@@ -17,6 +17,7 @@
 
 ### Fixes
 - Fixed spectators counting against the Taskmaster in the "Stay Hidden" task
+- Fixed the Taskmaster's "Kill a Player After a 360" task
 - Ported "TTT: Fixed font warnings (no visual changes)"
 
 ### Developer
