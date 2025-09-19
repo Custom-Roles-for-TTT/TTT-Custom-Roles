@@ -1,5 +1,28 @@
 # Release Notes
 
+## 2.3.6 (Beta)
+**Released:**
+
+### Additions
+- Added completed task count to Taskmaster on the round summary screen
+- Added radio sounds for Clown activate, Jester celebrate, Loot Goblin cackle, Old Man ramble, Vampire fade, and Zombie leap
+
+### Changes
+- Changed Taskmaster's "Stay Hidden" task to be a bit less lenient
+- Updated Phantom tutorial to show the maximum number of respawns they have, if that setting is enabled
+- Ported "TTT: Reduce Healing sound repetition count in Radio"
+- Ported "TTT: Do not stack round start popups"
+  - There is no change in functionality, we just adjusted our implementation of this feature to match the base
+- Ported "TTT: make Radio buttons a bit wider"
+
+### Fixes
+- Fixed spectators counting against the Taskmaster in the "Stay Hidden" task
+- Fixed the Taskmaster's "Kill a Player After a 360" task
+- Ported "TTT: Fixed font warnings (no visual changes)"
+
+### Developer
+- Added ability to use parameters when defining custom radio sound names
+
 ## 2.3.5 (Beta)
 **Released: September 5th, 2025**
 

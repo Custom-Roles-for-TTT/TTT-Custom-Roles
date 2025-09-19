@@ -39,7 +39,7 @@ surface.CreateFont("TabLarge", {
     weight = 700,
     shadow = true, antialias = false })
 surface.CreateFont("Trebuchet22", {
-    font = "Trebuchet MS",
+    font = "Tahoma",
     size = 22,
     weight = 900 })
 

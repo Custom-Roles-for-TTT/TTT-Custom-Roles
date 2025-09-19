@@ -35,6 +35,9 @@ hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
     -- HUD
     LANG.AddToLanguage("english", "taskmaster_hud", "You will lose in: {time}")
 
+    -- Scoring
+    LANG.AddToLanguage("english", "score_taskmaster_taskscomplete", "Tasks complete:")
+
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_taskmaster", "Has a list of tasks that they must complete before the end of the round.")
 
@@ -88,6 +91,26 @@ hook.Add("TTTScoringSecondaryWins", "Taskmaster_TTTScoringSecondaryWins", functi
             table.insert(secondary_wins, ROLE_TASKMASTER)
             break
         end
+    end
+end)
+
+-------------
+-- SCORING --
+-------------
+
+hook.Add("TTTScoringSummaryRender", "Taskmaster_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
+    if ply:IsTaskmaster() then
+        local complete = #ply.TaskmasterCompletedTasks
+        local total = 0
+        if ply.TaskmasterKillTasks then
+            total = total + #ply.TaskmasterKillTasks
+        end
+        if ply.TaskmasterMiscTasks then
+            total = total + #ply.TaskmasterMiscTasks
+        end
+        return roleFileName, groupingRole, roleColor, name, complete .. "/" .. total, LANG.GetTranslation("score_taskmaster_taskscomplete")
     end
 end)
 
