@@ -102,14 +102,8 @@ hook.Add("TTTScoringSummaryRender", "Taskmaster_TTTScoringSummaryRender", functi
     if not IsPlayer(ply) then return end
 
     if ply:IsTaskmaster() then
-        local complete = #ply.TaskmasterCompletedTasks
-        local total = 0
-        if ply.TaskmasterKillTasks then
-            total = total + #ply.TaskmasterKillTasks
-        end
-        if ply.TaskmasterMiscTasks then
-            total = total + #ply.TaskmasterMiscTasks
-        end
+        local complete = ply.TaskmasterCompleteCount or "??"
+        local total = ply.TaskmasterTotalCount or "??"
         return roleFileName, groupingRole, roleColor, name, complete .. "/" .. total, LANG.GetTranslation("score_taskmaster_taskscomplete")
     end
 end)
