@@ -154,7 +154,7 @@ local function DrawTask(task, height, isShadow)
         progress = task.Progress(client)
         desc = desc .. " " .. progress
     end
-    local completed = table.HasValue(client.TaskmasterCompletedTasks, task.id)
+    local completed = table.HasValue(client.TaskmasterCompletedTasks or {}, task.id)
 
     -- The checkboxes don't naturally align with the text, thus the '+2's everywhere to make it line up
     surface.DrawRect(xPos + margin + 2 + offset, height + 2 + offset, 2, checkboxSize)
@@ -247,12 +247,12 @@ hook.Add("HUDPaint", "Taskmaster_HUDPaint", function()
 
     local height = yOffset:GetInt() + margin
 
-    for _, id in ipairs(client.TaskmasterKillTasks) do
+    for _, id in ipairs(client.TaskmasterKillTasks or {}) do
         DrawTask(TASKMASTER.KillTasks[id], height, true)
         height = DrawTask(TASKMASTER.KillTasks[id], height)
     end
 
-    for _, id in ipairs(client.TaskmasterMiscTasks) do
+    for _, id in ipairs(client.TaskmasterMiscTasks or {}) do
         DrawTask(TASKMASTER.MiscTasks[id], height, true)
         height = DrawTask(TASKMASTER.MiscTasks[id], height)
     end
@@ -294,6 +294,7 @@ local scrollBarWidth = 15
 local creditsIconSize = 32
 
 local function CreateTaskReroll(task, dscrollpanel)
+    if not client.TaskmasterCompletedTasks then return false end
     if table.HasValue(client.TaskmasterCompletedTasks, task.id) then return false end
 
     local name = task.Name(client)
@@ -372,7 +373,7 @@ local function CreateTaskList(dscrollpanel)
     dtasks = {}
     dtasksHeight = 0
 
-    for _, id in ipairs(client.TaskmasterKillTasks) do
+    for _, id in ipairs(client.TaskmasterKillTasks or {}) do
         local dtask, dline = CreateTaskReroll(TASKMASTER.KillTasks[id], dscrollpanel)
         if dtask then
             table.insert(dtasks, dtask)
@@ -380,7 +381,7 @@ local function CreateTaskList(dscrollpanel)
         end
     end
 
-    for _, id in ipairs(client.TaskmasterMiscTasks) do
+    for _, id in ipairs(client.TaskmasterMiscTasks or {}) do
         local dtask, dline = CreateTaskReroll(TASKMASTER.MiscTasks[id], dscrollpanel)
         if dtask then
             table.insert(dtasks, dtask)
