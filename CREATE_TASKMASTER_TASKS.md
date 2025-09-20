@@ -206,7 +206,7 @@ To accomplish this, we will be adding a hook to track damage to this player and 
 
 ```lua
 TASK.OnTaskAssigned = function(ply)
-    timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+    timer.Create("TTTTaskmasterTakeDamageTimer_" .. ply:SteamID64(), 0.1, 0, function()
         if not IsPlayer(ply) then return end
         if not ply:Alive() or ply:IsSpec() then return end
     end)
@@ -226,7 +226,7 @@ We need to know how long they have survived so we will also be tracking when tha
 ```lua
 TASK.OnTaskAssigned = function(ply)
     local time = 30
-    timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+    timer.Create("TTTTaskmasterTakeDamageTimer_" .. ply:SteamID64(), 0.1, 0, function()
         if not IsPlayer(ply) then return end
         if not ply:Alive() or ply:IsSpec() then return end
         if not ply.Task_TakeDamageStart then return end
@@ -301,7 +301,7 @@ And of course, we should update the timer to use the ConVar for tracking surviva
 
 ```lua
 local time = taskmaster_takedamage_time:GetInt()
-timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+timer.Create("TTTTaskmasterTakeDamageTimer_" .. ply:SteamID64(), 0.1, 0, function()
     if not IsPlayer(ply) then return end
     if not ply:Alive() or ply:IsSpec() then return end
     if not ply.Task_TakeDamageStart then return end
@@ -325,7 +325,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local time = taskmaster_takedamage_time:GetInt()
-        timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterTakeDamageTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
             if not ply:Alive() or ply:IsSpec() then return end
             if not ply.Task_TakeDamageStart then return end
@@ -401,7 +401,7 @@ if SERVER then
     util.AddNetworkString("TTT_Taskmaster_TakeDamage_Cleanup")
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterTakeDamageTimer")
+        timer.Remove("TTTTaskmasterTakeDamageTimer_" .. ply:SteamID64())
 
         hook.Remove("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64())
 
@@ -504,7 +504,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local time = taskmaster_takedamage_time:GetInt()
-        timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterTakeDamageTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
             if not ply:Alive() or ply:IsSpec() then return end
             if not ply.Task_TakeDamageStart then return end
@@ -528,7 +528,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterTakeDamageTimer")
+        timer.Remove("TTTTaskmasterTakeDamageTimer_" .. ply:SteamID64())
 
         hook.Remove("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64())
 

@@ -66,7 +66,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local time = taskmaster_carrycorpse_time:GetInt()
-        timer.Create("TTTTaskmasterCarryCorpseTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterCarryCorpseTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
             local wep = ply:GetActiveWeapon()
@@ -90,7 +90,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterCarryCorpseTimer")
+        timer.Remove("TTTTaskmasterCarryCorpseTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_CarryCorpseStart", ply)
 

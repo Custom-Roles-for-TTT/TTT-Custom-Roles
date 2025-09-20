@@ -102,7 +102,7 @@ if SERVER then
         local range = taskmaster_crouchnearbody_range:GetInt() * UNITS_PER_METER
         local rangeSqr = range * range
         local time = taskmaster_crouchnearbody_time:GetInt()
-        timer.Create("TTTTaskmasterCrouchNearBodyTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterCrouchNearBodyTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
             if not ply:Alive() or ply:IsSpec() or not ply:Crouching() then
                 ply:ClearProperty("Task_CrouchNearBodyStart", ply)
@@ -135,7 +135,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterCrouchNearBodyTimer")
+        timer.Remove("TTTTaskmasterCrouchNearBodyTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_CrouchNearBodyStart", ply)
 

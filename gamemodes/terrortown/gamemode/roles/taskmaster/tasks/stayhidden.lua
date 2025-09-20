@@ -81,7 +81,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local time = taskmaster_stayhidden_time:GetInt()
-        timer.Create("TTTTaskmasterStayHiddenTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterStayHiddenTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
             if ply:Alive() and not ply:IsSpec() and IsHidden(ply) then
@@ -103,7 +103,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterStayHiddenTimer")
+        timer.Remove("TTTTaskmasterStayHiddenTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_StayHiddenStart", ply)
 

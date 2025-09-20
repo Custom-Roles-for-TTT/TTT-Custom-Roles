@@ -93,7 +93,7 @@ if SERVER then
 
         local sid64 = ply:SteamID64()
         local time = taskmaster_lookatplayer_time:GetInt()
-        timer.Create("TTTTaskmasterLookAtPlayerTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterLookAtPlayerTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
             if not IsPlayer(ply.Task_LookAtPlayerPlayer) then return end
 
@@ -141,7 +141,7 @@ if SERVER then
     end
 
     TASK.OnTaskComplete = function(ply)
-        timer.Remove("TTTTaskmasterLookAtPlayerTimer")
+        timer.Remove("TTTTaskmasterLookAtPlayerTimer_" .. ply:SteamID64())
 
         local sid64 = ply:SteamID64()
         hook.Remove("PlayerDeath", "Taskmaster_LookAtPlayer_PlayerDeath_" .. sid64)

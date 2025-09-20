@@ -132,7 +132,7 @@ if SERVER then
 
         ply:SetProperty("Task_StayNearTargetPlayer", GetRandomTarget(ply), ply)
 
-        timer.Create("TTTTaskmasterStayNearTargetTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterStayNearTargetTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
             if not IsPlayer(ply.Task_StayNearTargetPlayer) then return end
 
@@ -180,7 +180,7 @@ if SERVER then
     end
 
     TASK.OnTaskComplete = function(ply)
-        timer.Remove("TTTTaskmasterStayNearTargetTimer")
+        timer.Remove("TTTTaskmasterStayNearTargetTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_StayNearTargetStart", ply)
 

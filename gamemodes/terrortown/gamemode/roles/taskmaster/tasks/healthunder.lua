@@ -72,7 +72,7 @@ if SERVER then
     TASK.OnTaskAssigned = function(ply)
         local amount = taskmaster_healthunder_amount:GetInt()
         local time = taskmaster_healthunder_time:GetInt()
-        timer.Create("TTTTaskmasterHealthUnderTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterHealthUnderTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
             if ply:Alive() and not ply:IsSpec() and ply:Health() < amount then
@@ -94,7 +94,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterHealthUnderTimer")
+        timer.Remove("TTTTaskmasterHealthUnderTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_HealthUnderStart", ply)
 
