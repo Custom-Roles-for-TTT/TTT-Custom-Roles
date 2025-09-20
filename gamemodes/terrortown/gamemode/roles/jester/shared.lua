@@ -40,3 +40,15 @@ table.insert(ROLE_CONVARS[ROLE_JESTER], {
     cvar = "ttt_jester_healthstation_reduce_max",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+
+-- Initialize role features
+hook.Add("TTTPrepareRound", "Jester_Shared_TTTPrepareRound", function()
+    -- Add radio sounds
+    if not TRADIO.Sounds.jescelebrate and util.CanRoleSpawn(ROLE_JESTER) then
+        TRADIO.AddNewSound("jescelebrate", {
+            name = "radio_jes_celebrate",
+            name_params = { jester = ROLE_STRINGS[ROLE_JESTER] },
+            sound = "birthday.wav"
+        })
+    end
+end)

@@ -139,40 +139,29 @@ local function GetTextForLocalPlayer()
     end
 end
 
-local popupframe = nil
-local function RoundStartPopupClose()
-    if IsValid(popupframe) then
-        popupframe:Remove()
-        popupframe = nil
-    end
-end
-
 local startshowtime = CreateConVar("ttt_startpopup_duration", "17", FCVAR_ARCHIVE)
+local roundStartFrame = nil
 -- shows info about goal and fellow traitors (if any)
 local function RoundStartPopup()
     -- based on Derma_Message
-
-    -- close last round's if it's still there
-    RoundStartPopupClose()
-    timer.Remove("roundstartpopupclose")
 
     if startshowtime:GetInt() <= 0 then return end
 
     if not LocalPlayer() then return end
 
-    popupframe = vgui.Create("Panel")
-    popupframe:SetDrawOnTop(true)
-    popupframe:SetMouseInputEnabled(false)
-    popupframe:SetKeyboardInputEnabled(false)
+    local dframe = vgui.Create("Panel")
+    dframe:SetDrawOnTop(true)
+    dframe:SetMouseInputEnabled(false)
+    dframe:SetKeyboardInputEnabled(false)
 
     local color = Color(0, 0, 0, 200)
-    popupframe.Paint = function(s)
+    dframe.Paint = function(s)
         draw.RoundedBox(8, 0, 0, s:GetWide(), s:GetTall(), color)
     end
 
     local text = GetTextForLocalPlayer()
 
-    local dtext = vgui.Create("DLabel", popupframe)
+    local dtext = vgui.Create("DLabel", dframe)
     dtext:SetFont("TabLarge")
     dtext:SetText(text)
     dtext:SizeToContents()
@@ -184,12 +173,16 @@ local function RoundStartPopup()
 
     dtext:SetPos(m, m)
 
-    popupframe:SetSize(w + m * 2, h + m * 2)
-    popupframe:Center()
+    dframe:SetSize(w + m * 2, h + m * 2)
+    dframe:Center()
 
-    popupframe:AlignBottom(10)
+    dframe:AlignBottom(10)
 
-    timer.Create("roundstartpopupclose", startshowtime:GetInt(), 1, RoundStartPopupClose)
+    -- Do not stack the messages when ttt_roundrestart is used
+    if IsValid(roundStartFrame) then roundStartFrame:Remove() end
+    roundStartFrame = dframe
+
+    timer.Simple(startshowtime:GetInt(), function() if IsValid(dframe) then dframe:Remove() end end)
 end
 concommand.Add("ttt_cl_startpopup", RoundStartPopup)
 

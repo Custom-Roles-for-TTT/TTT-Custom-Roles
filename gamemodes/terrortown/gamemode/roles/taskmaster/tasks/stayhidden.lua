@@ -66,19 +66,13 @@ if SERVER then
         TASKMASTER_TF_PROGRESSBAR
     }
 
-    local function IsTargetInView(ply, target)
-        if not IsValid(ply) then return false end
-
-        local tr = ply:GetEyeTrace(MASK_SHOT)
-        return tr.Entity == target
-    end
-
     local function IsHidden(ply)
         for _, p in PlayerIterator() do
             if ply == p then continue end
+            if not p:Alive() or p:IsSpec() then continue end
 
             -- Check IsOnScreen first because math is more efficient then sending traces this often
-            if p:IsOnScreen(ply, 0.35) and IsTargetInView(p, ply) then
+            if p:IsOnScreen(ply, 0.35) and p:IsLineOfSightClear(ply) then
                 return false
             end
         end

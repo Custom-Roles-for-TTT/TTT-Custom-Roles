@@ -24,6 +24,7 @@ CreateConVar("ttt_phantom_weaker_each_respawn", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_phantom_announce_death", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_phantom_killer_footstep_time", "0", FCVAR_REPLICATED, "The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable", 0, 60)
 CreateConVar("ttt_phantom_respawn", "1", FCVAR_REPLICATED, "Whether the phantom should respawn when their killer is killed", 0, 1)
+CreateConVar("ttt_phantom_respawn_limit", "0", FCVAR_REPLICATED, "The amount of times a phantom can respawn. Set to 0 to have no limit", 0, 20)
 
 ROLE_CONVARS[ROLE_PHANTOM] = {}
 table.insert(ROLE_CONVARS[ROLE_PHANTOM], {

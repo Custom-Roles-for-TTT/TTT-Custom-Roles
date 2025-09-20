@@ -37,6 +37,9 @@ hook.Add("Initialize", "Vampire_Translations_Initialize", function()
     LANG.AddToLanguage("english", "vam_fangs_kill", "KILL")
     LANG.AddToLanguage("english", "vam_fangs_killing", "KILLING")
 
+    -- Radio
+    LANG.AddToLanguage("english", "radio_vam_fade", "{vampire} Fade")
+
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_vampire", "Can drain players and bodies of blood to heal, leaving only a pile of bones behind as evidence.")
     LANG.AddToLanguage("english", "cheatsheet_desc_vampire_no_bones", "Can drain players and bodies of blood to heal, leaving behind no evidence.")

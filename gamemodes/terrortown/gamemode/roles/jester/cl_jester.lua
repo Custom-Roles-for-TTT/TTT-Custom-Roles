@@ -20,6 +20,9 @@ hook.Add("Initialize", "Jester_Translations_Initialize", function()
     -- Scoring
     LANG.AddToLanguage("english", "score_jester_killedby", "Killed by")
 
+    -- Radio
+    LANG.AddToLanguage("english", "radio_jes_celebrate", "{jester} Celebrate")
+
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_jester", "Wins the round if they can get another player to kill them.")
 

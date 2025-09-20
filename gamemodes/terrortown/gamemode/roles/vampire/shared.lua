@@ -239,6 +239,18 @@ hook.Add("Initialize", "Vampire_Shared_Initialize", function()
 end)
 hook.Add("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
     InitializeEquipment()
+
+    -- Add radio sounds
+    if not TRADIO.Sounds.vamfade and util.CanRoleSpawn(ROLE_VAMPIRE) then
+        TRADIO.AddNewSound("vamfade", {
+            name = "radio_vam_fade",
+            name_params = { vampire = ROLE_STRINGS[ROLE_VAMPIRE] },
+            sound = { Sound("weapons/ttt/fade.wav"), Sound("weapons/ttt/unfade.wav") },
+            serial = true,
+            delay = { 2, 4 },
+            ampl = 110
+        })
+    end
 end)
 
 hook.Add("TTTUpdateRoleState", "Vampire_TTTUpdateRoleState", function()

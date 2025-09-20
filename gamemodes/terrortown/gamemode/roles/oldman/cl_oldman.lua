@@ -19,6 +19,9 @@ hook.Add("Initialize", "OldMan_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "ev_win_oldman", "The {role} has somehow survived and also won the round!")
 
+    -- Radio
+    LANG.AddToLanguage("english", "radio_old_ramble", "{oldman} Ramble")
+
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_oldman", "Has barely any health and must survive until the end of the round to win.")
 

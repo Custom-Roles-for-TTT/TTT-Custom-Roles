@@ -4,6 +4,7 @@ local table = table
 local util = util
 
 local MathAbs = math.abs
+local MathMin = math.min
 local MathMax = math.max
 
 local TASK = {}
@@ -47,6 +48,7 @@ if SERVER then
     TASK.OnTaskAssigned = function(ply)
         local sid64 = ply:SteamID64()
 
+        ply.Task_Kill360LastTick = CurTime()
         ply.Task_Kill360LastAngle = ply:GetAimVector():Angle().y
         ply.Task_Kill360RotationDecay = 0
         ply.Task_Kill360RotationClockwise = 0
@@ -62,7 +64,15 @@ if SERVER then
             end
         end)
 
+        local rotationDecayThreshold = 90 -- The Taskmaster needs to be turning at least 90 degrees per second to avoid rotation decay
+        local rotationDecayMax = 120 -- Rotation will at most decay at a rate of 120 degrees per second
+        local rotationDecayIncrement = 30 -- Rotation decay will build up at a rate of 30 degrees per second while not spinning
+        local rotationDecayDecrement = 60 -- Rotation decay will reduce at a rate of 60 degrees per second while spinning
+
         hook.Add("Think", "Taskmaster_Kill360_Think_" ..sid64, function()
+            local tickLength = CurTime() - ply.Task_Kill360LastTick
+            ply.Task_Kill360LastTick = CurTime()
+
             local angle = ply:GetAimVector():Angle().y
             local angleDiff = angle - ply.Task_Kill360LastAngle
             while angleDiff > 180 do
@@ -76,10 +86,10 @@ if SERVER then
             if ply.Task_Kill360Start and CurTime() < ply.Task_Kill360Start + taskmaster_kill360_time:GetInt() then return end
 
             -- If the player is turning fast enough quickly decrease the decay value, otherwise slowly increase it
-            if MathAbs(angleDiff) > 5 then
-                ply.Task_Kill360RotationDecay = MathMax(ply.Task_Kill360RotationDecay - 0.3, 0);
+            if MathAbs(angleDiff) > rotationDecayThreshold * tickLength then
+                ply.Task_Kill360RotationDecay = MathMax(ply.Task_Kill360RotationDecay - (rotationDecayDecrement * tickLength), 0);
             else
-                ply.Task_Kill360RotationDecay = MathMax(ply.Task_Kill360RotationDecay + 0.015, 1.5);
+                ply.Task_Kill360RotationDecay = MathMin(ply.Task_Kill360RotationDecay + (rotationDecayIncrement * tickLength), rotationDecayMax * tickLength);
             end
             ply.Task_Kill360RotationClockwise = MathMax(ply.Task_Kill360RotationClockwise + angleDiff - ply.Task_Kill360RotationDecay, 0)
             ply.Task_Kill360RotationCounterClockwise = MathMax(ply.Task_Kill360RotationCounterClockwise - angleDiff - ply.Task_Kill360RotationDecay, 0)
@@ -114,6 +124,7 @@ if SERVER then
     TASK.OnTaskRemoved = function(ply)
         ply:ClearProperty("Task_Kill360Start", ply)
         ply:ClearProperty("Task_Kill360Progress", ply)
+        ply.Task_Kill360LastTick = nil
         ply.Task_Kill360LastAngle = nil
         ply.Task_Kill360RotationDecay = nil
         ply.Task_Kill360RotationClockwise = nil

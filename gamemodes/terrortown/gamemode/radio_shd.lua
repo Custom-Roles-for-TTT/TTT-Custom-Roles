@@ -10,6 +10,7 @@ TRADIO = TRADIO or {}
 -- or how the sound is played on the server:
 --
 -- name: The name of the sound shown in the T menu. Can be localized.
+-- name_params: The parameters to use when localizing the name, if any.
 -- sound: The sound to be played, or a table of sounds to pick from randomly.
 -- serial: If true, play through the sound table in sequential order instead of randomly.
 -- times: The number of times to repeat the sound. If set to a table, randomizes the number of times within the range {min, max}.
@@ -65,7 +66,7 @@ TRADIO.Sounds = {
         name = "radio_button_heal",
         sound = Sound("items/medshot4.wav"),
         delay = 2,
-        times = {4, 8}
+        times = {3, 5}
     },
 
     -- Serial Sounds
@@ -104,7 +105,7 @@ TRADIO.Sounds = {
     -- Gun Sounds
     shotgun = {
         name = "radio_button_shotgun",
-        sound = Sound( "Weapon_XM1014.Single" ),
+        sound = Sound("Weapon_XM1014.Single"),
         delay = {0.8, 1.6},
         times = {1, 3},
         ampl = 90
@@ -112,7 +113,7 @@ TRADIO.Sounds = {
 
     pistol = {
         name = "radio_button_pistol",
-        sound = Sound( "Weapon_FiveSeven.Single" ),
+        sound = Sound("Weapon_FiveSeven.Single"),
         delay = {0.4, 0.8},
         times = {2, 4},
         ampl = 90
@@ -120,7 +121,7 @@ TRADIO.Sounds = {
 
     mac10 = {
         name = "radio_button_mac10",
-        sound = Sound( "Weapon_mac10.Single" ),
+        sound = Sound("Weapon_mac10.Single"),
         delay = 0.065,
         times = {5, 10},
         ampl = 90
@@ -128,7 +129,7 @@ TRADIO.Sounds = {
 
     deagle = {
         name = "radio_button_deagle",
-        sound = Sound( "Weapon_Deagle.Single" ),
+        sound = Sound("Weapon_Deagle.Single"),
         delay = {0.6, 1.2},
         times = {1, 3},
         ampl = 90
@@ -136,7 +137,7 @@ TRADIO.Sounds = {
 
     m16 = {
         name = "radio_button_m16",
-        sound = Sound( "Weapon_M4A1.Single" ),
+        sound = Sound("Weapon_M4A1.Single"),
         delay = 0.2,
         times = {1, 5},
         ampl = 90
@@ -144,13 +145,13 @@ TRADIO.Sounds = {
 
     rifle = {
         name = "radio_button_rifle",
-        sound = Sound( "weapons/scout/scout_fire-1.wav" ),
+        sound = Sound("weapons/scout/scout_fire-1.wav"),
         ampl = 80
     },
 
     huge = {
         name = "radio_button_huge",
-        sound = Sound( "Weapon_m249.Single" ),
+        sound = Sound("Weapon_m249.Single"),
         delay = 0.055,
         times = {6, 12},
         ampl = 90
