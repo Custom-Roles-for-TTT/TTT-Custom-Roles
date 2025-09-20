@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.3.6 (Beta)
-**Released:**
+**Released: September 20th, 2025**
 
 ### Additions
 - Added completed task count to Taskmaster on the round summary screen
@@ -21,7 +21,7 @@
 - Ported "TTT: Fixed font warnings (no visual changes)"
 
 ### Developer
-- Added ability to use parameters when defining custom radio sound names
+- Ported "TTT: Added ability to use parameters when defining custom radio sound names"
 
 ## 2.3.5 (Beta)
 **Released: September 5th, 2025**
