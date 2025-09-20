@@ -199,6 +199,7 @@ function plymeta:CompleteTask(taskId)
         task.OnTaskComplete(self)
         table.insert(self.TaskmasterCompletedTasks, taskId)
         self:SetProperty("TaskmasterCompletedTasks", self.TaskmasterCompletedTasks, self)
+        self:SetProperty("TaskmasterCompleteCount", self.TaskmasterCompleteCount + 1)
 
         net.Start("TTT_TaskmasterTaskComplete")
         net.Send(self)
@@ -238,12 +239,14 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_TASKMASTER] = function(ply)
     ply:SetProperty("TaskmasterMiscTasks", {}, ply)
     ply:SetProperty("TaskmasterCompletedTasks", {}, ply)
     ply:SetProperty("TaskmasterRerolledTasks", {}, ply)
+    ply:SetProperty("TaskmasterCompleteCount", 0)
     for _ = 1, taskmaster_kill_tasks:GetInt() do
         ply:AssignTask(true)
     end
     for _ = 1, taskmaster_misc_tasks:GetInt() do
         ply:AssignTask(false)
     end
+    ply:SetProperty("TaskmasterTotalCount", #ply.TaskmasterMiscTasks + #ply.TaskmasterKillTasks)
 end
 
 ----------------
@@ -342,6 +345,8 @@ local function CleanupTasks(ply)
     ply:ClearProperty("TaskmasterMiscTasks", ply)
     ply:ClearProperty("TaskmasterCompletedTasks", ply)
     ply:ClearProperty("TaskmasterRerolledTasks", ply)
+    ply:ClearProperty("TaskmasterCompleteCount")
+    ply:ClearProperty("TaskmasterTotalCount")
     ply:ClearProperty("TaskmasterShouldWin")
     ply.TaskmasterCompletedButBlocked = nil
 end
