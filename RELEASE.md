@@ -1,5 +1,13 @@
 # Release Notes
 
+## 2.4.0
+**Released: September 20th, 2025**\
+Includes beta updates [2.3.1](#231-beta) to [2.3.6](#236-beta).
+
+### Fixes
+- Fixed brief clientside errors when Taskmaster's role is switched to something else
+- Fixed error when the Taskmaster uses the crowbar after completing the "Swing Crowbar" task
+
 ## 2.3.6 (Beta)
 **Released: September 20th, 2025**
 
