@@ -10,6 +10,7 @@ Includes beta updates [2.3.1](#231-beta) to [2.3.6](#236-beta).
 - Fixed all Taskmaster timer-based tasks not working if there is more than one Taskmaster
 - Fixed Taskmaster's "Crouch Near Body" task not working when there were multiple bodies on the map
 - Fixed Taskmaster's `TASK.OnTaskRemoved` and `TASK.OnTaskComplete` not always being called when the role state was cleaned up (at the end of a round, when their role is changed, etc.)
+  - This caused odd issues like receiving notifications from Taskmaster tasks even when the player was no longer a Taskmaster
 
 ## 2.3.6 (Beta)
 **Released: September 20th, 2025**
