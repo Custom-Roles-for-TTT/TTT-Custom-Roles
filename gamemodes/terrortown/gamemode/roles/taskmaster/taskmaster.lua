@@ -66,7 +66,7 @@ function plymeta:AssignTask(isKillTask, index)
         if taskList[id].CanAssignTask(self) then
             local blockedByFeature = false
             for _, feature in pairs(taskList[id].RequiredFeatures) do
-                for _, killTaskId in pairs(self.TaskmasterKillTasks) do
+                for _, killTaskId in ipairs(self.TaskmasterKillTasks) do
                     if not table.HasValue(self.TaskmasterCompletedTasks, killTaskId) and not table.HasValue(self.TaskmasterRerolledTasks, killTaskId) then
                         if table.HasValue(TASKMASTER.KillTasks[killTaskId].RequiredFeatures, feature) then
                             blockedByFeature = true
@@ -76,7 +76,7 @@ function plymeta:AssignTask(isKillTask, index)
                 end
                 if blockedByFeature then break end
 
-                for _, miscTaskId in pairs(self.TaskmasterMiscTasks) do
+                for _, miscTaskId in ipairs(self.TaskmasterMiscTasks) do
                     if not table.HasValue(self.TaskmasterCompletedTasks, miscTaskId) and not table.HasValue(self.TaskmasterRerolledTasks, miscTaskId) then
                         if table.HasValue(TASKMASTER.MiscTasks[miscTaskId].RequiredFeatures, feature) then
                             blockedByFeature = true
@@ -330,13 +330,17 @@ end)
 
 local function CleanupTasks(ply)
     if ply.TaskmasterKillTasks then
-        for _, id in pairs(ply.TaskmasterKillTasks) do
+        -- Loop backwards so removing something from this list doesn't mess us up
+        for idx = #ply.TaskmasterKillTasks, 1, -1 do
+            local id = ply.TaskmasterKillTasks[idx]
             ply:RemoveTask(id)
         end
     end
 
     if ply.TaskmasterMiscTasks then
-        for _, id in pairs(ply.TaskmasterMiscTasks) do
+        -- Loop backwards so removing something from this list doesn't mess us up
+        for idx = #ply.TaskmasterMiscTasks, 1, -1 do
+            local id = ply.TaskmasterMiscTasks[idx]
             ply:RemoveTask(id)
         end
     end
