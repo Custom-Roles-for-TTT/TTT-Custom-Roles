@@ -106,7 +106,21 @@ if SERVER then
             if not IsPlayer(ply) then return end
             if not ply:Alive() or ply:IsSpec() or not ply:Crouching() then
                 ply:ClearProperty("Task_CrouchNearBodyStart", ply)
+                ply.Task_CrouchNearBodyTarget = nil
                 return
+            end
+
+            -- If we already have a valid target, don't look for others
+            if IsValid(ply.Task_CrouchNearBodyTarget) then
+                local corpse = ply.Task_CrouchNearBodyTarget
+                -- Within range
+                if ply:GetPos():DistToSqr(corpse:GetPos()) <= rangeSqr then
+                    -- Long enough
+                    if CurTime() > ply.Task_CrouchNearBodyStart + time then
+                        ply:CompleteTask(TASK.id)
+                    end
+                    return
+                end
             end
 
             for _, corpse in ipairs(EntsFindByClass("prop_ragdoll")) do
@@ -119,13 +133,15 @@ if SERVER then
                     -- Just starting
                     if not ply.Task_CrouchNearBodyStart then
                         ply:SetProperty("Task_CrouchNearBodyStart", CurTime(), ply)
-                    -- Long enough
-                    elseif CurTime() > ply.Task_CrouchNearBodyStart + time then
-                        ply:CompleteTask(TASK.id)
+                        ply.Task_CrouchNearBodyTarget = corpse
                     end
+
+                    -- Don't look at other bodies if we already found one within range
+                    return
                 -- Not within range
                 else
                     ply:ClearProperty("Task_CrouchNearBodyStart", ply)
+                    ply.Task_CrouchNearBodyTarget = nil
                 end
             end
         end)
@@ -138,6 +154,7 @@ if SERVER then
         timer.Remove("TTTTaskmasterCrouchNearBodyTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_CrouchNearBodyStart", ply)
+        ply.Task_CrouchNearBodyTarget = nil
 
         net.Start("TTT_Taskmaster_CrouchNearBody_Cleanup")
         net.Send(ply)

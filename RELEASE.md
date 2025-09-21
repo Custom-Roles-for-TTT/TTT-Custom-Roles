@@ -8,6 +8,7 @@ Includes beta updates [2.3.1](#231-beta) to [2.3.6](#236-beta).
 - Fixed brief clientside errors when Taskmaster's role is switched to something else
 - Fixed error when the Taskmaster uses the crowbar after completing the "Swing Crowbar" task
 - Fixed all Taskmaster timer-based tasks not working if there is more than one Taskmaster
+- Fixed Taskmaster's "Crouch Near Body" task not working when there were multiple bodies on the map
 
 ## 2.3.6 (Beta)
 **Released: September 20th, 2025**
