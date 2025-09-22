@@ -85,7 +85,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local time = taskmaster_staylower_time:GetInt()
-        timer.Create("TTTTaskmasterStayLowerTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterStayLowerTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
             if not ply:Alive() or ply:IsSpec() then
                 ply:ClearProperty("Task_StayLowerStart", ply)
@@ -112,7 +112,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterStayLowerTimer")
+        timer.Remove("TTTTaskmasterStayLowerTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_StayLowerStart", ply)
 

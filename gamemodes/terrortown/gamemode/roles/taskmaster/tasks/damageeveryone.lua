@@ -70,7 +70,7 @@ if SERVER then
             ply:SetProperty("Task_DamageEveryoneDamaged", damaged, ply)
         end)
 
-        timer.Create("TTTTaskmasterDamageEveryoneTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterDamageEveryoneTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
             local damaged = ply.Task_DamageEveryoneDamaged or {}
@@ -91,7 +91,7 @@ if SERVER then
 
     TASK.OnTaskRemoved = function(ply)
         hook.Remove("PostEntityTakeDamage", "Taskmaster_DamageEveryone_PostEntityTakeDamage_" .. ply:SteamID64())
-        timer.Remove("TTTTaskmasterDamageEveryoneTimer")
+        timer.Remove("TTTTaskmasterDamageEveryoneTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_DamageEveryoneDamaged", ply)
 

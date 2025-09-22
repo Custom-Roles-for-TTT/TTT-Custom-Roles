@@ -81,7 +81,7 @@ if SERVER then
         local range = taskmaster_stayinarea_range:GetInt() * UNITS_PER_METER
         local rangeSqr = range * range
         local time = taskmaster_stayinarea_time:GetInt()
-        timer.Create("TTTTaskmasterStayInAreaTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterStayInAreaTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
             -- Within range
@@ -104,7 +104,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterStayInAreaTimer")
+        timer.Remove("TTTTaskmasterStayInAreaTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_StayInAreaLocation", ply)
         ply:ClearProperty("Task_StayInAreaStart", ply)

@@ -89,8 +89,6 @@ if SERVER then
     end
 
     TASK.OnTaskComplete = function(ply)
-        timer.Remove("TTTTaskmasterGetPlayerKilledTimer")
-
         hook.Remove("PlayerDeath", "Taskmaster_GetPlayerKilled_PlayerDeath_" .. ply:SteamID64())
         hook.Remove("PlayerDisconnected", "Taskmaster_GetPlayerKilled_PlayerDisconnected_" .. ply:SteamID64())
 

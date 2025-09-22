@@ -66,7 +66,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local time = taskmaster_holstered_time:GetInt()
-        timer.Create("TTTTaskmasterHolsteredTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterHolsteredTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
             if not ply:Alive() or ply:IsSpec() then
                 ply:ClearProperty("Task_HolsteredStart", ply)
@@ -93,7 +93,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterHolsteredTimer")
+        timer.Remove("TTTTaskmasterHolsteredTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_HolsteredStart", ply)
 
