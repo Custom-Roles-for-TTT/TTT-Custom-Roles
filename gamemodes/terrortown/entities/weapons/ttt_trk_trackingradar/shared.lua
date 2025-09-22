@@ -32,7 +32,8 @@ local function InitializeEquipment()
                 type = "item_active",
                 material = "vgui/ttt/icon_track_radar",
                 name = "item_track_radar",
-                desc = "item_track_radar_desc"
+                desc = "item_track_radar_desc",
+                norandom = true
             })
         end
     end

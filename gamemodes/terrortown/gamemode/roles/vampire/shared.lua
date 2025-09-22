@@ -14,6 +14,11 @@ VAMPIRE_THRALL_FF_MODE_NONE = 0
 VAMPIRE_THRALL_FF_MODE_REFLECT = 1
 VAMPIRE_THRALL_FF_MODE_IMMUNE = 2
 
+-- Vampire overheal mode
+VAMPIRE_OVERHEAL_MODE_HEALTH = 0
+VAMPIRE_OVERHEAL_MODE_MAX_HEALTH = 1
+VAMPIRE_OVERHEAL_MODE_BOTH = 2
+
 -- Initialize role features
 ROLE_CAN_SEE_JESTERS[ROLE_VAMPIRE] = true
 ROLE_CAN_SEE_MIA[ROLE_VAMPIRE] = true
@@ -128,6 +133,12 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_fang_overheal_mode",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"Health", "Max health", "Both"},
+    isNumeric = true
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_fang_overheal_living",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
@@ -228,6 +239,18 @@ hook.Add("Initialize", "Vampire_Shared_Initialize", function()
 end)
 hook.Add("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
     InitializeEquipment()
+
+    -- Add radio sounds
+    if not TRADIO.Sounds.vamfade and util.CanRoleSpawn(ROLE_VAMPIRE) then
+        TRADIO.AddNewSound("vamfade", {
+            name = "radio_vam_fade",
+            name_params = { vampire = ROLE_STRINGS[ROLE_VAMPIRE] },
+            sound = { Sound("weapons/ttt/fade.wav"), Sound("weapons/ttt/unfade.wav") },
+            serial = true,
+            delay = { 2, 4 },
+            ampl = 110
+        })
+    end
 end)
 
 hook.Add("TTTUpdateRoleState", "Vampire_TTTUpdateRoleState", function()

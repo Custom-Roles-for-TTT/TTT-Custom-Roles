@@ -35,6 +35,7 @@ end)
 -- ROLE FEATURES --
 -------------------
 
+local particleVelocity = Vector(0, 0, 20)
 hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
     if ply:GetDisplayedRole() == ROLE_PALADIN and ply:GetObserverMode() == OBS_MODE_NONE then
         if not ply.AuraEmitter then ply.AuraEmitter = ParticleEmitter(ply:GetPos()) end
@@ -50,7 +51,7 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
             local radius = paladin_aura_radius:GetFloat() * UNITS_PER_METER
             local vec = Vector(MathSin(ply.AuraDir) * radius, MathCos(ply.AuraDir) * radius, 10)
             local particle = ply.AuraEmitter:Add("particle/shield.vmt", ply:GetPos() + vec)
-            particle:SetVelocity(Vector(0, 0, 20))
+            particle:SetVelocity(particleVelocity)
             particle:SetDieTime(1)
             particle:SetStartAlpha(200)
             particle:SetEndAlpha(0)

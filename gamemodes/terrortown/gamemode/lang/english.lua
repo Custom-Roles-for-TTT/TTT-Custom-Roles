@@ -150,7 +150,10 @@ L.radio_button_huge = "H.U.G.E burst"
 L.radio_button_c4 = "C4 beeping"
 L.radio_button_burn = "Burning"
 L.radio_button_steps = "Footsteps"
-
+L.radio_button_glock = "Glock shots"
+L.radio_button_sipist = "Silenced shots"
+L.radio_button_tele = "Teleport"
+L.radio_button_heal = "Healing"
 
 -- Intro screen shown after joining
 L.intro_help = "If you're new to the game, press F1 for instructions!"
@@ -397,6 +400,7 @@ L.c4_arm_seconds = "Seconds until detonation:"
 L.c4_arm_attempts = "In disarm attempts, {num} of the 6 wires will cause instant detonation when cut."
 
 L.c4_remove_title = "Removal"
+L.c4_defuser_disarm = "Use Defuser"
 L.c4_remove_pickup = "Pick up C4"
 L.c4_remove_destroy1 = "Destroy C4"
 L.c4_remove_destroy2 = "Confirm: destroy"
@@ -439,10 +443,11 @@ your DNA.]]
 
 -- Defuser
 L.defuser_name = "Defuser"
-L.defuser_help = "{primaryfire} defuses targeted C4."
+L.defuser_help = "{primaryfire} defuses targeted device."
 
 L.defuser_desc = [[
-Instantly defuse a C4 explosive.
+Instantly defuse an explosive or
+disable a harmful device.
 
 Unlimited uses. C4 will be easier to
 notice if you carry this.]]
@@ -1262,3 +1267,7 @@ L.roleblocks_delete_group = "Delete group"
 
 -- Player name disguising
 L.player_name_disguised = "{name} (Disguised as {disguise})"
+
+-- Cheat Sheet
+L.cheatsheet_current_role = "{role} (CURRENT ROLE)"
+L.cheatsheet_rolepack = "Role Pack: {name}"

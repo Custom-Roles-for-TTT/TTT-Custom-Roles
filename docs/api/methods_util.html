@@ -17,6 +17,18 @@
         <p>Utility methods created to help with various common scenarios</p>
     </div>
     <div class="contentbody panel">
+        <h3><a id="utilbitsrequirednum-signed" href="#utilbitsrequirednum-signed">util.BitsRequired(num, signed)</a></h3>
+        <p>
+            Returns how many bits are required to transmit the given number over the network.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.3.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>num</em> - The number being transmitted</li>
+            <li><em>signed</em> - Whether the number being transmitted is signed <em>(Added in 2.3.5)</em></li>
+        </ul>
+
         <h3><a id="utilburnragdollrag-burn_time_scorch" href="#utilburnragdollrag-burn_time_scorch">util.BurnRagdoll(rag, burn_time, scorch)</a></h3>
         <p>
             Burns a player ragdoll, shows scorch marks, and automatically destroys the ragdoll unless it's been extinguished by water.<br>
@@ -100,6 +112,13 @@
             <li><em>ext</em> - The file extension to use in the role icon path</li>
             <li><em>file_name_override</em> - The file name to use, appended to <code>{typ}_</code> when the path is built (Optional, defaults to the <code>{role_str}</code> value)</li>
         </ul>
+
+        <h3><a id="utilrolebits" href="#utilrolebits">util.RoleBits()</a></h3>
+        <p>
+            Returns how many bits are required to transmit a role ID over the network.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.3.3
+        </p>
     </div>
     <div class="footerpadding panel"></div>
 </body>

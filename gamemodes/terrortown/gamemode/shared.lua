@@ -24,8 +24,8 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.3.1"
-CR_BETA = false
+CR_VERSION = "2.4.0"
+CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
 function CRVersion(version)
@@ -184,8 +184,9 @@ ROLE_EVILTWIN = 48
 ROLE_PLAGUEMASTER = 49
 ROLE_ILLUSIONIST = 50
 ROLE_CANNIBAL = 51
+ROLE_TASKMASTER = 52
 
-ROLE_MAX = 51
+ROLE_MAX = 52
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(tbl, roles)
@@ -222,7 +223,7 @@ JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE, ROLE_GUESSER, ROLE_CANNIBAL})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST, ROLE_HIVEMIND, ROLE_PLAGUEMASTER})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST, ROLE_HIVEMIND, ROLE_PLAGUEMASTER, ROLE_TASKMASTER})
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
@@ -487,7 +488,7 @@ function CreateShopConVars(role)
     CreateCreditConVar(role)
 
     CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
-    CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring, 0, 1)
 
     local hassync = (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or ROLE_HAS_SHOP_SYNC[role]
     if hassync then
@@ -593,7 +594,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_EVILTWIN] = "eviltwin",
     [ROLE_PLAGUEMASTER] = "plaguemaster",
     [ROLE_ILLUSIONIST] = "illusionist",
-    [ROLE_CANNIBAL] = "cannibal"
+    [ROLE_CANNIBAL] = "cannibal",
+    [ROLE_TASKMASTER] = "taskmaster"
 }
 
 ROLE_STRINGS = {
@@ -648,7 +650,8 @@ ROLE_STRINGS = {
     [ROLE_EVILTWIN] = "Evil Twin",
     [ROLE_PLAGUEMASTER] = "Plaguemaster",
     [ROLE_ILLUSIONIST] = "Illusionist",
-    [ROLE_CANNIBAL] = "Cannibal"
+    [ROLE_CANNIBAL] = "Cannibal",
+    [ROLE_TASKMASTER] = "Taskmaster"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -703,7 +706,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_EVILTWIN] = "Evil Twins",
     [ROLE_PLAGUEMASTER] = "Plaguemasters",
     [ROLE_ILLUSIONIST] = "Illusionists",
-    [ROLE_CANNIBAL] = "Cannibals"
+    [ROLE_CANNIBAL] = "Cannibals",
+    [ROLE_TASKMASTER] = "Taskmasters"
 }
 
 ROLE_STRINGS_EXT = {
@@ -759,7 +763,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_EVILTWIN] = "an Evil Twin",
     [ROLE_PLAGUEMASTER] = "a Plaguemaster",
     [ROLE_ILLUSIONIST] = "an Illusionist",
-    [ROLE_CANNIBAL] = "a Cannibal"
+    [ROLE_CANNIBAL] = "a Cannibal",
+    [ROLE_TASKMASTER] = "a Taskmaster"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -815,7 +820,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_EVILTWIN] = "etw",
     [ROLE_PLAGUEMASTER] = "plm",
     [ROLE_ILLUSIONIST] = "ill",
-    [ROLE_CANNIBAL] = "can"
+    [ROLE_CANNIBAL] = "can",
+    [ROLE_TASKMASTER] = "tsk"
 }
 
 function StartsWithVowel(word)
@@ -939,12 +945,18 @@ ROLE_IS_ACTIVE = {}
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
 ROLE_IS_TARGETID_OVERRIDDEN = {}
 ROLE_IS_TARGET_HIGHLIGHTED = {}
+
 ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
+
 ROLE_SHOULD_ACT_LIKE_JESTER = {}
 ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE = {}
 ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
+
+ROLE_USES_SPECTATOR = {}
+
 ROLE_VICTIM_CHANGING_ROLE = {}
+
 ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
@@ -953,13 +965,6 @@ ROLE_CONVAR_TYPE_TEXT = 2
 ROLE_CONVAR_TYPE_DROPDOWN = 3
 
 function RegisterRole(tbl)
-    -- Unsigned 8-bit max
-    local maximum_role_count = (2^7) - 1
-    if ROLE_MAX == maximum_role_count then
-        error("Too many roles (more than " .. maximum_role_count .. ") have been defined.")
-        return
-    end
-
     if table.HasValue(ROLE_STRINGS_RAW, tbl.nameraw) then
         error("Attempting to define role with a duplicate raw name value: " .. tbl.nameraw)
         return
@@ -1091,6 +1096,10 @@ function RegisterRole(tbl)
 
     if type(tbl.blockshopconvars) == "boolean" then
         ROLE_BLOCK_SHOP_CONVARS[roleID] = tbl.blockshopconvars
+    end
+
+    if type(tbl.usesspectator) == "boolean" then
+        ROLE_USES_SPECTATOR[roleID] = tbl.usesspectator
     end
 
     -- Equipment
@@ -1397,8 +1406,9 @@ WIN_VINDICATOR = 18
 WIN_INFECTED = 19
 WIN_PLAGUEMASTER = 20
 WIN_CANNIBAL = 21
+WIN_TASKMASTER = 22
 
-WIN_MAX = WIN_MAX or 21
+WIN_MAX = WIN_MAX or 22
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
@@ -1497,6 +1507,8 @@ UNITS_PER_METER = 39.37
 UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
 UNITS_PER_SIX_METERS = UNITS_PER_METER * 6
 
+FEET_PER_METER = 3.28084
+
 -- Message queue modes
 MSG_PRINTBOTH = 1
 MSG_PRINTTALK = 3 -- Keep this the same value as HUD_PRINTTALK just in case
@@ -1541,6 +1553,7 @@ COLOR_CYAN = Color(0, 255, 255, 255)
 
 include("lang_shd.lua") -- uses some of util
 include("equip_items_shd.lua")
+include("radio_shd.lua")
 
 function DetectiveMode() return GetGlobalBool("ttt_detective", false) end
 function HasteMode() return GetGlobalBool("ttt_haste", false) end
@@ -1644,8 +1657,6 @@ function GM:Move(ply, mv)
 end
 
 function UpdateRoleWeaponState()
-    CallHook("TTTUpdateRoleState", nil)
-
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")
         net.Broadcast()
@@ -1673,6 +1684,8 @@ function UpdateRoleState()
             end
         end
     end
+
+    CallHook("TTTUpdateRoleState", nil)
 
     -- Update which weapons are available based on role state
     UpdateRoleWeaponState()

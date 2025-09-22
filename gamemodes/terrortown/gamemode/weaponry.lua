@@ -958,7 +958,7 @@ net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
     end
 
     local id = StringLower(net.ReadString())
-    local role = net.ReadInt(8)
+    local role = net.ReadInt(util.RoleBits())
     local includeSelected = net.ReadBool()
     local excludeSelected = net.ReadBool()
     local noRandomSelected = net.ReadBool()
@@ -1059,7 +1059,7 @@ net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
     -- Send list update to client
     net.Start("TTT_UpdateBuyableWeapons")
     net.WriteString(id)
-    net.WriteInt(role, 8)
+    net.WriteInt(role, util.RoleBits())
     net.WriteBool(includeSelected)
     net.WriteBool(excludeSelected)
     net.WriteBool(noRandomSelected)

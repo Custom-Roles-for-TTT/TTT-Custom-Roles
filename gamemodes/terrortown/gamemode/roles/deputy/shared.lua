@@ -51,7 +51,8 @@ local function InitializeEquipment()
                 type = "item_active",
                 material = mat_dir .. "icon_radar",
                 name = "item_radar",
-                desc = "item_radar_desc"
+                desc = "item_radar_desc",
+                norandom = true
             })
         end
     end

@@ -1,4 +1,5 @@
 local GetRawTranslation = LANG.GetRawTranslation
+local GetParamTranslation = LANG.GetParamTranslation
 local StringLower = string.lower
 local TableInsert = table.insert
 local TableSort = table.sort
@@ -9,6 +10,8 @@ local MathSin = math.sin
 
 local hotkey = CreateClientConVar("ttt_cheatsheat_hotkey", "h", true, false, "Hotkey for opening the cheat sheet")
 local panel
+
+local hide_role = GetConVar("ttt_hide_role")
 
 local function ClosePanel()
     panel:Close()
@@ -21,6 +24,10 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     if panel ~= nil then return end
 
     UpdateRoleColours()
+
+    if table.IsEmpty(ROLE_STARTING_TEAM) then
+        ply:PrintMessage(HUD_PRINTTALK, "Cheat sheet teams and colors may display incorrectly before the first round starts.")
+    end
 
     local function AddRolesFromTeam(tbl, team)
         local roles = {}
@@ -61,8 +68,14 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     local titleHeight       = 14
     local descriptionWidth  = 256
     local labelHeight       = 16
+    local rolePackHeight    = 32
     local scrollbarWidth    = 15
     local m                 = 5
+
+    local packName = GetConVar("ttt_role_pack"):GetString()
+    if #packName == 0 then
+        rolePackHeight = 0
+    end
 
     local w, h, detectivesHeight, innocentsHeight, traitorsHeight, jestersHeight, independentsHeight, monstersHeight
 
@@ -93,7 +106,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         monstersHeight      = MathMax((iconSize + m) * monsterRows, 0)
 
         w = (iconSize + descriptionWidth + (m * 3)) * columns
-        h = detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight + (labelHeight * labels) + m
+        h = rolePackHeight + detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight + (labelHeight * labels) + m
 
         if needsScrollbar then -- If we know we need a scrollbar then add it
             w = w + scrollbarWidth
@@ -125,9 +138,23 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     dbackground:SetPos(0, 0)
     dbackground:SetBackgroundColor(COLOR_GRAY)
 
+    if rolePackHeight > 0 then
+        local drolepackframe = vgui.Create("DPanel", dframe)
+        drolepackframe:SetSize(w, rolePackHeight)
+        drolepackframe:SetPos(0, 0)
+        drolepackframe:SetBackgroundColor(COLOR_GRAY)
+
+        local drolepack = vgui.Create("DLabel", drolepackframe)
+        drolepack:SetFont("TabLarge")
+        drolepack:SetText(GetParamTranslation("cheatsheet_rolepack", {name = packName}))
+        drolepack:SetContentAlignment(1)
+        drolepack:SetWidth(w)
+        drolepack:SetPos(m + 3, 3)
+    end
+
     local dlist = vgui.Create("DScrollPanel", dbackground)
     dlist:SetSize(w, h)
-    dlist:SetPos(0, 0)
+    dlist:SetPos(0, rolePackHeight)
 
     local dcanvas = dlist:GetCanvas()
 
@@ -146,6 +173,11 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
 
         local currentColumn = 0
         local currentRow = 0
+
+        local ply_role = ply:GetRole()
+        if hide_role:GetBool() then
+            ply_role = ROLE_NONE
+        end
 
         for _, role in pairs(roleTable) do
             local icon = vgui.Create("SimpleIcon", dteam)
@@ -170,7 +202,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
                 ClosePanel()
             end
 
-            if role == ply:GetRole() and ply:IsActive() then
+            if role == ply_role and ply:IsActive() then
                 local r1, g1, b1, _ = color:Unpack()
                 local r2, g2, b2, _ = dark_color:Unpack()
                 local rd = r2 - r1
@@ -187,8 +219,8 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
             title:SetPos(iconSize + m + (currentColumn * (iconSize + descriptionWidth + (m * 2))), currentRow * (iconSize + m))
             title:SetSize(descriptionWidth, titleHeight)
             title:SetContentAlignment(7)
-            if role == ply:GetRole() and ply:IsActive() then
-                title:SetText(ROLE_STRINGS[role] .. " (CURRENT ROLE)")
+            if role == ply_role and ply:IsActive() then
+                title:SetText(GetParamTranslation("cheatsheet_current_role", {role = ROLE_STRINGS[role]}))
             else
                 title:SetText(ROLE_STRINGS[role])
             end

@@ -24,8 +24,8 @@ CreateConVar("ttt_beggar_notify_killer", "1", FCVAR_NONE, "Whether to notify a b
 CreateConVar("ttt_beggar_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a beggar is killed", 0, 1)
 CreateConVar("ttt_beggar_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a beggar is a killed", 0, 1)
 
-local beggar_scan_float_time = CreateConVar("ttt_beggar_scan_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight", 0, 60)
-local beggar_scan_cooldown = CreateConVar("ttt_beggar_scan_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target", 0, 60)
+local beggar_scan_float_time = CreateConVar("ttt_beggar_scan_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the beggar's scanner to lose its target without line of sight", 0, 60)
+local beggar_scan_cooldown = CreateConVar("ttt_beggar_scan_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing its target", 0, 60)
 local beggar_scan_distance = CreateConVar("ttt_beggar_scan_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
 local beggar_ignore_empty_weapons = CreateConVar("ttt_beggar_ignore_empty_weapons", "1", FCVAR_NONE, "Whether the beggar should not change teams if they are given a weapon with no ammo", 0, 1)
 local beggar_ignore_empty_weapons_warning = CreateConVar("ttt_beggar_ignore_empty_weapons_warning", "1", FCVAR_NONE, "Whether the beggar should receive a chat message warning on receiving an empty weapon", 0, 1)

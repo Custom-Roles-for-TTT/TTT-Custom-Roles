@@ -58,3 +58,14 @@ end
 ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[ROLE_OLDMAN] = function()
     return not oldman_hide_when_active:GetBool()
 end
+
+hook.Add("TTTPrepareRound", "OldMan_Shared_TTTPrepareRound", function()
+    -- Add radio sounds
+    if not TRADIO.Sounds.oldramble and util.CanRoleSpawn(ROLE_OLDMAN) then
+        TRADIO.AddNewSound("oldramble", {
+            name = "radio_old_ramble",
+            name_params = { oldman = ROLE_STRINGS[ROLE_OLDMAN] },
+            sound = "oldmanramble.wav"
+        })
+    end
+end)

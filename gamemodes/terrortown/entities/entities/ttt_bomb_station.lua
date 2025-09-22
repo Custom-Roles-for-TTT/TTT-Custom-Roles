@@ -28,6 +28,7 @@ ENT.ExplosionRange = 400
 ENT.ExplosionTime = 1
 
 ENT.Triggered = false
+ENT.Defusable = true
 
 AccessorFuncDT(ENT, "StoredHealth", "StoredHealth")
 
@@ -42,6 +43,9 @@ local explodesound = Sound("c4.explode")
 function ENT:Explode()
     if not IsValid(self) then return end
 
+    -- Mark this as triggered so we don't have an infinite explosion loop from self destruction
+    self.Triggered = true
+
     local pos = self:GetPos()
     local radius = self.ExplosionRange
     local damage = self.ExplosionDamage
@@ -51,7 +55,7 @@ function ENT:Explode()
         damage = 0
     end
 
-    util.BlastDamage(self, self:GetPlacer(), pos, radius, damage)
+    util.BlastDamage(self, placer, pos, radius, damage)
     local effect = EffectData()
         effect:SetStart(pos)
         effect:SetOrigin(pos)
@@ -181,26 +185,45 @@ function ENT:Use(ply)
     end
 end
 
-function ENT:OnTakeDamage(dmginfo)
-    local att = dmginfo:GetAttacker()
-    local placer = self:GetPlacer()
-    if att == placer then return end
+if SERVER then
+    local function DoDestroy(station, explode)
+        util.EquipmentDestroyed(station:GetPos())
 
-    self:TakePhysicsDamage(dmginfo)
+        if explode then
+            station:Explode()
+        else
+            station:Remove()
+        end
 
-    self:SetHealth(self:Health() - dmginfo:GetDamage())
-
-    if IsPlayer(att) then
-        DamageLog(Format("DMG: \t %s [%s] damaged bomb station [%s] for %d dmg", att:Nick(), ROLE_STRINGS[att:GetRole()], IsPlayer(placer) and placer:Nick() or "<disconnected>", dmginfo:GetDamage()))
+        if IsValid(station:GetPlacer()) then
+            LANG.Msg(station:GetPlacer(), "bstation_broken")
+        end
     end
 
-    if self:Health() <= 0 then
-        self:Remove()
+    function ENT:Disarm()
+        DoDestroy(self)
+    end
 
-        util.EquipmentDestroyed(self:GetPos())
+    local bombstation_explode_on_destroy = CreateConVar("ttt_bombstation_explode_on_destroy", "1", FCVAR_NONE, "Whether a bomb station explodes when it is destroyed", 0, 1)
+    local damage_own_bombstation = CreateConVar("ttt_damage_own_bombstation", "0")
 
-        if IsValid(placer) then
-            LANG.Msg(placer, "bstation_broken")
+    function ENT:OnTakeDamage(dmginfo)
+        if self.Triggered then return end
+
+        local att = dmginfo:GetAttacker()
+        local placer = self:GetPlacer()
+        if att == placer and not damage_own_bombstation:GetBool() then return end
+
+        self:TakePhysicsDamage(dmginfo)
+
+        self:SetHealth(self:Health() - dmginfo:GetDamage())
+
+        if IsPlayer(att) then
+            DamageLog(Format("DMG: \t %s [%s] damaged bomb station [%s] for %d dmg", att:Nick(), ROLE_STRINGS[att:GetRole()], IsPlayer(placer) and placer:Nick() or "<disconnected>", dmginfo:GetDamage()))
+        end
+
+        if self:Health() <= 0 then
+            DoDestroy(self, bombstation_explode_on_destroy:GetBool())
         end
     end
 end

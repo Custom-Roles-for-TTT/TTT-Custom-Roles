@@ -158,7 +158,7 @@ local function GetPlayerFromBody(body)
         ply = player.GetBySteamID64(body.sid64)
     elseif body.sid == "BOT" then
         ply = player.GetByUniqueID(body.uqid)
-    else
+    elseif body.sid then
         ply = player.GetBySteamID(body.sid)
     end
 
@@ -206,7 +206,7 @@ function SWEP:PrimaryAttack()
             if hitEnt:IsPlayer() or hitEnt:GetClass() == "prop_ragdoll" then
                 util.Effect("BloodImpact", edata)
                 owner:LagCompensation(false)
-                owner:FireBullets({ Num = 1, Src = spos, Dir = owner:GetAimVector(), Spread = vector_origin, Tracer = 0, Force = 1, Damage = 0 })
+                owner:FireBullets({ Attacker = owner, Inflictor = self, Num = 1, Src = spos, Dir = owner:GetAimVector(), Spread = vector_origin, Tracer = 0, Force = 1, Damage = 0 })
 
                 if SERVER and zombie_eat_enabled:GetBool() and hitEnt:GetClass() == "prop_ragdoll" and not owner:IsRoleAbilityDisabled() then
                     local ply = GetPlayerFromBody(hitEnt)
@@ -418,6 +418,7 @@ function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
     local owner = self:GetOwner()
     local bullet = {}
     bullet.Attacker      = owner
+    bullet.Inflictor     = self
     bullet.Num           = numbul
     bullet.Src           = owner:GetShootPos()    -- Source
     bullet.Dir           = owner:GetAimVector()   -- Dir of bullet

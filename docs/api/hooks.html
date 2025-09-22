@@ -308,6 +308,19 @@
             <li><em>role</em> - The new role value to use or the original passed into the hook. Use <code>ROLE_NONE</code> to hide the attacker's role from the victim</li>
         </ul>
 
+        <h3><a id="tttdetectivecalledtobodyply-owner-rag" href="#tttdetectivecalledtobodyply-owner-rag">TTTDetectiveCalledToBody(ply, owner, rag)</a></h3>
+        <p>
+            Called when a player calls a detective to a player ragdoll.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is calling for a detective</li>
+            <li><em>owner</em> - The player who owns the corpse the detective is being called to</li>
+            <li><em>rag</em> - The ragdoll representing the corpse being called to</li>
+        </ul>
+
         <h3><a id="tttdetectivelikepromotedply" href="#tttdetectivelikepromotedply">TTTDetectiveLikePromoted(ply)</a></h3>
         <p>
             Called when a detective-like (deputy, impersonator, etc.) player is promoted.<br>
@@ -753,6 +766,18 @@
             <li><em>newHealth</em> - The player's new health</li>
         </ul>
 
+        <h3><a id="tttplayerragdolledply-ragdoll" href="#tttplayerragdolledply-ragdoll">TTTPlayerRagdolled(ply, ragdoll)</a></h3>
+        <p>
+            Called after a player is ragdolled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who was ragdolled</li>
+            <li><em>ragdoll</em> - The ragdoll that was created</li>
+        </ul>
+
         <h3><a id="tttplayerrolechangedply-oldrole-newrole" href="#tttplayerrolechangedply-oldrole-newrole">TTTPlayerRoleChanged(ply, oldRole, newRole)</a></h3>
         <p>
             Called after a player's role has changed.<br>
@@ -789,6 +814,18 @@
         <ul>
             <li><em>ply</em> - The player who is being spawned or respawned</li>
             <li><em>deadOnly</em> - Whether this call is specifically targeted at dead players</li>
+        </ul>
+
+        <h3><a id="tttplayerunragdolledply-ragdoll" href="#tttplayerunragdolledply-ragdoll">TTTPlayerUnRagdolled(ply, ragdoll)</a></h3>
+        <p>
+            Called after a player is un-ragdolled.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who was un-ragdolled</li>
+            <li><em>ragdoll</em> - The ragdoll that was removed</li>
         </ul>
 
         <h3><a id="tttplayerusedhealthstationply-station-healed-should_reduce" href="#tttplayerusedhealthstationply-station-healed-should_reduce">TTTPlayerUsedHealthStation(ply, station, healed, should_reduce)</a></h3>
@@ -1379,6 +1416,21 @@
             <li><em>item</em> - The random item that was selected</li>
         </ul>
 
+        <h3><a id="tttshouldhidefromhighlightply-client" href="#tttshouldhidefromhighlightply-client">TTTShouldHideFromHighlight(ply, client)</a></h3>
+        <p>
+            Called when a player is about to be highlighted, allowing you to block that from happening.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being highlighted</li>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to stop this player from being highlighted
+        </p>
+
         <h3><a id="tttshouldplayersmokeply-client-shouldsmoke-smokecolor-smokeparticle-smokeoffset" href="#tttshouldplayersmokeply-client-shouldsmoke-smokecolor-smokeparticle-smokeoffset">TTTShouldPlayerSmoke(ply, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)</a></h3>
         <p>
             Called when during a player's `Think`, allowing a player to emit smoke with different visual effects.<br>
@@ -1464,6 +1516,18 @@
         <ul>
             <li><em>client</em> - The local player</li>
             <li><em>tgt</em> - The target playing being spectated</li>
+        </ul>
+
+        <h3><a id="tttspectatorspiritcreatedply-spirit" href="#tttspectatorspiritcreatedply-spirit">TTTSpectatorSpiritCreated(ply, spirit)</a></h3>
+        <p>
+            Called when a player dies and a spirit entity is created to follow them.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player that died</li>
+            <li><em>spirit</em> - The spirit entity that was created to follow the player</li>
         </ul>
 
         <h3><a id="tttspeedmultiplierply-mults-sprinting" href="#tttspeedmultiplierply-mults-sprinting">TTTSpeedMultiplier(ply, mults, sprinting)</a></h3>
@@ -1838,7 +1902,7 @@
             <em>Return:</em> Whether or not this team chat message should be sent (Defaults to <code>true</code>).
         </p>
 
-        <h3><a id="tttteamvoicechattargetsspeaker-targetsfrom_chat" href="#tttteamvoicechattargetsspeaker-targetsfrom_chat">TTTTeamVoiceChatTargets(speaker, targets)</a></h3>
+        <h3><a id="tttteamvoicechattargetsspeaker-targets-state" href="#tttteamvoicechattargetsspeaker-targets-state">TTTTeamVoiceChatTargets(speaker, targets, state)</a></h3>
         <p>
             Called before a team voice state message is sent. Used to modify the targets of the team voice state message.<br>
             <em>Realm:</em> Server<br>
@@ -1848,6 +1912,7 @@
         <ul>
             <li><em>speaker</em> - The player trying to send their team voice state message</li>
             <li><em>targets</em> - The table of players that this message will be sent to. Add or remove players from this table to change the message recipients</li>
+            <li><em>state</em> - Whether the speaker is speaking globally (<code>true</code>) or only to their team (<code>false</code>) <em>(Added in 2.3.5)</em></li>
         </ul>
         <p>
             <em>Return:</em> Whether or not this team voice state message should be sent (Defaults to <code>true</code>).
@@ -1950,7 +2015,7 @@
             <em>Added in:</em> 1.2.7
         </p>
 
-        <h3><a id="tttvampirebodyeatenply-ent-living-healed" href="#tttvampirebodyeatenply-ent-living-healed">TTTVampireBodyEaten(ply, ent, living, healed)</a></h3>
+        <h3><a id="tttvampirebodyeatenply-ent-living-healed-maxchange" href="#tttvampirebodyeatenply-ent-living-healed-maxchange">TTTVampireBodyEaten(ply, ent, living, healed, maxchange)</a></h3>
         <p>
             Called after a Vampire eats a body.<br>
             <em>Realm:</em> Server<br>
@@ -1962,6 +2027,7 @@
             <li><em>ent</em> - The target entity. Generally either a player or a ragdoll</li>
             <li><em>living</em> - Whether the target entity was living at the time they were eaten</li>
             <li><em>healed</em> - The amount of health the player gained from eating the body</li>
+            <li><em>maxchange</em> - The amount of maximum health the player gained from eating the body <em>(Added in 2.3.5)</em></li>
         </ul>
 
         <h3><a id="tttvampireinvisibilitychangeply-invisible" href="#tttvampireinvisibilitychangeply-invisible">TTTVampireInvisibilityChange(ply, invisible)</a></h3>

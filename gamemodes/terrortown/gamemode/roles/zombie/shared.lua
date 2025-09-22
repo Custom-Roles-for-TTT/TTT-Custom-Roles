@@ -231,7 +231,8 @@ local function InitializeEquipment()
               type = "item_passive",
               material = mat_dir .. "icon_speed",
               name = "item_speed",
-              desc = "item_speed_desc"
+              desc = "item_speed_desc",
+              norandom = true
             },
 
             -- passive regen
@@ -239,7 +240,8 @@ local function InitializeEquipment()
               type = "item_passive",
               material = mat_dir .. "icon_regen",
               name = "item_regen",
-              desc = "item_regen_desc"
+              desc = "item_regen_desc",
+              norandom = true
             }
         }
     end
@@ -262,6 +264,16 @@ hook.Add("Initialize", "Zombie_Shared_Initialize", function()
 end)
 hook.Add("TTTPrepareRound", "Zombie_Shared_TTTPrepareRound", function()
     InitializeEquipment()
+
+    -- Add radio sounds
+    if not TRADIO.Sounds.zomleap and util.CanRoleSpawn(ROLE_ZOMBIE) then
+        TRADIO.AddNewSound("zomleap", {
+            name = "radio_zom_leap",
+            name_params = { zombie = ROLE_STRINGS[ROLE_ZOMBIE] },
+            sound = { Sound("npc/fast_zombie/leap1.wav"), Sound("npc/zombie/zo_attack2.wav"),
+                    Sound("npc/fast_zombie/fz_alert_close1.wav"), Sound("npc/zombie/zombie_alert1.wav") }
+        })
+    end
 end)
 
 hook.Add("TTTUpdateRoleState", "Zombie_Team_TTTUpdateRoleState", function()

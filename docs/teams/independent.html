@@ -791,16 +791,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <td>ttt_plaguemaster_body_search_mode</td>
-                        <td>0</td>
-                        <td>Integer (0-2)</td>
-                        <td>Whether dead bodies reveal if they had the plague when searched:
-                            <ol start="0">
-                                <li>Don't show.</li>
-                                <li>Show if died from plague.</li>
-                                <li>Show if infected with plague.</li>
-                            </ol>
-                        </td>
+                        <tr>
+                            <td>ttt_plaguemaster_body_search_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-2)</td>
+                            <td>Whether dead bodies reveal if they had the plague when searched:
+                                <ol start="0">
+                                    <li>Don't show.</li>
+                                    <li>Show if died from plague.</li>
+                                    <li>Show if infected with plague.</li>
+                                </ol>
+                            </td>
+                        </tr>
                         <tr>
                             <td>ttt_plaguemaster_can_see_jesters</td>
                             <td>0</td>
@@ -1111,6 +1113,497 @@
                 </div>
             </div>
         </div>
+        <div id="taskmaster" class="collapsible">
+            <button class="header" style="background-color:var(--independent);"><i class="icon-taskmaster"></i>Taskmaster</button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-taskmaster"></i><a href="#taskmaster">Taskmaster</a></span> has a list of tasks that they must complete before the end of the round.</p>
+                <div class="expansion">
+                    <p>The Taskmaster's tasks are divided into two types: Kill and Miscellaneous.</p>
+                    <p>A Kill-type task requires that the Taskmaster themselves kill another player, and the Miscellaneous tasks are everything else.</p>
+                    <p>The number of Kill tasks that a Taskmaster must complete is controlled by the <code>ttt_taskmaster_kill_tasks</code> convar, and the <code>ttt_taskmaster_misc_tasks</code> convar for Miscellaneous tasks.</p>
+                    <p>If a task cannot be completed (or the Taskmaster deems it too difficult), they can spend a credit to reroll that task to get something different.</p>
+                    <p>If the <code>ttt_taskmaster_wins_with_others</code> convar is disabled, the Taskmaster must also kill all other (non-passive) players to win.</p>
+                    <p>The <code>ttt_taskmaster_blocks_team_wins</code> convar controls whether the Taskmaster blocks another team for winning for a short period of time if their tasks have not been completed yet, giving them extra time to finish.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_taskmaster_is_passive</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Taskmaster should count as a 'passive' role for roles that need to kill other players, allowing them to win while the Taskmaster is still alive (if <code>ttt_taskmaster_wins_with_others</code> is enabled)</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_kill_tasks</td>
+                            <td>1</td>
+                            <td>Integer (0-10)</td>
+                            <td>The number of kill tasks assigned to the Taskmaster</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_misc_tasks</td>
+                            <td>2</td>
+                            <td>Integer (0-10)</td>
+                            <td>The number of miscellaneous tasks assigned to the Taskmaster</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_repeat_rerolls</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Taskmaster can be assigned tasks they previously rerolled away from</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_win_block_length</td>
+                            <td>60</td>
+                            <td>Integer (0-300)</td>
+                            <td>How long (in seconds) the Taskmaster should block teams (innocent, traitor, monster) from winning for (if <code>ttt_taskmaster_blocks_team_wins</code> is enabled). Set to 0 to block until time runs out</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_wins_with_others</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>If the Taskmaster should be allowed to win alongside other teams/players</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_blocks_team_wins</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Taskmaster should block teams (innocent, traitor, monster) from winning if they are alive and haven't finished their tasks.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_calldetective_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Call a Detective to a Body' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_carrycorpse_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Carry a Corpse for X Seconds' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_carrycorpse_time</td>
+                            <td>60</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must carry a player corpse to complete the 'Carry Corpse' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_chat_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Send X Messages' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_chat_times</td>
+                            <td>25</td>
+                            <td>Integer (1-100)</td>
+                            <td>The number of text messages a player must sent to complete the 'Send X Messages' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_completion_bonus</td>
+                            <td>1</td>
+                            <td>Integer (0-10)</td>
+                            <td>How many credits the Taskmaster should get whenever they complete a task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_crouch_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Crouch for X Seconds' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_crouch_time</td>
+                            <td>40</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must stay crouched to complete the 'Crouch' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_crouchnearbody_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Crouch Near a Body' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_crouchnearbody_range</td>
+                            <td>1</td>
+                            <td>Integer (1-100)</td>
+                            <td>The distance (in meters) away a player must stay within to count for the 'Crouch Near Body' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_crouchnearbody_time</td>
+                            <td>20</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must stay near a body to count for the 'Crouch Near Body' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_crowbar_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Swing a Crowbar X Times' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_crowbar_times</td>
+                            <td>50</td>
+                            <td>Integer (1-240)</td>
+                            <td>The number of times a player must use their crowbar to complete the 'Swing Crowbar' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_damageeveryone_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Damage Everyone Else' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_dodamage_amount</td>
+                            <td>200</td>
+                            <td>Integer (1-1000)</td>
+                            <td>The amount of damage a player must do to complete the 'Deal X Damage' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_dodamage_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Deal X Damage' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_firebullets_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Fire X Bullets' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_firebullets_times</td>
+                            <td>100</td>
+                            <td>Integer (1-1000)</td>
+                            <td>The jump of times a player must fire a bullet to complete the 'Fire X Bullets' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_getplayerkilled_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Get Target Killed' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_getplayertokill_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Get Target to Kill' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_healthunder_amount</td>
+                            <td>15</td>
+                            <td>Integer (1-240)</td>
+                            <td>The amount of health a player must stay under to complete the 'Health Under' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_healthunder_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Survive Under X Health' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_healthunder_time</td>
+                            <td>60</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must stay under the target health to complete the 'Health Under' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_holstered_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Stay Holstered for X Seconds' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_holstered_time</td>
+                            <td>60</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must stay holstered to complete the 'Holstered' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_jump_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Jump X Times' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_jump_times</td>
+                            <td>100</td>
+                            <td>Integer (1-500)</td>
+                            <td>The jump of times a player must jump to complete the 'Jump X Times' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_kill360_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player After a 360' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_kill360_time</td>
+                            <td>3</td>
+                            <td>Integer (1-10)</td>
+                            <td>The time (in seconds) a player has after completing a 360 to kill a player for the 'Kill a Player After a 360' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killaiming_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player While Aiming' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killairborne_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill an Airborne Player' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killbehind_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player From Behind' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killbehind_view_angle</td>
+                            <td>75</td>
+                            <td>Integer (0-180)</td>
+                            <td>The angle (in degrees) from a player's eye angle within which the Taskmaster is 'spotted' for the 'Kill a Player From Behind' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killcrowbar_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player With a Crowbar' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killdistant_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Distant Player' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killdistant_range</td>
+                            <td>25</td>
+                            <td>Integer (0-100)</td>
+                            <td>The minimum distance (in meters) away a player can be to count for the 'Kill a Distant Player' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killdouble_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Get a Double Kill' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killdouble_time</td>
+                            <td>5</td>
+                            <td>Integer (0-30)</td>
+                            <td>The time (in seconds) the taskmaster has between kills to complete the 'Get a Double Kill' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killheadshot_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player With a Headshot' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killlastbullet_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player With Your Last Bullet' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killmidair_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player While Midair' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killnearby_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Nearby Player' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killnearby_range</td>
+                            <td>5</td>
+                            <td>Integer (0-10)</td>
+                            <td>The maximum distance (in meters) away a player can be to count for the 'Kill a Nearby Player' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killonehit_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player in One Hit' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killpistol_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player With a Pistol' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killretaliate_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player That Attacked First' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killtarget_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill Target' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_killweapon_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Kill a Player With a Specific Weapon' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_lookatplayer_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Look at Target' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_lookatplayer_time</td>
+                            <td>30</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must look at their target to complete for the 'Look at Player' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_pickupshopitem_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Pick up a Shop Item' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_standonplayer_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Stand on a Player for X Seconds' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_standonplayer_time</td>
+                            <td>15</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must stay stand on top of another player to complete the 'Stand On Player' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayhidden_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Stay Hidden for X Seconds' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayhidden_time</td>
+                            <td>30</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must hide to complete for the 'Stay Hidden' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayhigher_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Be Highest for X Seconds' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayhigher_time</td>
+                            <td>30</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must stay higher up to complete the 'Highest Player' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayinarea_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Stay in Area for X Seconds' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayinarea_range</td>
+                            <td>5</td>
+                            <td>Integer (1-100)</td>
+                            <td>The distance (in meters) away from the location that a player must stay within to count for the 'Stay in Area' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayinarea_time</td>
+                            <td>30</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must stay inside the target area to count for the 'Stay in Area' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_staylower_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Be Lowest for X Seconds' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_staylower_time</td>
+                            <td>30</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must stay lower down to complete the 'Lowest Player' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayneartarget_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Stay Near Target' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayneartarget_range</td>
+                            <td>5</td>
+                            <td>Integer (1-100)</td>
+                            <td>The distance (in meters) away a player must stay within to count for the 'Stay Near Target' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_stayneartarget_time</td>
+                            <td>30</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must stay near their target to count for the 'Stay Near Target' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_survive_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Survive' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_takedamage_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Take Damage and Survive' task should be enabled</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_takedamage_time</td>
+                            <td>60</td>
+                            <td>Integer (1-240)</td>
+                            <td>The time (in seconds) a player must survive without taking further damage to complete the 'Take Damage' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_weaponpickups_count</td>
+                            <td>20</td>
+                            <td>Integer (1-240)</td>
+                            <td>The number of unique weapons a player must pick up to complete the 'Pick Up Weapons' task</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_taskmaster_weaponpickups_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the 'Pick up X Weapons' task should be enabled</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
+            </div>
+        </div>
         <div id="zombie" class="collapsible">
             <button class="header" style="background-image:linear-gradient(110deg, var(--independent) 0%, var(--independent) 70%, var(--special-traitor) 70%, var(--special-traitor) 85%, var(--monster) 85%, var(--monster) 100%);"><i class="icon-zombie"></i>Zombie</button>
             <div class="content">
@@ -1261,7 +1754,7 @@
                             <td>ttt_zombie_round_chance</td>
                             <td>0.1</td>
                             <td>Float (0-1)</td>
-                            <td>The chance that a "zombie round" will occur where all players who would have been traitors are made Zombies instead. <i>(Requires <code>ttt_zombie_is_traitor</code> to be enabled.)</i></td>
+                            <td>The chance that a "zombie round" will occur where all players who would have been traitors are made Zombies instead. If set to <code>0</code>, zombies will spawn alongside other traitor roles. <i>(Requires <code>ttt_zombie_is_traitor</code> to be enabled.)</i></td>
                         </tr>
                         <tr>
                             <td>ttt_zombie_show_target_icon</td>

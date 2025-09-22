@@ -116,6 +116,7 @@ ttt_shadow_enabled                             0       // Whether or not the Sha
 ttt_arsonist_enabled                           0       // Whether or not the Arsonist should spawn
 ttt_hivemind_enabled                           0       // Whether or not the Hive Mind should spawn
 ttt_plaguemaster_enabled                       0       // Whether or not the Plaguemaster should spawn
+ttt_taskmaster_enabled                         0       // Whether or not the Taskmaster should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                     1       // The weight assigned to spawning the Hypnotist
@@ -165,6 +166,7 @@ ttt_shadow_spawn_weight                        1       // The weight assigned to
 ttt_arsonist_spawn_weight                      1       // The weight assigned to spawning the Arsonist
 ttt_hivemind_spawn_weight                      1       // The weight assigned to spawning the Hive Mind
 ttt_plaguemaster_spawn_weight                  1       // The weight assigned to spawning the Plaguemaster
+ttt_taskmaster_spawn_weight                    1       // The weight assigned to spawning the Taskmaster
 
 // (Note: Each role is limited to one player per round.)
 
@@ -216,6 +218,7 @@ ttt_shadow_min_players                         0       // The minimum number of 
 ttt_arsonist_min_players                       0       // The minimum number of players required to spawn the Arsonist
 ttt_hivemind_min_players                       0       // The minimum number of players required to spawn the Hive Mind
 ttt_plaguemaster_min_players                   0       // The minimum number of players required to spawn the Plaguemaster
+ttt_taskmaster_min_players                     0       // The minimum number of players required to spawn the Taskmaster
 
 // Grouped Role Spawn Settings
 ttt_twins_enabled                              0       // Whether or not the Twins should spawn
@@ -300,9 +303,10 @@ ttt_vampire_show_target_icon                   0       // Whether Vampires have 
 ttt_vampire_damage_reduction                   0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Vampire
 ttt_vampire_fang_timer                         5       // The amount of time fangs must be used to fully drain a target's blood
 ttt_vampire_fang_dead_timer                    0       // The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as "ttt_vampire_fang_timer"
-ttt_vampire_fang_heal                          50      // The amount of health a vVampire will heal by when they fully drain a target's blood
+ttt_vampire_fang_heal                          50      // The amount of health a Vampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                      25      // The amount over the Vampire's normal maximum health (e.g. 100 + this ConVar) that the Vampire can heal to by drinking blood.
 ttt_vampire_fang_overheal_living               -1      // The amount of overheal (see "ttt_vampire_fang_overheal") to give if the Vampire's target is living. Set to -1 to use the same amount as "ttt_vampire_fang_overheal" instead
+ttt_vampire_fang_overheal_mode                 0       // How to handle healing a vampire over their maximum health. 0 - Increase health. 1 - Increase max health. 2 - Increase both.
 ttt_vampire_fang_unfreeze_delay                2       // The number of seconds before players who were frozen in place by the fangs should be released if the Vampire stops using the fangs on them
 ttt_vampire_prime_death_mode                   0       // What to do when the prime Vampire(s) (e.g. players who spawn as Vampires originally) are killed. 0 - Do nothing. 1 - Kill all Vampire thralls (non-prime Vampires). 2 - Revert all Vampire thralls (non-prime Vampires) to their original role
 ttt_vampire_prime_only_convert                 1       // Whether only prime Vampires (e.g. players who spawn as Vampire originally) are allowed to convert other players
@@ -347,8 +351,8 @@ ttt_informant_can_scan_jesters                 0       // Whether the Informant 
 ttt_informant_can_scan_glitches                0       // Whether the Informant should be able to scan Glitches
 ttt_informant_requires_scanner                 0       // Whether the Informant needs to hold the scanner item to be able to scan players
 ttt_informant_scanner_time                     8       // The amount of time (in seconds) the Informant's scanner takes to use
-ttt_informant_scanner_float_time               1       // The amount of time (in seconds) it takes for the Informant's scanner to lose it's target without line of sight
-ttt_informant_scanner_cooldown                 3       // The amount of time (in seconds) the Informant's tracker goes on cooldown for after losing it's target
+ttt_informant_scanner_float_time               1       // The amount of time (in seconds) it takes for the Informant's scanner to lose its target without line of sight
+ttt_informant_scanner_cooldown                 3       // The amount of time (in seconds) the Informant's tracker goes on cooldown for after losing its target
 ttt_informant_scanner_distance                 2500    // The maximum distance away the scanner target can be
 ttt_informant_scanner_innocent_mult            1       // The multiplier to use with the scanner time when the target is an innocent (e.g. 0.5 = 50% scanner time)
 ttt_informant_scanner_traitor_mult             1       // The multiplier to use with the scanner time when the target is a traitor (e.g. 0.5 = 50% scanner time)
@@ -411,6 +415,7 @@ ttt_deputy_activation_credits                  0       // The number of credits 
 
 // Mercenary
 ttt_mercenary_credits_starting                 1       // The number of credits a Mercenary should start with
+ttt_mercenary_armor_loadout                    1       // Whether the mercenary should get body armor as part of their loadout
 
 // Veteran
 ttt_veteran_damage_bonus                       0.5     // Damage bonus that the Veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)
@@ -520,6 +525,7 @@ ttt_paladin_heal_self                          1       // Whether the Paladin's 
 ttt_paladin_credits_starting                   1       // The number of credits a Paladin should start with
 
 // Tracker
+ttt_tracker_is_innocent                        0       // Whether the Tracker should be treated as a special innocent
 ttt_tracker_footstep_time                      15      // The amount of time players' footsteps should show to the Tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                     1       // Whether players' footsteps should have different colors
 ttt_tracker_credits_starting                   1       // The number of credits a Tracker should start with
@@ -530,8 +536,8 @@ ttt_medium_spirit_color                        1       // Whether players' spiri
 ttt_medium_spirit_vision                       1       // Whether players' spirits should be able to see each other
 ttt_medium_dead_notify                         1       // Whether player should be notified that there is a Medium when they die
 ttt_medium_seance_time                         8       // The amount of time (in seconds) it takes for the Medium to finish a seance
-ttt_medium_seance_float_time                   1       // The amount of time (in seconds) it takes for the Medium's seance to lose it's target after getting out of range
-ttt_medium_seance_cooldown                     3       // The amount of time (in seconds) the Medium's seance goes on cooldown for after losing it's target
+ttt_medium_seance_float_time                   1       // The amount of time (in seconds) it takes for the Medium's seance to lose its target after getting out of range
+ttt_medium_seance_cooldown                     3       // The amount of time (in seconds) the Medium's seance goes on cooldown for after losing its target
 ttt_medium_seance_distance                     150     // The maximum distance away the seance target can be
 ttt_medium_seance_max_info                     0       // The maximum amount of information the Medium can learn from performing a seance. 0 - None, 1 - Name, 2 - Team, 3 - Role
 ttt_medium_hide_killer_role                    0       // Whether to hide the role of a player's killer when there is a Medium in the round
@@ -626,8 +632,8 @@ ttt_beggar_notify_sound                        0       // Whether to play a chee
 ttt_beggar_notify_confetti                     0       // Whether to throw confetti when a Beggar is a killed
 ttt_beggar_scan                                0       // Whether the Beggar can scan players to see if they are traitors. 0 - Disabled. 1 - Can only scan traitors. 2 - Can scan any role that has a shop.
 ttt_beggar_scan_time                           15      // The amount of time (in seconds) the Beggar's scanner takes to use
-ttt_beggar_scan_float_time                     1       // The amount of time (in seconds) it takes for the Beggar's scanner to lose it's target without line of sight
-ttt_beggar_scan_cooldown                       3       // The amount of time (in seconds) the Beggar's tracker goes on cooldown for after losing it's target
+ttt_beggar_scan_float_time                     1       // The amount of time (in seconds) it takes for the Beggar's scanner to lose its target without line of sight
+ttt_beggar_scan_cooldown                       3       // The amount of time (in seconds) the Beggar's tracker goes on cooldown for after losing its target
 ttt_beggar_scan_distance                       2500    // The maximum distance away the scanner target can be
 ttt_beggar_can_see_jesters                     0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Beggar (Only applies if ttt_beggar_is_independent is enabled)
 ttt_beggar_update_scoreboard                   0       // Whether the Beggar shows dead players as missing in action (Only applies if ttt_beggar_is_independent is enabled)
@@ -851,7 +857,7 @@ ttt_killer_credits_award_repeat                1       // Whether the credit awa
 // Zombie
 ttt_zombie_is_monster                          0       // Whether Zombies should be treated as members of the monster team (rather than the independent team)
 ttt_zombie_is_traitor                          0       // Whether Zombies should be treated as members of the traitors team (rather than the independent team)
-ttt_zombie_round_chance                        0.1     // The chance that a "Zombie round" will occur where all players who would have been traitors are made Zombies instead. Only usable when "ttt_zombie_is_traitor" is set to "1"
+ttt_zombie_round_chance                        0.1     // The chance that a "Zombie round" will occur where all players who would have been traitors are made Zombies instead. If set to 0, zombies will spawn alongside other traitor roles. Only usable when "ttt_zombie_is_traitor" is set to "1"
 ttt_zombie_vision_enabled                      0       // Whether Zombies have their special vision highlights enabled
 ttt_zombie_spit_enabled                        1       // Whether Zombies have their spit attack enabled
 ttt_zombie_spit_convert                        0       // Whether players killed by a spitting Zombie will be converted to be a Zombie themselves
@@ -965,7 +971,88 @@ ttt_plaguemaster_dart_replace_timer            0       // How long (in seconds) 
 ttt_plaguemaster_body_search_mode              1       // Whether dead bodies reveal if they had the plague when searched. 0 - Don't show. 1 - Show if died from plague. 2 - Show if Infected with plague.
 ttt_plaguemaster_can_see_jesters               0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Plaguemaster
 ttt_plaguemaster_update_scoreboard             1       // Whether the Plaguemaster shows dead players as missing in action
-    
+
+// Taskmaster
+ttt_taskmaster_blocks_team_wins                1       // Whether the Taskmaster should block teams (innocent, traitor, monster) from winning if they are alive and haven't finished their tasks.
+ttt_taskmaster_is_passive                      0       // Whether the Taskmaster should count as a 'passive' role for roles that need to kill other players, allowing them to win while the Taskmaster is still alive (if 'ttt_taskmaster_wins_with_others' is enabled)
+ttt_taskmaster_kill_tasks                      1       // The number of kill tasks assigned to the Taskmaster
+ttt_taskmaster_misc_tasks                      2       // The number of miscellaneous tasks assigned to the Taskmaster
+ttt_taskmaster_repeat_rerolls                  1       // Whether the Taskmaster can be assigned tasks they previously rerolled away from
+ttt_taskmaster_win_block_length                60      // How long (in seconds) the Taskmaster should block teams (innocent, traitor, monster) from winning for (if 'ttt_taskmaster_blocks_team_wins' is enabled). Set to 0 to block until time runs out
+ttt_taskmaster_wins_with_others                1       // If the Taskmaster should be allowed to win alongside other teams/players
+
+// Taskmaster tasks
+ttt_taskmaster_calldetective_enabled           1       // Whether the 'Call a Detective to a Body' task should be enabled
+ttt_taskmaster_carrycorpse_enabled             1       // Whether the 'Carry a Corpse for X Seconds' task should be enabled
+ttt_taskmaster_carrycorpse_time                60      // The time (in seconds) a player must carry a player corpse to complete the 'Carry Corpse' task
+ttt_taskmaster_chat_enabled                    1       // Whether the 'Send X Messages' task should be enabled
+ttt_taskmaster_chat_times                      25      // The number of text messages a player must sent to complete the 'Send X Messages' task
+ttt_taskmaster_completion_bonus                1       // How many credits the Taskmaster should get whenever they complete a task
+ttt_taskmaster_crouch_enabled                  1       // Whether the 'Crouch for X Seconds' task should be enabled
+ttt_taskmaster_crouch_time                     40      // The time (in seconds) a player must stay crouched to complete the 'Crouch' task
+ttt_taskmaster_crouchnearbody_enabled          1       // Whether the 'Crouch Near a Body' task should be enabled
+ttt_taskmaster_crouchnearbody_range            1       // The distance (in meters) away a player must stay within to count for the 'Crouch Near Body' task
+ttt_taskmaster_crouchnearbody_time             20      // The time (in seconds) a player must stay near a body to count for the 'Crouch Near Body' task
+ttt_taskmaster_crowbar_enabled                 1       // Whether the 'Swing a Crowbar 50 Times' task should be enabled
+ttt_taskmaster_crowbar_times                   50      // The number of times a player must use their crowbar to complete the 'Swing Crowbar' task
+ttt_taskmaster_damageeveryone_enabled          1       // Whether the 'Damage Everyone Else' task should be enabled
+ttt_taskmaster_dodamage_amount                 200     // The amount of damage a player must do to complete the 'Deal X Damage' task
+ttt_taskmaster_dodamage_enabled                1       // Whether the 'Deal X Damage' task should be enabled
+ttt_taskmaster_firebullets_enabled             1       // Whether the 'Fire X Bullets' task should be enabled
+ttt_taskmaster_firebullets_times               100     // The jump of times a player must fire a bullet to complete the 'Fire X Bullets' task
+ttt_taskmaster_getplayerkilled_enabled         1       // Whether the 'Get Target Killed' task should be enabled
+ttt_taskmaster_getplayertokill_enabled         1       // Whether the 'Get Target to Kill' task should be enabled
+ttt_taskmaster_healthunder_amount              15      // The amount of health a player must stay under to complete the 'Health Under' task
+ttt_taskmaster_healthunder_enabled             1       // Whether the 'Survive Under X Health' task should be enabled
+ttt_taskmaster_healthunder_time                60      // The time (in seconds) a player must stay under the target health to complete the 'Health Under' task
+ttt_taskmaster_holstered_enabled               1       // Whether the 'Stay Holstered for X Seconds' task should be enabled
+ttt_taskmaster_holstered_time                  60      // The time (in seconds) a player must stay holstered to complete the 'Holstered' task
+ttt_taskmaster_jump_enabled                    1       // Whether the 'Jump x Times' task should be enabled
+ttt_taskmaster_jump_times                      100     // The jump of times a player must jump to complete the 'Jump X Times' task
+ttt_taskmaster_kill360_enabled                 1       // Whether the 'Kill a Player After a 360' task should be enabled
+ttt_taskmaster_kill360_time                    3       // The time (in seconds) a player has after completing a 360 to kill a player for the 'Kill a Player After a 360' task
+ttt_taskmaster_killaiming_enabled              1       // Whether the 'Kill a Player While Aiming' task should be enabled
+ttt_taskmaster_killairborne_enabled            1       // Whether the 'Kill an Airborne Player' task should be enabled
+ttt_taskmaster_killbehind_enabled              1       // Whether the 'Kill a Player From Behind' task should be enabled
+ttt_taskmaster_killbehind_view_angle           75      // The angle (in degrees) from a player's eye angle within which the Taskmaster is 'spotted' for the 'Kill a Player From Behind' task
+ttt_taskmaster_killcrowbar_enabled             1       // Whether the 'Kill a Player With a Crowbar' task should be enabled
+ttt_taskmaster_killdistant_enabled             1       // Whether the 'Kill a Distant Player' task should be enabled
+ttt_taskmaster_killdistant_range               25      // The minimum distance (in meters) away a player can be to count for the 'Kill a Distant Player' task
+ttt_taskmaster_killdouble_enabled              1       // Whether the 'Get a Double Kill' task should be enabled
+ttt_taskmaster_killdouble_time                 5       // The time (in seconds) the taskmaster has between kills to complete the 'Get a Double Kill' task
+ttt_taskmaster_killheadshot_enabled            1       // Whether the 'Kill a Player With a Headshot' task should be enabled
+ttt_taskmaster_killlastbullet_enabled          1       // Whether the 'Kill a Player With Your Last Bullet' task should be enabled
+ttt_taskmaster_killmidair_enabled              1       // Whether the 'Kill a Player While Midair' task should be enabled
+ttt_taskmaster_killnearby_enabled              1       // Whether the 'Kill a Nearby Player' task should be enabled
+ttt_taskmaster_killnearby_range                5       // The maximum distance (in meters) away a player can be to count for the 'Kill a Nearby Player' task
+ttt_taskmaster_killonehit_enabled              1       // Whether the 'Kill a Player in One Hit' task should be enabled
+ttt_taskmaster_killpistol_enabled              1       // Whether the 'Kill a Player With a Pistol' task should be enabled
+ttt_taskmaster_killretaliate_enabled           1       // Whether the 'Kill a Player That Attacked First' task should be enabled
+ttt_taskmaster_killtarget_enabled              1       // Whether the 'Kill Target' task should be enabled
+ttt_taskmaster_killweapon_enabled              1       // Whether the 'Kill a Player With a Specific Weapon' task should be enabled
+ttt_taskmaster_lookatplayer_enabled            1       // Whether the 'Look at Target' task should be enabled
+ttt_taskmaster_lookatplayer_time               30      // The time (in seconds) a player must look at their target to complete for the 'Look at Player' task
+ttt_taskmaster_pickupshopitem_enabled          1       // Whether the 'Pick up a Shop Item' task should be enabled
+ttt_taskmaster_standonplayer_enabled           1       // Whether the 'Stand on a Player for X Seconds' task should be enabled
+ttt_taskmaster_standonplayer_time              15      // The time (in seconds) a player must stay stand on top of another player to complete the 'Stand On Player' task
+ttt_taskmaster_stayhidden_enabled              1       // Whether the 'Stay Hidden for X Seconds' task should be enabled
+ttt_taskmaster_stayhidden_time                 30      // The time (in seconds) a player must hide to complete for the 'Stay Hidden' task
+ttt_taskmaster_stayhigher_enabled              1       // Whether the 'Be Highest for X Seconds' task should be enabled
+ttt_taskmaster_stayhigher_time                 30      // The time (in seconds) a player must stay higher up to complete the 'Highest Player' task
+ttt_taskmaster_stayinarea_enabled              1       // Whether the 'Stay in Area for X Seconds' task should be enabled
+ttt_taskmaster_stayinarea_range                5       // The distance (in meters) away from the location that a player must stay within to count for the 'Stay in Area' task
+ttt_taskmaster_stayinarea_time                 30      // The time (in seconds) a player must stay inside the target area to count for the 'Stay in Area' task
+ttt_taskmaster_staylower_enabled               1       // Whether the 'Be Lowest for X Seconds' task should be enabled
+ttt_taskmaster_staylower_time                  30      // The time (in seconds) a player must stay lower down to complete the 'Lowest Player' task
+ttt_taskmaster_stayneartarget_enabled          1       // Whether the 'Stay Near Target' task should be enabled
+ttt_taskmaster_stayneartarget_range            5       // The distance (in meters) away a player must stay within to count for the 'Stay Near Target' task
+ttt_taskmaster_stayneartarget_time             30      // The time (in seconds) a player must stay near their target to count for the 'Stay Near Target' task
+ttt_taskmaster_survive_enabled                 1       // Whether the 'Survive' task should be enabled
+ttt_taskmaster_takedamage_enabled              1       // Whether the 'Take Damage and Survive' task should be enabled
+ttt_taskmaster_takedamage_time                 60      // The time (in seconds) a player must survive without taking further damage to complete the 'Take Damage' task
+ttt_taskmaster_weaponpickups_count             20      // The number of unique weapons a player must pick up to complete the 'Pick Up Weapons' task
+ttt_taskmaster_weaponpickups_enabled           1       // Whether the 'Pick up X Weapons' task should be enabled
+
 // ----------------------------------------
 
 // GROUPED ROLE SETTINGS
@@ -1143,6 +1230,7 @@ ttt_shadow_starting_health                     100     // The amount of health t
 ttt_arsonist_starting_health                   100     // The amount of health the Arsonist starts with
 ttt_hivemind_starting_health                   100     // The amount of health the Hive Mind starts with
 ttt_plaguemaster_starting_health               100     // The amount of health the Plaguemaster starts with
+ttt_taskmaster_starting_health                 100     // The amount of health the Taskmaster starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                         100     // The maximum amount of health a Traitor can have
@@ -1197,6 +1285,7 @@ ttt_shadow_max_health                          100     // The maximum amount of 
 ttt_arsonist_max_health                        100     // The maximum amount of health the Arsonist can have
 ttt_hivemind_max_health                        100     // The maximum amount of health the Hive Mind can have
 ttt_plaguemaster_max_health                    100     // The maximum amount of health the Plaguemaster can have
+ttt_taskmaster_max_health                      100     // The maximum amount of health the Taskmaster can have
 
 // Round Time
 ttt_roundtime_win_draw                         0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
@@ -1240,7 +1329,8 @@ ttt_dna_scan_detectives_loadout                0       // Whether all detectives
 ttt_dna_scan_on_dialog                         1       // Whether to show a button to open the DNA scanner on the body search dialog
 ttt_dna_scan_only_drop_on_death                0       // Whether the DNA scanner should only be droppable when the holder dies
 ttt_spectator_corpse_search                    1       // Whether spectators can search bodies (not shared with other players)
-ttt_corpse_search_not_shared                   0       // Whether corpse searches are not shared with other players (only affects non-detective-like searchers)
+ttt_corpse_search_auto_confirm                 1       // Whether corpse searches are not shared with other players (only affects non-detective-like searchers)
+ttt_corpse_search_not_shared                   0       // Whether corpse searches automatically confirm the death of the player
 ttt_corpse_search_killer_team_text_traitor     0       // Whether corpse searches should include flavor text hinting at the team of their traitor team killer
 ttt_corpse_search_killer_team_text_innocent    0       // Whether corpse searches should include flavor text hinting at the team of their innocent team killer
 ttt_corpse_search_killer_team_text_monster     0       // Whether corpse searches should include flavor text hinting at the team of their monster team killer
@@ -1255,6 +1345,9 @@ ttt_corpse_search_team_text_jester             0       // Whether corpse searche
 ttt_color_mode_override                        "none"  // Forces all players to have a certain role color setting. none (let user decide), default, simple, protan, deutan, tritan
 ttt_spectators_see_roles                       0       // Whether spectators (not dead players) should be able to see the roles of all players
 ttt_weapon_transfer_ownership                  0       // Whether the ownership of a shop item should transfer each time its picked up
+ttt_damage_own_healthstation                   0       // Whether the player who places a health station can damage it
+ttt_damage_own_bombstation                     0       // Whether the player who places a bomb station can damage it
+ttt_bombstation_explode_on_destroy             1       // Whether a bomb station explodes when it is destroyed
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for their original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
@@ -1478,7 +1571,7 @@ The ConVars tab allows you to specify configuration values to set only when the 
 ## Role Blocks
 Role blocks let you prevent specific roles from spawning together in the same round. Previously this functionality was only available to a few select pairs of roles using ConVars such as `ttt_single_paramedic_hypnotist`, but these have been removed as role blocks can achieve everything these ConVars could, and more.
 
-Role blocks are configured using the UI, accessible by admins using the `ttt_roleblocks` command. Role blocks are saved in the *data/rolepacks.json* file so that they can then be backed up or copied from server-to-server just by transferring that file.
+Role blocks are configured using the UI, accessible by admins using the `ttt_roleblocks` command. Role blocks are saved in the *data/rolepacks.json* file so that they can then be backed up or copied from server-to-server just by transferring that file. Once a role block is created and saved, it automatically takes effect.
 
 ![Blank Role Blocks Window](docs/tutorials/img/RoleBlocks_Blank.png)
 

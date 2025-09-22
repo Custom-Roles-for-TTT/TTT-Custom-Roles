@@ -24,6 +24,7 @@ AddCSLuaFile("lang_shd.lua")
 AddCSLuaFile("corpse_shd.lua")
 AddCSLuaFile("player_ext_shd.lua")
 AddCSLuaFile("weaponry_shd.lua")
+AddCSLuaFile("radio_shd.lua")
 AddCSLuaFile("cl_radio.lua")
 AddCSLuaFile("cl_radar.lua")
 AddCSLuaFile("cl_tbuttons.lua")
@@ -332,10 +333,6 @@ function GM:Initialize()
         ErrorNoHalt("TTT WARNING: sv_alltalk is enabled. Dead players will be able to talk to living players. TTT will now attempt to set sv_alltalk 0.\n")
         RunConsoleCommand("sv_alltalk", "0")
     end
-
-    if not IsMounted("cstrike") then
-        ErrorNoHalt("TTT WARNING: CS:S does not appear to be mounted by GMod. Things may break in strange ways. Server admin? Check the TTT readme for help.\n")
-    end
 end
 
 -- Used to do this in Initialize, but server cfg has not always run yet by that
@@ -592,6 +589,8 @@ function PrepareRound()
         v.ignite_info = nil
         -- Clear the message queue so any messages from the previous round don't show update
         v:ResetMessageQueue()
+        -- Remove the spirit entity for this player, if there is one
+        v:RemoveSpectatorSpirit()
     end
 
     -- Check playercount
@@ -667,9 +666,7 @@ function PrepareRound()
 
     -- Tell hooks and map we started prep
     RunHook("TTTPrepareRound")
-    for role = 0, ROLE_MAX do
-        ROLE_STARTING_TEAM[role] = player.GetRoleTeam(role, false)
-    end
+
     ClearAllFootsteps()
     ents.TTT.TriggerRoundStateOutputs(ROUND_PREP)
 end
@@ -890,6 +887,9 @@ function BeginRound()
     GAMEMODE:UpdatePlayerLoadouts() -- needs to happen when round_active
 
     RunHook("TTTBeginRound")
+    for role = 0, ROLE_MAX do
+        ROLE_STARTING_TEAM[role] = player.GetRoleTeam(role, false)
+    end
 
     ents.TTT.TriggerRoundStateOutputs(ROUND_BEGIN)
 end
@@ -1361,7 +1361,9 @@ function SelectRoles()
     local monsterRoles = {}
     local detectives = {}
     local traitors = {}
+
     local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
+    local zombie_round_chance = GetConVar("ttt_zombie_round_chance"):GetFloat()
 
     -- Special rules for role spawning
     -- Role exclusion logic also needs to be copied into the drunk role selection logic in drunk.lua -> plymeta:SoberDrunk
@@ -1416,8 +1418,8 @@ function SelectRoles()
     for r = ROLE_DETECTIVE + 1, ROLE_MAX do
         if not delayedCheckRoles[r] and IsRoleAvailable(r) then
             for _ = 1, cvars.Number("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight", 1) do
-                -- Don't include zombies in the traitor list since they will spawn as a special "zombie round" sometimes if they are traitors
-                if TRAITOR_ROLES[r] and r ~= ROLE_ZOMBIE then
+                -- Don't include traitor zombies in the traitor role list if the special "zombie round" is enabled since their spawning is handled separately
+                if TRAITOR_ROLES[r] and (r ~= ROLE_ZOMBIE or zombie_round_chance == 0) then
                     table.insert(specialTraitorRoles, r)
                 elseif DETECTIVE_ROLES[r] then
                     table.insert(specialDetectiveRoles, r)
@@ -1544,7 +1546,8 @@ function SelectRoles()
         end
     end
 
-    if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and choice_count >= cvars.Number("ttt_zombie_min_players", 0) and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) and TRAITOR_ROLES[ROLE_ZOMBIE] then
+    -- If zombie rounds are enabled, check the RNG to see if this is one of those rounds
+    if TRAITOR_ROLES[ROLE_ZOMBIE] and zombie_round_chance > 0 and ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= zombie_round_chance and choice_count >= cvars.Number("ttt_zombie_min_players", 0) and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) then
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_ZOMBIE)

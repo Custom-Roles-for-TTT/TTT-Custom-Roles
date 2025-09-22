@@ -101,3 +101,15 @@ ROLE_SHOULD_ACT_LIKE_JESTER[ROLE_CLOWN] = function(ply)
         return true
     end
 end
+
+-- Initialize role features
+hook.Add("TTTPrepareRound", "Clown_Shared_TTTPrepareRound", function()
+    -- Add radio sounds
+    if not TRADIO.Sounds.cloactivate and util.CanRoleSpawn(ROLE_CLOWN) then
+        TRADIO.AddNewSound("cloactivate", {
+            name = "radio_clo_activate",
+            name_params = { clown = ROLE_STRINGS[ROLE_CLOWN] },
+            sound = "clown.wav"
+        })
+    end
+end)

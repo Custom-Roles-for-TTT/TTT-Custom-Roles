@@ -537,7 +537,7 @@ if SERVER then
         if IsValid(bomb) and bomb:GetClass() == "ttt_c4" and not bomb.DisarmCausedExplosion and bomb:GetArmed() then
             if bomb:GetPos():Distance(ply:GetPos()) > 256 then return end
 
-            local result = bomb.SafeWires[wire] or ply:IsTraitorTeam() or ply == bomb:GetOwner()
+            local result = ply:HasWeapon("weapon_ttt_defuser") or bomb.SafeWires[wire] or ply:IsTraitorTeam() or ply == bomb:GetOwner()
             result = SendDisarmResult(ply, bomb, result)
             if result then
                 LANG.Msg(ply, "c4_disarmed")
@@ -605,7 +605,7 @@ end
 
 if CLIENT then
     surface.CreateFont("C4ModelTimer", {
-        font = "Default",
+        font = "Tahoma",
         size = 13,
         weight = 0,
         antialias = false

@@ -56,7 +56,7 @@ In order to create your own role you will need to make sure you have downloaded 
 - **.lua** - This can be done in Notepad in a pinch but at the very least we would recommend [Notepad++](https://notepad-plus-plus.org/).
 - **.vmt and .vtf** - [VTFEdit Reloaded](https://github.com/Sky-rym/VTFEdit-Reloaded/releases) is the best way to edit these files but if you know what you are doing there are plugins for other apps.
 
-In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using [here](/templates).
+In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using [here](/templates/role).
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:
 
@@ -476,6 +476,7 @@ There are a few options for roles that aren't covered in the template because th
 | `ROLE.blockspawnconvars`          | boolean                           | Whether this role should ***NOT*** have `ttt_rolename_enabled`, `ttt_rolename_spawn_weight`, and `ttt_rolename_min_players` ConVars.                                                                                                                                                                                                                                                                   | 2.1.8    |
 | `ROLE.blockhealthconvars`         | boolean                           | Whether this role should ***NOT*** have `ttt_rolename_starting_health` and `ttt_rolename_max_health` ConVars.                                                                                                                                                                                                                                                                                          | 2.1.8    |
 | `ROLE.blockshopconvars`           | boolean                           | Whether this role should ***NOT*** have shop related ConVars.                                                                                                                                                                                                                                                                                                                                          | 2.1.8    |
+| `ROLE.usesspectator`              | boolean                           | Whether this role uses spectator positions and should have an invisible following entity created for all dead players. This is needed to work around dead players not networking their positions frequently enough for accurate position representation.                                                                                                                                               | 2.3.2    |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
@@ -997,7 +998,7 @@ For example, here is what 'sprite_sum_noz.vmt' looks like:
 
 ## Uploading Your Addon
 
-Your role is almost ready to go! The last thing you need to do is upload your addon to the steam workshop. Before you can do that there are 2 more files you need to make 'addon.json' and your workshop icon.
+Your role is almost ready to go! The last thing you need to do is upload your addon to the steam workshop. Before you can do that there are 2 more files you need to make: 'addon.json' and your workshop icon.
 
 ### addon.json
 
@@ -1016,7 +1017,7 @@ For example 'addon.json' for the Summoner role looks like this:
 
 Now is the time to open the last template. This step is completely optional, you can use whatever workshop icon you want! However, if you want to keep it consistent with other CR for TTT roles open up 'Workshop Icon Template.psd'.
 
-Right about now you should be getting a feeling of déjà vu because out friend the white dashed outline is back. Copy your role icon onto the 'Icon' layer and this time instead of a shadow you should see a thick coloured outline. Resize your icon so the white all fits within the guide, it doesn't matter if the coloured outline spills outside the guide. Hide the 'Icon Guide' layer and you are almost good to go.
+Right about now you should be getting a feeling of déjà vu because our friend the white dashed outline is back. Copy your role icon onto the 'Icon' layer and this time instead of a shadow you should see a thick coloured outline. Resize your icon so the white all fits within the guide, it doesn't matter if the coloured outline spills outside the guide. Hide the 'Icon Guide' layer and you are almost good to go.
 
 Each team in CR for TTT has it's own colour it is identified by and this template works best if you switch out the background to match that colour. In the layers window you should see four different background colours. Hide all the ones that don't match your roles team. You should also see four different stroke outline effects on the 'Role Icon' layer. Hide all the ones that don't match the colour of the background.
 

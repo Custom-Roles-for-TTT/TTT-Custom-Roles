@@ -109,6 +109,12 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
     AddHook("Move", "TTTSprintMove", function(ply, _)
         if GetRoundState() == ROUND_WAIT then return end
         if CLIENT and ply ~= LocalPlayer() then return end
+        if not sprintEnabled then
+            if ply:GetSprinting() then
+                ply:SetSprinting(false)
+            end
+            return
+        end
         if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
 
         local forwardKey = CallHook("TTTSprintKey", nil, ply) or IN_FORWARD
@@ -139,6 +145,7 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
     end)
 
     AddHook("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
+        if not sprintEnabled then return end
         if GetRoundState() == ROUND_WAIT then return end
         if CLIENT and ply ~= LocalPlayer() then return end
         if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end

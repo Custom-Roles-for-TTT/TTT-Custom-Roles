@@ -18,7 +18,7 @@
         <p><em>NOTE</em>: These values are synchronized at the exact moment the method is called and that is it. They are *not* sent to new players upon joining the game.</p>
     </div>
     <div class="contentbody panel">
-        <h3><a id="syncsetplayerpropertyply-propertyName-propertyValue-targets" href="#syncsetplayerpropertyply-propertyName-propertyValue-targets">SYNC:SetPlayerProperty(ply, propertyName, propertyValue, targets)</a></h3>
+        <h3><a id="syncsetplayerpropertyply-propertyname-propertyvalue-targets" href="#syncsetplayerpropertyply-propertyname-propertyvalue-targets">SYNC:SetPlayerProperty(ply, propertyName, propertyValue, targets)</a></h3>
         <p>
             Sets the value of the property with the given <code>propertyName</code> on <code>ply</code> to equal <code>propertyValue</code> and then synchronizes that value to all <code>targets</code>.<br>
             <em>Realm:</em> Server<br>
@@ -32,7 +32,7 @@
             <li><em>targets</em> - The targets that should have this value available on their clients. <em>(Defaults to sending to all players)</em></li>
         </ul>
 
-        <h3><a id="syncclearplayerpropertyply-propertyName-targets" href="#syncclearplayerpropertyply-propertyName-targets">SYNC:ClearPlayerProperty(ply, propertyName, targets)</a></h3>
+        <h3><a id="syncclearplayerpropertyply-propertyname-targets" href="#syncclearplayerpropertyply-propertyname-targets">SYNC:ClearPlayerProperty(ply, propertyName, targets)</a></h3>
         <p>
             Clears the value of the property with the given <code>propertyName</code> on <code>ply</code> and then synchronizes that value to all <code>targets</code>.<br>
             <em>Realm:</em> Server<br>
@@ -41,6 +41,33 @@
         </p>
         <ul>
             <li><em>ply</em> - The player whose property value is being cleared</li>
+            <li><em>propertyName</em> - The name of the property being cleared</li>
+            <li><em>targets</em> - The targets that should have this value cleared on their clients. <em>(Defaults to sending to all players)</em></li>
+        </ul>
+
+        <h3><a id="syncsetentitypropertyent-propertyname-propertyvalue-targets" href="#syncsetentitypropertyent-propertyname-propertyvalue-targets">SYNC:SetEntityProperty(ent, propertyName, propertyValue, targets)</a></h3>
+        <p>
+            Sets the value of the property with the given <code>propertyName</code> on <code>ent</code> to equal <code>propertyValue</code> and then synchronizes that value to all <code>targets</code>.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The entity whose property value is being set</li>
+            <li><em>propertyName</em> - The name of the property being set</li>
+            <li><em>propertyValue</em> - The value the property is being set to</li>
+            <li><em>targets</em> - The targets that should have this value available on their clients. <em>(Defaults to sending to all players)</em></li>
+        </ul>
+
+        <h3><a id="syncclearentitypropertyent-propertyname-targets" href="#syncclearentitypropertyent-propertyname-targets">SYNC:ClearEntityProperty(ent, propertyName, targets)</a></h3>
+        <p>
+            Clears the value of the property with the given <code>propertyName</code> on <code>ent</code> and then synchronizes that value to all <code>targets</code>.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.3.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The entity whose property value is being cleared</li>
             <li><em>propertyName</em> - The name of the property being cleared</li>
             <li><em>targets</em> - The targets that should have this value cleared on their clients. <em>(Defaults to sending to all players)</em></li>
         </ul>

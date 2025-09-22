@@ -58,6 +58,13 @@ Removes queued messages with the given ID from the queue and clears any currentl
 *Parameters:*
 - *id* - The identifier of the message(s) you want to clear
 
+### plymeta:CreateSpectatorSpirit(allow_spectators)
+Creates an invisible entity that follows this dead player. Useful for tracking their position as a spectator more accurately due to the low network rate for spectator players.\
+*Realm*: Server\
+*Added in*: 2.3.2 \
+*Parameters:*
+- *allow_spectators* - Whether to create spirits for players who are true spectators (players who did not participate in this round). (Defaults to `false`) *(Added in 2.3.3)*
+
 ### plymeta:DisableRoleAbility()
 Disables this player's role ability, if it isn't already.\
 *NOTE*: If the player's role ability was not already disabled, this will also call the `TTTOnRoleAbilityDisabled` hook.\
@@ -270,6 +277,11 @@ Whether the entity or position given is on screen for the player, within the giv
 - *ent_or_pos* - The entity or position vector that is being checked
 - *limit* - The maximum value limit before a player is determined to be "off screen" (Defaults to 1)
 
+### plymeta:IsRagdolled()
+Whether this player has been ragdolled by `plymeta:Ragdoll`.\
+*Realm*: Client and Server\
+*Added in*: 2.3.2 
+
 ### plymeta:IsRespawning()
 Whether this player is currently respawning.\
 *Realm:* Client and Server\
@@ -406,12 +418,28 @@ Queues a message to be shown to the player. Useful in situations where multiple 
 - *id* - An identifier string that can be used to clear the message or remove it from the queue (Optional) *(Added in 2.2.1)*
 - *predicate* - Predicate function called with the player as the sole parameter before the message is sent. Return *true* to allow the message or *false* to prevent it (Optional) *(Added in 2.0.5)* *(Only available on the server realm)*
 
+### plymeta:Ragdoll(len, transfer_damage, leave_role_weaps)  
+Creates a ragdoll representation of this player and forces the player to spectate it.\
+*Realm*: Server\
+*Added in*: 2.3.2\
+*Parameters*:
+- *len* - The length of time to ragdoll this player for. If <0 or not provided, ragdoll lasts indefinitely
+- *transfer_damage* - Whether to transfer damage from the created ragdoll to the player it represents
+- *leave_role_weaps* - Whether to leave role weapons on the player while they are ragdolled
+
+*Returns*: The created ragdoll entity. 
+
 ### plymeta:RemoveEquipmentItem(item_id)
 Removes the equipment item with given ID from this player.\
 *Realm:* Server\
 *Added in:* 2.1.1\
 *Parameters:*
 - *item_id* - The ID of the item being removed from this player
+
+### plymeta:RemoveSpectatorSpirit()
+Removes the invisible following entity for this player.\
+*Realm*: Server\
+*Added in*: 2.3.2 
 
 ### plymeta:ResetMessageQueue()
 Clears the message queue for the player.\
@@ -565,3 +593,8 @@ Stops the player from respawning due to a role feature.\
 Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
+
+### plymeta:UnRagdoll()
+Removes the ragdoll representation of this player created by `plymeta:Ragdoll` and restores the player state.\
+*Realm*: Server\
+*Added in*: 2.3.2

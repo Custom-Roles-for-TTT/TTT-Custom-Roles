@@ -4,10 +4,12 @@ if not util then return end
 
 local cvars = cvars
 local file = file
+local hook = hook
 local input = input
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
+local net = net
 local pairs = pairs
 local player = player
 local scripted_ents = scripted_ents
@@ -15,7 +17,6 @@ local string = string
 local table = table
 local timer = timer
 local weapons = weapons
-local hook = hook
 
 local FileExists = file.Exists
 local FileRead = file.Read
@@ -27,6 +28,7 @@ local StringStartsWith = string.StartsWith
 local StringTrim = string.Trim
 local StringTrimLeft = string.TrimLeft
 local HookCall = hook.Call
+local HookAdd = hook.Add
 
 -- attempts to get the weapon used from a DamageInfo instance needed because the
 -- GetAmmoType value is useless and inflictor isn't properly set (yet)
@@ -221,12 +223,16 @@ function table.HasValue(tbl, val)
 end
 
 function table.HasItemWithPropertyValue(tbl, key, val)
-    if not tbl or not key then return end
+    return table.GetFirstItemWithPropertyValue(tbl, key, val) ~= nil
+end
+
+function table.GetFirstItemWithPropertyValue(tbl, key, val)
+    if not tbl or not key then return nil end
 
     for _, v in pairs(tbl) do
-        if v[key] and v[key] == val then return true end
+        if v[key] == val then return v end
     end
-    return false
+    return nil
 end
 
 -- Value equality for tables
@@ -466,6 +472,21 @@ function util.SimpleTime(seconds, fmt)
     return StringFormat(fmt, m, s, ms)
 end
 
+-- Returns the number of bits required to network an integer
+function util.BitsRequired(num, signed)
+    local bits, max = 0, 1
+    while max <= num do
+        bits = bits + 1
+        max = max + max
+    end
+
+    if signed then
+        bits = bits + 1
+    end
+
+    return bits
+end
+
 if SERVER then
     function util.ExecFile(filePath, errorIfMissing)
         if not FileExists(filePath, "GAME") then
@@ -547,6 +568,20 @@ function util.FormattedList(tbl, formatting)
 
     return result
 end
+
+local roleBits = nil
+function util.RoleBits()
+    if not roleBits then
+        roleBits = math.max(8, util.BitsRequired(ROLE_MAX, true))
+    end
+
+    return roleBits
+end
+
+-- Bust the cache each round just in case something screwed up
+HookAdd("TTTPrepareRound", "RoleBits_Cache_TTTPrepareRound", function()
+    roleBits = nil
+end)
 
 ----------------------------
 -- ADAPTED FROM FLARE GUN --

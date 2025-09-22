@@ -48,10 +48,12 @@ local ClassHint = {
                     end
                 -- Only show covert search label if the body can be searched
                 elseif CORPSE.CanBeSearched(ply, ent) then
-                    local ownerEnt = CORPSE.GetPlayer(ent)
-                    -- and has not already
-                    if IsValid(ownerEnt) and not ownerEnt:GetNWBool("body_searched", false) then
-                        txt = txt .. "_covert"
+                    if GetConVar("ttt_corpse_search_auto_confirm"):GetBool() then
+                        local ownerEnt = CORPSE.GetPlayer(ent)
+                        -- and has not already
+                        if IsValid(ownerEnt) and not ownerEnt:GetNWBool("body_searched", false) then
+                            txt = txt .. "_covert"
+                        end
                     end
                 -- If the body can't be searched, change the label to say "call a Detective" instead
                 else
@@ -386,7 +388,7 @@ end
 
 ---- Crosshair affairs
 
-surface.CreateFont("TargetIDSmall2", { font = "TargetID",
+surface.CreateFont("TargetIDSmall2", { font = "Tahoma",
                                        size = 16,
                                        weight = 1000 })
 

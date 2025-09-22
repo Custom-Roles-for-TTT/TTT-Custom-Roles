@@ -38,7 +38,7 @@ include("scoring_shd.lua")
 local skull_icon = Material("HUD/killicons/default")
 
 surface.CreateFont("WinHuge", {
-    font = "Trebuchet24",
+    font = "Tahoma",
     size = 72,
     weight = 1000,
     shadow = true,
@@ -46,7 +46,7 @@ surface.CreateFont("WinHuge", {
 })
 
 surface.CreateFont("WinLarge", {
-    font = "Trebuchet24",
+    font = "Tahoma",
     size = 48,
     weight = 1000,
     shadow = true,
@@ -54,7 +54,7 @@ surface.CreateFont("WinLarge", {
 })
 
 surface.CreateFont("WinMedium", {
-    font = "Trebuchet24",
+    font = "Tahoma",
     size = 40,
     weight = 1000,
     shadow = true,
@@ -62,7 +62,7 @@ surface.CreateFont("WinMedium", {
 })
 
 surface.CreateFont("WinSmall", {
-    font = "Trebuchet24",
+    font = "Tahoma",
     size = 32,
     weight = 1000,
     shadow = true,
@@ -70,7 +70,7 @@ surface.CreateFont("WinSmall", {
 })
 
 surface.CreateFont("WinTiny", {
-    font = "Trebuchet24",
+    font = "Tahoma",
     size = 24,
     weight = 1000,
     shadow = true,
@@ -78,13 +78,13 @@ surface.CreateFont("WinTiny", {
 })
 
 surface.CreateFont("ScoreNicks", {
-    font = "Trebuchet24",
+    font = "Tahoma",
     size = 32,
     weight = 100
 })
 
 surface.CreateFont("IconText", {
-    font = "Trebuchet24",
+    font = "Tahoma",
     size = 24,
     weight = 100
 })
@@ -157,7 +157,7 @@ end)
 
 net.Receive("TTT_RoleChanged", function(len)
     local s64 = net.ReadString()
-    local role = net.ReadInt(8)
+    local role = net.ReadInt(util.RoleBits())
     local ply = player.GetBySteamID64(s64)
     local name = "UNKNOWN"
     if IsValid(ply) then

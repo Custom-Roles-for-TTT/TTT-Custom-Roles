@@ -1,5 +1,136 @@
 # Release Notes
 
+## 2.4.0
+**Released: September 22nd, 2025**\
+Includes beta updates [2.3.1](#231-beta) to [2.3.6](#236-beta).
+
+### Fixes
+- Fixed brief clientside errors when Taskmaster's role is switched to some other role
+- Fixed error when the Taskmaster uses the crowbar after completing the "Swing Crowbar" task
+- Fixed all Taskmaster timer-based tasks not working if there is more than one Taskmaster
+- Fixed Taskmaster's "Crouch Near Body" task not working when there were multiple bodies on the map
+- Fixed Taskmaster's `TASK.OnTaskRemoved` and `TASK.OnTaskComplete` not always being called when the role state was cleaned up (at the end of a round, when their role is changed, etc.)
+  - This caused odd issues like receiving notifications from Taskmaster tasks even when the player was no longer a Taskmaster
+
+## 2.3.6 (Beta)
+**Released: September 20th, 2025**
+
+### Additions
+- Added completed task count to Taskmaster on the round summary screen
+- Added radio sounds for Clown activate, Jester celebrate, Loot Goblin cackle, Old Man ramble, Vampire fade, and Zombie leap
+
+### Changes
+- Changed Taskmaster's "Stay Hidden" task to be a bit less lenient
+- Updated Phantom tutorial to show the maximum number of respawns they have, if that setting is enabled
+- Ported "TTT: Reduce Healing sound repetition count in Radio"
+- Ported "TTT: Do not stack round start popups"
+  - There is no change in functionality, we just adjusted our implementation of this feature to match the base
+- Ported "TTT: make Radio buttons a bit wider"
+
+### Fixes
+- Fixed spectators counting against the Taskmaster in the "Stay Hidden" task
+- Fixed the Taskmaster's "Kill a Player After a 360" task
+- Ported "TTT: Fixed font warnings (no visual changes)"
+
+### Developer
+- Ported "TTT: Added ability to use parameters when defining custom radio sound names"
+
+## 2.3.5 (Beta)
+**Released: September 5th, 2025**
+
+### Additions
+- Added new independent role: Taskmaster
+- Added ability to control whether the mercenary gets body armor as part of their loadout (defaults to `true`)
+- Added ability to change vampire's fang drain overheal to overheal (default), increase max health, or do both
+- Added ability to disable automatically confirming a players death when searching their body (disabled by default)
+- Added ability for the Tracker to be a special innocent instead of a special detective (disabled by default)
+
+### Changes
+- Updated weapon switch and pickup HUD elements to use the same logic for getting weapon names
+  - Fixes very rare cases where they would say different things
+- Ported "TTT: Add custom T Radio sound support and extra default sounds" from base TTT
+
+### Fixes
+- Fixed illusionist not blocking traitor team voice chat
+- Fixed promoted impersonator and deputy who are searched by a detective not always showing their true role on the scoreboard
+
+### Developer
+- Ported "signed" parameter added to `util.BitsRequired` from base TTT
+- Added `state` parameter to `TTTTeamVoiceChatTargets` hook
+- Added `table.GetFirstItemWithPropertyValue` static method
+- Added `maxchange` parameter to `TTTVampireBodyEaten` hook
+- Added `TTTDetectiveCalledToBody` hook which is called when a player calls a detective to a body
+- Changed `SYNC` methods to not clear values that are already `nil`
+
+## 2.3.4 (Beta)
+**Released: August 9th, 2025**
+
+### Changes
+- Changed "Useful Keys" tutorial screen to hide the sprint button when sprint is disabled
+- Updated incompatible addons list to add a few more addons causing issues
+- Removed warning that CS:S isn't installed when starting now that the content is shipped with GMod
+
+### Fixes
+- Fixed `ttt_phantom_killer_footstep_time` not being disable-able
+- Fixed crosshair changing size when pressing the sprint button even with sprint is disabled
+- Fixed shop randomization not applying to passive items
+- Fixed a few typos
+
+## 2.3.3 (Beta)
+**Released: June 28th, 2025**
+
+### Additions
+- Added role pack name to the top of the cheat sheet if one is enabled
+
+### Changes
+- Changed invisible `npc_kleiner` spawning logic so they are automatically created when a role that needs them (like the medium) is used and removed when one is not
+  - This is an improvement over the previous logic which always created the invisible NPC even when it wasn't being used by anyone
+
+### Fixes
+- Fixed Plaguemaster's gun not being removed when it drops because they are killed
+- Fixed error when trying to unragdoll a player that was not ragdolled
+- Fixed player ragdolls created by `plymeta:Ragdoll` not being removed when a player died
+
+### Developer
+- Added `util.BitsRequired` helper method to calculate how many bits are required to transmit the given numerical value over the network
+- Added `util.RoleBits` helper method to calculate how many bits are required to transmit a role ID over the network
+- Changed role transmission over the network to use a dynamically increasing number of bits, starting at 8, to allow for more custom roles to be installed simultaneously
+- Changed `plymeta:CreateSpectatorSpirit` to not create spirits for players who were not in the round (ROLE_NONE) by default
+  - Added new `allow_spectator` parameter to change to previous behavior of creating spirits for everyone who is not alive
+
+## 2.3.2 (Beta)
+**Released: June 14th, 2025**
+
+### Additions
+- Added ability for zombies on the traitor team to spawn with other traitor roles when `ttt_zombie_round_chance` is `0`
+- Added ability for the defuser to disable the bomb station, radio, and decoy
+- Added button to the C4 defuse UI to use the defuser if you have one
+- Added ability to allow a player to damage their own bomb station (disabled by default)
+  - This adds parity with a similar convar that exists for health stations
+
+### Changes
+- Changed C4 defuse logic to automatically succeed when you have the defuser, regardless of which wire is cut
+- Changed the bomb station to explode when it is destroyed (this can be disabled by changing the new `ttt_bombstation_explode_on_destroy` convar)
+
+### Fixes
+- Fixed role cheat sheet and Guessing Device sorting roles by the team that role ended the last round on
+- Fixed role cheat sheet revealing your role when `ttt_hide_role` was enabled
+- Fixed potential errors when vampire fangs and zombie claws are used on fake ragdolls
+- Fixed arsonist's delayed notifications not being cancelled if their role is changed after a target is doused but before they are notified
+- Fixed cannibal being revealed to anyone who can see jesters
+
+### Developer
+- Fixed `TTTUpdateRoleState` being called every time role weapons were updated
+- Added Attacker and upcoming Inflictor property to Bullet structure in `weapon_tttbase` for compatibility
+- Added missing information to the developer documentation
+- Added `plymeta:Ragdoll`, `plymeta:UnRagdoll`, and `plymeta:IsRagdolled` to make it easier for roles that want to temporarily ragdoll their players
+- Added `TTTPlayerRagdolled` and `TTTPlayerUnRagdolled` hooks that are called after `plymeta:Ragdoll` and `plymeta:UnRagdoll`, respectively
+- Added `plymeta:CreateSpectatorSpirit` and `plymeta:RemoveSpectatorSpirit` for creating and removing a following entity for dead players
+- Added `ROLE.usesspectator` external role property and `ROLE_USES_SPECTATOR` global table to enable creating a following entity on dead players
+- Added `TTTSpectatorSpiritCreated` hook for when a following entity is created on a dead player
+- Added `SYNC:SetEntityProperty`, `SYNC:ClearEntityProperty`, `entmeta:SetProperty`, and `entmeta:ClearProperty` to allow doing an on-demand sync of property values for entities
+- Added `TTTShouldHideFromHighlight` hook to allow blocking a player from being highlighted
+
 ## 2.3.1
 **Released: April 20th, 2025**
 

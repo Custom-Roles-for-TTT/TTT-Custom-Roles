@@ -447,7 +447,8 @@ local function ShowSearchScreen(search_raw)
                 btn:SetDisabled(true)
             end,
             disabled = function()
-                return client:IsSpec() or not client:KeyDownLast(IN_WALK) or CORPSE.GetFound(rag, false)
+                local covert = client:KeyDownLast(IN_WALK) or not GetConVar("ttt_corpse_search_auto_confirm"):GetBool()
+                return client:IsSpec() or not covert or CORPSE.GetFound(rag, false)
             end
         })
 
@@ -607,16 +608,7 @@ local function StoreSearchResult(search)
     end
 end
 
-local function bitsRequired(num)
-    local bits, max = 0, 1
-    while max <= num do
-        bits = bits + 1
-        max = max + max
-    end
-    return bits
-end
-
-local plyBits = bitsRequired(game.MaxPlayers())
+local plyBits = util.BitsRequired(game.MaxPlayers())
 local origBitSet = util.BitSet
 local search = {}
 local function ReceiveRagdollSearch()
@@ -637,7 +629,7 @@ local function ReceiveRagdollSearch()
     search.nick = net.ReadString()
 
     -- Equipment
-    local eq_bits = bitsRequired(EQUIP_MAX)
+    local eq_bits = util.BitsRequired(EQUIP_MAX)
     local eq = {}
     local eq_count = net.ReadUInt(eq_bits)
     for i=1,eq_count do
@@ -652,9 +644,9 @@ local function ReceiveRagdollSearch()
     search.eq_regen = table.HasValue(eq, EQUIP_REGEN)
 
     -- Traitor things
-    search.role = net.ReadInt(8)
+    search.role = net.ReadInt(util.RoleBits())
     search.team = player.GetRoleTeam(search.role)
-    search.c4 = net.ReadUInt(bitsRequired(C4_WIRE_COUNT))
+    search.c4 = net.ReadUInt(util.BitsRequired(C4_WIRE_COUNT))
 
     -- Kill info
     search.dmg = net.ReadUInt(30)

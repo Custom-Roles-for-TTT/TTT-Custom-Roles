@@ -55,6 +55,8 @@ function SWEP:PrimaryAttack()
 
     local cone = self.Primary.Cone
     local bullet      = {}
+    bullet.Attacker   = owner
+    bullet.Inflictor  = self
     bullet.Num        = 1
     bullet.Src        = owner:GetShootPos()
     bullet.Dir        = owner:GetAimVector()
@@ -90,4 +92,8 @@ function SWEP:PrimaryAttack()
 
     if owner:IsNPC() or (not owner.ViewPunch) then return end
     owner:ViewPunch(Angle(util.SharedRandom(self:GetClass(), -0.2, -0.1, 0) * self.Primary.Recoil, util.SharedRandom(self:GetClass(), -0.1, 0.1, 1) * self.Primary.Recoil, 0))
+end
+
+function SWEP:OnDrop()
+    self:Remove()
 end

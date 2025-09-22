@@ -549,7 +549,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
         -- Send message to server to update tables and files
         net.Start("TTT_ConfigureRoleWeapons")
         net.WriteString(id)
-        net.WriteInt(save_role, 8)
+        net.WriteInt(save_role, util.RoleBits())
         net.WriteBool(includeSelected)
         net.WriteBool(excludeSelected)
         net.WriteBool(noRandomSelected)

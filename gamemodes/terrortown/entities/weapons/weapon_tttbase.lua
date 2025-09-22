@@ -388,8 +388,11 @@ function SWEP:ShootBullet(dmg, recoil, numbul, cone)
 
     self:SendWeaponAnim(self.PrimaryAnim)
 
-    self:GetOwner():MuzzleFlash()
-    self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+
+    owner:MuzzleFlash()
+    owner:SetAnimation(PLAYER_ATTACK1)
 
     local sights = self:GetIronsights()
 
@@ -397,22 +400,24 @@ function SWEP:ShootBullet(dmg, recoil, numbul, cone)
     cone = cone or 0.01
 
     local bullet = {}
-    bullet.Num = numbul
-    bullet.Src = self:GetOwner():GetShootPos()
-    bullet.Dir = self:GetOwner():GetAimVector()
-    bullet.Spread = Vector(cone, cone, 0)
-    bullet.Tracer = 4
+    bullet.Attacker   = owner
+    bullet.Inflictor  = self
+    bullet.Num        = numbul
+    bullet.Src        = owner:GetShootPos()
+    bullet.Dir        = owner:GetAimVector()
+    bullet.Spread     = Vector(cone, cone, 0)
+    bullet.Tracer     = 4
     bullet.TracerName = self.Tracer or "Tracer"
-    bullet.Force = 10
-    bullet.Damage = dmg
+    bullet.Force      = 10
+    bullet.Damage     = dmg
     if CLIENT and sparkle:GetBool() then
         bullet.Callback = Sparklies
     end
 
-    self:GetOwner():FireBullets(bullet)
+    owner:FireBullets(bullet)
 
     -- Owner can die after firebullets
-    if (not IsValid(self:GetOwner())) or self:GetOwner():IsNPC() or (not self:GetOwner():Alive()) then return end
+    if owner:IsNPC() or not owner:Alive() then return end
 
     if ((game.SinglePlayer() and SERVER) or
             ((not game.SinglePlayer()) and CLIENT and IsFirstTimePredicted())) then
@@ -420,9 +425,9 @@ function SWEP:ShootBullet(dmg, recoil, numbul, cone)
         -- reduce recoil if ironsighting
         recoil = sights and (recoil * 0.6) or recoil
 
-        local eyeang = self:GetOwner():EyeAngles()
+        local eyeang = owner:EyeAngles()
         eyeang.pitch = eyeang.pitch - recoil
-        self:GetOwner():SetEyeAngles(eyeang)
+        owner:SetEyeAngles(eyeang)
     end
 end
 

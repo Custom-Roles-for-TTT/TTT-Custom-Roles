@@ -83,7 +83,7 @@ local function RoleChatMsg(sender, msg)
     if not targets then return end
 
     net.Start("TTT_RoleChat")
-        net.WriteInt(sender:GetRole(), 8)
+        net.WriteInt(sender:GetRole(), util.RoleBits())
         net.WritePlayer(sender)
         net.WriteString(msg)
     net.Send(targets)
@@ -338,20 +338,20 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
     return true, loc_voice:GetBool() and GetRoundState() ~= ROUND_POST
 end
 
-local function GetVoiceChatTargets(speaker)
+local function GetVoiceChatTargets(speaker, state)
     local targets = {}
     if speaker:IsActiveTraitorTeam() then
         targets = GetTraitorTeamFilterWithExcludes(true)
     end
 
-    local result = CallHook("TTTTeamVoiceChatTargets", nil, speaker, targets)
+    local result = CallHook("TTTTeamVoiceChatTargets", nil, speaker, targets, state)
     if type(result) == "boolean" and not result then return nil end
 
     return targets
 end
 
 local function SendTraitorVoiceState(speaker, state)
-    local targets = GetVoiceChatTargets(speaker)
+    local targets = GetVoiceChatTargets(speaker, state)
     if not targets then return end
 
     -- make it as small as possible, to get there as fast as possible

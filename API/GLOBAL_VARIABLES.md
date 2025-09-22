@@ -66,6 +66,16 @@ Lookup table for the roles whose shop purchases can be delayed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2
 
+### DETECTIVE_ROLES
+Lookup table for whether a role is a detective or special detective role.\
+*Realm:* Client and Server\
+*Added in:* 1.1.3
+
+### DETECTIVE_LIKE_ROLES
+Lookup table for whether a role is a detective-like role.\
+*Realm:* Client and Server\
+*Added in:* 1.9.9
+
 ### EVENT_MAX
 The maximum event identifier.\
 *Realm:* Client and Server\

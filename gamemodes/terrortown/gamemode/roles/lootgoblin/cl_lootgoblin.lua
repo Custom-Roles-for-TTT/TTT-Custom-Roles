@@ -28,6 +28,9 @@ hook.Add("Initialize", "LootGoblin_Translations_Initialize", function()
     -- ConVars
     LANG.AddToLanguage("english", "lootgoblin_config_radar_sound", "Play radar ping sound")
 
+    -- Radio
+    LANG.AddToLanguage("english", "radio_lgob_cackle", "{goblin} Cackle")
+
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_lootgoblin", "Revealed to all players and drops random shop items when they die. They win if they can survive until the end of the round.")
 
@@ -64,6 +67,16 @@ hook.Add("TTTSettingsRolesTabSections", "LootGoblin_TTTSettingsRolesTabSections"
 
     parentForm:CheckBox(LANG.GetTranslation("lootgoblin_config_radar_sound"), "ttt_lootgoblin_radar_beep_sound")
     return true
+end)
+
+------------------
+-- HIGHLIGHTING --
+------------------
+
+hook.Add("TTTShouldHideFromHighlight", "LootGoblin_TTTShouldHideFromHighlight", function(ply, cli)
+    if ply:IsLootGoblin() and ply:IsRoleActive() then
+        return true
+    end
 end)
 
 -----------

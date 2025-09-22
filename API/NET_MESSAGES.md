@@ -30,7 +30,7 @@ Logs that a player's role has changed.\
 *Added in:* 1.0.0\
 *Parameters:*
 - *String* - The player's SteamID64 value
-- *UInt (Versions <= 1.1.1), Int (Versions >= 1.1.2)* - The player's new role number
+- *UInt(8) (Versions <= 1.1.1), Int(8) (Versions >= 1.1.2)* - The player's new role number. *(NOTE: Starting in 2.3.3, the number of bits this uses dynamically increases from 8 based on how many role are registered. Use [util.RoleBits](./METHODS_UTIL.md#utilrolebits) to determine the correct value to use.)*
 
 ### TTT_UpdateRoleNames
 Causes the client to update their local role name tables based on convar values.\

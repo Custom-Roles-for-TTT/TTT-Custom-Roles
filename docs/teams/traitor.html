@@ -527,7 +527,7 @@
                             <td>ttt_informant_scanner_cooldown</td>
                             <td>3</td>
                             <td>Integer</td>
-                            <td>The amount of time in seconds the Informant's tracker goes on cooldown for after losing it's target.</td>
+                            <td>The amount of time in seconds the Informant's tracker goes on cooldown for after losing its target.</td>
                         </tr>
                         <tr>
                             <td>ttt_informant_scanner_distance</td>
@@ -539,7 +539,7 @@
                             <td>ttt_informant_scanner_float_time</td>
                             <td>1</td>
                             <td>Integer</td>
-                            <td>The amount of time in seconds it takes for the Informant's scanner to lose it's target without line of sight.</td>
+                            <td>The amount of time in seconds it takes for the Informant's scanner to lose its target without line of sight.</td>
                         </tr>
                         <tr>
                             <td>ttt_informant_scanner_independent_mult</td>
@@ -983,6 +983,18 @@
                             <td>-1</td>
                             <td>Integer</td>
                             <td>The amount over the Vampire's normal maximum health that the Vampire can heal to by drinking blood from living players. <i>(Set to -1 to use the same amount as <code>ttt_vampire_fang_overheal</code> instead.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_vampire_fang_overheal_mode</td>
+                            <td>0</td>
+                            <td>Integer (0-1)</td>                            
+                            <td>How to handle healing a vampire over their maximum health:
+                                <ol start="0">
+                                    <li>Heal over their max health.</li>
+                                    <li>Increase their max health.</li>
+                                    <li>Increase their max health and heal them to full.</li>
+                                </ol>
+                            </td>
                         </tr>
                         <tr>
                             <td>ttt_vampire_fang_timer</td>

@@ -39,7 +39,7 @@ surface.CreateFont("TabLarge", {
     weight = 700,
     shadow = true, antialias = false })
 surface.CreateFont("Trebuchet22", {
-    font = "Trebuchet MS",
+    font = "Tahoma",
     size = 22,
     weight = 900 })
 
@@ -190,11 +190,11 @@ local function RoundStateChange(o, n)
     if n == ROUND_PREP then
         -- can enter PREP from any phase due to ttt_roundrestart
         RunHook("TTTPrepareRound")
+    elseif (o == ROUND_PREP) and (n == ROUND_ACTIVE) then
+        RunHook("TTTBeginRound")
         for role = 0, ROLE_MAX do
             ROLE_STARTING_TEAM[role] = player.GetRoleTeam(role, false)
         end
-    elseif (o == ROUND_PREP) and (n == ROUND_ACTIVE) then
-        RunHook("TTTBeginRound")
     elseif (o == ROUND_ACTIVE) and (n == ROUND_POST) then
         RunHook("TTTEndRound")
     end
@@ -230,7 +230,7 @@ local function ReceiveRole()
     -- Wait until now to update the teams so we know the globals have been synced
     UpdateRoleState()
 
-    local role = net.ReadInt(8)
+    local role = net.ReadInt(util.RoleBits())
 
     -- after a mapswitch, server might have sent us this before we are even done
     -- loading our code
@@ -257,7 +257,7 @@ end
 net.Receive("TTT_Role", ReceiveRole)
 
 local function ReceiveRoleList()
-    local role = net.ReadInt(8)
+    local role = net.ReadInt(util.RoleBits())
     local num_ids = net.ReadUInt(8)
 
     for _ = 1, num_ids do
@@ -572,7 +572,7 @@ end
 -- Player highlights
 
 local function ShouldHideFromHighlight(ply, client)
-    return ply:IsLootGoblin() and ply:IsRoleActive()
+    return CallHook("TTTShouldHideFromHighlight", nil, ply, client) == true
 end
 
 function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)

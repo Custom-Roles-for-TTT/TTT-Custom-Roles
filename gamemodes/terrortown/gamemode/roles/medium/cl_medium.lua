@@ -93,6 +93,9 @@ local function ShouldSeeSpirits(ply)
 end
 
 local client
+local wispOffset = Vector(0, 0, 64)
+local wispVelocity = Vector(0, 0, 30)
+local wispColor = Vector(1, 1, 1)
 hook.Add("Think", "Medium_RoleFeature_Think", function()
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
@@ -102,21 +105,21 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
     if not ShouldSeeSpirits(client) then return end
 
     for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
-        if ent:GetNWBool("MediumSpirit", false) then
+        if ent.SpiritVisible then
             ent:SetNoDraw(true)
             ent:SetRenderMode(RENDERMODE_NONE)
             ent:SetNotSolid(true)
             ent:DrawShadow(false)
             if not ent.WispEmitter then ent.WispEmitter = ParticleEmitter(ent:GetPos()) end
             if not ent.WispNextPart then ent.WispNextPart = CurTime() end
-            local pos = ent:GetPos() + Vector(0, 0, 64)
+            local pos = ent:GetPos() + wispOffset
             -- Use DistToSqr as it's more efficient and this is called very frequently
             -- 9000000 = 3000^2
             if ent.WispNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
                 ent.WispEmitter:SetPos(pos)
                 ent.WispNextPart = CurTime() + MathRand(0.003, 0.01)
                 local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
-                particle:SetVelocity(Vector(0, 0, 30))
+                particle:SetVelocity(wispVelocity)
                 particle:SetDieTime(1)
                 particle:SetStartAlpha(MathRandom(150, 220))
                 particle:SetEndAlpha(0)
@@ -125,7 +128,7 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
                 particle:SetEndSize(1)
                 particle:SetRoll(MathRand(0, math.pi))
                 particle:SetRollDelta(0)
-                local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
+                local col = ent:GetNWVector("SpiritColor", wispColor)
                 particle:SetColor(col.x * 255, col.y * 255, col.z * 255)
             end
         elseif ent.WispEmitter then
@@ -151,15 +154,15 @@ hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderable
     if not IsPlayer(client) or not client:IsActiveMedium() or client:IsRoleAbilityDisabled() then return end
 
     for _, ent in ipairs(FindEntsByClass("npc_kleiner")) do
-        if ent:GetNWBool("MediumSpirit", false) then
+        if ent.SpiritVisible then
             local sid64 = ent:GetNWString("SpiritOwner", "")
             local ply = player.GetBySteamID64(sid64)
             if IsPlayer(ply) then
                 local stage = ply:GetNWInt("TTTMediumSeanceStage")
                 if stage >= MEDIUM_SCANNED_NAME then
-                    local pos = ent:GetPos() + Vector(0, 0, 64)
+                    local pos = ent:GetPos() + wispOffset
                     local ang = EyeAngles()
-                    local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
+                    local col = ent:GetNWVector("SpiritColor", wispColor)
                     cam.Start3D2D(pos, Angle(0, ang.y - 90, 90 - ang.x), .25)
                     draw.SimpleText(ply:Nick(), "TargetID", 0, 30, Color(col.x * 255, col.y * 255, col.z * 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
                     if stage >= MEDIUM_SCANNED_TEAM then
