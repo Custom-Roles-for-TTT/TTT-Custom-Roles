@@ -91,7 +91,10 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        ClearPrimaryAttack(ply)
+        local crowbar = ply:GetWeapon("weapon_zm_improvised")
+        if IsValid(crowbar) then
+            ClearPrimaryAttack(crowbar)
+        end
 
         local sid64 = ply:SteamID64()
         hook.Remove("WeaponEquip", "Taskmaster_Crowbar_WeaponEquip_" .. sid64)

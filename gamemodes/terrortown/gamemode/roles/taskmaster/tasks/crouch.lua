@@ -66,7 +66,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local time = taskmaster_crouch_time:GetInt()
-        timer.Create("TTTTaskmasterCrouchTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterCrouchTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
             if ply:Alive() and not ply:IsSpec() and ply:Crouching() then
@@ -88,7 +88,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterCrouchTimer")
+        timer.Remove("TTTTaskmasterCrouchTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_CrouchStart", ply)
 

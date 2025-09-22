@@ -63,7 +63,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local time = taskmaster_takedamage_time:GetInt()
-        timer.Create("TTTTaskmasterTakeDamageTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterTakeDamageTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
             if not ply:Alive() or ply:IsSpec() then return end
             if not ply.Task_TakeDamageStart then return end
@@ -87,7 +87,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterTakeDamageTimer")
+        timer.Remove("TTTTaskmasterTakeDamageTimer_" .. ply:SteamID64())
 
         hook.Remove("PostEntityTakeDamage", "Taskmaster_TakeDamage_PostEntityTakeDamage_" .. ply:SteamID64())
 

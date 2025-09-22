@@ -66,7 +66,7 @@ if SERVER then
 
     TASK.OnTaskAssigned = function(ply)
         local time = taskmaster_standonplayer_time:GetInt()
-        timer.Create("TTTTaskmasterStandOnPlayerTimer", 0.1, 0, function()
+        timer.Create("TTTTaskmasterStandOnPlayerTimer_" .. ply:SteamID64(), 0.1, 0, function()
             if not IsPlayer(ply) then return end
 
             if ply:Alive() and not ply:IsSpec() and IsPlayer(ply:GetGroundEntity()) then
@@ -88,7 +88,7 @@ if SERVER then
     end
 
     TASK.OnTaskRemoved = function(ply)
-        timer.Remove("TTTTaskmasterStandOnPlayerTimer")
+        timer.Remove("TTTTaskmasterStandOnPlayerTimer_" .. ply:SteamID64())
 
         ply:ClearProperty("Task_StandOnPlayerStart", ply)
 
