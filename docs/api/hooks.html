@@ -157,6 +157,21 @@
             <em>Return:</em> Whether to allow using the cure on this player. (Defaults to <code>false</code>)
         </p>
 
+        <h3><a id="tttcanrespawnasroleply-role" href="#tttcanrespawnasroleply-role">TTTCanRespawnAsRole(ply, role)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when determining if a player can be respawned as the given role.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.4.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player who is potentially respawning as a new role</li>
+            <li><em>role</em> - The role the player is respawning as (see <code>ROLE_*</code> global enumeration)</li>
+        </ul>
+        <p>
+            <em>Return:</em> Whether to allow this player to respawn as the given role. (Defaults to <code>true</code>)
+        </p>
+
         <h3><a id="tttcantransferweaponownershipply-wep" href="#tttcantransferweaponownershipply-wep">TTTCanTransferWeaponOwnership(ply, wep)</a></h3>
         <p>
             Called when determining if a player can have ownership of a specific weapon transferred to them.<br>
@@ -1151,7 +1166,7 @@
         <ul>
             <li><em>color</em> - The new color value to use or the original passed into the hook. Starting in version 2.1.19, you can also return <code>false</code> to not show color at all</li></li>
             <li><em>roleFileName</em> - The new roleFileName value to use or the original passed into the hook. Starting in version 2.1.19, you can also return <code>false</code> to not show an icon at all</li></li>
-            <li><em>flashRole</em> - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)</li>
+            <li><em>flashRole</em> - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see <code>ROLE_*</code> global enumeration)</li>
         </ul>
 
         <h3><a id="tttscoringsecondarywinswintype-secondarywins" href="#tttscoringsecondarywinswintype-secondarywins">TTTScoringSecondaryWins(wintype, secondaryWins)</a></h3>

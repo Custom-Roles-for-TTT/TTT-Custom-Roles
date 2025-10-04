@@ -99,6 +99,16 @@ Called when someone is attempting to use a cure on a player.\
 
 *Return:* Whether to allow using the cure on this player. (Defaults to `false`)
 
+### TTTCanRespawnAsRole(ply, role)  
+Called when determining if a player can be respawned as the given role.\
+*Realm:* Server\
+*Added in:* 2.4.1\
+*Parameters:*
+- *ply* - The target player who is potentially respawning as a new role
+- *role* - The role the player is respawning as (see `ROLE_*` global enumeration)
+
+*Return*: Whether to allow this player to respawn as the given role. (Defaults to `true`)
+
 ### TTTCanTransferWeaponOwnership(ply, wep)
 Called when determining if a player can have ownership of a specific weapon transferred to them.\
 *Realm:* Server\
@@ -757,7 +767,7 @@ Called before a player's row in the scoreboard (tab menu) is shown, allowing the
 *Return:*
 - *color* - The new color value to use or the original passed into the hook. Starting in version 2.1.19, you can also return `false` to not show color at all
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook. Starting in version 2.1.19, you can also return `false` to not show an icon at all
-- *flashRole* - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)
+- *flashRole* - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see `ROLE_*` global enumeration)
 
 ### TTTScoringSecondaryWins(wintype, secondaryWins)
 Called before each round summary screen is shown with the winning team. Used to add roles to the secondary win display (e.g. AND THE OLD MAN WINS).\
