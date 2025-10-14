@@ -1386,6 +1386,11 @@ Called after the `TTTCheckForWins` has already been called, allowing for an addo
 *Parameters:*
 - *winBlocks* - The table of callback functions that are given the current win type and return either the same win type they are given or a different win type if it should be changed. The callback function should **always** return a value.
 
+### TTTWinCheckBlocked()
+Called after the `TTTWinCheckBlocks` hook has been called and used to block a win.\
+*Realm:* Server\
+*Added in:* 2.4.1
+
 ### TTTWinCheckComplete(win)
 Called after a win condition has been set and right before the round eds. Used for roles like the old man that perform some logic before the end of the round without changing the outcome.\
 *Realm:* Server\

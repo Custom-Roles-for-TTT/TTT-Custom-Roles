@@ -2068,6 +2068,13 @@
             <li><em>winBlocks</em> - The table of callback functions that are given the current win type and return either the same win type they are given or a different win type if it should be changed. The callback function should <strong>always</strong> return a value.</li>
         </ul>
 
+        <h3><a id="tttwincheckblocked" href="#tttwincheckblocked">TTTWinCheckBlocked()</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called after the <code>TTTWinCheckBlocks</code> hook has been called and used to block a win.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.4.1
+        </p>
+
         <h3><a id="tttwincheckcompletewin" href="#tttwincheckcompletewin">TTTWinCheckComplete(win)</a></h3>
         <p>
             Called after a win condition has been set and right before the round eds. Used for roles like the Old Man that perform some logic before the end of the round without changing the outcome.<br>

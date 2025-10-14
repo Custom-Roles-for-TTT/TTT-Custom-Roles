@@ -6,6 +6,7 @@
 ### Developer
 - Added `TTTCanRespawnAsRole` hook to allow other roles or addons to prevent players from respawning as a targeted role
   - Currently implemented for the Zombie and Hive Mind
+- Added `TTTWinCheckBlocked` hook to react to a win being blocked by the `TTTWinCheckBlocks` hook
 
 ## 2.4.0
 **Released: September 22nd, 2025**\
