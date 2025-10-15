@@ -3,6 +3,9 @@
 ## 2.4.1 (Beta)
 **Released:**
 
+### Fixes
+- Fixed Drunk not sobering up when another role (such as Taskmaster or Clown) blocked another team's win
+
 ### Developer
 - Added `TTTCanRespawnAsRole` hook to allow other roles or addons to prevent players from respawning as a targeted role
   - Currently implemented for the Zombie and Hive Mind
