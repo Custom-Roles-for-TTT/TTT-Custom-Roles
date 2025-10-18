@@ -58,7 +58,8 @@ local incompatible = {
     ["663328966"] = { reason = "Damage logs are not compatible with any non-default roles.", alt = "2306802961" }, -- TTT RDM Manager With Damage Logs by Schmatty
 
     -- Better Equipment Menu
-    ["878772496"] = { reason = "Better Equipment Menu is included in Custom Roles for TTT." }, -- [TTT] Better Equipment Menu
+    ["878772496"] = { reason = "Better Equipment Menu is included in Custom Roles for TTT." }, -- [TTT] Better Equipment Menu by Ping
+    ["1107420703"] = { reason = "Better Equipment Menu is included in Custom Roles for TTT." }, -- [TTT] Better Equipment menu / shop by Fresh Garry
 
     -- Sprint
     ["933056549"] = { reason = "Sprinting is included in Custom Roles for TTT." }, -- TTT Sprint by Fresh Garry
