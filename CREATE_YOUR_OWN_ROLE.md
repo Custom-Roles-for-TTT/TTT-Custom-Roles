@@ -60,7 +60,7 @@ In this guide we will be walking through how we made the Summoner role and you c
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:
 
-![TemplateContents.png](https://i.imgur.com/UCyxklx.png)
+![TemplateContents.png](docs/img/create_role/templatecontents.png)
 
 ## Code
 
@@ -933,7 +933,7 @@ Before you start messing with each individual sprite you need to find a good rol
 
 For the Summoner we are going to use their "minions" icon with some slight changes. Make sure your icon is white with a transparent background. Here is the final version of the icon we are using for the summoner:
 
-![SummonerIcon.png](https://i.imgur.com/vbuDVHP.png)
+![SummonerIcon.png](docs/img/create_role/summonericon.png)
 
 ### Tab File
 
@@ -941,7 +941,7 @@ The tab file is the simplest icon of the bunch. This icon shows up next to playe
 
 Here is what we ended with for 'tab_sum.png':
 
-![tab_sum.png](https://i.imgur.com/XocV4qu.png)
+![tab_sum.png](docs/img/create_role/tab_sum.png)
 
 ### Score File
 
@@ -949,7 +949,7 @@ The score file is what shows up in the round summary at the end of each round. O
 
 Here is what we have for 'score_sum.png':
 
-![score_sum.png](https://i.imgur.com/zZkU611.png)
+![score_sum.png](docs/img/create_role/score_sum.png)
 
 ### Sprite File
 
@@ -959,7 +959,7 @@ Finally we can turn our .png into the .vtf file we need. Open VTFEdit Reloaded, 
 
 Here is the final version of 'sprite_sum.vtf':
 
-![sprite_sum.vtf](https://i.imgur.com/IhFJfmp.png)
+![sprite_sum.vtf](docs/img/create_role/sprite_sum.png)
 
 ### Icon File
 
@@ -967,7 +967,7 @@ The icon file is shown when a body is searched to reveal that players role. Open
 
 Here is the final version of 'icon_sum.vtf':
 
-![icon_sum.vtf](https://i.imgur.com/Jeh8sHo.png)
+![icon_sum.vtf](docs/img/create_role/icon_sum.png)
 
 ### .vmt Files
 
@@ -1023,13 +1023,13 @@ Each team in CR for TTT has it's own colour it is identified by and this templat
 
 In the case of the Summoner or another traitor role it should look like this:
 
-![RoleLayers.png](https://i.imgur.com/x5sUaXT.png)
+![RoleLayers.png](docs/img/create_role/rolelayers.png)
 
 Once you have done that you are ready to hit save. This time you want to put your icon in the same folder as 'Role Addon Template', not inside it! Steam workshop needs the icon file to be a .jpg so make sure you save it as the right format.
 
 Here is my finalised 'SummonerRole.jpg':
 
-![SummonerRole.jpg](https://i.imgur.com/wTMTtEj.png)
+![SummonerRole.jpg](docs/img/create_role/summonerrole.png)
 
 ### Folder Name
 
