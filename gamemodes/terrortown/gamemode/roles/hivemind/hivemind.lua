@@ -5,6 +5,7 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
+local CallHook = hook.Call
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_HiveMindChatDupe")
@@ -54,6 +55,9 @@ end)
 AddHook("PlayerDeath", "HiveMind_Assimilate_PlayerDeath", function(victim, infl, attacker)
     if not IsPlayer(victim) or victim:IsHiveMind() then return end
     if not IsPlayer(attacker) or not attacker:IsHiveMind() or attacker:IsRoleAbilityDisabled() then return end
+
+    -- Let other roles or addons prevent hive mind respawn
+    if CallHook("TTTCanRespawnAsRole", nil, victim, ROLE_HIVEMIND) == false then return end
 
     -- Hive Mind bypasses whatever respawn feature the victim's old role had
     if victim:IsRespawning() then

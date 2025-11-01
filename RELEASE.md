@@ -1,11 +1,22 @@
 # Release Notes
 
+## 2.4.1 (Beta)
+**Released: November 1st, 2025**
+
+### Fixes
+- Fixed Drunk not sobering up when another role (such as Taskmaster or Clown) blocked another team's win
+
+### Developer
+- Added `TTTCanRespawnAsRole` hook to allow other roles or addons to prevent players from respawning as a targeted role
+  - Currently implemented for the Zombie and Hive Mind
+- Added `TTTWinCheckBlocked` hook to react to a win being blocked by the `TTTWinCheckBlocks` hook
+
 ## 2.4.0
 **Released: September 22nd, 2025**\
 Includes beta updates [2.3.1](#231-beta) to [2.3.6](#236-beta).
 
 ### Fixes
-- Fixed brief clientside errors when Taskmaster's role is switched to some other role
+- Fixed brief client-side errors when Taskmaster's role is switched to some other role
 - Fixed error when the Taskmaster uses the crowbar after completing the "Swing Crowbar" task
 - Fixed all Taskmaster timer-based tasks not working if there is more than one Taskmaster
 - Fixed Taskmaster's "Crouch Near Body" task not working when there were multiple bodies on the map

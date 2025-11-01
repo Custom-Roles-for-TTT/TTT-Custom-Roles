@@ -63,8 +63,9 @@ local CollisionIgnoreClasses = {
 }
 
 local function ShouldIgnoreCollision(ent)
+    local ent_class = ent:GetClass()
     for _, c in ipairs(CollisionIgnoreClasses) do
-        if string.gmatch(ent:GetClass(), c) then
+        if string.gmatch(ent_class, c) then
             return true
         end
     end
