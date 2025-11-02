@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed Drunk not sobering up when another role (such as Taskmaster or Clown) blocked another team's win
+- Fixed Cannibal's name, health, and karma information not showing when a player looked at them
 
 ### Developer
 - Added `TTTCanRespawnAsRole` hook to allow other roles or addons to prevent players from respawning as a targeted role

@@ -102,9 +102,15 @@ AddHook("TTTTargetIDPlayerBlockIcon", "Cannibal_TTTTargetIDPlayerBlockIcon", fun
     end
 end)
 
-AddHook("TTTTargetIDPlayerBlockInfo", "Cannibal_TTTTargetIDPlayerBlockInfo", function(ply, cli)
-    if ply:IsCannibal() then
-        return true
+AddHook("TTTTargetIDPlayerText", "Cannibal_TTTTargetIDPlayerText", function(ent, cli, text, col)
+    if IsPlayer(ent) and ent:IsCannibal() then
+        return false
+    end
+end)
+
+AddHook("TTTTargetIDPlayerRing", "Cannibal_TTTTargetIDPlayerRing", function(ent, cli, ring_visible)
+    if IsPlayer(ent) and ent:IsCannibal() then
+        return false
     end
 end)
 
