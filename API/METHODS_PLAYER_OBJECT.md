@@ -87,7 +87,7 @@ Sets the drunk's role and runs required checks for that role.\
 *Realm:* Server\
 *Added in:* 1.1.9\
 *Parameters:*
-- *role* - Which role to set the drunk to (see ROLE_* global enumeration)
+- *role* - Which role to set the drunk to (see `ROLE_*` global enumeration)
 
 ### plymeta:EnableRoleAbility()
 Enables this player's role ability, if it was previously disabled.\

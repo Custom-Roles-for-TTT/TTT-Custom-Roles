@@ -1009,6 +1009,7 @@ function GM:MapTriggeredEnd(wintype)
 end
 
 local function HandleWinCondition(win)
+    local win_blocked = false
     -- Allow addons to block win conditions other than time limit
     if win ~= WIN_TIMELIMIT then
         -- Handle role-specific checks
@@ -1028,9 +1029,17 @@ local function HandleWinCondition(win)
             end)
             -- Protect against blocking functions which don't always return
             if new_win then
+                if win ~= new_win then
+                    win_blocked = true
+                end
                 win = new_win
             end
         end
+    end
+
+    -- Let roles and addons react to wins being blocked
+    if win_blocked then
+        CallHook("TTTWinCheckBlocked", nil)
     end
 
     -- If, after all that, we have a win condition then end the round

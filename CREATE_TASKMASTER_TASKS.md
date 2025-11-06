@@ -34,7 +34,7 @@ In this guide we will be walking through how to make a basic task and you can do
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 1 .psd file and a folder like this:
 
-![TemplateContents.png](https://i.imgur.com/W9Z00s1.png)
+![TemplateContents.png](docs/img/taskmaster_tasks/templatecontents.png)
 
 ## Code
 Open up 'Task Addon Template' > 'lua' > 'taskmastertasks' and rename '%TASKNAME%.lua' to whatever you want the name of your task to be. In this case we will be creating a task to have a player take damage and survive, so we'll rename it to 'takedamage.lua'.
@@ -599,12 +599,12 @@ Now is the time to open the last template. This step is completely optional, you
 The icon is already set up to have the Taskmaster icon and team color set, so all you have to do is add text with your task name.
 
 In the case of the task we're working on it will look something like this:  
-![TakeDamageTaskLayers.png](https://i.imgur.com/WQHTBGZ.png)
+![TakeDamageTaskLayers.png](docs/img/taskmaster_tasks/takedamagetasklayers.png)
 
 Once you have done that you are ready to hit save. You want to put your icon in the same folder as 'Task Addon Template', not inside it! Steam workshop needs the icon file to be a .jpg so make sure you save it as the right format.
 
 Here is my finalised 'TakeDamageTask.jpg':  
-![TakeDamageTask.png](https://i.imgur.com/97JWCED.png)
+![TakeDamageTask.png](docs/img/taskmaster_tasks/takedamagetask.png)
 
 ### Folder Name
 While we are at it now is a good time to rename 'Task Addon Template' because it's not a template anymore, it's yours! Name it the same thing as whatever you named your workshop icon.

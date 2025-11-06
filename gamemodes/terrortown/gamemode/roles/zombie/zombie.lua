@@ -293,6 +293,9 @@ end)
 ----------------
 
 function plymeta:RespawnAsZombie(prime)
+    -- Let other roles or addons prevent zombie respawn
+    if hook.Call("TTTCanRespawnAsRole", nil, self, ROLE_ZOMBIE) == false then return end
+
     self:QueueMessage(MSG_PRINTCENTER, "You will respawn as " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " in 3 seconds.")
     self:SetNWBool("IsZombifying", true)
 

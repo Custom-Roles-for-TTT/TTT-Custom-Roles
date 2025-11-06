@@ -496,9 +496,7 @@ local function StopDrunkTimers()
     if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
 end
 
-local function HandleDrunkWinBlock(win_type)
-    if win_type == WIN_NONE then return win_type end
-
+local function HandleDrunkSober()
     local drunk
     -- Iterate manually so we can skip disabled drunks and find the non-disabled ones
     for _, v in PlayerIterator() do
@@ -508,13 +506,13 @@ local function HandleDrunkWinBlock(win_type)
         end
     end
 
-    if not IsPlayer(drunk) then return win_type end
+    if not IsPlayer(drunk) then return nil end
 
     -- Make the drunk a clown
     if drunk_become_clown:GetBool() then
         StopDrunkTimers()
         drunk:DrunkRememberRole(ROLE_CLOWN, true)
-        return WIN_NONE
+        return true
     end
 
     -- Change the drunk to whichever team is about to lose
@@ -522,10 +520,24 @@ local function HandleDrunkWinBlock(win_type)
     if not traitor_alive then
         StopDrunkTimers()
         drunk:SoberDrunk(ROLE_TEAM_TRAITOR)
-        return WIN_NONE
+        return true
     elseif not innocent_alive then
         StopDrunkTimers()
         drunk:SoberDrunk(ROLE_TEAM_INNOCENT)
+        return true
+    end
+    return false
+end
+
+local function HandleDrunkWinBlock(win_type)
+    if win_type == WIN_NONE then return win_type end
+
+    local result = HandleDrunkSober()
+    -- `nil` means there is no drunk
+    if result == nil then
+        return win_type
+    -- `true` means we sobered so we should block the win
+    elseif result then
         return WIN_NONE
     end
 end
@@ -533,6 +545,7 @@ end
 hook.Add("TTTWinCheckBlocks", "Drunk_TTTWinCheckBlocks", function(win_blocks)
     table.insert(win_blocks, HandleDrunkWinBlock)
 end)
+hook.Add("TTTWinCheckBlocked", "Drunk_TTTWinCheckBlocked", HandleDrunkSober)
 
 hook.Add("TTTPrepareRound", "Drunk_PrepareRound", function()
     for _, v in PlayerIterator() do
