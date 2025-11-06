@@ -1,7 +1,7 @@
 # Release Notes
 
-## 2.4.1 (Beta)
-**Released: November 1st, 2025**
+## 2.4.1
+**Released: November 6th, 2025**
 
 ### Fixes
 - Fixed Drunk not sobering up when another role (such as Taskmaster or Clown) blocked another team's win
