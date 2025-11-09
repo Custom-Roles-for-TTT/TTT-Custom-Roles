@@ -361,6 +361,7 @@ ttt_informant_scanner_independent_mult         1       // The multiplier to use 
 ttt_informant_scanner_monster_mult             1       // The multiplier to use with the scanner time when the target is a monster (e.g. 0.5 = 50% scanner time)
 
 // Spy
+ttt_spy_steal_mode                             1       // When a spy should steal their victim's identity. 0 - Never. 1 - When they kill a player. 2 - When they inspect a body.
 ttt_spy_steal_model                            1       // Whether the Spy should change to the victim's playermodel after killing a player
 ttt_spy_steal_model_hands                      1       // Whether the Spy should change to the victim's playermodel's 1st-person hands after killing a player
 ttt_spy_steal_model_alert                      1       // Whether the Spy should see an alert message displaying who they are disguised as after killing a player
