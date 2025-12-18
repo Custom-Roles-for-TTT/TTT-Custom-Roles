@@ -326,13 +326,13 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
     local dconfirm = vgui.Create("DButton", droleweapons)
     dconfirm:SetPos(w - 30 - bw, dih + dsearchheight + bh + 6)
     dconfirm:SetSize(bw / 2 - 3, bh)
-    dconfirm:SetDisabled(true)
+    dconfirm:SetEnabled(false)
     dconfirm:SetText(GetTranslation("roleweapons_confirm"))
 
     local dcancel = vgui.Create("DButton", droleweapons)
     dcancel:SetPos(w - 30 - bw / 2 + 3, dih + dsearchheight + bh + 6)
     dcancel:SetSize(bw / 2 - 3, bh)
-    dcancel:SetDisabled(false)
+    dcancel:SetEnabled(true)
     dcancel:SetText(GetTranslation("close"))
     dcancel.DoClick = function() dframe:Close() end
 
@@ -345,7 +345,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
     dradionone:SizeToContents()
     dradionone:SetValue(true)
     dradionone:SetTextColor(COLOR_WHITE)
-    dradionone:SetDisabled(true)
+    dradionone:SetEnabled(false)
 
     local dradiol, dradiot = dradionone:GetPos()
     local _, dradioh = dradionone:GetSize()
@@ -356,7 +356,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
     dradioinclude:SetTooltip(GetTranslation("roleweapons_option_include_tooltip"))
     dradioinclude:SizeToContents()
     dradioinclude:SetTextColor(COLOR_WHITE)
-    dradioinclude:SetDisabled(true)
+    dradioinclude:SetEnabled(false)
 
     local dradioexclude = vgui.Create("DCheckBoxLabel", droleweapons)
     dradioexclude:SetPos(dradiol, dradiot + (dradioh * 2) + (dradiopadding * 2))
@@ -364,7 +364,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
     dradioexclude:SetTooltip(GetTranslation("roleweapons_option_exclude_tooltip"))
     dradioexclude:SizeToContents()
     dradioexclude:SetTextColor(COLOR_WHITE)
-    dradioexclude:SetDisabled(true)
+    dradioexclude:SetEnabled(false)
 
     local dradionorandom = vgui.Create("DCheckBoxLabel", droleweapons)
     dradionorandom:SetPos(w - 30 - bw, dih)
@@ -372,7 +372,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
     dradionorandom:SetTooltip(GetTranslation("roleweapons_option_norandom_tooltip"))
     dradionorandom:SizeToContents()
     dradionorandom:SetTextColor(COLOR_WHITE)
-    dradionorandom:SetDisabled(true)
+    dradionorandom:SetEnabled(false)
 
     local dradioloadout = vgui.Create("DCheckBoxLabel", droleweapons)
     dradioloadout:SetPos(w - 30 - bw, dih + dradioh + dradiopadding)
@@ -380,7 +380,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
     dradioloadout:SetTooltip(GetTranslation("roleweapons_option_loadout_tooltip"))
     dradioloadout:SizeToContents()
     dradioloadout:SetTextColor(COLOR_WHITE)
-    dradioloadout:SetDisabled(true)
+    dradioloadout:SetEnabled(false)
 
     local function UpdateButtonState()
         local valid = role > ROLE_NONE and save_role > ROLE_NONE
@@ -388,12 +388,12 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
             valid = false
         end
 
-        dconfirm:SetDisabled(not valid)
-        dradionone:SetDisabled(not valid)
-        dradioinclude:SetDisabled(not valid)
-        dradioexclude:SetDisabled(not valid)
-        dradionorandom:SetDisabled(not valid)
-        dradioloadout:SetDisabled(not valid)
+        dconfirm:SetEnabled(valid)
+        dradionone:SetEnabled(valid)
+        dradioinclude:SetEnabled(valid)
+        dradioexclude:SetEnabled(valid)
+        dradionorandom:SetEnabled(valid)
+        dradioloadout:SetEnabled(valid)
     end
 
     local function UpdateRadioButtonState(item)
@@ -431,7 +431,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
             dradioexclude:SetValue(false)
             UpdateButtonState()
         else
-            dconfirm:SetDisabled(true)
+            dconfirm:SetEnabled(false)
         end
     end
     dradioinclude.OnChange = function(pnl, val)
@@ -440,7 +440,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
             dradioexclude:SetValue(false)
             UpdateButtonState()
         else
-            dconfirm:SetDisabled(true)
+            dconfirm:SetEnabled(false)
         end
     end
     dradioexclude.OnChange = function(pnl, val)
@@ -451,7 +451,7 @@ local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw
             dradionorandom:SetValue(false)
             UpdateButtonState()
         else
-            dconfirm:SetDisabled(true)
+            dconfirm:SetEnabled(false)
         end
     end
     dradionorandom.OnChange = function(pnl, val)
@@ -593,7 +593,7 @@ local function BuildCommands(dsheet, dframe, m, w, h)
     local dlist = vgui.Create("DButton", dcommands)
     dlist:SetPos(0, currenth)
     dlist:SetSize(w - m * 2, bh)
-    dlist:SetDisabled(false)
+    dlist:SetEnabled(true)
     dlist:SetText(GetTranslation("roleweapons_command_print"))
     dlist.DoClick = function() ShowList() end
 
@@ -612,7 +612,7 @@ local function BuildCommands(dsheet, dframe, m, w, h)
     local dclean = vgui.Create("DButton", dcommands)
     dclean:SetPos(0, currenth)
     dclean:SetSize(w - m * 2, bh)
-    dclean:SetDisabled(false)
+    dclean:SetEnabled(true)
     dclean:SetText(GetTranslation("roleweapons_command_clean"))
     dclean.DoClick = function() Clean() end
 
@@ -631,14 +631,14 @@ local function BuildCommands(dsheet, dframe, m, w, h)
     local dreload = vgui.Create("DButton", dcommands)
     dreload:SetPos(0, currenth)
     dreload:SetSize(w - m * 2, bh)
-    dreload:SetDisabled(false)
+    dreload:SetEnabled(true)
     dreload:SetText(GetTranslation("roleweapons_command_reload"))
     dreload.DoClick = function() Reload() end
 
     local dcancel = vgui.Create("DButton", dcommands)
     dcancel:SetPos(w - bw - 30, h - bh - 74)
     dcancel:SetSize(bw, bh)
-    dcancel:SetDisabled(false)
+    dcancel:SetEnabled(true)
     dcancel:SetText(GetTranslation("close"))
     dcancel.DoClick = function() dframe:Close() end
 

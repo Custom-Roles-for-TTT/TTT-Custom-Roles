@@ -6,6 +6,9 @@
 ### Additions
 - Added ability for Spy to steal a player's identity when they search a body instead of when they kill a player (disabled by default)
 
+### Changes
+- Ported "TTT: Remove usages of Panel:Set/GetDisabled"
+
 ## 2.4.1
 **Released: November 6th, 2025**
 

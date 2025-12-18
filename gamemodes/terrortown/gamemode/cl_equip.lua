@@ -965,7 +965,7 @@ local function TraitorMenuPopup()
         local dconfirm = vgui.Create("DButton", dinfobg)
         dconfirm:SetPos(0, dih - bh * 2)
         dconfirm:SetSize(bw, bh)
-        dconfirm:SetDisabled(true)
+        dconfirm:SetEnabled(false)
         dconfirm:SetText(GetTranslation("equip_confirm"))
 
         dsheet:AddSheet(GetTranslation("equip_tabtitle"), dequip, "icon16/bomb.png", false, false, GetTranslation("equip_tooltip_main"))
@@ -1002,7 +1002,7 @@ local function TraitorMenuPopup()
                 end
             end
 
-            dconfirm:SetDisabled(not can_order)
+            dconfirm:SetEnabled(can_order)
         end
 
         -- prep confirm action
@@ -1024,14 +1024,14 @@ local function TraitorMenuPopup()
 
             if new:GetPanel() == dequip then
                 can_order = update_preqs(pnl.item)
-                dconfirm:SetDisabled(not can_order)
+                dconfirm:SetEnabled(can_order)
             end
         end
 
         local dcancel = vgui.Create("DButton", dframe)
         dcancel:SetPos(w - 17 - bw, h - bh - 17)
         dcancel:SetSize(bw, bh)
-        dcancel:SetDisabled(false)
+        dcancel:SetEnabled(true)
         dcancel:SetText(GetTranslation("close"))
         dcancel.DoClick = function() dframe:Close() end
 
@@ -1040,7 +1040,7 @@ local function TraitorMenuPopup()
         dfav:SetPos(0, dih - bh * 2)
         dfav:MoveRightOf(dconfirm)
         dfav:SetSize(bh, bh)
-        dfav:SetDisabled(false)
+        dfav:SetEnabled(true)
         dfav:SetText("")
         dfav:SetImage("icon16/star.png")
         dfav:SetTooltip(GetTranslation("buy_favorite_toggle"))
@@ -1067,7 +1067,7 @@ local function TraitorMenuPopup()
         local bx, _ = drdm:GetPos()
         drdm:SetPos(bx + 1, dih - bh * 2)
         drdm:SetSize(bh, bh)
-        drdm:SetDisabled(false)
+        drdm:SetEnabled(true)
         drdm:SetText("")
         drdm:SetImage("icon16/basket_go.png")
         drdm:SetTooltip(GetTranslation("buy_random"))
