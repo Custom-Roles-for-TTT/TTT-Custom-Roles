@@ -75,6 +75,7 @@ cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
         end
     end
 end)
+CreateConVar("ttt_shop_limit_count", 0, FCVAR_REPLICATED, "The number of (randomly selected) items to limit each shop to")
 
 local shop_roles = GetTeamRoles(SHOP_ROLES)
 for _, role in ipairs(shop_roles) do

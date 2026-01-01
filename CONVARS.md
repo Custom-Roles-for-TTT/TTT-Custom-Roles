@@ -1064,6 +1064,7 @@ ttt_twins_invulnerability_timer                20      // How long (in seconds) 
 
 // WEAPON SHOP SETTINGS
 ttt_shop_for_all                               0       // Whether all roles should have a shop. Roles that normally do not have a shop will need to have items added via the roleweapon system (see below). Also note that all supporting shop-related convars (such as ttt_*_credits_starting, ttt_*_shop_random_percent, ttt_*_shop_random_enabled, and ttt_*_shop_sync or ttt_*_shop_mode where applicable) will be automatically created but are not documented here to avoid confusion. Server must be restarted for changes to take effect
+ttt_shop_limit_count                           0       // The number of (randomly selected) items to limit each shop to
 // Random Shop Restriction Percent
 ttt_shop_random_percent                        50      // The percent chance that a weapon in the shop will be not be shown
 ttt_shop_random_position                       0       // Whether to randomize the position of the items in the shop

@@ -1,6 +1,7 @@
 include("shared.lua")
 
 local concommand = concommand
+local cvars = cvars
 local hook = hook
 local ipairs = ipairs
 local math = math
@@ -18,12 +19,16 @@ local RunHook = hook.Run
 local GetWeapon = weapons.GetStored
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
+local MathRandom = math.random
 local StringFind = string.find
 local StringLower = string.lower
+local TableCopy = table.Copy
 local TableHasValue = table.HasValue
 local TableInsert = table.insert
+local TableMerge = table.Merge
+local TableRemove = table.remove
+local TableShuffle = table.Shuffle
 local TableSort = table.sort
-local TableCopy = table.Copy
 
 -- BEM client convars and config menu
 local numColsVar = CreateClientConVar("ttt_bem_cols", 4, true, false, "Sets the number of columns in the Traitor/Detective menu's item list.")
@@ -175,7 +180,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
     -- Cache the equipment unless the role's shop can change mid round
     if ignore_cache or not Equipment[role] then
         -- start with all the non-weapon goodies
-        local tbl = table.Copy(EquipmentItems)
+        local tbl = TableCopy(EquipmentItems)
 
         -- find buyable weapons to load info from
         for _, v in pairs(weapons.GetList()) do
@@ -203,7 +208,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     base.material = nil
                 end
 
-                table.Merge(base, data)
+                TableMerge(base, data)
 
                 -- add this buyable weapon to all relevant equipment tables
                 for _, r in pairs(v.CanBuy) do
@@ -333,7 +338,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     if equip ~= nil then
                         for idx, i in ipairs(tbl[role]) do
                             if not ItemIsWeapon(i) and i.id == equip.id then
-                                table.remove(tbl[role], idx)
+                                TableRemove(tbl[role], idx)
                                 break
                             end
                         end
@@ -344,17 +349,17 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
             end
         end
 
+        local mergedNoRandomWeapons = TableCopy(WEPS.BypassRandomWeapons[role])
+        for _, v in pairs(rolepack_weps.NoRandoms) do
+            if not TableHasValue(mergedNoRandomWeapons, v) then
+                TableInsert(mergedNoRandomWeapons, v)
+            end
+        end
+
         -- Lastly, apply randomization to passive items
         -- Weapons have randomization applied in WEPS.HandleCanBuyOverrides
         local random_cvar_enabled = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_enabled", false)
         if not block_randomization and random_cvar_enabled then
-            local mergedNoRandomWeapons = TableCopy(WEPS.BypassRandomWeapons[role])
-            for _, v in pairs(rolepack_weps.NoRandoms) do
-                if not TableHasValue(mergedNoRandomWeapons, v) then
-                    TableInsert(mergedNoRandomWeapons, v)
-                end
-            end
-
             local random_cvar_percent_global = GetConVar("ttt_shop_random_percent"):GetInt()
             local random_cvar_percent = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_percent"):GetInt()
             -- Use the global value if the per-role override isn't set
@@ -375,11 +380,52 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                 if TableHasValue(mergedNoRandomWeapons, equip.name) then continue end
 
                 -- Check if the random value is less than the randomization percent
-                if math.random() < (random_cvar_percent / 100.0) then
+                if MathRandom() < (random_cvar_percent / 100.0) then
                     -- If it is, remove it from the table
-                    table.remove(tbl[role], idx)
+                    TableRemove(tbl[role], idx)
                     available[equip.id] = false
                 end
+            end
+        end
+
+        -- If randomization and max shop counts are enabled then limit the items in the table
+        if not block_randomization then
+            local max_shop_items = GetConVar("ttt_shop_limit_count"):GetInt()
+            if max_shop_items > 0 and #tbl[role] > max_shop_items then
+                TableShuffle(tbl[role])
+
+                local new_tbl = {}
+                -- Put the items that can't be randomized away into the new table first
+                -- Loop backwards so removing something from the table doesn't mess up our loop
+                for idx = #tbl[role], 1, -1 do
+                    local item = tbl[role][idx]
+                    if item == nil then continue end
+
+                    if ItemIsWeapon(item) then
+                        local id = WEPS.GetClass(item)
+                        if not item.BlockShopRandomization and not TableHasValue(mergedNoRandomWeapons, id) then continue end
+                    else
+                        if not item.norandom and not TableHasValue(mergedNoRandomWeapons, item.name) then continue end
+                    end
+
+                    TableInsert(new_tbl, item)
+                    TableRemove(tbl[role], idx)
+
+                    -- If we have enough "required" items then stop adding more
+                    if #new_tbl >= max_shop_items then
+                        break
+                    end
+                end
+
+                -- Then add any remaining items in after to fill the total count (if there are any)
+                local additional_item_count = max_shop_items - #new_tbl
+                if additional_item_count > 0 then
+                    for i=1, additional_item_count do
+                        TableInsert(new_tbl, tbl[role][i])
+                    end
+                end
+
+                tbl[role] = new_tbl
             end
         end
 
@@ -1082,7 +1128,7 @@ local function TraitorMenuPopup()
 
             if #buyable_items == 0 then return end
 
-            local random_panel = buyable_items[math.random(1, #buyable_items)]
+            local random_panel = buyable_items[MathRandom(1, #buyable_items)]
             dlist:SelectPanel(random_panel)
             dconfirm.DoClick()
             CallHook("TTTShopRandomBought", nil, LocalPlayer(), random_panel.item)
