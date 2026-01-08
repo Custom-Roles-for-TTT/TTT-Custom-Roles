@@ -6,10 +6,12 @@ AddCSLuaFile()
 local ents = ents
 local ipairs = ipairs
 local IsValid = IsValid
+local math = math
 local table = table
 local util = util
 
 local EntsFindByClass = ents.FindByClass
+local MathRand = math.Rand
 local TableInsert = table.insert
 
 ENT.Type = "anim"
