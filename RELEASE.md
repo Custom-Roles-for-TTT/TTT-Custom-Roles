@@ -12,6 +12,9 @@
 - Ported "TTT: Remove usages of Panel:Set/GetDisabled"
 - Ported "TTT: Add TTTRadarScan hook"
 
+### Fixes
+- Fixed decoy not showing as grey on traitor team radars
+
 ### Developer
 - Added `TTTTrackRadarScan` hook that allows addons to add or modify the targets used by the Tracking Radar
 

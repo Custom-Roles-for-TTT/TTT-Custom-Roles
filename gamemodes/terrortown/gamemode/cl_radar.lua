@@ -252,6 +252,9 @@ function RADAR:Draw(client)
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_TRAITOR], alpha)
                 elseif TRAITOR_ROLES[role] then
                     color = ColorAlpha(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"), alpha)
+                -- Decoys
+                elseif role == ROLE_NONE then
+                    color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_NONE], alpha)
                 else
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], alpha)
                 end

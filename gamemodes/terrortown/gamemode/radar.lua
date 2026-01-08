@@ -49,9 +49,9 @@ local function RadarScan(ply, cmd, args)
             ent = p,
             was_beggar = p:GetNWBool("WasBeggar", false),
             was_bodysnatcher = p:GetNWBool("WasBodysnatcher", false),
-            killer_clown_active = p:IsPlayer() and p:IsClown() and p:IsRoleActive(),
-            should_act_like_jester = p:IsPlayer() and p:ShouldActLikeJester(),
-            sid64 = p:IsPlayer() and p:SteamID64() or ""
+            killer_clown_active = p:IsClown() and p:IsRoleActive(),
+            should_act_like_jester = p:ShouldActLikeJester(),
+            sid64 = p:SteamID64()
         })
     end
 
@@ -72,7 +72,7 @@ local function RadarScan(ply, cmd, args)
             net.WriteBool(tgt.was_bodysnatcher)
             net.WriteBool(tgt.killer_clown_active)
             net.WriteBool(tgt.should_act_like_jester)
-            net.WriteString(tgt.sid64)
+            net.WriteString(tgt.sid64 or "")
         end
     net.Send(ply)
 end

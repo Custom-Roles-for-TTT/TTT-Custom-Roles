@@ -536,6 +536,8 @@ function UpdateRoleColours()
 
     ROLE_COLORS_RADAR = {}
     FillRoleColors(ROLE_COLORS_RADAR, "radar")
+    -- Keep this the same from base TTT
+    ROLE_COLORS_RADAR[ROLE_NONE] = Color(150, 150, 150, 230)
     ROLE_COLOURS_RADAR = ROLE_COLORS_RADAR
 end
 UpdateRoleColors = UpdateRoleColours
