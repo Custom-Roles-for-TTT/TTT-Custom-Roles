@@ -10,6 +10,10 @@
 
 ### Changes
 - Ported "TTT: Remove usages of Panel:Set/GetDisabled"
+- Ported "TTT: Add TTTRadarScan hook"
+
+### Developer
+- Added `TTTTrackRadarScan` hook that allows addons to add or modify the targets used by the Tracking Radar
 
 ## 2.4.1
 **Released: November 6th, 2025**

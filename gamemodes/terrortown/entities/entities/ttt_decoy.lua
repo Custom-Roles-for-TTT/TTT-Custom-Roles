@@ -3,6 +3,15 @@
 
 AddCSLuaFile()
 
+local ents = ents
+local ipairs = ipairs
+local IsValid = IsValid
+local table = table
+local util = util
+
+local EntsFindByClass = ents.FindByClass
+local TableInsert = table.insert
+
 ENT.Type = "anim"
 ENT.Model = Model("models/props_lab/reciever01b.mdl")
 ENT.CanHavePrints = false
@@ -81,4 +90,32 @@ function ENT:OnRemove()
     if IsValid(self:GetOwner()) then
         self:GetOwner().decoy = nil
     end
+end
+
+if SERVER then
+    hook.Add("TTTRadarScan", "TTTDecoy", function(ply, targets)
+        for _, ent in ipairs(EntsFindByClass("ttt_decoy")) do
+            local pos = ent:GetPos()
+            local role = ROLE_NONE -- Appear grey for traitors
+
+            -- Decoys appear as innocents for non-traitors
+            if not ply:IsTraitorTeam() then
+                role = ROLE_INNOCENT
+            end
+
+            TableInsert(targets, {role=role, pos=pos, ent=ent})
+        end
+    end)
+
+    hook.Add("TTTTrackRadarScan", "TTTDecoy", function(ply, targets)
+        for _, ent in ipairs(EntsFindByClass("ttt_decoy")) do
+            local pos = ent:GetPos()
+
+            -- Generate a random color for decoys
+            local color = HSLToColor(MathRand(0, 360), MathRand(0.5, 1), MathRand(0.25, 0.75))
+            local col = Vector(color.r / 255, color.g / 255, color.b / 255)
+
+            TableInsert(targets, {pos=pos, col=col, ent=ent})
+        end
+    end)
 end
