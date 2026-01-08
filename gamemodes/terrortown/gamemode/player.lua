@@ -229,7 +229,7 @@ local function PointsAroundSpawn(spwn)
         pos + Vector(-w, w, 0),
         pos + Vector(w, -w, 0)
         --pos + Vector( 0,  0,  h) -- just in case we're outside
-    };
+    }
 end
 
 function GM:PlayerSelectSpawn(ply)
@@ -470,7 +470,7 @@ function GM:KeyRelease(ply, key)
             endpos = ply:GetShootPos() + ply:GetAimVector() * 84,
             filter = ply,
             mask = MASK_SHOT
-        });
+        })
 
         if tr.Hit and IsValid(tr.Entity) then
             if tr.Entity.CanUseKey and tr.Entity.UseOverride then
@@ -588,7 +588,7 @@ local deathsounds = {
     Sound("hostage/hpain/hpain4.wav"),
     Sound("hostage/hpain/hpain5.wav"),
     Sound("hostage/hpain/hpain6.wav")
-};
+}
 
 local function PlayDeathSound(victim)
     if not IsValid(victim) then return end
@@ -1011,7 +1011,7 @@ local fallsounds = {
     Sound("player/damage1.wav"),
     Sound("player/damage2.wav"),
     Sound("player/damage3.wav")
-};
+}
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
     if GetRoundState() == ROUND_ACTIVE and ply:ShouldActLikeJester() and (not ply:IsJesterTeam() or not ply:IsRoleAbilityDisabled()) then

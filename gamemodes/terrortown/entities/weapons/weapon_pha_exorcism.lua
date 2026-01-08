@@ -24,7 +24,7 @@ if CLIENT then
                 phantom = string.lower(ROLE_STRINGS[ROLE_PHANTOM])
             })
         end
-    };
+    }
 
     SWEP.Icon = "vgui/ttt/icon_exor"
 end

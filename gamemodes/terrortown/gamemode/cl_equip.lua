@@ -200,7 +200,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     type = "Type not specified",
                     model = "models/weapons/w_bugbait.mdl",
                     desc = "No description specified."
-                };
+                }
 
                 -- Force material to nil so that model key is used when we are
                 -- explicitly told to do so (ie. material is false rather than nil).

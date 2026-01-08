@@ -17,7 +17,7 @@ if CLIENT then
     SWEP.ViewModelFOV = 54
     SWEP.DrawCrosshair = false
 
-    SWEP.EquipMenuData = {type = "item_weapon", desc = "kil_knife_desc"};
+    SWEP.EquipMenuData = {type = "item_weapon", desc = "kil_knife_desc"}
 
     SWEP.Icon = "vgui/ttt/icon_knife"
     SWEP.IconLetter = "j"

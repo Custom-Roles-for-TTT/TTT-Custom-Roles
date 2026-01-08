@@ -176,7 +176,7 @@ local wire_colors = {
     COLOR_WHITE, -- white/grey
     Color(20, 200, 20, 255), -- green
     Color(255, 160, 50, 255)  -- brown
-};
+}
 
 function PANEL:Init()
     self.BaseClass.Init(self)

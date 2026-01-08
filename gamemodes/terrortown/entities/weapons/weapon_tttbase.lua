@@ -38,7 +38,7 @@ if CLIENT then
     --
     ---- Desc is the description in the menu. Needs manual linebreaks (via \n).
     --     desc = "Text."
-    -- };
+    -- }
 
     -- This sets the icon shown for the weapon in the DNA sampler, search window,
     -- equipment menu (if buyable), etc.
@@ -307,7 +307,7 @@ if CLIENT then
         secondaryfire = Key("+attack2", "MOUSE2"),
         reload = Key("+reload", "R"),
         usekey = Key("+use", "E")
-    };
+    }
 
     function SWEP:AddHUDHelp(primary_text, secondary_text, translate, extra_params)
         extra_params = extra_params or {}
@@ -317,7 +317,7 @@ if CLIENT then
             secondary = secondary_text,
             translatable = translate,
             translate_params = table.Merge(extra_params, default_key_params)
-        };
+        }
     end
 end
 

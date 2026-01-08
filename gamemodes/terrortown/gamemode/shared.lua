@@ -1579,7 +1579,7 @@ local ttt_playermodels = {
     Model("models/player/arctic.mdl"),
     Model("models/player/guerilla.mdl"),
     Model("models/player/leet.mdl")
-};
+}
 
 function GetRandomPlayerModel()
     return table.Random(ttt_playermodels)
@@ -1609,7 +1609,7 @@ local ttt_playercolors = {
         COLOR_DGREEN,
         COLOR_OLIVE
     }
-};
+}
 
 local playercolor_mode = CreateConVar("ttt_playercolor_mode", "1")
 function GM:TTTPlayerColor(model)
@@ -1838,7 +1838,7 @@ DefaultEquipment = {
         "weapon_zm_sledge",
         "weapon_ttt_glock"
     }
-};
+}
 
 -----------------
 -- Old ConVars --

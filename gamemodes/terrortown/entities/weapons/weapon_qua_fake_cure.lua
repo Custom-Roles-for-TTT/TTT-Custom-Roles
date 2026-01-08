@@ -20,7 +20,7 @@ if CLIENT then
     SWEP.EquipMenuData = {
         type =  "item_weapon",
         desc = "fake_cure_desc"
-    };
+    }
 
     SWEP.Icon = "vgui/ttt/icon_fakecure"
 end

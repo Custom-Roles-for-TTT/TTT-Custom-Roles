@@ -87,9 +87,9 @@ if SERVER then
 
             -- If the player is turning fast enough quickly decrease the decay value, otherwise slowly increase it
             if MathAbs(angleDiff) > rotationDecayThreshold * tickLength then
-                ply.Task_Kill360RotationDecay = MathMax(ply.Task_Kill360RotationDecay - (rotationDecayDecrement * tickLength), 0);
+                ply.Task_Kill360RotationDecay = MathMax(ply.Task_Kill360RotationDecay - (rotationDecayDecrement * tickLength), 0)
             else
-                ply.Task_Kill360RotationDecay = MathMin(ply.Task_Kill360RotationDecay + (rotationDecayIncrement * tickLength), rotationDecayMax * tickLength);
+                ply.Task_Kill360RotationDecay = MathMin(ply.Task_Kill360RotationDecay + (rotationDecayIncrement * tickLength), rotationDecayMax * tickLength)
             end
             ply.Task_Kill360RotationClockwise = MathMax(ply.Task_Kill360RotationClockwise + angleDiff - ply.Task_Kill360RotationDecay, 0)
             ply.Task_Kill360RotationCounterClockwise = MathMax(ply.Task_Kill360RotationCounterClockwise - angleDiff - ply.Task_Kill360RotationDecay, 0)

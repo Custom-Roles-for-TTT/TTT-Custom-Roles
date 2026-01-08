@@ -298,7 +298,7 @@ function GM:Initialize()
         [OPEN_ROT] = true,
         [OPEN_BUT] = true,
         [OPEN_NOTOGGLE] = true
-    };
+    }
 
     -- More map config ent defaults
     GAMEMODE.force_plymodel = ""

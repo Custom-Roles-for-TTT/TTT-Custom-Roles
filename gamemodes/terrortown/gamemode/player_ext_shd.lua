@@ -599,7 +599,7 @@ if CLIENT then
             end
             return w
         end
-    };
+    }
 
     -- Insert all the "simple" gestures that do not need weight control
     for _, a in ipairs(simple_runners) do
