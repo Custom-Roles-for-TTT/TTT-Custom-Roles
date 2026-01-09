@@ -687,7 +687,9 @@ concommand.Add("ttt_order_for_someone", function(ply, cmd, args)
 
     if not IsValid(target) then return end
     local new_args = {}
-    new_args[1] = args[2]
+
+    local num_arg = tonumber(args[2])
+    new_args[1] = num_arg or args[2]
 
     OrderEquipment(target, cmd, new_args)
 end, nil, nil, FCVAR_CHEAT)
