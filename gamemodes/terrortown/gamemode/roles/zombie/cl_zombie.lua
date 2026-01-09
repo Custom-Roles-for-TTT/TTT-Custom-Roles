@@ -6,6 +6,7 @@ local string = string
 
 local RemoveHook = hook.Remove
 local StringUpper = string.upper
+local Utf8Upper = utf8.upper
 
 -------------
 -- CONVARS --
@@ -104,7 +105,7 @@ hook.Add("TTTTargetIDPlayerText", "Zombie_TTTTargetIDPlayerText", function(ent, 
 
     if cli:IsActiveZombie() and ent:IsZombieAlly() then
         local role = ent:GetRole()
-        return StringUpper(ROLE_STRINGS[role]), ROLE_COLORS_RADAR[role]
+        return Utf8Upper(ROLE_STRINGS[role]), ROLE_COLORS_RADAR[role]
     elseif cli:IsZombieAlly() and ent:IsActiveZombie() then
         return StringUpper(ROLE_STRINGS[ROLE_ZOMBIE]), ROLE_COLORS_RADAR[ROLE_ZOMBIE]
     end

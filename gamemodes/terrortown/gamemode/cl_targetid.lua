@@ -16,6 +16,7 @@ local GetPTranslation = LANG.GetParamTranslation
 local GetRaw = LANG.GetRawTranslation
 local StringFormat = string.format
 local StringUpper = string.upper
+local Utf8Upper = utf8.upper
 
 local key_params = { usekey = Key("+use", "USE"), walkkey = Key("+walk", "WALK"), adetective = ROLE_STRINGS_EXT[ROLE_DETECTIVE] }
 
@@ -746,7 +747,7 @@ function GM:HUDDrawTargetID()
 
     text = nil
     if target_role then
-        text = StringUpper(ROLE_STRINGS[ent:GetRole()])
+        text = Utf8Upper(ROLE_STRINGS[ent:GetRole()])
         col = ROLE_COLORS_RADAR[ent:GetRole()]
     elseif target_jester then
         text = GetPTranslation("target_unknown_team", { targettype = StringUpper(GetTranslation("jester")) })
@@ -759,7 +760,7 @@ function GM:HUDDrawTargetID()
         col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
     elseif target_special_traitor then
         local role = ent:GetRole()
-        text = StringUpper(ROLE_STRINGS[role])
+        text = Utf8Upper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
     elseif target_unknown_special_traitor then
         text = GetPTranslation("target_unknown_team", { targettype = StringUpper(GetTranslation("traitor")) })
@@ -769,7 +770,7 @@ function GM:HUDDrawTargetID()
         if client:IsZombie() and client:IsTraitorTeam() then
             bluff = ROLE_ZOMBIE
         end
-        text = StringUpper(ROLE_STRINGS[bluff])
+        text = Utf8Upper(ROLE_STRINGS[bluff])
         col = ROLE_COLORS_RADAR[bluff]
     elseif target_detective then
         local detective_role = ROLE_DETECTIVE
@@ -777,17 +778,17 @@ function GM:HUDDrawTargetID()
         if not ent:IsDetectiveTeam() then
             detective_role = GetDetectiveIconRole(false)
         end
-        text = StringUpper(ROLE_STRINGS[detective_role])
+        text = Utf8Upper(ROLE_STRINGS[detective_role])
         col = ROLE_COLORS_RADAR[detective_role]
     elseif target_special_detective then
         local role = ent:GetRole()
-        text = StringUpper(ROLE_STRINGS[role])
+        text = Utf8Upper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
     elseif target_unknown_detective then
         text = GetPTranslation("target_unknown_team", { targettype = StringUpper(ROLE_STRINGS[ROLE_DETECTIVE]) })
         col = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
     elseif target_monster then
-        text = StringUpper(ROLE_STRINGS[target_monster])
+        text = Utf8Upper(ROLE_STRINGS[target_monster])
         col = GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar")
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]

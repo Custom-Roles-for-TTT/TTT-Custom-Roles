@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 local hook = hook
 local IsValid = IsValid
-local string = string
 local util = util
 
 local CallHook = hook.Call
@@ -106,7 +105,7 @@ if SERVER then
         if ply == self:GetOwner() then
             return "CURING YOURSELF"
         end
-        return "CURING " .. string.upper(ply:Nick())
+        return "CURING " .. utf8.upper(ply:Nick())
     end
 
     function SWEP:GetAbortMessage()

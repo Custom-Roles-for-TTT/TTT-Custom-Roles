@@ -88,7 +88,7 @@ if SERVER then
         if ply == self:GetOwner() then
             return "CLEANSING YOURSELF"
         end
-        return "CLEANSING " .. string.upper(ply:Nick())
+        return "CLEANSING " .. utf8.upper(ply:Nick())
     end
 
     function SWEP:GetAbortMessage()

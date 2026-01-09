@@ -3,7 +3,6 @@ AddCSLuaFile()
 local hook = hook
 local net = net
 local surface = surface
-local string = string
 local util = util
 
 if CLIENT then
@@ -96,7 +95,7 @@ if SERVER then
     end
 
     function SWEP:GetProgressMessage(ply, body, bone)
-        return "DEFIBRILLATING " .. string.upper(ply:Nick())
+        return "DEFIBRILLATING " .. utf8.upper(ply:Nick())
     end
 
     function SWEP:GetAbortMessage()

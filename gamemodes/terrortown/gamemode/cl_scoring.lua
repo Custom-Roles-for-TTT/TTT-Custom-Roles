@@ -22,6 +22,7 @@ local vgui = vgui
 local parentPanel, parentTabs, closeButton, saveButton
 
 local StringUpper = string.upper
+local Utf8Upper = utf8.upper
 
 CLSCORE = {}
 CLSCORE.Events = {}
@@ -272,7 +273,7 @@ local function GetWinTitle(wintype)
         local monster_role = GetWinningMonsterRole()
         -- If a single support role (zombies or vampires) won as the "monsters team", use their role as the label
         if monster_role then
-            title.params = { role = StringUpper(ROLE_STRINGS_PLURAL[monster_role]) }
+            title.params = { role = Utf8Upper(ROLE_STRINGS_PLURAL[monster_role]) }
         -- Otherwise use the monsters label
         else
             title.params = { role = StringUpper(T("monsters")) }
@@ -679,7 +680,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
         if type(r) == "table" then
             role_string = r.txt
         else
-            role_string = PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) })
+            role_string = PT("hilite_win_role_singular_additional", { role = Utf8Upper(ROLE_STRINGS[r]) })
         end
         local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")
@@ -853,7 +854,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
         if type(r) == "table" then
             role_string = r.txt
         else
-            role_string = PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) })
+            role_string = PT("hilite_win_role_singular_additional", { role = Utf8Upper(ROLE_STRINGS[r]) })
         end
         local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")

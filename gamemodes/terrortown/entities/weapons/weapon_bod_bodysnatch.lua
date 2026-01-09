@@ -189,10 +189,10 @@ if SERVER then
     end
 
     function SWEP:GetProgressMessage(ply, body, bone)
-        local message = "BODYSNATCHING " .. string.upper(ply:Nick())
+        local message = "BODYSNATCHING " .. utf8.upper(ply:Nick())
         if GetConVar("ttt_bodysnatcher_show_role"):GetBool() then
             local role = body.was_role or ply:GetRole()
-            message = message .. " [" .. string.upper(ROLE_STRINGS_RAW[role]) .. "]"
+            message = message .. " [" .. utf8.upper(ROLE_STRINGS[role]) .. "]"
         end
         return message
     end

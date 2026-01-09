@@ -26,6 +26,7 @@ local StringSub = string.sub
 local TableCopy = table.Copy
 local TableHasValue = table.HasValue
 local TableInsert = table.insert
+local Utf8Lower = utf8.lower
 
 -- Prevent players from picking up multiple weapons of the same type etc
 function GM:PlayerCanPickupWeapon(ply, wep)
@@ -965,7 +966,7 @@ net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
     local excludeSelected = net.ReadBool()
     local noRandomSelected = net.ReadBool()
     local loadoutSelected = net.ReadBool()
-    local roleName = StringLower(ROLE_STRINGS_RAW[role])
+    local roleName = Utf8Lower(ROLE_STRINGS_RAW[role])
 
     -- Ensure directories exist
     if not file.IsDir("roleweapons", "DATA") then

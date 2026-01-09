@@ -1428,9 +1428,9 @@ function GM:PlayerDroppedWeapon(ply, wep)
 end
 
 local function GetTargetPlayerByName(name, allow_dead)
-    name = string.lower(name)
+    name = utf8.lower(name)
     for _, v in RandomPairs(GetAllPlayers()) do
-        if IsValid(v) and (allow_dead or v:IsActive()) and string.lower(v:Nick()) == name then
+        if IsValid(v) and (allow_dead or v:IsActive()) and utf8.lower(v:Nick()) == name then
             return v
         end
     end
@@ -1458,7 +1458,7 @@ local function PlayerAutoComplete(cmd, args)
     local name = ""
     local other_args = ""
     if not table.IsEmpty(arg_split) then
-        name = string.Trim(string.lower(arg_split[#arg_split]))
+        name = string.Trim(utf8.lower(arg_split[#arg_split]))
         if #arg_split > 1 then
             other_args = " \"" .. table.concat(arg_split, "\" \"", 1, #arg_split - 1) .. "\""
         end
@@ -1467,7 +1467,7 @@ local function PlayerAutoComplete(cmd, args)
     -- Find player options that match the given value (or all if there is no given value)
     local options = {}
     for _, v in PlayerIterator() do
-        if #name == 0 or string.find(string.lower(v:Nick()), name) then
+        if #name == 0 or string.find(utf8.lower(v:Nick()), name) then
             TableInsert(options, cmd .. other_args .. " \"" .. v:Nick() .. "\"")
         end
     end

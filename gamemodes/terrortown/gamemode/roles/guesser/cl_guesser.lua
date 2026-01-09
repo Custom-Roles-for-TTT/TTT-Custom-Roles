@@ -3,6 +3,7 @@ local string = string
 
 local AddHook = hook.Add
 local StringUpper = string.upper
+local Utf8Upper = utf8.upper
 
 -------------
 -- CONVARS --
@@ -223,7 +224,7 @@ hook.Add("TTTTargetIDPlayerText", "Guesser_TTTTargetIDPlayerText", function(ent,
         end
     elseif state == GUESSER_SCANNED_ROLE then
         newColor = ROLE_COLORS_RADAR[ent:GetRole()]
-        newText = StringUpper(ROLE_STRINGS[ent:GetRole()])
+        newText = Utf8Upper(ROLE_STRINGS[ent:GetRole()])
     end
 
     if ent:GetNWBool("TTTGuesserWasGuesser", false) then

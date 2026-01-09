@@ -23,10 +23,11 @@ local FileRead = file.Read
 local PlayerIterator = player.Iterator
 local StringUpper = string.upper
 local StringFormat = string.format
-local StringSub = string.sub
 local StringStartsWith = string.StartsWith
 local StringTrim = string.Trim
 local StringTrimLeft = string.TrimLeft
+local Utf8Upper = utf8.upper
+local Utf8Sub = utf8.sub
 local HookCall = hook.Call
 local HookAdd = hook.Add
 
@@ -112,7 +113,7 @@ end
 
 -- Uppercases the first character only
 function string.Capitalize(str)
-    return StringUpper(StringSub(str, 1, 1)) .. StringSub(str, 2)
+    return Utf8Upper(Utf8Sub(str, 1, 1)) .. Utf8Sub(str, 2)
 end
 util.Capitalize = string.Capitalize
 

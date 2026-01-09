@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 local math = math
 local net = net
-local string = string
 local util = util
 
 SWEP.HoldType               = "slam"
@@ -126,7 +125,7 @@ if SERVER then
 
     function SWEP:GetProgressMessage(ply, body, bone)
         ply:QueueMessage(MSG_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_MARSHAL] .. " is promoting you.")
-        return "DEPUTIZING " .. string.upper(ply:Nick())
+        return "DEPUTIZING " .. utf8.upper(ply:Nick())
     end
 
     function SWEP:GetAbortMessage()

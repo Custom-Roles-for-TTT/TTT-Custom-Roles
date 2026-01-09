@@ -10,7 +10,6 @@ AddCSLuaFile()
 local IsValid = IsValid
 local math = math
 local player = player
-local string = string
 local timer = timer
 
 SWEP.HoldType = "pistol"
@@ -201,7 +200,7 @@ if SERVER then
 
     function SWEP:GetProgressMessage(ply, body, bone)
         -- Override in derived weapons
-        return "WORKING ON " .. string.upper(ply:Nick())
+        return "WORKING ON " .. utf8.upper(ply:Nick())
     end
 
     function SWEP:Begin(target, bone)

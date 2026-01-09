@@ -311,7 +311,7 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
                 if stage < INFORMANT_SCANNED_TRACKED and ScanAllowed(ply, target) then
                     ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOCKED)
                     ply:SetNWString("TTTInformantScannerTarget", target:SteamID64())
-                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. utf8.upper(target:Nick()))
                     ply:SetNWFloat("TTTInformantScannerStartTime", CurTime())
                 end
             end
@@ -320,7 +320,7 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
             if target:IsActive() then
                 if not InRange(ply, target) then
                     ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_SEARCHING)
-                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()) .. " (LOSING TARGET)")
+                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. utf8.upper(target:Nick()) .. " (LOSING TARGET)")
                     ply:SetNWFloat("TTTInformantScannerTargetLostTime", CurTime())
                 end
                 Scan(ply, target)
@@ -335,7 +335,7 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
                 else
                     if InRange(ply, target) then
                         ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOCKED)
-                        ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                        ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. utf8.upper(target:Nick()))
                         ply:SetNWFloat("TTTInformantScannerTargetLostTime", -1)
                     end
                     Scan(ply, target)

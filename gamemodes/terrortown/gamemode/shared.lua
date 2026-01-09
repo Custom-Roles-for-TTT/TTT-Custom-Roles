@@ -1,3 +1,5 @@
+include("utf8_ext.lua")
+
 local file = file
 local hook = hook
 local ipairs = ipairs
@@ -15,11 +17,12 @@ local CallHook = hook.Call
 local RunHook = hook.Run
 local PlayerIterator = player.Iterator
 local StringUpper = string.upper
-local StringLower = string.lower
 local StringFind = string.find
 local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
+local Utf8Lower = utf8.lower
+local Utf8Sub = utf8.sub
 
 include("player_class/player_ttt.lua")
 
@@ -843,11 +846,11 @@ function UpdateRoleStrings()
 
             local plural = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural"):GetString()
             if #plural == 0 then -- Fallback if no plural is given. Does NOT handle all cases properly
-                local lastChar = StringLower(StringSub(name, #name, #name))
+                local lastChar = Utf8Lower(Utf8Sub(name, #name, #name))
                 if lastChar == "s" then
                     ROLE_STRINGS_PLURAL[role] = name .. "es"
                 elseif lastChar == "y" then
-                    ROLE_STRINGS_PLURAL[role] = StringSub(name, 1, #name - 1) .. "ies"
+                    ROLE_STRINGS_PLURAL[role] = Utf8Sub(name, 1, #name - 1) .. "ies"
                 else
                     ROLE_STRINGS_PLURAL[role] = name .. "s"
                 end
@@ -1279,11 +1282,11 @@ local function GetRoleFromStackTrace()
             -- Get the file path
             local source = info.short_src
             -- Extract the file name from the path and drop the extension
-            local role_name = StringLower(string.StripExtension(string.GetFileFromFilename(source)))
+            local role_name = Utf8Lower(string.StripExtension(string.GetFileFromFilename(source)))
 
             -- Find the role whose raw string matches the file name
             for r, str in pairs(ROLE_STRINGS_RAW) do
-                if StringLower(str) == role_name then
+                if Utf8Lower(str) == role_name then
                     role = r
                     break
                 end
