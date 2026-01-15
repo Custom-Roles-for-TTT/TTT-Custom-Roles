@@ -16,6 +16,7 @@
 - Fixed decoy not showing as grey on traitor team radars
 - Fixed player names and custom role names with non-English characters in them not changing case correctly
 - Fixed bodysnatching device progress message ignoring overwritten role names
+- Ported "TTT: Fix auto weapon spawning on non-TTT maps"
 
 ### Developer
 - Added `TTTTrackRadarScan` hook that allows addons to add or modify the targets used by the Tracking Radar

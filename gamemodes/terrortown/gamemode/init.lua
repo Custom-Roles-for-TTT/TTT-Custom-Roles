@@ -502,27 +502,6 @@ function StartNameChangeChecks()
     end
 end
 
-local function CleanUp()
-    local et = ents.TTT
-    -- if we are going to import entities, it's no use replacing HL2DM ones as
-    -- soon as they spawn, because they'll be removed anyway
-    et.SetReplaceChecking(not et.CanImportEntities(game.GetMap()))
-
-    et.FixParentedPreCleanup()
-
-    game.CleanUpMap(false, nil, function() et.FixParentedPostCleanup() end)
-
-    -- Strip players now, so that their weapons are not seen by ReplaceEntities
-    for k, v in PlayerIterator() do
-        if IsValid(v) then
-            v:StripWeapons()
-        end
-    end
-
-    -- a different kind of cleanup
-    hook.Remove("PlayerSay", "ULXMeCheck")
-end
-
 local function SpawnEntities()
     local et = ents.TTT
     -- Spawn weapons from script if there is one
@@ -548,6 +527,30 @@ local function SpawnEntities()
 
     -- Finally, get players in there
     SpawnWillingPlayers()
+end
+
+local function CleanUp()
+    local et = ents.TTT
+    -- if we are going to import entities, it's no use replacing HL2DM ones as
+    -- soon as they spawn, because they'll be removed anyway
+    et.SetReplaceChecking(not et.CanImportEntities(game.GetMap()))
+
+    et.FixParentedPreCleanup()
+
+    game.CleanUpMap(false, nil, function()
+        et.FixParentedPostCleanup()
+        SpawnEntities()
+    end)
+
+    -- Strip players now, so that their weapons are not seen by ReplaceEntities
+    for k, v in PlayerIterator() do
+        if IsValid(v) then
+            v:StripWeapons()
+        end
+    end
+
+    -- a different kind of cleanup
+    hook.Remove("PlayerSay", "ULXMeCheck")
 end
 
 local function StopRoundTimers()
@@ -650,9 +653,6 @@ function PrepareRound()
 
     LANG.Msg("round_begintime", { num = ptime })
     SetRoundState(ROUND_PREP)
-
-    -- Delay spawning until next frame to avoid ent overload
-    timer.Simple(0.01, SpawnEntities)
 
     -- Undo the roundrestart mute, though they will once again be muted for the
     -- selectmute timer.
