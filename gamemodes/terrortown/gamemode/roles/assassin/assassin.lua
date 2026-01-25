@@ -27,6 +27,8 @@ local assassin_allow_independents_kill = GetConVar("ttt_assassin_allow_independe
 local assassin_allow_jesters_kill = GetConVar("ttt_assassin_allow_jesters_kill")
 local assassin_allow_monsters_kill = GetConVar("ttt_assassin_allow_monsters_kill")
 
+local assassin_is_independent = GetConVar("ttt_assassin_is_independent")
+
 -----------------------
 -- TARGET ASSIGNMENT --
 -----------------------
@@ -84,8 +86,10 @@ local function AssignAssassinTarget(ply, start, delay)
             elseif p:IsMonsterTeam() then
                 AddEnemy(p, enemies)
             -- Exclude roles that have a passive win because they just want to survive
-            elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
+            elseif p:IsIndependentTeam() and not p:IsAssassin() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
                 AddEnemy(p, independents)
+            elseif assassin_is_independent:GetBool() and p:IsTraitorTeam() then
+                AddEnemy(p, enemies)
             end
         end
     end
@@ -184,7 +188,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_ASSASSIN] = function(ply)
 end
 
 local function ValidTarget(role)
-    if TRAITOR_ROLES[role] then return false end
+    if TRAITOR_ROLES[role] and not assassin_is_independent:GetBool() then return false end
     if JESTER_ROLES[role] then return false end
     if ROLE_HAS_PASSIVE_WIN[role] then return false end
     if role == ROLE_GLITCH then return false end
@@ -218,9 +222,11 @@ end)
 
 hook.Add("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", function(ply, traitor)
     if not IsPlayer(ply) then return end
-
+    
     -- Update any assassin targets since this player isn't a threat anymore
-    UpdateAssassinTargets(ply)
+    if not assassin_is_independent:GetBool() then
+        UpdateAssassinTargets(ply)
+    end
 end)
 
 -- Handle an assassin becoming the lover of their target
@@ -317,6 +323,44 @@ hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgro
 
     dmginfo:ScaleDamage(1 + scale)
 end)
+
+----------------
+-- WIN CHECKS --
+----------------
+
+if assassin_is_independent:GetBool() then
+
+    PrintMessage(HUD_PRINTTALK, "- assassin_is_independent = " .. tostring(assassin_is_independent:GetBool()))
+
+    hook.Add("TTTCheckForWin", "Assassin_TTTCheckForWin", function()
+        local assassin_alive = false
+        local other_alive = false
+        for _, v in PlayerIterator() do
+            if v:IsActive() then
+                if v:IsAssassin() then
+                    assassin_alive = true
+                elseif not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
+                    other_alive = true
+                end
+            end
+        end
+
+        if assassin_alive and not other_alive then
+            return WIN_ASSASSIN
+        elseif assassin_alive then
+            return WIN_NONE
+        end
+    end)
+
+    hook.Add("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage", function(type)
+        if type == WIN_ASSASSIN then
+            LANG.Msg("win_assassin", { role = ROLE_STRINGS[ROLE_ASSASSIN] })
+            ServerLog("Result: " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " wins.\n")
+            return true
+        end
+    end)
+
+end
 
 -----------------------
 -- PLAYER VISIBILITY --

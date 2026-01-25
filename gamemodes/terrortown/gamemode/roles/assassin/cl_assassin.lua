@@ -27,6 +27,11 @@ local assassin_failed_damage_penalty = GetConVar("ttt_assassin_failed_damage_pen
 ------------------
 
 hook.Add("Initialize", "Assassin_Translations_Initialize", function()
+
+    -- Win conditions
+    LANG.AddToLanguage("english", "win_assassin", "The {role} has murdered you all!")
+    LANG.AddToLanguage("english", "ev_win_assassin", "The cold-blooded {role} won the round!")
+
     -- Target
     LANG.AddToLanguage("english", "target_assassin_target", "TARGET")
     LANG.AddToLanguage("english", "target_assassin_target_team", "{player}'s TARGET")
@@ -47,6 +52,33 @@ player will result in you losing your damage bonus and
 maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]])
+
+end)
+
+----------------
+-- WIN CHECKS --
+----------------
+
+hook.Add("TTTScoringWinTitle", "Assassin_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+    if wintype == WIN_ASSASSIN then
+        return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_ASSASSIN]) }, c = ROLE_COLORS[ROLE_ASSASSIN] }
+    end
+end)
+
+------------
+-- EVENTS --
+------------
+
+hook.Add("TTTEventFinishText", "Assassin_TTTEventFinishText", function(e)
+    if e.win == WIN_ASSASSIN then
+        return LANG.GetParamTranslation("ev_win_assassin", { role = string.lower(ROLE_STRINGS[ROLE_ASSASSIN]) })
+    end
+end)
+
+hook.Add("TTTEventFinishIconText", "Assassin_TTTEventFinishIconText", function(e, win_string, role_string)
+    if e.win == WIN_ASSASSIN then
+        return win_string, ROLE_STRINGS[ROLE_ASSASSIN]
+    end
 end)
 
 ---------------
