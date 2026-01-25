@@ -72,7 +72,7 @@ local function AssignAssassinTarget(ply, start, delay)
 
     local assassinLover = ply:GetNWString("TTTCupidLover", "")
     for _, p in PlayerIterator() do
-        if p:Alive() and not p:IsSpec() then
+        if p:Alive() and not p:IsSpec() and not p:IsAssassin() then
             local pSid64 = p:SteamID64()
             -- Don't add the assassin's lover as a target, if they have one
             if #assassinLover > 0 and pSid64 == assassinLover then continue end
@@ -86,7 +86,7 @@ local function AssignAssassinTarget(ply, start, delay)
             elseif p:IsMonsterTeam() then
                 AddEnemy(p, enemies)
             -- Exclude roles that have a passive win because they just want to survive
-            elseif p:IsIndependentTeam() and not p:IsAssassin() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
+            elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
                 AddEnemy(p, independents)
             elseif assassin_is_independent:GetBool() and p:IsTraitorTeam() then
                 AddEnemy(p, enemies)
