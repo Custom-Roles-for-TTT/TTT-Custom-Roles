@@ -328,27 +328,29 @@ end)
 -- WIN CHECKS --
 ----------------
 
-if assassin_is_independent:GetBool() then
 
-    PrintMessage(HUD_PRINTTALK, "- assassin_is_independent = " .. tostring(assassin_is_independent:GetBool()))
+
+    -- PrintMessage(HUD_PRINTTALK, "- assassin_is_independent = " .. tostring(assassin_is_independent:GetBool()))
 
     hook.Add("TTTCheckForWin", "Assassin_TTTCheckForWin", function()
-        local assassin_alive = false
-        local other_alive = false
-        for _, v in PlayerIterator() do
-            if v:IsActive() then
-                if v:IsAssassin() then
-                    assassin_alive = true
-                elseif not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
-                    other_alive = true
+        if assassin_is_independent:GetBool() then
+            local assassin_alive = false
+            local other_alive = false
+            for _, v in PlayerIterator() do
+                if v:IsActive() then
+                    if v:IsAssassin() then
+                        assassin_alive = true
+                    elseif not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
+                        other_alive = true
+                    end
                 end
             end
-        end
 
-        if assassin_alive and not other_alive then
-            return WIN_ASSASSIN
-        elseif assassin_alive then
-            return WIN_NONE
+            if assassin_alive and not other_alive then
+                return WIN_ASSASSIN
+            elseif assassin_alive then
+                return WIN_NONE
+            end
         end
     end)
 
@@ -359,8 +361,6 @@ if assassin_is_independent:GetBool() then
             return true
         end
     end)
-
-end
 
 -----------------------
 -- PLAYER VISIBILITY --
