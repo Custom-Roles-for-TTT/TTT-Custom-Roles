@@ -1293,6 +1293,14 @@ Called before a team voice state message is sent. Used to modify the targets of 
 
 *Return:* Whether or not this team voice state message should be sent (Defaults to `true`)
 
+### TTTTrackRadarScan(ply, targets)
+Called after a Tracking Radar generates its targets list, allowing the addition of new values or modification of existing values.\
+*Realm:* Server\
+*Added in:* 2.4.2\
+*Parameters:*
+- *ply* - The player who triggered the Tracking Radar update
+- *targets* - The list of targets to be displayed by the Tracking Radar
+
 ### TTTTurncoatTeamChanged(ply, traitor)
 Called when a turncoat's team is changed
 *Realm:* Server\

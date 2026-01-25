@@ -19,7 +19,7 @@ if CLIENT then
                 traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]
             })
         end
-    };
+    }
 
     SWEP.Icon = "vgui/ttt/icon_bombstation"
 end

@@ -21,7 +21,7 @@ if CLIENT then
     SWEP.EquipMenuData = {
         type = "Weapon",
         desc = "Left click to attack. Right click to leap. Press reload to spit."
-    };
+    }
 
     SWEP.Slot = 8 -- add 1 to get the slot number key
     SWEP.ViewModelFOV = 54

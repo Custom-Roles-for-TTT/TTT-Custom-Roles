@@ -168,9 +168,9 @@ local function Scan(ply, target)
                 if seance_max_info > MEDIUM_SCANNED_NAME then
                     local state = ply:GetNWInt("TTTMediumSeanceState", MEDIUM_SEANCE_IDLE)
                     if state == MEDIUM_SEANCE_LOCKED then
-                        ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. string.upper(target:Nick()))
+                        ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. utf8.upper(target:Nick()))
                     elseif state == MEDIUM_SEANCE_SEARCHING then
-                        ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. string.upper(target:Nick()) .. " (LOSING TARGET)")
+                        ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. utf8.upper(target:Nick()) .. " (LOSING TARGET)")
                     end
                 end
                 ply:QueueMessage(MSG_PRINTBOTH, "You have learned that this spirit belongs to " .. target:Nick())
@@ -243,7 +243,7 @@ hook.Add("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", function(ply)
                 ply:SetNWString("TTTMediumSeanceTarget", target:SteamID64())
                 ply:SetNWFloat("TTTMediumSeanceStartTime", CurTime())
                 if stage >= MEDIUM_SCANNED_NAME then
-                    ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. string.upper(target:Nick()))
+                    ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. utf8.upper(target:Nick()))
                 else
                     ply:SetNWString("TTTMediumSeanceMessage", "SCANNING UNKNOWN SPIRIT")
                 end
@@ -258,7 +258,7 @@ hook.Add("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", function(ply)
                 ply:SetNWInt("TTTMediumSeanceState", MEDIUM_SEANCE_SEARCHING)
                 ply:SetNWFloat("TTTMediumSeanceTargetLostTime", CurTime())
                 if targetPlayer:GetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE) >= MEDIUM_SCANNED_NAME then
-                    ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. string.upper(targetPlayer:Nick()) .. " (LOSING TARGET)")
+                    ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. utf8.upper(targetPlayer:Nick()) .. " (LOSING TARGET)")
                 else
                     ply:SetNWString("TTTMediumSeanceMessage", "SCANNING UNKNOWN SPIRIT (LOSING TARGET)")
                 end
@@ -279,7 +279,7 @@ hook.Add("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", function(ply)
                     ply:SetNWInt("TTTMediumSeanceState", MEDIUM_SEANCE_LOCKED)
                     ply:SetNWFloat("TTTMediumSeanceTargetLostTime", -1)
                     if targetPlayer:GetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE) >= MEDIUM_SCANNED_NAME then
-                        ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. string.upper(targetPlayer:Nick()))
+                        ply:SetNWString("TTTMediumSeanceMessage", "SCANNING " .. utf8.upper(targetPlayer:Nick()))
                     else
                         ply:SetNWString("TTTMediumSeanceMessage", "SCANNING UNKNOWN SPIRIT")
                     end

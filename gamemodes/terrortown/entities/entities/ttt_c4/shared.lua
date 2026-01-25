@@ -33,7 +33,7 @@ if CLIENT then
         name = "C4",
         hint = "c4_hint",
         fmt = function(ent, txt) return GetPTranslation(txt, hint_params) end
-    };
+    }
 end
 
 C4_WIRE_COUNT = 6

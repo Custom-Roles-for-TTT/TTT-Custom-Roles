@@ -339,8 +339,8 @@ local function BuildRoleConfig(dsheet, packName, tab)
     ReceiveStreamFromServer("TTT_ReadRolePackRoles", UpdateRolePackRoleUI)
 
     if not packName or #packName == 0 then
-        daddslotbutton:SetDisabled(true)
-        dallowduplicates:SetDisabled(true)
+        daddslotbutton:SetEnabled(false)
+        dallowduplicates:SetEnabled(false)
     else
         ReadRolePackRoleTable(packName)
     end
@@ -574,8 +574,8 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
     ReceiveStreamFromServer("TTT_ReadRolePackRoleBlocks", UpdateRolePackRoleBlockUI)
 
     if not packName or #packName == 0 then
-        daddgroupbutton:SetDisabled(true)
-        dusedefault:SetDisabled(true)
+        daddgroupbutton:SetEnabled(false)
+        dusedefault:SetEnabled(false)
     else
         ReadRolePackRoleBlockTable(packName)
     end
@@ -886,7 +886,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dradionone:SizeToContents()
     dradionone:SetValue(true)
     dradionone:SetTextColor(COLOR_WHITE)
-    dradionone:SetDisabled(true)
+    dradionone:SetEnabled(false)
 
     local dradiol, dradiot = dradionone:GetPos()
     local _, dradioh = dradionone:GetSize()
@@ -897,7 +897,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dradioinclude:SetTooltip(GetTranslation("roleweapons_option_include_tooltip"))
     dradioinclude:SizeToContents()
     dradioinclude:SetTextColor(COLOR_WHITE)
-    dradioinclude:SetDisabled(true)
+    dradioinclude:SetEnabled(false)
 
     local dradioexclude = vgui.Create("DCheckBoxLabel", dweapons)
     dradioexclude:SetPos(dradiol, dradiot + (dradioh * 2) + (dradiopadding * 2))
@@ -905,7 +905,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dradioexclude:SetTooltip(GetTranslation("roleweapons_option_exclude_tooltip"))
     dradioexclude:SizeToContents()
     dradioexclude:SetTextColor(COLOR_WHITE)
-    dradioexclude:SetDisabled(true)
+    dradioexclude:SetEnabled(false)
 
     local dradionorandom = vgui.Create("DCheckBoxLabel", dweapons)
     dradionorandom:SetPos(w - 30 - bw, dih + dsearchheight + dradiopadding)
@@ -913,7 +913,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dradionorandom:SetTooltip(GetTranslation("roleweapons_option_norandom_tooltip"))
     dradionorandom:SizeToContents()
     dradionorandom:SetTextColor(COLOR_WHITE)
-    dradionorandom:SetDisabled(true)
+    dradionorandom:SetEnabled(false)
 
     local dradioloadout = vgui.Create("DCheckBoxLabel", dweapons)
     dradioloadout:SetPos(w - 30 - bw, dih + dsearchheight + dradioh + (dradiopadding * 2))
@@ -921,7 +921,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dradioloadout:SetTooltip(GetTranslation("roleweapons_option_loadout_tooltip"))
     dradioloadout:SizeToContents()
     dradioloadout:SetTextColor(COLOR_WHITE)
-    dradioloadout:SetDisabled(true)
+    dradioloadout:SetEnabled(false)
 
     local function UpdateButtonState()
         local valid = role > ROLE_NONE and save_role > ROLE_NONE
@@ -929,11 +929,11 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             valid = false
         end
 
-        dradionone:SetDisabled(not valid)
-        dradioinclude:SetDisabled(not valid)
-        dradioexclude:SetDisabled(not valid)
-        dradionorandom:SetDisabled(not valid)
-        dradioloadout:SetDisabled(not valid)
+        dradionone:SetEnabled(valid)
+        dradioinclude:SetEnabled(valid)
+        dradioexclude:SetEnabled(valid)
+        dradionorandom:SetEnabled(valid)
+        dradioloadout:SetEnabled(valid)
     end
 
     local function UpdateRadioButtonState(item)
@@ -1135,9 +1135,9 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     ReceiveStreamFromServer("TTT_ReadRolePackWeapons", UpdateRolePackWeaponUI)
 
     if not packName or #packName == 0 then
-        dsearch:SetDisabled(true)
-        dsearchrole:SetDisabled(true)
-        dsaverole:SetDisabled(true)
+        dsearch:SetEnabled(false)
+        dsearchrole:SetEnabled(false)
+        dsaverole:SetEnabled(false)
     else
         weaponChanges.name = packName
         ReadRolePackWeaponTables(packName)
@@ -1250,7 +1250,7 @@ local function BuildConVarConfig(dsheet, packName, tab)
     ReceiveStreamFromServer("TTT_ReadRolePackConvars", UpdateRolePackConvarUI)
 
     if not packName or #packName == 0 then
-        dtextentry:SetDisabled(true)
+        dtextentry:SetEnabled(false)
     else
         ReadRolePackConvarTable(packName)
     end

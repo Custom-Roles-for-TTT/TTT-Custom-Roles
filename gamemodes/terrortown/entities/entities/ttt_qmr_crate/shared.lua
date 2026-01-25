@@ -35,7 +35,7 @@ function ENT:Initialize()
                 fmt  = function(ent, txt)
                     return GetPTranslation(txt, { usekey = Key("+use", "USE") } )
                 end
-            };
+            }
         end
     end
 end

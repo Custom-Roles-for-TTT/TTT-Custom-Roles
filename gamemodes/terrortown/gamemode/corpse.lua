@@ -546,7 +546,7 @@ local crimescene_keys = { "Fraction", "HitBox", "Normal", "HitPos", "StartPos" }
 local poseparams = {
     "aim_yaw", "move_yaw", "aim_pitch",
     --   "spine_yaw", "head_yaw", "head_pitch"
-};
+}
 
 local function GetSceneDataFromPlayer(ply)
     local data = {
@@ -554,7 +554,7 @@ local function GetSceneDataFromPlayer(ply)
         ang = ply:GetAngles(),
         sequence = ply:GetSequence(),
         cycle = ply:GetCycle()
-    };
+    }
 
     for _, param in pairs(poseparams) do
         data[param] = ply:GetPoseParameter(param)

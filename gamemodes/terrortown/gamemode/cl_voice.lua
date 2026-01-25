@@ -65,7 +65,7 @@ local function RoleChatRecv()
     end
 
     chat.AddText(ROLE_COLORS[visible_role],
-        Format("(%s) ", string.upper(ROLE_STRINGS[visible_role])),
+        Format("(%s) ", utf8.upper(ROLE_STRINGS[visible_role])),
         ROLE_COLORS[visible_role],
         name,
         COLOR_WHITE,
@@ -199,7 +199,7 @@ RADIO.Commands = {
     { cmd = "traitor", text = "quick_traitor", format = true, params = { atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR] } },
     { cmd = "innocent", text = "quick_inno", format = true, params = { aninnocent = ROLE_STRINGS_EXT[ROLE_INNOCENT] } },
     { cmd = "check", text = "quick_check", format = false }
-};
+}
 
 local radioframe = nil
 
@@ -495,7 +495,7 @@ local radio_gestures = {
     quick_see = ACT_GMOD_GESTURE_WAVE,
     quick_check = ACT_SIGNAL_GROUP,
     quick_suspect = ACT_SIGNAL_HALT
-};
+}
 
 function GM:PlayerSentRadioCommand(ply, name, target)
     local act = radio_gestures[name]
@@ -692,7 +692,7 @@ local MuteText = {
     [MUTE_TERROR] = "mute_living",
     [MUTE_ALL] = "mute_all",
     [MUTE_SPEC] = "mute_specs"
-};
+}
 
 local function SetMuteState(state)
     if MutedState then

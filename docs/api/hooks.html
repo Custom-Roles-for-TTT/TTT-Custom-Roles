@@ -1933,6 +1933,18 @@
             <em>Return:</em> Whether or not this team voice state message should be sent (Defaults to <code>true</code>).
         </p>
 
+        <h3><a id="ttttrackradarscanply-targets" href="#ttttrackradarscanply-targets">TTTTrackRadarScan(ply, targets)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called after a Tracking Radar generates its targets list, allowing the addition of new values or modification of existing values.
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.4.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who triggered the Tracking Radar update</li>
+            <li><em>targets</em> - The list of targets to be displayed by the Tracking Radar</li>
+        </ul>
+
         <h3><a id="tttturncoatteamchangedply-traitor" href="#tttturncoatteamchangedply-traitor">TTTTurncoatTeamChanged(ply, traitor)</a></h3>
         <p>
             Called when a Turncoat's team is changed

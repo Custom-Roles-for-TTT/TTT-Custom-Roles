@@ -17,7 +17,7 @@ if CLIENT then
                 bombstation = GetTranslation("bstation_name")
             })
         end
-    };
+    }
 
     SWEP.Icon = "vgui/ttt/icon_stationbomb"
 end

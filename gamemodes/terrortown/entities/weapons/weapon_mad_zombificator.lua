@@ -4,7 +4,6 @@ local hook = hook
 local net = net
 local player = player
 local surface = surface
-local string = string
 local table = table
 local util = util
 
@@ -95,7 +94,7 @@ if SERVER then
     end
 
     function SWEP:GetProgressMessage(ply, body, bone)
-        return "ZOMBIFYING " .. string.upper(ply:Nick())
+        return "ZOMBIFYING " .. utf8.upper(ply:Nick())
     end
 
     function SWEP:GetAbortMessage()

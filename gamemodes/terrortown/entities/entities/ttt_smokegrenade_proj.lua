@@ -26,7 +26,7 @@ if CLIENT then
     local smokeparticles = {
         Model("particle/particle_smokegrenade"),
         Model("particle/particle_noisesphere")
-    };
+    }
 
    function ENT:CreateSmoke(center)
         local em = ParticleEmitter(center)

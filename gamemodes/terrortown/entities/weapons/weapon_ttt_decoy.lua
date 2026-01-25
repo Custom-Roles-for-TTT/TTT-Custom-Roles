@@ -19,7 +19,7 @@ if CLIENT then
    SWEP.EquipMenuData = {
       type = "item_weapon",
       desc = function() return GetPTranslation("decoy_desc", { detective = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE] }) end
-   };
+   }
 
    SWEP.Icon                = "vgui/ttt/icon_beacon"
 end

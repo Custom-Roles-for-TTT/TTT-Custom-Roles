@@ -141,7 +141,7 @@ local tags = {
     {txt="sb_tag_avoid",  color=Color(255, 150, 0, 255)},
     {txt="sb_tag_kill",   color=COLOR_RED},
     {txt="sb_tag_miss",   color=Color(130, 190, 130, 255)}
-};
+}
 
 PANEL = {}
 

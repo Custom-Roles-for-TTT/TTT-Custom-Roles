@@ -25,7 +25,7 @@ function ScoreInit()
         monsters = 0,
         role = -1,
         bonus = 0 -- non-kill points to add
-    };
+    }
 end
 
 function ScoreEvent(e, scores)
