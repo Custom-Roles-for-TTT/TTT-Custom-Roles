@@ -255,6 +255,7 @@ ttt_hypnotist_brainwash_muted                  0       // Whether players brainw
 ttt_hypnotist_brainwash_credits                0       // How many credits a hypnotized player should get
 
 // Assassin
+ttt_assassin_is_independent                    0       // Whether Assassins should be treated as members of the independent team (rather than the traitor team)
 ttt_assassin_show_target_icon                  0       // Whether Assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_assassin_target_vision_enabled             0       // Whether Assassins have a visible aura around their target, visible through walls
 ttt_assassin_next_target_delay                 5       // The delay (in seconds) before an Assassin is assigned their next target
@@ -288,7 +289,6 @@ ttt_assassin_allow_plaguemaster_kill           0       // Whether the Assassin c
 ttt_assassin_allow_cannibal_kill               0       // Whether the Assassin can kill a Cannibal without damage penalty, even if it is not their target
 ttt_assassin_allow_vindicator_kill             1       // Whether the Assassin can kill a Vindicator without damage penalty, even if it is not their target
 ttt_assassin_allow_vampire_kill                1       // Whether the Assassin can kill a Vampire without damage penalty, even if it is not their target (only created and used when "ttt_vampire_is_monster" or "ttt_vampire_is_independent" is enabled)
-ttt_assassin_is_independent                    0       // Whether Assassins should be treated as members of the independent team (rather than the traitor team)
 
 // Vampire
 ttt_vampire_is_monster                         0       // Whether Vampires should be treated as members of the monster team (rather than the traitor team)
