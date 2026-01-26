@@ -94,7 +94,7 @@ end)
 
 hook.Add("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
     if cli:IsAssassin() and IsPlayer(ent) and ent:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
-        if ent:GetNWBool("ParasiteInfected", false) and ShouldShowTraitorExtraInfo() then
+        if ent:GetNWBool("ParasiteInfected", false) and ShouldShowTraitorExtraInfo() and cli:IsTraitorTeam() then
             secondary_text = LANG.GetTranslation("target_infected")
         end
         return LANG.GetTranslation("target_current_target"), ROLE_COLORS_RADAR[ROLE_ASSASSIN], secondary_text
@@ -119,7 +119,7 @@ end
 
 -- Flash the assassin target's row on the scoreboard
 hook.Add("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
-    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
+    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() and cli:IsTraitorTeam() then
         return c, roleStr, ROLE_ASSASSIN
     end
 end)
@@ -127,7 +127,7 @@ end)
 hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function(ply, cli, text)
     if cli:IsAssassin() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         local newText = " ("
-        if ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false) then
+        if ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false) and cli:IsTraitorTeam() then
             newText = newText .. LANG.GetTranslation("target_infected") .. " | "
         end
         newText = newText .. LANG.GetTranslation("target_assassin_target") .. ")"
@@ -143,7 +143,7 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target)
     -- Shared logic
     local show = target:SteamID64() == ply:GetNWString("AssassinTarget", "")
 
-    local name = show and ShouldShowTraitorExtraInfo()
+    local name = show and ShouldShowTraitorExtraInfo() and ply:IsTraitorTeam()
     ------ name, role
     return name, show
 end

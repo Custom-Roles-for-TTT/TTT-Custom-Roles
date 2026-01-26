@@ -114,9 +114,9 @@ end)
 
 hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function(ply, cli, text)
     -- Skip this for Assassin so they can have their own Current Target logic (it also handles parasite infection there)
-    local shouldShowTraitor = cli:IsTraitorTeam() and not cli:IsAssassin() and ShouldShowTraitorExtraInfo()
+    local shouldShowTraitor = cli:IsTraitorTeam() and not cli:IsAssassin() and ShouldShowTraitorExtraInfo() and not GetConVar("ttt_assassin_is_independent"):GetBool()
 
-    -- Show Assassin and Parasite logic if necessary
+    -- Show Assassin and Parasite logic if necessary (unless Assassin is on the independent team)
     local infected = ply:GetNWBool("ParasiteInfected", false)
     if shouldShowTraitor then
         for _, v in PlayerIterator() do
