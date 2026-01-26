@@ -7,6 +7,7 @@
 - Added ability for Spy to steal a player's identity when they search a body instead of when they kill a player (disabled by default)
 - Added optional `ttt_shop_limit_count` convar to limit the number of items available in the equipment shop
   - The items are chosen randomly (obeying the equipment and SWEP properties as well as the role weapons and role pack configurations for bypassing randomization) and will change each round
+- Added ability for the Assassin to be an independent role (disabled by default) (Thanks Joel!)
 
 ### Changes
 - Ported "TTT: Remove usages of Panel:Set/GetDisabled"
