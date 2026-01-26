@@ -53,6 +53,13 @@ maybe even suffering from a penalty!
 Press {menukey} to receive your special equipment!]])
 end)
 
+-- If this is an independent Assassin, replace the "comrades" list with a generic kill message
+hook.Add("TTTRolePopupParams", "Assassin_TTTRolePopupParams", function(cli)
+    if cli:IsAssassin() and cli:IsIndependentTeam() then
+        return {comrades = "\n\nKill all others to win!"}
+    end
+end)
+
 ----------------
 -- WIN CHECKS --
 ----------------
