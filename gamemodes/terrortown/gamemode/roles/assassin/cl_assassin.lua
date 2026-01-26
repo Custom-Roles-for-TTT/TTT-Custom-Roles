@@ -248,8 +248,17 @@ end
 
 hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ASSASSIN then
-        local roleColor = ROLE_COLORS[ROLE_TRAITOR]
-        local html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to eliminate their enemies, one target at a time."
+    
+        local roleColor = nil
+        local html = nil
+
+        if GetConVar("ttt_assassin_is_independent"):GetBool() then
+            roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
+            html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent team</span> whose goal is to eliminate their enemies, one target at a time."
+        else
+            roleColor = ROLE_COLORS[ROLE_TRAITOR]
+            html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to eliminate their enemies, one target at a time."
+        end
 
         local delay = assassin_next_target_delay:GetInt()
         html = html .. "<span style='display: block; margin-top: 10px;'>They are assigned an initial target at the start of the round. A new target is assigned "
@@ -271,7 +280,7 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
             html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>skull</span> icon floating over their head.</span>"
         end
 
-        if GetConVar("ttt_traitors_vision_enabled"):GetBool() then
+        if GetConVar("ttt_traitors_vision_enabled"):GetBool() and not GetConVar("ttt_assassin_is_independent"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
         end
 
