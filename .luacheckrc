@@ -1069,6 +1069,7 @@ globals = {
     "UNITS_PER_METER",
     "WEAPON_CATEGORY_ROLE",
     "WINS_BY_ROLE",
+    "WIN_ASSASSIN",
     "WIN_ARSONIST",
     "WIN_CANNIBAL",
     "WIN_CLOWN",
