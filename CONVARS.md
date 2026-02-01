@@ -656,6 +656,12 @@ ttt_bodysnatcher_reveal_jester                 1       // Who the Bodysnatcher i
 ttt_bodysnatcher_respawn                       0       // Whether the Bodysnatcher respawns when they are killed before joining another team
 ttt_bodysnatcher_respawn_delay                 3       // The delay to use when respawning the Bodysnatcher (if "ttt_bodysnatcher_respawn" is enabled)
 ttt_bodysnatcher_respawn_limit                 0       // The maximum number of times the Bodysnatcher can respawn (if "ttt_bodysnatcher_respawn" is enabled). Set to 0 to allow infinite respawns
+ttt_bodysnatcher_target_innocents              1       // Whether the Bodysnatcher can target innocent bodies
+ttt_bodysnatcher_target_detectives             1       // Whether the Bodysnatcher can target detective bodies
+ttt_bodysnatcher_target_traitors               1       // Whether the Bodysnatcher can target traitor bodies
+ttt_bodysnatcher_target_jesters                1       // Whether the Bodysnatcher can target jester bodies
+ttt_bodysnatcher_target_independents           1       // Whether the Bodysnatcher can target independent bodies
+ttt_bodysnatcher_target_monsters               1       // Whether the Bodysnatcher can target monster bodies
 ttt_bodysnatcher_notify_mode                   0       // The logic to use when notifying players that a Bodysnatcher was killed. Killer is notified unless "ttt_bodysnatcher_notify_killer" is disabled. 0 - Don't notify anyone. 1 - Only notify traitors and detectives. 2 - Only notify traitors. 3 - Only notify detectives. 4 - Notify everyone
 ttt_bodysnatcher_notify_killer                 1       // Whether to notify a Bodysnatcher's killer
 ttt_bodysnatcher_notify_sound                  0       // Whether to play a cheering sound when a Bodysnatcher is killed
