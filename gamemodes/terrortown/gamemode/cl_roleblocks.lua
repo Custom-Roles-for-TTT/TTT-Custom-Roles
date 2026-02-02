@@ -8,6 +8,7 @@ local math = math
 local string = string
 
 local GetTranslation = LANG.GetTranslation
+local GetParamTranslation = LANG.GetParamTranslation
 local TableInsert = table.insert
 local TableRemove = table.remove
 local TableRemoveByValue = table.RemoveByValue
