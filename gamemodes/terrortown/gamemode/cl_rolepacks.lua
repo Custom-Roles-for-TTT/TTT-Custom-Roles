@@ -216,7 +216,12 @@ local function BuildRoleConfig(dsheet, packName, tab)
             dicon:SetIconSize(iconWidth)
             dicon:SetIcon(material)
             dicon:SetBackgroundColor(ROLE_COLORS[role] or Color(0, 0, 0, 0))
-            dicon:SetTooltip(ROLE_STRINGS[role])
+            if role ~= ROLE_NONE then
+                dicon:SetTooltip(ROLE_STRINGS[role])
+            -- Show the string that was loaded from JSON if it doesn't exist on the server anymore
+            elseif rolestr ~= nil then
+                dicon:SetTooltip(GetParamTranslation("rolepacks_unknown_role", { role = rolestr }))
+            end
             dicon.DoClick = function()
                 local dmenu = DermaMenu()
                 for r, s in SortedPairsByValue(ROLE_STRINGS) do
@@ -268,7 +273,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
         daddrolebutton:SetTooltip(GetTranslation("rolepacks_add_role"))
         daddrolebutton.DoClick = function()
             TableRemove(dlist.Items)
-            CreateRole(ROLE_INNOCENT, 1)
+            CreateRole(nil, 1)
             dlist:AddPanel(dbuttons)
             droles.unsavedChanges = true
         end
@@ -455,7 +460,12 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             dicon:SetIconSize(iconWidth)
             dicon:SetIcon(material)
             dicon:SetBackgroundColor(ROLE_COLORS[role] or Color(0, 0, 0, 0))
-            dicon:SetTooltip(ROLE_STRINGS[role])
+            if role ~= ROLE_NONE then
+                dicon:SetTooltip(ROLE_STRINGS[role])
+            -- Show the string that was loaded from JSON if it doesn't exist on the server anymore
+            elseif rolestr ~= nil then
+                dicon:SetTooltip(GetParamTranslation("roleblocks_unknown_role", { role = rolestr }))
+            end
             dicon.DoClick = function()
                 local dmenu = DermaMenu()
                 for r, s in SortedPairsByValue(ROLE_STRINGS) do
@@ -507,7 +517,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
         daddrolebutton:SetTooltip(GetTranslation("rolepacks_add_role"))
         daddrolebutton.DoClick = function()
             TableRemove(dlist.Items)
-            CreateRole(ROLE_INNOCENT, 1)
+            CreateRole(nil, 1)
             dlist:AddPanel(dbuttons)
             droleblocks.unsavedChanges = true
         end
