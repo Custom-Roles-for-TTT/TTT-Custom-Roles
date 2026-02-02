@@ -10,6 +10,7 @@
 - Added ability for Bodysnatcher to have the roles they can snatch restricted by team-based convars
 - Added unknown role name to the tooltip for rolepack and roleblock edit UIs to help in troubleshooting
 - Added buttons to easily duplicate rolepack slot and roleblock group
+- Added ability to rearrange rolepack slot and roleblock group rows by dragging and dropping them
 
 ### Changes
 - Ported "TTT: Remove usages of Panel:Set/GetDisabled"

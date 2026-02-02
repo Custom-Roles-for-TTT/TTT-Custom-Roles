@@ -169,15 +169,24 @@ local function BuildRoleConfig(dsheet, packName, tab)
         end
     end
 
+    local listwidth, listheight = dslotlist:GetSize()
+    local dlayout = vgui.Create("DListLayout", dslotlist)
+    dlayout:SetPaintBackground(false)
+    dlayout:SetSize(listwidth, listheight)
+    dlayout:MakeDroppable("cr4ttt_rolepacks_packslots")
+    dlayout.OnModified = function()
+        UpdateSlotLabels()
+    end
+
     local function CreateSlot(roleTable)
         local labelHeight = 10
         local iconWidth = 64
         local iconHeight = 84
         local buttonSize = 20
 
-        local dslot = vgui.Create("DPanel", dslotlist)
+        local dslot = vgui.Create("DPanel", dlayout)
         dslot:SetPaintBackground(false)
-        dslot:SetSize(dslotlist:GetSize(), labelHeight + iconHeight + 2 * m)
+        dslot:SetSize(dlayout:GetSize(), labelHeight + iconHeight + 2 * m)
         dslot:Dock(TOP)
 
         local dlabel = vgui.Create("DLabel", dslot)
@@ -255,7 +264,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
             TableInsert(roleList, drole)
 
             local iconRows = MathCeil((#roleList + 1) / 8)
-            dslot:SetSize(dslotlist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dslot:SetSize(dlayout:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
             dlist:SetHeight(iconRows * iconHeight + 2 * m)
 
             dlist:AddPanel(drole)
@@ -295,7 +304,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
             drole:Remove()
             dlist:AddPanel(dbuttons)
             local iconRows = MathCeil((#dlist.Items) / 8)
-            dslot:SetSize(dslotlist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dslot:SetSize(dlayout:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
             dlist:SetHeight(iconRows * iconHeight + 2 * m)
             droles.unsavedChanges = true
         end
@@ -335,7 +344,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
 
         dlist:AddPanel(dbuttons)
 
-        dslotlist:AddItem(dslot)
+        dlayout:Add(dslot)
     end
 
     local daddslotbutton = vgui.Create("DButton", droles)
@@ -354,7 +363,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
     end
 
     local function UpdateRolePackRoleUI(jsonTable)
-        dslotlist:Clear()
+        dlayout:Clear()
         if jsonTable.config then
             dallowduplicates:SetChecked(jsonTable.config.allowduplicates)
 
@@ -433,15 +442,21 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
     dgrouplist:SetPaintBackground(false)
     dgrouplist:StretchToParent(0, configHeight + m, 16, buttonHeight + m + 36)  -- For some reason filling the scroll panel to the size of its parent makes it too big, thus the magic numbers
 
+    local listwidth, listheight = dgrouplist:GetSize()
+    local dlayout = vgui.Create("DListLayout", dgrouplist)
+    dlayout:SetPaintBackground(false)
+    dlayout:SetSize(listwidth, listheight)
+    dlayout:MakeDroppable("cr4ttt_rolepacks_blockgroups")
+
     local function CreateGroup(roleTable)
         local labelHeight = 10
         local iconWidth = 64
         local iconHeight = 84
         local buttonSize = 20
 
-        local dgroup = vgui.Create("DPanel", dgrouplist)
+        local dgroup = vgui.Create("DPanel", dlayout)
         dgroup:SetPaintBackground(false)
-        dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconHeight + 2 * m)
+        dgroup:SetSize(dlayout:GetSize(), labelHeight + iconHeight + 2 * m)
         dgroup:Dock(TOP)
 
         local dlabel = vgui.Create("DLabel", dgroup)
@@ -520,7 +535,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             TableInsert(roleList, drole)
 
             local iconRows = MathCeil((#roleList + 1) / 8)
-            dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dgroup:SetSize(dlayout:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
             dlist:SetHeight(iconRows * iconHeight + 2 * m)
 
             dlist:AddPanel(drole)
@@ -560,7 +575,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             drole:Remove()
             dlist:AddPanel(dbuttons)
             local iconRows = MathCeil((#dlist.Items) / 8)
-            dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dgroup:SetSize(dlayout:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
             dlist:SetHeight(iconRows * iconHeight + 2 * m)
             droleblocks.unsavedChanges = true
         end
@@ -597,7 +612,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
 
         dlist:AddPanel(dbuttons)
 
-        dgrouplist:AddItem(dgroup)
+        dlayout:Add(dgroup)
     end
 
     local daddgroupbutton = vgui.Create("DButton", droleblocks)
@@ -615,7 +630,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
     end
 
     local function UpdateRolePackRoleBlockUI(jsonTable)
-        dgrouplist:Clear()
+        dlayout:Clear()
         if jsonTable.config then
             dusedefault:SetChecked(jsonTable.config.usedefault)
 

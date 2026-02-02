@@ -114,15 +114,21 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
     dgrouplist:SetPaintBackground(false)
     dgrouplist:StretchToParent(0, m, 0, buttonHeight + m)
 
+    local listwidth, listheight = dgrouplist:GetSize()
+    local dlayout = vgui.Create("DListLayout", dgrouplist)
+    dlayout:SetPaintBackground(false)
+    dlayout:SetSize(listwidth, listheight)
+    dlayout:MakeDroppable("cr4ttt_roleblocks_blockgroups")
+
     local function CreateGroup(roleTable)
         local labelHeight = 10
         local iconWidth = 64
         local iconHeight = 84
         local buttonSize = 20
 
-        local dgroup = vgui.Create("DPanel", dgrouplist)
+        local dgroup = vgui.Create("DPanel", dlayout)
         dgroup:SetPaintBackground(false)
-        dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconHeight + 2 * m)
+        dgroup:SetSize(dlayout:GetSize(), labelHeight + iconHeight + 2 * m)
         dgroup:Dock(TOP)
 
         local dlabel = vgui.Create("DLabel", dgroup)
@@ -201,7 +207,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             TableInsert(roleList, drole)
 
             local iconRows = MathCeil((#roleList + 1) / 8)
-            dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dgroup:SetSize(dlayout:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
             dlist:SetHeight(iconRows * iconHeight + 2 * m)
 
             dlist:AddPanel(drole)
@@ -241,7 +247,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             drole:Remove()
             dlist:AddPanel(dbuttons)
             local iconRows = MathCeil((#dlist.Items) / 8)
-            dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dgroup:SetSize(dlayout:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
             dlist:SetHeight(iconRows * iconHeight + 2 * m)
             droleblocks.unsavedChanges = true
         end
@@ -278,7 +284,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
 
         dlist:AddPanel(dbuttons)
 
-        dgrouplist:AddItem(dgroup)
+        dlayout:Add(dgroup)
     end
 
     local dbuttons = vgui.Create("DPanel", droleblocks)
@@ -306,7 +312,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
     end
 
     local function UpdateRoleBlockUI(jsonTable)
-        dgrouplist:Clear()
+        dlayout:Clear()
         for _, group in pairs(jsonTable) do
             CreateGroup(group)
         end
