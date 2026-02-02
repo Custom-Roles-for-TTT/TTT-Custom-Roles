@@ -56,23 +56,23 @@ local function SendStreamToServer(tbl, networkString)
 
     if len <= maxStreamLength then
         net.Start(networkString)
-        net.WriteUInt(len, 16)
-        net.WriteData(jsonTable, len)
+            net.WriteUInt(len, 16)
+            net.WriteData(jsonTable, len)
         net.SendToServer()
     else
         local curpos = 0
 
         repeat
             net.Start(networkString .. "_Part")
-            net.WriteData(StringSub(jsonTable, curpos + 1, curpos + maxStreamLength + 1), maxStreamLength)
+                net.WriteData(StringSub(jsonTable, curpos + 1, curpos + maxStreamLength + 1), maxStreamLength)
             net.SendToServer()
 
             curpos = curpos + maxStreamLength + 1
         until (len - curpos <= maxStreamLength)
 
         net.Start(networkString)
-        net.WriteUInt(len, 16)
-        net.WriteData(StringSub(jsonTable, curpos + 1, len), len - curpos)
+            net.WriteUInt(len, 16)
+            net.WriteData(StringSub(jsonTable, curpos + 1, len), len - curpos)
         net.SendToServer()
     end
 end
@@ -115,20 +115,25 @@ local function DoesValueMatch(item, data, value)
     return itemdata and StringFind(StringLower(SafeTranslate(itemdata)), StringLower(value), 1, true)
 end
 
-local function IsNameValid(name, dpack)
+local function IsNameUsed(name, dpack)
+    for _, v in pairs(dpack.Choices) do
+        if name == v then
+            return true
+        end
+    end
+    return false
+end
+
+local function IsNameValid(name, dpack, overwrite)
     if string.find(name, "[\\/:%*%?\"<>|]") then
         LocalPlayer():PrintMessage(HUD_PRINTTALK, "Name cannot contain the following characters: \\/:*?\"<>|")
         return false
     elseif #name > 30 then
         LocalPlayer():PrintMessage(HUD_PRINTTALK, "Name cannot be longer than 30 characters")
         return false
-    else
-        for _, v in pairs(dpack.Choices) do
-            if name == v then
-                LocalPlayer():PrintMessage(HUD_PRINTTALK, "Name cannot be a duplicate of another role pack")
-                return false
-            end
-        end
+    elseif not overwrite and IsNameUsed(name, dpack) then
+        LocalPlayer():PrintMessage(HUD_PRINTTALK, "Name cannot be a duplicate of another role pack")
+        return false
     end
     return true
 end
@@ -358,7 +363,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
 
     local function ReadRolePackRoleTable(name)
         net.Start("TTT_RequestRolePackRoles")
-        net.WriteString(name)
+            net.WriteString(name)
         net.SendToServer()
     end
 
@@ -386,8 +391,9 @@ local function BuildRoleConfig(dsheet, packName, tab)
         return droles.unsavedChanges
     end
 
-    droles.Save = function()
+    droles.Save = function(name)
         if droles.HasUnsavedChanges() then
+            packName = name or packName
             local slotTable = {name = packName, config = {allowduplicates = dallowduplicates:GetChecked()}, slots = {}}
             for _, slot in pairs(slotList) do
                 local roleTable = {}
@@ -625,7 +631,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
 
     local function ReadRolePackRoleBlockTable(name)
         net.Start("TTT_RequestRolePackRoleBlocks")
-        net.WriteString(name)
+            net.WriteString(name)
         net.SendToServer()
     end
 
@@ -652,8 +658,9 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
         return droleblocks.unsavedChanges
     end
 
-    droleblocks.Save = function()
+    droleblocks.Save = function(name)
         if droleblocks.HasUnsavedChanges() then
+            packName = name or packName
             local groupTable = { name = packName, config = { usedefault = dusedefault:GetChecked()}, groups = {}}
             for _, group in pairs(groupList) do
                 local roleTable = {}
@@ -683,6 +690,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     local dweapons = vgui.Create("DPanel", dsheet)
     dweapons:SetPaintBackground(false)
     dweapons:StretchToParent(0, 0, 0, 0)
+    dweapons.unsavedChanges = false
 
     local role = ROLE_NONE
     local save_role = ROLE_NONE
@@ -1180,8 +1188,8 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         local roleBits = util.RoleBits()
         for r = ROLE_INNOCENT, ROLE_MAX do
             net.Start("TTT_RequestRolePackWeapons")
-            net.WriteString(name)
-            net.WriteUInt(r, roleBits)
+                net.WriteString(name)
+                net.WriteUInt(r, roleBits)
             net.SendToServer()
         end
     end
@@ -1232,6 +1240,10 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     end
 
     dweapons.HasUnsavedChanges = function()
+        if dweapons.unsavedChanges then
+            return true
+        end
+
         for r = 0, ROLE_MAX do
             if weaponChanges.weapons[r] then
                 if not oldWeaponChanges.weapons[r] then return true end
@@ -1244,9 +1256,11 @@ local function BuildWeaponConfig(dsheet, packName, tab)
         return false
     end
 
-    dweapons.Save = function()
+    dweapons.Save = function(name)
         CacheWeaponChange()
         if dweapons.HasUnsavedChanges() then
+            packName = name or packName
+            weaponChanges.name = packName
             SendStreamToServer(weaponChanges, "TTT_WriteRolePackWeapons")
             if role == save_role then
                 LocalPlayer():ConCommand("ttt_reset_weapons_cache")
@@ -1289,7 +1303,7 @@ local function BuildConVarConfig(dsheet, packName, tab)
 
     local function ReadRolePackConvarTable(name)
         net.Start("TTT_RequestRolePackConvars")
-        net.WriteString(name)
+            net.WriteString(name)
         net.SendToServer()
     end
 
@@ -1327,8 +1341,9 @@ local function BuildConVarConfig(dsheet, packName, tab)
         return dconvars.unsavedChanges
     end
 
-    dconvars.Save = function()
+    dconvars.Save = function(name)
         if dconvars.HasUnsavedChanges() then
+            packName = name or packName
             local text = dtextentry:GetValue()
             local lines = string.Split(text, '\n')
             if #lines <= 0 then return end
@@ -1402,7 +1417,7 @@ local function OpenDialog()
 
     local dpack = vgui.Create("DComboBox", dframe)
     dpack:SetPos(m, titleBarHeight + m)
-    dpack:StretchToParent(m, nil, m + 6 * (m + iconButtonSize), nil)
+    dpack:StretchToParent(m, nil, m + 7 * (m + iconButtonSize), nil)
     dpack.OnSelect = function(_, _, name)
         droles:Remove()
         droleblocks:Remove()
@@ -1414,14 +1429,19 @@ local function OpenDialog()
         dconvars = BuildConVarConfig(dsheet, name, dconvarstab)
     end
 
-    local function Save()
-        droles.Save()
-        droleblocks.Save()
-        dweapons.Save()
-        dconvars.Save()
+    local function Save(name)
+        if not name then
+            local pack, _ = dpack:GetSelected()
+            name = pack
+        end
+
+        droles.Save(name)
+        droleblocks.Save(name)
+        dweapons.Save(name)
+        dconvars.Save(name)
+
         net.Start("TTT_SavedRolePack")
-        local pack, _ = dpack:GetSelected()
-        net.WriteString(pack)
+            net.WriteString(name)
         net.SendToServer()
     end
 
@@ -1547,14 +1567,113 @@ local function OpenDialog()
         local pack, _ = dpack:GetSelected()
         if not pack or #pack == 0 then return end
         net.Start("TTT_ApplyRolePack")
-        net.WriteString(pack)
+            net.WriteString(pack)
         net.SendToServer()
         LocalPlayer():PrintMessage(HUD_PRINTTALK, "Enabling " .. pack .. " role pack...")
     end
 
+    local dsaveasbutton = vgui.Create("DButton", dframe)
+    dsaveasbutton:SetSize(iconButtonSize, iconButtonSize)
+    dsaveasbutton:SetPos(w - 3 * (m + iconButtonSize), titleBarHeight + m)
+    dsaveasbutton:SetText("")
+    dsaveasbutton:SetIcon("icon16/page_copy.png")
+    dsaveasbutton:SetTooltip(GetTranslation("rolepacks_saveas"))
+    dsaveasbutton.DoClick = function()
+        local pack, _ = dpack:GetSelected()
+        if not pack or #pack == 0 then return end
+
+        dframe:SetMouseInputEnabled(false)
+
+        local dsaveasdialog = vgui.Create("DFrame")
+        dsaveasdialog:SetSize(popupWidth, popupHeight)
+        dsaveasdialog:Center()
+        dsaveasdialog:SetTitle("Duplicating " .. pack)
+        dsaveasdialog:SetVisible(true)
+        dsaveasdialog:ShowCloseButton(true)
+        dsaveasdialog:SetMouseInputEnabled(true)
+        dsaveasdialog:SetDeleteOnClose(true)
+        dsaveasdialog.OnClose = function()
+            dframe:SetMouseInputEnabled(true)
+        end
+
+        local dsaveasentry = vgui.Create("DTextEntry", dsaveasdialog)
+        dsaveasentry:SetPos(m, titleBarHeight + m)
+        dsaveasentry:SetWidth(popupWidth - 3 * m - buttonWidth)
+
+        local dsaveas = vgui.Create("DButton", dsaveasdialog)
+        dsaveas:SetText("Save As")
+        dsaveas:SetPos(popupWidth - m - buttonWidth, titleBarHeight + m)
+        dsaveas.DoClick = function()
+            local newpack = StringLower(dsaveasentry:GetValue())
+            if not newpack or #newpack == 0 then return end
+
+            local function SaveAs()
+                net.Start("TTT_CreateRolePack")
+                    net.WriteString(newpack)
+                net.SendToServer()
+
+                -- Cheese the save logic and use a name override to duplicate all tabs
+                droles.unsavedChanges = true
+                droleblocks.unsavedChanges = true
+                dweapons.unsavedChanges = true
+                dconvars.unsavedChanges = true
+                Save(newpack)
+                droles.unsavedChanges = false
+                droleblocks.unsavedChanges = false
+                dweapons.unsavedChanges = false
+                dconvars.unsavedChanges = false
+
+                local index = dpack:AddChoice(newpack)
+                dpack:ChooseOption(newpack, index)
+
+                dsaveasdialog:Close()
+            end
+
+            if IsNameUsed(newpack, dpack) then
+                dsaveasdialog:SetMouseInputEnabled(false)
+
+                local dconfirmdialog = vgui.Create("DFrame")
+                dconfirmdialog:SetSize(popupWidth, popupHeight)
+                dconfirmdialog:Center()
+                dconfirmdialog:SetTitle("\"" .. newpack .. "\" already exists, would you like to overwrite?")
+                dconfirmdialog:SetVisible(true)
+                dconfirmdialog:ShowCloseButton(false)
+                dconfirmdialog:SetMouseInputEnabled(true)
+                dconfirmdialog:SetDeleteOnClose(true)
+                dconfirmdialog.OnClose = function()
+                    dsaveasdialog:SetMouseInputEnabled(true)
+                end
+
+                local dyes = vgui.Create("DButton", dconfirmdialog)
+                dyes:SetText("Yes")
+                dyes:SetPos(popupWidth / 2 - buttonWidth - m, titleBarHeight + m)
+                dyes.DoClick = function()
+                    SaveAs()
+                    dconfirmdialog:Close()
+                end
+
+                local dno = vgui.Create("DButton", dconfirmdialog)
+                dno:SetText("No")
+                dno:SetPos(popupWidth / 2 + m, titleBarHeight + m)
+                dno.DoClick = function()
+                    dconfirmdialog:Close()
+                end
+
+                dconfirmdialog:MakePopup()
+                return
+            end
+
+            if not IsNameValid(newpack, dpack, true) then return end
+
+            SaveAs()
+        end
+
+        dsaveasdialog:MakePopup()
+    end
+
     local dsavebutton = vgui.Create("DButton", dframe)
     dsavebutton:SetSize(iconButtonSize, iconButtonSize)
-    dsavebutton:SetPos(w - 3 * (m + iconButtonSize), titleBarHeight + m)
+    dsavebutton:SetPos(w - 4 * (m + iconButtonSize), titleBarHeight + m)
     dsavebutton:SetText("")
     dsavebutton:SetIcon("icon16/disk.png")
     dsavebutton:SetTooltip(GetTranslation("rolepacks_save"))
@@ -1566,7 +1685,7 @@ local function OpenDialog()
 
     local ddeletebutton = vgui.Create("DButton", dframe)
     ddeletebutton:SetSize(iconButtonSize, iconButtonSize)
-    ddeletebutton:SetPos(w - 4 * (m + iconButtonSize), titleBarHeight + m)
+    ddeletebutton:SetPos(w - 5 * (m + iconButtonSize), titleBarHeight + m)
     ddeletebutton:SetText("")
     ddeletebutton:SetIcon("icon16/delete.png")
     ddeletebutton:SetTooltip(GetTranslation("rolepacks_delete"))
@@ -1594,7 +1713,7 @@ local function OpenDialog()
         dyes.DoClick = function()
             dpack:Clear()
             net.Start("TTT_DeleteRolePack")
-            net.WriteString(pack)
+                net.WriteString(pack)
             net.SendToServer()
             droles:Remove()
             droleblocks:Remove()
@@ -1619,7 +1738,7 @@ local function OpenDialog()
 
     local drenamebutton = vgui.Create("DButton", dframe)
     drenamebutton:SetSize(iconButtonSize, iconButtonSize)
-    drenamebutton:SetPos(w - 5 * (m + iconButtonSize), titleBarHeight + m)
+    drenamebutton:SetPos(w - 6 * (m + iconButtonSize), titleBarHeight + m)
     drenamebutton:SetText("")
     drenamebutton:SetIcon("icon16/page_edit.png")
     drenamebutton:SetTooltip(GetTranslation("rolepacks_rename"))
@@ -1655,8 +1774,8 @@ local function OpenDialog()
             if not IsNameValid(newpack, dpack) then return end
             dpack:Clear()
             net.Start("TTT_RenameRolePack")
-            net.WriteString(pack)
-            net.WriteString(newpack)
+                net.WriteString(pack)
+                net.WriteString(newpack)
             net.SendToServer()
             droles:Remove()
             droleblocks:Remove()
@@ -1674,7 +1793,7 @@ local function OpenDialog()
 
     local dnewbutton = vgui.Create("DButton", dframe)
     dnewbutton:SetSize(iconButtonSize, iconButtonSize)
-    dnewbutton:SetPos(w - 6 * (m + iconButtonSize), titleBarHeight + m)
+    dnewbutton:SetPos(w - 7 * (m + iconButtonSize), titleBarHeight + m)
     dnewbutton:SetText("")
     dnewbutton:SetIcon("icon16/add.png")
     dnewbutton:SetTooltip(GetTranslation("rolepacks_add"))
@@ -1707,7 +1826,7 @@ local function OpenDialog()
             local index = dpack:AddChoice(pack)
             dpack:ChooseOption(pack, index)
             net.Start("TTT_CreateRolePack")
-            net.WriteString(pack)
+                net.WriteString(pack)
             net.SendToServer()
             droles:Remove()
             droleblocks:Remove()
