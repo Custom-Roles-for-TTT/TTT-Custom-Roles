@@ -9,6 +9,7 @@
   - The items are chosen randomly (obeying the equipment and SWEP properties as well as the role weapons and role pack configurations for bypassing randomization) and will change each round
 - Added ability for Bodysnatcher to have the roles they can snatch restricted by team-based convars
 - Added unknown role name to the tooltip for rolepack and roleblock edit UIs to help in troubleshooting
+- Added buttons to easily duplicate rolepack slot and roleblock group
 
 ### Changes
 - Ported "TTT: Remove usages of Panel:Set/GetDisabled"

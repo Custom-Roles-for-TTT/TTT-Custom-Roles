@@ -1258,12 +1258,16 @@ L.rolepacks_add_role = "Add role"
 L.rolepacks_delete_role = "Delete role"
 L.rolepacks_add_slot = "Add slot"
 L.rolepacks_delete_slot = "Delete slot"
+L.rolepacks_duplicate_slot = "Duplicate slot"
 L.rolepacks_use_default = "Use Default"
+L.rolepacks_unknown_role = "Unknown role: \"{role}\""
 
 -- Role Blocks Configuration
 L.roleblocks_title = "Role Blocks Configuration"
 L.roleblocks_add_group = "Add group"
 L.roleblocks_delete_group = "Delete group"
+L.roleblocks_duplicate_group = "Duplicate group"
+L.roleblocks_unknown_role = "Unknown role: \"{role}\""
 
 -- Player name disguising
 L.player_name_disguised = "{name} (Disguised as {disguise})"

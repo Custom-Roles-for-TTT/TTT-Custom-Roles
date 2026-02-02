@@ -8,6 +8,7 @@ local math = math
 local string = string
 
 local GetTranslation = LANG.GetTranslation
+local GetParamTranslation = LANG.GetParamTranslation
 local SafeTranslate = LANG.TryTranslation
 local TableInsert = table.insert
 local TableRemove = table.remove
@@ -25,6 +26,7 @@ local numRows = 5
 local itemSize = 64
 -- margin
 local m = 5
+local buttonMargin = 1
 -- item list width
 local dlistw = ((itemSize + 2) * numCols) - 2 + 15
 local dlisth = ((itemSize + 2) * numRows) - 2 + 15
@@ -34,7 +36,7 @@ local diw = 270
 local w = dlistw + diw + (m * 4)
 local h = dlisth + 75 + m + 22
 
--- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte)  - 1 (terminanting byte)
+-- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte) - 1 (terminating byte)
 local maxStreamLength = 65528
 
 local function SendStreamToServer(tbl, networkString)
@@ -171,7 +173,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
         local labelHeight = 10
         local iconWidth = 64
         local iconHeight = 84
-        local buttonSize = 22
+        local buttonSize = 20
 
         local dslot = vgui.Create("DPanel", dslotlist)
         dslot:SetPaintBackground(false)
@@ -207,6 +209,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
             drole:SetPaintBackground(false)
             drole.role = role
             drole.weight = weight
+            drole.rolestr = rolestr
 
             local dicon = vgui.Create("SimpleIcon", drole)
 
@@ -232,6 +235,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
                         dicon:SetBackgroundColor(ROLE_COLORS[r] or Color(0, 0, 0, 0))
                         dicon:SetTooltip(s)
                         drole.role = r
+                        drole.rolestr = ROLE_STRINGS_RAW[r]
                         droles.unsavedChanges = true
                     end)
                 end
@@ -280,7 +284,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
 
         local ddeleterolebutton = vgui.Create("DButton", dbuttons)
         ddeleterolebutton:SetSize(buttonSize, buttonSize)
-        ddeleterolebutton:SetPos(0, buttonSize + m)
+        ddeleterolebutton:SetPos(0, buttonSize + buttonMargin)
         ddeleterolebutton:SetText("")
         ddeleterolebutton:SetIcon("icon16/delete.png")
         ddeleterolebutton:SetTooltip(GetTranslation("rolepacks_delete_role"))
@@ -298,7 +302,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
 
         local ddeleteslotbutton = vgui.Create("DButton", dbuttons)
         ddeleteslotbutton:SetSize(buttonSize, buttonSize)
-        ddeleteslotbutton:SetPos(0, 2 * (buttonSize + m))
+        ddeleteslotbutton:SetPos(0, 2 * (buttonSize + buttonMargin))
         ddeleteslotbutton:SetText("")
         ddeleteslotbutton:SetIcon("icon16/bin.png")
         ddeleteslotbutton:SetTooltip(GetTranslation("rolepacks_delete_slot"))
@@ -307,6 +311,25 @@ local function BuildRoleConfig(dsheet, packName, tab)
             TableRemoveByValue(slotLabels, dlabel)
             UpdateSlotLabels()
             dslot:Remove()
+            droles.unsavedChanges = true
+        end
+
+        local ddupeslotbutton = vgui.Create("DButton", dbuttons)
+        ddupeslotbutton:SetSize(buttonSize, buttonSize)
+        ddupeslotbutton:SetPos(0, 3 * (buttonSize + buttonMargin))
+        ddupeslotbutton:SetText("")
+        ddupeslotbutton:SetIcon("icon16/page_copy.png")
+        ddupeslotbutton:SetTooltip(GetTranslation("rolepacks_duplicate_slot"))
+        ddupeslotbutton.DoClick = function()
+            local slotRoles = {}
+            for _, d in ipairs(roleList) do
+                TableInsert(slotRoles, {
+                    role = d.rolestr,
+                    weight = d.weight
+                })
+            end
+            CreateSlot(slotRoles)
+            UpdateSlotLabels()
             droles.unsavedChanges = true
         end
 
@@ -414,7 +437,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
         local labelHeight = 10
         local iconWidth = 64
         local iconHeight = 84
-        local buttonSize = 22
+        local buttonSize = 20
 
         local dgroup = vgui.Create("DPanel", dgrouplist)
         dgroup:SetPaintBackground(false)
@@ -450,6 +473,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             drole:SetSize(iconWidth, iconHeight)
             drole:SetPaintBackground(false)
             drole.role = role
+            drole.rolestr = rolestr
             drole.weight = 1
 
             local dicon = vgui.Create("SimpleIcon", drole)
@@ -476,6 +500,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
                         dicon:SetBackgroundColor(ROLE_COLORS[r] or Color(0, 0, 0, 0))
                         dicon:SetTooltip(s)
                         drole.role = r
+                        drole.rolestr = ROLE_STRINGS_RAW[r]
                         droleblocks.unsavedChanges = true
                     end)
                 end
@@ -524,7 +549,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
 
         local ddeleterolebutton = vgui.Create("DButton", dbuttons)
         ddeleterolebutton:SetSize(buttonSize, buttonSize)
-        ddeleterolebutton:SetPos(0, buttonSize + m)
+        ddeleterolebutton:SetPos(0, buttonSize + buttonMargin)
         ddeleterolebutton:SetText("")
         ddeleterolebutton:SetIcon("icon16/delete.png")
         ddeleterolebutton:SetTooltip(GetTranslation("rolepacks_delete_role"))
@@ -542,13 +567,31 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
 
         local ddeletegroupbutton = vgui.Create("DButton", dbuttons)
         ddeletegroupbutton:SetSize(buttonSize, buttonSize)
-        ddeletegroupbutton:SetPos(0, 2 * (buttonSize + m))
+        ddeletegroupbutton:SetPos(0, 2 * (buttonSize + buttonMargin))
         ddeletegroupbutton:SetText("")
         ddeletegroupbutton:SetIcon("icon16/bin.png")
         ddeletegroupbutton:SetTooltip(GetTranslation("roleblocks_delete_group"))
         ddeletegroupbutton.DoClick = function()
             TableRemoveByValue(groupList, roleList)
             dgroup:Remove()
+            droleblocks.unsavedChanges = true
+        end
+
+        local ddupegroupbutton = vgui.Create("DButton", dbuttons)
+        ddupegroupbutton:SetSize(buttonSize, buttonSize)
+        ddupegroupbutton:SetPos(0, 3 * (buttonSize + buttonMargin))
+        ddupegroupbutton:SetText("")
+        ddupegroupbutton:SetIcon("icon16/page_copy.png")
+        ddupegroupbutton:SetTooltip(GetTranslation("roleblocks_duplicate_group"))
+        ddupegroupbutton.DoClick = function()
+            local groupRoles = {}
+            for _, d in ipairs(roleList) do
+                TableInsert(groupRoles, {
+                    role = d.rolestr,
+                    weight = d.weight
+                })
+            end
+            CreateGroup(groupRoles)
             droleblocks.unsavedChanges = true
         end
 
