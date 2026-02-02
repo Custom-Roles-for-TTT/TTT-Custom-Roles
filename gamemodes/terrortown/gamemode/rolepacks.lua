@@ -43,6 +43,7 @@ util.AddNetworkString("TTT_RenameRolePack")
 util.AddNetworkString("TTT_DeleteRolePack")
 util.AddNetworkString("TTT_SavedRolePack")
 util.AddNetworkString("TTT_ApplyRolePack")
+util.AddNetworkString("TTT_TestRolePack")
 util.AddNetworkString("TTT_ClearRolePack")
 util.AddNetworkString("TTT_SendRolePackRoleList")
 util.AddNetworkString("TTT_RolePackBuyableWeapons")
@@ -312,6 +313,28 @@ net.Receive("TTT_ApplyRolePack", function(len, ply)
 
     local name = net.ReadString()
     GetConVar("ttt_role_pack"):SetString(name)
+end)
+
+net.Receive("TTT_TestRolePack", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
+    local name = net.ReadString()
+    GetConVar("ttt_role_pack"):SetString(name)
+
+    -- Add bots to fill the slots
+    local count = table.Count(player.GetAll())
+    local max = game.MaxPlayers()
+    for n = 1, max - count do
+        RunConsoleCommand("bot")
+    end
+
+    -- Restart the round
+    if GetRoundState() == ROUND_ACTIVE then
+        RunConsoleCommand("ttt_roundrestart")
+    end
 end)
 
 net.Receive("TTT_ClearRolePack", function(len, ply)
