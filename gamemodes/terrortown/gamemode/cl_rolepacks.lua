@@ -180,6 +180,10 @@ local function BuildRoleConfig(dsheet, packName, tab)
     dlayout:SetSize(listwidth, listheight)
     dlayout:MakeDroppable("cr4ttt_rolepacks_packslots")
     dlayout.OnModified = function()
+        slotLabels = {}
+        for _, dslot in ipairs(dlayout:GetChildren()) do
+            TableInsert(slotLabels, dslot.label)
+        end
         UpdateSlotLabels()
     end
 
@@ -199,6 +203,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
         dlabel:SetContentAlignment(7)
         dlabel:SetPos(3, 0) -- For some reason the text isn't inline with the icons so we shift it 3px to the right
         TableInsert(slotLabels, dlabel)
+        dslot.label = dlabel
 
         local dlist = vgui.Create("EquipSelect", dslot)
         dlist:SetPos(0, labelHeight + m)
