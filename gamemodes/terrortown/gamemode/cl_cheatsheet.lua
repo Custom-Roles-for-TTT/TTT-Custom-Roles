@@ -27,6 +27,7 @@ local MathSin = math.sin
 
 local hotkey = CreateClientConVar("ttt_cheatsheet_hotkey", "h", true, false, "Hotkey for opening the cheat sheet")
 local rolepack_icon = CreateClientConVar("ttt_cheatsheet_rolepack_icon", "0", true, false, "Whether to show an icon indicating which roles are from the current rolepack")
+local panel
 
 local hide_role = GetConVar("ttt_hide_role")
 
