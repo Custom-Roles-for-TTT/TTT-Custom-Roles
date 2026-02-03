@@ -69,12 +69,26 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     local descriptionWidth  = 256
     local labelHeight       = 16
     local rolePackHeight    = 32
+    local rolePackDescHeight= 45
     local scrollbarWidth    = 15
     local m                 = 5
 
     local packName = GetConVar("ttt_role_pack"):GetString()
+    local packDesc
     if #packName == 0 then
         rolePackHeight = 0
+        rolePackDescHeight = 0
+    elseif ROLE_PACK_DETAILS then
+        local displayName = ROLE_PACK_DETAILS.displayName
+        if displayName and #displayName > 0 then
+            packName = displayName
+        end
+
+        packDesc = ROLE_PACK_DETAILS.description
+        if not packDesc or #packDesc == 0 then
+            packDesc = nil
+            rolePackDescHeight = 0
+        end
     end
 
     local w, h, detectivesHeight, innocentsHeight, traitorsHeight, jestersHeight, independentsHeight, monstersHeight
@@ -106,7 +120,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         monstersHeight      = MathMax((iconSize + m) * monsterRows, 0)
 
         w = (iconSize + descriptionWidth + (m * 3)) * columns
-        h = rolePackHeight + detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight + (labelHeight * labels) + m
+        h = rolePackHeight + rolePackDescHeight + detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight + (labelHeight * labels) + m
 
         if needsScrollbar then -- If we know we need a scrollbar then add it
             w = w + scrollbarWidth
@@ -140,7 +154,6 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
 
     if rolePackHeight > 0 then
         local drolepackframe = vgui.Create("DPanel", dframe)
-        drolepackframe:SetSize(w, rolePackHeight)
         drolepackframe:SetPos(0, 0)
         drolepackframe:SetBackgroundColor(COLOR_GRAY)
 
@@ -150,11 +163,25 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         drolepack:SetContentAlignment(1)
         drolepack:SetWidth(w)
         drolepack:SetPos(m + 3, 3)
+
+        if rolePackDescHeight > 0 then
+            local drolepackdesc = vgui.Create("DLabel", drolepackframe)
+            drolepackdesc:SetFont("TabLarge")
+            drolepackdesc:SetText(packDesc)
+            drolepackdesc:SetContentAlignment(4)
+            drolepackdesc:SetPos(m + 3, 25)
+            drolepackdesc:SetWidth(w)
+            -- TODO: Wrap and height aren't calculated correctly
+            drolepackdesc:SetWrap(true)
+            drolepackdesc:SetAutoStretchVertical(true)
+        end
+
+        drolepackframe:SetSize(w, rolePackHeight + rolePackDescHeight)
     end
 
     local dlist = vgui.Create("DScrollPanel", dbackground)
     dlist:SetSize(w, h)
-    dlist:SetPos(0, rolePackHeight)
+    dlist:SetPos(0, rolePackHeight + rolePackDescHeight)
 
     local dcanvas = dlist:GetCanvas()
 

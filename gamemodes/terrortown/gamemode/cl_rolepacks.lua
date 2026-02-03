@@ -39,6 +39,8 @@ local h = dlisth + 75 + m + 22
 -- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte) - 1 (terminating byte)
 local maxStreamLength = 65528
 
+local packDetails = {}
+
 local function SendStreamToServer(tbl, networkString)
     local jsonTable = util.TableToJSON(tbl)
     if jsonTable == nil then
@@ -1419,7 +1421,7 @@ local function OpenDialog()
 
     local dpack = vgui.Create("DComboBox", dframe)
     dpack:SetPos(m, titleBarHeight + m)
-    dpack:StretchToParent(m, nil, m + 8 * (m + iconButtonSize), nil)
+    dpack:StretchToParent(m, nil, m + 9 * (m + iconButtonSize), nil)
     dpack.OnSelect = function(_, _, name)
         droles:Remove()
         droleblocks:Remove()
@@ -1540,6 +1542,8 @@ local function OpenDialog()
         local length = net.ReadUInt(8)
         for _ = 1, length do
             local packName = net.ReadString()
+            packDetails[packName] = net.ReadTable(false)
+
             local index = dpack:AddChoice(packName)
             if packName == currentPack then
                 dpack:ChooseOption(packName, index)
@@ -1634,6 +1638,7 @@ local function OpenDialog()
                 droleblocks.unsavedChanges = true
                 dweapons.unsavedChanges = true
                 dconvars.unsavedChanges = true
+                packDetails[newpack] = packDetails[pack]
                 Save(newpack)
                 droles.unsavedChanges = false
                 droleblocks.unsavedChanges = false
@@ -1753,9 +1758,76 @@ local function OpenDialog()
         dconfirmdialog:MakePopup()
     end
 
+    local ddetailsbutton = vgui.Create("DButton", dframe)
+    ddetailsbutton:SetSize(iconButtonSize, iconButtonSize)
+    ddetailsbutton:SetPos(w - 7 * (m + iconButtonSize), titleBarHeight + m)
+    ddetailsbutton:SetText("")
+    ddetailsbutton:SetIcon("icon16/database_edit.png")
+    ddetailsbutton:SetTooltip(GetTranslation("rolepacks_details"))
+    ddetailsbutton.DoClick = function()
+        local pack, _ = dpack:GetSelected()
+        if not pack or #pack == 0 then return end
+
+        -- Make sure the table exists before we try to use it
+        if not packDetails[pack] then
+            packDetails[pack] = {}
+        end
+
+        dframe:SetMouseInputEnabled(false)
+
+        local lineHeight = 20
+        local ddetailsdialog = vgui.Create("DFrame")
+        ddetailsdialog:SetSize(popupWidth, titleBarHeight + (lineHeight * 5) + (m * 5) + (m * 2))
+        ddetailsdialog:Center()
+        ddetailsdialog:SetTitle(GetParamTranslation("rolepacks_details_title", { name = pack }))
+        ddetailsdialog:SetVisible(true)
+        ddetailsdialog:ShowCloseButton(true)
+        ddetailsdialog:SetMouseInputEnabled(true)
+        ddetailsdialog:SetDeleteOnClose(true)
+        ddetailsdialog.OnClose = function()
+            dframe:SetMouseInputEnabled(true)
+        end
+
+        local ddisplaynamelabel = vgui.Create("DLabel", ddetailsdialog)
+        ddisplaynamelabel:SetFont("TabLarge")
+        ddisplaynamelabel:SetContentAlignment(7)
+        ddisplaynamelabel:SetPos(m + 2, titleBarHeight + m)
+        ddisplaynamelabel:SetWidth(popupWidth - (m * 2))
+        ddisplaynamelabel:SetText(GetTranslation("rolepacks_displayname"))
+
+        local ddisplaynameentry = vgui.Create("DTextEntry", ddetailsdialog)
+        ddisplaynameentry:SetPos(m, titleBarHeight + m + lineHeight)
+        ddisplaynameentry:SetWidth(popupWidth - (m * 2))
+        ddisplaynameentry:SetText(packDetails[pack].displayName or "")
+
+        local ddescriptionlabel = vgui.Create("DLabel", ddetailsdialog)
+        ddescriptionlabel:SetFont("TabLarge")
+        ddescriptionlabel:SetContentAlignment(7)
+        ddescriptionlabel:SetPos(m + 2, titleBarHeight + (m * 3) + (lineHeight * 2))
+        ddescriptionlabel:SetWidth(popupWidth - (m * 2))
+        ddescriptionlabel:SetText(GetTranslation("rolepacks_description"))
+
+        local ddescriptionentry = vgui.Create("DTextEntry", ddetailsdialog)
+        ddescriptionentry:SetPos(m, titleBarHeight + (m * 3) + (lineHeight * 3))
+        ddescriptionentry:SetWidth(popupWidth - (m * 2))
+        ddescriptionentry:SetText(packDetails[pack].description or "")
+
+        local dconfirm = vgui.Create("DButton", ddetailsdialog)
+        dconfirm:SetText(GetTranslation("rolepacks_confirm"))
+        dconfirm:SetPos(m, titleBarHeight + (m * 5) + (lineHeight * 4))
+        dconfirm.DoClick = function()
+            packDetails[pack].displayName = ddisplaynameentry:GetValue()
+            packDetails[pack].description = ddescriptionentry:GetValue()
+            droles.unsavedChanges = true
+            ddetailsdialog:Close()
+        end
+
+        ddetailsdialog:MakePopup()
+    end
+
     local drenamebutton = vgui.Create("DButton", dframe)
     drenamebutton:SetSize(iconButtonSize, iconButtonSize)
-    drenamebutton:SetPos(w - 7 * (m + iconButtonSize), titleBarHeight + m)
+    drenamebutton:SetPos(w - 8 * (m + iconButtonSize), titleBarHeight + m)
     drenamebutton:SetText("")
     drenamebutton:SetIcon("icon16/page_edit.png")
     drenamebutton:SetTooltip(GetTranslation("rolepacks_rename"))
@@ -1810,7 +1882,7 @@ local function OpenDialog()
 
     local dnewbutton = vgui.Create("DButton", dframe)
     dnewbutton:SetSize(iconButtonSize, iconButtonSize)
-    dnewbutton:SetPos(w - 8 * (m + iconButtonSize), titleBarHeight + m)
+    dnewbutton:SetPos(w - 9 * (m + iconButtonSize), titleBarHeight + m)
     dnewbutton:SetText("")
     dnewbutton:SetIcon("icon16/add.png")
     dnewbutton:SetTooltip(GetTranslation("rolepacks_add"))
@@ -1872,6 +1944,7 @@ end)
 
 net.Receive("TTT_SendRolePackRoleList", function()
     ROLE_PACK_ROLES = {}
+    ROLE_PACK_DETAILS = {}
 
     local count = net.ReadUInt(8)
     if count <= 0 then return end
@@ -1881,4 +1954,5 @@ net.Receive("TTT_SendRolePackRoleList", function()
         local role = net.ReadUInt(roleBits)
         ROLE_PACK_ROLES[role] = true
     end
+    ROLE_PACK_DETAILS = net.ReadTable(false)
 end)
