@@ -25,8 +25,8 @@ local MathClamp = math.Clamp
 local MathCeil = math.ceil
 local MathSin = math.sin
 
-local hotkey = CreateClientConVar("ttt_cheatsheat_hotkey", "h", true, false, "Hotkey for opening the cheat sheet")
-local panel
+local hotkey = CreateClientConVar("ttt_cheatsheet_hotkey", "h", true, false, "Hotkey for opening the cheat sheet")
+local rolepack_icon = CreateClientConVar("ttt_cheatsheet_rolepack_icon", "0", true, false, "Whether to show an icon indicating which roles are from the current rolepack")
 
 local hide_role = GetConVar("ttt_hide_role")
 
@@ -270,7 +270,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         end
 
         for _, role in pairs(roleTable) do
-            local icon = vgui.Create("SimpleIcon", dteam)
+            local icon = vgui.Create("LayeredIcon", dteam)
 
             local roleStringShort = ROLE_STRINGS_SHORT[role]
             local material = util.GetRoleIconPath(roleStringShort, "icon", "vtf")
@@ -290,6 +290,19 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
             icon.DoClick = function()
                 HELPSCRN:OpenRoleTutorial(role)
                 ClosePanel()
+            end
+
+            if ROLE_PACK_ROLES[role] and rolepack_icon:GetBool() then
+                local rolepackicon = vgui.Create("DImage")
+                rolepackicon:SetImage("icon16/bricks.png")
+                rolepackicon.PerformLayout = function(s)
+                    s:AlignTop(6)
+                    s:AlignRight(6)
+                    s:SetSize(12, 12)
+                end
+                rolepackicon:SetTooltip(GetRawTranslation("cheatsheet_rolepack_role"))
+                icon:AddLayer(rolepackicon)
+                icon:EnableMousePassthrough(rolepackicon)
             end
 
             if role == ply_role and ply:IsActive() then

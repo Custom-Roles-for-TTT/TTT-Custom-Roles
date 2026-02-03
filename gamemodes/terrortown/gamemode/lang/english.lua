@@ -304,8 +304,10 @@ L.set_bypass_culling = "Bypass map culling"
 L.set_bypass_culling_tip = "Whether to bypass vis leafs and culling in maps for player icons and highlighting. Disable for performance if you don't care about icons and highlighting lagging behind players sometimes."
 L.set_distance_unit = "Distance unit"
 L.set_distance_unit_tip = "What distance unit to display. Used for things like radar"
-L.set_cheatsheat_hotkey = "Cheat sheet hotkey"
-L.set_cheatsheat_hotkey_tip = "What button to hold to open the cheat sheet"
+L.set_cheatsheet_hotkey = "Cheat sheet hotkey"
+L.set_cheatsheet_hotkey_tip = "What button to hold to open the cheat sheet"
+L.set_cheatsheet_rolepack_icon = "Show rolepack inclusion icons on cheat sheet"
+L.set_cheatsheet_rolepack_icon_tip = "Whether to show an icon on each role on the cheat sheet if it belongs to the currently enabled role pack"
 
 L.set_title_play = "Gameplay settings"
 
@@ -1297,3 +1299,4 @@ L.player_name_disguised = "{name} (Disguised as {disguise})"
 -- Cheat Sheet
 L.cheatsheet_current_role = "{role} (CURRENT ROLE)"
 L.cheatsheet_rolepack = "Role Pack: {name}"
+L.cheatsheet_rolepack_role = "Included in current role pack"

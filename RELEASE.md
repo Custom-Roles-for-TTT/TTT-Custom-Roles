@@ -14,6 +14,7 @@
 - Added ability to save a rolepack with a new name as a way of duplicating it
 - Added button to test a rolepack by enabling it, filling the server with bots, and restarting the round (if one is running)
 - Added ability to set display name and description for a rolepack which is then shown on the cheat sheet
+- Added ability to show which roles belong to the current rolepack on the cheat sheet (disabled by default, enabled in the F1 menu)
 
 ### Changes
 - Ported "TTT: Remove usages of Panel:Set/GetDisabled"
@@ -23,6 +24,9 @@
 - Fixed decoy not showing as grey on traitor team radars
 - Fixed player names and custom role names with non-English characters in them not changing case correctly
 - Fixed bodysnatching device progress message ignoring overwritten role names
+- **BREAKING CHANGE** - Fixed spelling of "cheatsheet" convar and translations
+    - Any player that changed their cheatsheet button from the default ("h") will need to set it again the F1 menu
+    - Any translations that were done for the cheatsheet help entry will need to be renamed to match
 - Ported "TTT: Fix auto weapon spawning on non-TTT maps"
 
 ### Developer
