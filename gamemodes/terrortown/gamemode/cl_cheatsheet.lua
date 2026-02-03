@@ -1,6 +1,23 @@
+local hook = hook
+local ipairs = ipairs
+local input = input
+local math = math
+local string = string
+local surface = surface
+local table = table
+local util = util
+local vgui = vgui
+
 local GetRawTranslation = LANG.GetRawTranslation
 local GetParamTranslation = LANG.GetParamTranslation
+local InputGetKeyCode = input.GetKeyCode
 local StringLower = string.lower
+local StringSplit = string.Split
+local SurfaceGetTextSize = surface.GetTextSize
+local SurfaceSetFont = surface.SetFont
+local TableAdd = table.Add
+local TableConcat = table.concat
+local TableIsEmpty = table.IsEmpty
 local TableInsert = table.insert
 local TableSort = table.sort
 local MathMax = math.max
@@ -19,13 +36,58 @@ local function ClosePanel()
     hook.Remove("Think", "CheetSheet_Think")
 end
 
+local function AdjustPackDescription(description, width, margin)
+    -- Split each line into a list of words so we can manually calculate sizes below
+    local lines = StringSplit(description, '\n')
+    local words = {}
+    for _, line in ipairs(lines) do
+        TableAdd(words, StringSplit(line, ' '))
+    end
+
+    -- Calculate the necessary width to fit the text, building out each line word-by-word
+    SurfaceSetFont("TabLarge")
+
+    local line = ""
+    lines = {}
+    for _, word in ipairs(words) do
+        if #word == 0 then continue end
+
+        local tempLine = line
+        if #tempLine > 0 then
+            tempLine = tempLine .. " "
+        end
+        tempLine = tempLine .. word
+
+        local lineWidth, _ = SurfaceGetTextSize(tempLine)
+
+        -- If the new line still fits within the width, keep adding words to it
+        if lineWidth < (width - (margin * 2)) then
+            line = tempLine
+        -- Otherwise save it as-is and reset it
+        else
+            TableInsert(lines, line)
+            line = word
+        end
+    end
+    -- Make sure to save the last line that was a partial width
+    TableInsert(lines, line)
+
+    local newDesc = TableConcat(lines, "\n")
+    local _, descHeight = SurfaceGetTextSize(newDesc)
+
+    -- Reset the font now that we're done messing with it
+    SurfaceSetFont("Default")
+
+    return newDesc, descHeight
+end
+
 hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button)
-    if button ~= input.GetKeyCode(hotkey:GetString()) then return end
+    if button ~= InputGetKeyCode(hotkey:GetString()) then return end
     if panel ~= nil then return end
 
     UpdateRoleColours()
 
-    if table.IsEmpty(ROLE_STARTING_TEAM) then
+    if TableIsEmpty(ROLE_STARTING_TEAM) then
         ply:PrintMessage(HUD_PRINTTALK, "Cheat sheet teams and colors may display incorrectly before the first round starts.")
     end
 
@@ -120,6 +182,10 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         monstersHeight      = MathMax((iconSize + m) * monsterRows, 0)
 
         w = (iconSize + descriptionWidth + (m * 3)) * columns
+        if rolePackDescHeight > 0 then
+            packDesc, rolePackDescHeight = AdjustPackDescription(packDesc, w, m)
+        end
+
         h = rolePackHeight + rolePackDescHeight + detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight + (labelHeight * labels) + m
 
         if needsScrollbar then -- If we know we need a scrollbar then add it
@@ -154,6 +220,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
 
     if rolePackHeight > 0 then
         local drolepackframe = vgui.Create("DPanel", dframe)
+        drolepackframe:SetSize(w, rolePackHeight + rolePackDescHeight)
         drolepackframe:SetPos(0, 0)
         drolepackframe:SetBackgroundColor(COLOR_GRAY)
 
@@ -171,12 +238,8 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
             drolepackdesc:SetContentAlignment(4)
             drolepackdesc:SetPos(m + 3, 25)
             drolepackdesc:SetWidth(w)
-            -- TODO: Wrap and height aren't calculated correctly
-            drolepackdesc:SetWrap(true)
-            drolepackdesc:SetAutoStretchVertical(true)
+            drolepackdesc:SetTall(rolePackDescHeight)
         end
-
-        drolepackframe:SetSize(w, rolePackHeight + rolePackDescHeight)
     end
 
     local dlist = vgui.Create("DScrollPanel", dbackground)
@@ -309,7 +372,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
 end)
 
 hook.Add("PlayerButtonUp", "CheatSheet_PlayerButtonUp", function(ply, button)
-    if button ~= input.GetKeyCode(hotkey:GetString()) then return end
+    if button ~= InputGetKeyCode(hotkey:GetString()) then return end
     if panel == nil then return end
 
     ClosePanel()
