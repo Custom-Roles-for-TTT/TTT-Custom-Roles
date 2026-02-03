@@ -157,7 +157,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
     dconfig:SetHeight(configHeight)
 
     local dallowduplicates = vgui.Create("DCheckBoxLabel", dconfig)
-    dallowduplicates:SetText("Allow Duplicate Roles")
+    dallowduplicates:SetText(GetTranslation("rolepacks_allow_duplicate"))
     dallowduplicates:Dock(LEFT)
     dallowduplicates.OnChange = function()
         droles.unsavedChanges = true
@@ -170,7 +170,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
     local slotLabels = {}
     local function UpdateSlotLabels()
         for index, label in ipairs(slotLabels) do
-            label:SetText("Slot " .. index .. ":")
+            label:SetText(GetParamTranslation("rolepacks_slot_title", { num = index }))
         end
     end
 
@@ -399,7 +399,7 @@ local function BuildRoleConfig(dsheet, packName, tab)
     droles.Save = function(name)
         if droles.HasUnsavedChanges() then
             packName = name or packName
-            local slotTable = {name = packName, config = {allowduplicates = dallowduplicates:GetChecked()}, slots = {}}
+            local slotTable = {name = packName, details = packDetails[packName], config = {allowduplicates = dallowduplicates:GetChecked()}, slots = {}}
             for _, slot in pairs(slotList) do
                 local roleTable = {}
                 for _, role in pairs(slot) do
@@ -443,7 +443,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
     dconfig:SetHeight(configHeight)
 
     local dusedefault = vgui.Create("DCheckBoxLabel", dconfig)
-    dusedefault:SetText("Use Default Role Blocks")
+    dusedefault:SetText(GetTranslation("roleblocks_use_default"))
     dusedefault:Dock(LEFT)
     dusedefault.OnChange = function()
         droleblocks.unsavedChanges = true
@@ -474,7 +474,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
         dlabel:SetFont("TabLarge")
         dlabel:SetContentAlignment(7)
         dlabel:SetPos(3, 0) -- For some reason the text isn't inline with the icons so we shift it 3px to the right
-        dlabel:SetText("Blocking Group:")
+        dlabel:SetText(GetTranslation("roleblocks_group_title"))
         dlabel:SetWidth(200)
 
         local dlist = vgui.Create("EquipSelect", dgroup)
@@ -1413,11 +1413,8 @@ local function OpenDialog()
     local popupHeight = 60
 
     local droles, drolestab = BuildRoleConfig(dsheet, "")
-
     local droleblocks, droleblockstab = BuildRoleBlockConfig(dsheet, "")
-
     local dweapons, dweaponstab = BuildWeaponConfig(dsheet, "")
-
     local dconvars, dconvarstab = BuildConVarConfig(dsheet, "")
 
     local dpack = vgui.Create("DComboBox", dframe)
@@ -1464,7 +1461,7 @@ local function OpenDialog()
         local dsavedialog = vgui.Create("DFrame")
         dsavedialog:SetSize(popupWidth, popupHeight)
         dsavedialog:Center()
-        dsavedialog:SetTitle("Would you like to save your changes?")
+        dsavedialog:SetTitle(GetTranslation("rolepacks_save_title"))
         dsavedialog:SetVisible(true)
         dsavedialog:ShowCloseButton(false)
         dsavedialog:SetMouseInputEnabled(true)
@@ -1474,7 +1471,7 @@ local function OpenDialog()
         end
 
         local dyes = vgui.Create("DButton", dsavedialog)
-        dyes:SetText("Yes")
+        dyes:SetText(GetTranslation("dialog_yes"))
         dyes:SetPos(popupWidth / 2 - buttonWidth - m, titleBarHeight + m)
         dyes.DoClick = function()
             Save()
@@ -1483,7 +1480,7 @@ local function OpenDialog()
         end
 
         local dno = vgui.Create("DButton", dsavedialog)
-        dno:SetText("No")
+        dno:SetText(GetTranslation("dialog_no"))
         dno:SetPos(popupWidth / 2 + m, titleBarHeight + m)
         dno.DoClick = function()
             dsavedialog:Close()
@@ -1506,7 +1503,7 @@ local function OpenDialog()
         local dsavedialog = vgui.Create("DFrame")
         dsavedialog:SetSize(popupWidth, popupHeight)
         dsavedialog:Center()
-        dsavedialog:SetTitle("Would you like to save your changes?")
+        dsavedialog:SetTitle(GetTranslation("rolepacks_save_title"))
         dsavedialog:SetVisible(true)
         dsavedialog:ShowCloseButton(false)
         dsavedialog:SetMouseInputEnabled(true)
@@ -1516,7 +1513,7 @@ local function OpenDialog()
         end
 
         local dyes = vgui.Create("DButton", dsavedialog)
-        dyes:SetText("Yes")
+        dyes:SetText(GetTranslation("dialog_yes"))
         dyes:SetPos(popupWidth / 2 - buttonWidth - m, titleBarHeight + m)
         dyes.DoClick = function()
             Save()
@@ -1525,7 +1522,7 @@ local function OpenDialog()
         end
 
         local dno = vgui.Create("DButton", dsavedialog)
-        dno:SetText("No")
+        dno:SetText(GetTranslation("dialog_no"))
         dno:SetPos(popupWidth / 2 + m, titleBarHeight + m)
         dno.DoClick = function()
             dsavedialog:Close()
@@ -1607,7 +1604,7 @@ local function OpenDialog()
         local dsaveasdialog = vgui.Create("DFrame")
         dsaveasdialog:SetSize(popupWidth, popupHeight)
         dsaveasdialog:Center()
-        dsaveasdialog:SetTitle("Duplicating " .. pack)
+        dsaveasdialog:SetTitle(GetParamTranslation("rolepacks_saveas_title", { name = pack }))
         dsaveasdialog:SetVisible(true)
         dsaveasdialog:ShowCloseButton(true)
         dsaveasdialog:SetMouseInputEnabled(true)
@@ -1621,7 +1618,7 @@ local function OpenDialog()
         dsaveasentry:SetWidth(popupWidth - 3 * m - buttonWidth)
 
         local dsaveas = vgui.Create("DButton", dsaveasdialog)
-        dsaveas:SetText("Save As")
+        dsaveas:SetText(GetTranslation("rolepacks_saveas"))
         dsaveas:SetPos(popupWidth - m - buttonWidth, titleBarHeight + m)
         dsaveas.DoClick = function()
             local newpack = StringLower(dsaveasentry:GetValue())
@@ -1655,7 +1652,7 @@ local function OpenDialog()
                 local dconfirmdialog = vgui.Create("DFrame")
                 dconfirmdialog:SetSize(popupWidth, popupHeight)
                 dconfirmdialog:Center()
-                dconfirmdialog:SetTitle("\"" .. newpack .. "\" already exists, would you like to overwrite?")
+                dconfirmdialog:SetTitle(GetParamTranslation("rolepacks_saveas_override_title", { name = newpack }))
                 dconfirmdialog:SetVisible(true)
                 dconfirmdialog:ShowCloseButton(false)
                 dconfirmdialog:SetMouseInputEnabled(true)
@@ -1665,7 +1662,7 @@ local function OpenDialog()
                 end
 
                 local dyes = vgui.Create("DButton", dconfirmdialog)
-                dyes:SetText("Yes")
+                dyes:SetText(GetTranslation("dialog_yes"))
                 dyes:SetPos(popupWidth / 2 - buttonWidth - m, titleBarHeight + m)
                 dyes.DoClick = function()
                     SaveAs()
@@ -1673,7 +1670,7 @@ local function OpenDialog()
                 end
 
                 local dno = vgui.Create("DButton", dconfirmdialog)
-                dno:SetText("No")
+                dno:SetText(GetTranslation("dialog_no"))
                 dno:SetPos(popupWidth / 2 + m, titleBarHeight + m)
                 dno.DoClick = function()
                     dconfirmdialog:Close()
@@ -1718,7 +1715,7 @@ local function OpenDialog()
         local dconfirmdialog = vgui.Create("DFrame")
         dconfirmdialog:SetSize(popupWidth, popupHeight)
         dconfirmdialog:Center()
-        dconfirmdialog:SetTitle("Are you sure you want to delete " .. pack .. "?")
+        dconfirmdialog:SetTitle(GetParamTranslation("rolepacks_delete_title", { name = pack }))
         dconfirmdialog:SetVisible(true)
         dconfirmdialog:ShowCloseButton(false)
         dconfirmdialog:SetMouseInputEnabled(true)
@@ -1728,7 +1725,7 @@ local function OpenDialog()
         end
 
         local dyes = vgui.Create("DButton", dconfirmdialog)
-        dyes:SetText("Yes")
+        dyes:SetText(GetTranslation("dialog_yes"))
         dyes:SetPos(popupWidth / 2 - buttonWidth - m, titleBarHeight + m)
         dyes.DoClick = function()
             dpack:Clear()
@@ -1747,7 +1744,7 @@ local function OpenDialog()
         end
 
         local dno = vgui.Create("DButton", dconfirmdialog)
-        dno:SetText("No")
+        dno:SetText(GetTranslation("dialog_no"))
         dno:SetPos(popupWidth / 2 + m, titleBarHeight + m)
         dno.DoClick = function()
             dconfirmdialog:Close()
@@ -1771,7 +1768,7 @@ local function OpenDialog()
         local drenamedialog = vgui.Create("DFrame")
         drenamedialog:SetSize(popupWidth, popupHeight)
         drenamedialog:Center()
-        drenamedialog:SetTitle("Renaming " .. pack)
+        drenamedialog:SetTitle(GetParamTranslation("rolepacks_rename_title", { name = pack }))
         drenamedialog:SetVisible(true)
         drenamedialog:ShowCloseButton(true)
         drenamedialog:SetMouseInputEnabled(true)
@@ -1786,7 +1783,7 @@ local function OpenDialog()
         drenameentry:SetText(pack)
 
         local drename = vgui.Create("DButton", drenamedialog)
-        drename:SetText("Rename")
+        drename:SetText(GetTranslation("rolepacks_rename"))
         drename:SetPos(popupWidth - m - buttonWidth, titleBarHeight + m)
         drename.DoClick = function()
             local newpack = StringLower(drenameentry:GetValue())
@@ -1823,7 +1820,7 @@ local function OpenDialog()
         local dnewdialog = vgui.Create("DFrame")
         dnewdialog:SetSize(popupWidth, popupHeight)
         dnewdialog:Center()
-        dnewdialog:SetTitle("Create new role pack")
+        dnewdialog:SetTitle(GetTranslation("rolepacks_add_title"))
         dnewdialog:SetVisible(true)
         dnewdialog:ShowCloseButton(true)
         dnewdialog:SetMouseInputEnabled(true)
@@ -1837,7 +1834,7 @@ local function OpenDialog()
         dnewentry:SetWidth(popupWidth - 3 * m - buttonWidth)
 
         local dconfirm = vgui.Create("DButton", dnewdialog)
-        dconfirm:SetText("Confirm")
+        dconfirm:SetText(GetTranslation("rolepacks_confirm"))
         dconfirm:SetPos(popupWidth - m - buttonWidth, titleBarHeight + m)
         dconfirm.DoClick = function()
             local pack = StringLower(dnewentry:GetValue())
