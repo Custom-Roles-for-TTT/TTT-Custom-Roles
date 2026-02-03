@@ -13,6 +13,7 @@
 - Added ability to rearrange rolepack slot and roleblock group rows by dragging and dropping them
 - Added ability to save a rolepack with a new name as a way of duplicating it
 - Added button to test a rolepack by enabling it, filling the server with bots, and restarting the round (if one is running)
+- Added ability to set display name and description for a rolepack which is then shown on the cheat sheet
 
 ### Changes
 - Ported "TTT: Remove usages of Panel:Set/GetDisabled"
