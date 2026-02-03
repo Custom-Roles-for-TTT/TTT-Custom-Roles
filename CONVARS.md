@@ -1519,6 +1519,7 @@ At the top of the role packs window are the overall controls that are available 
 1. **Role packs dropdown** - List of current role packs available on the server. Select an entry from the list to edit it.
 1. **Add button** - Creates a new role pack when clicked, first prompting for the name of the role pack being created.
 1. **Rename button** - Renames the currently selected role pack, prompting for the new name.
+1. **Edit Details button** - Allows editing extra details such as the display name and description that are shown on the cheat sheet window.
 1. **Delete button** - Deletes the currently selected role pack, prompting for confirmation.
 1. **Save button** - Saves the changes made to the currently selected role pack.
 1. **Save As button** - Saves the currently selected role pack and any unsaved changes as a new role pack with a new given name.
