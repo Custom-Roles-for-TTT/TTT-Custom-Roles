@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.4.2 (Beta)
-**Released:**
+**Released: February 7th, 2026**
 
 ### Additions
 - Added ability for Spy to steal a player's identity when they search a body instead of when they kill a player (disabled by default)
