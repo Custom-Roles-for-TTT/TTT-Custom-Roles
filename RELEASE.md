@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.4.3 (Beta)
+**Released:**
+
+### Developer
+- Added `ROLEPACKS.GetRolePackDetails` to get the role pack details for any rolepack by name on the server
+
 ## 2.4.2 (Beta)
 **Released: February 7th, 2026**
 
