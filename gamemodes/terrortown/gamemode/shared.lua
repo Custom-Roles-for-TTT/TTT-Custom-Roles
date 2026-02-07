@@ -1,3 +1,5 @@
+include("utf8_ext.lua")
+
 local file = file
 local hook = hook
 local ipairs = ipairs
@@ -15,16 +17,17 @@ local CallHook = hook.Call
 local RunHook = hook.Run
 local PlayerIterator = player.Iterator
 local StringUpper = string.upper
-local StringLower = string.lower
 local StringFind = string.find
 local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
+local Utf8Lower = utf8.lower
+local Utf8Sub = utf8.sub
 
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.4.1"
+CR_VERSION = "2.4.2"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -238,6 +241,7 @@ DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
 
 ROLE_PACK_ROLES = {}
+ROLE_PACK_DETAILS = {}
 
 -- Traitors get this ability by default
 TRAITOR_BUTTON_ROLES = {}
@@ -536,6 +540,8 @@ function UpdateRoleColours()
 
     ROLE_COLORS_RADAR = {}
     FillRoleColors(ROLE_COLORS_RADAR, "radar")
+    -- Keep this the same from base TTT
+    ROLE_COLORS_RADAR[ROLE_NONE] = Color(150, 150, 150, 230)
     ROLE_COLOURS_RADAR = ROLE_COLORS_RADAR
 end
 UpdateRoleColors = UpdateRoleColours
@@ -841,11 +847,11 @@ function UpdateRoleStrings()
 
             local plural = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural"):GetString()
             if #plural == 0 then -- Fallback if no plural is given. Does NOT handle all cases properly
-                local lastChar = StringLower(StringSub(name, #name, #name))
+                local lastChar = Utf8Lower(Utf8Sub(name, #name, #name))
                 if lastChar == "s" then
                     ROLE_STRINGS_PLURAL[role] = name .. "es"
                 elseif lastChar == "y" then
-                    ROLE_STRINGS_PLURAL[role] = StringSub(name, 1, #name - 1) .. "ies"
+                    ROLE_STRINGS_PLURAL[role] = Utf8Sub(name, 1, #name - 1) .. "ies"
                 else
                     ROLE_STRINGS_PLURAL[role] = name .. "s"
                 end
@@ -1277,11 +1283,11 @@ local function GetRoleFromStackTrace()
             -- Get the file path
             local source = info.short_src
             -- Extract the file name from the path and drop the extension
-            local role_name = StringLower(string.StripExtension(string.GetFileFromFilename(source)))
+            local role_name = Utf8Lower(string.StripExtension(string.GetFileFromFilename(source)))
 
             -- Find the role whose raw string matches the file name
             for r, str in pairs(ROLE_STRINGS_RAW) do
-                if StringLower(str) == role_name then
+                if Utf8Lower(str) == role_name then
                     role = r
                     break
                 end
@@ -1407,8 +1413,9 @@ WIN_INFECTED = 19
 WIN_PLAGUEMASTER = 20
 WIN_CANNIBAL = 21
 WIN_TASKMASTER = 22
+WIN_ASSASSIN = 23
 
-WIN_MAX = WIN_MAX or 22
+WIN_MAX = WIN_MAX or 23
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
@@ -1577,7 +1584,7 @@ local ttt_playermodels = {
     Model("models/player/arctic.mdl"),
     Model("models/player/guerilla.mdl"),
     Model("models/player/leet.mdl")
-};
+}
 
 function GetRandomPlayerModel()
     return table.Random(ttt_playermodels)
@@ -1607,7 +1614,7 @@ local ttt_playercolors = {
         COLOR_DGREEN,
         COLOR_OLIVE
     }
-};
+}
 
 local playercolor_mode = CreateConVar("ttt_playercolor_mode", "1")
 function GM:TTTPlayerColor(model)
@@ -1836,7 +1843,7 @@ DefaultEquipment = {
         "weapon_zm_sledge",
         "weapon_ttt_glock"
     }
-};
+}
 
 -----------------
 -- Old ConVars --

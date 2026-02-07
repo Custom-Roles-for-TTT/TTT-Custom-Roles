@@ -348,7 +348,7 @@ local function CreateTaskReroll(task, dscrollpanel)
     end
 
     dreroll.Think = function()
-        dreroll:SetDisabled(client:GetCredits() == 0)
+        dreroll:SetEnabled(client:GetCredits() > 0)
     end
 
     dpanel.rerollButton = dreroll

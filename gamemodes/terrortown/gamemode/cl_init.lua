@@ -1,4 +1,5 @@
 include("shared.lua")
+include("utf8_ext.lua")
 include("init_shd.lua")
 
 local cam = cam
@@ -24,9 +25,9 @@ local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local MathRand = math.Rand
 local MathRandom = math.random
-local StringUpper = string.upper
 local TableInsert = table.insert
 local TableHasValue = table.HasValue
+local Utf8Upper = utf8.upper
 
 -- Define GM12 fonts for compatibility
 surface.CreateFont("DefaultBold", {
@@ -251,7 +252,7 @@ local function ReceiveRole()
 
     if role > ROLE_NONE then
         Msg("You are: ")
-        MsgN(StringUpper(client:GetRoleString()))
+        MsgN(Utf8Upper(client:GetRoleString()))
     end
 end
 net.Receive("TTT_Role", ReceiveRole)

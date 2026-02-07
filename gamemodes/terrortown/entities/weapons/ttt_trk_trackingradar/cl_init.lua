@@ -170,7 +170,7 @@ function TRACKRADAR.CreateMenu(parent, frame)
     dscan:SetSize(bw, bh)
     dscan:SetText(GetTranslation("trackradar_scan"))
     dscan.DoClick = function(s)
-        s:SetDisabled(true)
+        s:SetEnabled(false)
         RunConsoleCommand("ttt_trackradar_scan")
         frame:Close()
     end
@@ -193,9 +193,9 @@ function TRACKRADAR.CreateMenu(parent, frame)
 
     dform.Think = function(s)
         if TRACKRADAR.enable or not owned then
-            dscan:SetDisabled(true)
+            dscan:SetEnabled(false)
         else
-            dscan:SetDisabled(false)
+            dscan:SetEnabled(true)
         end
     end
 

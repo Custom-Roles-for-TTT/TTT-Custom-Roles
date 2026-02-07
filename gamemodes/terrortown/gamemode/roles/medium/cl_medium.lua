@@ -6,6 +6,7 @@ local string = string
 local ents = ents
 
 local StringUpper = string.upper
+local Utf8Upper = utf8.upper
 local PlayerIterator = player.Iterator
 local MathRand = math.Rand
 local MathRandom = math.random
@@ -168,7 +169,7 @@ hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderable
                     if stage >= MEDIUM_SCANNED_TEAM then
                         local role = ply:GetRole()
                         local roleFileName = ROLE_STRINGS_SHORT[role]
-                        local roleText = StringUpper(ROLE_STRINGS[ply:GetRole()])
+                        local roleText = Utf8Upper(ROLE_STRINGS[ply:GetRole()])
                         if stage == MEDIUM_SCANNED_TEAM then
                             role = ROLE_NONE
                             if ply:IsTraitorTeam() then role = ROLE_TRAITOR

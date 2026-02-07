@@ -70,23 +70,26 @@ local function AssignAssassinTarget(ply, start, delay)
 
     local assassinLover = ply:GetNWString("TTTCupidLover", "")
     for _, p in PlayerIterator() do
-        if p:Alive() and not p:IsSpec() then
-            local pSid64 = p:SteamID64()
-            -- Don't add the assassin's lover as a target, if they have one
-            if #assassinLover > 0 and pSid64 == assassinLover then continue end
+        if not p:Alive() or p:IsSpec() then continue end
+        if p:IsAssassin() then continue end
 
-            -- Include all non-traitor detective-like players
-            if p:IsDetectiveLike() and not p:IsTraitorTeam() then
-                table.insert(detectives, pSid64)
-            -- Exclude Glitch from this list so they don't get discovered immediately
-            elseif p:IsInnocentTeam() and not p:IsGlitch() then
-                AddEnemy(p, enemies)
-            elseif p:IsMonsterTeam() then
-                AddEnemy(p, enemies)
-            -- Exclude roles that have a passive win because they just want to survive
-            elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
-                AddEnemy(p, independents)
-            end
+        local pSid64 = p:SteamID64()
+        -- Don't add the assassin's lover as a target, if they have one
+        if #assassinLover > 0 and pSid64 == assassinLover then continue end
+
+        -- Include all non-traitor detective-like players
+        if p:IsDetectiveLike() and not p:IsTraitorTeam() then
+            table.insert(detectives, pSid64)
+        -- Exclude Glitch from this list so they don't get discovered immediately
+        elseif p:IsInnocentTeam() and not p:IsGlitch() then
+            AddEnemy(p, enemies)
+        elseif p:IsMonsterTeam() then
+            AddEnemy(p, enemies)
+        -- Exclude roles that have a passive win because they just want to survive
+        elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
+            AddEnemy(p, independents)
+        elseif INDEPENDENT_ROLES[ROLE_ASSASSIN] and p:IsTraitorTeam() then
+            AddEnemy(p, enemies)
         end
     end
 
@@ -184,7 +187,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_ASSASSIN] = function(ply)
 end
 
 local function ValidTarget(role)
-    if TRAITOR_ROLES[role] then return false end
+    if TRAITOR_ROLES[role] and not INDEPENDENT_ROLES[ROLE_ASSASSIN] then return false end
     if JESTER_ROLES[role] then return false end
     if ROLE_HAS_PASSIVE_WIN[role] then return false end
     if role == ROLE_GLITCH then return false end
@@ -217,6 +220,8 @@ hook.Add("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", function
 end)
 
 hook.Add("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", function(ply, traitor)
+    -- Independent Assassins aren't allied with the Turncoat so we know they can still be a target even if they are a traitor now
+    if INDEPENDENT_ROLES[ROLE_ASSASSIN] then return end
     if not IsPlayer(ply) then return end
 
     -- Update any assassin targets since this player isn't a threat anymore
@@ -316,6 +321,41 @@ hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgro
     if scale == 0 then return end
 
     dmginfo:ScaleDamage(1 + scale)
+end)
+
+----------------
+-- WIN CHECKS --
+----------------
+
+hook.Add("TTTCheckForWin", "Assassin_TTTCheckForWin", function()
+    -- Only run the win check if the assassin wins by themselves
+    if not INDEPENDENT_ROLES[ROLE_ASSASSIN] then return end
+
+    local assassin_alive = false
+    local other_alive = false
+    for _, v in PlayerIterator() do
+        if v:IsActive() then
+            if v:IsAssassin() then
+                assassin_alive = true
+            elseif not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
+                other_alive = true
+            end
+        end
+    end
+
+    if assassin_alive and not other_alive then
+        return WIN_ASSASSIN
+    elseif assassin_alive then
+        return WIN_NONE
+    end
+end)
+
+hook.Add("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage", function(type)
+    if type == WIN_ASSASSIN then
+        LANG.Msg("win_assassin", { role = ROLE_STRINGS[ROLE_ASSASSIN] })
+        ServerLog("Result: " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " wins.\n")
+        return true
+    end
 end)
 
 -----------------------

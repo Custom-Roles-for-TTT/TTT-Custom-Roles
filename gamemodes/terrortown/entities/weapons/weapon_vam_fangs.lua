@@ -16,7 +16,7 @@ if CLIENT then
     SWEP.EquipMenuData = {
         type = "Weapon",
         desc = "Left-click to suck blood. Right-click to fade."
-    };
+    }
 
     SWEP.Slot = 8 -- add 1 to get the slot number key
     SWEP.ViewModelFOV = 54
@@ -673,8 +673,8 @@ if CLIENT then
                 part:SetRoll(0)
                 part:SetRollDelta(0)
 
-                local velocity = VectorRand() * math.random(10, 15);
-                velocity.z = 5;
+                local velocity = VectorRand() * math.random(10, 15)
+                velocity.z = 5
                 part:SetVelocity(velocity)
             end
         end

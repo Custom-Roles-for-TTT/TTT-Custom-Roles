@@ -65,7 +65,7 @@ hook.Add("TTTTargetIDPlayerText", "Twins_TTTTargetIDPlayerText", function(ent, c
 
     if ent:IsActiveTwin() then
         local role = ent:GetRole()
-        return string.upper(ROLE_STRINGS[role]), ROLE_COLORS_RADAR[role]
+        return utf8.upper(ROLE_STRINGS[role]), ROLE_COLORS_RADAR[role]
     end
 end)
 

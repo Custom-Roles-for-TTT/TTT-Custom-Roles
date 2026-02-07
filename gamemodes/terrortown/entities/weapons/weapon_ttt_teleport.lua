@@ -26,7 +26,7 @@ if CLIENT then
     SWEP.EquipMenuData = {
         type = "item_weapon",
         desc = "tele_desc"
-    };
+    }
 
     SWEP.Icon                = "vgui/ttt/icon_tport"
 end

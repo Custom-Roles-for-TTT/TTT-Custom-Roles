@@ -437,7 +437,7 @@ hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
                 if stage < BEGGAR_SCANNED_HIDDEN and ScanAllowed(ply, target) then
                     ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_LOCKED)
                     ply:SetNWString("TTTBeggarScannerTarget", target:SteamID64())
-                    ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                    ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. utf8.upper(target:Nick()))
                     ply:SetNWFloat("TTTBeggarScannerStartTime", CurTime())
                 end
             end
@@ -446,7 +446,7 @@ hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
             if target:IsActive() then
                 if not InRange(ply, target) then
                     ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_SEARCHING)
-                    ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()) .. " (LOSING TARGET)")
+                    ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. utf8.upper(target:Nick()) .. " (LOSING TARGET)")
                     ply:SetNWFloat("TTTBeggarScannerTargetLostTime", CurTime())
                 end
                 Scan(ply, target)
@@ -461,7 +461,7 @@ hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
                 else
                     if InRange(ply, target) then
                         ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_LOCKED)
-                        ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                        ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. utf8.upper(target:Nick()))
                         ply:SetNWFloat("TTTBeggarScannerTargetLostTime", -1)
                     end
                     Scan(ply, target)

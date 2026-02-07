@@ -259,7 +259,7 @@ LANG.Styles = {
     chat_plain = function(text, params)
         chat.AddText(text)
     end
-};
+}
 
 -- Table mapping message name => message style name. If no message style is
 -- defined, the default style is used. This is the case for the vast majority of
@@ -381,7 +381,7 @@ local styledmessages = {
 
         "drop_no_ammo"
     }
-};
+}
 
 local set_style = LANG.SetStyle
 

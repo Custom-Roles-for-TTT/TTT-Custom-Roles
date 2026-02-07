@@ -5,6 +5,7 @@ local GetConVar = GetConVar
 -- CONVARS --
 -------------
 
+local spy_steal_mode = GetConVar("ttt_spy_steal_mode")
 local spy_steal_model = GetConVar("ttt_spy_steal_model")
 local spy_steal_name = GetConVar("ttt_spy_steal_name")
 local spy_flare_gun_loadout = GetConVar("ttt_spy_flare_gun_loadout")
@@ -24,6 +25,20 @@ hook.Add("Initialize", "Spy_Translations_Initialize", function()
 When you kill a player, you steal their identity.
 
 Press {menukey} to receive your special equipment!]])
+    LANG.AddToLanguage("english", "info_popup_spy_search", [[You are {role}! {comrades}
+
+When you search a player's body, you steal their identity.
+
+Press {menukey} to receive your special equipment!]])
+end)
+
+hook.Add("TTTRolePopupRoleStringOverride", "Spy_TTTRolePopupRoleStringOverride", function(cli, roleString)
+    if not IsPlayer(cli) or not cli:IsSpy() then return end
+
+    if spy_steal_mode:GetInt() == SPY_STEAL_MODE_SEARCH then
+        return roleString .. "_search"
+    end
+    return roleString
 end)
 
 ----------------
@@ -77,11 +92,19 @@ hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleL
     if role == ROLE_SPY then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_SPY] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to sow confusion by stealing the identity of other players. </span>"
+
+        local mode = spy_steal_mode:GetInt()
         local model = spy_steal_model:GetBool()
         local name = spy_steal_name:GetBool()
 
-        if model or name then
-            html = html .. "On killing a player, the " .. ROLE_STRINGS[ROLE_SPY] .. " copies their "
+        if mode > SPY_STEAL_MODE_DISABLE and (model or name) then
+            html = html .. "Upon "
+            if mode == SPY_STEAL_MODE_SEARCH then
+                html = html .. "searching a body"
+            else
+                html = html .. "killing a player"
+            end
+            html = html .. ", the " .. ROLE_STRINGS[ROLE_SPY] .. " copies their "
 
             if model then
                 html = html .. "playermodel"
@@ -95,7 +118,7 @@ hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleL
                 html = html .. "name"
             end
 
-            html = html .. ", and always takes on the identity of the last player they killed.</span>"
+            html = html .. ", and always takes on the identity of the target.</span>"
         end
 
         local inLoadout = spy_flare_gun_loadout:GetBool()

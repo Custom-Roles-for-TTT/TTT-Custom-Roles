@@ -20,6 +20,7 @@ AddCSLuaFile("cl_tips.lua")
 AddCSLuaFile("cl_voice.lua")
 AddCSLuaFile("scoring_shd.lua")
 AddCSLuaFile("util.lua")
+AddCSLuaFile("utf8_ext.lua")
 AddCSLuaFile("lang_shd.lua")
 AddCSLuaFile("corpse_shd.lua")
 AddCSLuaFile("player_ext_shd.lua")
@@ -51,6 +52,7 @@ AddCSLuaFile("cl_cheatsheet.lua")
 AddCSLuaFile("cl_sync.lua")
 
 include("shared.lua")
+include("utf8_ext.lua")
 include("init_shd.lua")
 
 include("incompatible_addons.lua")
@@ -298,7 +300,7 @@ function GM:Initialize()
         [OPEN_ROT] = true,
         [OPEN_BUT] = true,
         [OPEN_NOTOGGLE] = true
-    };
+    }
 
     -- More map config ent defaults
     GAMEMODE.force_plymodel = ""
@@ -500,27 +502,6 @@ function StartNameChangeChecks()
     end
 end
 
-local function CleanUp()
-    local et = ents.TTT
-    -- if we are going to import entities, it's no use replacing HL2DM ones as
-    -- soon as they spawn, because they'll be removed anyway
-    et.SetReplaceChecking(not et.CanImportEntities(game.GetMap()))
-
-    et.FixParentedPreCleanup()
-
-    game.CleanUpMap(false, nil, function() et.FixParentedPostCleanup() end)
-
-    -- Strip players now, so that their weapons are not seen by ReplaceEntities
-    for k, v in PlayerIterator() do
-        if IsValid(v) then
-            v:StripWeapons()
-        end
-    end
-
-    -- a different kind of cleanup
-    hook.Remove("PlayerSay", "ULXMeCheck")
-end
-
 local function SpawnEntities()
     local et = ents.TTT
     -- Spawn weapons from script if there is one
@@ -546,6 +527,30 @@ local function SpawnEntities()
 
     -- Finally, get players in there
     SpawnWillingPlayers()
+end
+
+local function CleanUp()
+    local et = ents.TTT
+    -- if we are going to import entities, it's no use replacing HL2DM ones as
+    -- soon as they spawn, because they'll be removed anyway
+    et.SetReplaceChecking(not et.CanImportEntities(game.GetMap()))
+
+    et.FixParentedPreCleanup()
+
+    game.CleanUpMap(false, nil, function()
+        et.FixParentedPostCleanup()
+        SpawnEntities()
+    end)
+
+    -- Strip players now, so that their weapons are not seen by ReplaceEntities
+    for k, v in PlayerIterator() do
+        if IsValid(v) then
+            v:StripWeapons()
+        end
+    end
+
+    -- a different kind of cleanup
+    hook.Remove("PlayerSay", "ULXMeCheck")
 end
 
 local function StopRoundTimers()
@@ -648,9 +653,6 @@ function PrepareRound()
 
     LANG.Msg("round_begintime", { num = ptime })
     SetRoundState(ROUND_PREP)
-
-    -- Delay spawning until next frame to avoid ent overload
-    timer.Simple(0.01, SpawnEntities)
 
     -- Undo the roundrestart mute, though they will once again be muted for the
     -- selectmute timer.

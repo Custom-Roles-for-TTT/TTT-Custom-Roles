@@ -9,6 +9,7 @@ local AddHook = hook.Add
 local RemoveHook = hook.Remove
 local TableInsert = table.insert
 local StringUpper = string.upper
+local Utf8Upper = utf8.upper
 
 -------------
 -- CONVARS --
@@ -233,7 +234,7 @@ AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, cl
     if ent:IsActiveCupid() and ent:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return StringUpper(ROLE_STRINGS[ROLE_CUPID]), ROLE_COLORS_RADAR[ROLE_CUPID]
     elseif ent:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
-        return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), heart_color
+        return Utf8Upper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), heart_color
     end
 end)
 

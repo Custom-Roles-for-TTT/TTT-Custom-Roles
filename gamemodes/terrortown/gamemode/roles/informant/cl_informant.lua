@@ -2,6 +2,7 @@ local hook = hook
 local string = string
 
 local StringUpper = string.upper
+local Utf8Upper = utf8.upper
 
 local client = nil
 
@@ -185,7 +186,7 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
             end
         elseif state >= INFORMANT_SCANNED_ROLE then
             newColor = ROLE_COLORS_RADAR[ent:GetRole()]
-            newText = StringUpper(ROLE_STRINGS[ent:GetRole()])
+            newText = Utf8Upper(ROLE_STRINGS[ent:GetRole()])
         end
 
         return newText, newColor, false

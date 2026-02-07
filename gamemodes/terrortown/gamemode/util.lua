@@ -23,10 +23,11 @@ local FileRead = file.Read
 local PlayerIterator = player.Iterator
 local StringUpper = string.upper
 local StringFormat = string.format
-local StringSub = string.sub
 local StringStartsWith = string.StartsWith
 local StringTrim = string.Trim
 local StringTrimLeft = string.TrimLeft
+local Utf8Upper = utf8.upper
+local Utf8Sub = utf8.sub
 local HookCall = hook.Call
 local HookAdd = hook.Add
 
@@ -112,12 +113,12 @@ end
 
 -- Uppercases the first character only
 function string.Capitalize(str)
-    return StringUpper(StringSub(str, 1, 1)) .. StringSub(str, 2)
+    return Utf8Upper(Utf8Sub(str, 1, 1)) .. Utf8Sub(str, 2)
 end
 util.Capitalize = string.Capitalize
 
 -- Color unpacking
-function clr(color) return color.r, color.g, color.b, color.a; end
+function clr(color) return color.r, color.g, color.b, color.a end
 
 if CLIENT then
     -- Is screenpos on screen?
@@ -409,7 +410,7 @@ if CLIENT then
         wounded = Color(230, 215, 10, 255),
         badwound = Color(255, 140, 0, 255),
         death = Color(255, 0, 0, 255)
-    };
+    }
 
     function util.HealthToString(health, maxhealth)
         maxhealth = maxhealth or 100
@@ -433,7 +434,7 @@ if CLIENT then
         med = Color(245, 220, 60, 255),
         low = Color(255, 180, 0, 255),
         min = Color(255, 130, 0, 255),
-    };
+    }
 
     function util.KarmaToString(karma)
         if karma >= 1000 then

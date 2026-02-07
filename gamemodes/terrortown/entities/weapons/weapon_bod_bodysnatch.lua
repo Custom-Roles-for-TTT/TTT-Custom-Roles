@@ -30,11 +30,16 @@ SWEP.Kind = WEAPON_ROLE
 
 SWEP.FindRespawnLocation = false
 
-if SERVER then
-    SWEP.DeviceTimeConVar = CreateConVar("ttt_bodysnatcher_device_time", "5", FCVAR_NONE, "The amount of time (in seconds) the bodysnatcher's device takes to use", 0, 60)
-end
+local target_innocents = CreateConVar("ttt_bodysnatcher_target_innocents", "1", FCVAR_REPLICATED, "Whether the bodysnatcher can target innocent bodies", 0,  1)
+local target_detectives = CreateConVar("ttt_bodysnatcher_target_detectives", "1", FCVAR_REPLICATED, "Whether the bodysnatcher can target detective bodies", 0,  1)
+local target_traitors = CreateConVar("ttt_bodysnatcher_target_traitors", "1", FCVAR_REPLICATED, "Whether the bodysnatcher can target traitor bodies", 0,  1)
+local target_jesters = CreateConVar("ttt_bodysnatcher_target_jesters", "1", FCVAR_REPLICATED, "Whether the bodysnatcher can target jester bodies", 0,  1)
+local target_independents = CreateConVar("ttt_bodysnatcher_target_independents", "1", FCVAR_REPLICATED, "Whether the bodysnatcher can target independent bodies", 0,  1)
+local target_monsters = CreateConVar("ttt_bodysnatcher_target_monsters", "1", FCVAR_REPLICATED, "Whether the bodysnatcher can target monster bodies", 0,  1)
 
 if SERVER then
+    SWEP.DeviceTimeConVar = CreateConVar("ttt_bodysnatcher_device_time", "5", FCVAR_NONE, "The amount of time (in seconds) the bodysnatcher's device takes to use", 0, 60)
+
     util.AddNetworkString("TTT_Bodysnatched")
     util.AddNetworkString("TTT_ScoreBodysnatch")
     util.AddNetworkString("TTT_BodysnatchUpdateCorpseRole")
@@ -188,11 +193,23 @@ if SERVER then
         SendFullStateUpdate()
     end
 
+    function SWEP:ValidateTarget(ply, body, bone)
+        if (ply:IsInnocentTeam() and not ply:IsDetectiveTeam() and not target_innocents:GetBool()) or
+            (ply:IsDetectiveTeam() and not target_detectives:GetBool()) or
+            (ply:IsTraitorTeam() and not target_traitors:GetBool()) or
+            (ply:IsJesterTeam() and not target_jesters:GetBool()) or
+            (ply:IsIndependentTeam() and not target_independents:GetBool()) or
+            (ply:IsMonsterTeam() and not target_monsters:GetBool()) then
+            return false, "INVALID TARGET ROLE"
+        end
+        return true, ""
+    end
+
     function SWEP:GetProgressMessage(ply, body, bone)
-        local message = "BODYSNATCHING " .. string.upper(ply:Nick())
+        local message = "BODYSNATCHING " .. utf8.upper(ply:Nick())
         if GetConVar("ttt_bodysnatcher_show_role"):GetBool() then
             local role = body.was_role or ply:GetRole()
-            message = message .. " [" .. string.upper(ROLE_STRINGS_RAW[role]) .. "]"
+            message = message .. " [" .. utf8.upper(ROLE_STRINGS[role]) .. "]"
         end
         return message
     end
@@ -223,7 +240,6 @@ if SERVER then
     net.Receive("TTT_BodysnatcherUnforceDuck", function(len, ply)
         if not IsPlayer(ply) then return end
         if not ply:Alive() or ply:IsSpec() then return end
-        if not ply.TTTBodysnatcherForceDuck then return end
 
         ply:ConCommand("-duck")
         ply:ClearProperty("TTTBodysnatcherForceDuck", ply)
@@ -329,7 +345,7 @@ if CLIENT then
 end
 
 -- Override the player's name in radio messages too
-hook.Add("TTTRadioPlayerName", "Bodysnatcher_TTTRadioPlayerName", function(sender, target)
+AddHook("TTTRadioPlayerName", "Bodysnatcher_TTTRadioPlayerName", function(sender, target)
     if not IsPlayer(sender) or not IsPlayer(target) then return end
 
     local disguiseName = target:GetNWString("TTTBodysnatcherName", "")

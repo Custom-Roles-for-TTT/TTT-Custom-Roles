@@ -112,7 +112,7 @@ function ENT:Initialize()
                             { usekey = Key("+use", "USE"),
                               num = ent:GetStoredHealth() or 0 } )
                 end
-            };
+            }
         end
     end
 end

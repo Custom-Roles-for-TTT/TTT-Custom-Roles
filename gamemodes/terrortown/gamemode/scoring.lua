@@ -63,7 +63,7 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
         vic = { ni = victim:Nick(), sid = victim:SteamID(), sid64 = victim:SteamID64(), role = -1, tr = false, inno = false, jes = false, ind = false, mon = false },
         dmg = CopyDmg(dmginfo),
         tk = false
-    };
+    }
 
     e.dmg.h = victim.was_headshot
 
@@ -138,7 +138,7 @@ function SCORE:HandleC4Disarm(disarmer, owner, success)
         id = EVENT_C4DISARM,
         ni = disarmer:Nick(),
         s = success
-    };
+    }
 
     if IsValid(owner) then
         ev.own = owner:Nick()

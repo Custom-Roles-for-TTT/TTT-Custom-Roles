@@ -26,6 +26,7 @@ end)
 -- ROLE CONVARS --
 ------------------
 
+local assassin_is_independent = CreateConVar("ttt_assassin_is_independent", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_assassin_show_target_icon", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_assassin_target_vision_enabled", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_assassin_next_target_delay", "5", FCVAR_REPLICATED, "The delay (in seconds) before an assassin is assigned their next target", 0, 30)
@@ -38,6 +39,10 @@ CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5", FCVAR_REPLICATED, "Dama
 CreateConVar("ttt_assassin_failed_damage_penalty", "0.5", FCVAR_REPLICATED, "Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)", 0, 1)
 
 ROLE_CONVARS[ROLE_ASSASSIN] = {}
+table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
+    cvar = "ttt_assassin_is_independent",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
 table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
     cvar = "ttt_assassin_show_target_icon",
     type = ROLE_CONVAR_TYPE_BOOL
@@ -100,3 +105,13 @@ for r = 0, ROLE_MAX do
         })
     end
 end
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTUpdateRoleState", "Assassin_TTTUpdateRoleState", function()
+    local is_independent = assassin_is_independent:GetBool()
+    TRAITOR_ROLES[ROLE_ASSASSIN] = not is_independent
+    INDEPENDENT_ROLES[ROLE_ASSASSIN] = is_independent
+end)

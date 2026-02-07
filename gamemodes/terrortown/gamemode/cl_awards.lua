@@ -851,7 +851,7 @@ local function TimeOfDeath(events, scores, players)
                     title = T("aw_tod1_title"),
                     text  = T("aw_tod1_text"),
                     priority = (e.t - time_near_end) * 2
-                };
+                }
             -- If this happened near the start
             elseif e.t < time_near_start then
                 return {
@@ -859,7 +859,7 @@ local function TimeOfDeath(events, scores, players)
                     title = T("aw_tod2_title"),
                     text  = T("aw_tod2_text"),
                     priority = (time_near_start - e.t) * 2
-                };
+                }
             end
         end
     end

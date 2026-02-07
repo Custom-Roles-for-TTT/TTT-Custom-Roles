@@ -188,7 +188,7 @@
             </div>
         </div>
         <div id="assassin" class="collapsible">
-            <button class="header" style="background-color:var(--special-traitor);"><i class="icon-assassin"></i>Assassin</button>
+            <button class="header" style="background-image:linear-gradient(110deg, var(--special-traitor) 0%, var(--special-traitor) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-assassin"></i>Assassin</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-assassin"></i><a href="#assassin">Assassin</a></span> is assigned a target at random. They deal more damage to their target and less damage to everyone else.</p>
@@ -200,6 +200,7 @@
                     <p>If the Assassin kills a player other than their target, they will fail their contract and gain a damage penalty for the rest of the round. This penalty can be configured or disabled entirely with <code>ttt_assassin_failed_damage_penalty</code>.</p>
                     <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="../teams/jester.html#clown">Clown</a></span>, <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="../teams/jester.html#loot-goblin">Loot Goblin</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="#vampire">Vampire</a></span>, <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span>, and <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="../teams/innocent.html#vindicator">Vindicator</a></span> can be killed by the Assassin without causing the Assassin to fail their contract, even if they aren't the Assassin's current target. This can be disabled for each role with <code>ttt_assassin_allow_clown_kill</code>, <code>ttt_assassin_allow_lootgoblin_kill</code>, <code>ttt_assassin_allow_vampire_kill</code>, <code>ttt_assassin_allow_zombie_kill</code>, <code>ttt_assassin_allow_vindicator_kill</code> respectively.</p>
                     <p>The Assassin has access to a shop containing a small handful of useful items. However, if the <code>ttt_assassin_shop_sync</code> ConVar is enabled the Assassin will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <p>The Assassin can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html">independent</a></span> by enabling <code>ttt_assassin_is_independent</code>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -252,6 +253,12 @@
                             <td>0.5</td>
                             <td>Float (0-1)</td>
                             <td>Damage penalty that the Assassin has after they have failed their contract by killing the wrong person. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_is_independent <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Assassins should be treated as members of the independent team.</td>
                         </tr>
                         <tr>
                             <td>ttt_assassin_next_target_delay</td>
@@ -795,7 +802,7 @@
                 <div class="expansion">
                     <p>By default, the Spy is given a flare gun as part of their loadout which can be used to burn bodies but this can be disabled via the <code>ttt_spy_flare_gun_loadout</code> ConVar.</p>
                     <p>When <code>ttt_spy_flare_gun_shop</code> is enabled, the Spy can buy a flare gun from their shop. They will only be able to buy one flare gun each round unless <code>ttt_spy_flare_gun_shop_rebuyable</code> is also enabled.</p>
-                    <p>When killing a player, the Spy will steal both their name and player model, however these can each be individually disabled by disabling <code>ttt_spy_steal_name</code> or <code>ttt_spy_steal_model</code> respectively.</p>
+                    <p>When killing a player or searching a body (configured via <code>ttt_spy_steal_mode</code>), the Spy will steal both their name and player model, however these can each be individually disabled by disabling <code>ttt_spy_steal_name</code> or <code>ttt_spy_steal_model</code> respectively.</p>
                     <p>When the Spy steals another player's model their first-person hands will switch to that of the stolen player model and they will receive an alert to remind them that they have switched player model. These can both be disabled individually by disabling <code>ttt_spy_steal_model_hands</code> or <code>ttt_spy_steal_model_alert</code> respectively.</p>
                     <p>The Spy has access to a shop containing a small handful of useful items. However, if the <code>ttt_spy_shop_sync</code> ConVar is enabled the Spy will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
@@ -834,28 +841,40 @@
                             <td>Whether the Spy should steal the identity of their victim even if that player is respawning.</td>
                         </tr>
                         <tr>
+                            <td>ttt_spy_steal_mode <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>1</td>
+                            <td>Integer (0-2)</td>
+                            <td>When a spy should steal their victim's identity
+                                <ol start="0">
+                                    <li>Never.</li>
+                                    <li>When they kill a player.</li>
+                                    <li>When they inspect a body.</li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>ttt_spy_steal_model</td>
                             <td>1</td>
                             <td>Boolean</td>
-                            <td>Whether the Spy should change to the victim's playermodel after killing a player.</td>
+                            <td>Whether the Spy should change to the victim's playermodel.</td>
                         </tr>
                         <tr>
                             <td>ttt_spy_steal_model_alert</td>
                             <td>1</td>
                             <td>Boolean</td>
-                            <td>Whether the Spy should see an alert message displaying who they are disguised as after killing a player.</td>
+                            <td>Whether the Spy should see an alert message displaying who they are disguised as.</td>
                         </tr>
                         <tr>
                             <td>ttt_spy_steal_model_hands</td>
                             <td>1</td>
                             <td>Boolean</td>
-                            <td>Whether the Spy should change to the victim's playermodel's 1st-person hands after killing a player.</td>
+                            <td>Whether the Spy should change to the victim's playermodel's 1st-person hands.</td>
                         </tr>
                         <tr>
                             <td>ttt_spy_steal_name</td>
                             <td>1</td>
                             <td>Boolean</td>
-                            <td>Whether the Spy should change to the victim's name after killing a player. <i>(When other players look at the Spy and see their info under the crosshair.)</i></td>
+                            <td>Whether the Spy should change to the victim's name. <i>(When other players look at the Spy and see their info under the crosshair.)</i></td>
                         </tr>
                         </tbody>
                     </table>
