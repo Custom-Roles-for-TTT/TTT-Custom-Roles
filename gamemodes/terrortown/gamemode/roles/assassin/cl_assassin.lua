@@ -27,6 +27,10 @@ local assassin_failed_damage_penalty = GetConVar("ttt_assassin_failed_damage_pen
 ------------------
 
 hook.Add("Initialize", "Assassin_Translations_Initialize", function()
+    -- Win conditions
+    LANG.AddToLanguage("english", "win_assassin", "The {role} has fulfilled all their contracts!")
+    LANG.AddToLanguage("english", "ev_win_assassin", "The cold-blooded {role} won the round!")
+
     -- Target
     LANG.AddToLanguage("english", "target_assassin_target", "TARGET")
     LANG.AddToLanguage("english", "target_assassin_target_team", "{player}'s TARGET")
@@ -49,6 +53,39 @@ maybe even suffering from a penalty!
 Press {menukey} to receive your special equipment!]])
 end)
 
+-- If this is an independent Assassin, replace the "comrades" list with a generic kill message
+hook.Add("TTTRolePopupParams", "Assassin_TTTRolePopupParams", function(cli)
+    if cli:IsAssassin() and cli:IsIndependentTeam() then
+        return {comrades = "\n\nKill all others to win!"}
+    end
+end)
+
+----------------
+-- WIN CHECKS --
+----------------
+
+hook.Add("TTTScoringWinTitle", "Assassin_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+    if wintype == WIN_ASSASSIN then
+        return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_ASSASSIN]) }, c = ROLE_COLORS[ROLE_ASSASSIN] }
+    end
+end)
+
+------------
+-- EVENTS --
+------------
+
+hook.Add("TTTEventFinishText", "Assassin_TTTEventFinishText", function(e)
+    if e.win == WIN_ASSASSIN then
+        return LANG.GetParamTranslation("ev_win_assassin", { role = string.lower(ROLE_STRINGS[ROLE_ASSASSIN]) })
+    end
+end)
+
+hook.Add("TTTEventFinishIconText", "Assassin_TTTEventFinishIconText", function(e, win_string, role_string)
+    if e.win == WIN_ASSASSIN then
+        return win_string, ROLE_STRINGS[ROLE_ASSASSIN]
+    end
+end)
+
 ---------------
 -- TARGET ID --
 ---------------
@@ -62,7 +99,7 @@ end)
 
 hook.Add("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
     if cli:IsAssassin() and IsPlayer(ent) and ent:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
-        if ent:GetNWBool("ParasiteInfected", false) and ShouldShowTraitorExtraInfo() then
+        if TRAITOR_ROLES[ROLE_ASSASSIN] and ent:GetNWBool("ParasiteInfected", false) and ShouldShowTraitorExtraInfo() then
             secondary_text = LANG.GetTranslation("target_infected")
         end
         return LANG.GetTranslation("target_current_target"), ROLE_COLORS_RADAR[ROLE_ASSASSIN], secondary_text
@@ -87,7 +124,7 @@ end
 
 -- Flash the assassin target's row on the scoreboard
 hook.Add("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
-    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
+    if cli:IsAssassin() and (INDEPENDENT_ROLES[ROLE_ASSASSIN] or ShouldShowTraitorExtraInfo()) and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         return c, roleStr, ROLE_ASSASSIN
     end
 end)
@@ -95,7 +132,7 @@ end)
 hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function(ply, cli, text)
     if cli:IsAssassin() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         local newText = " ("
-        if ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false) then
+        if TRAITOR_ROLES[ROLE_ASSASSIN] and ply:GetNWBool("ParasiteInfected", false) and ShouldShowTraitorExtraInfo() then
             newText = newText .. LANG.GetTranslation("target_infected") .. " | "
         end
         newText = newText .. LANG.GetTranslation("target_assassin_target") .. ")"
@@ -111,7 +148,7 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target)
     -- Shared logic
     local show = target:SteamID64() == ply:GetNWString("AssassinTarget", "")
 
-    local name = show and ShouldShowTraitorExtraInfo()
+    local name = show and (INDEPENDENT_ROLES[ROLE_ASSASSIN] or ShouldShowTraitorExtraInfo())
     ------ name, role
     return name, show
 end
@@ -216,8 +253,16 @@ end
 
 hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ASSASSIN then
-        local roleColor = ROLE_COLORS[ROLE_TRAITOR]
-        local html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to eliminate their enemies, one target at a time."
+        local roleColor
+        local html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is "
+        if INDEPENDENT_ROLES[ROLE_ASSASSIN] then
+            roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
+            html = html .. "an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent role</span>"
+        else
+            roleColor = ROLE_COLORS[ROLE_TRAITOR]
+            html =  html .. "a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span"
+        end
+        html = html .. " whose goal is to eliminate their enemies, one target at a time."
 
         local delay = assassin_next_target_delay:GetInt()
         html = html .. "<span style='display: block; margin-top: 10px;'>They are assigned an initial target at the start of the round. A new target is assigned "
@@ -239,7 +284,7 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
             html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>skull</span> icon floating over their head.</span>"
         end
 
-        if GetConVar("ttt_traitors_vision_enabled"):GetBool() then
+        if TRAITOR_ROLES[ROLE_ASSASSIN] and GetConVar("ttt_traitors_vision_enabled"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
         end
 

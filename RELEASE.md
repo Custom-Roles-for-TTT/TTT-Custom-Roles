@@ -7,6 +7,7 @@
 - Added ability for Spy to steal a player's identity when they search a body instead of when they kill a player (disabled by default)
 - Added optional `ttt_shop_limit_count` convar to limit the number of items available in the equipment shop
   - The items are chosen randomly (obeying the equipment and SWEP properties as well as the role weapons and role pack configurations for bypassing randomization) and will change each round
+- Added ability for the Assassin to be an independent role (disabled by default) (Thanks Joel!)
 - Added ability for Bodysnatcher to have the roles they can snatch restricted by team-based convars
 - Added unknown role name to the tooltip for rolepack and roleblock edit UIs to help in troubleshooting
 - Added buttons to easily duplicate rolepack slot and roleblock group

@@ -116,9 +116,9 @@ hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function
     -- Skip this for Assassin so they can have their own Current Target logic (it also handles parasite infection there)
     local shouldShowTraitor = cli:IsTraitorTeam() and not cli:IsAssassin() and ShouldShowTraitorExtraInfo()
 
-    -- Show Assassin and Parasite logic if necessary
+    -- Show Assassin and Parasite logic if necessary (unless Assassin is on the independent team)
     local infected = ply:GetNWBool("ParasiteInfected", false)
-    if shouldShowTraitor then
+    if shouldShowTraitor and not INDEPENDENT_ROLES[ROLE_ASSASSIN] then
         for _, v in PlayerIterator() do
             if ply:SteamID64() == v:GetNWString("AssassinTarget", "") then
                 local newText = " ("

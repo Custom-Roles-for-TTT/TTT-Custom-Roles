@@ -255,6 +255,7 @@ ttt_hypnotist_brainwash_muted                  0       // Whether players brainw
 ttt_hypnotist_brainwash_credits                0       // How many credits a hypnotized player should get
 
 // Assassin
+ttt_assassin_is_independent                    0       // Whether Assassins should be treated as members of the independent team (rather than the traitor team)
 ttt_assassin_show_target_icon                  0       // Whether Assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_assassin_target_vision_enabled             0       // Whether Assassins have a visible aura around their target, visible through walls
 ttt_assassin_next_target_delay                 5       // The delay (in seconds) before an Assassin is assigned their next target

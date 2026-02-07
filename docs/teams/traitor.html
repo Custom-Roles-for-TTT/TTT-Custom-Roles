@@ -188,7 +188,7 @@
             </div>
         </div>
         <div id="assassin" class="collapsible">
-            <button class="header" style="background-color:var(--special-traitor);"><i class="icon-assassin"></i>Assassin</button>
+            <button class="header" style="background-image:linear-gradient(110deg, var(--special-traitor) 0%, var(--special-traitor) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-assassin"></i>Assassin</button>
             <div class="content">
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-assassin"></i><a href="#assassin">Assassin</a></span> is assigned a target at random. They deal more damage to their target and less damage to everyone else.</p>
@@ -200,6 +200,7 @@
                     <p>If the Assassin kills a player other than their target, they will fail their contract and gain a damage penalty for the rest of the round. This penalty can be configured or disabled entirely with <code>ttt_assassin_failed_damage_penalty</code>.</p>
                     <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="../teams/jester.html#clown">Clown</a></span>, <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="../teams/jester.html#loot-goblin">Loot Goblin</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="#vampire">Vampire</a></span>, <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span>, and <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="../teams/innocent.html#vindicator">Vindicator</a></span> can be killed by the Assassin without causing the Assassin to fail their contract, even if they aren't the Assassin's current target. This can be disabled for each role with <code>ttt_assassin_allow_clown_kill</code>, <code>ttt_assassin_allow_lootgoblin_kill</code>, <code>ttt_assassin_allow_vampire_kill</code>, <code>ttt_assassin_allow_zombie_kill</code>, <code>ttt_assassin_allow_vindicator_kill</code> respectively.</p>
                     <p>The Assassin has access to a shop containing a small handful of useful items. However, if the <code>ttt_assassin_shop_sync</code> ConVar is enabled the Assassin will have access to all items available to the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+                    <p>The Assassin can optionally be an <span style="color:var(--independent)"><a href="../teams/independent.html">independent</a></span> by enabling <code>ttt_assassin_is_independent</code>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                     <table style="width:100%; margin-bottom: 10px;">
                         <thead>
@@ -252,6 +253,12 @@
                             <td>0.5</td>
                             <td>Float (0-1)</td>
                             <td>Damage penalty that the Assassin has after they have failed their contract by killing the wrong person. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_assassin_is_independent <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Assassins should be treated as members of the independent team.</td>
                         </tr>
                         <tr>
                             <td>ttt_assassin_next_target_delay</td>
