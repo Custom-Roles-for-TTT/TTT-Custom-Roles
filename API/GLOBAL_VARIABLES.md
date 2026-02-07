@@ -126,6 +126,16 @@ The maximum role number.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+### ROLE_PACK_DETAILS
+Table of extra role pack details (e.g. display name and description) for the currently enabled role pack.\
+*Realm:* Client and Server\
+*Added in:* 2.4.2
+
+### ROLE_PACK_ROLES
+Mapping of which roles are in the currently enabled role pack.\
+*Realm:* Client and Server\
+*Added in:* 2.0.7
+
 ### ROLE_SCORE_ICON_MATERIALS
 Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `score` icons for each role by their role short string.\
 *Realm:* Client and Server\

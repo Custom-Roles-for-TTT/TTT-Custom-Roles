@@ -43,6 +43,7 @@ util.AddNetworkString("TTT_RenameRolePack")
 util.AddNetworkString("TTT_DeleteRolePack")
 util.AddNetworkString("TTT_SavedRolePack")
 util.AddNetworkString("TTT_ApplyRolePack")
+util.AddNetworkString("TTT_TestRolePack")
 util.AddNetworkString("TTT_ClearRolePack")
 util.AddNetworkString("TTT_SendRolePackRoleList")
 util.AddNetworkString("TTT_RolePackBuyableWeapons")
@@ -211,6 +212,21 @@ local function SendRolePackList(ply)
     net.WriteUInt(#directories, 8)
     for _, v in pairs(directories) do
         net.WriteString(v)
+
+        -- Read the json file so we can get any extra details
+        local json = file.Read("rolepacks/" .. v .. "/roles.json", "DATA")
+        if not json then
+            net.WriteTable({}, false)
+            continue
+        end
+
+        local jsonTable = util.JSONToTable(json)
+        if jsonTable == nil then
+            net.WriteTable({}, false)
+            continue
+        end
+
+        net.WriteTable(jsonTable.details or {}, false)
     end
     net.Send(ply)
 end
@@ -314,6 +330,28 @@ net.Receive("TTT_ApplyRolePack", function(len, ply)
     GetConVar("ttt_role_pack"):SetString(name)
 end)
 
+net.Receive("TTT_TestRolePack", function(len, ply)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
+        return
+    end
+
+    local name = net.ReadString()
+    GetConVar("ttt_role_pack"):SetString(name)
+
+    -- Add bots to fill the slots
+    local count = table.Count(player.GetAll())
+    local max = game.MaxPlayers()
+    for n = 1, max - count do
+        RunConsoleCommand("bot")
+    end
+
+    -- Restart the round
+    if GetRoundState() == ROUND_ACTIVE then
+        RunConsoleCommand("ttt_roundrestart")
+    end
+end)
+
 net.Receive("TTT_ClearRolePack", function(len, ply)
     if not ply:IsAdmin() and not ply:IsSuperAdmin() then
         ErrorNoHalt("ERROR: You must be an administrator to configure Role Packs\n")
@@ -325,13 +363,19 @@ end)
 
 function ROLEPACKS.SendRolePackRoleList(ply)
     ROLE_PACK_ROLES = {}
+    ROLE_PACK_DETAILS = {}
 
     net.Start("TTT_SendRolePackRoleList")
     local name = GetConVar("ttt_role_pack"):GetString()
     local json = file.Read("rolepacks/" .. name .. "/roles.json", "DATA")
     if not json then
         net.WriteUInt(0, 8)
-        net.Broadcast()
+        net.WriteTable({}, false)
+        if ply then
+            net.Send(ply)
+        else
+            net.Broadcast()
+        end
         return
     end
 
@@ -339,7 +383,12 @@ function ROLEPACKS.SendRolePackRoleList(ply)
     if jsonTable == nil then
         ErrorNoHalt("Table decoding failed!\n")
         net.WriteUInt(0, 8)
-        net.Broadcast()
+        net.WriteTable({}, false)
+        if ply then
+            net.Send(ply)
+        else
+            net.Broadcast()
+        end
         return
     end
 
@@ -367,6 +416,10 @@ function ROLEPACKS.SendRolePackRoleList(ply)
         net.WriteUInt(role, roleBits)
         ROLE_PACK_ROLES[role] = true
     end
+
+    ROLE_PACK_DETAILS = jsonTable.details or {}
+    net.WriteTable(ROLE_PACK_DETAILS, false)
+
     if ply then
         net.Send(ply)
     else

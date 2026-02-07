@@ -656,6 +656,12 @@ ttt_bodysnatcher_reveal_jester                 1       // Who the Bodysnatcher i
 ttt_bodysnatcher_respawn                       0       // Whether the Bodysnatcher respawns when they are killed before joining another team
 ttt_bodysnatcher_respawn_delay                 3       // The delay to use when respawning the Bodysnatcher (if "ttt_bodysnatcher_respawn" is enabled)
 ttt_bodysnatcher_respawn_limit                 0       // The maximum number of times the Bodysnatcher can respawn (if "ttt_bodysnatcher_respawn" is enabled). Set to 0 to allow infinite respawns
+ttt_bodysnatcher_target_innocents              1       // Whether the Bodysnatcher can target innocent bodies
+ttt_bodysnatcher_target_detectives             1       // Whether the Bodysnatcher can target detective bodies
+ttt_bodysnatcher_target_traitors               1       // Whether the Bodysnatcher can target traitor bodies
+ttt_bodysnatcher_target_jesters                1       // Whether the Bodysnatcher can target jester bodies
+ttt_bodysnatcher_target_independents           1       // Whether the Bodysnatcher can target independent bodies
+ttt_bodysnatcher_target_monsters               1       // Whether the Bodysnatcher can target monster bodies
 ttt_bodysnatcher_notify_mode                   0       // The logic to use when notifying players that a Bodysnatcher was killed. Killer is notified unless "ttt_bodysnatcher_notify_killer" is disabled. 0 - Don't notify anyone. 1 - Only notify traitors and detectives. 2 - Only notify traitors. 3 - Only notify detectives. 4 - Notify everyone
 ttt_bodysnatcher_notify_killer                 1       // Whether to notify a Bodysnatcher's killer
 ttt_bodysnatcher_notify_sound                  0       // Whether to play a cheering sound when a Bodysnatcher is killed
@@ -1513,8 +1519,11 @@ At the top of the role packs window are the overall controls that are available 
 1. **Role packs dropdown** - List of current role packs available on the server. Select an entry from the list to edit it.
 1. **Add button** - Creates a new role pack when clicked, first prompting for the name of the role pack being created.
 1. **Rename button** - Renames the currently selected role pack, prompting for the new name.
+1. **Edit Details button** - Allows editing extra details such as the display name and description that are shown on the cheat sheet window.
 1. **Delete button** - Deletes the currently selected role pack, prompting for confirmation.
 1. **Save button** - Saves the changes made to the currently selected role pack.
+1. **Save As button** - Saves the currently selected role pack and any unsaved changes as a new role pack with a new given name.
+1. **Test Role Pack button** - Applies (but does *not* save) the currently selected role pack, fills the empty player slots on the server with bots, and restarts the round (if one is currently active).
 1. **Apply to Server button** - Activates the currently selected role pack on the server.
 1. **Disable Active Role Pack button** - Disables the current active role pack on the server.
 
@@ -1530,9 +1539,16 @@ To add a new role slot, click the "Add Slot" button on the bottom of the tab.
 One a slot has been added, you will be presented with three buttons:
 1. **Add role button** - Adds a new role entry to the role slot
 1. **Delete role button** - Deletes the last role entry in the role slot
-2. **Delete slot button** - Deletes the entire role slot
+1. **Delete slot button** - Deletes the entire role slot
+1. **Duplicate slot button** - Duplicates the entire role slot
 
 ![Role Packs Empty Slot](docs/tutorials/img/RolePacks_EmptySlot.png)
+
+### Reordering Role Slots
+
+To change the order of the role slots, click and hold the mouse down on the title (e.g. "Slot 2:") of the role slot you want to reorder and move your mouse to drag it around. While you're dragging the slot, a ghost (partially-opaque) version of it will appear to the left of the window. A pink line will show in the role slots list where the dragged slot will go when it is dropped. Release the mouse to drop the slot in the new location. 
+
+![Role Packs Reorder Slot](docs/tutorials/img/RolePacks_Reorder.png)
 
 #### Configuring a Role Slot Role
 
@@ -1586,8 +1602,14 @@ To add a new role blocking group, start by clicking the "Add group" button. Once
 - **Add role button** - Adds a new role entry to the blocking group
 - **Delete role button** - Deletes the last role entry in the blocking group
 - **Delete group button** - Deletes the entire blocking group
+- **Duplicate group button** - Duplicates the entire blocking group
 
 ![Role Blocks Empty Group](docs/tutorials/img/RoleBlocks_EmptyGroup.png)
+
+### Reordering Blocking Groups
+To change the order of the blocking groups, click and hold the mouse down on the title (e.g. "Blocking Group:") of the blocking group you want to reorder and move your mouse to drag it around. While you're dragging the group, a ghost (partially-opaque) version of it will appear to the left of the window. A pink line will show in the blocking groups list where the dragged group will go when it is dropped. Release the mouse to drop the group in the new location. 
+
+![Role Blocks Reorder Group](docs/tutorials/img/RoleBlocks_Reorder.png)
 
 ### Configuring a Blocking Group Role
 When a new role entry has been added to a blocking group it defaults to the "NONE" or "?" role. When this placeholder role is alone in a blocking group, it behaves the same as if the blocking group was empty and will do nothing.\

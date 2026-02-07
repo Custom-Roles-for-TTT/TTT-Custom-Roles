@@ -770,8 +770,11 @@ function HELPSCRN:CreateConfig(dsettings)
     combo:AddChoice("Meters", 1)
     combo:AddChoice("Feet", 2)
 
-    cb = dgui:TextEntry(GetTranslation("set_cheatsheat_hotkey"), "ttt_cheatsheat_hotkey")
-    cb:SetTooltip(GetTranslation("set_cheatsheat_hotkey_tip"))
+    cb = dgui:TextEntry(GetTranslation("set_cheatsheet_hotkey"), "ttt_cheatsheet_hotkey")
+    cb:SetTooltip(GetTranslation("set_cheatsheet_hotkey_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_cheatsheet_rolepack_icon"), "ttt_cheatsheet_rolepack_icon")
+    cb:SetTooltip(GetTranslation("set_cheatsheet_rolepack_icon_tip"))
 
     HookCall("TTTSettingsConfigTabFields", nil, "Interface", dgui)
 

@@ -192,9 +192,42 @@ end
 
 hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_BODYSNATCHER then
+        local T = LANG.GetTranslation
         local roleTeam = player.GetRoleTeam(ROLE_BODYSNATCHER, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
         local html = "The " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> team whose goal is to steal the role of a dead player using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bodysnatching device</span>."
+
+        local target_innocents = GetConVar("ttt_bodysnatcher_target_innocents"):GetBool()
+        local target_detectives = GetConVar("ttt_bodysnatcher_target_detectives"):GetBool()
+        local target_traitors = GetConVar("ttt_bodysnatcher_target_traitors"):GetBool()
+        local target_independents = GetConVar("ttt_bodysnatcher_target_independents"):GetBool()
+        local target_jesters = GetConVar("ttt_bodysnatcher_target_jesters"):GetBool()
+        local target_monsters = GetConVar("ttt_bodysnatcher_target_monsters"):GetBool()
+        html = html .. "<span style='display: block; margin-top: 10px;'>They can target corpses for players that are a member of <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>"
+        if target_innocents and target_detectives and target_traitors and target_independents and target_jesters and target_monsters then
+            html = html .. "any team</span>.</span>"
+        else
+            html = html .. "the following</span>:<ul>"
+            if target_innocents then
+                html = html .. "<li>" .. T("innocents") .. "</li>"
+            end
+            if target_detectives then
+                html = html .. "<li>" .. T("detectives") .. "</li>"
+            end
+            if target_traitors then
+                html = html .. "<li>" .. T("traitors") .. "</li>"
+            end
+            if target_independents then
+                html = html .. "<li>" .. T("independents") .. "</li>"
+            end
+            if target_jesters then
+                html = html .. "<li>" .. T("jesters") .. "</li>"
+            end
+            if target_monsters then
+                html = html .. "<li>" .. T("monsters") .. "</li>"
+            end
+            html = html .. "</ul></span>"
+        end
 
         html = html .. "<span style='display: block; margin-top: 10px;'>After <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>stealing a corpse's role</span>, they take over the goal of their new role.</span>"
 
