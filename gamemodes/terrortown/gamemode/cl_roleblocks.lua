@@ -8,6 +8,7 @@ local math = math
 local string = string
 
 local GetTranslation = LANG.GetTranslation
+local GetParamTranslation = LANG.GetParamTranslation
 local TableInsert = table.insert
 local TableRemove = table.remove
 local TableRemoveByValue = table.RemoveByValue
@@ -19,6 +20,7 @@ local numRows = 5
 local itemSize = 64
 -- margin
 local m = 5
+local buttonMargin = 1
 -- item list width
 local dlistw = ((itemSize + 2) * numCols) - 2 + 15
 local dlisth = ((itemSize + 2) * numRows) - 2 + 15
@@ -28,7 +30,7 @@ local diw = 270
 local w = dlistw + diw + (m * 4)
 local h = dlisth + 75 + m + 22
 
--- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte)  - 1 (terminanting byte)
+-- 2^16 bytes - 4 (header) - 2 (UInt length) - 1 (Extra optional byte) - 1 (terminating byte)
 local maxStreamLength = 65528
 
 local function SendStreamToServer(tbl, networkString)
@@ -112,22 +114,28 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
     dgrouplist:SetPaintBackground(false)
     dgrouplist:StretchToParent(0, m, 0, buttonHeight + m)
 
+    local listwidth, listheight = dgrouplist:GetSize()
+    local dlayout = vgui.Create("DListLayout", dgrouplist)
+    dlayout:SetPaintBackground(false)
+    dlayout:SetSize(listwidth, listheight)
+    dlayout:MakeDroppable("cr4ttt_roleblocks_blockgroups")
+
     local function CreateGroup(roleTable)
         local labelHeight = 10
         local iconWidth = 64
         local iconHeight = 84
-        local buttonSize = 22
+        local buttonSize = 20
 
-        local dgroup = vgui.Create("DPanel", dgrouplist)
+        local dgroup = vgui.Create("DPanel", dlayout)
         dgroup:SetPaintBackground(false)
-        dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconHeight + 2 * m)
+        dgroup:SetSize(dlayout:GetSize(), labelHeight + iconHeight + 2 * m)
         dgroup:Dock(TOP)
 
         local dlabel = vgui.Create("DLabel", dgroup)
         dlabel:SetFont("TabLarge")
         dlabel:SetContentAlignment(7)
         dlabel:SetPos(3, 0) -- For some reason the text isn't inline with the icons so we shift it 3px to the right
-        dlabel:SetText("Blocking Group:")
+        dlabel:SetText(GetTranslation("roleblocks_group_title"))
         dlabel:SetWidth(200)
 
         local dlist = vgui.Create("EquipSelect", dgroup)
@@ -152,6 +160,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             drole:SetSize(iconWidth, iconHeight)
             drole:SetPaintBackground(false)
             drole.role = role
+            drole.rolestr = rolestr
             drole.weight = 1
 
             local dicon = vgui.Create("SimpleIcon", drole)
@@ -162,7 +171,12 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             dicon:SetIconSize(iconWidth)
             dicon:SetIcon(material)
             dicon:SetBackgroundColor(ROLE_COLORS[role] or Color(0, 0, 0, 0))
-            dicon:SetTooltip(ROLE_STRINGS[role])
+            if role ~= ROLE_NONE then
+                dicon:SetTooltip(ROLE_STRINGS[role])
+            -- Show the string that was loaded from JSON if it doesn't exist on the server anymore
+            elseif rolestr ~= nil then
+                dicon:SetTooltip(GetParamTranslation("roleblocks_unknown_role", { role = rolestr }))
+            end
             dicon.DoClick = function()
                 local dmenu = DermaMenu()
                 for r, s in SortedPairsByValue(ROLE_STRINGS) do
@@ -173,6 +187,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
                         dicon:SetBackgroundColor(ROLE_COLORS[r] or Color(0, 0, 0, 0))
                         dicon:SetTooltip(s)
                         drole.role = r
+                        drole.rolestr = ROLE_STRINGS_RAW[r]
                         droleblocks.unsavedChanges = true
                     end)
                 end
@@ -192,7 +207,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             TableInsert(roleList, drole)
 
             local iconRows = MathCeil((#roleList + 1) / 8)
-            dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dgroup:SetSize(dlayout:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
             dlist:SetHeight(iconRows * iconHeight + 2 * m)
 
             dlist:AddPanel(drole)
@@ -214,14 +229,14 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
         daddrolebutton:SetTooltip(GetTranslation("rolepacks_add_role"))
         daddrolebutton.DoClick = function()
             TableRemove(dlist.Items)
-            CreateRole(ROLE_INNOCENT, 1)
+            CreateRole(nil, 1)
             dlist:AddPanel(dbuttons)
             droleblocks.unsavedChanges = true
         end
 
         local ddeleterolebutton = vgui.Create("DButton", dbuttons)
         ddeleterolebutton:SetSize(buttonSize, buttonSize)
-        ddeleterolebutton:SetPos(0, buttonSize + m)
+        ddeleterolebutton:SetPos(0, buttonSize + buttonMargin)
         ddeleterolebutton:SetText("")
         ddeleterolebutton:SetIcon("icon16/delete.png")
         ddeleterolebutton:SetTooltip(GetTranslation("rolepacks_delete_role"))
@@ -232,14 +247,14 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             drole:Remove()
             dlist:AddPanel(dbuttons)
             local iconRows = MathCeil((#dlist.Items) / 8)
-            dgroup:SetSize(dgrouplist:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
+            dgroup:SetSize(dlayout:GetSize(), labelHeight + iconRows * iconHeight + 2 * m)
             dlist:SetHeight(iconRows * iconHeight + 2 * m)
             droleblocks.unsavedChanges = true
         end
 
         local ddeletegroupbutton = vgui.Create("DButton", dbuttons)
         ddeletegroupbutton:SetSize(buttonSize, buttonSize)
-        ddeletegroupbutton:SetPos(0, 2 * (buttonSize + m))
+        ddeletegroupbutton:SetPos(0, 2 * (buttonSize + buttonMargin))
         ddeletegroupbutton:SetText("")
         ddeletegroupbutton:SetIcon("icon16/bin.png")
         ddeletegroupbutton:SetTooltip(GetTranslation("roleblocks_delete_group"))
@@ -249,9 +264,27 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
             droleblocks.unsavedChanges = true
         end
 
+        local ddupegroupbutton = vgui.Create("DButton", dbuttons)
+        ddupegroupbutton:SetSize(buttonSize, buttonSize)
+        ddupegroupbutton:SetPos(0, 3 * (buttonSize + buttonMargin))
+        ddupegroupbutton:SetText("")
+        ddupegroupbutton:SetIcon("icon16/page_copy.png")
+        ddupegroupbutton:SetTooltip(GetTranslation("roleblocks_duplicate_group"))
+        ddupegroupbutton.DoClick = function()
+            local groupRoles = {}
+            for _, d in ipairs(roleList) do
+                TableInsert(groupRoles, {
+                    role = d.rolestr,
+                    weight = d.weight
+                })
+            end
+            CreateGroup(groupRoles)
+            droleblocks.unsavedChanges = true
+        end
+
         dlist:AddPanel(dbuttons)
 
-        dgrouplist:AddItem(dgroup)
+        dlayout:Add(dgroup)
     end
 
     local dbuttons = vgui.Create("DPanel", droleblocks)
@@ -279,7 +312,7 @@ local function BuildRoleBlockConfig(dsheet, packName, tab)
     end
 
     local function UpdateRoleBlockUI(jsonTable)
-        dgrouplist:Clear()
+        dlayout:Clear()
         for _, group in pairs(jsonTable) do
             CreateGroup(group)
         end
@@ -339,7 +372,7 @@ local function OpenDialog()
         local dsavedialog = vgui.Create("DFrame")
         dsavedialog:SetSize(popupWidth, popupHeight)
         dsavedialog:Center()
-        dsavedialog:SetTitle("Would you like to save your changes?")
+        dsavedialog:SetTitle(GetTranslation("roleblocks_save_title"))
         dsavedialog:SetVisible(true)
         dsavedialog:ShowCloseButton(false)
         dsavedialog:SetMouseInputEnabled(true)
@@ -349,7 +382,7 @@ local function OpenDialog()
         end
 
         local dyes = vgui.Create("DButton", dsavedialog)
-        dyes:SetText("Yes")
+        dyes:SetText(GetTranslation("dialog_yes"))
         dyes:SetPos(popupWidth / 2 - buttonWidth - m, titleBarHeight + m)
         dyes.DoClick = function()
             droleblocks.Save()
@@ -358,7 +391,7 @@ local function OpenDialog()
         end
 
         local dno = vgui.Create("DButton", dsavedialog)
-        dno:SetText("No")
+        dno:SetText(GetTranslation("dialog_no"))
         dno:SetPos(popupWidth / 2 + m, titleBarHeight + m)
         dno.DoClick = function()
             dsavedialog:Close()
