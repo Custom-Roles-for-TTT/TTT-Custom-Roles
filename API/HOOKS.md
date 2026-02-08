@@ -1142,11 +1142,25 @@ Called before an entity's hint label (shown when you look at an entity) is rende
 *Parameters:*
 - *ent* - The target entity being rendered. Guaranteed to not be a player.
 - *client* - The local player
-- *text* - The label for the hint-related text being shown
+- *label* - The `name` value from the entity's `TargetIDHint` property or the entity class's `ClassHint` table entry
 - *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
+### TTTTargetIDEntityHintName(ent, client, name, clr)
+Called before an entity's hint name (shown when you look at an entity) is rendered.\
+*Realm:* Client\
+*Added in:* 2.4.3\
+*Parameters:*
+- *ent* - The target entity being rendered. Guaranteed to not be a player.
+- *client* - The local player
+- *name* - The `hintname` value from the entity's `TargetIDHint` property or the entity class's `ClassHint` table entry
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
+
+*Return:*
+- *name* - The new name value to use or the original passed into the hook. Return `false` to not show a name at all
 - *clr* - The new clr value to use or the original passed into the hook
 
 ### TTTTargetIDPlayerHintText(ent, client, text, clr)
@@ -1156,7 +1170,7 @@ Called before an entity's hint text (shown when you look at an entity) is render
 *Parameters:*
 - *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
 - *client* - The local player
-- *text* - The hint-related text being shown
+- *text* - The `hint` value from the entity's `TargetIDHint` property or the entity class's `ClassHint` table entry
 - *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*

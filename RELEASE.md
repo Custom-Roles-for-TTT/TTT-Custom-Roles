@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.4.3 (Beta)
+**Released:**
+
+### Developer
+- Added `hintname` as a property of `ENT.TargetIDHint` allowing entities to render a name in the same style as a player
+- Added `TTTTargetIDEntityHintName` hook to allow overwriting or modifying an entity's hint name before it is rendered
+
 ## 2.4.2 (Beta)
 **Released: February 7th, 2026**
 
