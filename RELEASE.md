@@ -1,11 +1,5 @@
 # Release Notes
 
-## 2.4.3 (Beta)
-**Released:**
-
-### Developer
-- Added `ROLEPACKS.GetRolePackDetails` to get the role pack details for any rolepack by name on the server
-
 ## 2.4.2 (Beta)
 **Released: February 7th, 2026**
 
@@ -38,6 +32,7 @@
 
 ### Developer
 - Added `TTTTrackRadarScan` hook that allows addons to add or modify the targets used by the Tracking Radar
+- Added `ROLEPACKS.GetRolePackDetails` to get the role pack details for any rolepack by name on the server
 - Fixed `ttt_order_for_someone` with equipment IDs triggering errors for addons that expected it to be a number
 
 ## 2.4.1
