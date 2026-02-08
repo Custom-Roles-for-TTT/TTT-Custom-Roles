@@ -575,7 +575,10 @@ function GM:HUDDrawTargetID()
         -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
         if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
         if new_col then color = new_col end
-    elseif hint then
+    elseif not hint then
+        -- Not something to ID and not something to hint about
+        return
+    elseif hint.entname then
         text = GetRaw(hint.entname) or hint.entname
 
         -- Allow external roles to override or block showing the entity name
@@ -583,8 +586,6 @@ function GM:HUDDrawTargetID()
         -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the name
         if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
         if new_col then color = new_col end
-    else
-        return
     end
 
     local x_orig = ScrW() / 2.0
