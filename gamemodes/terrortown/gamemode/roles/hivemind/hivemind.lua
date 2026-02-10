@@ -392,7 +392,7 @@ end)
 AddHook("TTTPrepareRound", "HiveMind_PrepareRound", function()
     maxHealth = nil
     currentHealth = nil
-    currentCredits = nil
+    currentCredits = 0
     primeAssigned = false
     for _, v in PlayerIterator() do
         timer.Remove("HiveMindRespawn_" .. v:SteamID64())
