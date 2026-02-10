@@ -252,6 +252,10 @@ AddHook("PlayerDeath", "HiveMind_GroupDeath_PlayerDeath", function(victim, infl,
         p:QueueMessage(MSG_PRINTCENTER, "A member of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " has been killed.")
         p:Kill()
     end
+
+    -- Reset the current health in case a member of the hive mind comes back somehow
+    -- Let them keep their max health and weapons though because the other players are still part of the hive mind, even if dead
+    currentHealth = nil
 end)
 
 ------------------

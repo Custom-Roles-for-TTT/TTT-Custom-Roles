@@ -3,6 +3,10 @@
 ## 2.4.3 (Beta)
 **Released:**
 
+### Fixes
+- Fixed a player who joins the Hive Mind after the rest of the collective has died due to a large amount of damage (e.g. an explosion) getting a larger-than-expected amount of starting health
+  - Now if a player joins the Hive Mind after the rest have died, they start with the same amount of health as the first player who was assimilated
+
 ### Developer
 - Added `hintname` as a property of `ENT.TargetIDHint` allowing entities to render a name in the same style as a player
 - Added `TTTTargetIDEntityHintName` hook to allow overwriting or modifying an entity's hint name before it is rendered
