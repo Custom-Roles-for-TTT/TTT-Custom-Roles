@@ -3,6 +3,13 @@
 ## 2.4.3 (Beta)
 **Released:**
 
+### Additions
+- Added ability to configure how a player killed by a dead Hive Mind member is handled
+  - 0 (Default) - Do nothing
+  - 1 - Assimilate the killed player (they will be the only Hive Mind member alive). NOTE: This is previously how the Hive Mind behaved before this change was implemented, but we considered that unintended.
+  - 2 - Assimilate the killed player and resurrect their Hive Mind killer (there would be two Hive Mind members alive)
+  - 3 - Assimilate the killed player and resurrect all Hive Mind members
+
 ### Fixes
 - Ported "TTT: Singleplayer weapon fixes"
 - Fixed a player who joins the Hive Mind after the rest of the collective has died due to a large amount of damage (e.g. an explosion) getting a larger-than-expected amount of starting health
