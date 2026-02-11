@@ -1457,18 +1457,6 @@ WINS_BY_ROLE = WINS_BY_ROLE or {
     [ROLE_TASKMASTER] = WIN_TASKMASTER,
     [ROLE_ASSASSIN] = WIN_ASSASSIN
 }
-for r, t in pairs(TRAITOR_ROLES) do
-    if not t then continue end
-    WINS_BY_ROLE[r] = WIN_TRAITOR
-end
-for r, t in pairs(INNOCENT_ROLES) do
-    if not t then continue end
-    WINS_BY_ROLE[r] = WIN_INNOCENT
-end
-for r, t in pairs(MONSTER_ROLES) do
-    if not t then continue end
-    WINS_BY_ROLE[r] = WIN_MONSTER
-end
 
 if SERVER then
     util.AddNetworkString("TTT_SyncWinIDs")
