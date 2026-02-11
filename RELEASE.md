@@ -16,6 +16,7 @@
   - Now if a player joins the Hive Mind after the rest have died, they start with the same amount of health as the first player who was assimilated
 - Fixed Hive Minds losing their credits if they were somehow resurrected and tried to loot credits off the body of another member of the Hive Mind who was still dead
 - Fixed Hive Mind credits, health, and max health not resetting between rounds
+- Fixed `ttt_guesser_minimum_radius 0` not working, despite the description saying it should
 
 ### Developer
 - Added `hintname` as a property of `ENT.TargetIDHint` allowing entities to render a name in the same style as a player
