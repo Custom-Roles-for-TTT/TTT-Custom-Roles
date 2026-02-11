@@ -1439,7 +1439,7 @@ WIN_MAX = WIN_MAX or 23
 -- Prepopulate this with the built-in roles
 WINS_BY_ROLE = WINS_BY_ROLE or {
     [ROLE_JESTER] = WIN_JESTER,
-    [ROLE_CLONE] = WIN_CLOWN,
+    [ROLE_CLOWN] = WIN_CLOWN,
     [ROLE_OLDMAN] = WIN_OLDMAN,
     [ROLE_KILLER] = WIN_KILLER,
     [ROLE_ZOMBIE] = WIN_ZOMBIE,
