@@ -74,7 +74,7 @@ hook.Add("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", function(ent
     if IsPlayer(ent) then
         local state = ent:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
         if state ~= ARSONIST_DOUSED then return end
-    -- Otherise if this is a ragdoll we just need to check the flag on it directly
+    -- Otherwise if this is a ragdoll we just need to check the flag on it directly
     elseif IsRagdoll(ent) and not ent:GetNWBool("TTTArsonistDoused", false) then
         return
     end
