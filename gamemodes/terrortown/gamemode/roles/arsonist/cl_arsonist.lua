@@ -290,6 +290,7 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
         else
             html = html .. "<span style='display: block; margin-top: 10px;'>Once every player has been doused, they can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players.</span>"
         end
+
         -- Show a warning about the notification delay if its enabled
         local delay_min = arsonist_douse_notify_delay_min:GetInt()
         local delay_max = arsonist_douse_notify_delay_max:GetInt()
