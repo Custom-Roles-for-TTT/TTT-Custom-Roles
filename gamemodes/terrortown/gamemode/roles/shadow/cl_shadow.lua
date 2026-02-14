@@ -440,14 +440,14 @@ AddHook("TTTHUDInfoPaint", "Shadow_Delay_TTTHUDInfoPaint", function(cli, label_l
         local text = LANG.GetParamTranslation("shadow_delay_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
         local _, h = surface.GetTextSize(text)
 
-        -- Move this up based on how many other labels here are
+        -- Move this up based on how many other labels there are
         label_top = label_top + (20 * #active_labels)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
 
         -- Track that the label was added so others can position accurately
-        table.insert(active_labels, "shadow")
+        table.insert(active_labels, "shadow_delay")
     end
 end)
 
@@ -540,14 +540,14 @@ AddHook("TTTHUDInfoPaint", "Shadow_Buff_TTTHUDInfoPaint", function(cli, label_le
     end
     local _, h = surface.GetTextSize(text)
 
-    -- Move this up based on how many other labels here are
+    -- Move this up based on how many other labels there are
     label_top = label_top + (20 * #active_labels)
 
     surface.SetTextPos(label_left, ScrH() - label_top - h)
     surface.DrawText(text)
 
     -- Track that the label was added so others can position accurately
-    table.insert(active_labels, "shadow")
+    table.insert(active_labels, "shadow_buff")
 end)
 
 --------------
