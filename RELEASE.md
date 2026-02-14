@@ -10,6 +10,10 @@
   - 2 - Assimilate the killed player and resurrect their Hive Mind killer (there would be two Hive Mind members alive)
   - 3 - Assimilate the killed player and resurrect all Hive Mind members
 
+### Changes
+- Updated Killer's throwable crowbar so the primary attack works exactly the same as a normal crowbar
+  - The main difference is it is now able to open openable entities which it couldn't do before
+
 ### Fixes
 - Ported "TTT: Singleplayer weapon fixes"
 - Fixed a player who joins the Hive Mind after the rest of the collective has died due to a large amount of damage (e.g. an explosion) getting a larger-than-expected amount of starting health
