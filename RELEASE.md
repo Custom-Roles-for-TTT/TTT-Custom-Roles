@@ -25,6 +25,7 @@
 ### Developer
 - Added `hintname` as a property of `ENT.TargetIDHint` allowing entities to render a name in the same style as a player
 - Added `TTTTargetIDEntityHintName` hook to allow overwriting or modifying an entity's hint name before it is rendered
+- Added "left", "right", "up", and "down" as valid keys to `CRHUD:PaintPowersHUD`
 - Changed `EVENTS_BY_ROLE` and `WINS_BY_ROLE` to be prepopulated for the built-in roles as well (except those that win with their team, due to issues with roles who can switch teams)
 
 ## 2.4.2 (Beta)
