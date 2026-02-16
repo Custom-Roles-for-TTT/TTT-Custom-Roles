@@ -16,6 +16,7 @@
 
 ### Fixes
 - Ported "TTT: Singleplayer weapon fixes"
+- Ported "TTT: Fix SimpleImage PaintOver handling"
 - Fixed a player who joins the Hive Mind after the rest of the collective has died due to a large amount of damage (e.g. an explosion) getting a larger-than-expected amount of starting health
   - Now if a player joins the Hive Mind after the rest have died, they start with the same amount of health as the first player who was assimilated
 - Fixed Hive Minds losing their credits if they were somehow resurrected and tried to loot credits off the body of another member of the Hive Mind who was still dead
