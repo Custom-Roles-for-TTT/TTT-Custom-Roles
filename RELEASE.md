@@ -23,6 +23,7 @@
 - Fixed Hive Mind credits, health, and max health not resetting between rounds
 - Fixed `ttt_guesser_minimum_radius 0` not working, despite the description saying it should
 - Fixed Old Man's shotgun not playing the empty click sound when trying to use the secondary fire with no shells remaining
+- Fixed Shadow not getting role weapons when `ttt_shadow_target_buff` is set to `4` and they copy a role that has one
 
 ### Developer
 - Added `hintname` as a property of `ENT.TargetIDHint` allowing entities to render a name in the same style as a player
