@@ -1,5 +1,38 @@
 # Release Notes
 
+## 2.4.3 (Beta)
+**Released:**
+
+### Additions
+- Added ability to configure how a player killed by a dead Hive Mind member is handled
+  - 0 (Default) - Do nothing
+  - 1 - Assimilate the killed player (they will be the only Hive Mind member alive). NOTE: This is previously how the Hive Mind behaved before this change was implemented, but we considered that unintended.
+  - 2 - Assimilate the killed player and resurrect their Hive Mind killer (there would be two Hive Mind members alive)
+  - 3 - Assimilate the killed player and resurrect all Hive Mind members
+
+### Changes
+- Updated Killer's throwable crowbar so the primary attack works exactly the same as a normal crowbar
+  - The main difference is it is now able to open openable entities which it couldn't do before
+
+### Fixes
+- Ported "TTT: Singleplayer weapon fixes"
+- Ported "TTT: Fix SimpleImage PaintOver handling"
+- Fixed a player who joins the Hive Mind after the rest of the collective has died due to a large amount of damage (e.g. an explosion) getting a larger-than-expected amount of starting health
+  - Now if a player joins the Hive Mind after the rest have died, they start with the same amount of health as the first player who was assimilated
+- Fixed Hive Minds losing their credits if they were somehow resurrected and tried to loot credits off the body of another member of the Hive Mind who was still dead
+- Fixed Hive Mind credits, health, and max health not resetting between rounds
+- Fixed `ttt_guesser_minimum_radius 0` not working, despite the description saying it should
+- Fixed Old Man's shotgun not playing the empty click sound when trying to use the secondary fire with no shells remaining
+- Fixed Shadow not getting role weapons when `ttt_shadow_target_buff` is set to `4` and they copy a role that has one
+
+### Developer
+- Added `hintname` as a property of `ENT.TargetIDHint` allowing entities to render a name in the same style as a player
+- Added `TTTTargetIDEntityHintName` hook to allow overwriting or modifying an entity's hint name before it is rendered
+- Added `TTTSmokeGrenadeShouldExtinguish` hook to allow non-standard entities (e.g. not smoke or fire) to be extinguished by a smoke grenade
+- Added "left", "right", "up", and "down" as valid keys to `CRHUD:PaintPowersHUD`
+- Changed `EVENTS_BY_ROLE` and `WINS_BY_ROLE` to be prepopulated for the built-in roles as well (except those that win with their team, due to issues with roles who can switch teams)
+- Changed `cr4ttt_role_cvars` to give a more descriptive error if the role doesn't have any convars
+
 ## 2.4.2 (Beta)
 **Released: February 7th, 2026**
 

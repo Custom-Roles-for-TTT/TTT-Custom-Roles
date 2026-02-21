@@ -80,31 +80,32 @@ function SWEP:SecondaryAttack(worldsnd)
     self:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-    if self:Clip1() == 2 then
-        if not worldsnd then
-            self:EmitSound(self.Secondary.Sound, self.Primary.SoundLevel)
-        elseif SERVER then
-            sound.Play(self.Secondary.Sound, self:GetPos(), self.Primary.SoundLevel)
-        end
-
-        self:ShootBullet(self.Primary.Damage, self.Secondary.Recoil, self.Primary.NumShots * 2, self:GetPrimaryCone())
-        self:TakePrimaryAmmo(2)
-
-        local owner = self:GetOwner()
-        if not IsValid(owner) or owner:IsNPC() or (not owner.ViewPunch) then return end
-        owner:ViewPunch(Angle(math.Rand(-0.2, -0.1) * self.Secondary.Recoil, math.Rand(-0.1, 0.1) * self.Secondary.Recoil, 0))
-    elseif self:Clip1() == 1 then
-        if not worldsnd then
-            self:EmitSound(self.Primary.Sound, self.Primary.SoundLevel)
-        elseif SERVER then
-            sound.Play(self.Primary.Sound, self:GetPos(), self.Primary.SoundLevel)
-        end
-
-        self:ShootBullet(self.Primary.Damage, self.Primary.Recoil, self.Primary.NumShots, self:GetPrimaryCone())
-        self:TakePrimaryAmmo(1)
-
-        local owner = self:GetOwner()
-        if not IsValid(owner) or owner:IsNPC() or (not owner.ViewPunch) then return end
-        owner:ViewPunch(Angle(math.Rand(-0.2, -0.1) * self.Primary.Recoil, math.Rand(-0.1, 0.1) * self.Primary.Recoil, 0))
+    local bullets = self:Clip1()
+    if bullets == 0 then
+        self:CanPrimaryAttack()
+        return
     end
+
+    local bulletSound
+    local bulletRecoil
+    if bullets == 1 then
+        bulletSound = self.Primary.Sound
+        bulletRecoil = self.Primary.Recoil
+    else
+        bulletSound = self.Secondary.Sound
+        bulletRecoil = self.Secondary.Recoil
+    end
+
+    if not worldsnd then
+        self:EmitSound(bulletSound, self.Primary.SoundLevel)
+    elseif SERVER then
+        sound.Play(bulletSound, self:GetPos(), self.Primary.SoundLevel)
+    end
+
+    self:ShootBullet(self.Primary.Damage, bulletRecoil, self.Primary.NumShots * bullets, self:GetPrimaryCone())
+    self:TakePrimaryAmmo(bullets)
+
+    local owner = self:GetOwner()
+    if not IsValid(owner) or owner:IsNPC() or not owner.ViewPunch then return end
+    owner:ViewPunch(Angle(math.Rand(-0.2, -0.1) * bulletRecoil, math.Rand(-0.1, 0.1) * bulletRecoil, 0))
 end

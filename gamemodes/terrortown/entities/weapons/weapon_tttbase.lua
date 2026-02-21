@@ -319,6 +319,13 @@ if CLIENT then
             translate_params = table.Merge(extra_params, default_key_params)
         }
     end
+
+    -- CallOnClient only works with lua functions
+    if game.SinglePlayer() then
+        function SWEP:SPLastShoot()
+            self:SetLastShootTime()
+        end
+    end
 end
 
 -- Shooting functions largely copied from weapon_cs_base
@@ -343,6 +350,10 @@ function SWEP:PrimaryAttack(worldsnd)
     if not IsValid(owner) or owner:IsNPC() or (not owner.ViewPunch) then return end
 
     owner:ViewPunch(Angle(util.SharedRandom(self:GetClass(), -0.2, -0.1, 0) * self.Primary.Recoil, util.SharedRandom(self:GetClass(), -0.1, 0.1, 1) * self.Primary.Recoil, 0))
+
+    if game.SinglePlayer() then
+        self:CallOnClient("SPLastShoot")
+    end
 end
 
 function SWEP:DryFire(setnext)
@@ -550,7 +561,10 @@ function SWEP:SetIronsights(b)
     if (b ~= self:GetIronsights()) then
         self:SetIronsightsPredicted(b)
         self:SetIronsightsTime(CurTime())
-        if CLIENT then
+
+        if game.SinglePlayer() then
+            self:CallOnClient("CalcViewModel")
+        elseif CLIENT then
             self:CalcViewModel()
         end
     end
