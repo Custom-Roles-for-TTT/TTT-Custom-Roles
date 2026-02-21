@@ -68,7 +68,7 @@ SWEP.InLoadoutFor           = {ROLE_GUESSER}
 SWEP.InLoadoutForDefault    = {ROLE_GUESSER}
 
 if SERVER then
-    CreateConVar("ttt_guesser_minimum_radius", "5", FCVAR_NONE, "The minimum radius of the guesser's device in meters. Set to 0 to disable", 1, 30)
+    CreateConVar("ttt_guesser_minimum_radius", "5", FCVAR_NONE, "The minimum radius of the guesser's device in meters. Set to 0 to disable", 0, 30)
 end
 local guesser_unguessable_roles = CreateConVar("ttt_guesser_unguessable_roles", "lootgoblin,zombie", FCVAR_REPLICATED, "Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.")
 

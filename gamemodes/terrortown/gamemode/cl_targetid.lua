@@ -578,6 +578,14 @@ function GM:HUDDrawTargetID()
     elseif not hint then
         -- Not something to ID and not something to hint about
         return
+    elseif hint.entname then
+        text = GetRaw(hint.entname) or hint.entname
+
+        -- Allow external roles to override or block showing the entity name
+        local new_text, new_col = CallHook("TTTTargetIDEntityHintName", nil, ent, client, text, color)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the name
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then color = new_col end
     end
 
     local x_orig = ScrW() / 2.0

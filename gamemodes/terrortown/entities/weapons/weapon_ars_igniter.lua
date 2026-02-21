@@ -271,7 +271,7 @@ if CLIENT then
         local text = LANG.GetTranslation("arsonist_igniter_ondeath_hud")
         local _, h = surface.GetTextSize(text)
 
-        -- Move this up based on how many other labels here are
+        -- Move this up based on how many other labels there are
         label_top = label_top + (20 * #active_labels)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)

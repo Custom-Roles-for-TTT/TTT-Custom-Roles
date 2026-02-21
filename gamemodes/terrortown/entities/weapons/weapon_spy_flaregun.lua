@@ -87,8 +87,8 @@ function SWEP:PrimaryAttack()
         owner:ViewPunch(Angle(math.Rand(-0.2,-0.1) * self.Primary.Recoil, math.Rand(-0.1,0.1) * self.Primary.Recoil, 0))
     end
 
-    if ((game.SinglePlayer() and SERVER) or CLIENT) then
-        self:SetNWFloat("LastShootTime", CurTime())
+    if game.SinglePlayer() then
+        self:CallOnClient("SPLastShoot")
     end
 
     if SERVER and self:Clip1() <= 0 then
