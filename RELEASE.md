@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.4.3 (Beta)
-**Released:**
+**Released: February 21st, 2026**
 
 ### Additions
 - Added ability to configure how a player killed by a dead Hive Mind member is handled
