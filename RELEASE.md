@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.4.4 (Beta)
+**Released:**
+
+### Changes
+- Changed role pack to apply next round, if the round is already active
+
 ## 2.4.3 (Beta)
 **Released: February 21st, 2026**
 

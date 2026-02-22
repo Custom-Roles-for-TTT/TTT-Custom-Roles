@@ -142,7 +142,7 @@ local function ItemIsWeapon(item) return not tonumber(item.id) end
 function GetEquipmentForRole(role, promoted, block_randomization, block_exclusion, ignore_cache, rolepack_weps)
     WEPS.PrepWeaponsLists(role)
 
-    local packName = GetConVar("ttt_role_pack"):GetString()
+    local packName = ROLEPACKS.GetCurrentRolePackName()
     if rolepack_weps == nil and #packName > 0 then
         rolepack_weps = {Buyables = WEPS.RolePackBuyableWeapons[role], Excludes = WEPS.RolePackExcludeWeapons[role], NoRandoms = WEPS.RolePackBypassRandomWeapons[role]}
     elseif rolepack_weps == false or #packName == 0 then

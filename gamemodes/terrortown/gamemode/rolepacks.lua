@@ -14,8 +14,6 @@ local TableHasValue = table.HasValue
 local TableShuffle = table.Shuffle
 local TableCopy = table.Copy
 
-ROLEPACKS = {}
-
 util.AddNetworkString("TTT_WriteRolePackRoles")
 util.AddNetworkString("TTT_WriteRolePackRoles_Part")
 util.AddNetworkString("TTT_RequestRolePackRoles")
@@ -312,7 +310,7 @@ net.Receive("TTT_SavedRolePack", function(len, ply)
     end
 
     local savedPack = net.ReadString()
-    local currentPack = GetConVar("ttt_role_pack"):GetString()
+    local currentPack = ROLEPACKS.GetCurrentRolePackName()
     if savedPack == currentPack then
         ROLEPACKS.SendRolePackRoleList()
         ROLEPACKS.ApplyRolePackConVars()
@@ -378,12 +376,13 @@ function ROLEPACKS.GetRolePackDetails(name)
     return jsonTable.details or {}
 end
 
-function ROLEPACKS.SendRolePackRoleList(ply)
+function ROLEPACKS.SendRolePackRoleList(ply, lateJoin)
     ROLE_PACK_ROLES = {}
     ROLE_PACK_DETAILS = {}
 
     net.Start("TTT_SendRolePackRoleList")
-    local name = GetConVar("ttt_role_pack"):GetString()
+    -- If we're sending to a late joiner, use the current running role pack
+    local name = lateJoin and ROLEPACKS.GetCurrentRolePackName() or GetConVar("ttt_role_pack"):GetString()
     local json = file.Read("rolepacks/" .. name .. "/roles.json", "DATA")
     if not json then
         net.WriteUInt(0, 8)
@@ -435,6 +434,7 @@ function ROLEPACKS.SendRolePackRoleList(ply)
     end
 
     ROLE_PACK_DETAILS = jsonTable.details or {}
+    ROLE_PACK_DETAILS.name = name
     net.WriteTable(ROLE_PACK_DETAILS, false)
 
     if ply then
@@ -445,7 +445,7 @@ function ROLEPACKS.SendRolePackRoleList(ply)
 end
 
 function ROLEPACKS.GetRolePackBlockedRoles()
-    local name = GetConVar("ttt_role_pack"):GetString()
+    local name = ROLEPACKS.GetCurrentRolePackName()
     local json = file.Read("rolepacks/" .. name .. "/roleblocks.json", "DATA")
     if not json then return end
 
@@ -459,7 +459,7 @@ function ROLEPACKS.GetRolePackBlockedRoles()
 end
 
 function ROLEPACKS.SendRolePackWeapons(ply)
-    local rolePackName = GetConVar("ttt_role_pack"):GetString()
+    local rolePackName = ROLEPACKS.GetCurrentRolePackName()
     if #rolePackName == 0 then return end
 
     for id, _ in pairs(ROLE_STRINGS_RAW) do
@@ -489,7 +489,7 @@ function ROLEPACKS.SendRolePackWeapons(ply)
 end
 
 function ROLEPACKS.AssignRoles(choices)
-    local rolePackName = GetConVar("ttt_role_pack"):GetString()
+    local rolePackName = ROLEPACKS.GetCurrentRolePackName()
     if #rolePackName == 0 then return end
 
     local json = file.Read("rolepacks/" .. rolePackName .. "/roles.json", "DATA")
@@ -669,7 +669,7 @@ function ROLEPACKS.ApplyRolePackConVars()
         ROLEPACKS.OldConVars[cvar] = nil
     end
 
-    local rolePackName = GetConVar("ttt_role_pack"):GetString()
+    local rolePackName = ROLEPACKS.GetCurrentRolePackName()
     if #rolePackName == 0 then return end
 
     local json = file.Read("rolepacks/" .. rolePackName .. "/convars.json", "DATA")
@@ -717,7 +717,7 @@ function ROLEPACKS.ApplyRolePackConVars()
 end
 
 function ROLEPACKS.FillRolePackWeaponTables()
-    local rolePackName = GetConVar("ttt_role_pack"):GetString()
+    local rolePackName = ROLEPACKS.GetCurrentRolePackName()
     if #rolePackName == 0 then return end
 
     local handled = false
@@ -766,6 +766,7 @@ function ROLEPACKS.FillRolePackWeaponTables()
 end
 
 cvars.AddChangeCallback("ttt_role_pack", function(cvar, old, new)
+    if GetRoundState() == ROUND_ACTIVE then return end
     ROLEPACKS.SendRolePackRoleList()
     ROLEPACKS.ApplyRolePackConVars()
     ROLEPACKS.FillRolePackWeaponTables()
