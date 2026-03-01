@@ -8,6 +8,8 @@ ROLE.nameshort = ""
 
 ROLE.desc = [[]]
 
+ROLE.shortdesc = ""
+
 ROLE.team = ROLE_TEAM_
 
 ROLE.shop = nil
