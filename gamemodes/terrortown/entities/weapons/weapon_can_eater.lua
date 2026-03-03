@@ -39,6 +39,9 @@ SWEP.InLoadoutForDefault    = {ROLE_CANNIBAL}
 SWEP.DeviceCooldownConVar = CreateConVar("ttt_cannibal_eat_cooldown", "10", FCVAR_REPLICATED, "The amount of time (in seconds) between uses of the Cannibal's Cannibalizer", 0, 60)
 SWEP.GainsHealthConVar = CreateConVar("ttt_cannibal_gains_health", "1", FCVAR_REPLICATED, "Whether the Cannibal gains their victim's health when eating them", 0, 1)
 SWEP.GainedHealthPercentageConVar = CreateConVar("ttt_cannibal_gained_health_percentage", "100", FCVAR_REPLICATED, "What percentage of their victim's health the Cannibal gains (set to 0 to always gain a flat 100HP)", 0, 500)
+SWEP.DigestsVictimsConVar = CreateConVar("ttt_cannibal_digests_victims", "1", FCVAR_REPLICATED, "Whether the Cannibal digests and permanently kills their victims over time", 0, 1)
+SWEP.DigestionTimeConVar = CreateConVar("ttt_cannibal_digestion_time", "30", FCVAR_REPLICATED, "How long in seconds a victim takes to be digested when eaten (set to 0 for immediate digestion)", 0, 300)
+SWEP.RectallyIncontinentConVar = CreateConVar("ttt_cannibal_does_poopy", "1", FCVAR_REPLICATED, "Whether the Cannibal poops themselves when a victim is digested", 0, 1)
 
 local eatSounds = {
     "cannibal/eat1.wav",
@@ -149,6 +152,43 @@ function SWEP:PrimaryAttack()
 
         end
 
+        -- Victim digestion
+        if self.DigestsVictimsConVar:GetBool() then
+
+            local digestiontime = self.DigestionTimeConVar:GetInt()
+
+            if digestiontime == 0 then
+                digestiontime = 0.1 -- short delay to avoid fuckyness?
+            end
+
+            local disgestiontimername = "TTTCannibalDigestion_" .. sID64
+
+            -- Remove existing digestion timer for victim if one somehow exists
+            if timer.Exists(disgestiontimername) then
+                timer.Remove(disgestiontimername)
+            end
+
+            timer.Create(disgestiontimername, digestiontime, 1, function()
+            
+                -- Safety checks
+                if not IsValid(hitEnt) or not hitEnt:IsPlayer() then return end
+                if not IsValid(owner) or not owner:IsPlayer() then return end
+            
+                -- Only digest if they are still in THIS cannibal's tummy
+                if hitEnt.TTTCannibalEaten == owner:SteamID64() then
+                    hitEnt:KillSilent()
+                    hitEnt:ClearProperty("TTTCannibalEaten")
+
+                    hitEnt:SetParent(nil)
+                    hitEnt:SpectateEntity(nil)
+
+                    hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been fully digested!", 3)
+                    owner:QueueMessage(MSG_PRINTBOTH, "You have fully digested " .. hitEnt:Nick() .. "!", 3)
+
+                end
+
+            end)
+        end
     end
 end
 

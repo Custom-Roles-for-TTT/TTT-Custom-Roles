@@ -46,6 +46,8 @@ local function ReleaseEatenPlayers(ply, message)
 
             local sID64 = v:SteamID64()
 
+            timer.Remove("TTTCannibalDigestion_" .. sID64)
+
             for _, data in ipairs(CANNIBAL.playerWeapons[sID64]) do
                 local wep = v:Give(data.class)
                 if not IsValid(wep) then continue end

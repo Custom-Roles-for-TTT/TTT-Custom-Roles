@@ -57,6 +57,18 @@ table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
     cvar = "ttt_cannibal_gained_health_percentage",
     type = ROLE_CONVAR_TYPE_NUM
 })
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_digests_victims",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_digestion_time",
+    type = ROLE_CONVAR_TYPE_NUM
+})
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_does_poopy",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
 
 -------------------
 -- ROLE FEATURES --
