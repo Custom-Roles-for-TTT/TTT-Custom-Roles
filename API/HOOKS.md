@@ -985,13 +985,25 @@ Called when a body search screen would be shown.\
 *Parameters:*
 - *search* - The body's search info
 
-### TTTSmokeGrenadeExtinguish(ent_class, ent_pos)
+### TTTSmokeGrenadeExtinguish(ent_class, pos)
 Called when a smoke grenade extinguishes a fire entity.\
 *Realm:* Server\
 *Added in:* 1.6.16\
 *Parameters:*
 - *ent_class* - The class of fire entity that was extinguished
-- *ent_pos* - The position of the fire entity that was extinguished
+- *pos* - The position of the smoke grenade that extinguished the fire entity
+
+### TTTSmokeGrenadeShouldExtinguish(ent, pos)
+Called to determine whether an entity should be extinguished when a smoke grenade deploys near it.\
+*Realm:* Server\
+*Added in:* 2.4.3\
+*Parameters:*
+- *ent* - The entity that the smoke grenade is trying to extinguish
+- *pos* - The position of the smoke grenade that is trying to extinguish this entity
+
+*Return:*
+- *should_extinguish* - `true` to extinguish this entity, otherwise only known fire and smoke entities will be extinguished
+- *remove_entity* - `false` to not delete the entity being extinguished (Defaults to `true`)
 
 ### TTTSpectatorHUDKeyPress(ply, tgt, powers)
 Called when a player who is being shown a role-specific spectator HUD presses a button, allowing the hook to intercept that button press and perform specific logic if necessary.\
@@ -1142,11 +1154,25 @@ Called before an entity's hint label (shown when you look at an entity) is rende
 *Parameters:*
 - *ent* - The target entity being rendered. Guaranteed to not be a player.
 - *client* - The local player
-- *text* - The label for the hint-related text being shown
+- *label* - The `name` value from the entity's `TargetIDHint` property or the entity class's `ClassHint` table entry
 - *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
+### TTTTargetIDEntityHintName(ent, client, name, clr)
+Called before an entity's hint name (shown when you look at an entity) is rendered.\
+*Realm:* Client\
+*Added in:* 2.4.3\
+*Parameters:*
+- *ent* - The target entity being rendered. Guaranteed to not be a player.
+- *client* - The local player
+- *name* - The `hintname` value from the entity's `TargetIDHint` property or the entity class's `ClassHint` table entry
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
+
+*Return:*
+- *name* - The new name value to use or the original passed into the hook. Return `false` to not show a name at all
 - *clr* - The new clr value to use or the original passed into the hook
 
 ### TTTTargetIDPlayerHintText(ent, client, text, clr)
@@ -1156,7 +1182,7 @@ Called before an entity's hint text (shown when you look at an entity) is render
 *Parameters:*
 - *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
 - *client* - The local player
-- *text* - The hint-related text being shown
+- *text* - The `hint` value from the entity's `TargetIDHint` property or the entity class's `ClassHint` table entry
 - *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*

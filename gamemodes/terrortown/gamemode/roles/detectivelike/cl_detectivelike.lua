@@ -72,7 +72,7 @@ AddHook("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, lab
             local text = LANG.GetParamTranslation("detective_special_hidden_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
             local _, h = surface.GetTextSize(text)
 
-            -- Move this up based on how many other labels here are
+            -- Move this up based on how many other labels there are
             label_top = label_top + (20 * #active_labels)
 
             surface.SetTextPos(label_left, ScrH() - label_top - h)
@@ -88,7 +88,7 @@ AddHook("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, lab
         local text = LANG.GetParamTranslation("detective_promotion_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
         local _, h = surface.GetTextSize(text)
 
-        -- Move this up based on how many other labels here are
+        -- Move this up based on how many other labels there are
         label_top = label_top + (20 * #active_labels)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)

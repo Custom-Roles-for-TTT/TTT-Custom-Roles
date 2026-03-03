@@ -271,7 +271,7 @@ hook.Add("TTTHUDInfoPaint", "Taskmaster_TTTHUDInfoPaint", function(cli, label_le
             local text = LANG.GetParamTranslation("taskmaster_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
             local _, h = surface.GetTextSize(text)
 
-            -- Move this up based on how many other labels here are
+            -- Move this up based on how many other labels there are
             label_top = label_top + (20 * #active_labels)
 
             surface.SetTextPos(label_left, ScrH() - label_top - h)

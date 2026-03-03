@@ -122,7 +122,6 @@ hook.Add("TTTScoreboardPlayerRole", "Phantom_TTTScoreboardPlayerRole", function(
 end)
 
 hook.Add("TTTScoreboardPlayerName", "Phantom_TTTScoreboardPlayerName", function(ply, cli, text)
-
     if IsLoverHaunting(cli, ply) then
         return ply:Nick() .. " (" .. LANG.GetTranslation("target_haunted") .. ")"
     end

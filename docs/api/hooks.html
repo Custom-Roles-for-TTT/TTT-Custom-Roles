@@ -1482,7 +1482,7 @@
             <li><em>search</em> - The body's search info</li>
         </ul>
 
-        <h3><a id="tttsmokegrenadeextinguishent_class-ent_pos" href="#tttsmokegrenadeextinguishent_class-ent_pos">TTTSmokeGrenadeExtinguish(ent_class, ent_pos)</a></h3>
+        <h3><a id="tttsmokegrenadeextinguishent_class-pos" href="#tttsmokegrenadeextinguishent_class-ent_pos">TTTSmokeGrenadeExtinguish(ent_class, pos)</a></h3>
         <p>
             Called when a smoke grenade extinguishes a fire entity.<br>
             <em>Realm:</em> Server<br>
@@ -1491,7 +1491,26 @@
         </p>
         <ul>
             <li><em>ent_class</em> - The class of fire entity that was extinguished</li>
-            <li><em>ent_pos</em> - The position of the fire entity that was extinguished</li>
+            <li><em>pos</em> - The position of the smoke grenade that extinguished the fire entity</li>
+        </ul>
+
+        <h3><a id="tttsmokegrenadeshouldextinguishent-pos" href="#tttsmokegrenadeshouldextinguishent-ent_pos">TTTSmokeGrenadeShouldExtinguish(ent, pos)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called when a smoke grenade extinguishes a fire entity.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 2.4.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The entity that the smoke grenade is trying to extinguish</li>
+            <li><em>pos</em> - The position of the smoke grenade that is trying to extinguish this entity</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>should_extinguish</em> - <code>true</code> to extinguish this entity, otherwise only known fire and smoke entities will be extinguished</li>
+            <li><em>remove_entity</em> - <code>false</code> to not delete the entity being extinguished (Defaults to <code>true</code>)</li>
         </ul>
 
         <h3><a id="tttspectatorhudkeypressply-tgt-powers" href="#tttspectatorhudkeypressply-tgt-powers">TTTSpectatorHUDKeyPress(ply, tgt, powers)</a></h3>
@@ -1712,7 +1731,7 @@
         <ul>
             <li><em>ent</em> - The target entity being rendered. Guaranteed to not be a player.</li>
             <li><em>client</em> - The local player</li>
-            <li><em>text</em> - The label for the hint-related text being shown</li>
+            <li><em>label</em> - The <code>name</code> value from the entity's <code>TargetIDHint</code> property or the entity class's <code>ClassHint</code> table entry</li>
             <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
         </ul>
         <p>
@@ -1720,6 +1739,27 @@
         </p>
         <ul>
             <li><em>text</em> - The new text value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
+            <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="ttttargetidentityhintnameent-client-label-clr" href="#ttttargetidentityhintnameent-client-label-clr">TTTTargetIDEntityHintName(ent, client, name, clr)</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Called before an entity's hint name (shown when you look at an entity) is rendered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.4.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The target entity being rendered. Guaranteed to not be a player.</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>name</em> - The <code>hintname</code> value from the entity's <code>TargetIDHint</code> property or the entity class's <code>ClassHint</code> table entry</li>
+            <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>name</em> - The new name value to use or the original passed into the hook. Return <code>false</code> to not show a name at all</li>
             <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
         </ul>
 
@@ -1733,7 +1773,7 @@
         <ul>
             <li><em>ent</em> - The target entity being rendered. Not necessarily a player so be sure to check <code>ent:IsPlayer()</code> if needed</li>
             <li><em>client</em> - The local player</li>
-            <li><em>text</em> - The hint-related text being shown</li>
+            <li><em>text</em> - The <code>hint</code> value from the entity's <code>TargetIDHint</code> property or the entity class's <code>ClassHint</code> table entry</li>
             <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
         </ul>
         <p>

@@ -20,6 +20,11 @@ local function PrintRoleCvars(ply, cmd, args)
         return
     end
 
+    if not ROLE_CONVARS[roleId] then
+        ErrorNoHalt("Role has no ConVars: " .. roleName .. "\n")
+        return
+    end
+
     local fmt
     if #args > 1 then
         fmt = args[2]

@@ -74,7 +74,7 @@ hook.Add("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", function(ent
     if IsPlayer(ent) then
         local state = ent:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
         if state ~= ARSONIST_DOUSED then return end
-    -- Otherise if this is a ragdoll we just need to check the flag on it directly
+    -- Otherwise if this is a ragdoll we just need to check the flag on it directly
     elseif IsRagdoll(ent) and not ent:GetNWBool("TTTArsonistDoused", false) then
         return
     end
@@ -259,7 +259,7 @@ hook.Add("TTTHUDInfoPaint", "Arsonist_TTTHUDInfoPaint", function(cli, label_left
         local text = LANG.GetTranslation("arsonist_hud")
         local _, h = surface.GetTextSize(text)
 
-        -- Move this up based on how many other labels here are
+        -- Move this up based on how many other labels there are
         label_top = label_top + (20 * #active_labels)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
@@ -290,6 +290,7 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
         else
             html = html .. "<span style='display: block; margin-top: 10px;'>Once every player has been doused, they can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players.</span>"
         end
+
         -- Show a warning about the notification delay if its enabled
         local delay_min = arsonist_douse_notify_delay_min:GetInt()
         local delay_max = arsonist_douse_notify_delay_max:GetInt()

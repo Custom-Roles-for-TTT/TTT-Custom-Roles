@@ -69,6 +69,12 @@ TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
     cvar = "ttt_hivemind_block_environmental",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
+    cvar = "ttt_hivemind_dead_kill_mode",
+    type = ROLE_CONVAR_TYPE_DROPDOWN,
+    choices = {"None", "Assimilate", "Assimilate and Respawn Killer", "Assimilate and Respawn Collective"},
+    isNumeric = true
+})
 
 -------------------
 -- ROLE FEATURES --

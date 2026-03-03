@@ -361,6 +361,23 @@ net.Receive("TTT_ClearRolePack", function(len, ply)
     GetConVar("ttt_role_pack"):SetString("")
 end)
 
+function ROLEPACKS.GetRolePackDetails(name)
+    -- Send back the current role pack's details (if there are any) if the parameter is not given
+    if not name then
+        return ROLE_PACK_DETAILS
+    end
+
+    if type(name) ~= "string" or #name == 0 then return nil end
+
+    local json = file.Read("rolepacks/" .. name .. "/roles.json", "DATA")
+    if not json then return nil end
+
+    local jsonTable = util.JSONToTable(json)
+    if jsonTable == nil then return nil end
+
+    return jsonTable.details or {}
+end
+
 function ROLEPACKS.SendRolePackRoleList(ply)
     ROLE_PACK_ROLES = {}
     ROLE_PACK_DETAILS = {}
