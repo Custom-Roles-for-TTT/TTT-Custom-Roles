@@ -69,6 +69,10 @@ table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
     cvar = "ttt_cannibal_does_poopy",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_does_poopy_noise",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
 
 -------------------
 -- ROLE FEATURES --

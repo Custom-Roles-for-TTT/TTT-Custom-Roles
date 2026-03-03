@@ -42,11 +42,21 @@ SWEP.GainedHealthPercentageConVar = CreateConVar("ttt_cannibal_gained_health_per
 SWEP.DigestsVictimsConVar = CreateConVar("ttt_cannibal_digests_victims", "1", FCVAR_REPLICATED, "Whether the Cannibal digests and permanently kills their victims over time", 0, 1)
 SWEP.DigestionTimeConVar = CreateConVar("ttt_cannibal_digestion_time", "30", FCVAR_REPLICATED, "How long in seconds a victim takes to be digested when eaten (set to 0 for immediate digestion)", 0, 300)
 SWEP.RectallyIncontinentConVar = CreateConVar("ttt_cannibal_does_poopy", "1", FCVAR_REPLICATED, "Whether the Cannibal poops themselves when a victim is digested", 0, 1)
+SWEP.AudibleIncontinenceConVar = CreateConVar("ttt_cannibal_does_poopy_noise", "1", FCVAR_REPLICATED, "Whether the Cannibal's poops produce an audible cue", 0, 1)
 
 local eatSounds = {
     "cannibal/eat1.wav",
     "cannibal/eat2.wav",
     "cannibal/eat3.wav"
+}
+
+local poopSounds = {
+    "cannibal/poop1.wav",
+    "cannibal/poop2.wav",
+    "cannibal/poop3.wav",
+    "cannibal/poop4.wav",
+    "cannibal/poop5.wav",
+    "cannibal/poop6.wav"
 }
 
 function SWEP:Initialize()
@@ -185,6 +195,25 @@ function SWEP:PrimaryAttack()
                     hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been fully digested!", 3)
                     owner:QueueMessage(MSG_PRINTBOTH, "You have fully digested " .. hitEnt:Nick() .. "!", 3)
 
+                    -- Spawn poop at cannibal's position
+                    if self.RectallyIncontinentConVar:GetBool() then
+                        local poop = ents.Create("prop_physics")
+                        if IsValid(poop) then
+                            poop:SetModel("models/poo/poo.mdl")
+
+                            local forward = owner:GetForward()
+                            local dropPos = owner:GetPos() + forward * -30 + Vector(0, 0, 10)
+                            poop:SetPos(dropPos)
+
+                            poop:SetAngles(Angle(0, math.random(0, 360), 0))
+                            poop:Spawn()
+                            poop:Activate()
+                        
+                            if self.AudibleIncontinenceConVar:GetBool()then
+                                owner:EmitSound(poopSounds[math.random(1, #poopSounds)], 100)
+                            end
+                        end
+                    end
                 end
 
             end)
