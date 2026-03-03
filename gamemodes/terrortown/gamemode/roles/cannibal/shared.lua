@@ -49,6 +49,14 @@ table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
     cvar = "ttt_cannibal_update_scoreboard",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_gains_health",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_gained_health_percentage",
+    type = ROLE_CONVAR_TYPE_NUM
+})
 
 -------------------
 -- ROLE FEATURES --

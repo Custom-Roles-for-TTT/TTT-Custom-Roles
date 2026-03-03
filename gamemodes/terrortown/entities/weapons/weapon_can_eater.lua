@@ -37,6 +37,8 @@ SWEP.InLoadoutFor           = {ROLE_CANNIBAL}
 SWEP.InLoadoutForDefault    = {ROLE_CANNIBAL}
 
 SWEP.DeviceCooldownConVar = CreateConVar("ttt_cannibal_eat_cooldown", "10", FCVAR_REPLICATED, "The amount of time (in seconds) between uses of the Cannibal's Cannibalizer", 0, 60)
+SWEP.GainsHealthConVar = CreateConVar("ttt_cannibal_gains_health", "1", FCVAR_REPLICATED, "Whether the Cannibal gains their victim's health when eating them", 0, 1)
+SWEP.GainedHealthPercentageConVar = CreateConVar("ttt_cannibal_gained_health_percentage", "100", FCVAR_REPLICATED, "What percentage of their victim's health the Cannibal gains (set to 0 to always gain a flat 100HP)", 0, 500)
 
 local eatSounds = {
     "cannibal/eat1.wav",
@@ -125,6 +127,28 @@ function SWEP:PrimaryAttack()
         if cooldown > 0 then
             self:SetDeviceCooldownEnd(CurTime() + cooldown)
         end
+
+        -- Cannibal health gain
+        if self.GainsHealthConVar:GetBool() then
+            
+            local gainedhealthpercentage = self.GainedHealthPercentageConVar:GetInt()
+            local victimhealth = hitEnt:Health()
+            local cannibalhealth = owner:Health()
+
+            if gainedhealthpercentage == 0 then
+                gainedhealth = 100
+            else
+                gainedhealthunrounded = (gainedhealthpercentage / 100) * victimhealth
+                gainedhealth = math.floor(gainedhealthunrounded)
+            end
+
+            local newcannibalhealth = cannibalhealth + gainedhealth
+            if newcannibalhealth > cannibalhealth then
+                owner:SetHealth(newcannibalhealth)
+            end
+
+        end
+
     end
 end
 
