@@ -267,6 +267,8 @@ local function CreateBuffTimer(shadow, target)
             end
 
             shadow:SetRole(role)
+            shadow:StripRoleWeapons()
+            RunHook("PlayerLoadout", shadow)
             SendFullStateUpdate()
 
             -- Update the player's health

@@ -965,6 +965,7 @@ ttt_hivemind_regen_per_member_amt              1       // The amount of health p
 ttt_hivemind_regen_max_pct                     0.5     // The percentage of the Hive Mind's maximum health to heal them up to (e.g. 0.5 = 50% of their max health)
 ttt_hivemind_chat_mode                         1       // How to handle chat by the Hive Mind. 0 - Do nothing. 1 - Force all members to duplicate when any member chats. 2 - Force all members to duplicate when only the first member chats
 ttt_hivemind_block_environmental               0       // Whether to block environmental damage to the Hive Mind
+ttt_hivemind_dead_kill_mode                    0       // How to handle kills by a dead member of the Hive Mind. 0 - Do nothing. 1 - Assimilate the new player, solo. 2 - Assimilate the new player and respawn their Hive Mind killer. 3 - Assimilate the new player and respawn the entire Hive Mind
 ttt_hivemind_can_see_jesters                   1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Hive Mind
 ttt_hivemind_update_scoreboard                 1       // Whether the Hive Mind shows dead players as missing in action
 

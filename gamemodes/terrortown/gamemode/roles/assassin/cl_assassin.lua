@@ -53,13 +53,6 @@ maybe even suffering from a penalty!
 Press {menukey} to receive your special equipment!]])
 end)
 
--- If this is an independent Assassin, replace the "comrades" list with a generic kill message
-hook.Add("TTTRolePopupParams", "Assassin_TTTRolePopupParams", function(cli)
-    if cli:IsAssassin() and cli:IsIndependentTeam() then
-        return {comrades = "\n\nKill all others to win!"}
-    end
-end)
-
 ----------------
 -- WIN CHECKS --
 ----------------
@@ -227,14 +220,21 @@ end
 ----------------
 
 hook.Add("TTTRolePopupParams", "Assassin_TTTRolePopupParams", function(cli)
-    if cli:IsAssassin() then
-        local target = player.GetBySteamID64(cli:GetNWString("AssassinTarget", ""))
-        local targetNick = "No one"
-        if IsPlayer(target) then
-            targetNick = target:Nick()
-        end
-        return { assassintarget = string.rep(" ", 42) .. targetNick }
+    if not cli:IsAssassin() then return end
+
+    local params = {}
+    if cli:IsIndependentTeam() then
+        params.comrades = "\n\nKill all others to win!"
     end
+
+    local target = player.GetBySteamID64(cli:GetNWString("AssassinTarget", ""))
+    local targetNick = "No one"
+    if IsPlayer(target) then
+        targetNick = target:Nick()
+    end
+    params.assassintarget = string.rep(" ", 42) .. targetNick
+
+    return params
 end)
 
 --------------
