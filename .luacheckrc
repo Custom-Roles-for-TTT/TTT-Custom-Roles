@@ -724,6 +724,7 @@ globals = {
     "CreateClientConVar",
     "CreateConVar",
     "CreateFavTable",
+    "CreateMaterial",
     "CreateSound",
     "CreateTransferMenu",
     "CurTime",
