@@ -8,6 +8,14 @@
 - Added optional `ttt_shop_limit_count` convar to limit the number of items available in the equipment shop
   - The items are chosen randomly (obeying the equipment and SWEP properties as well as the role weapons and role pack configurations for bypassing randomization) and will change each round
 - Added ability for the Assassin to be an independent role (disabled by default) (Thanks Joel!)
+- Added ability for Bodysnatcher to have the roles they can snatch restricted by team-based convars
+- Added unknown role name to the tooltip for rolepack and roleblock edit UIs to help in troubleshooting
+- Added buttons to easily duplicate rolepack slot and roleblock group
+- Added ability to rearrange rolepack slot and roleblock group rows by dragging and dropping them
+- Added ability to save a rolepack with a new name as a way of duplicating it
+- Added button to test a rolepack by enabling it, filling the server with bots, and restarting the round (if one is running)
+- Added ability to set display name and description for a rolepack which is then shown on the cheat sheet
+- Added ability to show which roles belong to the current rolepack on the cheat sheet (disabled by default, enabled in the F1 menu)
 
 ### Changes
 - Ported "TTT: Remove usages of Panel:Set/GetDisabled"
@@ -17,6 +25,9 @@
 - Fixed decoy not showing as grey on traitor team radars
 - Fixed player names and custom role names with non-English characters in them not changing case correctly
 - Fixed bodysnatching device progress message ignoring overwritten role names
+- **BREAKING CHANGE** - Fixed spelling of "cheatsheet" convar and translations
+    - Any player that changed their cheatsheet button from the default ("h") will need to set it again the F1 menu
+    - Any translations that were done for the cheatsheet help entry will need to be renamed to match
 - Ported "TTT: Fix auto weapon spawning on non-TTT maps"
 
 ### Developer

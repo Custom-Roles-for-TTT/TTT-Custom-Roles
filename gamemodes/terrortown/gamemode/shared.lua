@@ -241,6 +241,7 @@ DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
 
 ROLE_PACK_ROLES = {}
+ROLE_PACK_DETAILS = {}
 
 -- Traitors get this ability by default
 TRAITOR_BUTTON_ROLES = {}
