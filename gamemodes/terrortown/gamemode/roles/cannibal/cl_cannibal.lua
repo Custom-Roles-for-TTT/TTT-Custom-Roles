@@ -189,10 +189,21 @@ AddHook("TTTTutorialRoleText", "Cannibal_TTTTutorialRoleText", function(role, ti
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
         local html = "The " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role whose goal is to eat all other players."
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Eaten players are not dead, but they are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>unable to do anything</span> except talk with other eaten players and spectate the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. ".</span>"
+        if GetConVar("ttt_cannibal_digests_victims"):GetBool() then
+            
+            html = html .. "<span style='display: block; margin-top: 10px;'>Eaten players are not immediately dead, but they are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>unable to do anything</span> except talk with other eaten players and spectate the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. ".</span>"
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " dies, all eaten players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>freed</span> at the position where the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " died.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>Eaten players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>digested and killed </span>" .. GetConVar("ttt_cannibal_digestion_time"):GetInt() .. " seconds after being eaten.</span>"
 
+            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " dies, all undigested eaten players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>freed</span> at the position where the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " died.</span>"
+
+        else
+
+            html = html .. "<span style='display: block; margin-top: 10px;'>Eaten players are not dead, but they are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>unable to do anything</span> except talk with other eaten players and spectate the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. ".</span>"
+
+            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " dies, all eaten players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>freed</span> at the position where the " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " died.</span>"
+
+        end
         return html
     end
 end)
