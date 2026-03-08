@@ -6,6 +6,7 @@
 ### Changes
 - Changed role pack to apply next round, if the round is already active
 - Ported "TTT: Use gmod_language setting by default"
+- Ported "TTT: Translatability improvements"
 
 ## 2.4.3 (Beta)
 **Released: February 21st, 2026**
