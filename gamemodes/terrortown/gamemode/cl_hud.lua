@@ -567,7 +567,12 @@ local function InfoPaint(client)
         if hide_role:GetBool() then
             text = GetTranslation("hidden")
         else
-            text = LANG.GetRawTranslation(client:GetRoleStringRaw()) or client:GetRoleString()
+            local role_string = client:GetRoleString()
+            if role_string ~= ROLE_STRINGS_DEFAULT[client:GetRole()] then
+                text = role_string
+            else
+                text = LANG.GetRawTranslation(client:GetRoleStringRaw()) or role_string
+            end
 
             local new_text = CallHook("TTTHUDRoleNameOverride", nil, client, text)
             if new_text then text = new_text end

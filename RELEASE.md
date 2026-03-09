@@ -14,6 +14,10 @@
 
 ### Fixes
 - Fixed cheat sheet getting cut off when it exceeded the height of the screen and a role pack was enabled
+- Fixed jester, detective, innocent, and traitor role rename ConVars not working
+
+### Developer
+- Added `ROLE_STRINGS_DEFAULT` as a copy of `ROLE_STRINGS` from before role strings are changed by ConVars
 
 ## 2.4.3 (Beta)
 **Released: February 21st, 2026**
