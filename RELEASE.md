@@ -3,8 +3,12 @@
 ## 2.4.4 (Beta)
 **Released:**
 
+### Additions
+- Added messages to existing twins when a player becomes a twin during an active round
+
 ### Changes
 - Changed role pack to apply next round, if the round is already active
+- Changed logic to reassign a player's role if they change roles into being a solo twin during an active round
 - Ported "TTT: Use gmod_language setting by default"
 - Ported "TTT: Translatability improvements"
 

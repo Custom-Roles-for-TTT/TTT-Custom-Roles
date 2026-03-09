@@ -18,8 +18,10 @@ AddHook("TTTSprintStateChange", "Sprinting_Crosshair_TTTSprintStateChange", func
 
     if sprinting then
         crosshairSize = sizeConvar:GetFloat()
+        print("Increasing crosshair size", crosshairSize, crosshairSize+1)
         sizeConvar:SetFloat(crosshairSize + 1)
     elseif crosshairSize then
+        print("Decreasing crosshair size", crosshairSize)
         sizeConvar:SetFloat(crosshairSize)
         crosshairSize = nil
     end
