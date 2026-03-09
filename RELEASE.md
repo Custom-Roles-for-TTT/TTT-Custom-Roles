@@ -12,6 +12,9 @@
 - Ported "TTT: Use gmod_language setting by default"
 - Ported "TTT: Translatability improvements"
 
+### Fixes
+- Fixed cheat sheet getting cut off when it exceeded the height of the screen and a role pack was enabled
+
 ## 2.4.3 (Beta)
 **Released: February 21st, 2026**
 

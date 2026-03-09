@@ -244,7 +244,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     end
 
     local dlist = vgui.Create("DScrollPanel", dbackground)
-    dlist:SetSize(w, h)
+    dlist:SetSize(w, h - (rolePackHeight + rolePackDescHeight))
     dlist:SetPos(0, rolePackHeight + rolePackDescHeight)
 
     local dcanvas = dlist:GetCanvas()
