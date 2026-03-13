@@ -1229,6 +1229,14 @@ L.ev_suicide = "Suicide"
 L.ev_teamkill = "Teamkill"
 L.ev_killed = "killed"
 
+-- 2026-03-11
+L.equip_sort_default = "Default"
+L.equip_sort_slot    = "Slot"
+
+L.equip_sort_direction_tip = "Sort direction"
+
+L.set_hide_unbuyable = "Move unbuyable equipment items to the bottom of the list"
+
 -- Custom Events
 L.ev_defi = "{victim} was respawned"
 L.ev_defi_icon = "Defibrillated"

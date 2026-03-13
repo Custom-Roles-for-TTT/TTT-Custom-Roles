@@ -11,6 +11,7 @@
 - Changed logic to reassign a player's role if they change roles into being a solo twin during an active round
 - Ported "TTT: Use gmod_language setting by default"
 - Ported "TTT: Translatability improvements"
+- Ported "TTT: Equipment menu sorting options"
 
 ### Fixes
 - Fixed cheat sheet getting cut off when it exceeded the height of the screen and a role pack was enabled
