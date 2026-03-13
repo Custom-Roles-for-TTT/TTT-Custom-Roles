@@ -1218,7 +1218,7 @@ local function TraitorMenuPopup()
             local item_panels = dlist:GetItems()
             local buyable_items = {}
             for _, item_panel in pairs(item_panels) do
-                if item_panel.item and not CannotBuyItem(item_panel.item) then
+                if item_panel.item and CanOrder(item_panel.item, GetOwnedEquipment()) then
                     TableInsert(buyable_items, item_panel)
                 end
             end
