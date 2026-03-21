@@ -124,6 +124,9 @@ function SWEP:PrimaryAttack()
         hitEnt:SpectateEntity(owner)
         hitEnt:DrawViewModel(false)
         hitEnt:DrawWorldModel(false)
+        if IsValid(hitEnt.hat) then
+            hitEnt.hat:SetNoDraw(true)
+        end
 
         local sID64 = hitEnt:SteamID64()
 
