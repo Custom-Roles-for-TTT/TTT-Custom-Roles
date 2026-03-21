@@ -146,6 +146,11 @@ Table of title-case names for each role.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+### ROLE_STRINGS_DEFAULT
+Table of title-case names for each role. Copy of `ROLE_STRINGS` from before role strings are changed by ConVars.\
+*Realm:* Client and Server\
+*Added in:* 2.4.4
+
 ### ROLE_STRINGS_EXT
 Table of extended (e.g. prefixed by an article) names for each role.\
 *Realm:* Client and Server\

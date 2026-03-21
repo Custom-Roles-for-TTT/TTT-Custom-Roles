@@ -1,5 +1,26 @@
 # Release Notes
 
+## 2.4.4 (Beta)
+**Released:**
+
+### Additions
+- Added messages to existing twins when a player becomes a twin during an active round
+
+### Changes
+- Changed role pack to apply next round, if the round is already active
+- Changed logic to reassign a player's role if they change roles into being a solo twin during an active round
+- Ported "TTT: Use gmod_language setting by default"
+- Ported "TTT: Translatability improvements"
+- Ported "TTT: Equipment menu sorting options"
+
+### Fixes
+- Fixed cheat sheet getting cut off when it exceeded the height of the screen and a role pack was enabled
+- Fixed jester, detective, innocent, and traitor role rename ConVars not working
+- Fixed error in Cannibal's role weapon HUD when weapon was selected from last round (Thanks Stig!)
+
+### Developer
+- Added `ROLE_STRINGS_DEFAULT` as a copy of `ROLE_STRINGS` from before role strings are changed by ConVars
+
 ## 2.4.3 (Beta)
 **Released: February 21st, 2026**
 

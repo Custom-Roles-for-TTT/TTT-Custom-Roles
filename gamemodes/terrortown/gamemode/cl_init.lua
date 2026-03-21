@@ -48,6 +48,7 @@ include("corpse_shd.lua")
 include("player_ext_shd.lua")
 include("weaponry_shd.lua")
 include("sprint_shd.lua")
+include("rolepacks_shd.lua")
 
 include("vgui/ColoredBox.lua")
 include("vgui/SimpleIcon.lua")

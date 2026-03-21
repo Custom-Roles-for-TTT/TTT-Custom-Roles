@@ -175,7 +175,7 @@ function plymeta:DrunkJoinLosingTeam()
     local traitorPct = traitors / (players - jestersIndependents - monsters)
 
     -- If a role pack is enabled calculate the expected ratio of innocents to traitors
-    local rolePack = GetConVar("ttt_role_pack"):GetString()
+    local rolePack = ROLEPACKS.GetCurrentRolePackName()
     if #rolePack > 0 then
         local json = file.Read("rolepacks/" .. rolePack .. "/roles.json", "DATA")
         if json then

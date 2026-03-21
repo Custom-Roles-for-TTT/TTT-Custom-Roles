@@ -660,6 +660,8 @@ ROLE_STRINGS = {
     [ROLE_TASKMASTER] = "Taskmaster"
 }
 
+ROLE_STRINGS_DEFAULT = table.Copy(ROLE_STRINGS)
+
 ROLE_STRINGS_PLURAL = {
     [ROLE_INNOCENT] = "Innocents",
     [ROLE_TRAITOR] = "Traitors",
@@ -989,6 +991,7 @@ function RegisterRole(tbl)
 
     ROLE_STRINGS_RAW[roleID] = tbl.nameraw
     ROLE_STRINGS[roleID] = tbl.name
+    ROLE_STRINGS_DEFAULT[roleID] = tbl.name
     ROLE_STRINGS_PLURAL[roleID] = tbl.nameplural
     ROLE_STRINGS_EXT[roleID] = tbl.nameext
     ROLE_STRINGS_SHORT[roleID] = tbl.nameshort

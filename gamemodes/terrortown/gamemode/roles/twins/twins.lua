@@ -112,6 +112,7 @@ hook.Add("TTTBeginRound", "Twins_TTTBeginRound", function()
         for _, p in ipairs(evilTwins) do
             p:SetRole(ROLE_TRAITOR)
         end
+        SendFullStateUpdate()
         return
     end
 
@@ -243,6 +244,70 @@ hook.Add("PlayerDeath", "Twins_PlayerDeath", function(victim, infl, attacker)
 end)
 
 hook.Add("TTTPlayerRoleChanged", "Twins_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    -- If someone changes to a twin after the round starts, handle that specific case
+    if GetRoundState() == ROUND_ACTIVE and (newRole == ROLE_GOODTWIN or newRole == ROLE_EVILTWIN) then
+        local goodTwins = {}
+        local evilTwins = {}
+        local otherTwins = {}
+        for _, p in player.Iterator() do
+            if not p:IsActive() then continue end
+
+            if p ~= ply then
+                table.insert(otherTwins, p)
+            end
+
+            if p:IsGoodTwin() then
+                table.insert(goodTwins, p)
+            elseif p:IsEvilTwin() then
+                table.insert(evilTwins, p)
+            end
+        end
+
+        -- If we don't have both kinds of twin, change this player
+        -- to the base role for their team
+        if #goodTwins == 0 or #evilTwins == 0 then
+            local role
+            if newRole == ROLE_GOODTWIN then
+                role = ROLE_INNOCENT
+            else
+                role = ROLE_TRAITOR
+            end
+            ply:SetRole(role)
+            SendFullStateUpdate()
+            return
+        end
+
+        -- Remove this player so we don't tell them about themselves
+        table.RemoveByValue(goodTwins, ply)
+        table.RemoveByValue(evilTwins, ply)
+
+        -- Otherwise let everyone know about the new twin
+        local message = "You have a new " .. ROLE_STRINGS[ply:GetRole()] .. ", " .. ply:Nick() .. "!"
+        for _, p in ipairs(otherTwins) do
+            p:QueueMessage(MSG_PRINTBOTH, message)
+        end
+
+        -- And let the new twin know about their twins
+        if #goodTwins > 0 then
+            if #goodTwins == 1 then
+                message = goodTwins[1]:Nick() .. " is your " .. ROLE_STRINGS[ROLE_GOODTWIN] .. "."
+            else
+                message = "You have multiple " .. ROLE_STRINGS_PLURAL[ROLE_GOODTWIN] .. "! They are " .. util.FormattedList(goodTwins, function(p) return p:Nick() end) .. "."
+            end
+            ply:QueueMessage(MSG_PRINTBOTH, message)
+        end
+
+        if #evilTwins > 0 then
+            if #evilTwins == 1 then
+                message = evilTwins[1]:Nick() .. " is your " .. ROLE_STRINGS[ROLE_EVILTWIN] .. "."
+            else
+                message = "You have multiple " .. ROLE_STRINGS_PLURAL[ROLE_EVILTWIN] .. "! They are " .. util.FormattedList(evilTwins, function(p) return p:Nick() end) .. "."
+            end
+            ply:QueueMessage(MSG_PRINTBOTH, message)
+        end
+        return
+    end
+
     CheckTwinsInvulnerability(ply, oldRole)
     if (oldRole == ROLE_GOODTWIN or oldRole == ROLE_EVILTWIN) and newRole ~= ROLE_GOODTWIN and newRole ~= ROLE_EVILTWIN then
         if timer.Exists("TwinInvulnerabilityEnd_" .. ply:SteamID64()) then
