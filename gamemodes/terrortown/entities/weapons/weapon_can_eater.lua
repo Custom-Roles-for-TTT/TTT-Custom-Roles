@@ -41,8 +41,11 @@ SWEP.GainsHealthConVar = CreateConVar("ttt_cannibal_gains_health", "1", FCVAR_RE
 SWEP.GainedHealthPercentageConVar = CreateConVar("ttt_cannibal_gained_health_percentage", "100", FCVAR_REPLICATED, "What percentage of their victim's health the Cannibal gains (set to 0 to always gain a flat 100HP)", 0, 500)
 SWEP.DigestionConVar = CreateConVar("ttt_cannibal_digestion", "1", FCVAR_REPLICATED, "Whether the Cannibal digests and permanently kills their victims over time", 0, 1)
 SWEP.DigestionTimeConVar = CreateConVar("ttt_cannibal_digestion_time", "30", FCVAR_REPLICATED, "How long in seconds a victim takes to be digested when eaten (set to 0 for immediate digestion)", 0, 300)
-SWEP.DigestionPoopConVar = CreateConVar("ttt_cannibal_digestion_poop", "1", FCVAR_REPLICATED, "Whether the Cannibal drops poop when a victim is digested", 0, 1)
-SWEP.DigestionPoopSoundConVar = CreateConVar("ttt_cannibal_digestion_poop_sound", "1", FCVAR_REPLICATED, "Whether the Cannibal causes a sound when poop is dropped from a digested victim.", 0, 1)
+
+if SERVER then
+    SWEP.DigestionPoopConVar = CreateConVar("ttt_cannibal_digestion_poop", "1", FCVAR_NONE, "Whether the Cannibal drops poop when a victim is digested", 0, 1)
+    SWEP.DigestionPoopSoundConVar = CreateConVar("ttt_cannibal_digestion_poop_sound", "1", FCVAR_NONE, "Whether the Cannibal causes a sound when poop is dropped from a digested victim.", 0, 1)
+end
 
 local eatSounds = {
     "cannibal/eat1.wav",
@@ -75,6 +78,14 @@ end
 
 function SWEP:OnDrop()
     self:Remove()
+end
+
+function SWEP:OnRemove()
+    if SERVER then
+        for sid64, _ in pairs(CANNIBAL.playerWeapons) do
+            timer.Remove("TTTCannibalDigestion_" .. sid64)
+        end
+    end
 end
 
 function SWEP:Deploy()
@@ -164,51 +175,49 @@ function SWEP:PrimaryAttack()
         -- Victim digestion
         if self.DigestionConVar:GetBool() then
             local digestiontime = self.DigestionTimeConVar:GetInt()
+            -- Ensure there's a short delay to allow time for the vars to be set first
             if digestiontime == 0 then
-                digestiontime = 0.1 -- short delay to avoid fuckyness?
+                digestiontime = 0.1
             end
 
-            local disgestiontimername = "TTTCannibalDigestion_" .. sID64
-
-            -- Remove existing digestion timer for victim if one somehow exists
-            if timer.Exists(disgestiontimername) then
-                timer.Remove(disgestiontimername)
-            end
-
-            timer.Create(disgestiontimername, digestiontime, 1, function()
+            timer.Create("TTTCannibalDigestion_" .. sID64, digestiontime, 1, function()
                 if not IsPlayer(hitEnt) then return end
                 if not IsPlayer(owner) then return end
+
                 -- Only digest if they are still in THIS cannibal's tummy
-                if hitEnt.TTTCannibalEaten == owner:SteamID64() then
-                    hitEnt:Kill()
-                    hitEnt:ClearProperty("TTTCannibalEaten")
+                if hitEnt.TTTCannibalEaten ~= owner:SteamID64() then return end
 
-                    hitEnt:SetParent(nil)
-                    hitEnt:SpectateEntity(nil)
+                hitEnt:Kill()
+                hitEnt:ClearProperty("TTTCannibalEaten")
 
-                    hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been fully digested!")
-                    owner:QueueMessage(MSG_PRINTBOTH, "You have fully digested " .. hitEnt:Nick() .. "!")
+                hitEnt:SetParent(nil)
+                hitEnt:SpectateEntity(nil)
 
-                    -- Spawn poop at cannibal's position
-                    if self.DigestionPoopConVar:GetBool() then
-                        local poop = ents.Create("prop_physics")
-                        if IsValid(poop) then
-                            poop:SetModel("models/poo/poo.mdl")
+                hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been fully digested!")
+                owner:QueueMessage(MSG_PRINTBOTH, "You have fully digested " .. hitEnt:Nick() .. "!")
 
-                            local forward = owner:GetForward()
-                            local dropPos = owner:GetPos() + forward * -30 + Vector(0, 0, 10)
-                            poop:SetPos(dropPos)
+                -- Spawn poop at cannibal's position
+                if self.DigestionPoopConVar:GetBool() then
+                    local poop = ents.Create("prop_physics")
+                    if IsValid(poop) then
+                        local fingerprints = { owner }
+                        poop:SetModel("models/poo/poo.mdl")
 
-                            poop:SetAngles(Angle(0, math.random(0, 360), 0))
-                            poop:Spawn()
-                            poop:Activate()
-                            if self.DigestionPoopSoundConVar:GetBool()then
-                                owner:EmitSound(poopSounds[math.random(#poopSounds)], 100)
-                            end
+                        local forward = owner:GetForward()
+                        local dropPos = owner:GetPos() + forward * -30 + Vector(0, 0, 10)
+                        poop:SetPos(dropPos)
+
+                        poop:SetAngles(Angle(0, math.random(0, 360), 0))
+                        poop:Spawn()
+                        poop:Activate()
+                        poop:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+                        poop.fingerprints = fingerprints
+
+                        if self.DigestionPoopSoundConVar:GetBool()then
+                            owner:EmitSound(poopSounds[math.random(#poopSounds)], 100)
                         end
                     end
                 end
-
             end)
         end
     end
