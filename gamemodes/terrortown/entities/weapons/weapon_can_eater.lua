@@ -152,7 +152,7 @@ if CLIENT then
 
         local cooldownLeft = self:GetDeviceCooldownEnd() - CurTime()
         local progress = 1 - (cooldownLeft / cooldown)
-        if cooldownLeft > -3 or self.DeployTime > CurTime() - 3 then
+        if cooldownLeft > -3 or (self.DeployTime and self.DeployTime > CurTime() - 3) then
             if progress > 1 then
                 CRHUD:PaintProgressBar(x, y, w, Color(0, 255, 0, 155), "READY TO EAT", 1)
             else
