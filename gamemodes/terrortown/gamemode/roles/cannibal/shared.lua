@@ -58,7 +58,7 @@ table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
     type = ROLE_CONVAR_TYPE_NUM
 })
 table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
-    cvar = "ttt_cannibal_digests_victims",
+    cvar = "ttt_cannibal_digestion",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
@@ -66,11 +66,11 @@ table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
     type = ROLE_CONVAR_TYPE_NUM
 })
 table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
-    cvar = "ttt_cannibal_does_poopy",
+    cvar = "ttt_cannibal_digestion_poop",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
-    cvar = "ttt_cannibal_does_poopy_noise",
+    cvar = "ttt_cannibal_digestion_poop_sound",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 

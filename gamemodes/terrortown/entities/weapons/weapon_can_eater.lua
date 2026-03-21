@@ -39,10 +39,10 @@ SWEP.InLoadoutForDefault    = {ROLE_CANNIBAL}
 SWEP.DeviceCooldownConVar = CreateConVar("ttt_cannibal_eat_cooldown", "10", FCVAR_REPLICATED, "The amount of time (in seconds) between uses of the Cannibal's Cannibalizer", 0, 60)
 SWEP.GainsHealthConVar = CreateConVar("ttt_cannibal_gains_health", "1", FCVAR_REPLICATED, "Whether the Cannibal gains their victim's health when eating them", 0, 1)
 SWEP.GainedHealthPercentageConVar = CreateConVar("ttt_cannibal_gained_health_percentage", "100", FCVAR_REPLICATED, "What percentage of their victim's health the Cannibal gains (set to 0 to always gain a flat 100HP)", 0, 500)
-SWEP.DigestsVictimsConVar = CreateConVar("ttt_cannibal_digests_victims", "1", FCVAR_REPLICATED, "Whether the Cannibal digests and permanently kills their victims over time", 0, 1)
+SWEP.DigestionConVar = CreateConVar("ttt_cannibal_digestion", "1", FCVAR_REPLICATED, "Whether the Cannibal digests and permanently kills their victims over time", 0, 1)
 SWEP.DigestionTimeConVar = CreateConVar("ttt_cannibal_digestion_time", "30", FCVAR_REPLICATED, "How long in seconds a victim takes to be digested when eaten (set to 0 for immediate digestion)", 0, 300)
-SWEP.RectallyIncontinentConVar = CreateConVar("ttt_cannibal_does_poopy", "1", FCVAR_REPLICATED, "Whether the Cannibal poops themselves when a victim is digested", 0, 1)
-SWEP.AudibleIncontinenceConVar = CreateConVar("ttt_cannibal_does_poopy_noise", "1", FCVAR_REPLICATED, "Whether the Cannibal's poops produce an audible cue", 0, 1)
+SWEP.DigestionPoopConVar = CreateConVar("ttt_cannibal_digestion_poop", "1", FCVAR_REPLICATED, "Whether the Cannibal drops poop when a victim is digested", 0, 1)
+SWEP.DigestionPoopSoundConVar = CreateConVar("ttt_cannibal_digestion_poop_sound", "1", FCVAR_REPLICATED, "Whether the Cannibal causes a sound when poop is dropped from a digested victim.", 0, 1)
 
 local eatSounds = {
     "cannibal/eat1.wav",
@@ -143,7 +143,6 @@ function SWEP:PrimaryAttack()
 
         -- Cannibal health gain
         if self.GainsHealthConVar:GetBool() then
-            
             local gainedhealthpercentage = self.GainedHealthPercentageConVar:GetInt()
             local victimhealth = hitEnt:Health()
             local cannibalhealth = owner:Health()
@@ -151,7 +150,7 @@ function SWEP:PrimaryAttack()
             if gainedhealthpercentage == 0 then
                 gainedhealth = 100
             else
-                gainedhealthunrounded = (gainedhealthpercentage / 100) * victimhealth
+                local gainedhealthunrounded = (gainedhealthpercentage / 100) * victimhealth
                 gainedhealth = math.floor(gainedhealthunrounded)
             end
 
@@ -159,14 +158,11 @@ function SWEP:PrimaryAttack()
             if newcannibalhealth > cannibalhealth then
                 owner:SetHealth(newcannibalhealth)
             end
-
         end
 
         -- Victim digestion
-        if self.DigestsVictimsConVar:GetBool() then
-
+        if self.DigestionConVar:GetBool() then
             local digestiontime = self.DigestionTimeConVar:GetInt()
-
             if digestiontime == 0 then
                 digestiontime = 0.1 -- short delay to avoid fuckyness?
             end
@@ -179,24 +175,22 @@ function SWEP:PrimaryAttack()
             end
 
             timer.Create(disgestiontimername, digestiontime, 1, function()
-            
-                -- Safety checks
-                if not IsValid(hitEnt) or not hitEnt:IsPlayer() then return end
-                if not IsValid(owner) or not owner:IsPlayer() then return end
+                if not IsPlayer(hitEnt) then return end
+                if not IsPlayer(owner) then return end
             
                 -- Only digest if they are still in THIS cannibal's tummy
                 if hitEnt.TTTCannibalEaten == owner:SteamID64() then
-                    hitEnt:KillSilent()
+                    hitEnt:Kill()
                     hitEnt:ClearProperty("TTTCannibalEaten")
 
                     hitEnt:SetParent(nil)
                     hitEnt:SpectateEntity(nil)
 
-                    hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been fully digested!", 3)
-                    owner:QueueMessage(MSG_PRINTBOTH, "You have fully digested " .. hitEnt:Nick() .. "!", 3)
+                    hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been fully digested!")
+                    owner:QueueMessage(MSG_PRINTBOTH, "You have fully digested " .. hitEnt:Nick() .. "!")
 
                     -- Spawn poop at cannibal's position
-                    if self.RectallyIncontinentConVar:GetBool() then
+                    if self.DigestionPoopConVar:GetBool() then
                         local poop = ents.Create("prop_physics")
                         if IsValid(poop) then
                             poop:SetModel("models/poo/poo.mdl")
@@ -209,8 +203,8 @@ function SWEP:PrimaryAttack()
                             poop:Spawn()
                             poop:Activate()
                         
-                            if self.AudibleIncontinenceConVar:GetBool()then
-                                owner:EmitSound(poopSounds[math.random(1, #poopSounds)], 100)
+                            if self.DigestionPoopSoundConVar:GetBool()then
+                                owner:EmitSound(poopSounds[math.random(#poopSounds)], 100)
                             end
                         end
                     end
