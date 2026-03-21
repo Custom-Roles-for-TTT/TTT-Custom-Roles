@@ -5,6 +5,9 @@
 
 ### Additions
 - Added messages to existing twins when a player becomes a twin during an active round
+- Added option to allow Cannibal to gain a configurable percentage of their victims' health (disabled by default) (Thanks Joel!)
+- Added option to allow Cannibal to "digest" (permamnently kill) their victims a configurable amount of time after eating them (disabled by default) (Thanks Joel!)
+- Added option to allow Cannibal to drop a poop when a victim is fully digested, with or without an audible cue (enabled by default, but depends on digestion being enabled) (Thanks Joel!)
 
 ### Changes
 - Changed role pack to apply next round, if the round is already active

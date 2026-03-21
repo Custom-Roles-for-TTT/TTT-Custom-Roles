@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "Models/poo/poo"
+	"$bumpmap" "Models/poo/poo_n"
+	// -- From here down is new stuff which will only be applied if $phong is set to 1 --
+ 	"$phong"     "1"
+ 	"$phongboost"   "4"
+	"$phongexponent"   "30"
+ 	"$phongfresnelranges"   "[.2 .5 1]"
+}
