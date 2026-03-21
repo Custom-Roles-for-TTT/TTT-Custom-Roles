@@ -42,6 +42,15 @@ If you would like to test the available configurations, we recommend using ULX/U
 - MaxCooljazz from the CR4TTT Community for allowing us to integrate their Spy role into the mod.
 - [Game icons](https://game-icons.net), [Noun Project](https://thenounproject.com), and [Icons8](https://icons8.com) for the role icons.
 - [Videvo](https://www.videvo.net/profile/videvo/) for the royalty-free [extinguish sound](https://www.videvo.net/sound-effect/short-light-fire-exti-pe363704/255924/) and cough sounds: [1](https://www.videvo.net/sound-effect/human-cough-33/427996/), [2](https://www.videvo.net/sound-effect/human-cough-36/427999/), [3](https://www.videvo.net/sound-effect/human-cough-39/428002/), [4](https://www.videvo.net/sound-effect/human-cough-63/428026/)
+- [freesound.org](https://freesound.org/) for the poop sounds used by the Cannibal's digestion effect
+    - Licensed under [Creative Commons 0](https://creativecommons.org/public-domain/cc0/)
+        - [fart](https://freesound.org/people/MacKaffee/sounds/326143/) by [MacKaffee](https://freesound.org/people/MacKaffee/)
+        - [Short, definite fart](https://freesound.org/people/ycbcr/sounds/249583/) by [ycbcr](https://freesound.org/people/ycbcr/)
+        - [small fart](https://freesound.org/people/KataVlogsYT/sounds/324453/) by [KataVlogsYT](https://freesound.org/people/KataVlogsYT/)
+        - [queef_fart](https://freesound.org/people/faen/sounds/167090/) by [faen](https://freesound.org/people/faen/)
+        - [WAV Fart Vegan 047](https://freesound.org/people/frenkfurth/sounds/650693/) by [frenkfurth](https://freesound.org/people/frenkfurth/)
+    - Licensed under [Creative Commons BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+        - [fart_anxious](https://freesound.org/people/IFartInUrGeneralDirection/sounds/37850/) by [IFartInUrGeneralDirection](https://freesound.org/people/IFartInUrGeneralDirection/)
 - Our friends and everyone on the Discord server for their suggestions and help testing.
 
 ## Conflicts
