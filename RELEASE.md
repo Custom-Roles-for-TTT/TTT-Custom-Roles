@@ -16,6 +16,7 @@
 ### Fixes
 - Fixed cheat sheet getting cut off when it exceeded the height of the screen and a role pack was enabled
 - Fixed jester, detective, innocent, and traitor role rename ConVars not working
+- Fixed error in Cannibal's role weapon HUD when weapon was selected from last round (Thanks Stig!)
 
 ### Developer
 - Added `ROLE_STRINGS_DEFAULT` as a copy of `ROLE_STRINGS` from before role strings are changed by ConVars
