@@ -157,33 +157,31 @@ function SWEP:PrimaryAttack()
 
         -- Cannibal health gain
         if self.GainsHealthConVar:GetBool() then
-            local gainedhealthpercentage = self.GainedHealthPercentageConVar:GetInt()
-            local victimhealth = hitEnt:Health()
-            local cannibalhealth = owner:Health()
+            local gained_health_percentage = self.GainedHealthPercentageConVar:GetInt()
+            local victimHealth = hitEnt:Health()
+            local cannibalHealth = owner:Health()
 
-            local gainedhealth
-            if gainedhealthpercentage == 0 then
-                gainedhealth = 100
+            local gainedHealth
+            if gained_health_percentage == 0 then
+                gainedHealth = 100
             else
-                local gainedhealthunrounded = (gainedhealthpercentage / 100) * victimhealth
-                gainedhealth = math.floor(gainedhealthunrounded)
+                gainedHealth = math.floor((gained_health_percentage / 100) * victimHealth)
             end
 
-            local newcannibalhealth = cannibalhealth + gainedhealth
-            if newcannibalhealth > cannibalhealth then
-                owner:SetHealth(newcannibalhealth)
+            if gainedHealth > 0 then
+                owner:SetHealth(cannibalHealth + gainedHealth)
             end
         end
 
         -- Victim digestion
         if self.DigestionConVar:GetBool() then
-            local digestiontime = self.DigestionTimeConVar:GetInt()
+            local digestion_time = self.DigestionTimeConVar:GetInt()
             -- Ensure there's a short delay to allow time for the vars to be set first
-            if digestiontime == 0 then
-                digestiontime = 0.1
+            if digestion_time == 0 then
+                digestion_time = 0.1
             end
 
-            timer.Create("TTTCannibalDigestion_" .. sID64, digestiontime, 1, function()
+            timer.Create("TTTCannibalDigestion_" .. sID64, digestion_time, 1, function()
                 if not IsPlayer(hitEnt) then return end
                 if not IsPlayer(owner) then return end
 
