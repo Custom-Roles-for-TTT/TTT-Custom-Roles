@@ -51,6 +51,7 @@ If you would like to test the available configurations, we recommend using ULX/U
         - [WAV Fart Vegan 047](https://freesound.org/people/frenkfurth/sounds/650693/) by [frenkfurth](https://freesound.org/people/frenkfurth/)
     - Licensed under [Creative Commons BY 4.0](https://creativecommons.org/licenses/by/4.0/)
         - [fart_anxious](https://freesound.org/people/IFartInUrGeneralDirection/sounds/37850/) by [IFartInUrGeneralDirection](https://freesound.org/people/IFartInUrGeneralDirection/)
+- [Deika](https://steamcommunity.com/id/deikaeus) for the [model](https://steamcommunity.com/sharedfiles/filedetails/?id=304354340) used by the Cannibal's digestion poop effect
 - Our friends and everyone on the Discord server for their suggestions and help testing.
 
 ## Conflicts
