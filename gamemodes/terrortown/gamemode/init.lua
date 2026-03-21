@@ -50,6 +50,7 @@ AddCSLuaFile("cl_sprint.lua")
 AddCSLuaFile("sprint_shd.lua")
 AddCSLuaFile("cl_cheatsheet.lua")
 AddCSLuaFile("cl_sync.lua")
+AddCSLuaFile("rolepacks_shd.lua")
 
 include("shared.lua")
 include("utf8_ext.lua")
@@ -74,6 +75,7 @@ include("hitmarkers.lua")
 include("deathnotify.lua")
 include("roleweapons.lua")
 include("sprint_shd.lua")
+include("rolepacks_shd.lua")
 include("rolepacks.lua")
 include("roleblocks.lua")
 include("sync.lua")
@@ -624,6 +626,10 @@ function PrepareRound()
 
     -- Update damage scaling
     KARMA.RoundBegin()
+
+    ROLEPACKS.SendRolePackRoleList()
+    ROLEPACKS.ApplyRolePackConVars()
+    ROLEPACKS.FillRolePackWeaponTables()
 
     WEPS.ResetWeaponsCache()
     WEPS.ResetRoleWeaponCache()

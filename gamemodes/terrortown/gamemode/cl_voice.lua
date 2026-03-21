@@ -23,6 +23,12 @@ local RunHook = hook.Run
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
+local LastWordContext = {
+    [KILL_SUICIDE] = "words_suicide",
+    [KILL_FALL] = "words_fall",
+    [KILL_BURN] = "words_burn"
+}
+
 local function GetChatPlayerName(ply, team_chat)
     local name = CallHook("TTTChatPlayerName", nil, ply, team_chat or false)
     if not name or #name == 0 then
@@ -37,16 +43,27 @@ end
 local function LastWordsRecv()
     local sender = net.ReadPlayer()
     local words = net.ReadString()
+    local death_type = net.ReadUInt(2)
+
+    -- only append "--" if there's no ending interpunction
+    local final = string.match(words, "[\\.\\!\\?]$") ~= nil
+    local lastWordsStr = words .. (final and " " or "-- ")
+
+    -- add optional context relating to death type
+    if death_type ~= KILL_NORMAL then
+        local context = LastWordContext[death_type] or ""
+        lastWordsStr = lastWordsStr .. Format("*%s*", GetTranslation(context))
+    end
 
     local was_detective = IsValid(sender) and sender:IsDetectiveTeam()
-    local nick = IsValid(sender) and GetChatPlayerName(sender) or "<Unknown>"
+    local nick = IsValid(sender) and GetChatPlayerName(sender) or Format("<%s>", GetTranslation("unknown"))
 
     chat.AddText(Color(150, 150, 150),
             Format("(%s) ", string.upper(GetTranslation("last_words"))),
             was_detective and Color(50, 200, 255) or Color(0, 200, 0),
             nick,
             COLOR_WHITE,
-            ": " .. words)
+            ": " .. lastWordsStr)
 end
 net.Receive("TTT_LastWordsMsg", LastWordsRecv)
 

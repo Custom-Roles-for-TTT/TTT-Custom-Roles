@@ -60,7 +60,7 @@ function GM:PlayerInitialSpawn(ply)
         ply:SetForceSpec(true)
     end
 
-    ROLEPACKS.SendRolePackRoleList(ply)
+    ROLEPACKS.SendRolePackRoleList(ply, rstate == ROUND_ACTIVE)
     ROLEPACKS.SendRolePackWeapons(ply)
     WEPS.HandleRoleEquipment(ply)
 end

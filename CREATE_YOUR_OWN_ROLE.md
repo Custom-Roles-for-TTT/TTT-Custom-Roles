@@ -56,7 +56,7 @@ In order to create your own role you will need to make sure you have downloaded 
 - **.lua** - This can be done in Notepad in a pinch but at the very least we would recommend [Notepad++](https://notepad-plus-plus.org/).
 - **.vmt and .vtf** - [VTFEdit Reloaded](https://github.com/Sky-rym/VTFEdit-Reloaded/releases) is the best way to edit these files but if you know what you are doing there are plugins for other apps.
 
-In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using [here](/templates/role).
+In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using [here](/templates/role) using a tool that allows downloading directories from a GitHub repo like [this one](https://kinolien.github.io/gitzip/) *(Note: In most cases you won't need to enter a token despite its recommendation)*.
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:
 
@@ -81,7 +81,7 @@ ROLE.desc = [[]]
 
 ROLE.shortdesc = ""
 
-ROLE.team = 
+ROLE.team = ROLE_TEAM_
 
 ROLE.shop = nil
 ROLE.loadout = {}
@@ -835,7 +835,9 @@ end
 
 ### Role Registration
 
-The next line simply tells CR for TTT to register your role and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, `ROLE_%NAMERAW%` as well as helper functions `Get%NAMERAW%`, `Is%NAMERAW%` and `IsActive%NAMERAW%` if you would like to use them to add extra logic for your role.
+The next line simply tells CR for TTT to register your role and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, `ROLE_%NAMERAW%` as well as helper functions `Get%NAME%`, `Is%NAME%` and `IsActive%NAME%` if you would like to use them to add extra logic for your role.
+
+*(Note: All spaces are removed from `%NAME%` before `Get%NAME%`, `Is%NAME%` and `IsActive%NAME%` are created)*
 
 ### Final Block
 

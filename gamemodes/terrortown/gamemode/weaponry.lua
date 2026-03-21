@@ -246,7 +246,7 @@ function GM:PlayerLoadout(ply)
             -- Gather the list of extra loadout weapons for this role
             local role = ply:GetRole()
             local mergedLoadoutWeapons = TableCopy(WEPS.LoadoutWeapons[role] or {})
-            local packName = GetConVar("ttt_role_pack"):GetString()
+            local packName = ROLEPACKS.GetCurrentRolePackName()
             if #packName > 0 then
                 for _, v in pairs(WEPS.RolePackLoadoutWeapons[role] or {}) do
                     if not TableHasValue(mergedLoadoutWeapons, v) then
