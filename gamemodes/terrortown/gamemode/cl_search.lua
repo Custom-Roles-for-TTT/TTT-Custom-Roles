@@ -261,7 +261,7 @@ function PreprocSearch(raw)
                 local vic = Entity(d[1])
                 local dc = d[1] == 0 -- disconnected
                 if dc or IsPlayer(vic) then
-                    search[t].text = PT("search_kills1", { player = dc and "<Disconnected>" or vic:Nick() })
+                    search[t].text = PT("search_kills1", { player = dc and Format("<%s>", T("disconnected")) or vic:Nick() })
                 end
             elseif num > 1 then
                 local txt = T("search_kills2") .. "\n"
@@ -271,7 +271,7 @@ function PreprocSearch(raw)
                     local vic = Entity(idx)
                     local dc = idx == 0
                     if dc or IsPlayer(vic) then
-                        table.insert(nicks, dc and "<Disconnected>" or vic:Nick())
+                        table.insert(nicks, dc and Format("<%s>", T("disconnected")) or vic:Nick())
                     end
                 end
 

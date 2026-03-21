@@ -39,12 +39,17 @@ local function ReleaseEatenPlayers(ply, message)
             v:DrawViewModel(true)
             v:DrawWorldModel(true)
             v:SetNoDraw(false)
+            if IsValid(v.hat) then
+                v.hat:SetNoDraw(false)
+            end
             v:Spawn()
             local pos = ply:GetPos()
             v:SetPos(FindRespawnLocation(pos) or pos)
             v:SetEyeAngles(Angle(0, ply:GetAngles().y, 0))
 
             local sID64 = v:SteamID64()
+
+            timer.Remove("TTTCannibalDigestion_" .. sID64)
 
             for _, data in ipairs(CANNIBAL.playerWeapons[sID64]) do
                 local wep = v:Give(data.class)

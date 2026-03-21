@@ -112,8 +112,8 @@ function ROLEBLOCKS.GetBlockedRoles(excludeRolePack)
 
     local blocks = {}
     excludeRolePack = excludeRolePack or false
-    local rolepack = GetConVar("ttt_role_pack"):GetString()
-    if rolepack and #rolepack > 0 and not excludeRolePack then
+    local rolepack = ROLEPACKS.GetCurrentRolePackName()
+    if #rolepack > 0 and not excludeRolePack then
         local rolepackblocks = ROLEPACKS.GetRolePackBlockedRoles()
         if rolepackblocks and rolepackblocks.groups then
             blocks = table.Copy(rolepackblocks.groups)

@@ -1,5 +1,31 @@
 # Release Notes
 
+## 2.4.4 (Beta)
+**Released: March 21st, 2026**
+
+### Additions
+- Added messages to existing twins when a player becomes a twin during an active round
+- Added option to allow Cannibal to gain a configurable percentage of their victims' health (disabled by default) (Thanks Joel!)
+- Added option to allow Cannibal to "digest" (permanently kill) their victims a configurable amount of time after eating them (disabled by default) (Thanks Joel!)
+- Added option to allow Cannibal to drop a poop when a victim is fully digested, with or without an audible cue (enabled by default, but depends on digestion being enabled) (Thanks Joel!)
+
+### Changes
+- Changed role pack to apply next round, if the round is already active
+- Changed logic to reassign a player's role if they change roles into being a solo twin during an active round
+- Ported "TTT: Use gmod_language setting by default"
+- Ported "TTT: Translatability improvements"
+- Ported "TTT: Equipment menu sorting options"
+
+### Fixes
+- Fixed cheat sheet getting cut off when it exceeded the height of the screen and a role pack was enabled
+- Fixed jester, detective, innocent, and traitor role rename ConVars not working
+- Fixed error in Cannibal's role weapon HUD when weapon was selected from last round (Thanks Stig!)
+- Fixed detective hats not hiding when the owning player was eaten by the Cannibal
+- Ported "Add check for checking weapon GetHeadshotMultiplier"
+
+### Developer
+- Added `ROLE_STRINGS_DEFAULT` as a copy of `ROLE_STRINGS` from before role strings are changed by ConVars
+
 ## 2.4.3 (Beta)
 **Released: February 21st, 2026**
 

@@ -412,9 +412,10 @@ function CLSCORE:BuildScorePanel(dpanel)
 
                 local skull = vgui.Create("DImage", surv)
                 skull:SetMaterial(skull_icon)
-                skull:SetTooltip("Dead")
+                skull:SetTooltip(T("dead"))
                 skull:SetKeepAspect(true)
                 skull:SetSize(18, 18)
+                skull:SetMouseInputEnabled(true)
             end
 
             local points_own = KillsToPoints(s, was_traitor, was_innocent)

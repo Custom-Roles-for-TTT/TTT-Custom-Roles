@@ -49,6 +49,30 @@ table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
     cvar = "ttt_cannibal_update_scoreboard",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_gains_health",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_gained_health_percentage",
+    type = ROLE_CONVAR_TYPE_NUM
+})
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_digestion",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_digestion_time",
+    type = ROLE_CONVAR_TYPE_NUM
+})
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_digestion_poop",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_CANNIBAL], {
+    cvar = "ttt_cannibal_digestion_poop_sound",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
 
 -------------------
 -- ROLE FEATURES --

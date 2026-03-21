@@ -27,7 +27,7 @@ local Utf8Sub = utf8.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.4.3"
+CR_VERSION = "2.4.4"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -660,6 +660,8 @@ ROLE_STRINGS = {
     [ROLE_TASKMASTER] = "Taskmaster"
 }
 
+ROLE_STRINGS_DEFAULT = table.Copy(ROLE_STRINGS)
+
 ROLE_STRINGS_PLURAL = {
     [ROLE_INNOCENT] = "Innocents",
     [ROLE_TRAITOR] = "Traitors",
@@ -989,6 +991,7 @@ function RegisterRole(tbl)
 
     ROLE_STRINGS_RAW[roleID] = tbl.nameraw
     ROLE_STRINGS[roleID] = tbl.name
+    ROLE_STRINGS_DEFAULT[roleID] = tbl.name
     ROLE_STRINGS_PLURAL[roleID] = tbl.nameplural
     ROLE_STRINGS_EXT[roleID] = tbl.nameext
     ROLE_STRINGS_SHORT[roleID] = tbl.nameshort

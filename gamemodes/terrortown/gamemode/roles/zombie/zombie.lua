@@ -386,8 +386,8 @@ hook.Add("SetupPlayerVisibility", "Zombie_SetupPlayerVisibility", function(ply)
     if not zombie_vision_enabled:GetBool() and not zombie_show_target_icon:GetBool() then return end
 
     -- Only use this when the zombie would see the highlighting and icons (when they have their claws out)
-    local hasFangs = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws"
-    if not hasFangs then return end
+    local hasClaws = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws"
+    if not hasClaws then return end
 
     for _, v in PlayerIterator() do
         if ply:TestPVS(v) then continue end

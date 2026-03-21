@@ -60,7 +60,7 @@ function GM:PlayerInitialSpawn(ply)
         ply:SetForceSpec(true)
     end
 
-    ROLEPACKS.SendRolePackRoleList(ply)
+    ROLEPACKS.SendRolePackRoleList(ply, rstate == ROUND_ACTIVE)
     ROLEPACKS.SendRolePackWeapons(ply)
     WEPS.HandleRoleEquipment(ply)
 end
@@ -978,7 +978,7 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
 
         local wep = util.WeaponFromDamage(dmginfo)
 
-        if IsValid(wep) and not GetConVar("ttt_disable_headshots"):GetBool() then
+        if IsValid(wep) and wep.GetHeadshotMultiplier and not GetConVar("ttt_disable_headshots"):GetBool() then
             local s = wep:GetHeadshotMultiplier(ply, dmginfo) or 2
             dmginfo:ScaleDamage(s)
         end

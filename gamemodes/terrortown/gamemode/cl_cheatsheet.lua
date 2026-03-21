@@ -136,12 +136,9 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     local scrollbarWidth    = 15
     local m                 = 5
 
-    local packName = GetConVar("ttt_role_pack"):GetString()
+    local packName = ROLEPACKS.GetCurrentRolePackName()
     local packDesc
-    if #packName == 0 then
-        rolePackHeight = 0
-        rolePackDescHeight = 0
-    elseif ROLE_PACK_DETAILS then
+    if #packName > 0 then
         local displayName = ROLE_PACK_DETAILS.displayName
         if displayName and #displayName > 0 then
             packName = displayName
@@ -152,6 +149,9 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
             packDesc = nil
             rolePackDescHeight = 0
         end
+    else
+        rolePackHeight = 0
+        rolePackDescHeight = 0
     end
 
     local w, h, detectivesHeight, innocentsHeight, traitorsHeight, jestersHeight, independentsHeight, monstersHeight
@@ -244,7 +244,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     end
 
     local dlist = vgui.Create("DScrollPanel", dbackground)
-    dlist:SetSize(w, h)
+    dlist:SetSize(w, h - (rolePackHeight + rolePackDescHeight))
     dlist:SetPos(0, rolePackHeight + rolePackDescHeight)
 
     local dcanvas = dlist:GetCanvas()
