@@ -147,6 +147,7 @@ function SWEP:PrimaryAttack()
             local victimhealth = hitEnt:Health()
             local cannibalhealth = owner:Health()
 
+            local gainedhealth
             if gainedhealthpercentage == 0 then
                 gainedhealth = 100
             else
@@ -177,7 +178,6 @@ function SWEP:PrimaryAttack()
             timer.Create(disgestiontimername, digestiontime, 1, function()
                 if not IsPlayer(hitEnt) then return end
                 if not IsPlayer(owner) then return end
-            
                 -- Only digest if they are still in THIS cannibal's tummy
                 if hitEnt.TTTCannibalEaten == owner:SteamID64() then
                     hitEnt:Kill()
@@ -202,7 +202,6 @@ function SWEP:PrimaryAttack()
                             poop:SetAngles(Angle(0, math.random(0, 360), 0))
                             poop:Spawn()
                             poop:Activate()
-                        
                             if self.DigestionPoopSoundConVar:GetBool()then
                                 owner:EmitSound(poopSounds[math.random(#poopSounds)], 100)
                             end
