@@ -1336,6 +1336,8 @@ ttt_scoreboard_score                           0       // Whether to show the sc
 ttt_round_summary_tabs                         summary,hilite,events,scores // The tabs to show in the round summary screen. Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Round must be restarted for changes to take effect
 
 // Misc.
+ttt_disable_headshots                          0       // Whether to disable the headshot damage multiplier
+ttt_disable_mapwin                             0       // Whether to disable the ability for maps to set the round winner directly
 ttt_death_notifier_enabled                     1       // Whether the name and role of a player's killer should be shown to the victim
 ttt_death_notifier_show_role                   1       // Whether to show the killer's role in death notification messages
 ttt_death_notifier_show_team                   0       // Whether to show the killer's team in death notification messages (only used when "ttt_death_notifier_show_role" is disabled)
