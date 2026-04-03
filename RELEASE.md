@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.4.5 (Beta)
+**Released:**
+
+### Fixes
+- Fixed Loot Goblin not being able to drop some weapons that were droppable
+
 ## 2.4.4 (Beta)
 **Released: March 21st, 2026**
 
