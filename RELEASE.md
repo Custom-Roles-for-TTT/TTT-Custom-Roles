@@ -1,11 +1,5 @@
 # Release Notes
 
-## 2.4.5 (Beta)
-**Released:**
-
-### Fixes
-- Fixed Loot Goblin not being able to drop some weapons that were droppable
-
 ## 2.4.4 (Beta)
 **Released: March 21st, 2026**
 
@@ -27,6 +21,7 @@
 - Fixed jester, detective, innocent, and traitor role rename ConVars not working
 - Fixed error in Cannibal's role weapon HUD when weapon was selected from last round (Thanks Stig!)
 - Fixed detective hats not hiding when the owning player was eaten by the Cannibal
+- Fixed Loot Goblin not being able to drop some weapons that were droppable
 - Ported "Add check for checking weapon GetHeadshotMultiplier"
 
 ### Developer
