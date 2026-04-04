@@ -23,6 +23,7 @@
 - Fixed detective hats not hiding when the owning player was eaten by the Cannibal
 - Fixed Loot Goblin not being able to drop some weapons that were droppable
 - Fixed errors in shop with weapons that don't use the TTT base weapon (like the holdable cat)
+- Fixed role selection predicates being ignored by the role pack selection logic
 - Ported "Add check for checking weapon GetHeadshotMultiplier"
 
 ### Developer

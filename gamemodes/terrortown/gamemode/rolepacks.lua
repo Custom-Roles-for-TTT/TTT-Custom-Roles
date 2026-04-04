@@ -604,8 +604,8 @@ function ROLEPACKS.AssignRoles(choices)
                 end
 
                 if not allowDuplicates and TableHasValue(chosenRoles, role) then continue end
-
                 if blockedRoles[role] then continue end
+                if ROLE_SELECTION_PREDICATE[role] and not ROLE_SELECTION_PREDICATE[role]() then continue end
 
                 for _ = 1, roleslot.weight do
                     TableInsert(possibleRoles, role)
