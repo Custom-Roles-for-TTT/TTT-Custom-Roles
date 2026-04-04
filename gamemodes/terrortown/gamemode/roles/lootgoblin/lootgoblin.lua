@@ -233,10 +233,16 @@ local function StartGoblinTimers()
                         local wep = nil
                         -- Loop in here so we get a different weapon for each loot goblin (if there are multiple)
                         for _, v in RandomPairs(weps) do
-                            if v and not v.AutoSpawnable and v.CanBuy and #v.CanBuy > 0 and v.AllowDrop then
-                                wep = WEPS.GetClass(v)
-                                break
-                            end
+                            if not v then continue end
+
+                            -- Only allow weapons that can be bought, can be dropped, and don't spawn on their own
+                            -- Specifically check AllowDrop for `false` because weapons in this list don't have the base table
+                            -- applied and the base table has AllowDrop defaulting to `true`
+                            if v.AutoSpawnable or v.AllowDrop == false then continue end
+                            if not v.CanBuy or #v.CanBuy == 0 then continue end
+
+                            wep = WEPS.GetClass(v)
+                            break
                         end
 
                         -- Sanity check
@@ -344,9 +350,15 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
             timer.Create("LootGoblinWeaponDrop", 0.05, lootgoblin_weapons_dropped:GetInt(), function()
                 if #lootTable == 0 then -- Rebuild the loot table if we run out
                     for _, v in ipairs(weapons.GetList()) do
-                        if v and not v.AutoSpawnable and v.CanBuy and #v.CanBuy > 0 and v.AllowDrop then
-                            table.insert(lootTable, WEPS.GetClass(v))
-                        end
+                        if not v then continue end
+
+                        -- Only allow weapons that can be bought, can be dropped, and don't spawn on their own
+                        -- Specifically check AllowDrop for `false` because weapons in this list don't have the base table
+                        -- applied and the base table has AllowDrop defaulting to `true`
+                        if v.AutoSpawnable or v.AllowDrop == false then continue end
+                        if not v.CanBuy or #v.CanBuy == 0 then continue end
+
+                        table.insert(lootTable, WEPS.GetClass(v))
                     end
                 end
 
