@@ -22,6 +22,7 @@
 - Fixed error in Cannibal's role weapon HUD when weapon was selected from last round (Thanks Stig!)
 - Fixed detective hats not hiding when the owning player was eaten by the Cannibal
 - Fixed Loot Goblin not being able to drop some weapons that were droppable
+- Fixed errors in shop with weapons that don't use the TTT base weapon (like the holdable cat)
 - Ported "Add check for checking weapon GetHeadshotMultiplier"
 
 ### Developer
