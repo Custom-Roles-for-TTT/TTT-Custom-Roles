@@ -869,6 +869,7 @@ globals = {
     "debug",
     "derma",
     "draw",
+    "drive",
     "engine",
     "ents",
     "file",
