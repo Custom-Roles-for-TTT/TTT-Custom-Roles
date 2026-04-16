@@ -291,10 +291,10 @@ local function CreateBuffTimer(shadow, target)
             shadow:StripRoleWeapons()
             RunHook("PlayerLoadout", shadow)
 
-            target:MoveRoleState(shadow)
             target:SetRole(ROLE_SHADOW)
             target:StripRoleWeapons()
             RunHook("PlayerLoadout", target)
+            target:MoveRoleState(shadow)
 
             target:Kill()
 

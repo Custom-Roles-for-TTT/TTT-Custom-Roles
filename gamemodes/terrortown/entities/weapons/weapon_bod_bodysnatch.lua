@@ -119,12 +119,12 @@ if SERVER then
         net.WriteString(owner:SteamID64())
         net.Broadcast()
 
-        ply:MoveRoleState(owner, true)
         owner:SetRole(role)
         owner:StripRoleWeapons()
         owner:SelectWeapon("weapon_zm_carry")
         owner:SetNWBool("WasBodysnatcher", true)
         RunHook("PlayerLoadout", owner)
+        ply:MoveRoleState(owner, true)
 
         if GetConVar("ttt_bodysnatcher_destroy_body"):GetBool() then
             SafeRemoveEntity(body)
