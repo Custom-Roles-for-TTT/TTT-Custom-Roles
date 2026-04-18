@@ -6,6 +6,8 @@
 ### Fixes
 - Ported "Fix drive system not working fully in TTT"
 - Fixed error using the roleweapons UI and the weapons tab of the rolepacks UI due to recent changes in shop sorting
+- Fixed crosshair size sometimes not going back to the old size when sprinting
+  - Fixes crosshair growing into crazy sizes
 
 ### Developer
 - Added `TTTPlayerPassesTraitorCheck` to allow override traitor tester logic
