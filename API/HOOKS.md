@@ -513,6 +513,14 @@ Called when a player's health changes.\
 - *oldHealth* - The player's old health
 - *newHealth* - The player's new health
 
+### TTTPlayerPassesTraitorCheck(ply, ent)  
+Called when a player undergoes a traitor check (e.g. a traitor tester).\
+*Realm*: Server\
+*Added in*: 2.4.5\
+*Parameters*:
+- *ply* - The player is being checked
+- *ent* - The map entity doing the checking
+
 ### TTTPlayerRagdolled(ply, ragdoll)
 Called after a player is ragdolled.\
 *Realm*: Server\
