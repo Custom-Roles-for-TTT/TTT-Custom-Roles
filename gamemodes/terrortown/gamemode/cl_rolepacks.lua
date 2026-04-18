@@ -1,25 +1,34 @@
 local concommand = concommand
-local vgui = vgui
-local util = util
+local cvars = cvars
+local hook = hook
+local ipairs = ipairs
+local math = math
 local net = net
 local pairs = pairs
-local table = table
-local math = math
 local string = string
+local table = table
+local util = util
+local vgui = vgui
 
-local GetTranslation = LANG.GetTranslation
+local AddHook = hook.Add
 local GetParamTranslation = LANG.GetParamTranslation
+local GetTranslation = LANG.GetTranslation
+local MathCeil = math.ceil
+local MathClamp = math.Clamp
+local MathFloor = math.floor
 local SafeTranslate = LANG.TryTranslation
+local StringFind = string.find
+local StringLower = string.lower
+local StringSub = string.sub
+local TableCopy = table.Copy
+local TableHasValue = table.HasValue
 local TableInsert = table.insert
 local TableRemove = table.remove
-local TableSort = table.sort
 local TableRemoveByValue = table.RemoveByValue
-local TableHasValue = table.HasValue
-local TableCopy = table.Copy
-local MathCeil = math.ceil
-local StringSub = string.sub
-local StringLower = string.lower
-local StringFind = string.find
+local TableSort = table.sort
+
+local equipment_sorting = GetConVar("ttt_equipment_sorting")
+local equipment_ascending = GetConVar("ttt_equipment_ascending")
 
 local numCols = 4
 local numRows = 5
@@ -106,6 +115,95 @@ local function ReceiveStreamFromServer(networkString, callback)
 end
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end
+
+local sort_funcs = {
+   default = {
+      name = "equip_sort_default",
+      func = function(a, b)
+                local aItem, bItem = not ItemIsWeapon(a), not ItemIsWeapon(b)
+
+                if aItem or bItem then
+                   -- sort items by id
+                   if aItem and bItem then
+                      return a.id < b.id
+                   end
+
+                   -- keep items above weapons
+                   return aItem
+                end
+
+                return StringLower(SafeTranslate(a.name)) < StringLower(SafeTranslate(b.name))
+             end
+   },
+   name = {
+      name = "equip_spec_name",
+      func = function(a, b)
+                return StringLower(SafeTranslate(a.name)) < StringLower(SafeTranslate(b.name))
+             end
+   },
+   slot = {
+      name = "equip_sort_slot",
+      func = function(a, b)
+                local aSlot = a.slot or 0
+                local bSlot = b.slot or 0
+
+                -- sort items by id
+                if aSlot == 0 and bSlot == 0 then
+                   return a.id < b.id
+                end
+
+                if aSlot == bSlot then
+                   return StringLower(SafeTranslate(a.name)) < StringLower(SafeTranslate(b.name))
+                end
+
+                return aSlot < bSlot
+             end
+   }
+}
+
+local function SortEquipmentPanels(pnls)
+   local sort = equipment_sorting:GetString() or "default"
+   local sort_func = sort_funcs[sort].func
+
+   local ascending = equipment_ascending:GetBool()
+
+   TableSort(pnls, function(a, b)
+      local aItem, bItem = a.item, b.item
+      local ret = sort_func(aItem, bItem)
+
+      -- if table.sort is comparing an item to itself, don't mess with the result otherwise weird stuff happens
+      if not ascending and aItem.id ~= bItem.id then
+         ret = not ret
+      end
+
+      return ret
+   end)
+end
+
+local ListPanel = nil
+local function AddSortedPanels(panels)
+    SortEquipmentPanels(panels)
+    for _, panel in pairs(panels) do
+        ListPanel:AddPanel(panel)
+    end
+end
+
+local function ReSortEquipment()
+    if not IsValid(ListPanel) then return end
+
+    -- temp table for sorting
+    local paneltable = {}
+    for _, ic in ipairs(ListPanel:GetItems()) do
+        TableInsert(paneltable, ic)
+    end
+
+    ListPanel:Clear()
+    AddSortedPanels(paneltable)
+    ListPanel:InvalidateLayout()
+end
+AddHook("TTTLanguageChanged", "TTT_RolePacks_ReSortEquipment", ReSortEquipment)
+cvars.AddChangeCallback("ttt_equipment_sorting", ReSortEquipment, "rolepacks")
+cvars.AddChangeCallback("ttt_equipment_ascending", ReSortEquipment, "rolepacks")
 
 local function DoesValueMatch(item, data, value)
     if not item[data] then return false end
@@ -704,16 +802,55 @@ local function BuildWeaponConfig(dsheet, packName, tab)
 
     local dsearchheight = 25
     local dsearchpadding = 5
+    local dsortdirsize = 16
+    local sw = MathFloor((dlistw - dsearchpadding) / 2)
+
     local dsearch = vgui.Create("DTextEntry", dweapons)
     dsearch:SetPos(0, 0)
-    dsearch:SetSize(dlistw, dsearchheight)
+    dsearch:SetSize(sw, dsearchheight)
     dsearch:SetPlaceholderText("Search...")
     dsearch:SetUpdateOnType(true)
 
+    local dsort = vgui.Create("DPanel", dweapons)
+    dsort:SetPos(sw + dsearchpadding, 0)
+    dsort:SetSize(sw, dsearchheight)
+    dsort:SetPaintBackground(false)
+
+    local dsortlbl = vgui.Create("DLabel", dsort)
+    dsortlbl:SetFont("DermaDefaultBold")
+    dsortlbl:SetText(GetTranslation("sb_sortby"))
+    dsortlbl:SizeToContentsX()
+    dsortlbl:SetTall(dsearchheight)
+    dsortlbl:SetColor(COLOR_WHITE)
+
+    local dsorttype = vgui.Create("DComboBox", dsort)
+    dsorttype:MoveRightOf(dsortlbl, m)
+    dsorttype:SetSize(dsort:GetWide() - dsortlbl:GetWide() - m - dsortdirsize, dsearchheight)
+
+    for key, data in pairs(sort_funcs) do
+        dsorttype:AddChoice(GetTranslation(data.name), key, StringLower(equipment_sorting:GetString()) == key)
+    end
+
+    dsorttype.OnSelect = function(s, idx, val, data) equipment_sorting:SetString(data) end
+
+    local dsortasc = vgui.Create("DButton", dsort)
+    dsortasc:SetSize(dsortdirsize, dsortdirsize)
+    dsortasc:MoveRightOf(dsorttype)
+    dsortasc:SetY(dsearchpadding)
+    dsortasc:SetText("")
+    dsortasc:SetTooltip(GetTranslation("equip_sort_direction_tip"))
+
+    dsortasc.Paint = function(s, pw, ph)
+        local name = equipment_ascending:GetBool() and "ButtonUp" or "ButtonDown"
+        derma.SkinHook("Paint", name, s, dsortdirsize, dsortdirsize)
+    end
+
+    dsortasc.DoClick = function(s) equipment_ascending:SetBool(not equipment_ascending:GetBool()) end
+
     local dinfow = diw - m
     local dsearchrole = vgui.Create("DComboBox", dweapons)
-    dsearchrole:CopyPos(dsearch)
-    dsearchrole:MoveRightOf(dsearch)
+    dsearchrole:CopyPos(dsort)
+    dsearchrole:MoveRightOf(dsort)
     local dsrw, dsrh = dsearchrole:GetPos()
     dsearchrole:SetPos(dsrw + dsearchpadding, dsrh)
     dsearchrole:SetSize(dinfow - dsearchpadding * 2, dsearchheight)
@@ -730,6 +867,8 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dlist:SetSize(dlistw, dlisth - dsearchheight - dsearchpadding)
     dlist:EnableVerticalScrollbar()
     dlist:EnableHorizontal(true)
+
+    ListPanel = dlist
 
     local bw, bh = 126, 25
 
@@ -772,9 +911,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
 
         -- temp table for sorting
         local paneltable = {}
-        for i = 0, 9 do
-            paneltable[i] = {}
-        end
 
         for k, item in pairs(itemlist) do
             local ic = nil
@@ -814,7 +950,7 @@ local function BuildWeaponConfig(dsheet, packName, tab)
                     -- Credit to @Angela and @Technofrood on the Lonely Yogs Discord for the fix!
                     -- Clamp the item slot within the correct limits
                     if ic.slot ~= nil then
-                        ic.slot = math.Clamp(ic.slot, 1, #paneltable)
+                        ic.slot = MathClamp(ic.slot, 1, 9)
                     end
 
                     slot:SetIconProperties(COLOR_WHITE,
@@ -903,37 +1039,11 @@ local function BuildWeaponConfig(dsheet, packName, tab)
             if not ItemIsWeapon(item) and (item.loadout or externalLoadout) then
                 ic:Remove()
             else
-                TableInsert(paneltable[ic.slot or 1], ic)
+                TableInsert(paneltable, ic)
             end
         end
 
-        local AddNameSortedItems = function(panels)
-            if GetConVar("ttt_sort_alphabetically"):GetBool() then
-                TableSort(panels, function(a, b) return StringLower(a.item.name) < StringLower(b.item.name) end)
-            end
-            for _, panel in pairs(panels) do
-                dlist:AddPanel(panel)
-            end
-        end
-
-        -- Add equipment items separately
-        AddNameSortedItems(paneltable[0])
-
-        if GetConVar("ttt_sort_by_slot_first"):GetBool() then
-            for i = 1, 9 do
-                AddNameSortedItems(paneltable[i])
-            end
-        else
-            -- Gather all the panels into one list
-            local panels = {}
-            for i = 1, 9 do
-                for _, p in pairs(paneltable[i]) do
-                    TableInsert(panels, p)
-                end
-            end
-
-            AddNameSortedItems(panels)
-        end
+        AddSortedPanels(paneltable)
 
         -- select first
         dlist:SelectPanel(dlist:GetItems()[1])

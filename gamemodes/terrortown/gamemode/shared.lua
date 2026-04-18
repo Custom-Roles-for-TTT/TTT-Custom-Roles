@@ -27,7 +27,7 @@ local Utf8Sub = utf8.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.4.4"
+CR_VERSION = "2.4.5"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -1704,6 +1704,9 @@ function GM:Move(ply, mv)
         mv:SetMaxClientSpeed(mv:GetMaxClientSpeed() * mul)
         mv:SetMaxSpeed(mv:GetMaxSpeed() * mul)
     end
+
+    -- Call base movement code
+    if drive.Move(ply, mv) then return true end
 end
 
 function UpdateRoleWeaponState()

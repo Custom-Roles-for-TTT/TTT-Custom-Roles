@@ -167,8 +167,8 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
         end
 
         if swapper_killer_swap:GetBool() then
-            attacker:MoveRoleState(victim)
             attacker:SetRole(ROLE_SWAPPER)
+            attacker:MoveRoleState(victim)
 
             local health = swapper_killer_health:GetInt()
             local attCupidSID = attacker:GetNWString("TTTCupidShooter", "")

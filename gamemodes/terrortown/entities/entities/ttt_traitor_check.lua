@@ -1,6 +1,8 @@
+local hook = hook
 local IsValid = IsValid
 local player = player
 
+local CallHook = hook.Call
 local PlayerIterator = player.Iterator
 
 ENT.Type = "brush"
@@ -28,7 +30,8 @@ function ENT:CountTraitors()
         if (IsValid(ply) and ply:Alive()) and
                 (ply:IsActiveTraitorTeam() or
                 (ply:IsActiveJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()) or
-                (ply:IsActiveIndependentTeam() and GetConVar("ttt_independents_trigger_traitor_testers"):GetBool())) then
+                (ply:IsActiveIndependentTeam() and GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()) or
+                (CallHook("TTTPlayerPassesTraitorCheck", nil, ply, self) == true)) then
             local pos = ply:GetPos()
             if VectorInside(pos, mins, maxs) then
                 trs = trs + 1
