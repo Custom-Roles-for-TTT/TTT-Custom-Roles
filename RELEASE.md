@@ -5,6 +5,7 @@
 
 ### Fixes
 - Ported "Fix drive system not working fully in TTT"
+- Fixed error using the roleweapons UI and the weapons tab of the rolepacks UI due to recent changes in shop sorting
 
 ### Developer
 - Added `TTTPlayerPassesTraitorCheck` to allow override traitor tester logic

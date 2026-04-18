@@ -14,13 +14,16 @@ local weapons = weapons
 
 ---- Traitor equipment menu
 
+local AddHook = hook.Add
 local CallHook = hook.Call
-local RunHook = hook.Run
-local GetWeapon = weapons.GetStored
-local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
+local GetTranslation = LANG.GetTranslation
+local GetWeapon = weapons.GetStored
+local MathClamp = math.Clamp
 local MathFloor = math.floor
 local MathRandom = math.random
+local RunHook = hook.Run
+local SafeTranslate = LANG.TryTranslation
 local StringFind = string.find
 local StringLower = string.lower
 local TableCopy = table.Copy
@@ -30,7 +33,6 @@ local TableMerge = table.Merge
 local TableRemove = table.remove
 local TableShuffle = table.Shuffle
 local TableSort = table.sort
-local SafeTranslate = LANG.TryTranslation
 
 -- BEM client convars and config menu
 local numColsVar = CreateClientConVar("ttt_bem_cols", 4, true, false, "Sets the number of columns in the Traitor/Detective menu's item list.")
@@ -45,7 +47,7 @@ local equipment_sorting = CreateClientConVar("ttt_equipment_sorting", "default",
 local equipment_ascending = CreateClientConVar("ttt_equipment_ascending", "1", true)
 local equipment_hide_unbuyable = CreateClientConVar("ttt_equipment_hide_unbuyable", "0", true)
 
-hook.Add("Initialize", "EquipmentMenu_Initialize", function()
+AddHook("Initialize", "EquipmentMenu_Initialize", function()
     LANG.AddToLanguage("english", "set_title_equipment", "Equipment/Shop settings")
     LANG.AddToLanguage("english", "set_label_equipment", "All changes made here are clientside and will only apply to your own menu!")
     LANG.AddToLanguage("english", "set_equipment_convar_slot", "Show slot marker")
@@ -54,7 +56,7 @@ hook.Add("Initialize", "EquipmentMenu_Initialize", function()
     LANG.AddToLanguage("english", "set_equipment_convar_loadout", "Show loadout items")
 end)
 
-hook.Add("TTTSettingsConfigTabSections", "EquipmentMenu_TTTSettingsConfigTabSections", function(dsettings)
+AddHook("TTTSettingsConfigTabSections", "EquipmentMenu_TTTSettingsConfigTabSections", function(dsettings)
     local dbemsettings = vgui.Create("DForm", dsettings)
     dbemsettings:Dock(TOP)
     dbemsettings:DockMargin(0, 0, 5, 10)
@@ -635,7 +637,7 @@ local function ForceCloseTraitorMenu()
 end
 concommand.Add("ttt_cl_traitorpopup_close", ForceCloseTraitorMenu)
 
-hook.Add("OnPauseMenuShow", "EquipMenu_OnPauseMenuShow", function()
+AddHook("OnPauseMenuShow", "EquipMenu_OnPauseMenuShow", function()
     -- If we needed to close the traitor menu, don't open the pause menu too
     if ForceCloseTraitorMenu() then
         return false
@@ -793,7 +795,7 @@ local function ReSortEquipment()
     AddSortedPanels(paneltable)
     ListPanel:InvalidateLayout()
 end
-hook.Add("TTTLanguageChanged", "TTT_ReSortEquipment", ReSortEquipment)
+AddHook("TTTLanguageChanged", "TTT_ReSortEquipment", ReSortEquipment)
 cvars.AddChangeCallback("ttt_equipment_sorting", ReSortEquipment)
 cvars.AddChangeCallback("ttt_equipment_ascending", ReSortEquipment)
 
@@ -1039,7 +1041,7 @@ local function TraitorMenuPopup()
                             -- Credit to @Angela and @Technofrood on the Lonely Yogs Discord for the fix!
                             -- Clamp the item slot within the correct limits
                             if ic.slot ~= nil then
-                                ic.slot = math.Clamp(ic.slot, 1, 9)
+                                ic.slot = MathClamp(ic.slot, 1, 9)
                             end
 
                             slot:SetIconProperties(COLOR_WHITE,
