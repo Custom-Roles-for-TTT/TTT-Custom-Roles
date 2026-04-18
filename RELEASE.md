@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.4.5 (Beta)
-**Released:**
+**Released: April 18th, 2026**
 
 ### Fixes
 - Ported "Fix drive system not working fully in TTT"
