@@ -810,8 +810,6 @@ local function BuildWeaponConfig(dsheet, packName, tab)
     dsearch:SetSize(sw, dsearchheight)
     dsearch:SetPlaceholderText("Search...")
     dsearch:SetUpdateOnType(true)
-    dsearch.OnGetFocus = function() dframe:SetKeyboardInputEnabled(true) end
-    dsearch.OnLoseFocus = function() dframe:SetKeyboardInputEnabled(false) end
 
     local dsort = vgui.Create("DPanel", dweapons)
     dsort:SetPos(sw + dsearchpadding, 0)
