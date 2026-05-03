@@ -94,67 +94,70 @@ hook.Add("TTTSelectRoles", "Twins_TTTSelectRoles", function()
 end)
 
 hook.Add("TTTBeginRound", "Twins_TTTBeginRound", function()
-    local goodTwins = {}
-    local evilTwins = {}
-    for _, p in player.Iterator() do
-        if p:IsGoodTwin() then
-            table.insert(goodTwins, p)
-        elseif p:IsEvilTwin() then
-            table.insert(evilTwins, p)
+    -- Delay this a frame so other hooks have a chance to change roles first
+    timer.Simple(0, function()
+        local goodTwins = {}
+        local evilTwins = {}
+        for _, p in player.Iterator() do
+            if p:IsGoodTwin() then
+                table.insert(goodTwins, p)
+            elseif p:IsEvilTwin() then
+                table.insert(evilTwins, p)
+            end
         end
-    end
 
-    -- If we don't have at least one of each twin at the start of the round, change them to regular innocents and traitors
-    if #goodTwins == 0 or #evilTwins == 0 then
-        for _, p in ipairs(goodTwins) do
-            p:SetRole(ROLE_INNOCENT)
+        -- If we don't have at least one of each twin at the start of the round, change them to regular innocents and traitors
+        if #goodTwins == 0 or #evilTwins == 0 then
+            for _, p in ipairs(goodTwins) do
+                p:SetRole(ROLE_INNOCENT)
+            end
+            for _, p in ipairs(evilTwins) do
+                p:SetRole(ROLE_TRAITOR)
+            end
+            SendFullStateUpdate()
+            return
+        end
+
+        local message
+
+        if #goodTwins == 1 then
+            message = goodTwins[1]:Nick() .. " is your " .. ROLE_STRINGS[ROLE_GOODTWIN] .. "."
+        else
+            message = "You have multiple " .. ROLE_STRINGS_PLURAL[ROLE_GOODTWIN] .. "! They are " .. util.FormattedList(goodTwins, function(ply) return ply:Nick() end) .. "."
         end
         for _, p in ipairs(evilTwins) do
-            p:SetRole(ROLE_TRAITOR)
-        end
-        SendFullStateUpdate()
-        return
-    end
-
-    local message
-
-    if #goodTwins == 1 then
-        message = goodTwins[1]:Nick() .. " is your " .. ROLE_STRINGS[ROLE_GOODTWIN] .. "."
-    else
-        message = "You have multiple " .. ROLE_STRINGS_PLURAL[ROLE_GOODTWIN] .. "! They are " .. util.FormattedList(goodTwins, function(ply) return ply:Nick() end) .. "."
-    end
-    for _, p in ipairs(evilTwins) do
-        p:QueueMessage(MSG_PRINTBOTH, message)
-        if #evilTwins >= 2 then
-            local fellowEvilTwins = table.Copy(evilTwins)
-            table.RemoveByValue(fellowEvilTwins, p)
-            if #fellowEvilTwins == 1 then
-                message = fellowEvilTwins[1]:Nick() .. " is a fellow " .. ROLE_STRINGS[ROLE_EVILTWIN] .. "!"
-            else
-                message = util.FormattedList(fellowEvilTwins, function(ply) return ply:Nick() end) .. " are fellow " .. ROLE_STRINGS_PLURAL[ROLE_EVILTWIN] .. "!"
-            end
             p:QueueMessage(MSG_PRINTBOTH, message)
-        end
-    end
-
-    if #evilTwins == 1 then
-        message = evilTwins[1]:Nick() .. " is your " .. ROLE_STRINGS[ROLE_EVILTWIN] .. "."
-    else
-        message = "You have multiple " .. ROLE_STRINGS_PLURAL[ROLE_EVILTWIN] .. "! They are " .. util.FormattedList(evilTwins, function(ply) return ply:Nick() end) .. "."
-    end
-    for _, p in ipairs(goodTwins) do
-        p:QueueMessage(MSG_PRINTBOTH, message)
-        if #goodTwins >= 2 then
-            local fellowGoodTwins = table.Copy(goodTwins)
-            table.RemoveByValue(fellowGoodTwins, p)
-            if #fellowGoodTwins == 1 then
-                message = fellowGoodTwins[1]:Nick() .. " is a fellow " .. ROLE_STRINGS[ROLE_GOODTWIN] .. "!"
-            else
-                message = util.FormattedList(fellowGoodTwins, function(ply) return ply:Nick() end) .. " are fellow " .. ROLE_STRINGS_PLURAL[ROLE_GOODTWIN] .. "!"
+            if #evilTwins >= 2 then
+                local fellowEvilTwins = table.Copy(evilTwins)
+                table.RemoveByValue(fellowEvilTwins, p)
+                if #fellowEvilTwins == 1 then
+                    message = fellowEvilTwins[1]:Nick() .. " is a fellow " .. ROLE_STRINGS[ROLE_EVILTWIN] .. "!"
+                else
+                    message = util.FormattedList(fellowEvilTwins, function(ply) return ply:Nick() end) .. " are fellow " .. ROLE_STRINGS_PLURAL[ROLE_EVILTWIN] .. "!"
+                end
+                p:QueueMessage(MSG_PRINTBOTH, message)
             end
-            p:QueueMessage(MSG_PRINTBOTH, message)
         end
-    end
+
+        if #evilTwins == 1 then
+            message = evilTwins[1]:Nick() .. " is your " .. ROLE_STRINGS[ROLE_EVILTWIN] .. "."
+        else
+            message = "You have multiple " .. ROLE_STRINGS_PLURAL[ROLE_EVILTWIN] .. "! They are " .. util.FormattedList(evilTwins, function(ply) return ply:Nick() end) .. "."
+        end
+        for _, p in ipairs(goodTwins) do
+            p:QueueMessage(MSG_PRINTBOTH, message)
+            if #goodTwins >= 2 then
+                local fellowGoodTwins = table.Copy(goodTwins)
+                table.RemoveByValue(fellowGoodTwins, p)
+                if #fellowGoodTwins == 1 then
+                    message = fellowGoodTwins[1]:Nick() .. " is a fellow " .. ROLE_STRINGS[ROLE_GOODTWIN] .. "!"
+                else
+                    message = util.FormattedList(fellowGoodTwins, function(ply) return ply:Nick() end) .. " are fellow " .. ROLE_STRINGS_PLURAL[ROLE_GOODTWIN] .. "!"
+                end
+                p:QueueMessage(MSG_PRINTBOTH, message)
+            end
+        end
+    end)
 end)
 
 ------------------
@@ -315,6 +318,8 @@ hook.Add("TTTPlayerRoleChanged", "Twins_TTTPlayerRoleChanged", function(ply, old
             ply:SetInvulnerable(false, true)
             ply:SetNWFloat("TTTTwinsInvulnerabilityEnd", 0)
         end
+
+        -- TODO: If there are now solo twins (e.g. only good or only evil) then reassign them to their base team roles
     end
 end)
 
