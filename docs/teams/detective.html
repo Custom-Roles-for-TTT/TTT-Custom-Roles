@@ -336,7 +336,8 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-marshal"></i><a href="#marshal">Marshal</a></span> can use their badge to turn a player into a <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a href="../teams/innocent.html#deputy">Deputy</a></span> or an <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="../teams/traitor.html#impersonator">Impersonator</a></span>.</p>
                 <div class="expansion">
-                    <p>The Marshal is given a deputy badge as part of their loadout which can be used to convert players into either a Deputy or an Impersonator. If the badge is used on a member of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> that player will become a Deputy, and if it is used on a member of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> that player will become an Impersonator.</p>
+                    <p>The Marshal is given a deputy badge as part of their loadout which can be used to convert players into either a Deputy or an Impersonator but this can be disabled via the <code>ttt_marshal_badge_loadout</code> ConVar.</p>
+                    <p>If the badge is used on a member of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> that player will become a Deputy, and if it is used on a member of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> that player will become an Impersonator.</p>
                     <p>If the badge is used on any other player, there is a chance for that player to become either a Deputy or an Impersonator. This chance can be configured independently for each team with the ConVars below.</p>
                     <p>The Marshal has access to a shop containing a small handful of useful items. However, if the <code>ttt_marshal_shop_sync</code> ConVar is enabled the Marshal will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
@@ -361,6 +362,24 @@
                             <td>1</td>
                             <td>Boolean</td>
                             <td>Whether to only spawn the marshal when there isn't already a deputy or impersonator in the round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_badge_loadout <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Marshal's badge should be given to them when they spawn. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_badge_shop <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Marshal's badge should be purchasable in the shop. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_badge_shop_rebuyable <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Marshal's badge should be purchaseable multiple times. <i>(Requires <code>ttt_hypnotist_device_shop</code> to be enabled. Server must be restarted for changes to take effect.)</i></td>
                         </tr>
                         <tr>
                             <td>ttt_marshal_badge_time</td>

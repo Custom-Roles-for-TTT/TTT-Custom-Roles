@@ -3,6 +3,9 @@
 ## 2.4.6 (Beta)
 **Released:**
 
+### Additions
+- Added ability for Marshal to buy their deputizing badge from the shop (disabled by default)
+
 ### Fixes
 - Fixed single Twin being left in a round if their sibling's role was changed immediately on role start (by a Randomat, for example)
 - Ported "Fix DrawModel flags for base game entities" from base TTT
