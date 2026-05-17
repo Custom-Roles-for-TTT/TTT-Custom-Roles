@@ -253,7 +253,7 @@ hook.Add("TTTPlayerRoleChanged", "Twins_TTTPlayerRoleChanged", function(ply, old
         local evilTwins = {}
         local otherTwins = {}
         for _, p in player.Iterator() do
-            if not p:IsActive() then continue end
+            if not p:IsActiveTwin() then continue end
 
             if p ~= ply then
                 table.insert(otherTwins, p)

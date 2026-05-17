@@ -8,6 +8,7 @@
 
 ### Fixes
 - Fixed single Twin being left in a round if their sibling's role was changed immediately on role start (by a Randomat, for example)
+- Fixed all players being notified when a player becomes a twin in the middle of the round
 - Ported "Fix DrawModel flags for base game entities" from base TTT
 
 ## 2.4.5 (Beta)
