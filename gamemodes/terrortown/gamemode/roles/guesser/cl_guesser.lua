@@ -1,3 +1,4 @@
+local halo = halo
 local hook = hook
 local string = string
 
