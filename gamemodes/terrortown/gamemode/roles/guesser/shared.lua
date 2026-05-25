@@ -15,7 +15,7 @@ GUESSER_SCANNED_OUTLINE = 3
 CreateConVar("ttt_guesser_can_guess_detectives", "0", FCVAR_REPLICATED, "Whether the guesser is allowed to guess detectives", 0, 1)
 CreateConVar("ttt_guesser_show_team_threshold", "50", FCVAR_REPLICATED, "The amount of damage that needs to be dealt to a guesser before they learn your team", 1, 200)
 CreateConVar("ttt_guesser_show_role_threshold", "100", FCVAR_REPLICATED, "The amount of damage that needs to be dealt to a guesser before they learn your role", 1, 200)
-CreateConVar("ttt_guesser_show_outline", "150", FCVAR_REPLICATED, "The amount of damage that needs to be dealt to a guesser before they can see your outline", 1, 200)
+CreateConVar("ttt_guesser_show_outline_threshold", "150", FCVAR_REPLICATED, "The amount of damage that needs to be dealt to a guesser before they can see your outline", 1, 200)
 CreateConVar("ttt_guesser_warn_all", "0", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_GUESSER] = {}
