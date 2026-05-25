@@ -2,8 +2,10 @@ local hook = hook
 local string = string
 
 local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local StringUpper = string.upper
 local Utf8Upper = utf8.upper
+local PlayerIterator = player.Iterator
 
 -------------
 -- CONVARS --
@@ -11,6 +13,7 @@ local Utf8Upper = utf8.upper
 
 local guesser_show_team_threshold = GetConVar("ttt_guesser_show_team_threshold")
 local guesser_show_role_threshold = GetConVar("ttt_guesser_show_role_threshold")
+local guesser_show_outline_threshold = GetConVar("ttt_guesser_show_outline")
 local guesser_can_guess_detectives = GetConVar("ttt_guesser_can_guess_detectives")
 local guesser_warn_all = GetConVar("ttt_guesser_warn_all")
 local glitch_mode = GetConVar("ttt_glitch_mode")
@@ -130,11 +133,13 @@ end
 
 local function GetScanState(ply)
     local damage = ply:GetNWFloat("TTTGuesserDamageDealt", 0)
-    local state = GUESSER_SCANNED_ROLE
+    local state = GUESSER_SCANNED_OUTLINE
     if damage < guesser_show_team_threshold:GetInt() then
         state = GUESSER_UNSCANNED
     elseif damage < guesser_show_role_threshold:GetInt() then
         state = GUESSER_SCANNED_TEAM
+    elseif damage < guesser_show_outline_threshold:GetInt() then
+        state = GUESSER_SCANNED_ROLE
     end
     return state
 end
@@ -155,7 +160,7 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Guesser_TTTTargetIDPlayerRoleIcon", funct
         newRole = ROLE_NONE
     end
 
-    if state == GUESSER_SCANNED_ROLE then
+    if state == GUESSER_SCANNED_ROLE or state == GUESSER_SCANNED_OUTLINE then
         newColorRole = ply:GetRole()
         newRole = ply:GetRole()
     end
@@ -177,7 +182,7 @@ hook.Add("TTTTargetIDPlayerRing", "Guesser_TTTTargetIDPlayerRing", function(ent,
     if state == GUESSER_SCANNED_TEAM then
         newColor = ROLE_COLORS_RADAR[GetTeamRole(ent, cli)]
         newRingVisible = true
-    elseif state == GUESSER_SCANNED_ROLE then
+    elseif state == GUESSER_SCANNED_ROLE or state == GUESSER_SCANNED_OUTLINE then
         newColor = ROLE_COLORS_RADAR[ent:GetRole()]
         newRingVisible = true
     end
@@ -222,7 +227,7 @@ hook.Add("TTTTargetIDPlayerText", "Guesser_TTTTargetIDPlayerText", function(ent,
         if not (TRAITOR_ROLES[role] and not GetGlobalBool("ttt_glitch_round", false)) then
             newText = PT(labelName, { targettype = StringUpper(labelParam) })
         end
-    elseif state == GUESSER_SCANNED_ROLE then
+    elseif state == GUESSER_SCANNED_ROLE or state == GUESSER_SCANNED_OUTLINE then
         newColor = ROLE_COLORS_RADAR[ent:GetRole()]
         newText = Utf8Upper(ROLE_STRINGS[ent:GetRole()])
     end
@@ -267,7 +272,7 @@ hook.Add("TTTScoreboardPlayerRole", "Guesser_TTTScoreboardPlayerRole", function(
     if state == GUESSER_SCANNED_TEAM then
         newColor = ROLE_COLORS_SCOREBOARD[GetTeamRole(ply, cli)]
         newRoleStr = "nil"
-    elseif state == GUESSER_SCANNED_ROLE then
+    elseif state == GUESSER_SCANNED_ROLE or state == GUESSER_SCANNED_OUTLINE then
         newColor = ROLE_COLORS_SCOREBOARD[ply:GetRole()]
         newRoleStr = ROLE_STRINGS_SHORT[ply:GetRole()]
     end
@@ -324,6 +329,63 @@ AddHook("TTTHUDInfoPaint", "Guesser_TTTHUDInfoPaint", function(client, label_lef
         table.insert(active_labels, "guesser")
     end
 end)
+
+------------------
+-- HIGHLIGHTING --
+------------------
+
+local vision_enabled = false
+local client = nil
+
+local function EnableGuesserTargetHighlights()
+    hook.Add("PreDrawHalos", "Guesser_Highlight_PreDrawHalos", function()
+        local targets = {}
+        for _, v in PlayerIterator() do
+            if IsValid(v) and v:IsActive() and v ~= client and GetScanState(v) == GUESSER_SCANNED_OUTLINE then
+                table.insert(targets, v)
+            end
+        end
+
+        if #targets == 0 then return end
+
+        halo.Add(targets, ROLE_COLORS[ROLE_GUESSER], 1, 1, 1, true, true)
+    end)
+end
+
+hook.Add("TTTUpdateRoleState", "Guesser_Highlight_TTTUpdateRoleState", function()
+    client = LocalPlayer()
+
+    -- Disable highlights on role change
+    if vision_enabled then
+        RemoveHook("PreDrawHalos", "Guesser_Highlight_PreDrawHalos")
+        vision_enabled = false
+    end
+end)
+
+hook.Add("Think", "Guesser_Highlight_Think", function()
+    if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
+
+    if client:IsGuesser() and not client:IsRoleAbilityDisabled() then
+        if not vision_enabled then
+            EnableGuesserTargetHighlights()
+            vision_enabled = true
+        end
+    else
+        vision_enabled = false
+    end
+
+    if not vision_enabled then
+        RemoveHook("PreDrawHalos", "Guesser_Highlight_PreDrawHalos")
+    end
+end)
+
+ROLE_IS_TARGET_HIGHLIGHTED[ROLE_GUESSER] = function(ply, target)
+    if not ply:IsGuesser() then return end
+    if not IsPlayer(target) then return end
+    if ply:IsRoleAbilityDisabled() then return end
+
+    return GetScanState(target) == GUESSER_SCANNED_OUTLINE
+end
 
 --------------
 -- TUTORIAL --
