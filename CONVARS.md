@@ -561,6 +561,9 @@ ttt_marshal_monster_deputy_chance              0.5     // The chance that a mons
 ttt_marshal_announce_deputy                    1       // Whether a player being deputized will be announced to everyone
 ttt_marshal_prevent_deputy                     1       // Whether to only spawn the Marshal when there isn't already a Deputy or Impersonator in the round
 ttt_marshal_badge_time                         8       // The amount of time (in seconds) the Marshal's badge takes to use
+ttt_marshal_badge_loadout                      1       // Whether the Marshal's badge should be given to them when they spawn. Server must be restarted for changes to take effect   
+ttt_marshal_badge_shop                         0       // Whether the Marshal's badge should be purchasable in the shop. Server must be restarted for changes to take effect
+ttt_marshal_badge_shop_rebuyable               0       // Whether the Marshal's badge should be purchaseable multiple times (requires "ttt_marshal_badge_shop" to be enabled). Server must be restarted for changes to take effect
 ttt_marshal_credits_starting                   1       // The number of credits a Marshal should start with
 
 // Quartermaster
@@ -765,7 +768,7 @@ ttt_cannibal_damage_penalty                    0       // The fraction a Canniba
 ttt_cannibal_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Cannibal (Only applies if ttt_cannibal_is_independent is enabled)
 ttt_cannibal_update_scoreboard                 0       // Whether the Cannibal shows dead players as missing in action (Only applies if ttt_cannibal_is_independent is enabled)
 ttt_cannibal_gains_health                      0       // Whether the Cannibal gains their victim's health when eating them
-ttt_cannibal_gained_health_percentage          100     // What percentage of their victim's health the Cannibal gains. Set to 0 to always gain a flat 100HP (Only applies if ttt_cannibal_gains_health is enabled)
+ttt_cannibal_gained_health_percentage          15      // What percentage of their victim's health the Cannibal gains. Set to 0 to always gain a flat 100HP (Only applies if ttt_cannibal_gains_health is enabled)
 ttt_cannibal_digestion                         0       // Whether the Cannibal digests and permanently kills their victims over time
 ttt_cannibal_digestion_time                    30      // How long in seconds a victim takes to be digested when eaten. Set to 0 for immediate digestion (Only applies if ttt_cannibal_digestion is enabled)
 ttt_cannibal_digestion_poop                    1       // Whether the Cannibal drops poop when a victim is digested (Only applies if ttt_cannibal_digestion is enabled)
@@ -1336,6 +1339,8 @@ ttt_scoreboard_score                           0       // Whether to show the sc
 ttt_round_summary_tabs                         summary,hilite,events,scores // The tabs to show in the round summary screen. Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Round must be restarted for changes to take effect
 
 // Misc.
+ttt_disable_headshots                          0       // Whether to disable the headshot damage multiplier
+ttt_disable_mapwin                             0       // Whether to disable the ability for maps to set the round winner directly
 ttt_death_notifier_enabled                     1       // Whether the name and role of a player's killer should be shown to the victim
 ttt_death_notifier_show_role                   1       // Whether to show the killer's role in death notification messages
 ttt_death_notifier_show_team                   0       // Whether to show the killer's team in death notification messages (only used when "ttt_death_notifier_show_role" is disabled)

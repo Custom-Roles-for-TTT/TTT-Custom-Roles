@@ -189,7 +189,11 @@ if CLIENT then
         local bright = crosshair_brightness:GetFloat() or 1
 
         gap = gap or math.floor(20 * scale * (sights and 0.8 or 1))
-        local length = math.floor(gap + (25 * crosshair_size:GetFloat()) * scale)
+        local size = crosshair_size:GetFloat()
+        if client.GetSprinting and client:GetSprinting() then
+            size = size + 1
+        end
+        local length = math.floor(gap + (25 * size) * scale)
 
         local thickness = math.max(1, crosshair_thickness:GetInt())
         local rect = thickness > 1

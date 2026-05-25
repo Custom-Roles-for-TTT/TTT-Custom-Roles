@@ -39,6 +39,9 @@ local function ReleaseEatenPlayers(ply, message)
             v:DrawViewModel(true)
             v:DrawWorldModel(true)
             v:SetNoDraw(false)
+            if IsValid(v.hat) then
+                v.hat:SetNoDraw(false)
+            end
             v:Spawn()
             local pos = ply:GetPos()
             v:SetPos(FindRespawnLocation(pos) or pos)

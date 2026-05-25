@@ -261,8 +261,8 @@ if CLIENT then
         return current_fov - (self.AimMult2 * self.AimFOV)
     end
 
-    function SWEP:DrawWorldModelTranslucent()
-        self:DrawModel()
+    function SWEP:DrawWorldModelTranslucent(flags)
+        self:DrawModel(flags)
     end
 
     function SWEP:AdjustMouseSensitivity()

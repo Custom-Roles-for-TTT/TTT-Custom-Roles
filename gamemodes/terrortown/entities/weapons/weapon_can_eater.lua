@@ -38,7 +38,7 @@ SWEP.InLoadoutForDefault    = {ROLE_CANNIBAL}
 
 SWEP.DeviceCooldownConVar = CreateConVar("ttt_cannibal_eat_cooldown", "10", FCVAR_REPLICATED, "The amount of time (in seconds) between uses of the Cannibal's Cannibalizer", 0, 60)
 SWEP.GainsHealthConVar = CreateConVar("ttt_cannibal_gains_health", "0", FCVAR_REPLICATED, "Whether the Cannibal gains their victim's health when eating them", 0, 1)
-SWEP.GainedHealthPercentageConVar = CreateConVar("ttt_cannibal_gained_health_percentage", "100", FCVAR_REPLICATED, "What percentage of their victim's health the Cannibal gains (set to 0 to always gain a flat 100HP)", 0, 500)
+SWEP.GainedHealthPercentageConVar = CreateConVar("ttt_cannibal_gained_health_percentage", "15", FCVAR_REPLICATED, "What percentage of their victim's health the Cannibal gains (set to 0 to always gain a flat 100HP)", 0, 500)
 SWEP.DigestionConVar = CreateConVar("ttt_cannibal_digestion", "0", FCVAR_REPLICATED, "Whether the Cannibal digests and permanently kills their victims over time", 0, 1)
 SWEP.DigestionTimeConVar = CreateConVar("ttt_cannibal_digestion_time", "30", FCVAR_REPLICATED, "How long in seconds a victim takes to be digested when eaten (set to 0 for immediate digestion)", 0, 300)
 
@@ -124,6 +124,9 @@ function SWEP:PrimaryAttack()
         hitEnt:SpectateEntity(owner)
         hitEnt:DrawViewModel(false)
         hitEnt:DrawWorldModel(false)
+        if IsValid(hitEnt.hat) then
+            hitEnt.hat:SetNoDraw(true)
+        end
 
         local sID64 = hitEnt:SteamID64()
 
@@ -154,33 +157,31 @@ function SWEP:PrimaryAttack()
 
         -- Cannibal health gain
         if self.GainsHealthConVar:GetBool() then
-            local gainedhealthpercentage = self.GainedHealthPercentageConVar:GetInt()
-            local victimhealth = hitEnt:Health()
-            local cannibalhealth = owner:Health()
+            local gained_health_percentage = self.GainedHealthPercentageConVar:GetInt()
+            local victimHealth = hitEnt:Health()
+            local cannibalHealth = owner:Health()
 
-            local gainedhealth
-            if gainedhealthpercentage == 0 then
-                gainedhealth = 100
+            local gainedHealth
+            if gained_health_percentage == 0 then
+                gainedHealth = 100
             else
-                local gainedhealthunrounded = (gainedhealthpercentage / 100) * victimhealth
-                gainedhealth = math.floor(gainedhealthunrounded)
+                gainedHealth = math.floor((gained_health_percentage / 100) * victimHealth)
             end
 
-            local newcannibalhealth = cannibalhealth + gainedhealth
-            if newcannibalhealth > cannibalhealth then
-                owner:SetHealth(newcannibalhealth)
+            if gainedHealth > 0 then
+                owner:SetHealth(cannibalHealth + gainedHealth)
             end
         end
 
         -- Victim digestion
         if self.DigestionConVar:GetBool() then
-            local digestiontime = self.DigestionTimeConVar:GetInt()
+            local digestion_time = self.DigestionTimeConVar:GetInt()
             -- Ensure there's a short delay to allow time for the vars to be set first
-            if digestiontime == 0 then
-                digestiontime = 0.1
+            if digestion_time == 0 then
+                digestion_time = 0.1
             end
 
-            timer.Create("TTTCannibalDigestion_" .. sID64, digestiontime, 1, function()
+            timer.Create("TTTCannibalDigestion_" .. sID64, digestion_time, 1, function()
                 if not IsPlayer(hitEnt) then return end
                 if not IsPlayer(owner) then return end
 
@@ -223,11 +224,11 @@ function SWEP:PrimaryAttack()
     end
 end
 
-function SWEP:DrawWorldModel()
+function SWEP:DrawWorldModel(flags)
     return false
 end
 
-function SWEP:DrawWorldModelTranslucent()
+function SWEP:DrawWorldModelTranslucent(flags)
     return false
 end
 
