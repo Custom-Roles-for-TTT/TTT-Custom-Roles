@@ -858,7 +858,7 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-guesser"></i><a href="#guesser">Guesser</a></span> must guess another player's role to swap roles with them. If they guess wrong, they die.</p>
                 <div class="expansion">
-                    <p>The Guesser is immune to almost all forms of damage. However as players attempt to deal damage to the Guesser, the attacker's team and role will be revealed to the Guesser after an amount of damage determined by <code>ttt_guesser_show_team_threshold</code> and <code>ttt_guesser_show_role_threshold</code> has been prevented.</p>
+                    <p>The Guesser is immune to almost all forms of damage. However as players attempt to deal damage to the Guesser, the attacker's team, role and location will be revealed to the Guesser after an amount of damage determined by <code>ttt_guesser_show_team_threshold</code>, <code>ttt_guesser_show_role_threshold</code> and <code>ttt_guesser_show_outline_threshold</code> has been prevented.</p>
                     <p>The Guesser is unable to guess <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span> unless <code>ttt_guesser_can_guess_detectives</code> is enabled. They are also unable to guess the <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="#loot-goblin">Loot Goblin</a></span> or the <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span> by default, but this list of unguessable roles can be configured with <code>ttt_guesser_unguessable_roles</code> as detailed in the ConVars table below.</p>
                     <p>Players will be notified if there is a Guesser at the start of the round if <code>ttt_guesser_warn_all</code> is enabled.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
@@ -885,6 +885,12 @@
                             <td>The minimum radius of the Guesser's device in meters. <i>(Set to 0 to disable.)</i></td>
                         </tr>
                         <tr>
+                            <td>ttt_guesser_show_outline_threshold <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></td>
+                            <td>150</td>
+                            <td>Integer</td>
+                            <td>The amount of damage that needs to be dealt to a Guesser before they can see the attacker's outline.</td>
+                        </tr>
+                        <tr>
                             <td>ttt_guesser_show_role_threshold</td>
                             <td>100</td>
                             <td>Integer</td>
@@ -896,6 +902,7 @@
                             <td>Integer</td>
                             <td>The amount of damage that needs to be dealt to a Guesser before they learn the attacker's team.</td>
                         </tr>
+                    
                         <tr>
                             <td>ttt_guesser_unguessable_roles</td>
                             <td>"lootgoblin,zombie"</td>
