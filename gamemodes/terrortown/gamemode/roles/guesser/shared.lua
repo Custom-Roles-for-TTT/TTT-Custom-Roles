@@ -61,7 +61,7 @@ table.insert(ROLE_CONVARS[ROLE_GUESSER], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_show_outline",
+    cvar = "ttt_guesser_show_outline_threshold",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
