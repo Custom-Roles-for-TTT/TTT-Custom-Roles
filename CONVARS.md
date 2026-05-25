@@ -750,6 +750,7 @@ ttt_guesser_can_guess_detectives               0       // Whether the Guesser is
 ttt_guesser_minimum_radius                     5       // The minimum radius of the Guesser's device in meters. Set to 0 to disable
 ttt_guesser_show_team_threshold                50      // The amount of damage that needs to be dealt to a Guesser before they learn the attacker's team
 ttt_guesser_show_role_threshold                100     // The amount of damage that needs to be dealt to a Guesser before they learn the attacker's role
+ttt_guesser_show_outline_threshold             150     // The amount of damage that needs to be dealt to a Guesser before they can see the attacker's outline
 ttt_guesser_notify_mode                        0       // The logic to use when notifying players that a Guesser was killed. Killer is notified unless "ttt_guesser_notify_killer" is disabled. 0 - Don't notify anyone. 1 - Only notify traitors and detectives. 2 - Only notify traitors. 3 - Only notify detectives. 4 - Notify everyone
 ttt_guesser_notify_killer                      1       // Whether to notify a Guesser's killer
 ttt_guesser_notify_sound                       0       // Whether to play a cheering sound when a Guesser is killed

@@ -5,6 +5,7 @@
 
 ### Additions
 - Added ability for Marshal to buy their deputizing badge from the shop (disabled by default)
+- Added ability for a Guesser to see a player's outline after they've received a certain amount of damage (default 150)
 
 ### Fixes
 - Fixed single Twin being left in a round if their sibling's role was changed immediately on role start (by a Randomat, for example)
