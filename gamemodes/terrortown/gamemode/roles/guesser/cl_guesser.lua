@@ -1,6 +1,9 @@
 local halo = halo
 local hook = hook
+local player = player
 local string = string
+local table = table
+local utf8 = utf8
 
 local AddHook = hook.Add
 local RemoveHook = hook.Remove
