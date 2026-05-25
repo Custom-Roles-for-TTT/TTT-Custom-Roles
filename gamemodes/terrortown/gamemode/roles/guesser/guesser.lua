@@ -22,7 +22,7 @@ CreateConVar("ttt_guesser_notify_confetti", "0", FCVAR_NONE, "Whether to throw c
 
 local guesser_show_team_threshold = GetConVar("ttt_guesser_show_team_threshold")
 local guesser_show_role_threshold = GetConVar("ttt_guesser_show_role_threshold")
-local guesser_show_outline_threshold = GetConVar("ttt_guesser_show_outline")
+local guesser_show_outline_threshold = GetConVar("ttt_guesser_show_outline_threshold")
 local guesser_can_guess_detectives = GetConVar("ttt_guesser_can_guess_detectives")
 local guesser_warn_all = GetConVar("ttt_guesser_warn_all")
 
