@@ -7,9 +7,10 @@ local utf8 = utf8
 
 local AddHook = hook.Add
 local RemoveHook = hook.Remove
-local StringUpper = string.upper
-local Utf8Upper = utf8.upper
 local PlayerIterator = player.Iterator
+local StringUpper = string.upper
+local TableInsert = table.insert
+local Utf8Upper = utf8.upper
 
 -------------
 -- CONVARS --
