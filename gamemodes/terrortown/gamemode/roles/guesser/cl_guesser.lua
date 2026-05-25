@@ -346,7 +346,7 @@ local function EnableGuesserTargetHighlights()
         local targets = {}
         for _, v in PlayerIterator() do
             if IsValid(v) and v:IsActive() and v ~= client and GetScanState(v) == GUESSER_SCANNED_OUTLINE then
-                table.insert(targets, v)
+                TableInsert(targets, v)
             end
         end
 
