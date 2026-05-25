@@ -10,6 +10,13 @@ if CLIENT then
     SWEP.PrintName          = "Deputy Badge"
     SWEP.Slot               = 8
 
+    SWEP.EquipMenuData = {
+        type = "item_weapon",
+        desc = "Deputizes a target player."
+    }
+
+    SWEP.Icon = "vgui/ttt/icon_marshalbadge"
+
     SWEP.ViewModelFOV       = 60
     SWEP.DrawCrosshair      = false
     SWEP.ViewModelFlip      = false

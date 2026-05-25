@@ -224,11 +224,11 @@ function SWEP:PrimaryAttack()
     end
 end
 
-function SWEP:DrawWorldModel()
+function SWEP:DrawWorldModel(flags)
     return false
 end
 
-function SWEP:DrawWorldModelTranslucent()
+function SWEP:DrawWorldModelTranslucent(flags)
     return false
 end
 
