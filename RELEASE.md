@@ -6,6 +6,9 @@
 ### Additions
 - Added ability for Marshal to buy their deputizing badge from the shop (disabled by default)
 
+### Changes
+- Ported "TTT: Use replicated convars instead of global nwvars" from base TTT
+
 ### Fixes
 - Fixed single Twin being left in a round if their sibling's role was changed immediately on role start (by a Randomat, for example)
 - Fixed all players being notified when a player becomes a twin in the middle of the round

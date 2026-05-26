@@ -147,7 +147,9 @@ function GM:HUDClear()
 end
 
 KARMA = {}
-function KARMA.IsEnabled() return GetGlobalBool("ttt_karma", false) end
+
+local ttt_karma = CreateConVar("ttt_karma", "1", FCVAR_REPLICATED)
+function KARMA.IsEnabled() return ttt_karma:GetBool() end
 
 function GetRoundState() return GAMEMODE.round_state end
 
@@ -496,6 +498,7 @@ function GM:Tick()
 end
 
 -- Simple client-based idle checking
+local ttt_idle_limit = CreateConVar("ttt_idle_limit", "180", FCVAR_REPLICATED)
 local idle = { ang = nil, pos = nil, mx = 0, my = 0, t = 0 }
 function CheckIdle()
     local client = LocalPlayer()
@@ -514,9 +517,8 @@ function CheckIdle()
 
     -- Player is alive, not a spectator, and round is active
     if client:IsActive() then
-        local idle_limit = GetGlobalInt("ttt_idle_limit", 300) or 300
-        if idle_limit <= 0 then idle_limit = 300 end -- networking sucks sometimes
-
+        local idle_limit = ttt_idle_limit:GetInt()
+        if idle_limit <= 0 then return end
 
         if client:GetAngles() ~= idle.ang then
             -- Normal players will move their viewing angles all the time
