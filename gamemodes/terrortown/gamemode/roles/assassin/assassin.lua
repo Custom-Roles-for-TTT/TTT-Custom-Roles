@@ -7,6 +7,8 @@ local player = player
 local table = table
 local timer = timer
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -194,7 +196,7 @@ local function ValidTarget(role)
     return true
 end
 
-hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+local function Assassin_Target_TTTPlayerRoleChanged(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
 
     -- If this player is no longer an assassin, clear out their target
@@ -209,27 +211,27 @@ hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", functio
     if ValidTarget(oldRole) and not ValidTarget(newRole) then
         UpdateAssassinTargets(ply)
     end
-end)
+end
 
-hook.Add("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", function(ply)
+local function Assassin_TTTOnRoleAbilityEnabled(ply)
     if not IsPlayer(ply) or not ply:IsAssassin() then return end
 
     if ply:SetNWString("AssassinTarget", "") == "" then
         AssignAssassinTarget(ply, false, true)
     end
-end)
+end
 
-hook.Add("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", function(ply, traitor)
+local function Assassin_TTTTurncoatTeamChanged(ply, traitor)
     -- Independent Assassins aren't allied with the Turncoat so we know they can still be a target even if they are a traitor now
     if INDEPENDENT_ROLES[ROLE_ASSASSIN] then return end
     if not IsPlayer(ply) then return end
 
     -- Update any assassin targets since this player isn't a threat anymore
     UpdateAssassinTargets(ply)
-end)
+end
 
 -- Handle an assassin becoming the lover of their target
-hook.Add("TTTCupidLoversChosen", "Assassin_TTTCupidLoversChosen", function(cupid, lover1, lover2)
+local function Assassin_TTTCupidLoversChosen(cupid, lover1, lover2)
     if not IsPlayer(lover1) then return end
     if not IsPlayer(lover2) then return end
 
@@ -240,9 +242,9 @@ hook.Add("TTTCupidLoversChosen", "Assassin_TTTCupidLoversChosen", function(cupid
     if lover2:IsAssassin() and lover2:GetNWString("AssassinTarget", "") == lover1:SteamID64() then
         UpdateAssassinTargets(lover1, "You fell in love with your target.", "Final target seduced.")
     end
-end)
+end
 
-hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmginfo)
+local function Assassin_DoPlayerDeath(ply, attacker, dmginfo)
     if not IsValid(ply) then return end
 
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
@@ -266,10 +268,10 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
     end
 
     UpdateAssassinTargets(ply)
-end)
+end
 
 -- Clear the assassin target information when the next round starts
-hook.Add("TTTPrepareRound", "Assassin_Target_PrepareRound", function()
+AddHook("TTTPrepareRound", "Assassin_Target_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWString("AssassinTarget", "")
         v:SetNWBool("AssassinFailed", false)
@@ -278,16 +280,11 @@ hook.Add("TTTPrepareRound", "Assassin_Target_PrepareRound", function()
     end
 end)
 
--- Update assassin target when a player disconnects
-hook.Add("PlayerDisconnected", "Assassin_Target_PlayerDisconnected", function(ply)
-    UpdateAssassinTargets(ply)
-end)
-
 ------------
 -- DAMAGE --
 ------------
 
-hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Assassin_ScalePlayerDamage(ply, hitgroup, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(ply) then return end
 
@@ -321,13 +318,13 @@ hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgro
     if scale == 0 then return end
 
     dmginfo:ScaleDamage(1 + scale)
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTCheckForWin", "Assassin_TTTCheckForWin", function()
+local function Assassin_TTTCheckForWin()
     -- Only run the win check if the assassin wins by themselves
     if not INDEPENDENT_ROLES[ROLE_ASSASSIN] then return end
 
@@ -348,22 +345,22 @@ hook.Add("TTTCheckForWin", "Assassin_TTTCheckForWin", function()
     elseif assassin_alive then
         return WIN_NONE
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage", function(type)
+local function Assassin_TTTPrintResultMessage(type)
     if type == WIN_ASSASSIN then
         LANG.Msg("win_assassin", { role = ROLE_STRINGS[ROLE_ASSASSIN] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " wins.\n")
         return true
     end
-end)
+end
 
 -----------------------
 -- PLAYER VISIBILITY --
 -----------------------
 
 -- Add the target player to the PVS for the assassin if highlighting or Kill icon are enabled
-hook.Add("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility", function(ply)
+local function Assassin_SetupPlayerVisibility(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveAssassin() then return end
     if not assassin_target_vision_enabled:GetBool() and not assassin_show_target_icon:GetBool() then return end
@@ -381,4 +378,49 @@ hook.Add("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility", function(ply
         -- Assassins can only have one target so if we found them don't bother looping anymore
         break
     end
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+local function Register()
+    AddHook("DoPlayerDeath", "Assassin_DoPlayerDeath", Assassin_DoPlayerDeath)
+    -- Update assassin target when a player disconnects
+    AddHook("PlayerDisconnected", "Assassin_Target_PlayerDisconnected", UpdateAssassinTargets)
+    AddHook("ScalePlayerDamage", "Assassin_ScalePlayerDamage", Assassin_ScalePlayerDamage)
+    AddHook("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility", Assassin_SetupPlayerVisibility)
+    AddHook("TTTCheckForWin", "Assassin_TTTCheckForWin", Assassin_TTTCheckForWin)
+    AddHook("TTTCupidLoversChosen", "Assassin_TTTCupidLoversChosen", Assassin_TTTCupidLoversChosen)
+    AddHook("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", Assassin_TTTOnRoleAbilityEnabled)
+    AddHook("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", Assassin_Target_TTTPlayerRoleChanged)
+    AddHook("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage", Assassin_TTTPrintResultMessage)
+    AddHook("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", Assassin_TTTTurncoatTeamChanged)
+end
+
+local function Unregister()
+    RemoveHook("DoPlayerDeath", "Assassin_DoPlayerDeath")
+    RemoveHook("PlayerDisconnected", "Assassin_Target_PlayerDisconnected")
+    RemoveHook("ScalePlayerDamage", "Assassin_ScalePlayerDamage")
+    RemoveHook("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility")
+    RemoveHook("TTTCheckForWin", "Assassin_TTTCheckForWin")
+    RemoveHook("TTTCupidLoversChosen", "Assassin_TTTCupidLoversChosen")
+    RemoveHook("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled")
+    RemoveHook("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged")
+    RemoveHook("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage")
+    RemoveHook("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged")
+end
+
+AddHook("TTTPlayerRoleChanged", "Assassin_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == newRole then return end
+
+    if oldRole == ROLE_ASSASSIN then
+        Unregister()
+    elseif newRole == ROLE_ASSASSIN then
+        Register()
+    end
+end)
+AddHook("TTTPrepareRound", "Assassin_Registration_TTTPrepareRound", function()
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, Unregister)
 end)
