@@ -534,7 +534,11 @@ end
 -- REGISTRATION --
 ------------------
 
+local registered = 0
 local function Register()
+    registered = registered + 1
+    if registered ~= 1 then return end
+
     AddHook("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", Beggar_TTTTutorialRoleText)
     AddHook("HUDPaint", "Beggar_HUDPaint", Beggar_HUDPaint)
     AddHook("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", Beggar_TTTHUDInfoPaint)
@@ -548,6 +552,9 @@ local function Register()
 end
 
 local function Unregister()
+    registered = registered - 1
+    if registered ~= 0 then return end
+
     RemoveHook("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText")
     RemoveHook("HUDPaint", "Beggar_HUDPaint")
     RemoveHook("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint")
@@ -575,5 +582,8 @@ AddHook("TTTPlayerRoleChanged", "Beggar_Registration_TTTPlayerRoleChanged", func
 end)
 AddHook("TTTPrepareRound", "Beggar_Registration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, Unregister)
+    timer.Simple(0, function()
+        Unregister()
+        registered = 0
+    end)
 end)

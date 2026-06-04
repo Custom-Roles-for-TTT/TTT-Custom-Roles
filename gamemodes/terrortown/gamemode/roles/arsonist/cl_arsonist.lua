@@ -351,7 +351,11 @@ end
 -- REGISTRATION --
 ------------------
 
+local registered = 0
 local function Register()
+    registered = registered + 1
+    if registered ~= 1 then return end
+
     AddHook("HUDPaint", "Arsonist_HUDPaint", Arsonist_HUDPaint)
     AddHook("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate", Arsonist_TTTBodySearchPopulate)
     AddHook("TTTEventFinishIconText", "Arsonist_TTTEventFinishIconText", Arsonist_TTTEventFinishIconText)
@@ -366,6 +370,9 @@ local function Register()
 end
 
 local function Unregister()
+    registered = registered - 1
+    if registered ~= 0 then return end
+
     RemoveHook("HUDPaint", "Arsonist_HUDPaint")
     RemoveHook("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate")
     RemoveHook("TTTEventFinishIconText", "Arsonist_TTTEventFinishIconText")
@@ -394,5 +401,8 @@ AddHook("TTTPlayerRoleChanged", "Arsonist_Registration_TTTPlayerRoleChanged", fu
 end)
 AddHook("TTTPrepareRound", "Arsonist_Registration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, Unregister)
+    timer.Simple(0, function()
+        Unregister()
+        registered = 0
+    end)
 end)

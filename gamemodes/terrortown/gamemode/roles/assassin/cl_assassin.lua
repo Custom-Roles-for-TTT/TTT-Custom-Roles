@@ -371,7 +371,11 @@ end
 -- REGISTRATION --
 ------------------
 
+local registered = 0
 local function Register()
+    registered = registered + 1
+    if registered ~= 1 then return end
+
     AddHook("Think", "Assassin_Highlight_Think", Assassin_Highlight_Think)
     AddHook("TTTEventFinishIconText", "Assassin_TTTEventFinishIconText", Assassin_TTTEventFinishIconText)
     AddHook("TTTEventFinishText", "Assassin_TTTEventFinishText", Assassin_TTTEventFinishText)
@@ -386,6 +390,9 @@ local function Register()
 end
 
 local function Unregister()
+    registered = registered - 1
+    if registered ~= 0 then return end
+
     RemoveHook("Think", "Assassin_Highlight_Think")
     RemoveHook("TTTEventFinishIconText", "Assassin_TTTEventFinishIconText")
     RemoveHook("TTTEventFinishText", "Assassin_TTTEventFinishText")
@@ -414,5 +421,8 @@ AddHook("TTTPlayerRoleChanged", "Assassin_Registration_TTTPlayerRoleChanged", fu
 end)
 AddHook("TTTPrepareRound", "Assassin_Registration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, Unregister)
+    timer.Simple(0, function()
+        Unregister()
+        registered = 0
+    end)
 end)

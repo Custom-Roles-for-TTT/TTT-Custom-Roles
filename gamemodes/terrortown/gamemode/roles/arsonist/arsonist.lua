@@ -412,7 +412,11 @@ end
 -- REGISTRATION --
 ------------------
 
+local registered = 0
 local function Register()
+    registered = registered + 1
+    if registered ~= 1 then return end
+
     AddHook("EntityTakeDamage", "Arsonist_EntityTakeDamage", Arsonist_EntityTakeDamage)
     AddHook("PostPlayerDeath", "Arsonist_PostPlayerDeath", Arsonist_PostPlayerDeath)
     AddHook("ScalePlayerDamage", "Arsonist_ScalePlayerDamage", Arsonist_ScalePlayerDamage)
@@ -425,6 +429,9 @@ local function Register()
 end
 
 local function Unregister()
+    registered = registered - 1
+    if registered ~= 0 then return end
+
     RemoveHook("EntityTakeDamage", "Arsonist_EntityTakeDamage")
     RemoveHook("PostPlayerDeath", "Arsonist_PostPlayerDeath")
     RemoveHook("ScalePlayerDamage", "Arsonist_ScalePlayerDamage")
@@ -451,5 +458,8 @@ AddHook("TTTPlayerRoleChanged", "Arsonist_Registration_TTTPlayerRoleChanged", fu
 end)
 AddHook("TTTPrepareRound", "Arsonist_Registration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, Unregister)
+    timer.Simple(0, function()
+        Unregister()
+        registered = 0
+    end)
 end)

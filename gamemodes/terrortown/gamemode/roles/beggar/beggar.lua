@@ -481,7 +481,11 @@ end
 -- REGISTRATION --
 ------------------
 
+local registered = 0
 local function Register()
+    registered = registered + 1
+    if registered ~= 1 then return end
+
     AddHook("PlayerDeath", "Beggar_KillCheck_PlayerDeath", Beggar_KillCheck_PlayerDeath)
     AddHook("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership", Beggar_TTTCanTransferWeaponOwnership)
     AddHook("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive", Beggar_TTTCupidShouldLoverSurvive)
@@ -491,6 +495,9 @@ local function Register()
 end
 
 local function Unregister()
+    registered = registered - 1
+    if registered ~= 0 then return end
+
     RemoveHook("PlayerDeath", "Beggar_KillCheck_PlayerDeath")
     RemoveHook("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership")
     RemoveHook("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive")
@@ -514,5 +521,8 @@ AddHook("TTTPlayerRoleChanged", "Beggar_Registration_TTTPlayerRoleChanged", func
 end)
 AddHook("TTTPrepareRound", "Beggar_Registration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, Unregister)
+    timer.Simple(0, function()
+        Unregister()
+        registered = 0
+    end)
 end)

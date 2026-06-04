@@ -311,7 +311,11 @@ end
 -- REGISTRATION --
 ------------------
 
+local registered = 0
 local function Register()
+    registered = registered + 1
+    if registered ~= 1 then return end
+
     AddHook("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", Bodysnatcher_TTTHUDInfoPaint)
     AddHook("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride", Bodysnatcher_TTTRolePopupRoleStringOverride)
     AddHook("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender", Bodysnatcher_TTTScoringSummaryRender)
@@ -319,6 +323,9 @@ local function Register()
 end
 
 local function Unregister()
+    registered = registered - 1
+    if registered ~= 0 then return end
+
     RemoveHook("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint")
     RemoveHook("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride")
     RemoveHook("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender")
@@ -340,5 +347,8 @@ AddHook("TTTPlayerRoleChanged", "Bodysnatcher_Registration_TTTPlayerRoleChanged"
 end)
 AddHook("TTTPrepareRound", "Bodysnatcher_Registration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, Unregister)
+    timer.Simple(0, function()
+        Unregister()
+        registered = 0
+    end)
 end)

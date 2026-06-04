@@ -384,7 +384,11 @@ end
 -- REGISTRATION --
 ------------------
 
+local registered = 0
 local function Register()
+    registered = registered + 1
+    if registered ~= 1 then return end
+
     AddHook("DoPlayerDeath", "Assassin_DoPlayerDeath", Assassin_DoPlayerDeath)
     -- Update assassin target when a player disconnects
     AddHook("PlayerDisconnected", "Assassin_Target_PlayerDisconnected", UpdateAssassinTargets)
@@ -398,6 +402,9 @@ local function Register()
 end
 
 local function Unregister()
+    registered = registered - 1
+    if registered ~= 0 then return end
+
     RemoveHook("DoPlayerDeath", "Assassin_DoPlayerDeath")
     RemoveHook("PlayerDisconnected", "Assassin_Target_PlayerDisconnected")
     RemoveHook("ScalePlayerDamage", "Assassin_ScalePlayerDamage")
@@ -424,5 +431,8 @@ AddHook("TTTPlayerRoleChanged", "Assassin_Registration_TTTPlayerRoleChanged", fu
 end)
 AddHook("TTTPrepareRound", "Assassin_Registration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, Unregister)
+    timer.Simple(0, function()
+        Unregister()
+        registered = 0
+    end)
 end)
