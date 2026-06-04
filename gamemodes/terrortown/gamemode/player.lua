@@ -978,9 +978,12 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
 
         local wep = util.WeaponFromDamage(dmginfo)
 
-        if IsValid(wep) and wep.GetHeadshotMultiplier and not GetConVar("ttt_disable_headshots"):GetBool() then
-            local s = wep:GetHeadshotMultiplier(ply, dmginfo) or 2
-            dmginfo:ScaleDamage(s)
+        if IsValid(wep) and not GetConVar("ttt_disable_headshots"):GetBool() then
+            local s
+            if wep.GetHeadshotMultiplier then
+                s = wep:GetHeadshotMultiplier(ply, dmginfo)
+            end
+            dmginfo:ScaleDamage(s or 2)
         end
     elseif (hitgroup == HITGROUP_LEFTARM or
             hitgroup == HITGROUP_RIGHTARM or

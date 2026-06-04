@@ -644,8 +644,8 @@ if CLIENT then
         if client:GetPos():Distance(pos) > 1000 then return end
 
         local emitter = ParticleEmitter(pos)
+        local max_height = ply:GetViewOffset().z + 10
         for _ = 0, math.random(150, 250) do
-            local max_height = ply:GetViewOffset().z + 10
             local height = math.random(0, max_height)
 
             -- Set width limits based on what the random height is so it vaguely resembles a person-shape (or just their head)
