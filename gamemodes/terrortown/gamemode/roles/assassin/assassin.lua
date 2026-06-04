@@ -196,7 +196,7 @@ local function ValidTarget(role)
     return true
 end
 
-local function Assassin_Target_TTTPlayerRoleChanged(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
 
     -- If this player is no longer an assassin, clear out their target
@@ -211,7 +211,7 @@ local function Assassin_Target_TTTPlayerRoleChanged(ply, oldRole, newRole)
     if ValidTarget(oldRole) and not ValidTarget(newRole) then
         UpdateAssassinTargets(ply)
     end
-end
+end)
 
 local function Assassin_TTTOnRoleAbilityEnabled(ply)
     if not IsPlayer(ply) or not ply:IsAssassin() then return end
@@ -393,7 +393,6 @@ local function Register()
     AddHook("TTTCheckForWin", "Assassin_TTTCheckForWin", Assassin_TTTCheckForWin)
     AddHook("TTTCupidLoversChosen", "Assassin_TTTCupidLoversChosen", Assassin_TTTCupidLoversChosen)
     AddHook("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", Assassin_TTTOnRoleAbilityEnabled)
-    AddHook("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", Assassin_Target_TTTPlayerRoleChanged)
     AddHook("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage", Assassin_TTTPrintResultMessage)
     AddHook("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", Assassin_TTTTurncoatTeamChanged)
 end
@@ -406,7 +405,6 @@ local function Unregister()
     RemoveHook("TTTCheckForWin", "Assassin_TTTCheckForWin")
     RemoveHook("TTTCupidLoversChosen", "Assassin_TTTCupidLoversChosen")
     RemoveHook("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled")
-    RemoveHook("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged")
     RemoveHook("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage")
     RemoveHook("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged")
 end

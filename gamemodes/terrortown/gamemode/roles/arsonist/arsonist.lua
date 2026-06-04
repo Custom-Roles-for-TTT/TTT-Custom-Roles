@@ -265,7 +265,7 @@ local function Arsonist_PostPlayerDeath(ply)
     ply.ignite_info = nil
 end
 
-local function Arsonist_ClearNotifications_TTTPlayerRoleChanged(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Arsonist_ClearNotifications_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
 
     -- If we no longer have an arsonist, clear any notification delays that remain
@@ -274,7 +274,7 @@ local function Arsonist_ClearNotifications_TTTPlayerRoleChanged(ply, oldRole, ne
             timer.Remove("TTTArsonistNotifyDelay_" .. v:SteamID64())
         end
     end
-end
+end)
 
 AddHook("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
@@ -420,7 +420,6 @@ local function Register()
     AddHook("TTTBeginRound", "Arsonist_Announce_TTTBeginRound", Arsonist_Announce_TTTBeginRound)
     AddHook("TTTCheckForWin", "Arsonist_TTTCheckForWin", Arsonist_TTTCheckForWin)
     AddHook("TTTOnRoleAbilityEnabled", "Arsonist_TTTOnRoleAbilityEnabled", Arsonist_TTTOnRoleAbilityEnabled)
-    AddHook("TTTPlayerRoleChanged", "Arsonist_ClearNotifications_TTTPlayerRoleChanged", Arsonist_ClearNotifications_TTTPlayerRoleChanged)
     AddHook("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", Arsonist_TTTPlayerSpawnForRound)
     AddHook("TTTPrintResultMessage", "Arsonist_TTTPrintResultMessage", Arsonist_TTTPrintResultMessage)
 end
@@ -433,7 +432,6 @@ local function Unregister()
     RemoveHook("TTTBeginRound", "Arsonist_Announce_TTTBeginRound")
     RemoveHook("TTTCheckForWin", "Arsonist_TTTCheckForWin")
     RemoveHook("TTTOnRoleAbilityEnabled", "Arsonist_TTTOnRoleAbilityEnabled")
-    RemoveHook("TTTPlayerRoleChanged", "Arsonist_ClearNotifications_TTTPlayerRoleChanged")
     RemoveHook("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound")
     RemoveHook("TTTPrintResultMessage", "Arsonist_TTTPrintResultMessage")
 end
