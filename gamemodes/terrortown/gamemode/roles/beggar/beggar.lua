@@ -7,8 +7,10 @@ local player = player
 local timer = timer
 local util = util
 
-local PlayerIterator = player.Iterator
+local AddHook = hook.Add
 local CallHook = hook.Call
+local RemoveHook = hook.Remove
+local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_BeggarConverted")
 util.AddNetworkString("TTT_BeggarKilled")
@@ -249,7 +251,7 @@ local function HasBeggar()
 end
 
 -- Disable tracking that this player was a beggar at the start of a new round or if their role changes again (e.g. if they go beggar -> innocent -> dead -> hypnotist res to traitor)
-hook.Add("TTTPrepareRound", "Beggar_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Beggar_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("WasBeggar", false)
         v:SetNWBool("BeggarIsRespawning", false)
@@ -280,7 +282,7 @@ end)
 -- ROLE CHANGES --
 ------------------
 
-hook.Add("TTTPlayerRoleChanged", "Beggar_Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Beggar_Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
@@ -480,21 +482,21 @@ end
 ------------------
 
 local function Register()
-    hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", Beggar_KillCheck_PlayerDeath)
-    hook.Add("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership", Beggar_TTTCanTransferWeaponOwnership)
-    hook.Add("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive", Beggar_TTTCupidShouldLoverSurvive)
-    hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", Beggar_TTTPlayerAliveThink)
-    hook.Add("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning", Beggar_TTTStopPlayerRespawning)
-    hook.Add("WeaponEquip", "Beggar_WeaponEquip", Beggar_WeaponEquip)
+    AddHook("PlayerDeath", "Beggar_KillCheck_PlayerDeath", Beggar_KillCheck_PlayerDeath)
+    AddHook("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership", Beggar_TTTCanTransferWeaponOwnership)
+    AddHook("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive", Beggar_TTTCupidShouldLoverSurvive)
+    AddHook("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", Beggar_TTTPlayerAliveThink)
+    AddHook("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning", Beggar_TTTStopPlayerRespawning)
+    AddHook("WeaponEquip", "Beggar_WeaponEquip", Beggar_WeaponEquip)
 end
 
 local function Unregister()
-    hook.Remove("PlayerDeath", "Beggar_KillCheck_PlayerDeath")
-    hook.Remove("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership")
-    hook.Remove("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive")
-    hook.Remove("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink")
-    hook.Remove("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning")
-    hook.Remove("WeaponEquip", "Beggar_WeaponEquip")
+    RemoveHook("PlayerDeath", "Beggar_KillCheck_PlayerDeath")
+    RemoveHook("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership")
+    RemoveHook("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive")
+    RemoveHook("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink")
+    RemoveHook("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning")
+    RemoveHook("WeaponEquip", "Beggar_WeaponEquip")
 end
 
 AddHook("TTTPlayerRoleChanged", "Beggar_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
