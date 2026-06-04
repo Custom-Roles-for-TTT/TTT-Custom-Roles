@@ -52,7 +52,7 @@ local function AnnounceTeamChange(ply, role)
     end
 end
 
-hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
+local function Beggar_WeaponEquip(wep, ply)
     if not IsValid(wep) or not wep.CanBuy or wep.AutoSpawnable then return end
     -- We only care about beggars here
     if not IsPlayer(ply) or not ply:IsBeggar() then return end
@@ -120,42 +120,12 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
     net.WriteString(ROLE_STRINGS_EXT[role])
     net.WriteString(ply:SteamID64())
     net.Broadcast()
-end)
+end
 
-hook.Add("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership", function(ply, wep)
+local function Beggar_TTTCanTransferWeaponOwnership(ply, wep)
     -- Only non-beggars should receive ownership of weapons under normal circumstances
     if IsPlayer(ply) and ply:IsBeggar() then return false end
-end)
-
--- Disable tracking that this player was a beggar at the start of a new round or if their role changes again (e.g. if they go beggar -> innocent -> dead -> hypnotist res to traitor)
-hook.Add("TTTPrepareRound", "Beggar_PrepareRound", function()
-    for _, v in PlayerIterator() do
-        v:SetNWBool("WasBeggar", false)
-        v:SetNWBool("BeggarIsRespawning", false)
-        timer.Remove(v:Nick() .. "BeggarRespawn")
-        timer.Remove(v:Nick() .. "BeggarAnnounce")
-    end
-    INNOCENT_ROLES[ROLE_BEGGAR] = false
-    TRAITOR_ROLES[ROLE_BEGGAR] = false
-    if beggar_is_independent:GetBool() then
-        INDEPENDENT_ROLES[ROLE_BEGGAR] = true
-    else
-        JESTER_ROLES[ROLE_BEGGAR] = true
-    end
-    net.Start("TTT_BeggarResetTeam")
-    net.Broadcast()
-end)
-
-hook.Add("TTTPlayerRoleChanged", "Beggar_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole ~= ROLE_BEGGAR then
-        ply:SetNWBool("WasBeggar", false)
-
-        -- Keep track of how many times they have respawned
-        if newRole == ROLE_BEGGAR then
-            ply.BeggarRespawn = 0
-        end
-    end
-end)
+end
 
 -----------------
 -- KILL CHECKS --
@@ -169,7 +139,7 @@ local function BeggarKilledNotification(attacker, victim)
         end)
 end
 
-hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, attacker)
+local function Beggar_KillCheck_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
     if not victim:IsBeggar() or INNOCENT_ROLES[ROLE_BEGGAR] or TRAITOR_ROLES[ROLE_BEGGAR] then return end
@@ -243,9 +213,9 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
         net.WriteUInt(delay, 8)
         net.Broadcast()
     end
-end)
+end
 
-hook.Add("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning", function(ply)
+local function Beggar_TTTStopPlayerRespawning(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -253,17 +223,17 @@ hook.Add("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning", function(p
         timer.Remove(ply:Nick() .. "BeggarRespawn")
         ply:SetNWBool("BeggarIsRespawning", false)
     end
-end)
+end
 
 ------------------
 -- CUPID LOVERS --
 ------------------
 
-hook.Add("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive", function(ply, lover)
+local function Beggar_TTTCupidShouldLoverSurvive(ply, lover)
     if ply:GetNWBool("BeggarIsRespawning", false) or lover:GetNWBool("BeggarIsRespawning", false) then
         return true
     end
-end)
+end
 
 ----------------
 -- ROLE STATE --
@@ -278,8 +248,14 @@ local function HasBeggar()
     return false
 end
 
+-- Disable tracking that this player was a beggar at the start of a new round or if their role changes again (e.g. if they go beggar -> innocent -> dead -> hypnotist res to traitor)
 hook.Add("TTTPrepareRound", "Beggar_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
+        v:SetNWBool("WasBeggar", false)
+        v:SetNWBool("BeggarIsRespawning", false)
+        timer.Remove(v:Nick() .. "BeggarRespawn")
+        timer.Remove(v:Nick() .. "BeggarAnnounce")
+
         v:SetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
         v:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
         v:SetNWString("TTTBeggarScannerTarget", "")
@@ -288,6 +264,16 @@ hook.Add("TTTPrepareRound", "Beggar_TTTPrepareRound", function()
         v:SetNWFloat("TTTBeggarScannerTargetLostTime", -1)
         v:SetNWFloat("TTTBeggarScannerCooldown", -1)
     end
+
+    INNOCENT_ROLES[ROLE_BEGGAR] = false
+    TRAITOR_ROLES[ROLE_BEGGAR] = false
+    if beggar_is_independent:GetBool() then
+        INDEPENDENT_ROLES[ROLE_BEGGAR] = true
+    else
+        JESTER_ROLES[ROLE_BEGGAR] = true
+    end
+    net.Start("TTT_BeggarResetTeam")
+    net.Broadcast()
 end)
 
 ------------------
@@ -295,9 +281,19 @@ end)
 ------------------
 
 hook.Add("TTTPlayerRoleChanged", "Beggar_Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if beggar_scan:GetInt() <= BEGGAR_SCAN_MODE_DISABLED then return end
     if oldRole == newRole then return end
     if GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if oldRole ~= ROLE_BEGGAR then
+        ply:SetNWBool("WasBeggar", false)
+
+        -- Keep track of how many times they have respawned
+        if newRole == ROLE_BEGGAR then
+            ply.BeggarRespawn = 0
+        end
+    end
+
+    if beggar_scan:GetInt() <= BEGGAR_SCAN_MODE_DISABLED then return end
 
     if oldRole == ROLE_BEGGAR then
         ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
@@ -419,7 +415,7 @@ local function Scan(ply, target)
     end
 end
 
-hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
+local function Beggar_TTTPlayerAliveThink(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if ply:IsBeggar() then
@@ -477,4 +473,44 @@ hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
             end
         end
     end
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+local function Register()
+    hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", Beggar_KillCheck_PlayerDeath)
+    hook.Add("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership", Beggar_TTTCanTransferWeaponOwnership)
+    hook.Add("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive", Beggar_TTTCupidShouldLoverSurvive)
+    hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", Beggar_TTTPlayerAliveThink)
+    hook.Add("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning", Beggar_TTTStopPlayerRespawning)
+    hook.Add("WeaponEquip", "Beggar_WeaponEquip", Beggar_WeaponEquip)
+end
+
+local function Unregister()
+    hook.Remove("PlayerDeath", "Beggar_KillCheck_PlayerDeath")
+    hook.Remove("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership")
+    hook.Remove("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive")
+    hook.Remove("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink")
+    hook.Remove("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning")
+    hook.Remove("WeaponEquip", "Beggar_WeaponEquip")
+end
+
+AddHook("TTTPlayerRoleChanged", "Beggar_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == newRole then return end
+    if oldRole ~= ROLE_BEGGAR and newRole ~= ROLE_BEGGAR then return end
+
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, function()
+        if oldRole == ROLE_BEGGAR then
+            Unregister()
+        elseif newRole == ROLE_BEGGAR then
+            Register()
+        end
+    end)
+end)
+AddHook("TTTPrepareRound", "Beggar_Registration_TTTPrepareRound", function()
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, Unregister)
 end)

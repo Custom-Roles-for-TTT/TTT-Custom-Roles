@@ -1,7 +1,5 @@
 AddCSLuaFile()
 
-local table = table
-
 -- Initialize role features
 BEGGAR_UNSCANNED = 0
 BEGGAR_SCANNED_HIDDEN = 1
@@ -68,110 +66,111 @@ CreateConVar("ttt_beggar_keep_begging", "0", FCVAR_REPLICATED, "Whether the begg
 CreateConVar("ttt_beggar_can_see_jesters", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_beggar_update_scoreboard", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_BEGGAR] = {}
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_notify_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_notify_killer",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_notify_sound",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_notify_confetti",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_is_independent",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_reveal_traitor",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Traitors", "Innocents", "Roles that can see jesters"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_reveal_innocent",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Traitors", "Innocents", "Roles that can see jesters"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_respawn",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_respawn_limit",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_respawn_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_respawn_change_role",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_scan",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Disabled", "Can only scan traitors", "Can scan any role that has a shop"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_scan_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_scan_float_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_scan_cooldown",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_scan_distance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_can_see_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_announce_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_keep_begging",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_ignore_empty_weapons",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_ignore_empty_weapons_warning",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_BEGGAR] = {
+    {
+        cvar = "ttt_beggar_notify_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_beggar_notify_killer",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_notify_sound",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_notify_confetti",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_is_independent",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_reveal_traitor",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"No one", "Everyone", "Traitors", "Innocents", "Roles that can see jesters"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_beggar_reveal_innocent",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"No one", "Everyone", "Traitors", "Innocents", "Roles that can see jesters"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_beggar_respawn",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_respawn_limit",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_beggar_respawn_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_beggar_respawn_change_role",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_scan",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Disabled", "Can only scan traitors", "Can scan any role that has a shop"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_beggar_scan_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_beggar_scan_float_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_beggar_scan_cooldown",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_beggar_scan_distance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_beggar_can_see_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_update_scoreboard",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_announce_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_beggar_keep_begging",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_ignore_empty_weapons",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_beggar_ignore_empty_weapons_warning",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
