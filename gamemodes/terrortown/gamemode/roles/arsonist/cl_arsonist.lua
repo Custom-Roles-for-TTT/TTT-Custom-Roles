@@ -1,10 +1,12 @@
 local hook = hook
 local surface = surface
 local table = table
+local timer = timer
 local util = util
 
 local AddHook = hook.Add
 local RemoveHook = hook.Remove
+local TableInsert = table.insert
 
 local client
 
@@ -272,7 +274,7 @@ local function Arsonist_TTTHUDInfoPaint(cli, label_left, label_top, active_label
         surface.DrawText(text)
 
         -- Track that the label was added so others can position accurately
-        table.insert(active_labels, "arsonist")
+        TableInsert(active_labels, "arsonist")
     end
 end
 

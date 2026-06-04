@@ -5,6 +5,7 @@ local hook = hook
 local ipairs = ipairs
 local math = math
 local player = player
+local timer = timer
 
 local AddHook = hook.Add
 local RemoveHook = hook.Remove

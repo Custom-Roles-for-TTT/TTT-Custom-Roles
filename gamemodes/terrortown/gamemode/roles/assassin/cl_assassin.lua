@@ -3,6 +3,7 @@ local hook = hook
 local IsValid = IsValid
 local player = player
 local string = string
+local timer = timer
 
 local AddHook = hook.Add
 local RemoveHook = hook.Remove
