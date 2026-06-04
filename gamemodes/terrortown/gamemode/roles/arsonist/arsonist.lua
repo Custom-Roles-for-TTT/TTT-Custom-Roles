@@ -440,12 +440,16 @@ end
 
 AddHook("TTTPlayerRoleChanged", "Arsonist_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
+    if oldRole ~= ROLE_ARSONIST and newRole ~= ROLE_ARSONIST then return end
 
-    if oldRole == ROLE_ARSONIST then
-        Unregister()
-    elseif newRole == ROLE_ARSONIST then
-        Register()
-    end
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, function()
+        if oldRole == ROLE_ARSONIST then
+            Unregister()
+        elseif newRole == ROLE_ARSONIST then
+            Register()
+        end
+    end)
 end)
 AddHook("TTTPrepareRound", "Arsonist_Registration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
