@@ -8,11 +8,13 @@
 - Added ability for a Guesser to see a player's outline after they've received a certain amount of damage (default 150)
 
 ### Changes
+- Changed roles to register and unregister hooks automatically to reduce the performance impact of roles that aren't in the current round
 - Ported "TTT: Use replicated convars instead of global nwvars" from base TTT
 
 ### Fixes
 - Fixed single Twin being left in a round if their sibling's role was changed immediately on role start (by a Randomat, for example)
 - Fixed all players being notified when a player becomes a twin in the middle of the round
+- Fixed Taskmaster's "Do Damage" task showing long decimal values
 - Ported "Fix DrawModel flags for base game entities" from base TTT
 
 ## 2.4.5 (Beta)
