@@ -6,7 +6,6 @@ local string = string
 local ents = ents
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local StringUpper = string.upper
 local Utf8Upper = utf8.upper
 local PlayerIterator = player.Iterator
@@ -322,7 +321,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Medium_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Medium_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_MEDIUM then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -370,28 +369,17 @@ local function Medium_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_MEDIUM] = function()
-    AddHook("HUDPaint", "Medium_HUDPaint", Medium_HUDPaint)
-    AddHook("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderables", Medium_PostDrawTranslucentRenderables)
-    AddHook("Think", "Medium_RoleFeature_Think", Medium_RoleFeature_Think)
-    AddHook("TTTScoreboardPlayerRole", "Medium_TTTScoreboardPlayerRole", Medium_TTTScoreboardPlayerRole)
-    AddHook("TTTScoreGroup", "Medium_TTTScoreGroup", Medium_TTTScoreGroup)
-    AddHook("TTTTutorialRoleText", "Medium_TTTTutorialRoleText", Medium_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "Medium_RoleFeature_TTTUpdateRoleState", Medium_RoleFeature_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_MEDIUM] = function()
-    RemoveHook("HUDPaint", "Medium_HUDPaint")
-    RemoveHook("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderables")
-    RemoveHook("Think", "Medium_RoleFeature_Think")
-    RemoveHook("TTTScoreboardPlayerRole", "Medium_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoreGroup", "Medium_TTTScoreGroup")
-    RemoveHook("TTTTutorialRoleText", "Medium_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "Medium_RoleFeature_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_MEDIUM] = {
+    ["HUDPaint"] = Medium_HUDPaint,
+    ["PostDrawTranslucentRenderables"] = Medium_PostDrawTranslucentRenderables,
+    ["Think"] = Medium_RoleFeature_Think,
+    ["TTTScoreboardPlayerRole"] = Medium_TTTScoreboardPlayerRole,
+    ["TTTScoreGroup"] = Medium_TTTScoreGroup,
+    ["TTTUpdateRoleState"] = Medium_RoleFeature_TTTUpdateRoleState
+}

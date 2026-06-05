@@ -5,8 +5,6 @@ local math = math
 local player = player
 local timer = timer
 
-local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local CallHook = hook.Call
 
@@ -78,14 +76,8 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_PALADIN] = function()
-    AddHook("ScalePlayerDamage", "Paladin_ScalePlayerDamage", Paladin_ScalePlayerDamage)
-    AddHook("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound", Paladin_RoleFeatures_TTTBeginRound)
-    AddHook("TTTEndRound", "Paladin_RoleFeatures_TTTEndRound", Paladin_RoleFeatures_TTTEndRound)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PALADIN] = function()
-    RemoveHook("ScalePlayerDamage", "Paladin_ScalePlayerDamage")
-    RemoveHook("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound")
-    RemoveHook("TTTEndRound", "Paladin_RoleFeatures_TTTEndRound")
-end
+ROLE_REGISTERED_HOOKS[ROLE_PALADIN] = {
+    ["ScalePlayerDamage"] = Paladin_ScalePlayerDamage,
+    ["TTTBeginRound"] = Paladin_RoleFeatures_TTTBeginRound,
+    ["TTTEndRound"] = Paladin_RoleFeatures_TTTEndRound
+}

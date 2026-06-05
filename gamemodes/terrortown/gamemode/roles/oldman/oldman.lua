@@ -9,7 +9,6 @@ local timer = timer
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_UpdateOldManWins")
@@ -28,14 +27,13 @@ local oldman_adrenaline_ramble = GetConVar("ttt_oldman_adrenaline_ramble")
 -- WIN CHECKS --
 ----------------
 
-local function HandleOldManWinChecks(win_type)
+local function OldMan_TTTWinCheckComplete(win_type)
     if win_type == WIN_NONE then return end
     if not player.IsRoleLiving(ROLE_OLDMAN) then return end
 
     net.Start("TTT_UpdateOldManWins")
     net.Broadcast()
 end
-AddHook("TTTWinCheckComplete", "OldMan_TTTWinCheckComplete", HandleOldManWinChecks)
 
 -------------------
 -- ROLE FEATURES --
@@ -252,28 +250,19 @@ local function OldManCreditLogic(victim, attacker, amt)
     end
 end
 
--- Nobody should be rewarded for killing the old man
-AddHook("TTTRewardDetectiveTraitorDeathAmount", "OldMan_TTTRewardDetectiveTraitorDeathAmount", OldManCreditLogic)
-AddHook("TTTRewardTraitorInnocentDeathAmount", "OldMan_TTTRewardTraitorInnocentDeathAmount", OldManCreditLogic)
-
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_OLDMAN] = function()
-    AddHook("EntityTakeDamage", "OldMan_EntityTakeDamage", OldMan_EntityTakeDamage)
-    AddHook("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", OldMan_PostEntityTakeDamage)
-    AddHook("TTTBeginRound", "OldMan_TTTBeginRound", OldMan_TTTBeginRound)
-    AddHook("TTTDrawHitMarker", "OldMan_TTTDrawHitMarker", OldMan_TTTDrawHitMarker)
-    AddHook("TTTEndRound", "OldMan_RoleFeatures_TTTEndRound", OldMan_RoleFeatures_TTTEndRound)
-    AddHook("TTTKarmaShouldGivePenalty", "OldMan_TTTKarmaShouldGivePenalty", OldMan_TTTKarmaShouldGivePenalty)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_OLDMAN] = function()
-    RemoveHook("EntityTakeDamage", "OldMan_EntityTakeDamage")
-    RemoveHook("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage")
-    RemoveHook("TTTBeginRound", "OldMan_TTTBeginRound")
-    RemoveHook("TTTDrawHitMarker", "OldMan_TTTDrawHitMarker")
-    RemoveHook("TTTEndRound", "OldMan_RoleFeatures_TTTEndRound")
-    RemoveHook("TTTKarmaShouldGivePenalty", "OldMan_TTTKarmaShouldGivePenalty")
-end
+ROLE_REGISTERED_HOOKS[ROLE_OLDMAN] = {
+    ["EntityTakeDamage"] = OldMan_EntityTakeDamage,
+    ["PostEntityTakeDamage"] = OldMan_PostEntityTakeDamage,
+    ["TTTBeginRound"] = OldMan_TTTBeginRound,
+    ["TTTDrawHitMarker"] = OldMan_TTTDrawHitMarker,
+    ["TTTEndRound"] = OldMan_RoleFeatures_TTTEndRound,
+    ["TTTKarmaShouldGivePenalty"] = OldMan_TTTKarmaShouldGivePenalty,
+    -- Nobody should be rewarded for killing the old man
+    ["TTTRewardDetectiveTraitorDeathAmount"] = OldManCreditLogic,
+    ["TTTRewardTraitorInnocentDeathAmount"] = OldManCreditLogic,
+    ["TTTWinCheckComplete"] = OldMan_TTTWinCheckComplete
+}

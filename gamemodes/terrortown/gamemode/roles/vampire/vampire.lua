@@ -12,7 +12,6 @@ local table = table
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local MathRandom = math.random
 
@@ -377,30 +376,16 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_VAMPIRE] = function()
-    AddHook("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", Vampire_Credits_DoPlayerDeath)
-    AddHook("PlayerCanPickupWeapon", "Vampire_Weapons_PlayerCanPickupWeapon", Vampire_Weapons_PlayerCanPickupWeapon)
-    AddHook("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", Vampire_PrimeDeath_PlayerDeath)
-    AddHook("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", Vampire_Prime_PlayerDisconnected)
-    AddHook("PlayerLoadout", "Vampire_PlayerLoadout", Vampire_PlayerLoadout)
-    AddHook("ScalePlayerDamage", "Vampire_ScalePlayerDamage", Vampire_ScalePlayerDamage)
-    AddHook("SetupPlayerVisibility", "Vampire_SetupPlayerVisibility", Vampire_SetupPlayerVisibility)
-    AddHook("TTTCheckForWin", "Vampire_TTTCheckForWin", Vampire_TTTCheckForWin)
-    AddHook("TTTKarmaShouldGivePenalty", "Vampire_TTTKarmaShouldGivePenalty", Vampire_TTTKarmaShouldGivePenalty)
-    AddHook("TTTPlayerAliveThink", "Vampire_TTTPlayerAliveThink", Vampire_TTTPlayerAliveThink)
-    AddHook("TTTPrintResultMessage", "Vampire_TTTPrintResultMessage", Vampire_TTTPrintResultMessage)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_VAMPIRE] = function()
-    RemoveHook("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath")
-    RemoveHook("PlayerCanPickupWeapon", "Vampire_Weapons_PlayerCanPickupWeapon")
-    RemoveHook("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath")
-    RemoveHook("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected")
-    RemoveHook("PlayerLoadout", "Vampire_PlayerLoadout")
-    RemoveHook("ScalePlayerDamage", "Vampire_ScalePlayerDamage")
-    RemoveHook("SetupPlayerVisibility", "Vampire_SetupPlayerVisibility")
-    RemoveHook("TTTCheckForWin", "Vampire_TTTCheckForWin")
-    RemoveHook("TTTKarmaShouldGivePenalty", "Vampire_TTTKarmaShouldGivePenalty")
-    RemoveHook("TTTPlayerAliveThink", "Vampire_TTTPlayerAliveThink")
-    RemoveHook("TTTPrintResultMessage", "Vampire_TTTPrintResultMessage")
-end
+ROLE_REGISTERED_HOOKS[ROLE_VAMPIRE] = {
+    ["DoPlayerDeath"] = Vampire_Credits_DoPlayerDeath,
+    ["PlayerCanPickupWeapon"] = Vampire_Weapons_PlayerCanPickupWeapon,
+    ["PlayerDeath"] = Vampire_PrimeDeath_PlayerDeath,
+    ["PlayerDisconnected"] = Vampire_Prime_PlayerDisconnected,
+    ["PlayerLoadout"] = Vampire_PlayerLoadout,
+    ["ScalePlayerDamage"] = Vampire_ScalePlayerDamage,
+    ["SetupPlayerVisibility"] = Vampire_SetupPlayerVisibility,
+    ["TTTCheckForWin"] = Vampire_TTTCheckForWin,
+    ["TTTKarmaShouldGivePenalty"] = Vampire_TTTKarmaShouldGivePenalty,
+    ["TTTPlayerAliveThink"] = Vampire_TTTPlayerAliveThink,
+    ["TTTPrintResultMessage"] = Vampire_TTTPrintResultMessage
+}

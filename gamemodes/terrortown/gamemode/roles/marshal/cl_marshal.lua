@@ -2,7 +2,6 @@ local hook = hook
 local net = net
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -104,7 +103,7 @@ local function GetChanceTutorialString(chance, targetTeam, roleColor, detectiveC
     return html .. ".</span>"
 end
 
-local function Marshal_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Marshal_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_MARSHAL then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -128,18 +127,12 @@ local function Marshal_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_MARSHAL] = function()
-    AddHook("TTTRolePopupParams", "Marshal_TTTRolePopupParams", Marshal_TTTRolePopupParams)
-    AddHook("TTTTutorialRoleText", "Marshal_TTTTutorialRoleText", Marshal_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_MARSHAL] = function()
-    RemoveHook("TTTRolePopupParams", "Marshal_TTTRolePopupParams")
-    RemoveHook("TTTTutorialRoleText", "Marshal_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_MARSHAL] = {
+    ["TTTRolePopupParams"] = Marshal_TTTRolePopupParams
+}

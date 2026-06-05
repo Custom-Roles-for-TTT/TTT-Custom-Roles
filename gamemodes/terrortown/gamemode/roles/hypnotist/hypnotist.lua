@@ -5,7 +5,6 @@ local IsValid = IsValid
 local player = player
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 CreateConVar("ttt_hypnotist_brainwash_credits", 0, FCVAR_NONE, "How many credits a hypnotized player should get", 0, 5)
@@ -95,16 +94,9 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_HYPNOTIST] = function()
-    AddHook("PlayerCanHearPlayersVoice", "Hypnotist_PlayerCanHearPlayersVoice", Hypnotist_PlayerCanHearPlayersVoice)
-    AddHook("PlayerCanPickupWeapon", "Hypnotist_Weapons_PlayerCanPickupWeapon", Hypnotist_Weapons_PlayerCanPickupWeapon)
-    AddHook("PlayerSay", "Hypnotist_PlayerSay", Hypnotist_PlayerSay)
-    AddHook("TTTPlayerRadioCommand", "Hypnotist_TTTPlayerRadioCommand", Hypnotist_TTTPlayerRadioCommand)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_HYPNOTIST] = function()
-    RemoveHook("PlayerCanHearPlayersVoice", "Hypnotist_PlayerCanHearPlayersVoice")
-    RemoveHook("PlayerCanPickupWeapon", "Hypnotist_Weapons_PlayerCanPickupWeapon")
-    RemoveHook("PlayerSay", "Hypnotist_PlayerSay")
-    RemoveHook("TTTPlayerRadioCommand", "Hypnotist_TTTPlayerRadioCommand")
-end
+ROLE_REGISTERED_HOOKS[ROLE_HYPNOTIST] = {
+    ["PlayerCanHearPlayersVoice"] = Hypnotist_PlayerCanHearPlayersVoice,
+    ["PlayerCanPickupWeapon"] = Hypnotist_Weapons_PlayerCanPickupWeapon,
+    ["PlayerSay"] = Hypnotist_PlayerSay,
+    ["TTTPlayerRadioCommand"] = Hypnotist_TTTPlayerRadioCommand
+}

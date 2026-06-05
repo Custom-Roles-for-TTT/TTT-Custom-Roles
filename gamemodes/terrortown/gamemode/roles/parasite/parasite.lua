@@ -11,7 +11,6 @@ local timer = timer
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_ParasiteInfect")
@@ -421,28 +420,15 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_PARASITE] = function()
-    AddHook("DoPlayerDeath", "Parasite_DoPlayerDeath", Parasite_DoPlayerDeath)
-    AddHook("PlayerDeath", "Parasite_PlayerDeath", Parasite_PlayerDeath)
-    AddHook("PlayerFootstep", "Parasite_PlayerFootstep", Parasite_PlayerFootstep)
-    AddHook("PostPlayerDeath", "Parasite_Lovers_PostPlayerDeath", Parasite_Lovers_PostPlayerDeath)
-    AddHook("TTTCanPlayerBeCured", "Parasite_TTTCanPlayerBeCured", Parasite_TTTCanPlayerBeCured)
-    AddHook("TTTCupidShouldLoverSurvive", "Parasite_TTTCupidShouldLoverSurvive", Parasite_TTTCupidShouldLoverSurvive)
-    AddHook("TTTCurePlayer", "Parasite_TTTCurePlayer", Parasite_TTTCurePlayer)
-    AddHook("TTTPlayerRoleChangedByItem", "Parasite_TTTPlayerRoleChangedByItem", Parasite_TTTPlayerRoleChangedByItem)
-    AddHook("TTTPlayerSpawnForRound", "Parasite_TTTPlayerSpawnForRound", Parasite_TTTPlayerSpawnForRound)
-    AddHook("TTTSpectatorHUDKeyPress", "Parasite_TTTSpectatorHUDKeyPress", Parasite_TTTSpectatorHUDKeyPress)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PARASITE] = function()
-    RemoveHook("DoPlayerDeath", "Parasite_DoPlayerDeath")
-    RemoveHook("PlayerDeath", "Parasite_PlayerDeath")
-    RemoveHook("PlayerFootstep", "Parasite_PlayerFootstep")
-    RemoveHook("PostPlayerDeath", "Parasite_Lovers_PostPlayerDeath")
-    RemoveHook("TTTCanPlayerBeCured", "Parasite_TTTCanPlayerBeCured")
-    RemoveHook("TTTCupidShouldLoverSurvive", "Parasite_TTTCupidShouldLoverSurvive")
-    RemoveHook("TTTCurePlayer", "Parasite_TTTCurePlayer")
-    RemoveHook("TTTPlayerRoleChangedByItem", "Parasite_TTTPlayerRoleChangedByItem")
-    RemoveHook("TTTPlayerSpawnForRound", "Parasite_TTTPlayerSpawnForRound")
-    RemoveHook("TTTSpectatorHUDKeyPress", "Parasite_TTTSpectatorHUDKeyPress")
-end
+ROLE_REGISTERED_HOOKS[ROLE_PARASITE] = {
+    ["DoPlayerDeath"] = Parasite_DoPlayerDeath,
+    ["PlayerDeath"] = Parasite_PlayerDeath,
+    ["PlayerFootstep"] = Parasite_PlayerFootstep,
+    ["PostPlayerDeath"] = Parasite_Lovers_PostPlayerDeath,
+    ["TTTCanPlayerBeCured"] = Parasite_TTTCanPlayerBeCured,
+    ["TTTCupidShouldLoverSurvive"] = Parasite_TTTCupidShouldLoverSurvive,
+    ["TTTCurePlayer"] = Parasite_TTTCurePlayer,
+    ["TTTPlayerRoleChangedByItem"] = Parasite_TTTPlayerRoleChangedByItem,
+    ["TTTPlayerSpawnForRound"] = Parasite_TTTPlayerSpawnForRound,
+    ["TTTSpectatorHUDKeyPress"] = Parasite_TTTSpectatorHUDKeyPress
+}

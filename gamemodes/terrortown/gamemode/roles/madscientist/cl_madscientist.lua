@@ -31,7 +31,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function MadScientist_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_MADSCIENTIST then
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         local roleTeam = player.GetRoleTeam(ROLE_MADSCIENTIST, true)
@@ -46,16 +46,4 @@ local function MadScientist_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_MADSCIENTIST] = function()
-    AddHook("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText", MadScientist_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_MADSCIENTIST] = function()
-    RemoveHook("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText")
-end
+end)

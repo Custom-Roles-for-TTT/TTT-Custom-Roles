@@ -59,10 +59,6 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_TRACKER] = function()
-    AddHook("PlayerFootstep", "Tracker_PlayerFootstep", Tracker_PlayerFootstep)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_TRACKER] = function()
-    RemoveHook("PlayerFootstep", "Tracker_PlayerFootstep")
-end
+ROLE_REGISTERED_HOOKS[ROLE_TRACKER] = {
+    ["PlayerFootstep"] = Tracker_PlayerFootstep
+}

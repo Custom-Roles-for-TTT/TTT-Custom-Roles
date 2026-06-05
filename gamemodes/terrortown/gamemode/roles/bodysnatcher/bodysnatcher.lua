@@ -8,7 +8,6 @@ local timer = timer
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_BodysnatcherKilled")
@@ -136,16 +135,9 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_BODYSNATCHER] = function()
-    AddHook("PlayerCanPickupWeapon", "Bodysnatcher_Weapons_PlayerCanPickupWeapon", Bodysnatcher_Weapons_PlayerCanPickupWeapon)
-    AddHook("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", Bodysnatcher_KillCheck_PlayerDeath)
-    AddHook("TTTCupidShouldLoverSurvive", "Bodysnatcher_TTTCupidShouldLoverSurvive", Bodysnatcher_TTTCupidShouldLoverSurvive)
-    AddHook("TTTStopPlayerRespawning", "Bodysnatcher_TTTStopPlayerRespawning", Bodysnatcher_TTTStopPlayerRespawning)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_BODYSNATCHER] = function()
-    RemoveHook("PlayerCanPickupWeapon", "Bodysnatcher_Weapons_PlayerCanPickupWeapon")
-    RemoveHook("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath")
-    RemoveHook("TTTCupidShouldLoverSurvive", "Bodysnatcher_TTTCupidShouldLoverSurvive")
-    RemoveHook("TTTStopPlayerRespawning", "Bodysnatcher_TTTStopPlayerRespawning")
-end
+ROLE_REGISTERED_HOOKS[ROLE_BODYSNATCHER] = {
+    ["PlayerCanPickupWeapon"] = Bodysnatcher_Weapons_PlayerCanPickupWeapon,
+    ["PlayerDeath"] = Bodysnatcher_KillCheck_PlayerDeath,
+    ["TTTCupidShouldLoverSurvive"] = Bodysnatcher_TTTCupidShouldLoverSurvive,
+    ["TTTStopPlayerRespawning"] = Bodysnatcher_TTTStopPlayerRespawning
+}

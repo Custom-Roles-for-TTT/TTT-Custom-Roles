@@ -7,7 +7,6 @@ local table = table
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local MathMax = math.max
 local PlayerIterator = player.Iterator
 local TableInsert = table.insert
@@ -218,7 +217,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function LootGoblin_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_LOOTGOBLIN then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html = "The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role who likes to hoard loot."
@@ -300,32 +299,19 @@ local function LootGoblin_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_LOOTGOBLIN] = function()
-    AddHook("TTTEndRound", "LootGoblin_Radar_TTTEndRound", LootGoblin_Radar_TTTEndRound)
-    AddHook("TTTEventFinishIconText", "LootGoblin_TTTEventFinishIconText", LootGoblin_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "LootGoblin_TTTEventFinishText", LootGoblin_TTTEventFinishText)
-    AddHook("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", LootGoblin_TTTHUDInfoPaint)
-    AddHook("TTTRadarRender", "LootGoblin_TTTRadarRender", LootGoblin_TTTRadarRender)
-    AddHook("TTTScoringSecondaryWins", "LootGoblin_TTTScoringSecondaryWins", LootGoblin_TTTScoringSecondaryWins)
-    AddHook("TTTSettingsRolesTabSections", "LootGoblin_TTTSettingsRolesTabSections", LootGoblin_TTTSettingsRolesTabSections)
-    AddHook("TTTShouldHideFromHighlight", "LootGoblin_TTTShouldHideFromHighlight", LootGoblin_TTTShouldHideFromHighlight)
-    AddHook("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", LootGoblin_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_LOOTGOBLIN] = function()
-    RemoveHook("TTTEndRound", "LootGoblin_Radar_TTTEndRound")
-    RemoveHook("TTTEventFinishIconText", "LootGoblin_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "LootGoblin_TTTEventFinishText")
-    RemoveHook("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint")
-    RemoveHook("TTTRadarRender", "LootGoblin_TTTRadarRender")
-    RemoveHook("TTTScoringSecondaryWins", "LootGoblin_TTTScoringSecondaryWins")
-    RemoveHook("TTTSettingsRolesTabSections", "LootGoblin_TTTSettingsRolesTabSections")
-    RemoveHook("TTTShouldHideFromHighlight", "LootGoblin_TTTShouldHideFromHighlight")
-    RemoveHook("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_LOOTGOBLIN] = {
+    ["TTTEndRound"] = LootGoblin_Radar_TTTEndRound,
+    ["TTTEventFinishIconText"] = LootGoblin_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = LootGoblin_TTTEventFinishText,
+    ["TTTHUDInfoPaint"] = LootGoblin_TTTHUDInfoPaint,
+    ["TTTRadarRender"] = LootGoblin_TTTRadarRender,
+    ["TTTScoringSecondaryWins"] = LootGoblin_TTTScoringSecondaryWins,
+    ["TTTSettingsRolesTabSections"] = LootGoblin_TTTSettingsRolesTabSections,
+    ["TTTShouldHideFromHighlight"] = LootGoblin_TTTShouldHideFromHighlight
+}

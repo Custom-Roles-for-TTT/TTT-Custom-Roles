@@ -8,7 +8,6 @@ local table = table
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local TableInsert = table.insert
 
@@ -360,24 +359,13 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_VINDICATOR] = function()
-    AddHook("PlayerDeath", "Vindicator_PlayerDeath", Vindicator_PlayerDeath)
-    AddHook("PlayerDisconnected", "Vindicator_PlayerDisconnected", Vindicator_PlayerDisconnected)
-    AddHook("TTTBeginRound", "Vindicator_TTTBeginRound", Vindicator_TTTBeginRound)
-    AddHook("TTTCheckForWin", "Vindicator_TTTCheckForWin", Vindicator_TTTCheckForWin)
-    AddHook("TTTDeathNotifyOverride", "Vindicator_TTTDeathNotifyOverride", Vindicator_TTTDeathNotifyOverride)
-    AddHook("TTTPrintResultMessage", "Vindicator_TTTPrintResultMessage", Vindicator_TTTPrintResultMessage)
-    AddHook("TTTStopPlayerRespawning", "Vindicator_TTTStopPlayerRespawning", Vindicator_TTTStopPlayerRespawning)
-    AddHook("TTTWinCheckBlocks", "Vindicator_TTTWinCheckBlocks", Vindicator_TTTWinCheckBlocks)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_VINDICATOR] = function()
-    RemoveHook("PlayerDeath", "Vindicator_PlayerDeath")
-    RemoveHook("PlayerDisconnected", "Vindicator_PlayerDisconnected")
-    RemoveHook("TTTBeginRound", "Vindicator_TTTBeginRound")
-    RemoveHook("TTTCheckForWin", "Vindicator_TTTCheckForWin")
-    RemoveHook("TTTDeathNotifyOverride", "Vindicator_TTTDeathNotifyOverride")
-    RemoveHook("TTTPrintResultMessage", "Vindicator_TTTPrintResultMessage")
-    RemoveHook("TTTStopPlayerRespawning", "Vindicator_TTTStopPlayerRespawning")
-    RemoveHook("TTTWinCheckBlocks", "Vindicator_TTTWinCheckBlocks")
-end
+ROLE_REGISTERED_HOOKS[ROLE_VINDICATOR] = {
+    ["PlayerDeath"] = Vindicator_PlayerDeath,
+    ["PlayerDisconnected"] = Vindicator_PlayerDisconnected,
+    ["TTTBeginRound"] = Vindicator_TTTBeginRound,
+    ["TTTCheckForWin"] = Vindicator_TTTCheckForWin,
+    ["TTTDeathNotifyOverride"] = Vindicator_TTTDeathNotifyOverride,
+    ["TTTPrintResultMessage"] = Vindicator_TTTPrintResultMessage,
+    ["TTTStopPlayerRespawning"] = Vindicator_TTTStopPlayerRespawning,
+    ["TTTWinCheckBlocks"] = Vindicator_TTTWinCheckBlocks
+}

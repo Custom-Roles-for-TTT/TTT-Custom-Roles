@@ -10,6 +10,16 @@ local TableInsert = table.insert
 local PlayerIterator = player.Iterator
 
 ------------------
+-- ROLE CONVARS --
+------------------
+
+local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suicide_success")
+local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
+local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
+local vindicator_reset_on_success = GetConVar("ttt_vindicator_reset_on_success")
+local vindicator_reset_win_on_success = GetConVar("ttt_vindicator_reset_win_on_success")
+
+------------------
 -- TRANSLATIONS --
 ------------------
 
@@ -285,13 +295,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suicide_success")
-local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
-local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
-local vindicator_reset_on_success = GetConVar("ttt_vindicator_reset_on_success")
-local vindicator_reset_win_on_success = GetConVar("ttt_vindicator_reset_win_on_success")
-
-local function Vindicator_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_VINDICATOR then
         local innocentColor = ROLE_COLORS[ROLE_INNOCENT]
         local independentColor = ROLE_COLORS[ROLE_DRUNK]
@@ -329,40 +333,23 @@ local function Vindicator_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_VINDICATOR] = function()
-    AddHook("Think", "Vindicator_Highlight_Think", Vindicator_Highlight_Think)
-    AddHook("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound", Vindicator_SecondaryWinEvent_TTTEndRound)
-    AddHook("TTTEventFinishIconText", "Vindicator_TTTEventFinishIconText", Vindicator_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Vindicator_TTTEventFinishText", Vindicator_TTTEventFinishText)
-    AddHook("TTTScoreboardPlayerName", "Vindicator_TTTScoreboardPlayerName", Vindicator_TTTScoreboardPlayerName)
-    AddHook("TTTScoreboardPlayerRole", "Vindicator_TTTScoreboardPlayerRole", Vindicator_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringSecondaryWins", "Vindicator_TTTScoringSecondaryWins", Vindicator_TTTScoringSecondaryWins)
-    AddHook("TTTScoringSummaryRender", "Vindicator_TTTScoringSummaryRender", Vindicator_TTTScoringSummaryRender)
-    AddHook("TTTScoringWinTitle", "Vindicator_TTTScoringWinTitle", Vindicator_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Vindicator_TTTTargetIDPlayerTargetIcon", Vindicator_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTargetIDPlayerText", "Vindicator_TTTTargetIDPlayerText", Vindicator_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", Vindicator_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "Vindicator_Highlight_TTTUpdateRoleState", Vindicator_Highlight_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_VINDICATOR] = function()
-    RemoveHook("Think", "Vindicator_Highlight_Think")
-    RemoveHook("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound")
-    RemoveHook("TTTEventFinishIconText", "Vindicator_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Vindicator_TTTEventFinishText")
-    RemoveHook("TTTScoreboardPlayerName", "Vindicator_TTTScoreboardPlayerName")
-    RemoveHook("TTTScoreboardPlayerRole", "Vindicator_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringSecondaryWins", "Vindicator_TTTScoringSecondaryWins")
-    RemoveHook("TTTScoringSummaryRender", "Vindicator_TTTScoringSummaryRender")
-    RemoveHook("TTTScoringWinTitle", "Vindicator_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Vindicator_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Vindicator_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "Vindicator_Highlight_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_VINDICATOR] = {
+    ["Think"] = Vindicator_Highlight_Think,
+    ["TTTEndRound"] = Vindicator_SecondaryWinEvent_TTTEndRound,
+    ["TTTEventFinishIconText"] = Vindicator_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Vindicator_TTTEventFinishText,
+    ["TTTScoreboardPlayerName"] = Vindicator_TTTScoreboardPlayerName,
+    ["TTTScoreboardPlayerRole"] = Vindicator_TTTScoreboardPlayerRole,
+    ["TTTScoringSecondaryWins"] = Vindicator_TTTScoringSecondaryWins,
+    ["TTTScoringSummaryRender"] = Vindicator_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Vindicator_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerTargetIcon"] = Vindicator_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Vindicator_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = Vindicator_Highlight_TTTUpdateRoleState
+}

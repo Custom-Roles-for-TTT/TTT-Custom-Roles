@@ -8,7 +8,6 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local FindEntsByClass = ents.FindByClass
 local PlayerIterator = player.Iterator
 local MathRandom = math.random
@@ -412,26 +411,14 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_ARSONIST] = function()
-    AddHook("EntityTakeDamage", "Arsonist_EntityTakeDamage", Arsonist_EntityTakeDamage)
-    AddHook("PostPlayerDeath", "Arsonist_PostPlayerDeath", Arsonist_PostPlayerDeath)
-    AddHook("ScalePlayerDamage", "Arsonist_ScalePlayerDamage", Arsonist_ScalePlayerDamage)
-    AddHook("Think", "Arsonist_Douse_Think", Arsonist_Douse_Think)
-    AddHook("TTTBeginRound", "Arsonist_Announce_TTTBeginRound", Arsonist_Announce_TTTBeginRound)
-    AddHook("TTTCheckForWin", "Arsonist_TTTCheckForWin", Arsonist_TTTCheckForWin)
-    AddHook("TTTOnRoleAbilityEnabled", "Arsonist_TTTOnRoleAbilityEnabled", Arsonist_TTTOnRoleAbilityEnabled)
-    AddHook("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", Arsonist_TTTPlayerSpawnForRound)
-    AddHook("TTTPrintResultMessage", "Arsonist_TTTPrintResultMessage", Arsonist_TTTPrintResultMessage)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_ARSONIST] = function()
-    RemoveHook("EntityTakeDamage", "Arsonist_EntityTakeDamage")
-    RemoveHook("PostPlayerDeath", "Arsonist_PostPlayerDeath")
-    RemoveHook("ScalePlayerDamage", "Arsonist_ScalePlayerDamage")
-    RemoveHook("Think", "Arsonist_Douse_Think")
-    RemoveHook("TTTBeginRound", "Arsonist_Announce_TTTBeginRound")
-    RemoveHook("TTTCheckForWin", "Arsonist_TTTCheckForWin")
-    RemoveHook("TTTOnRoleAbilityEnabled", "Arsonist_TTTOnRoleAbilityEnabled")
-    RemoveHook("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound")
-    RemoveHook("TTTPrintResultMessage", "Arsonist_TTTPrintResultMessage")
-end
+ROLE_REGISTERED_HOOKS[ROLE_ARSONIST] = {
+    ["EntityTakeDamage"] = Arsonist_EntityTakeDamage,
+    ["PostPlayerDeath"] = Arsonist_PostPlayerDeath,
+    ["ScalePlayerDamage"] = Arsonist_ScalePlayerDamage,
+    ["Think"] = Arsonist_Douse_Think,
+    ["TTTBeginRound"] = Arsonist_Announce_TTTBeginRound,
+    ["TTTCheckForWin"] = Arsonist_TTTCheckForWin,
+    ["TTTOnRoleAbilityEnabled"] = Arsonist_TTTOnRoleAbilityEnabled,
+    ["TTTPlayerSpawnForRound"] = Arsonist_TTTPlayerSpawnForRound,
+    ["TTTPrintResultMessage"] = Arsonist_TTTPrintResultMessage
+}

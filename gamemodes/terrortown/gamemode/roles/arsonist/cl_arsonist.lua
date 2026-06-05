@@ -4,7 +4,6 @@ local table = table
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local TableInsert = table.insert
 
 local client
@@ -302,7 +301,8 @@ end
 -- TUTORIAL --
 --------------
 
-local function Arsonist_TTTTutorialRoleText(role, titleLabel)
+
+AddHook("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ARSONIST then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_ARSONIST] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to be the last player standing."
@@ -344,36 +344,23 @@ local function Arsonist_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_ARSONIST] = function()
-    AddHook("HUDPaint", "Arsonist_HUDPaint", Arsonist_HUDPaint)
-    AddHook("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate", Arsonist_TTTBodySearchPopulate)
-    AddHook("TTTEventFinishIconText", "Arsonist_TTTEventFinishIconText", Arsonist_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Arsonist_TTTEventFinishText", Arsonist_TTTEventFinishText)
-    AddHook("TTTHUDInfoPaint", "Arsonist_Igniter_TTTHUDInfoPaint", Arsonist_Igniter_TTTHUDInfoPaint)
-    AddHook("TTTHUDInfoPaint", "Arsonist_TTTHUDInfoPaint", Arsonist_TTTHUDInfoPaint)
-    AddHook("TTTScoreboardPlayerName", "Arsonist_TTTScoreboardPlayerName", Arsonist_TTTScoreboardPlayerName)
-    AddHook("TTTScoringWinTitle", "Arsonist_TTTScoringWinTitle", Arsonist_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Arsonist_TTTTargetIDPlayerTargetIcon", Arsonist_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", Arsonist_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", Arsonist_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_ARSONIST] = function()
-    RemoveHook("HUDPaint", "Arsonist_HUDPaint")
-    RemoveHook("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate")
-    RemoveHook("TTTEventFinishIconText", "Arsonist_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Arsonist_TTTEventFinishText")
-    RemoveHook("TTTHUDInfoPaint", "Arsonist_Igniter_TTTHUDInfoPaint")
-    RemoveHook("TTTHUDInfoPaint", "Arsonist_TTTHUDInfoPaint")
-    RemoveHook("TTTScoreboardPlayerName", "Arsonist_TTTScoreboardPlayerName")
-    RemoveHook("TTTScoringWinTitle", "Arsonist_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Arsonist_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_ARSONIST] = {
+    ["HUDPaint"] = Arsonist_HUDPaint,
+    ["TTTBodySearchPopulate"] = Arsonist_TTTBodySearchPopulate,
+    ["TTTEventFinishIconText"] = Arsonist_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Arsonist_TTTEventFinishText,
+    ["TTTHUDInfoPaint"] = {
+        ["Arsonist_Igniter_TTTHUDInfoPaint"] = Arsonist_Igniter_TTTHUDInfoPaint,
+        ["Arsonist_TTTHUDInfoPaint"] = Arsonist_TTTHUDInfoPaint
+    },
+    ["TTTScoreboardPlayerName"] = Arsonist_TTTScoreboardPlayerName,
+    ["TTTScoringWinTitle"] = Arsonist_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerTargetIcon"] = Arsonist_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Arsonist_TTTTargetIDPlayerText
+}

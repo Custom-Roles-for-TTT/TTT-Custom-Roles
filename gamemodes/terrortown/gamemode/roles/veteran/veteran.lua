@@ -7,7 +7,6 @@ local player = player
 local table = table
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -99,12 +98,7 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_VETERAN] = function()
-    AddHook("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", Veteran_RoleFeatures_PlayerDeath)
-    AddHook("ScalePlayerDamage", "Veteran_ScalePlayerDamage", Veteran_ScalePlayerDamage)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_VETERAN] = function()
-    RemoveHook("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath")
-    RemoveHook("ScalePlayerDamage", "Veteran_ScalePlayerDamage")
-end
+ROLE_REGISTERED_HOOKS[ROLE_VETERAN] = {
+    ["PlayerDeath"] = Veteran_RoleFeatures_PlayerDeath,
+    ["ScalePlayerDamage"] = Veteran_ScalePlayerDamage
+}

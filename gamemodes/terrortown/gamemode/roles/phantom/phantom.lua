@@ -11,7 +11,6 @@ local timer = timer
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_PhantomHaunt")
@@ -376,26 +375,14 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_PHANTOM] = function()
-    AddHook("DoPlayerDeath", "Phantom_DoPlayerDeath", Phantom_DoPlayerDeath)
-    AddHook("PlayerDeath", "Phantom_PlayerDeath", Phantom_PlayerDeath)
-    AddHook("PlayerFootstep", "Phantom_PlayerFootstep", Phantom_PlayerFootstep)
-    AddHook("PostPlayerDeath", "Phantom_Lovers_PostPlayerDeath", Phantom_Lovers_PostPlayerDeath)
-    AddHook("TTTCupidShouldLoverSurvive", "Phantom_TTTCupidShouldLoverSurvive", Phantom_TTTCupidShouldLoverSurvive)
-    AddHook("TTTDeathNotifyOverride", "Phantom_TTTDeathNotifyOverride", Phantom_TTTDeathNotifyOverride)
-    AddHook("TTTPlayerRoleChangedByItem", "Phantom_TTTPlayerRoleChangedByItem", Phantom_TTTPlayerRoleChangedByItem)
-    AddHook("TTTPlayerSpawnForRound", "Phantom_TTTPlayerSpawnForRound", Phantom_TTTPlayerSpawnForRound)
-    AddHook("TTTSpectatorHUDKeyPress", "Phantom_TTTSpectatorHUDKeyPress", Phantom_TTTSpectatorHUDKeyPress)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PHANTOM] = function()
-    RemoveHook("DoPlayerDeath", "Phantom_DoPlayerDeath")
-    RemoveHook("PlayerDeath", "Phantom_PlayerDeath")
-    RemoveHook("PlayerFootstep", "Phantom_PlayerFootstep")
-    RemoveHook("PostPlayerDeath", "Phantom_Lovers_PostPlayerDeath")
-    RemoveHook("TTTCupidShouldLoverSurvive", "Phantom_TTTCupidShouldLoverSurvive")
-    RemoveHook("TTTDeathNotifyOverride", "Phantom_TTTDeathNotifyOverride")
-    RemoveHook("TTTPlayerRoleChangedByItem", "Phantom_TTTPlayerRoleChangedByItem")
-    RemoveHook("TTTPlayerSpawnForRound", "Phantom_TTTPlayerSpawnForRound")
-    RemoveHook("TTTSpectatorHUDKeyPress", "Phantom_TTTSpectatorHUDKeyPress")
-end
+ROLE_REGISTERED_HOOKS[ROLE_PHANTOM] = {
+    ["DoPlayerDeath"] = Phantom_DoPlayerDeath,
+    ["PlayerDeath"] = Phantom_PlayerDeath,
+    ["PlayerFootstep"] = Phantom_PlayerFootstep,
+    ["PostPlayerDeath"] = Phantom_Lovers_PostPlayerDeath,
+    ["TTTCupidShouldLoverSurvive"] = Phantom_TTTCupidShouldLoverSurvive,
+    ["TTTDeathNotifyOverride"] = Phantom_TTTDeathNotifyOverride,
+    ["TTTPlayerRoleChangedByItem"] = Phantom_TTTPlayerRoleChangedByItem,
+    ["TTTPlayerSpawnForRound"] = Phantom_TTTPlayerSpawnForRound,
+    ["TTTSpectatorHUDKeyPress"] = Phantom_TTTSpectatorHUDKeyPress
+}

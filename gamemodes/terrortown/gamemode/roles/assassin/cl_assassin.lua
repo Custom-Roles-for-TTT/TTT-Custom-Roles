@@ -252,7 +252,7 @@ local function GetPunctuatedListString(tbl)
     return string.gsub(allowed_string, "(.*),(.*)", "%1" .. allowed_replace .. "%2")
 end
 
-local function Assassin_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ASSASSIN then
         local roleColor
         local html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is "
@@ -364,36 +364,21 @@ local function Assassin_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_ASSASSIN] = function()
-    AddHook("Think", "Assassin_Highlight_Think", Assassin_Highlight_Think)
-    AddHook("TTTEventFinishIconText", "Assassin_TTTEventFinishIconText", Assassin_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Assassin_TTTEventFinishText", Assassin_TTTEventFinishText)
-    AddHook("TTTRolePopupParams", "Assassin_TTTRolePopupParams", Assassin_TTTRolePopupParams)
-    AddHook("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", Assassin_TTTScoreboardPlayerName)
-    AddHook("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole", Assassin_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringWinTitle", "Assassin_TTTScoringWinTitle", Assassin_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Assassin_TTTTargetIDPlayerTargetIcon", Assassin_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", Assassin_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", Assassin_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState", Assassin_Highlight_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_ASSASSIN] = function()
-    RemoveHook("Think", "Assassin_Highlight_Think")
-    RemoveHook("TTTEventFinishIconText", "Assassin_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Assassin_TTTEventFinishText")
-    RemoveHook("TTTRolePopupParams", "Assassin_TTTRolePopupParams")
-    RemoveHook("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName")
-    RemoveHook("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringWinTitle", "Assassin_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Assassin_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_ASSASSIN] = {
+    ["Think"] = Assassin_Highlight_Think,
+    ["TTTEventFinishIconText"] = Assassin_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Assassin_TTTEventFinishText,
+    ["TTTRolePopupParams"] = Assassin_TTTRolePopupParams,
+    ["TTTScoreboardPlayerName"] = Assassin_TTTScoreboardPlayerName,
+    ["TTTScoreboardPlayerRole"] = Assassin_TTTScoreboardPlayerRole,
+    ["TTTScoringWinTitle"] = Assassin_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerTargetIcon"] = Assassin_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Assassin_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = Assassin_Highlight_TTTUpdateRoleState
+}

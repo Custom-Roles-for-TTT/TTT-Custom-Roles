@@ -197,7 +197,7 @@ end
 -- ROLE POPUP --
 ----------------
 
-local function HiveMind_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_HIVEMIND then
         local roleTeam = player.GetRoleTeam(ROLE_HIVEMIND, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
@@ -235,34 +235,20 @@ local function HiveMind_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_HIVEMIND] = function()
-    AddHook("Think", "HiveMind_Highlight_Think", HiveMind_Highlight_Think)
-    AddHook("TTTEventFinishIconText", "HiveMind_TTTEventFinishIconText", HiveMind_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "HiveMind_TTTEventFinishText", HiveMind_TTTEventFinishText)
-    AddHook("TTTScoreboardPlayerRole", "HiveMind_TTTScoreboardPlayerRole", HiveMind_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringWinTitle", "HiveMind_TTTScoringWinTitle", HiveMind_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerRing", "HiveMind_TTTTargetIDPlayerRing", HiveMind_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "HiveMind_TTTTargetIDPlayerRoleIcon", HiveMind_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerText", "HiveMind_TTTTargetIDPlayerText", HiveMind_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", HiveMind_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "HiveMind_Highlight_TTTUpdateRoleState", HiveMind_Highlight_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_HIVEMIND] = function()
-    RemoveHook("Think", "HiveMind_Highlight_Think")
-    RemoveHook("TTTEventFinishIconText", "HiveMind_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "HiveMind_TTTEventFinishText")
-    RemoveHook("TTTScoreboardPlayerRole", "HiveMind_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringWinTitle", "HiveMind_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerRing", "HiveMind_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "HiveMind_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerText", "HiveMind_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "HiveMind_Highlight_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_HIVEMIND] = {
+    ["Think"] = HiveMind_Highlight_Think,
+    ["TTTEventFinishIconText"] = HiveMind_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = HiveMind_TTTEventFinishText,
+    ["TTTScoreboardPlayerRole"] = HiveMind_TTTScoreboardPlayerRole,
+    ["TTTScoringWinTitle"] = HiveMind_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerRing"] = HiveMind_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = HiveMind_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = HiveMind_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = HiveMind_Highlight_TTTUpdateRoleState
+}

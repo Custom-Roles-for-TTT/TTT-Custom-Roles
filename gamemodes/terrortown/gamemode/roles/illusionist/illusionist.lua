@@ -4,7 +4,6 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -110,20 +109,11 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_ILLUSIONIST] = function()
-    AddHook("PlayerDeath", "Illusionist_PlayerDeath", Illusionist_PlayerDeath)
-    AddHook("TTTBeginRound", "Illusionist_TTTBeginRound", Illusionist_TTTBeginRound)
-    AddHook("TTTEndRound", "Illusionist_TTTEndRound", Illusionist_TTTEndRound)
-    AddHook("TTTPlayerSpawnForRound", "Illusionist_TTTPlayerSpawnForRound", Illusionist_TTTPlayerSpawnForRound)
-    AddHook("TTTTeamChatTargets", "Illusionist_TTTTeamChatTargets", Illusionist_TTTTeamChatTargets)
-    AddHook("TTTTeamVoiceChatTargets", "Illusionist_TTTTeamVoiceChatTargets", Illusionist_TTTTeamVoiceChatTargets)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_ILLUSIONIST] = function()
-    RemoveHook("PlayerDeath", "Illusionist_PlayerDeath")
-    RemoveHook("TTTBeginRound", "Illusionist_TTTBeginRound")
-    RemoveHook("TTTEndRound", "Illusionist_TTTEndRound")
-    RemoveHook("TTTPlayerSpawnForRound", "Illusionist_TTTPlayerSpawnForRound")
-    RemoveHook("TTTTeamChatTargets", "Illusionist_TTTTeamChatTargets")
-    RemoveHook("TTTTeamVoiceChatTargets", "Illusionist_TTTTeamVoiceChatTargets")
-end
+ROLE_REGISTERED_HOOKS[ROLE_ILLUSIONIST] = {
+    ["PlayerDeath"] = Illusionist_PlayerDeath,
+    ["TTTBeginRound"] = Illusionist_TTTBeginRound,
+    ["TTTEndRound"] = Illusionist_TTTEndRound,
+    ["TTTPlayerSpawnForRound"] = Illusionist_TTTPlayerSpawnForRound,
+    ["TTTTeamChatTargets"] = Illusionist_TTTTeamChatTargets,
+    ["TTTTeamVoiceChatTargets"] = Illusionist_TTTTeamVoiceChatTargets
+}

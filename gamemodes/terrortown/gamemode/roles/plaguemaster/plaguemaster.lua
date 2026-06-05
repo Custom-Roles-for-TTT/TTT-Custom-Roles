@@ -5,7 +5,6 @@ local player = player
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_PlaguemasterPlagued")
@@ -276,24 +275,13 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_PLAGUEMASTER] = function()
-    AddHook("PostPlayerDeath", "Plaguemaster_PostPlayerDeath", Plaguemaster_PostPlayerDeath)
-    AddHook("TTTCanPlayerBeCured", "Plaguemaster_TTTCanPlayerBeCured", Plaguemaster_TTTCanPlayerBeCured)
-    AddHook("TTTCheckForWin", "Plaguemaster_TTTCheckForWin", Plaguemaster_TTTCheckForWin)
-    AddHook("TTTCurePlayer", "Plaguemaster_TTTCurePlayer", Plaguemaster_TTTCurePlayer)
-    AddHook("TTTOnRoleAbilityEnabled", "Plaguemaster_TTTOnRoleAbilityEnabled", Plaguemaster_TTTOnRoleAbilityEnabled)
-    AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", Plaguemaster_Plague_TTTPlayerAliveThink)
-    AddHook("TTTPlayerSpawnForRound", "Plaguemaster_TTTPlayerSpawnForRound", Plaguemaster_TTTPlayerSpawnForRound)
-    AddHook("TTTPrintResultMessage", "Plaguemaster_TTTPrintResultMessage", Plaguemaster_TTTPrintResultMessage)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PLAGUEMASTER] = function()
-    RemoveHook("PostPlayerDeath", "Plaguemaster_PostPlayerDeath")
-    RemoveHook("TTTCanPlayerBeCured", "Plaguemaster_TTTCanPlayerBeCured")
-    RemoveHook("TTTCheckForWin", "Plaguemaster_TTTCheckForWin")
-    RemoveHook("TTTCurePlayer", "Plaguemaster_TTTCurePlayer")
-    RemoveHook("TTTOnRoleAbilityEnabled", "Plaguemaster_TTTOnRoleAbilityEnabled")
-    RemoveHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink")
-    RemoveHook("TTTPlayerSpawnForRound", "Plaguemaster_TTTPlayerSpawnForRound")
-    RemoveHook("TTTPrintResultMessage", "Plaguemaster_TTTPrintResultMessage")
-end
+ROLE_REGISTERED_HOOKS[ROLE_PLAGUEMASTER] = {
+    ["PostPlayerDeath"] = Plaguemaster_PostPlayerDeath,
+    ["TTTCanPlayerBeCured"] = Plaguemaster_TTTCanPlayerBeCured,
+    ["TTTCheckForWin"] = Plaguemaster_TTTCheckForWin,
+    ["TTTCurePlayer"] = Plaguemaster_TTTCurePlayer,
+    ["TTTOnRoleAbilityEnabled"] = Plaguemaster_TTTOnRoleAbilityEnabled,
+    ["TTTPlayerAliveThink"] = Plaguemaster_Plague_TTTPlayerAliveThink,
+    ["TTTPlayerSpawnForRound"] = Plaguemaster_TTTPlayerSpawnForRound,
+    ["TTTPrintResultMessage"] = Plaguemaster_TTTPrintResultMessage
+}

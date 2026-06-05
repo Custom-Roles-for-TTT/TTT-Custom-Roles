@@ -8,7 +8,6 @@ local table = table
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -384,27 +383,15 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_ASSASSIN] = function()
-    AddHook("DoPlayerDeath", "Assassin_DoPlayerDeath", Assassin_DoPlayerDeath)
+ROLE_REGISTERED_HOOKS[ROLE_ASSASSIN] = {
+    ["DoPlayerDeath"] = Assassin_DoPlayerDeath,
     -- Update assassin target when a player disconnects
-    AddHook("PlayerDisconnected", "Assassin_Target_PlayerDisconnected", UpdateAssassinTargets)
-    AddHook("ScalePlayerDamage", "Assassin_ScalePlayerDamage", Assassin_ScalePlayerDamage)
-    AddHook("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility", Assassin_SetupPlayerVisibility)
-    AddHook("TTTCheckForWin", "Assassin_TTTCheckForWin", Assassin_TTTCheckForWin)
-    AddHook("TTTCupidLoversChosen", "Assassin_TTTCupidLoversChosen", Assassin_TTTCupidLoversChosen)
-    AddHook("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled", Assassin_TTTOnRoleAbilityEnabled)
-    AddHook("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage", Assassin_TTTPrintResultMessage)
-    AddHook("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", Assassin_TTTTurncoatTeamChanged)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_ASSASSIN] = function()
-    RemoveHook("DoPlayerDeath", "Assassin_DoPlayerDeath")
-    RemoveHook("PlayerDisconnected", "Assassin_Target_PlayerDisconnected")
-    RemoveHook("ScalePlayerDamage", "Assassin_ScalePlayerDamage")
-    RemoveHook("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility")
-    RemoveHook("TTTCheckForWin", "Assassin_TTTCheckForWin")
-    RemoveHook("TTTCupidLoversChosen", "Assassin_TTTCupidLoversChosen")
-    RemoveHook("TTTOnRoleAbilityEnabled", "Assassin_TTTOnRoleAbilityEnabled")
-    RemoveHook("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage")
-    RemoveHook("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged")
-end
+    ["PlayerDisconnected"] = UpdateAssassinTargets,
+    ["ScalePlayerDamage"] = Assassin_ScalePlayerDamage,
+    ["SetupPlayerVisibility"] = Assassin_SetupPlayerVisibility,
+    ["TTTCheckForWin"] = Assassin_TTTCheckForWin,
+    ["TTTCupidLoversChosen"] = Assassin_TTTCupidLoversChosen,
+    ["TTTOnRoleAbilityEnabled"] = Assassin_TTTOnRoleAbilityEnabled,
+    ["TTTPrintResultMessage"] = Assassin_TTTPrintResultMessage,
+    ["TTTTurncoatTeamChanged"] = Assassin_TTTTurncoatTeamChanged
+}

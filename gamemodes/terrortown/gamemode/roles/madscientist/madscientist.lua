@@ -1,10 +1,5 @@
 AddCSLuaFile()
 
-local hook = hook
-
-local AddHook = hook.Add
-local RemoveHook = hook.Remove
-
 -------------
 -- CONVARS --
 -------------
@@ -28,10 +23,6 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_MADSCIENTIST] = function()
-    AddHook("PlayerDeath", "MadScientist_PlayerDeath", MadScientist_PlayerDeath)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_MADSCIENTIST] = function()
-    RemoveHook("PlayerDeath", "MadScientist_PlayerDeath")
-end
+ROLE_REGISTERED_HOOKS[ROLE_MADSCIENTIST] = {
+    ["PlayerDeath"] = MadScientist_PlayerDeath
+}

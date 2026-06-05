@@ -12,7 +12,6 @@ local table = table
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local MathRandom = math.random
 local TableInsert = table.insert
@@ -406,38 +405,20 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_ZOMBIE] = function()
-    AddHook("DoPlayerDeath", "Zombie_DoPlayerDeath", Zombie_DoPlayerDeath)
-    AddHook("EntityTakeDamage", "Zombie_EntityTakeDamage", Zombie_EntityTakeDamage)
-    AddHook("OnPlayerHitGround", "Zombie_OnPlayerHitGround", Zombie_OnPlayerHitGround)
-    AddHook("PlayerCanPickupWeapon", "Zombie_Weapons_PlayerCanPickupWeapon", Zombie_Weapons_PlayerCanPickupWeapon)
-    AddHook("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", Zombie_Prime_PlayerDisconnected)
-    AddHook("PlayerLoadout", "Zombie_PlayerLoadout", Zombie_PlayerLoadout)
-    AddHook("ScalePlayerDamage", "Zombie_ScalePlayerDamage", Zombie_ScalePlayerDamage)
-    AddHook("SetupPlayerVisibility", "Zombie_SetupPlayerVisibility", Zombie_SetupPlayerVisibility)
-    AddHook("TTTCheckForWin", "Zombie_TTTCheckForWin", Zombie_TTTCheckForWin)
-    AddHook("TTTCupidShouldLoverSurvive", "Zombie_TTTCupidShouldLoverSurvive", Zombie_TTTCupidShouldLoverSurvive)
-    AddHook("TTTKarmaShouldGivePenalty", "Zombie_TTTKarmaShouldGivePenalty", Zombie_TTTKarmaShouldGivePenalty)
-    AddHook("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", Zombie_TTTPlayerAliveThink)
-    AddHook("TTTPrintResultMessage", "Zombie_TTTPrintResultMessage", Zombie_TTTPrintResultMessage)
-    AddHook("TTTStopPlayerRespawning", "Zombie_TTTStopPlayerRespawning", Zombie_TTTStopPlayerRespawning)
-    AddHook("TTTWinCheckBlocks", "Zombie_TTTWinCheckBlocks", Zombie_TTTWinCheckBlocks)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_ZOMBIE] = function()
-    RemoveHook("DoPlayerDeath", "Zombie_DoPlayerDeath")
-    RemoveHook("EntityTakeDamage", "Zombie_EntityTakeDamage")
-    RemoveHook("OnPlayerHitGround", "Zombie_OnPlayerHitGround")
-    RemoveHook("PlayerCanPickupWeapon", "Zombie_Weapons_PlayerCanPickupWeapon")
-    RemoveHook("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected")
-    RemoveHook("PlayerLoadout", "Zombie_PlayerLoadout")
-    RemoveHook("ScalePlayerDamage", "Zombie_ScalePlayerDamage")
-    RemoveHook("SetupPlayerVisibility", "Zombie_SetupPlayerVisibility")
-    RemoveHook("TTTCheckForWin", "Zombie_TTTCheckForWin")
-    RemoveHook("TTTCupidShouldLoverSurvive", "Zombie_TTTCupidShouldLoverSurvive")
-    RemoveHook("TTTKarmaShouldGivePenalty", "Zombie_TTTKarmaShouldGivePenalty")
-    RemoveHook("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink")
-    RemoveHook("TTTPrintResultMessage", "Zombie_TTTPrintResultMessage")
-    RemoveHook("TTTStopPlayerRespawning", "Zombie_TTTStopPlayerRespawning")
-    RemoveHook("TTTWinCheckBlocks", "Zombie_TTTWinCheckBlocks")
-end
+ROLE_REGISTERED_HOOKS[ROLE_ZOMBIE] = {
+    ["DoPlayerDeath"] = Zombie_DoPlayerDeath,
+    ["EntityTakeDamage"] = Zombie_EntityTakeDamage,
+    ["OnPlayerHitGround"] = Zombie_OnPlayerHitGround,
+    ["PlayerCanPickupWeapon"] = Zombie_Weapons_PlayerCanPickupWeapon,
+    ["PlayerDisconnected"] = Zombie_Prime_PlayerDisconnected,
+    ["PlayerLoadout"] = Zombie_PlayerLoadout,
+    ["ScalePlayerDamage"] = Zombie_ScalePlayerDamage,
+    ["SetupPlayerVisibility"] = Zombie_SetupPlayerVisibility,
+    ["TTTCheckForWin"] = Zombie_TTTCheckForWin,
+    ["TTTCupidShouldLoverSurvive"] = Zombie_TTTCupidShouldLoverSurvive,
+    ["TTTKarmaShouldGivePenalty"] = Zombie_TTTKarmaShouldGivePenalty,
+    ["TTTPlayerAliveThink"] = Zombie_TTTPlayerAliveThink,
+    ["TTTPrintResultMessage"] = Zombie_TTTPrintResultMessage,
+    ["TTTStopPlayerRespawning"] = Zombie_TTTStopPlayerRespawning,
+    ["TTTWinCheckBlocks"] = Zombie_TTTWinCheckBlocks
+}

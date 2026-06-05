@@ -59,7 +59,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Turncoat_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TURNCOAT then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_TURNCOAT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span>."
@@ -74,16 +74,4 @@ local function Turncoat_TTTTutorialRoleText(role, titleLabel)
         local health = turncoat_change_health:GetInt()
         return html .. "<span style='display: block; margin-top: 10px;'>At the same time, their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>health is changed to</span> " .. health .. ".</span>"
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_TURNCOAT] = function()
-    AddHook("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText", Turncoat_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_TURNCOAT] = function()
-    RemoveHook("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText")
-end
+end)

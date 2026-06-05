@@ -1,7 +1,6 @@
 local hook = hook
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -90,7 +89,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Spy_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SPY then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_SPY] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to sow confusion by stealing the identity of other players. </span>"
@@ -150,22 +149,14 @@ local function Spy_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SPY] = function()
-    AddHook("TTTChatPlayerName", "Spy_TTTChatPlayerName", Spy_TTTChatPlayerName)
-    AddHook("TTTRolePopupRoleStringOverride", "Spy_TTTRolePopupRoleStringOverride", Spy_TTTRolePopupRoleStringOverride)
-    AddHook("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", Spy_TTTTargetIDPlayerName)
-    AddHook("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", Spy_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SPY] = function()
-    RemoveHook("TTTChatPlayerName", "Spy_TTTChatPlayerName")
-    RemoveHook("TTTRolePopupRoleStringOverride", "Spy_TTTRolePopupRoleStringOverride")
-    RemoveHook("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName")
-    RemoveHook("TTTTutorialRoleText", "Spy_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SPY] = {
+    ["TTTChatPlayerName"] = Spy_TTTChatPlayerName,
+    ["TTTRolePopupRoleStringOverride"] = Spy_TTTRolePopupRoleStringOverride,
+    ["TTTTargetIDPlayerName"] = Spy_TTTTargetIDPlayerName
+}

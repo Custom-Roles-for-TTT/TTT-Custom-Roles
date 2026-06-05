@@ -559,7 +559,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Shadow_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SHADOW then
         local roleTeam = player.GetRoleTeam(ROLE_SHADOW, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
@@ -649,50 +649,32 @@ local function Shadow_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SHADOW] = function()
-    AddHook("HUDPaint", "Shadow_HUDPaint", Shadow_HUDPaint)
-    AddHook("Think", "Shadow_Highlight_Think", Shadow_Highlight_Think)
-    AddHook("Think", "Shadow_Think", Shadow_Think)
-    AddHook("TTTEndRound", "Shadow_ClearCache_TTTEndRound", Shadow_ClearCache_TTTEndRound)
-    AddHook("TTTEventFinishIconText", "Shadow_TTTEventFinishIconText", Shadow_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Shadow_TTTEventFinishText", Shadow_TTTEventFinishText)
-    AddHook("TTTHUDInfoPaint", "Shadow_Buff_TTTHUDInfoPaint", Shadow_Buff_TTTHUDInfoPaint)
-    AddHook("TTTHUDInfoPaint", "Shadow_Delay_TTTHUDInfoPaint", Shadow_Delay_TTTHUDInfoPaint)
-    AddHook("TTTScoreboardPlayerName", "Shadow_TTTScoreboardPlayerName", Shadow_TTTScoreboardPlayerName)
-    AddHook("TTTScoreboardPlayerRole", "Shadow_TTTScoreboardPlayerRole", Shadow_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringSecondaryWins", "Shadow_TTTScoringSecondaryWins", Shadow_TTTScoringSecondaryWins)
-    AddHook("TTTScoringSummaryRender", "Shadow_TTTScoringSummaryRender", Shadow_TTTScoringSummaryRender)
-    AddHook("TTTTargetIDPlayerRing", "Shadow_TTTTargetIDPlayerRing", Shadow_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Shadow_TTTTargetIDPlayerRoleIcon", Shadow_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Shadow_TTTTargetIDPlayerTargetIcon", Shadow_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText", Shadow_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", Shadow_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "Shadow_Highlight_TTTUpdateRoleState", Shadow_Highlight_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SHADOW] = function()
-    RemoveHook("HUDPaint", "Shadow_HUDPaint")
-    RemoveHook("Think", "Shadow_Highlight_Think")
-    RemoveHook("Think", "Shadow_Think")
-    RemoveHook("TTTEndRound", "Shadow_ClearCache_TTTEndRound")
-    RemoveHook("TTTEventFinishIconText", "Shadow_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Shadow_TTTEventFinishText")
-    RemoveHook("TTTHUDInfoPaint", "Shadow_Buff_TTTHUDInfoPaint")
-    RemoveHook("TTTHUDInfoPaint", "Shadow_Delay_TTTHUDInfoPaint")
-    RemoveHook("TTTScoreboardPlayerName", "Shadow_TTTScoreboardPlayerName")
-    RemoveHook("TTTScoreboardPlayerRole", "Shadow_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringSecondaryWins", "Shadow_TTTScoringSecondaryWins")
-    RemoveHook("TTTScoringSummaryRender", "Shadow_TTTScoringSummaryRender")
-    RemoveHook("TTTTargetIDPlayerRing", "Shadow_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Shadow_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Shadow_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "Shadow_Highlight_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SHADOW] = {
+    ["HUDPaint"] = Shadow_HUDPaint,
+    ["Think"] = {
+        ["Shadow_Highlight_Think"] = Shadow_Highlight_Think,
+        ["Shadow_Think"] = Shadow_Think
+    },
+    ["TTTEndRound"] = Shadow_ClearCache_TTTEndRound,
+    ["TTTEventFinishIconText"] = Shadow_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Shadow_TTTEventFinishText,
+    ["TTTHUDInfoPaint"] = {
+        ["Shadow_Buff_TTTHUDInfoPaint"] = Shadow_Buff_TTTHUDInfoPaint,
+        ["Shadow_Delay_TTTHUDInfoPaint"] = Shadow_Delay_TTTHUDInfoPaint
+    },
+    ["TTTScoreboardPlayerName"] = Shadow_TTTScoreboardPlayerName,
+    ["TTTScoreboardPlayerRole"] = Shadow_TTTScoreboardPlayerRole,
+    ["TTTScoringSecondaryWins"] = Shadow_TTTScoringSecondaryWins,
+    ["TTTScoringSummaryRender"] = Shadow_TTTScoringSummaryRender,
+    ["TTTTargetIDPlayerRing"] = Shadow_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Shadow_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerTargetIcon"] = Shadow_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Shadow_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = Shadow_Highlight_TTTUpdateRoleState
+}

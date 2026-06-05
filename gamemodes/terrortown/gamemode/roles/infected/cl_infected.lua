@@ -7,7 +7,6 @@ local table = table
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local MathMax = math.max
 local StringUpper = string.upper
 
@@ -219,7 +218,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Infected_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Infected_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_INFECTED then
         local roleTeam = player.GetRoleTeam(ROLE_INFECTED, true)
         local roleTeamString, roleTeamColor = GetRoleTeamInfo(roleTeam, true)
@@ -258,36 +257,21 @@ local function Infected_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_INFECTED] = function()
-    AddHook("TTTEventFinishIconText", "Infected_TTTEventFinishIconText", Infected_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Infected_TTTEventFinishText", Infected_TTTEventFinishText)
-    AddHook("TTTHUDInfoPaint", "Infected_TTTHUDInfoPaint", Infected_TTTHUDInfoPaint)
-    AddHook("TTTRolePopupParams", "Infected_TTTRolePopupParams", Infected_TTTRolePopupParams)
-    AddHook("TTTRolePopupRoleStringOverride", "Infected_TTTRolePopupRoleStringOverride", Infected_TTTRolePopupRoleStringOverride)
-    AddHook("TTTScoreboardPlayerRole", "Infected_TTTScoreboardPlayerRole", Infected_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringWinTitle", "Infected_TTTScoringWinTitle", Infected_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerRing", "Infected_TTTTargetIDPlayerRing", Infected_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Infected_TTTTargetIDPlayerRoleIcon", Infected_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerText", "Infected_TTTTargetIDPlayerText", Infected_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Infected_TTTTutorialRoleText", Infected_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_INFECTED] = function()
-    RemoveHook("TTTEventFinishIconText", "Infected_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Infected_TTTEventFinishText")
-    RemoveHook("TTTHUDInfoPaint", "Infected_TTTHUDInfoPaint")
-    RemoveHook("TTTRolePopupParams", "Infected_TTTRolePopupParams")
-    RemoveHook("TTTRolePopupRoleStringOverride", "Infected_TTTRolePopupRoleStringOverride")
-    RemoveHook("TTTScoreboardPlayerRole", "Infected_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringWinTitle", "Infected_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerRing", "Infected_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Infected_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Infected_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Infected_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_INFECTED] = {
+    ["TTTEventFinishIconText"] = Infected_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Infected_TTTEventFinishText,
+    ["TTTHUDInfoPaint"] = Infected_TTTHUDInfoPaint,
+    ["TTTRolePopupParams"] = Infected_TTTRolePopupParams,
+    ["TTTRolePopupRoleStringOverride"] = Infected_TTTRolePopupRoleStringOverride,
+    ["TTTScoreboardPlayerRole"] = Infected_TTTScoreboardPlayerRole,
+    ["TTTScoringWinTitle"] = Infected_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerRing"] = Infected_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Infected_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Infected_TTTTargetIDPlayerText
+}

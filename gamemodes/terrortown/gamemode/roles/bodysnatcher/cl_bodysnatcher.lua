@@ -5,7 +5,6 @@ local string = string
 local table = table
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local TableInsert = table.insert
 
 -------------
@@ -195,7 +194,7 @@ local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
     return modeString .. "."
 end
 
-local function Bodysnatcher_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_BODYSNATCHER then
         local T = LANG.GetTranslation
         local roleTeam = player.GetRoleTeam(ROLE_BODYSNATCHER, true)
@@ -304,22 +303,14 @@ local function Bodysnatcher_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_BODYSNATCHER] = function()
-    AddHook("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", Bodysnatcher_TTTHUDInfoPaint)
-    AddHook("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride", Bodysnatcher_TTTRolePopupRoleStringOverride)
-    AddHook("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender", Bodysnatcher_TTTScoringSummaryRender)
-    AddHook("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", Bodysnatcher_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_BODYSNATCHER] = function()
-    RemoveHook("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint")
-    RemoveHook("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride")
-    RemoveHook("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender")
-    RemoveHook("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_BODYSNATCHER] = {
+    ["TTTHUDInfoPaint"] = Bodysnatcher_TTTHUDInfoPaint,
+    ["TTTRolePopupRoleStringOverride"] = Bodysnatcher_TTTRolePopupRoleStringOverride,
+    ["TTTScoringSummaryRender"] = Bodysnatcher_TTTScoringSummaryRender
+}

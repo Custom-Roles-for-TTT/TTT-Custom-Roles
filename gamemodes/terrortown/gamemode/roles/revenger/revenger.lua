@@ -10,7 +10,6 @@ local timer = timer
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_RevengerLoverKillerRadar")
@@ -215,18 +214,10 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_REVENGER] = function()
-    AddHook("PlayerDeath", "Revenger_PlayerDeath", Revenger_PlayerDeath)
-    AddHook("PlayerDisconnected", "Revenger_Lover_PlayerDisconnected", Revenger_Lover_PlayerDisconnected)
-    AddHook("ScalePlayerDamage", "Revenger_ScalePlayerDamage", Revenger_ScalePlayerDamage)
-    AddHook("TTTEndRound", "Revenger_RoundFeatures_TTTEndRound", Revenger_RoundFeatures_TTTEndRound)
-    AddHook("TTTKarmaShouldGivePenalty", "Revenger_TTTKarmaShouldGivePenalty", Revenger_TTTKarmaShouldGivePenalty)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_REVENGER] = function()
-    RemoveHook("PlayerDeath", "Revenger_PlayerDeath")
-    RemoveHook("PlayerDisconnected", "Revenger_Lover_PlayerDisconnected")
-    RemoveHook("ScalePlayerDamage", "Revenger_ScalePlayerDamage")
-    RemoveHook("TTTEndRound", "Revenger_RoundFeatures_TTTEndRound")
-    RemoveHook("TTTKarmaShouldGivePenalty", "Revenger_TTTKarmaShouldGivePenalty")
-end
+ROLE_REGISTERED_HOOKS[ROLE_REVENGER] = {
+    ["PlayerDeath"] = Revenger_PlayerDeath,
+    ["PlayerDisconnected"] = Revenger_Lover_PlayerDisconnected,
+    ["ScalePlayerDamage"] = Revenger_ScalePlayerDamage,
+    ["TTTEndRound"] = Revenger_RoundFeatures_TTTEndRound,
+    ["TTTKarmaShouldGivePenalty"] = Revenger_TTTKarmaShouldGivePenalty
+}

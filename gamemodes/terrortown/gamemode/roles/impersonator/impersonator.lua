@@ -35,10 +35,6 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_IMPERSONATOR] = function()
-    AddHook("TTTTutorialRoleText", "Impersonator_ScalePlayerDamage", Impersonator_ScalePlayerDamage)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_IMPERSONATOR] = function()
-    RemoveHook("TTTTutorialRoleText", "Impersonator_ScalePlayerDamage")
-end
+ROLE_REGISTERED_HOOKS[ROLE_IMPERSONATOR] = {
+    ["ScalePlayerDamage"] = Impersonator_ScalePlayerDamage
+}

@@ -3,7 +3,6 @@ local net = net
 local string = string
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local StringUpper = string.upper
 
 -------------
@@ -219,7 +218,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Clown_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_CLOWN then
         -- Use this for highlighting things like "kill"
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -269,38 +268,22 @@ local function Clown_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_CLOWN] = function()
-    AddHook("TTTCrosshairColorOverride", "Clown_RoleDisabled_TTTCrosshairColorOverride", Clown_RoleDisabled_TTTCrosshairColorOverride)
-    AddHook("TTTEventFinishIconText", "Clown_TTTEventFinishIconText", Clown_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Clown_TTTEventFinishText", Clown_TTTEventFinishText)
-    AddHook("TTTHUDRoleColorOverride", "Clown_RoleDisabled_TTTHUDRoleColorOverride", Clown_RoleDisabled_TTTHUDRoleColorOverride)
-    AddHook("TTTScoreboardPlayerRole", "Clown_RoleDisabled_TTTScoreboardPlayerRole", Clown_RoleDisabled_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringSummaryRender", "Clown_RoleDisabled_TTTScoringSummaryRender", Clown_RoleDisabled_TTTScoringSummaryRender)
-    AddHook("TTTScoringWinTitle", "Clown_TTTScoringWinTitle", Clown_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerRing", "Clown_RoleDisabled_TTTTargetIDPlayerRing", Clown_RoleDisabled_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon", Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Clown_TTTTargetIDPlayerTargetIcon", Clown_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTargetIDPlayerText", "Clown_RoleDisabled_TTTTargetIDPlayerText", Clown_RoleDisabled_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", Clown_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_CLOWN] = function()
-    RemoveHook("TTTCrosshairColorOverride", "Clown_RoleDisabled_TTTCrosshairColorOverride")
-    RemoveHook("TTTEventFinishIconText", "Clown_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Clown_TTTEventFinishText")
-    RemoveHook("TTTHUDRoleColorOverride", "Clown_RoleDisabled_TTTHUDRoleColorOverride")
-    RemoveHook("TTTScoreboardPlayerRole", "Clown_RoleDisabled_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringSummaryRender", "Clown_RoleDisabled_TTTScoringSummaryRender")
-    RemoveHook("TTTScoringWinTitle", "Clown_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerRing", "Clown_RoleDisabled_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Clown_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Clown_RoleDisabled_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Clown_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_CLOWN] = {
+    ["TTTCrosshairColorOverride"] = Clown_RoleDisabled_TTTCrosshairColorOverride,
+    ["TTTEventFinishIconText"] = Clown_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Clown_TTTEventFinishText,
+    ["TTTHUDRoleColorOverride"] = Clown_RoleDisabled_TTTHUDRoleColorOverride,
+    ["TTTScoreboardPlayerRole"] = Clown_RoleDisabled_TTTScoreboardPlayerRole,
+    ["TTTScoringSummaryRender"] = Clown_RoleDisabled_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Clown_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerRing"] = Clown_RoleDisabled_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerTargetIcon"] = Clown_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Clown_RoleDisabled_TTTTargetIDPlayerText
+}

@@ -2,7 +2,6 @@ local hook = hook
 local net = net
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -85,7 +84,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Swapper_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Swapper_TTTTutorialRoleText", function()
     if role == ROLE_SWAPPER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html = "The " .. ROLE_STRINGS[ROLE_SWAPPER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player and steal their role."
@@ -102,20 +101,13 @@ local function Swapper_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SWAPPER] = function()
-    AddHook("TTTRolePopupParams", "Swapper_TTTRolePopupParams", Swapper_TTTRolePopupParams)
-    AddHook("TTTScoringSummaryRender", "Swapper_TTTScoringSummaryRender", Swapper_TTTScoringSummaryRender)
-    AddHook("TTTTutorialRoleText", "Swapper_TTTTutorialRoleText", Swapper_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SWAPPER] = function()
-    RemoveHook("TTTRolePopupParams", "Swapper_TTTRolePopupParams")
-    RemoveHook("TTTScoringSummaryRender", "Swapper_TTTScoringSummaryRender")
-    RemoveHook("TTTTutorialRoleText", "Swapper_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SWAPPER] = {
+    ["TTTRolePopupParams"] = Swapper_TTTRolePopupParams,
+    ["TTTScoringSummaryRender"] = Swapper_TTTScoringSummaryRender
+}

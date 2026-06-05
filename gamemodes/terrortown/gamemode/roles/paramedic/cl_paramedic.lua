@@ -35,7 +35,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Paramedic_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_PARAMEDIC then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_PARAMEDIC] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to resurrect dead players."
@@ -73,16 +73,4 @@ local function Paramedic_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_PARAMEDIC] = function()
-    AddHook("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText", Paramedic_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PARAMEDIC] = function()
-    RemoveHook("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText")
-end
+end)

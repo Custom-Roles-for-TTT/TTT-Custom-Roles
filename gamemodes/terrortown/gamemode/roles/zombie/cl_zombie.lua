@@ -300,7 +300,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Zombie_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ZOMBIE then
         -- Use this for highlighting things like "brains"
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -364,40 +364,23 @@ local function Zombie_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_ZOMBIE] = function()
-    AddHook("Think", "Zombie_Highlight_Think", Zombie_Highlight_Think)
-    AddHook("TTTEventFinishIconText", "Zombie_TTTEventFinishIconText", Zombie_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Zombie_TTTEventFinishText", Zombie_TTTEventFinishText)
-    AddHook("TTTRolePopupParams", "Zombie_TTTRolePopupParams", Zombie_TTTRolePopupParams)
-    AddHook("TTTScoreboardPlayerRole", "Zombie_TTTScoreboardPlayerRole", Zombie_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringSummaryRender", "Zombie_TTTScoringSummaryRender", Zombie_TTTScoringSummaryRender)
-    AddHook("TTTScoringWinTitle", "Zombie_TTTScoringWinTitle", Zombie_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerRing", "Zombie_TTTTargetIDPlayerRing", Zombie_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Zombie_TTTTargetIDPlayerRoleIcon", Zombie_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Zombie_TTTTargetIDPlayerTargetIcon", Zombie_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTargetIDPlayerText", "Zombie_TTTTargetIDPlayerText", Zombie_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", Zombie_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "Zombie_Highlight_TTTUpdateRoleState", Zombie_Highlight_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_ZOMBIE] = function()
-    RemoveHook("Think", "Zombie_Highlight_Think")
-    RemoveHook("TTTEventFinishIconText", "Zombie_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Zombie_TTTEventFinishText")
-    RemoveHook("TTTRolePopupParams", "Zombie_TTTRolePopupParams")
-    RemoveHook("TTTScoreboardPlayerRole", "Zombie_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringSummaryRender", "Zombie_TTTScoringSummaryRender")
-    RemoveHook("TTTScoringWinTitle", "Zombie_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerRing", "Zombie_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Zombie_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Zombie_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Zombie_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "Zombie_Highlight_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_ZOMBIE] = {
+    ["Think"] = Zombie_Highlight_Think,
+    ["TTTEventFinishIconText"] = Zombie_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Zombie_TTTEventFinishText,
+    ["TTTRolePopupParams"] = Zombie_TTTRolePopupParams,
+    ["TTTScoreboardPlayerRole"] = Zombie_TTTScoreboardPlayerRole,
+    ["TTTScoringSummaryRender"] = Zombie_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Zombie_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerRing"] = Zombie_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Zombie_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerTargetIcon"] = Zombie_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Zombie_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = Zombie_Highlight_TTTUpdateRoleState
+}

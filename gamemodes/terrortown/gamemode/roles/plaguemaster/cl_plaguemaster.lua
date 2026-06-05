@@ -4,7 +4,6 @@ local net = net
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local MathMax = math.max
 local MathSin = math.sin
 
@@ -200,7 +199,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Plaguemaster_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Plaguemaster_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_PLAGUEMASTER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_PLAGUEMASTER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to spread their plague using their dart gun and be the last player standing."
@@ -244,28 +243,17 @@ local function Plaguemaster_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_PLAGUEMASTER] = function()
-    AddHook("HUDPaint", "Plaguemaster_HUDPaint", Plaguemaster_HUDPaint)
-    AddHook("TTTBodySearchPopulate", "Plaguemaster_TTTBodySearchPopulate", Plaguemaster_TTTBodySearchPopulate)
-    AddHook("TTTEventFinishIconText", "Plaguemaster_TTTEventFinishIconText", Plaguemaster_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Plaguemaster_TTTEventFinishText", Plaguemaster_TTTEventFinishText)
-    AddHook("TTTScoringWinTitle", "Plaguemaster_TTTScoringWinTitle", Plaguemaster_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerText", "Plaguemaster_TTTTargetIDPlayerText", Plaguemaster_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Plaguemaster_TTTTutorialRoleText", Plaguemaster_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PLAGUEMASTER] = function()
-    RemoveHook("HUDPaint", "Plaguemaster_HUDPaint")
-    RemoveHook("TTTBodySearchPopulate", "Plaguemaster_TTTBodySearchPopulate")
-    RemoveHook("TTTEventFinishIconText", "Plaguemaster_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Plaguemaster_TTTEventFinishText")
-    RemoveHook("TTTScoringWinTitle", "Plaguemaster_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerText", "Plaguemaster_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Plaguemaster_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_PLAGUEMASTER] = {
+    ["HUDPaint"] = Plaguemaster_HUDPaint,
+    ["TTTBodySearchPopulate"] = Plaguemaster_TTTBodySearchPopulate,
+    ["TTTEventFinishIconText"] = Plaguemaster_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Plaguemaster_TTTEventFinishText,
+    ["TTTScoringWinTitle"] = Plaguemaster_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerText"] = Plaguemaster_TTTTargetIDPlayerText
+}

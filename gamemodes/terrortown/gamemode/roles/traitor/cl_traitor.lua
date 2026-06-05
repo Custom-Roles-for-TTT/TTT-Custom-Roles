@@ -21,7 +21,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Traitor_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Traitor_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TRAITOR then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_TRAITOR] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose job is to kill all of their enemies, both innocent and independent."
@@ -32,16 +32,4 @@ local function Traitor_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_TRAITOR] = function()
-    AddHook("TTTTutorialRoleText", "Traitor_TTTTutorialRoleText", Traitor_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_TRAITOR] = function()
-    RemoveHook("TTTTutorialRoleText", "Traitor_TTTTutorialRoleText")
-end
+end)

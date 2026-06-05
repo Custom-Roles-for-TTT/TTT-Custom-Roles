@@ -3,7 +3,6 @@ local math = math
 local player = player
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local MathCos = math.cos
 local MathSin = math.sin
 local StringUpper = string.upper
@@ -258,7 +257,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Sponge_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SPONGE then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html =  "The " .. ROLE_STRINGS[ROLE_SPONGE] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player."
@@ -280,36 +279,21 @@ local function Sponge_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SPONGE] = function()
-    AddHook("HUDPaintBackground", "Sponge_HUDPaintBackground", Sponge_HUDPaintBackground)
-    AddHook("TTTEventFinishIconText", "Sponge_TTTEventFinishIconText", Sponge_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Sponge_TTTEventFinishText", Sponge_TTTEventFinishText)
-    AddHook("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientThink", Sponge_RoleFeatures_TTTPlayerAliveClientThink)
-    AddHook("TTTScoreboardPlayerRole", "Sponge_TTTScoreboardPlayerRole", Sponge_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringSummaryRender", "Sponge_TTTScoringSummaryRender", Sponge_TTTScoringSummaryRender)
-    AddHook("TTTScoringWinTitle", "Sponge_TTTScoringWinTitle", Sponge_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerRing", "Sponge_TTTTargetIDPlayerRing", Sponge_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Sponge_TTTTargetIDPlayerRoleIcon", Sponge_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerText", "Sponge_TTTTargetIDPlayerText", Sponge_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText", Sponge_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SPONGE] = function()
-    RemoveHook("HUDPaintBackground", "Sponge_HUDPaintBackground")
-    RemoveHook("TTTEventFinishIconText", "Sponge_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Sponge_TTTEventFinishText")
-    RemoveHook("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientThink")
-    RemoveHook("TTTScoreboardPlayerRole", "Sponge_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringSummaryRender", "Sponge_TTTScoringSummaryRender")
-    RemoveHook("TTTScoringWinTitle", "Sponge_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerRing", "Sponge_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Sponge_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Sponge_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SPONGE] = {
+    ["HUDPaintBackground"] = Sponge_HUDPaintBackground,
+    ["TTTEventFinishIconText"] = Sponge_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Sponge_TTTEventFinishText,
+    ["TTTPlayerAliveClientThink"] = Sponge_RoleFeatures_TTTPlayerAliveClientThink,
+    ["TTTScoreboardPlayerRole"] = Sponge_TTTScoreboardPlayerRole,
+    ["TTTScoringSummaryRender"] = Sponge_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Sponge_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerRing"] = Sponge_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Sponge_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Sponge_TTTTargetIDPlayerText
+}

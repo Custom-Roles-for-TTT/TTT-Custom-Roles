@@ -1,10 +1,7 @@
 AddCSLuaFile()
 
-local hook = hook
 local player = player
 
-local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------------
@@ -40,12 +37,7 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_QUACK] = function()
-    AddHook("EntityTakeDamage", "Quack_EntityTakeDamage", Quack_EntityTakeDamage)
-    AddHook("TTTFakeCurePlayer", "Quack_TTTFakeCurePlayer", Quack_TTTFakeCurePlayer)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_QUACK] = function()
-    RemoveHook("EntityTakeDamage", "Quack_EntityTakeDamage")
-    RemoveHook("TTTFakeCurePlayer", "Quack_TTTFakeCurePlayer")
-end
+ROLE_REGISTERED_HOOKS[ROLE_QUACK] = {
+    ["EntityTakeDamage"] = Quack_EntityTakeDamage,
+    ["TTTFakeCurePlayer"] = Quack_TTTFakeCurePlayer
+}

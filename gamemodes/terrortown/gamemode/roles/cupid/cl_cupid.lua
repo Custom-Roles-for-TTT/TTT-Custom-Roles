@@ -381,7 +381,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Cupid_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_CUPID then
         local roleTeam = player.GetRoleTeam(ROLE_CUPID, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
@@ -425,50 +425,28 @@ local function Cupid_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_CUPID] = function()
-    AddHook("Think", "Cupid_Highlight_Think", Cupid_Highlight_Think)
-    AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", Cupid_SecondaryWinEvent_TTTEndRound)
-    AddHook("TTTEventFinishIconText", "Cupid_TTTEventFinishIconText", Cupid_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Cupid_TTTEventFinishText", Cupid_TTTEventFinishText)
-    AddHook("TTTPlayerCanSendCredits", "Cupid_TTTPlayerCanSendCredits", Cupid_TTTPlayerCanSendCredits)
-    AddHook("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride", Cupid_TTTRolePopupRoleStringOverride)
-    AddHook("TTTScoreboardPlayerName", "Cupid_TTTScoreboardPlayerName", Cupid_TTTScoreboardPlayerName)
-    AddHook("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole", Cupid_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", Cupid_TTTScoringSecondaryWins)
-    AddHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender", Cupid_TTTScoringSummaryRender)
-    AddHook("TTTScoringWinTitle", "Cupid_TTTScoringWinTitle", Cupid_TTTScoringWinTitle)
-    AddHook("TTTShouldPlayerSmoke", "Cupid_TTTShouldPlayerSmoke", Cupid_TTTShouldPlayerSmoke)
-    AddHook("TTTTargetIDPlayerRing", "Cupid_TTTTargetIDPlayerRing", Cupid_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", Cupid_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon", Cupid_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", Cupid_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText", Cupid_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", Cupid_Highlight_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_CUPID] = function()
-    RemoveHook("Think", "Cupid_Highlight_Think")
-    RemoveHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound")
-    RemoveHook("TTTEventFinishIconText", "Cupid_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Cupid_TTTEventFinishText")
-    RemoveHook("TTTPlayerCanSendCredits", "Cupid_TTTPlayerCanSendCredits")
-    RemoveHook("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride")
-    RemoveHook("TTTScoreboardPlayerName", "Cupid_TTTScoreboardPlayerName")
-    RemoveHook("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins")
-    RemoveHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender")
-    RemoveHook("TTTScoringWinTitle", "Cupid_TTTScoringWinTitle")
-    RemoveHook("TTTShouldPlayerSmoke", "Cupid_TTTShouldPlayerSmoke")
-    RemoveHook("TTTTargetIDPlayerRing", "Cupid_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_CUPID] = {
+    ["Think"] = Cupid_Highlight_Think,
+    ["TTTEndRound"] = Cupid_SecondaryWinEvent_TTTEndRound,
+    ["TTTEventFinishIconText"] = Cupid_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Cupid_TTTEventFinishText,
+    ["TTTPlayerCanSendCredits"] = Cupid_TTTPlayerCanSendCredits,
+    ["TTTRolePopupRoleStringOverride"] = Cupid_TTTRolePopupRoleStringOverride,
+    ["TTTScoreboardPlayerName"] = Cupid_TTTScoreboardPlayerName,
+    ["TTTScoreboardPlayerRole"] = Cupid_TTTScoreboardPlayerRole,
+    ["TTTScoringSecondaryWins"] = Cupid_TTTScoringSecondaryWins,
+    ["TTTScoringSummaryRender"] = Cupid_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Cupid_TTTScoringWinTitle,
+    ["TTTShouldPlayerSmoke"] = Cupid_TTTShouldPlayerSmoke,
+    ["TTTTargetIDPlayerRing"] = Cupid_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Cupid_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerTargetIcon"] = Cupid_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Cupid_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = Cupid_Highlight_TTTUpdateRoleState
+}

@@ -28,7 +28,7 @@ end)
 -- ROLE POPUP --
 ----------------
 
-local function Quartermaster_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Quartermaster_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_QUARTERMASTER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -45,16 +45,4 @@ local function Quartermaster_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_QUARTERMASTER] = function()
-    AddHook("TTTTutorialRoleText", "Quartermaster_TTTTutorialRoleText", Quartermaster_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_QUARTERMASTER] = function()
-    RemoveHook("TTTTutorialRoleText", "Quartermaster_TTTTutorialRoleText")
-end
+end)

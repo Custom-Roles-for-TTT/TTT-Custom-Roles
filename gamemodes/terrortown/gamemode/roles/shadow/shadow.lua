@@ -6,7 +6,6 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local MathMax = math.max
 local MathMin = math.min
@@ -679,24 +678,13 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SHADOW] = function()
-    AddHook("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", Shadow_SoulLink_DoPlayerDeath)
-    AddHook("PlayerDeath", "Shadow_KillCheck_PlayerDeath", Shadow_KillCheck_PlayerDeath)
-    AddHook("PlayerSpawn", "Shadow_PlayerSpawn", Shadow_PlayerSpawn)
-    AddHook("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", Shadow_Buff_PostPlayerDeath)
-    AddHook("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage", Shadow_Buff_ScalePlayerDamage)
-    AddHook("TTTBeginRound", "Shadow_TTTBeginRound", Shadow_TTTBeginRound)
-    AddHook("TTTStopPlayerRespawning", "Shadow_TTTStopPlayerRespawning", Shadow_TTTStopPlayerRespawning)
-    AddHook("TTTWinCheckComplete", "Shadow_TTTWinCheckComplete", Shadow_TTTWinCheckComplete)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SHADOW] = function()
-    RemoveHook("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath")
-    RemoveHook("PlayerDeath", "Shadow_KillCheck_PlayerDeath")
-    RemoveHook("PlayerSpawn", "Shadow_PlayerSpawn")
-    RemoveHook("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath")
-    RemoveHook("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage")
-    RemoveHook("TTTBeginRound", "Shadow_TTTBeginRound")
-    RemoveHook("TTTStopPlayerRespawning", "Shadow_TTTStopPlayerRespawning")
-    RemoveHook("TTTWinCheckComplete", "Shadow_TTTWinCheckComplete")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SHADOW] = {
+    ["DoPlayerDeath"] = Shadow_SoulLink_DoPlayerDeath,
+    ["PlayerDeath"] = Shadow_KillCheck_PlayerDeath,
+    ["PlayerSpawn"] = Shadow_PlayerSpawn,
+    ["PostPlayerDeath"] = Shadow_Buff_PostPlayerDeath,
+    ["ScalePlayerDamage"] = Shadow_Buff_ScalePlayerDamage,
+    ["TTTBeginRound"] = Shadow_TTTBeginRound,
+    ["TTTStopPlayerRespawning"] = Shadow_TTTStopPlayerRespawning,
+    ["TTTWinCheckComplete"] = Shadow_TTTWinCheckComplete
+}

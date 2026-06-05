@@ -250,7 +250,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Vampire_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_VAMPIRE then
         -- Use this for highlighting things like "blood"
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -315,34 +315,20 @@ local function Vampire_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_VAMPIRE] = function()
-    AddHook("Think", "Vampire_Highlight_Think", Vampire_Highlight_Think)
-    AddHook("TTTCheatSheetRoleStringOverride", "Vampire_TTTCheatSheetRoleStringOverride", Vampire_TTTCheatSheetRoleStringOverride)
-    AddHook("TTTEventFinishIconText", "Vampire_TTTEventFinishIconText", Vampire_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Vampire_TTTEventFinishText", Vampire_TTTEventFinishText)
-    AddHook("TTTRolePopupParams", "Vampire_TTTRolePopupParams", Vampire_TTTRolePopupParams)
-    AddHook("TTTScoringSummaryRender", "Vampire_TTTScoringSummaryRender", Vampire_TTTScoringSummaryRender)
-    AddHook("TTTScoringWinTitle", "Vampire_TTTScoringWinTitle", Vampire_TTTScoringWinTitle)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Vampire_TTTTargetIDPlayerTargetIcon", Vampire_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", Vampire_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", Vampire_Highlight_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_VAMPIRE] = function()
-    RemoveHook("Think", "Vampire_Highlight_Think")
-    RemoveHook("TTTCheatSheetRoleStringOverride", "Vampire_TTTCheatSheetRoleStringOverride")
-    RemoveHook("TTTEventFinishIconText", "Vampire_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Vampire_TTTEventFinishText")
-    RemoveHook("TTTRolePopupParams", "Vampire_TTTRolePopupParams")
-    RemoveHook("TTTScoringSummaryRender", "Vampire_TTTScoringSummaryRender")
-    RemoveHook("TTTScoringWinTitle", "Vampire_TTTScoringWinTitle")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Vampire_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_VAMPIRE] = {
+    ["Think"] = Vampire_Highlight_Think,
+    ["TTTCheatSheetRoleStringOverride"] = Vampire_TTTCheatSheetRoleStringOverride,
+    ["TTTEventFinishIconText"] = Vampire_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Vampire_TTTEventFinishText,
+    ["TTTRolePopupParams"] = Vampire_TTTRolePopupParams,
+    ["TTTScoringSummaryRender"] = Vampire_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Vampire_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerTargetIcon"] = Vampire_TTTTargetIDPlayerTargetIcon,
+    ["TTTUpdateRoleState"] = Vampire_Highlight_TTTUpdateRoleState
+}

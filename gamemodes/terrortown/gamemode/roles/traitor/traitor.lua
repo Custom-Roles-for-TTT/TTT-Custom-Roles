@@ -1,11 +1,8 @@
 AddCSLuaFile()
 
-local hook = hook
 local player = player
 local timer = timer
 
-local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -60,14 +57,8 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_TRAITOR] = function()
-    AddHook("SetupPlayerVisibility", "Traitors_SetupPlayerVisibility", Traitors_SetupPlayerVisibility)
-    AddHook("TTTBeginRound", "Traitors_TTTBeginRound", Traitors_TTTBeginRound)
-    AddHook("TTTEndRound", "Traitors_TTTEndRound", Traitors_TTTEndRound)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_TRAITOR] = function()
-    RemoveHook("SetupPlayerVisibility", "Traitors_SetupPlayerVisibility")
-    RemoveHook("TTTBeginRound", "Traitors_TTTBeginRound")
-    RemoveHook("TTTEndRound", "Traitors_TTTEndRound")
-end
+ROLE_REGISTERED_HOOKS[ROLE_TRAITOR] = {
+    ["SetupPlayerVisibility"] = Traitors_SetupPlayerVisibility,
+    ["TTTBeginRound"] = Traitors_TTTBeginRound,
+    ["TTTEndRound"] = Traitors_TTTEndRound
+}

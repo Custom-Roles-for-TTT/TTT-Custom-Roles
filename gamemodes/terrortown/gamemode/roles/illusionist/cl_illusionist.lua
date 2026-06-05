@@ -1,7 +1,6 @@
 local hook = hook
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -95,7 +94,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Illusionist_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Illusionist_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ILLUSIONIST then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -139,26 +138,16 @@ local function Illusionist_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_ILLUSIONIST] = function()
-    AddHook("TTTRadarPlayerRender", "Illusionist_TTTRadarPlayerRender", Illusionist_TTTRadarPlayerRender)
-    AddHook("TTTScoreboardPlayerRole", "Illusionist_TTTScoreboardPlayerRole", Illusionist_TTTScoreboardPlayerRole)
-    AddHook("TTTTargetIDPlayerRing", "Illusionist_TTTTargetIDPlayerRing", Illusionist_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Illusionist_TTTTargetIDPlayerRoleIcon", Illusionist_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerText", "Illusionist_TTTTargetIDPlayerText", Illusionist_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Illusionist_TTTTutorialRoleText", Illusionist_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_ILLUSIONIST] = function()
-    RemoveHook("TTTRadarPlayerRender", "Illusionist_TTTRadarPlayerRender")
-    RemoveHook("TTTScoreboardPlayerRole", "Illusionist_TTTScoreboardPlayerRole")
-    RemoveHook("TTTTargetIDPlayerRing", "Illusionist_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Illusionist_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Illusionist_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Illusionist_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_ILLUSIONIST] = {
+    ["TTTRadarPlayerRender"] = Illusionist_TTTRadarPlayerRender,
+    ["TTTScoreboardPlayerRole"] = Illusionist_TTTScoreboardPlayerRole,
+    ["TTTTargetIDPlayerRing"] = Illusionist_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Illusionist_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Illusionist_TTTTargetIDPlayerText
+}

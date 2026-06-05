@@ -4,7 +4,6 @@ local hook = hook
 local player = player
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------------
@@ -59,12 +58,7 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_QUARTERMASTER] = function()
-    AddHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment", Quartermaster_TTTCanOrderEquipment)
-    AddHook("TTTRandomatCanEventRun", "Quartermaster_TTTRandomatCanEventRun", Quartermaster_TTTRandomatCanEventRun)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_QUARTERMASTER] = function()
-    RemoveHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment")
-    RemoveHook("TTTRandomatCanEventRun", "Quartermaster_TTTRandomatCanEventRun")
-end
+ROLE_REGISTERED_HOOKS[ROLE_QUARTERMASTER] = {
+    ["TTTCanOrderEquipment"] = Quartermaster_TTTCanOrderEquipment,
+    ["TTTRandomatCanEventRun"] = Quartermaster_TTTRandomatCanEventRun
+}

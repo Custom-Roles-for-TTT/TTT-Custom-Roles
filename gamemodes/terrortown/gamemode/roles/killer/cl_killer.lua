@@ -151,7 +151,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Killer_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_KILLER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_KILLER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to be the last player standing."
@@ -202,30 +202,18 @@ local function Killer_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_KILLER] = function()
-    AddHook("Think", "Killer_Highlight_Think", Killer_Highlight_Think)
-    AddHook("TTTEventFinishIconText", "Killer_TTTEventFinishIconText", Killer_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Killer_TTTEventFinishText", Killer_TTTEventFinishText)
-    AddHook("TTTScoringWinTitle", "Killer_TTTScoringWinTitle", Killer_TTTScoringWinTitle)
-    AddHook("TTTShouldPlayerSmoke", "Killer_TTTShouldPlayerSmoke", Killer_TTTShouldPlayerSmoke)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Killer_TTTTargetIDPlayerTargetIcon", Killer_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", Killer_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", Killer_Highlight_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_KILLER] = function()
-    RemoveHook("Think", "Killer_Highlight_Think")
-    RemoveHook("TTTEventFinishIconText", "Killer_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Killer_TTTEventFinishText")
-    RemoveHook("TTTScoringWinTitle", "Killer_TTTScoringWinTitle")
-    RemoveHook("TTTShouldPlayerSmoke", "Killer_TTTShouldPlayerSmoke")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Killer_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTutorialRoleText", "Killer_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_KILLER] = {
+    ["Think"] = Killer_Highlight_Think,
+    ["TTTEventFinishIconText"] = Killer_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Killer_TTTEventFinishText,
+    ["TTTScoringWinTitle"] = Killer_TTTScoringWinTitle,
+    ["TTTShouldPlayerSmoke"] = Killer_TTTShouldPlayerSmoke,
+    ["TTTTargetIDPlayerTargetIcon"] = Killer_TTTTargetIDPlayerTargetIcon,
+    ["TTTUpdateRoleState"] = Killer_Highlight_TTTUpdateRoleState
+}

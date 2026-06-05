@@ -11,7 +11,6 @@ local table = table
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 local plymeta = FindMetaTable("Player")
 
@@ -377,16 +376,9 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_TASKMASTER] = function()
-    AddHook("TTTCheckForWin", "Taskmaster_TTTCheckForWin", Taskmaster_TTTCheckForWin)
-    AddHook("TTTOnRoleAbilityEnabled", "Taskmaster_TTTOnRoleAbilityEnabled", Taskmaster_TTTOnRoleAbilityEnabled)
-    AddHook("TTTPrintResultMessage", "Taskmaster_TTTPrintResultMessage", Taskmaster_TTTPrintResultMessage)
-    AddHook("TTTWinCheckBlocks", "Taskmaster_TTTWinCheckBlocks", Taskmaster_TTTWinCheckBlocks)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_TASKMASTER] = function()
-    RemoveHook("TTTCheckForWin", "Taskmaster_TTTCheckForWin")
-    RemoveHook("TTTOnRoleAbilityEnabled", "Taskmaster_TTTOnRoleAbilityEnabled")
-    RemoveHook("TTTPrintResultMessage", "Taskmaster_TTTPrintResultMessage")
-    RemoveHook("TTTWinCheckBlocks", "Taskmaster_TTTWinCheckBlocks")
-end
+ROLE_REGISTERED_HOOKS[ROLE_TASKMASTER] = {
+    ["TTTCheckForWin"] = Taskmaster_TTTCheckForWin,
+    ["TTTOnRoleAbilityEnabled"] = Taskmaster_TTTOnRoleAbilityEnabled,
+    ["TTTPrintResultMessage"] = Taskmaster_TTTPrintResultMessage,
+    ["TTTWinCheckBlocks"] = Taskmaster_TTTWinCheckBlocks
+}

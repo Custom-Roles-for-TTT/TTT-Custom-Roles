@@ -397,7 +397,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Guesser_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_GUESSER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -438,32 +438,19 @@ local function Guesser_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_GUESSER] = function()
-    AddHook("Think", "Guesser_Highlight_Think", Guesser_Highlight_Think)
-    AddHook("TTTHUDInfoPaint", "Guesser_TTTHUDInfoPaint", Guesser_TTTHUDInfoPaint)
-    AddHook("TTTScoreboardPlayerRole", "Guesser_TTTScoreboardPlayerRole", Guesser_TTTScoreboardPlayerRole)
-    AddHook("TTTScoringSummaryRender", "Guesser_TTTScoringSummaryRender", Guesser_TTTScoringSummaryRender)
-    AddHook("TTTTargetIDPlayerRing", "Guesser_TTTTargetIDPlayerRing", Guesser_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Guesser_TTTTargetIDPlayerRoleIcon", Guesser_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerText", "Guesser_TTTTargetIDPlayerText", Guesser_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", Guesser_TTTTutorialRoleText)
-    AddHook("TTTUpdateRoleState", "Guesser_Highlight_TTTUpdateRoleState", Guesser_Highlight_TTTUpdateRoleState)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_GUESSER] = function()
-    RemoveHook("Think", "Guesser_Highlight_Think")
-    RemoveHook("TTTHUDInfoPaint", "Guesser_TTTHUDInfoPaint")
-    RemoveHook("TTTScoreboardPlayerRole", "Guesser_TTTScoreboardPlayerRole")
-    RemoveHook("TTTScoringSummaryRender", "Guesser_TTTScoringSummaryRender")
-    RemoveHook("TTTTargetIDPlayerRing", "Guesser_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Guesser_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Guesser_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText")
-    RemoveHook("TTTUpdateRoleState", "Guesser_Highlight_TTTUpdateRoleState")
-end
+ROLE_REGISTERED_HOOKS[ROLE_GUESSER] = {
+    ["Think"] = Guesser_Highlight_Think,
+    ["TTTHUDInfoPaint"] = Guesser_TTTHUDInfoPaint,
+    ["TTTScoreboardPlayerRole"] = Guesser_TTTScoreboardPlayerRole,
+    ["TTTScoringSummaryRender"] = Guesser_TTTScoringSummaryRender,
+    ["TTTTargetIDPlayerRing"] = Guesser_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Guesser_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Guesser_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = Guesser_Highlight_TTTUpdateRoleState
+}

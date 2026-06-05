@@ -10,7 +10,6 @@ local timer = timer
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local MathRandom = math.random
 local StringFormat = string.format
@@ -264,22 +263,12 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_INFECTED] = function()
-    AddHook("PlayerDeath", "Infected_KillCheck_PlayerDeath", Infected_KillCheck_PlayerDeath)
-    AddHook("TTTCheckForWin", "Infected_TTTCheckForWin", Infected_TTTCheckForWin)
-    AddHook("TTTEndRound", "Infected_TTTEndRound", Infected_TTTEndRound)
-    AddHook("TTTOnRoleAbilityEnabled", "Infected_TTTOnRoleAbilityEnabled", Infected_TTTOnRoleAbilityEnabled)
-    AddHook("TTTPrintResultMessage", "Infected_TTTPrintResultMessage", Infected_TTTPrintResultMessage)
-    AddHook("TTTStopPlayerRespawning", "Infected_TTTStopPlayerRespawning", Infected_TTTStopPlayerRespawning)
-    AddHook("TTTWinCheckBlocks", "Infected_TTTWinCheckBlocks", Infected_TTTWinCheckBlocks)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_INFECTED] = function()
-    RemoveHook("PlayerDeath", "Infected_KillCheck_PlayerDeath")
-    RemoveHook("TTTCheckForWin", "Infected_TTTCheckForWin")
-    RemoveHook("TTTEndRound", "Infected_TTTEndRound")
-    RemoveHook("TTTOnRoleAbilityEnabled", "Infected_TTTOnRoleAbilityEnabled")
-    RemoveHook("TTTPrintResultMessage", "Infected_TTTPrintResultMessage")
-    RemoveHook("TTTStopPlayerRespawning", "Infected_TTTStopPlayerRespawning")
-    RemoveHook("TTTWinCheckBlocks", "Infected_TTTWinCheckBlocks")
-end
+ROLE_REGISTERED_HOOKS[ROLE_INFECTED] = {
+    ["PlayerDeath"] = Infected_KillCheck_PlayerDeath,
+    ["TTTCheckForWin"] = Infected_TTTCheckForWin,
+    ["TTTEndRound"] = Infected_TTTEndRound,
+    ["TTTOnRoleAbilityEnabled"] = Infected_TTTOnRoleAbilityEnabled,
+    ["TTTPrintResultMessage"] = Infected_TTTPrintResultMessage,
+    ["TTTStopPlayerRespawning"] = Infected_TTTStopPlayerRespawning,
+    ["TTTWinCheckBlocks"] = Infected_TTTWinCheckBlocks
+}

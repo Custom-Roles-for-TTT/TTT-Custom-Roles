@@ -7,7 +7,6 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -128,7 +127,7 @@ local function Killer_Smoke_PlayerDeath(victim, infl, attacker)
 end
 
 -- Disable the smoke when the round ends, the player respawns, or they have their role changed
-hook.Add("TTTPrepareRound", "Killer_Smoke_PrepareRound", function()
+AddHook("TTTPrepareRound", "Killer_Smoke_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("KillerSmoke", false)
     end
@@ -140,7 +139,7 @@ local function Killer_Smoke_TTTPlayerSpawnForRound(ply, dead_only)
     ply:SetNWBool("KillerSmoke", false)
 end
 
-hook.Add("TTTPlayerRoleChanged", "Killer_Smoke_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Killer_Smoke_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_KILLER then
         ply:SetNWBool("KillerSmoke", false)
     end
@@ -151,11 +150,11 @@ end)
 -------------
 
 -- Reset credit status
-hook.Add("Initialize", "Killer_Credits_Initialize", function()
+AddHook("Initialize", "Killer_Credits_Initialize", function()
     GAMEMODE.AwardedKillerCredits = false
     GAMEMODE.AwardedKillerCreditsDead = 0
 end)
-hook.Add("TTTPrepareRound", "Killer_Credits_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Killer_Credits_TTTPrepareRound", function()
     GAMEMODE.AwardedKillerCredits = false
     GAMEMODE.AwardedKillerCreditsDead = 0
 end)
@@ -370,34 +369,18 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_KILLER] = function()
-    AddHook("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", Killer_Credits_DoPlayerDeath)
-    AddHook("PlayerCanPickupWeapon", "Killer_Weapons_PlayerCanPickupWeapon", Killer_Weapons_PlayerCanPickupWeapon)
-    AddHook("PlayerDeath", "Killer_Smoke_PlayerDeath", Killer_Smoke_PlayerDeath)
-    AddHook("PlayerLoadout", "Killer_PlayerLoadout", Killer_PlayerLoadout)
-    AddHook("ScalePlayerDamage", "Killer_ScalePlayerDamage", Killer_ScalePlayerDamage)
-    AddHook("SetupPlayerVisibility", "Killer_SetupPlayerVisibility", Killer_SetupPlayerVisibility)
-    AddHook("TTTBeginRound", "Killer_Announce_TTTBeginRound", Killer_Announce_TTTBeginRound)
-    AddHook("TTTCheckForWin", "Killer_TTTCheckForWin", Killer_TTTCheckForWin)
-    AddHook("TTTKarmaGivePenalty", "Killer_TTTKarmaGivePenalty", Killer_TTTKarmaGivePenalty)
-    AddHook("TTTKarmaGiveReward", "Killer_TTTKarmaGiveReward", Killer_TTTKarmaGiveReward)
-    AddHook("TTTPlayerAliveThink", "Killer_TTTPlayerAliveThink", Killer_TTTPlayerAliveThink)
-    AddHook("TTTPlayerSpawnForRound", "Killer_Smoke_TTTPlayerSpawnForRound", Killer_Smoke_TTTPlayerSpawnForRound)
-    AddHook("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", Killer_TTTPrintResultMessage)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_KILLER] = function()
-    RemoveHook("DoPlayerDeath", "Killer_Credits_DoPlayerDeath")
-    RemoveHook("PlayerCanPickupWeapon", "Killer_Weapons_PlayerCanPickupWeapon")
-    RemoveHook("PlayerDeath", "Killer_Smoke_PlayerDeath")
-    RemoveHook("PlayerLoadout", "Killer_PlayerLoadout")
-    RemoveHook("ScalePlayerDamage", "Killer_ScalePlayerDamage")
-    RemoveHook("SetupPlayerVisibility", "Killer_SetupPlayerVisibility")
-    RemoveHook("TTTBeginRound", "Killer_Announce_TTTBeginRound")
-    RemoveHook("TTTCheckForWin", "Killer_TTTCheckForWin")
-    RemoveHook("TTTKarmaGivePenalty", "Killer_TTTKarmaGivePenalty")
-    RemoveHook("TTTKarmaGiveReward", "Killer_TTTKarmaGiveReward")
-    RemoveHook("TTTPlayerAliveThink", "Killer_TTTPlayerAliveThink")
-    RemoveHook("TTTPlayerSpawnForRound", "Killer_Smoke_TTTPlayerSpawnForRound")
-    RemoveHook("TTTPrintResultMessage", "Killer_TTTPrintResultMessage")
-end
+ROLE_REGISTERED_HOOKS[ROLE_KILLER] = {
+    ["DoPlayerDeath"] = Killer_Credits_DoPlayerDeath,
+    ["PlayerCanPickupWeapon"] = Killer_Weapons_PlayerCanPickupWeapon,
+    ["PlayerDeath"] = Killer_Smoke_PlayerDeath,
+    ["PlayerLoadout"] = Killer_PlayerLoadout,
+    ["ScalePlayerDamage"] = Killer_ScalePlayerDamage,
+    ["SetupPlayerVisibility"] = Killer_SetupPlayerVisibility,
+    ["TTTBeginRound"] = Killer_Announce_TTTBeginRound,
+    ["TTTCheckForWin"] = Killer_TTTCheckForWin,
+    ["TTTKarmaGivePenalty"] = Killer_TTTKarmaGivePenalty,
+    ["TTTKarmaGiveReward"] = Killer_TTTKarmaGiveReward,
+    ["TTTPlayerAliveThink"] = Killer_TTTPlayerAliveThink,
+    ["TTTPlayerSpawnForRound"] = Killer_Smoke_TTTPlayerSpawnForRound,
+    ["TTTPrintResultMessage"] = Killer_TTTPrintResultMessage
+}

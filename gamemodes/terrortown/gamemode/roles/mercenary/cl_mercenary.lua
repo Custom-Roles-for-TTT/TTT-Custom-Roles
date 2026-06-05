@@ -27,7 +27,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Mercenary_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Mercenary_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_MERCENARY then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -52,16 +52,4 @@ local function Mercenary_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_MERCENARY] = function()
-    AddHook("TTTTutorialRoleText", "Mercenary_TTTTutorialRoleText", Mercenary_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_MERCENARY] = function()
-    RemoveHook("TTTTutorialRoleText", "Mercenary_TTTTutorialRoleText")
-end
+end)

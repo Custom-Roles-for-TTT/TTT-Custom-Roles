@@ -5,7 +5,6 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local HookCall = hook.Call
 
@@ -224,26 +223,16 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_CUPID] = function()
-    AddHook("PlayerDeath", "Cupid_Killbind_PlayerDeath", Cupid_Killbind_PlayerDeath)
-    AddHook("PlayerDeath", "Cupid_PlayerDeath", Cupid_PlayerDeath)
-    AddHook("PlayerDisconnected", "Cupid_PlayerDisconnected", Cupid_PlayerDisconnected)
-    AddHook("ScalePlayerDamage", "Cupid_ScalePlayerDamage", Cupid_ScalePlayerDamage)
-    AddHook("TTTBeginRound", "Cupid_TTTBeginRound", Cupid_TTTBeginRound)
-    AddHook("TTTCheckForWin", "Cupid_TTTCheckForWin", Cupid_TTTCheckForWin)
-    AddHook("TTTKarmaShouldGivePenalty", "Cupid_TTTKarmaShouldGivePenalty", Cupid_TTTKarmaShouldGivePenalty)
-    AddHook("TTTPlayerSpawnForRound", "Cupid_TTTPlayerSpawnForRound", Cupid_TTTPlayerSpawnForRound)
-    AddHook("TTTPrintResultMessage", "Cupid_TTTPrintResultMessage", Cupid_TTTPrintResultMessage)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_CUPID] = function()
-    RemoveHook("PlayerDeath", "Cupid_Killbind_PlayerDeath")
-    RemoveHook("PlayerDeath", "Cupid_PlayerDeath")
-    RemoveHook("PlayerDisconnected", "Cupid_PlayerDisconnected")
-    RemoveHook("ScalePlayerDamage", "Cupid_ScalePlayerDamage")
-    RemoveHook("TTTBeginRound", "Cupid_TTTBeginRound")
-    RemoveHook("TTTCheckForWin", "Cupid_TTTCheckForWin")
-    RemoveHook("TTTKarmaShouldGivePenalty", "Cupid_TTTKarmaShouldGivePenalty")
-    RemoveHook("TTTPlayerSpawnForRound", "Cupid_TTTPlayerSpawnForRound")
-    RemoveHook("TTTPrintResultMessage", "Cupid_TTTPrintResultMessage")
-end
+ROLE_REGISTERED_HOOKS[ROLE_CUPID] = {
+    ["PlayerDeath"] = {
+        ["Cupid_Killbind_PlayerDeath"] = Cupid_Killbind_PlayerDeath,
+        ["Cupid_PlayerDeath"] = Cupid_PlayerDeath
+    },
+    ["PlayerDisconnected"] = Cupid_PlayerDisconnected,
+    ["ScalePlayerDamage"] = Cupid_ScalePlayerDamage,
+    ["TTTBeginRound"] = Cupid_TTTBeginRound,
+    ["TTTCheckForWin"] = Cupid_TTTCheckForWin,
+    ["TTTKarmaShouldGivePenalty"] = Cupid_TTTKarmaShouldGivePenalty,
+    ["TTTPlayerSpawnForRound"] = Cupid_TTTPlayerSpawnForRound,
+    ["TTTPrintResultMessage"] = Cupid_TTTPrintResultMessage
+}

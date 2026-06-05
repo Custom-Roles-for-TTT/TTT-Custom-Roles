@@ -6,7 +6,6 @@ local player = player
 local hook = hook
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_GuesserSelectRole")
@@ -133,12 +132,7 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_GUESSER] = function()
-    AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", Guesser_EntityTakeDamage)
-    AddHook("TTTBeginRound", "Guesser_Announce_TTTBeginRound", Guesser_Announce_TTTBeginRound)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_GUESSER] = function()
-    RemoveHook("EntityTakeDamage", "Guesser_EntityTakeDamage")
-    RemoveHook("TTTBeginRound", "Guesser_Announce_TTTBeginRound")
-end
+ROLE_REGISTERED_HOOKS[ROLE_GUESSER] = {
+    ["EntityTakeDamage"] = Guesser_EntityTakeDamage,
+    ["TTTBeginRound"] = Guesser_Announce_TTTBeginRound
+}

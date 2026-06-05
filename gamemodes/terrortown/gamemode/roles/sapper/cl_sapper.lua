@@ -3,7 +3,6 @@ local math = math
 local player = player
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local MathCos = math.cos
 local MathSin = math.sin
 local PlayerIterator = player.Iterator
@@ -119,7 +118,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Sapper_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SAPPER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
 
@@ -171,20 +170,13 @@ local function Sapper_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SAPPER] = function()
-    AddHook("HUDPaintBackground", "Sapper_HUDPaintBackground", Sapper_HUDPaintBackground)
-    AddHook("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientThink", Sapper_RoleFeatures_TTTPlayerAliveClientThink)
-    AddHook("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", Sapper_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SAPPER] = function()
-    RemoveHook("HUDPaintBackground", "Sapper_HUDPaintBackground")
-    RemoveHook("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientThink")
-    RemoveHook("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SAPPER] = {
+    ["HUDPaintBackground"] = Sapper_HUDPaintBackground,
+    ["TTTPlayerAliveClientThink"] = Sapper_RoleFeatures_TTTPlayerAliveClientThink
+}

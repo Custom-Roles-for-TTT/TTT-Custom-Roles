@@ -5,7 +5,6 @@ local surface = surface
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local MathMax = math.max
 
 -------------
@@ -107,7 +106,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Drunk_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Drunk_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_DRUNK then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_DRUNK] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role who can't quite remember what team they really belong to."
@@ -127,20 +126,13 @@ local function Drunk_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_DRUNK] = function()
-    AddHook("TTTHUDInfoPaint", "Drunk_TTTHUDInfoPaint", Drunk_TTTHUDInfoPaint)
-    AddHook("TTTScoringSummaryRender", "Drunk_TTTScoringSummaryRender", Drunk_TTTScoringSummaryRender)
-    AddHook("TTTTutorialRoleText", "Drunk_TTTTutorialRoleText", Drunk_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_DRUNK] = function()
-    RemoveHook("TTTHUDInfoPaint", "Drunk_TTTHUDInfoPaint")
-    RemoveHook("TTTScoringSummaryRender", "Drunk_TTTScoringSummaryRender")
-    RemoveHook("TTTTutorialRoleText", "Drunk_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_DRUNK] = {
+    ["TTTHUDInfoPaint"] = Drunk_TTTHUDInfoPaint,
+    ["TTTScoringSummaryRender"] = Drunk_TTTScoringSummaryRender
+}

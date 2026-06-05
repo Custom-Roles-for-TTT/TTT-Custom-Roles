@@ -5,7 +5,6 @@ local player = player
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 local plymeta = FindMetaTable("Player")
@@ -75,10 +74,6 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_TURNCOAT] = function()
-    AddHook("DoPlayerDeath", "Turncoat_DoPlayerDeath", Turncoat_DoPlayerDeath)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_TURNCOAT] = function()
-    RemoveHook("DoPlayerDeath", "Turncoat_DoPlayerDeath")
-end
+ROLE_REGISTERED_HOOKS[ROLE_TURNCOAT] = {
+    ["DoPlayerDeath"] = Turncoat_DoPlayerDeath
+}

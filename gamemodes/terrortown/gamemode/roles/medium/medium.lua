@@ -6,7 +6,6 @@ local player = player
 local ents = ents
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local CallHook = hook.Call
 local PlayerIterator = player.Iterator
 local FindEntsByClass = ents.FindByClass
@@ -319,16 +318,9 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_MEDIUM] = function()
-    AddHook("TTTBodyFound", "Medium_TTTBodyFound", Medium_TTTBodyFound)
-    AddHook("TTTDeathNotifyOverride", "Medium_TTTDeathNotifyOverride", Medium_TTTDeathNotifyOverride)
-    AddHook("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", Medium_TTTPlayerAliveThink)
-    AddHook("TTTSpectatorSpiritCreated", "Medium_TTTSpectatorSpiritCreated", Medium_TTTSpectatorSpiritCreated)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_MEDIUM] = function()
-    RemoveHook("TTTBodyFound", "Medium_TTTBodyFound")
-    RemoveHook("TTTDeathNotifyOverride", "Medium_TTTDeathNotifyOverride")
-    RemoveHook("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink")
-    RemoveHook("TTTSpectatorSpiritCreated", "Medium_TTTSpectatorSpiritCreated")
-end
+ROLE_REGISTERED_HOOKS[ROLE_MEDIUM] = {
+    ["TTTBodyFound"] = Medium_TTTBodyFound,
+    ["TTTDeathNotifyOverride"] = Medium_TTTDeathNotifyOverride,
+    ["TTTPlayerAliveThink"] = Medium_TTTPlayerAliveThink,
+    ["TTTSpectatorSpiritCreated"] = Medium_TTTSpectatorSpiritCreated
+}

@@ -5,7 +5,6 @@ local IsValid = IsValid
 local player = player
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local CallHook = hook.Call
 local PlayerIterator = player.Iterator
 
@@ -376,16 +375,9 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_INFORMANT] = function()
-    AddHook("PlayerCanPickupWeapon", "Informant_Weapons_PlayerCanPickupWeapon", Informant_Weapons_PlayerCanPickupWeapon)
-    AddHook("TTTBeginRound", "Informant_TTTBeginRound", Informant_TTTBeginRound)
-    AddHook("TTTDrawHitMarker", "Informant_TTTDrawHitMarker", Informant_TTTDrawHitMarker)
-    AddHook("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", Informant_TTTPlayerAliveThink)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_INFORMANT] = function()
-    RemoveHook("PlayerCanPickupWeapon", "Informant_Weapons_PlayerCanPickupWeapon")
-    RemoveHook("TTTBeginRound", "Informant_TTTBeginRound")
-    RemoveHook("TTTDrawHitMarker", "Informant_TTTDrawHitMarker")
-    RemoveHook("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink")
-end
+ROLE_REGISTERED_HOOKS[ROLE_INFORMANT] = {
+    ["PlayerCanPickupWeapon"] = Informant_Weapons_PlayerCanPickupWeapon,
+    ["TTTBeginRound"] = Informant_TTTBeginRound,
+    ["TTTDrawHitMarker"] = Informant_TTTDrawHitMarker,
+    ["TTTPlayerAliveThink"] = Informant_TTTPlayerAliveThink
+}

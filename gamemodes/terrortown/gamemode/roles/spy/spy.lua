@@ -6,7 +6,6 @@ local table = table
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local SetMDL = FindMetaTable("Entity").SetModel
 
@@ -132,21 +131,15 @@ local function ClearFullState()
     table.Empty(playerModels)
 end
 
-AddHook("TTTEndRound", "Spy_TTTEndRound", ClearFullState)
 AddHook("TTTPrepareRound", "Spy_TTTPrepareRound", ClearFullState)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SPY] = function()
-    AddHook("PlayerCanPickupWeapon", "Spy_Weapons_PlayerCanPickupWeapon", Spy_Weapons_PlayerCanPickupWeapon)
-    AddHook("PlayerDeath", "Spy_PlayerDeath", Spy_PlayerDeath)
-    AddHook("TTTBodyFound", "Spy_TTTBodyFound", Spy_TTTBodyFound)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SPY] = function()
-    RemoveHook("PlayerCanPickupWeapon", "Spy_Weapons_PlayerCanPickupWeapon")
-    RemoveHook("PlayerDeath", "Spy_PlayerDeath")
-    RemoveHook("TTTBodyFound", "Spy_TTTBodyFound")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SPY] = {
+    ["PlayerCanPickupWeapon"] = Spy_Weapons_PlayerCanPickupWeapon,
+    ["PlayerDeath"] = Spy_PlayerDeath,
+    ["TTTBodyFound"] = Spy_TTTBodyFound,
+    ["TTTEndRound"] = ClearFullState
+}

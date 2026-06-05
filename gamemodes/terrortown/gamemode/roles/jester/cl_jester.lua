@@ -3,7 +3,6 @@ local net = net
 local string = string
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -100,7 +99,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Jester_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Jester_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_JESTER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html =  "The " .. ROLE_STRINGS[ROLE_JESTER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player."
@@ -116,26 +115,16 @@ local function Jester_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_JESTER] = function()
-    AddHook("TTTEventFinishIconText", "Jester_TTTEventFinishIconText", Jester_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Jester_TTTEventFinishText", Jester_TTTEventFinishText)
-    AddHook("TTTScoringSecondaryWins", "Jester_TTTScoringSecondaryWins", Jester_TTTScoringSecondaryWins)
-    AddHook("TTTScoringSummaryRender", "Jester_TTTScoringSummaryRender", Jester_TTTScoringSummaryRender)
-    AddHook("TTTScoringWinTitle", "Jester_TTTScoringWinTitle", Jester_TTTScoringWinTitle)
-    AddHook("TTTTutorialRoleText", "Jester_TTTTutorialRoleText", Jester_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_JESTER] = function()
-    RemoveHook("TTTEventFinishIconText", "Jester_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Jester_TTTEventFinishText")
-    RemoveHook("TTTScoringSecondaryWins", "Jester_TTTScoringSecondaryWins")
-    RemoveHook("TTTScoringSummaryRender", "Jester_TTTScoringSummaryRender")
-    RemoveHook("TTTScoringWinTitle", "Jester_TTTScoringWinTitle")
-    RemoveHook("TTTTutorialRoleText", "Jester_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_JESTER] = {
+    ["TTTEventFinishIconText"] = Jester_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Jester_TTTEventFinishText,
+    ["TTTScoringSecondaryWins"] = Jester_TTTScoringSecondaryWins,
+    ["TTTScoringSummaryRender"] = Jester_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Jester_TTTScoringWinTitle
+}

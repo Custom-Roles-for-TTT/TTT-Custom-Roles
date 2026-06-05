@@ -9,7 +9,6 @@ local util = util
 
 local AddHook = hook.Add
 local CallHook = hook.Call
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_BeggarConverted")
@@ -481,20 +480,11 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_BEGGAR] = function()
-    AddHook("PlayerDeath", "Beggar_KillCheck_PlayerDeath", Beggar_KillCheck_PlayerDeath)
-    AddHook("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership", Beggar_TTTCanTransferWeaponOwnership)
-    AddHook("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive", Beggar_TTTCupidShouldLoverSurvive)
-    AddHook("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", Beggar_TTTPlayerAliveThink)
-    AddHook("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning", Beggar_TTTStopPlayerRespawning)
-    AddHook("WeaponEquip", "Beggar_WeaponEquip", Beggar_WeaponEquip)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_BEGGAR] = function()
-    RemoveHook("PlayerDeath", "Beggar_KillCheck_PlayerDeath")
-    RemoveHook("TTTCanTransferWeaponOwnership", "Beggar_TTTCanTransferWeaponOwnership")
-    RemoveHook("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive")
-    RemoveHook("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink")
-    RemoveHook("TTTStopPlayerRespawning", "Beggar_TTTStopPlayerRespawning")
-    RemoveHook("WeaponEquip", "Beggar_WeaponEquip")
-end
+ROLE_REGISTERED_HOOKS[ROLE_BEGGAR] = {
+    ["PlayerDeath"] = Beggar_KillCheck_PlayerDeath,
+    ["TTTCanTransferWeaponOwnership"] = Beggar_TTTCanTransferWeaponOwnership,
+    ["TTTCupidShouldLoverSurvive"] = Beggar_TTTCupidShouldLoverSurvive,
+    ["TTTPlayerAliveThink"] = Beggar_TTTPlayerAliveThink,
+    ["TTTStopPlayerRespawning"] = Beggar_TTTStopPlayerRespawning,
+    ["WeaponEquip"] = Beggar_WeaponEquip
+}

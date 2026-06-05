@@ -125,10 +125,6 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SCOUT] = function()
-    AddHook("TTTBeginRound", "Scout_TTTBeginRound", Scout_TTTBeginRound)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SCOUT] = function()
-    RemoveHook("TTTBeginRound", "Scout_TTTBeginRound")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SCOUT] = {
+    ["TTTBeginRound"] = Scout_TTTBeginRound
+}

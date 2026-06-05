@@ -3,7 +3,6 @@ local math = math
 local table = table
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local MathMax = math.max
 
 ------------------
@@ -144,7 +143,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Twins_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Twins_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_GOODTWIN then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -174,31 +173,19 @@ local function Twins_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-local function Register()
-    AddHook("TTTHUDInfoPaint", "Twins_TTTHUDInfoPaint", Twins_TTTHUDInfoPaint)
-    AddHook("TTTScoreboardPlayerRole", "Twins_TTTScoreboardPlayerRole", Twins_TTTScoreboardPlayerRole)
-    AddHook("TTTTargetIDPlayerRing", "Twins_TTTTargetIDPlayerRing", Twins_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Twins_TTTTargetIDPlayerRoleIcon", Twins_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerText", "Twins_TTTTargetIDPlayerText", Twins_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Twins_TTTTutorialRoleText", Twins_TTTTutorialRoleText)
-end
+local hooks = {
+    ["TTTHUDInfoPaint"] = Twins_TTTHUDInfoPaint,
+    ["TTTScoreboardPlayerRole"] = Twins_TTTScoreboardPlayerRole,
+    ["TTTTargetIDPlayerRing"] = Twins_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Twins_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Twins_TTTTargetIDPlayerText
+}
 
-local function Unregister()
-    RemoveHook("TTTHUDInfoPaint", "Twins_TTTHUDInfoPaint")
-    RemoveHook("TTTScoreboardPlayerRole", "Twins_TTTScoreboardPlayerRole")
-    RemoveHook("TTTTargetIDPlayerRing", "Twins_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Twins_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Twins_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Twins_TTTTutorialRoleText")
-end
-
-ROLE_REGISTER_HOOKS[ROLE_GOODTWIN] = Register
-ROLE_REGISTER_HOOKS[ROLE_EVILTWIN] = Register
-ROLE_UNREGISTER_HOOKS[ROLE_GOODTWIN] = Unregister
-ROLE_UNREGISTER_HOOKS[ROLE_EVILTWIN] = Unregister
+ROLE_REGISTERED_HOOKS[ROLE_GOODTWIN] = hooks
+ROLE_REGISTERED_HOOKS[ROLE_EVILTWIN] = hooks

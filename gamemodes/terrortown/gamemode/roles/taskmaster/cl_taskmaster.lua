@@ -12,7 +12,6 @@ local util = util
 local vgui = vgui
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local TableInsert = table.insert
 
 ------------------
@@ -488,7 +487,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Taskmaster_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function()
     if role == ROLE_TASKMASTER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to complete a series of tasks before the round ends."
@@ -552,7 +551,7 @@ local function Taskmaster_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------
 -- SOUNDS --
@@ -566,30 +565,15 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_TASKMASTER] = function()
-    AddHook("HUDPaint", "Taskmaster_HUDPaint", Taskmaster_HUDPaint)
-    AddHook("HUDPaintBackground", "Taskmaster_HUDPaintBackground", Taskmaster_HUDPaintBackground)
-    AddHook("TTTEquipmentTabs", "Taskmaster_TTTEquipmentTabs", Taskmaster_TTTEquipmentTabs)
-    AddHook("TTTEventFinishIconText", "Taskmaster_TTTEventFinishIconText", Taskmaster_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "Taskmaster_TTTEventFinishText", Taskmaster_TTTEventFinishText)
-    AddHook("TTTHUDInfoPaint", "Taskmaster_TTTHUDInfoPaint", Taskmaster_TTTHUDInfoPaint)
-    AddHook("TTTScoringSecondaryWins", "Taskmaster_TTTScoringSecondaryWins", Taskmaster_TTTScoringSecondaryWins)
-    AddHook("TTTScoringSummaryRender", "Taskmaster_TTTScoringSummaryRender", Taskmaster_TTTScoringSummaryRender)
-    AddHook("TTTScoringWinTitle", "Taskmaster_TTTScoringWinTitle", Taskmaster_TTTScoringWinTitle)
-    AddHook("TTTSettingsRolesTabSections", "Taskmaster_TTTSettingsRolesTabSections", Taskmaster_TTTSettingsRolesTabSections)
-    AddHook("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", Taskmaster_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_TASKMASTER] = function()
-    RemoveHook("HUDPaint", "Taskmaster_HUDPaint")
-    RemoveHook("HUDPaintBackground", "Taskmaster_HUDPaintBackground")
-    RemoveHook("TTTEquipmentTabs", "Taskmaster_TTTEquipmentTabs")
-    RemoveHook("TTTEventFinishIconText", "Taskmaster_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "Taskmaster_TTTEventFinishText")
-    RemoveHook("TTTHUDInfoPaint", "Taskmaster_TTTHUDInfoPaint")
-    RemoveHook("TTTScoringSecondaryWins", "Taskmaster_TTTScoringSecondaryWins")
-    RemoveHook("TTTScoringSummaryRender", "Taskmaster_TTTScoringSummaryRender")
-    RemoveHook("TTTScoringWinTitle", "Taskmaster_TTTScoringWinTitle")
-    RemoveHook("TTTSettingsRolesTabSections", "Taskmaster_TTTSettingsRolesTabSections")
-    RemoveHook("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_TASKMASTER] = {
+    ["HUDPaint"] = Taskmaster_HUDPaint,
+    ["HUDPaintBackground"] = Taskmaster_HUDPaintBackground,
+    ["TTTEquipmentTabs"] = Taskmaster_TTTEquipmentTabs,
+    ["TTTEventFinishIconText"] = Taskmaster_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Taskmaster_TTTEventFinishText,
+    ["TTTHUDInfoPaint"] = Taskmaster_TTTHUDInfoPaint,
+    ["TTTScoringSecondaryWins"] = Taskmaster_TTTScoringSecondaryWins,
+    ["TTTScoringSummaryRender"] = Taskmaster_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Taskmaster_TTTScoringWinTitle,
+    ["TTTSettingsRolesTabSections"] = Taskmaster_TTTSettingsRolesTabSections
+}

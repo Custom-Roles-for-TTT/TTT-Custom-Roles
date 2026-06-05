@@ -1,7 +1,6 @@
 local hook = hook
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -28,7 +27,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Veteran_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Veteran_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_VETERAN then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -58,16 +57,4 @@ local function Veteran_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_VETERAN] = function()
-    AddHook("TTTTutorialRoleText", "Veteran_TTTTutorialRoleText", Veteran_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_VETERAN] = function()
-    RemoveHook("TTTTutorialRoleText", "Veteran_TTTTutorialRoleText")
-end
+end)

@@ -6,7 +6,6 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local CallHook = hook.Call
 local PlayerIterator = player.Iterator
 
@@ -448,36 +447,21 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_HIVEMIND] = function()
-    AddHook("EntityTakeDamage", "HiveMind_EntityTakeDamage", HiveMind_EntityTakeDamage)
-    AddHook("PlayerDeath", "HiveMind_Assimilate_PlayerDeath", HiveMind_Assimilate_PlayerDeath)
-    AddHook("PlayerDeath", "HiveMind_GroupDeath_PlayerDeath", HiveMind_GroupDeath_PlayerDeath)
-    AddHook("PlayerSay", "HiveMind_PlayerSay", HiveMind_PlayerSay)
-    AddHook("PostEntityTakeDamage", "HiveMind_PostEntityTakeDamage", HiveMind_PostEntityTakeDamage)
-    AddHook("ScalePlayerDamage", "HiveMind_ScalePlayerDamage", HiveMind_ScalePlayerDamage)
-    AddHook("SetupPlayerVisibility", "HiveMind_SetupPlayerVisibility", HiveMind_SetupPlayerVisibility)
-    AddHook("TTTBodyCreditsLooted", "HiveMind_CreditsSync_TTTBodyCreditsLooted", HiveMind_CreditsSync_TTTBodyCreditsLooted)
-    AddHook("TTTCheckForWin", "HiveMind_TTTCheckForWin", HiveMind_TTTCheckForWin)
-    AddHook("TTTKarmaShouldGivePenalty", "HiveMind_TTTKarmaShouldGivePenalty", HiveMind_TTTKarmaShouldGivePenalty)
-    AddHook("TTTPlayerCreditsChanged", "HiveMind_CreditsSync_TTTPlayerCreditsChanged", HiveMind_CreditsSync_TTTPlayerCreditsChanged)
-    AddHook("TTTPlayerHealthChanged", "HiveMind_TTTPlayerHealthChanged", HiveMind_TTTPlayerHealthChanged)
-    AddHook("TTTPrintResultMessage", "HiveMind_TTTPrintResultMessage", HiveMind_TTTPrintResultMessage)
-    AddHook("TTTStopPlayerRespawning", "HiveMind_TTTStopPlayerRespawning", HiveMind_TTTStopPlayerRespawning)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_HIVEMIND] = function()
-    RemoveHook("EntityTakeDamage", "HiveMind_EntityTakeDamage")
-    RemoveHook("PlayerDeath", "HiveMind_Assimilate_PlayerDeath")
-    RemoveHook("PlayerDeath", "HiveMind_GroupDeath_PlayerDeath")
-    RemoveHook("PlayerSay", "HiveMind_PlayerSay")
-    RemoveHook("PostEntityTakeDamage", "HiveMind_PostEntityTakeDamage")
-    RemoveHook("ScalePlayerDamage", "HiveMind_ScalePlayerDamage")
-    RemoveHook("SetupPlayerVisibility", "HiveMind_SetupPlayerVisibility")
-    RemoveHook("TTTBodyCreditsLooted", "HiveMind_CreditsSync_TTTBodyCreditsLooted")
-    RemoveHook("TTTCheckForWin", "HiveMind_TTTCheckForWin")
-    RemoveHook("TTTKarmaShouldGivePenalty", "HiveMind_TTTKarmaShouldGivePenalty")
-    RemoveHook("TTTPlayerCreditsChanged", "HiveMind_CreditsSync_TTTPlayerCreditsChanged")
-    RemoveHook("TTTPlayerHealthChanged", "HiveMind_TTTPlayerHealthChanged")
-    RemoveHook("TTTPrintResultMessage", "HiveMind_TTTPrintResultMessage")
-    RemoveHook("TTTStopPlayerRespawning", "HiveMind_TTTStopPlayerRespawning")
-end
+ROLE_REGISTERED_HOOKS[ROLE_HIVEMIND] = {
+    ["EntityTakeDamage"] = HiveMind_EntityTakeDamage,
+    ["PlayerDeath"] = {
+        ["HiveMind_Assimilate_PlayerDeath"] = HiveMind_Assimilate_PlayerDeath,
+        ["HiveMind_GroupDeath_PlayerDeath"] = HiveMind_GroupDeath_PlayerDeath
+    },
+    ["PlayerSay"] = HiveMind_PlayerSay,
+    ["PostEntityTakeDamage"] = HiveMind_PostEntityTakeDamage,
+    ["ScalePlayerDamage"] = HiveMind_ScalePlayerDamage,
+    ["SetupPlayerVisibility"] = HiveMind_SetupPlayerVisibility,
+    ["TTTBodyCreditsLooted"] = HiveMind_CreditsSync_TTTBodyCreditsLooted,
+    ["TTTCheckForWin"] = HiveMind_TTTCheckForWin,
+    ["TTTKarmaShouldGivePenalty"] = HiveMind_TTTKarmaShouldGivePenalty,
+    ["TTTPlayerCreditsChanged"] = HiveMind_CreditsSync_TTTPlayerCreditsChanged,
+    ["TTTPlayerHealthChanged"] = HiveMind_TTTPlayerHealthChanged,
+    ["TTTPrintResultMessage"] = HiveMind_TTTPrintResultMessage,
+    ["TTTStopPlayerRespawning"] = HiveMind_TTTStopPlayerRespawning
+}

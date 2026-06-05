@@ -7,7 +7,6 @@ local table = table
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_ClownTeamChange")
@@ -197,16 +196,9 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_CLOWN] = function()
-    AddHook("PostPlayerDeath", "Clown_ActivationPercent_PostPlayerDeath", Clown_ActivationPercent_PostPlayerDeath)
-    AddHook("ScalePlayerDamage", "Clown_ScalePlayerDamage", Clown_ScalePlayerDamage)
-    AddHook("TTTPrintResultMessage", "Clown_TTTPrintResultMessage", Clown_TTTPrintResultMessage)
-    AddHook("TTTWinCheckBlocks", "Clown_TTTWinCheckBlocks", Clown_TTTWinCheckBlocks)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_CLOWN] = function()
-    RemoveHook("PostPlayerDeath", "Clown_ActivationPercent_PostPlayerDeath")
-    RemoveHook("ScalePlayerDamage", "Clown_ScalePlayerDamage")
-    RemoveHook("TTTPrintResultMessage", "Clown_TTTPrintResultMessage")
-    RemoveHook("TTTWinCheckBlocks", "Clown_TTTWinCheckBlocks")
-end
+ROLE_REGISTERED_HOOKS[ROLE_CLOWN] = {
+    ["PostPlayerDeath"] = Clown_ActivationPercent_PostPlayerDeath,
+    ["ScalePlayerDamage"] = Clown_ScalePlayerDamage,
+    ["TTTPrintResultMessage"] = Clown_TTTPrintResultMessage,
+    ["TTTWinCheckBlocks"] = Clown_TTTWinCheckBlocks
+}

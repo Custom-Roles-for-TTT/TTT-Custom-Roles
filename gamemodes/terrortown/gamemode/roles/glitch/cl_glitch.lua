@@ -27,7 +27,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Glitch_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_GLITCH then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -60,16 +60,4 @@ local function Glitch_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_GLITCH] = function()
-    AddHook("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText", Glitch_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_GLITCH] = function()
-    RemoveHook("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText")
-end
+end)

@@ -4,7 +4,6 @@ local surface = surface
 local string = string
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local StringUpper = string.upper
 
 local client = nil
@@ -461,7 +460,7 @@ local function GetRevealModeInfo(roleColor, revealMode, teamName, teamColor)
     return modeString .. ".", revealed
 end
 
-local function Beggar_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_BEGGAR then
         local roleTeam = player.GetRoleTeam(ROLE_BEGGAR, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
@@ -527,34 +526,20 @@ local function Beggar_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_BEGGAR] = function()
-    AddHook("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", Beggar_TTTTutorialRoleText)
-    AddHook("HUDPaint", "Beggar_HUDPaint", Beggar_HUDPaint)
-    AddHook("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", Beggar_TTTHUDInfoPaint)
-    AddHook("TTTScoreboardPlayerRole", "Beggar_TTTScoreboardPlayerRole", Beggar_TTTScoreboardPlayerRole)
-    AddHook("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", Beggar_TTTTargetIDPlayerText)
-    AddHook("TTTTargetIDPlayerRing", "Beggar_TTTTargetIDPlayerRing", Beggar_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Beggar_TTTTargetIDPlayerRoleIcon", Beggar_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTScoringSummaryRender", "Beggar_TTTScoringSummaryRender", Beggar_TTTScoringSummaryRender)
-    AddHook("TTTSettingsRolesTabSections", "Beggar_TTTSettingsRolesTabSections", Beggar_TTTSettingsRolesTabSections)
-    AddHook("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride", Beggar_TTTRolePopupRoleStringOverride)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_BEGGAR] = function()
-    RemoveHook("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText")
-    RemoveHook("HUDPaint", "Beggar_HUDPaint")
-    RemoveHook("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint")
-    RemoveHook("TTTScoreboardPlayerRole", "Beggar_TTTScoreboardPlayerRole")
-    RemoveHook("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText")
-    RemoveHook("TTTTargetIDPlayerRing", "Beggar_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Beggar_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTScoringSummaryRender", "Beggar_TTTScoringSummaryRender")
-    RemoveHook("TTTSettingsRolesTabSections", "Beggar_TTTSettingsRolesTabSections")
-    RemoveHook("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride")
-end
+ROLE_REGISTERED_HOOKS[ROLE_BEGGAR] = {
+    ["HUDPaint"] = Beggar_HUDPaint,
+    ["TTTHUDInfoPaint"] = Beggar_TTTHUDInfoPaint,
+    ["TTTRolePopupRoleStringOverride"] = Beggar_TTTRolePopupRoleStringOverride,
+    ["TTTScoreboardPlayerRole"] = Beggar_TTTScoreboardPlayerRole,
+    ["TTTScoringSummaryRender"] = Beggar_TTTScoringSummaryRender,
+    ["TTTSettingsRolesTabSections"] = Beggar_TTTSettingsRolesTabSections,
+    ["TTTTargetIDPlayerRing"] = Beggar_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Beggar_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Beggar_TTTTargetIDPlayerText
+}

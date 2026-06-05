@@ -13,7 +13,6 @@ local timer = timer
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local TableInsert = table.insert
 
@@ -571,16 +570,9 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_DRUNK] = function()
-    AddHook("TTTEndRound", "Drunk_TTTEndRound", StopDrunkTimers)
-    AddHook("TTTKarmaShouldGivePenalty", "Drunk_TTTKarmaShouldGivePenalty", Drunk_TTTKarmaShouldGivePenalty)
-    AddHook("TTTOnRoleAbilityEnabled", "Drunk_TTTOnRoleAbilityEnabled", Drunk_TTTOnRoleAbilityEnabled)
-    AddHook("TTTWinCheckBlocks", "Drunk_TTTWinCheckBlocks", Drunk_TTTWinCheckBlocks)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_DRUNK] = function()
-    RemoveHook("TTTEndRound", "Drunk_TTTEndRound")
-    RemoveHook("TTTKarmaShouldGivePenalty", "Drunk_TTTKarmaShouldGivePenalty")
-    RemoveHook("TTTOnRoleAbilityEnabled", "Drunk_TTTOnRoleAbilityEnabled")
-    RemoveHook("TTTWinCheckBlocks", "Drunk_TTTWinCheckBlocks")
-end
+ROLE_REGISTERED_HOOKS[ROLE_DRUNK] = {
+    ["TTTEndRound"] = StopDrunkTimers,
+    ["TTTKarmaShouldGivePenalty"] = Drunk_TTTKarmaShouldGivePenalty,
+    ["TTTOnRoleAbilityEnabled"] = Drunk_TTTOnRoleAbilityEnabled,
+    ["TTTWinCheckBlocks"] = Drunk_TTTWinCheckBlocks
+}

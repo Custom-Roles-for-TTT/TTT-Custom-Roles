@@ -4,7 +4,6 @@ local string = string
 local table = table
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local TableInsert = table.insert
 
 -------------
@@ -87,7 +86,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function OldMan_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "OldMan_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_OLDMAN then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_OLDMAN] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is just to survive until the end of the round."
@@ -112,22 +111,14 @@ local function OldMan_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_OLDMAN] = function()
-    AddHook("TTTEventFinishIconText", "OldMan_TTTEventFinishIconText", OldMan_TTTEventFinishIconText)
-    AddHook("TTTEventFinishText", "OldMan_TTTEventFinishText", OldMan_TTTEventFinishText)
-    AddHook("TTTScoringSecondaryWins", "OldMan_TTTScoringSecondaryWins", OldMan_TTTScoringSecondaryWins)
-    AddHook("TTTTutorialRoleText", "OldMan_TTTTutorialRoleText", OldMan_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_OLDMAN] = function()
-    RemoveHook("TTTEventFinishIconText", "OldMan_TTTEventFinishIconText")
-    RemoveHook("TTTEventFinishText", "OldMan_TTTEventFinishText")
-    RemoveHook("TTTScoringSecondaryWins", "OldMan_TTTScoringSecondaryWins")
-    RemoveHook("TTTTutorialRoleText", "OldMan_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_OLDMAN] = {
+    ["TTTEventFinishIconText"] = OldMan_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = OldMan_TTTEventFinishText,
+    ["TTTScoringSecondaryWins"] = OldMan_TTTScoringSecondaryWins
+}

@@ -4,7 +4,6 @@ local hook = hook
 local player = player
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------------
@@ -79,14 +78,8 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_PARAMEDIC] = function()
-    AddHook("PlayerCanHearPlayersVoice", "Paramedic_PlayerCanHearPlayersVoice", Paramedic_PlayerCanHearPlayersVoice)
-    AddHook("PlayerSay", "Paramedic_PlayerSay", Paramedic_PlayerSay)
-    AddHook("TTTPlayerRadioCommand", "Paramedic_TTTPlayerRadioCommand", Paramedic_TTTPlayerRadioCommand)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PARAMEDIC] = function()
-    RemoveHook("PlayerCanHearPlayersVoice", "Paramedic_PlayerCanHearPlayersVoice")
-    RemoveHook("PlayerSay", "Paramedic_PlayerSay")
-    RemoveHook("TTTPlayerRadioCommand", "Paramedic_TTTPlayerRadioCommand")
-end
+ROLE_REGISTERED_HOOKS[ROLE_PARAMEDIC] = {
+    ["PlayerCanHearPlayersVoice"] = Paramedic_PlayerCanHearPlayersVoice,
+    ["PlayerSay"] = Paramedic_PlayerSay,
+    ["TTTPlayerRadioCommand"] = Paramedic_TTTPlayerRadioCommand
+}

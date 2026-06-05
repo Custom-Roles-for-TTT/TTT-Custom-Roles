@@ -3,7 +3,6 @@ local net = net
 local player = player
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 ------------------
@@ -179,7 +178,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Parasite_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Parasite_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_PARASITE then
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         local roleTeam = player.GetRoleTeam(ROLE_PARASITE, true)
@@ -262,26 +261,16 @@ local function Parasite_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_PARASITE] = function()
-    AddHook("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", Parasite_TTTScoreboardPlayerName)
-    AddHook("TTTScoreboardPlayerRole", "Parasite_TTTScoreboardPlayerRole", Parasite_TTTScoreboardPlayerRole)
-    AddHook("TTTShouldPlayerSmoke", "Parasite_Infecting_TTShouldPlayerSmoke", Parasite_Infecting_TTShouldPlayerSmoke)
-    AddHook("TTTSpectatorShowHUD", "Parasite_Infecting_TTTSpectatorShowHUD", Parasite_Infecting_TTTSpectatorShowHUD)
-    AddHook("TTTTargetIDPlayerText", "Parasite_TTTTargetIDPlayerText", Parasite_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Parasite_TTTTutorialRoleText", Parasite_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PARASITE] = function()
-    RemoveHook("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName")
-    RemoveHook("TTTScoreboardPlayerRole", "Parasite_TTTScoreboardPlayerRole")
-    RemoveHook("TTTShouldPlayerSmoke", "Parasite_Infecting_TTShouldPlayerSmoke")
-    RemoveHook("TTTSpectatorShowHUD", "Parasite_Infecting_TTTSpectatorShowHUD")
-    RemoveHook("TTTTargetIDPlayerText", "Parasite_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Parasite_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_PARASITE] = {
+    ["TTTScoreboardPlayerName"] = Parasite_TTTScoreboardPlayerName,
+    ["TTTScoreboardPlayerRole"] = Parasite_TTTScoreboardPlayerRole,
+    ["TTTShouldPlayerSmoke"] = Parasite_Infecting_TTShouldPlayerSmoke,
+    ["TTTSpectatorShowHUD"] = Parasite_Infecting_TTTSpectatorShowHUD,
+    ["TTTTargetIDPlayerText"] = Parasite_TTTTargetIDPlayerText
+}

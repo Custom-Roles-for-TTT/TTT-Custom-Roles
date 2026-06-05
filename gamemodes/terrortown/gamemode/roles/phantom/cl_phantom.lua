@@ -3,7 +3,6 @@ local net = net
 local table = table
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -227,7 +226,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Phantom_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_PHANTOM then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to help defeat their team's enemies."
@@ -306,28 +305,17 @@ local function Phantom_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_PHANTOM] = function()
-    AddHook("TTTRolePopupParams", "Phantom_TTTRolePopupParams", Phantom_TTTRolePopupParams)
-    AddHook("TTTScoreboardPlayerName", "Phantom_TTTScoreboardPlayerName", Phantom_TTTScoreboardPlayerName)
-    AddHook("TTTScoreboardPlayerRole", "Phantom_TTTScoreboardPlayerRole", Phantom_TTTScoreboardPlayerRole)
-    AddHook("TTTShouldPlayerSmoke", "Phantom_Haunting_TTTShouldPlayerSmoke", Phantom_Haunting_TTTShouldPlayerSmoke)
-    AddHook("TTTSpectatorShowHUD", "Phantom_Haunting_TTTSpectatorShowHUD", Phantom_Haunting_TTTSpectatorShowHUD)
-    AddHook("TTTTargetIDPlayerText", "Phantom_TTTTargetIDPlayerText", Phantom_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", Phantom_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PHANTOM] = function()
-    RemoveHook("TTTRolePopupParams", "Phantom_TTTRolePopupParams")
-    RemoveHook("TTTScoreboardPlayerName", "Phantom_TTTScoreboardPlayerName")
-    RemoveHook("TTTScoreboardPlayerRole", "Phantom_TTTScoreboardPlayerRole")
-    RemoveHook("TTTShouldPlayerSmoke", "Phantom_Haunting_TTTShouldPlayerSmoke")
-    RemoveHook("TTTSpectatorShowHUD", "Phantom_Haunting_TTTSpectatorShowHUD")
-    RemoveHook("TTTTargetIDPlayerText", "Phantom_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_PHANTOM] = {
+    ["TTTRolePopupParams"] = Phantom_TTTRolePopupParams,
+    ["TTTScoreboardPlayerName"] = Phantom_TTTScoreboardPlayerName,
+    ["TTTScoreboardPlayerRole"] = Phantom_TTTScoreboardPlayerRole,
+    ["TTTShouldPlayerSmoke"] = Phantom_Haunting_TTTShouldPlayerSmoke,
+    ["TTTSpectatorShowHUD"] = Phantom_Haunting_TTTSpectatorShowHUD,
+    ["TTTTargetIDPlayerText"] = Phantom_TTTTargetIDPlayerText
+}

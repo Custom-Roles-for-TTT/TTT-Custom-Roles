@@ -2,7 +2,6 @@ local hook = hook
 local net = net
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -76,7 +75,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Hypnotist_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Hypnotist_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_HYPNOTIST then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_HYPNOTIST] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to revive a dead player as an ally using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>brainwashing device</span>."
@@ -102,18 +101,12 @@ local function Hypnotist_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_HYPNOTIST] = function()
-    AddHook("TTTScoringSummaryRender", "Hypnotist_TTTScoringSummaryRender", Hypnotist_TTTScoringSummaryRender)
-    AddHook("TTTTutorialRoleText", "Hypnotist_TTTTutorialRoleText", Hypnotist_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_HYPNOTIST] = function()
-    RemoveHook("TTTScoringSummaryRender", "Hypnotist_TTTScoringSummaryRender")
-    RemoveHook("TTTTutorialRoleText", "Hypnotist_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_HYPNOTIST] = {
+    ["TTTScoringSummaryRender"] = Hypnotist_TTTScoringSummaryRender
+}

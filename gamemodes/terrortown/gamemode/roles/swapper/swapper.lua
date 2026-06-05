@@ -10,7 +10,6 @@ local timer = timer
 local util = util
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local TableInsert = table.insert
 
@@ -288,14 +287,8 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SWAPPER] = function()
-    AddHook("PlayerDeath", "Swapper_KillCheck_PlayerDeath", Swapper_KillCheck_PlayerDeath)
-    AddHook("TTTCupidShouldLoverSurvive", "Swapper_TTTCupidShouldLoverSurvive", Swapper_TTTCupidShouldLoverSurvive)
-    AddHook("TTTStopPlayerRespawning", "Swapper_TTTStopPlayerRespawning", Swapper_TTTStopPlayerRespawning)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SWAPPER] = function()
-    RemoveHook("PlayerDeath", "Swapper_KillCheck_PlayerDeath")
-    RemoveHook("TTTCupidShouldLoverSurvive", "Swapper_TTTCupidShouldLoverSurvive")
-    RemoveHook("TTTStopPlayerRespawning", "Swapper_TTTStopPlayerRespawning")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SWAPPER] = {
+    ["PlayerDeath"] = Swapper_KillCheck_PlayerDeath,
+    ["TTTCupidShouldLoverSurvive"] = Swapper_TTTCupidShouldLoverSurvive,
+    ["TTTStopPlayerRespawning"] = Swapper_TTTStopPlayerRespawning
+}

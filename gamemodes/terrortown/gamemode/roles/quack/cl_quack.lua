@@ -51,7 +51,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Quack_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Quack_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_QUACK then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_QUACK] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is imitate the " .. ROLE_STRINGS[ROLE_DOCTOR] .. " and \"heal\" their patients... <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>to death</span>."
@@ -68,16 +68,4 @@ local function Quack_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_QUACK] = function()
-    AddHook("TTTTutorialRoleText", "Quack_TTTTutorialRoleText", Quack_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_QUACK] = function()
-    RemoveHook("TTTTutorialRoleText", "Quack_TTTTutorialRoleText")
-end
+end)

@@ -6,7 +6,6 @@ local surface = surface
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 local function IsLover(cli, ply)
     return ply:SteamID64() == cli:GetNWString("RevengerLover", "")
@@ -171,7 +170,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Revenger_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Revenger_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_REVENGER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_REVENGER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to protect their soulmate."
@@ -189,30 +188,18 @@ local function Revenger_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_REVENGER] = function()
-    AddHook("TTTEndRound", "Revenger_Radar_TTTEndRound", Revenger_Radar_TTTEndRound)
-    AddHook("TTTRadarRender", "Revenger_TTTRadarRender", Revenger_TTTRadarRender)
-    AddHook("TTTRolePopupParams", "Revenger_TTTRolePopupParams", Revenger_TTTRolePopupParams)
-    AddHook("TTTScoreboardPlayerName", "Revenger_TTTScoreboardPlayerName", Revenger_TTTScoreboardPlayerName)
-    AddHook("TTTScoreboardPlayerRole", "Revenger_TTTScoreboardPlayerRole", Revenger_TTTScoreboardPlayerRole)
-    AddHook("TTTTargetIDPlayerTargetIcon", "Revenger_TTTTargetIDPlayerTargetIcon", Revenger_TTTTargetIDPlayerTargetIcon)
-    AddHook("TTTTargetIDPlayerText", "Revenger_TTTTargetIDPlayerText", Revenger_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Revenger_TTTTutorialRoleText", Revenger_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_REVENGER] = function()
-    RemoveHook("TTTEndRound", "Revenger_Radar_TTTEndRound")
-    RemoveHook("TTTRadarRender", "Revenger_TTTRadarRender")
-    RemoveHook("TTTRolePopupParams", "Revenger_TTTRolePopupParams")
-    RemoveHook("TTTScoreboardPlayerName", "Revenger_TTTScoreboardPlayerName")
-    RemoveHook("TTTScoreboardPlayerRole", "Revenger_TTTScoreboardPlayerRole")
-    RemoveHook("TTTTargetIDPlayerTargetIcon", "Revenger_TTTTargetIDPlayerTargetIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Revenger_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Revenger_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_REVENGER] = {
+    ["TTTEndRound"] = Revenger_Radar_TTTEndRound,
+    ["TTTRadarRender"] = Revenger_TTTRadarRender,
+    ["TTTRolePopupParams"] = Revenger_TTTRolePopupParams,
+    ["TTTScoreboardPlayerName"] = Revenger_TTTScoreboardPlayerName,
+    ["TTTScoreboardPlayerRole"] = Revenger_TTTScoreboardPlayerRole,
+    ["TTTTargetIDPlayerTargetIcon"] = Revenger_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Revenger_TTTTargetIDPlayerText
+}

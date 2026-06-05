@@ -20,7 +20,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Trickster_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Trickster_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TRICKSTER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_TRICKSTER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> who can:"
@@ -32,16 +32,4 @@ local function Trickster_TTTTutorialRoleText(role, titleLabel)
             html = html .. "<li>Loot credits from corpses"
         return html .. "</ul>"
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_TRICKSTER] = function()
-    AddHook("TTTTutorialRoleText", "Trickster_TTTTutorialRoleText", Trickster_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_TRICKSTER] = function()
-    RemoveHook("TTTTutorialRoleText", "Trickster_TTTTutorialRoleText")
-end
+end)

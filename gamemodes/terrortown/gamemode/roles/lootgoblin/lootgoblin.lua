@@ -11,7 +11,6 @@ local util = util
 local weapons = weapons
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local CreateEntity = ents.Create
 local MathRandom = math.random
@@ -475,28 +474,15 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_LOOTGOBLIN] = function()
-    AddHook("FinishMove", "LootGoblin_FinishMove", LootGoblin_FinishMove)
-    AddHook("PlayerDeath", "LootGoblin_PlayerDeath", LootGoblin_PlayerDeath)
-    AddHook("PlayerFootstep", "LootGoblin_PlayerFootstep", LootGoblin_PlayerFootstep)
-    AddHook("PostEntityTakeDamage", "LootGoblin_PostEntityTakeDamage", LootGoblin_PostEntityTakeDamage)
-    AddHook("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", LootGoblin_Radar_TTTBeginRound)
-    AddHook("TTTBeginRound", "LootGoblin_TTTBeginRound", LootGoblin_TTTBeginRound)
-    AddHook("TTTEndRound", "LootGoblin_TTTEndRound", LootGoblin_TTTEndRound)
-    AddHook("TTTKarmaGivePenalty", "LootGoblin_TTTKarmaGivePenalty", LootGoblin_TTTKarmaGivePenalty)
-    AddHook("TTTKarmaGiveReward", "LootGoblin_TTTKarmaGiveReward", LootGoblin_TTTKarmaGiveReward)
-    AddHook("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", LootGoblin_TTTPlayerSpawnForRound)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_LOOTGOBLIN] = function()
-    RemoveHook("FinishMove", "LootGoblin_FinishMove")
-    RemoveHook("PlayerDeath", "LootGoblin_PlayerDeath")
-    RemoveHook("PlayerFootstep", "LootGoblin_PlayerFootstep")
-    RemoveHook("PostEntityTakeDamage", "LootGoblin_PostEntityTakeDamage")
-    RemoveHook("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound")
-    RemoveHook("TTTBeginRound", "LootGoblin_TTTBeginRound")
-    RemoveHook("TTTEndRound", "LootGoblin_TTTEndRound")
-    RemoveHook("TTTKarmaGivePenalty", "LootGoblin_TTTKarmaGivePenalty")
-    RemoveHook("TTTKarmaGiveReward", "LootGoblin_TTTKarmaGiveReward")
-    RemoveHook("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound")
-end
+ROLE_REGISTERED_HOOKS[ROLE_LOOTGOBLIN] = {
+    ["FinishMove"] = LootGoblin_FinishMove,
+    ["PlayerDeath"] = LootGoblin_PlayerDeath,
+    ["PlayerFootstep"] = LootGoblin_PlayerFootstep,
+    ["PostEntityTakeDamage"] = LootGoblin_PostEntityTakeDamage,
+    ["TTTBeginRound"] = LootGoblin_Radar_TTTBeginRound,
+    ["TTTBeginRound"] = LootGoblin_TTTBeginRound,
+    ["TTTEndRound"] = LootGoblin_TTTEndRound,
+    ["TTTKarmaGivePenalty"] = LootGoblin_TTTKarmaGivePenalty,
+    ["TTTKarmaGiveReward"] = LootGoblin_TTTKarmaGiveReward,
+    ["TTTPlayerSpawnForRound"] = LootGoblin_TTTPlayerSpawnForRound
+}

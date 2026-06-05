@@ -5,7 +5,6 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_CannibalEaten")
@@ -229,28 +228,15 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_CANNIBAL] = function()
-    AddHook("PlayerCanHearPlayersVoice", "Cannibal_PlayerCanHearPlayersVoice", Cannibal_PlayerCanHearPlayersVoice)
-    AddHook("PlayerCanPickupWeapon", "Cannibal_PlayerCanPickupWeapon", Cannibal_PlayerCanPickupWeapon)
-    AddHook("PlayerCanSeePlayersChat", "Cannibal_PlayerCanSeePlayersChat", Cannibal_PlayerCanSeePlayersChat)
-    AddHook("PlayerDeath", "Cannibal_PlayerDeath", Cannibal_PlayerDeath)
-    AddHook("PlayerDisconnected", "Cannibal_PlayerDisconnected", Cannibal_PlayerDisconnected)
-    AddHook("ScalePlayerDamage", "Cannibal_ScalePlayerDamage", Cannibal_ScalePlayerDamage)
-    AddHook("TTTCheckForWin", "Cannibal_TTTCheckForWin", Cannibal_TTTCheckForWin)
-    AddHook("TTTEndRound", "Cannibal_TTTEndRound", Cannibal_TTTEndRound)
-    AddHook("TTTOnRoleAbilityDisabled", "Cannibal_TTTOnRoleAbilityDisabled", Cannibal_TTTOnRoleAbilityDisabled)
-    AddHook("TTTPrintResultMessage", "Cannibal_TTTPrintResultMessage", Cannibal_TTTPrintResultMessage)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_CANNIBAL] = function()
-    RemoveHook("PlayerCanHearPlayersVoice", "Cannibal_PlayerCanHearPlayersVoice")
-    RemoveHook("PlayerCanPickupWeapon", "Cannibal_PlayerCanPickupWeapon")
-    RemoveHook("PlayerCanSeePlayersChat", "Cannibal_PlayerCanSeePlayersChat")
-    RemoveHook("PlayerDeath", "Cannibal_PlayerDeath")
-    RemoveHook("PlayerDisconnected", "Cannibal_PlayerDisconnected")
-    RemoveHook("ScalePlayerDamage", "Cannibal_ScalePlayerDamage")
-    RemoveHook("TTTCheckForWin", "Cannibal_TTTCheckForWin")
-    RemoveHook("TTTEndRound", "Cannibal_TTTEndRound")
-    RemoveHook("TTTOnRoleAbilityDisabled", "Cannibal_TTTOnRoleAbilityDisabled")
-    RemoveHook("TTTPrintResultMessage", "Cannibal_TTTPrintResultMessage")
-end
+ROLE_REGISTERED_HOOKS[ROLE_CANNIBAL] = {
+    ["PlayerCanHearPlayersVoice"] = Cannibal_PlayerCanHearPlayersVoice,
+    ["PlayerCanPickupWeapon"] = Cannibal_PlayerCanPickupWeapon,
+    ["PlayerCanSeePlayersChat"] = Cannibal_PlayerCanSeePlayersChat,
+    ["PlayerDeath"] = Cannibal_PlayerDeath,
+    ["PlayerDisconnected"] = Cannibal_PlayerDisconnected,
+    ["ScalePlayerDamage"] = Cannibal_ScalePlayerDamage,
+    ["TTTCheckForWin"] = Cannibal_TTTCheckForWin,
+    ["TTTEndRound"] = Cannibal_TTTEndRound,
+    ["TTTOnRoleAbilityDisabled"] = Cannibal_TTTOnRoleAbilityDisabled,
+    ["TTTPrintResultMessage"] = Cannibal_TTTPrintResultMessage
+}

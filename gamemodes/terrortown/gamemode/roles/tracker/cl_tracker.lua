@@ -30,7 +30,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Tracker_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TRACKER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -59,16 +59,4 @@ local function Tracker_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_TRACKER] = function()
-    AddHook("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", Tracker_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_TRACKER] = function()
-    RemoveHook("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText")
-end
+end)

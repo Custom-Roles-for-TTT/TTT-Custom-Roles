@@ -5,7 +5,6 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_UpdateJesterSecondaryWins")
@@ -115,16 +114,9 @@ end
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_JESTER] = function()
-    AddHook("PlayerDeath", "Jester_WinCheck_PlayerDeath", Jester_WinCheck_PlayerDeath)
-    AddHook("TTTBeginRound", "Jester_TTTBeginRound", Jester_TTTBeginRound)
-    AddHook("TTTOnRoleAbilityEnabled", "Jester_TTTOnRoleAbilityEnabled", Jester_TTTOnRoleAbilityEnabled)
-    AddHook("TTTPrintResultMessage", "Jester_TTTPrintResultMessage", Jester_TTTPrintResultMessage)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_JESTER] = function()
-    RemoveHook("PlayerDeath", "Jester_WinCheck_PlayerDeath")
-    RemoveHook("TTTBeginRound", "Jester_TTTBeginRound")
-    RemoveHook("TTTOnRoleAbilityEnabled", "Jester_TTTOnRoleAbilityEnabled")
-    RemoveHook("TTTPrintResultMessage", "Jester_TTTPrintResultMessage")
-end
+ROLE_REGISTERED_HOOKS[ROLE_JESTER] = {
+    ["PlayerDeath"] = Jester_WinCheck_PlayerDeath,
+    ["TTTBeginRound"] = Jester_TTTBeginRound,
+    ["TTTOnRoleAbilityEnabled"] = Jester_TTTOnRoleAbilityEnabled,
+    ["TTTPrintResultMessage"] = Jester_TTTPrintResultMessage
+}

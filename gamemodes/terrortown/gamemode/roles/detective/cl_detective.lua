@@ -1,7 +1,6 @@
 local hook = hook
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 ------------------
 -- TRANSLATIONS --
@@ -23,7 +22,7 @@ end)
 -- TUTORIAL --
 --------------
 
-local function Detective_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Detective_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_DETECTIVE then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
@@ -44,16 +43,4 @@ local function Detective_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTER_HOOKS[ROLE_DETECTIVE] = function()
-    AddHook("TTTTutorialRoleText", "Detective_TTTTutorialRoleText", Detective_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_DETECTIVE] = function()
-    RemoveHook("TTTTutorialRoleText", "Detective_TTTTutorialRoleText")
-end
+end)

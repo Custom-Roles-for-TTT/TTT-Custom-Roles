@@ -24,6 +24,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 local Utf8Lower = utf8.lower
 local Utf8Sub = utf8.sub
+local TableHasValue = table.HasValue
 
 include("player_class/player_ttt.lua")
 
@@ -103,7 +104,7 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
             local key = eventName .. "_" .. tostring(identifier)
             -- Keep track of which ones we've checked already so we don't spam ourselves on reload
             -- Also ignore the ones that are known to replace themselves... for whatever reason
-            if not table.HasValue(CRDebug.IgnoredHookDupes, key) then
+            if not TableHasValue(CRDebug.IgnoredHookDupes, key) then
                 local locationKey = info.short_src .. "_" .. info.currentline
                 -- If we have a location key saved but it's different this time then it's a duplicate
                 if CRDebug.HooksChecked[key] and CRDebug.HooksChecked[key] ~= locationKey then
@@ -935,8 +936,7 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_SHOP_ITEMS = {}
 ROLE_STARTING_CREDITS = {}
 ROLE_STARTING_HEALTH = {}
-ROLE_REGISTER_HOOKS = {}
-ROLE_UNREGISTER_HOOKS = {}
+ROLE_REGISTERED_HOOKS = {}
 ROLE_HOOK_REGISTRATION_KEY = {}
 
 -- Optional features
@@ -977,12 +977,12 @@ ROLE_CONVAR_TYPE_TEXT = 2
 ROLE_CONVAR_TYPE_DROPDOWN = 3
 
 function RegisterRole(tbl)
-    if table.HasValue(ROLE_STRINGS_RAW, tbl.nameraw) then
+    if TableHasValue(ROLE_STRINGS_RAW, tbl.nameraw) then
         error("Attempting to define role with a duplicate raw name value: " .. tbl.nameraw)
         return
     end
 
-    if table.HasValue(ROLE_STRINGS_SHORT, tbl.nameshort) then
+    if TableHasValue(ROLE_STRINGS_SHORT, tbl.nameshort) then
         error("Attempting to define role with a duplicate short name value: " .. tbl.nameshort)
         return
     end
@@ -1190,30 +1190,58 @@ function RegisterRole(tbl)
 end
 
 local role_hooks_registered = {}
+local banned_hooks = {"Initialize", "TTTPrepareRound", "TTTPlayerRoleChanged", "TTTTutorialRoleText"}
 local function RegisterHooks(role)
     local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
     role_hooks_registered[key] = (role_hooks_registered[key] or 0) + 1
     if role_hooks_registered[key] ~= 1 then return end
 
-    ROLE_REGISTER_HOOKS[role]()
+    for hookName, hookData in pairs(ROLE_REGISTERED_HOOKS[role]) do
+        if not hookData then continue end
+        if TableHasValue(banned_hooks, hookName) then
+            ErrorNoHalt("Role '" .. ROLE_STRINGS_RAW[role] .. "' is registering an unsupported hook! Tell the developer they need to manage '" .. hookName .. "' hooks manually.\n")
+            continue
+        end
+
+        if type(hookData) == "table" then
+            for hookKey, hookFn in ipairs(hookData) do
+                AddHook(hookName, hookKey, hookFn)
+            end
+        else
+            local hookKey = ROLE_STRINGS[role] .. "_" .. hookName
+            AddHook(hookName, hookKey, hookData)
+        end
+    end
 end
 local function UnregisterHooks(role)
     local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
     role_hooks_registered[key] = (role_hooks_registered[key] or 0) - 1
     if role_hooks_registered[key] ~= 0 then return end
 
-    ROLE_UNREGISTER_HOOKS[role]()
+    for hookName, hookData in pairs(ROLE_REGISTERED_HOOKS[role]) do
+        if not hookData then continue end
+
+        if type(hookData) == "table" then
+            for hookKey, _ in ipairs(hookData) do
+                RemoveHook(hookName, hookKey)
+            end
+        else
+            local hookKey = ROLE_STRINGS[role] .. "_" .. hookName
+            RemoveHook(hookName, hookKey)
+        end
+    end
 end
 
 AddHook("TTTPlayerRoleChanged", "HookRegistration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
-    if not ROLE_UNREGISTER_HOOKS[oldRole] and not ROLE_REGISTER_HOOKS[newRole] then return end
+    if not ROLE_REGISTERED_HOOKS[oldRole] and not ROLE_REGISTERED_HOOKS[newRole] then return end
 
     -- Delay this by a frame so cleanup can run first
     timer.Simple(0, function()
-        if ROLE_UNREGISTER_HOOKS[oldRole] then
+        if ROLE_REGISTERED_HOOKS[oldRole] then
             UnregisterHooks(oldRole)
-        elseif ROLE_REGISTER_HOOKS[newRole] then
+        end
+        if ROLE_REGISTERED_HOOKS[newRole] then
             RegisterHooks(newRole)
         end
     end)
@@ -1222,7 +1250,7 @@ AddHook("TTTPrepareRound", "HookRegistration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
     timer.Simple(0, function()
         for role = 0, ROLE_MAX do
-            if ROLE_UNREGISTER_HOOKS[role] then
+            if ROLE_REGISTERED_HOOKS[role] then
                 UnregisterHooks(role)
             end
         end

@@ -3,7 +3,6 @@ local math = math
 local player = player
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local MathCos = math.cos
 local MathSin = math.sin
 local PlayerIterator = player.Iterator
@@ -96,7 +95,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Paladin_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_PALADIN then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -143,20 +142,13 @@ local function Paladin_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_PALADIN] = function()
-    AddHook("HUDPaintBackground", "Paladin_HUDPaintBackground", Paladin_HUDPaintBackground)
-    AddHook("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClientThink", Paladin_RoleFeatures_TTTPlayerAliveClientThink)
-    AddHook("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", Paladin_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_PALADIN] = function()
-    RemoveHook("HUDPaintBackground", "Paladin_HUDPaintBackground")
-    RemoveHook("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClientThink")
-    RemoveHook("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_PALADIN] = {
+    ["HUDPaintBackground"] = Paladin_HUDPaintBackground,
+    ["TTTPlayerAliveClientThink"] = Paladin_RoleFeatures_TTTPlayerAliveClientThink
+}

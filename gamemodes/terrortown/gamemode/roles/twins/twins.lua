@@ -382,23 +382,13 @@ end)
 -- REGISTRATION --
 ------------------
 
-local function Register()
-    AddHook("EntityTakeDamage", "Twins_EntityTakeDamage", Twins_EntityTakeDamage)
-    AddHook("PlayerDeath", "Twins_PlayerDeath", Twins_PlayerDeath)
-    AddHook("TTTBeginRound", "Twins_TTTBeginRound", Twins_TTTBeginRound)
-    AddHook("TTTDrawHitMarker", "Twins_TTTDrawHitMarker", Twins_TTTDrawHitMarker)
-    AddHook("TTTSelectRoles", "Twins_TTTSelectRoles", Twins_TTTSelectRoles)
-end
+local hooks = {
+    ["EntityTakeDamage"] = Twins_EntityTakeDamage,
+    ["PlayerDeath"] = Twins_PlayerDeath,
+    ["TTTBeginRound"] = Twins_TTTBeginRound,
+    ["TTTDrawHitMarker"] = Twins_TTTDrawHitMarker,
+    ["TTTSelectRoles"] = Twins_TTTSelectRoles
+}
 
-local function Unregister()
-    RemoveHook("EntityTakeDamage", "Twins_EntityTakeDamage")
-    RemoveHook("PlayerDeath", "Twins_PlayerDeath")
-    RemoveHook("TTTBeginRound", "Twins_TTTBeginRound")
-    RemoveHook("TTTDrawHitMarker", "Twins_TTTDrawHitMarker")
-    RemoveHook("TTTSelectRoles", "Twins_TTTSelectRoles")
-end
-
-ROLE_REGISTER_HOOKS[ROLE_GOODTWIN] = Register
-ROLE_REGISTER_HOOKS[ROLE_EVILTWIN] = Register
-ROLE_UNREGISTER_HOOKS[ROLE_GOODTWIN] = Unregister
-ROLE_UNREGISTER_HOOKS[ROLE_EVILTWIN] = Unregister
+ROLE_REGISTERED_HOOKS[ROLE_GOODTWIN] = hooks
+ROLE_REGISTERED_HOOKS[ROLE_EVILTWIN] = hooks

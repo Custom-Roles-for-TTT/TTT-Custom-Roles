@@ -6,7 +6,6 @@ local table = table
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -235,28 +234,15 @@ end)
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_SPONGE] = function()
-    AddHook("EntityTakeDamage", "Sponge_EntityTakeDamage", Sponge_EntityTakeDamage)
-    AddHook("PlayerDeath", "Sponge_WinCheck_PlayerDeath", Sponge_WinCheck_PlayerDeath)
-    AddHook("PlayerSpawn", "Sponge_AuraSize_PlayerSpawn", Sponge_AuraSize_PlayerSpawn)
-    AddHook("PostPlayerDeath", "Sponge_AuraSize_PostPlayerDeath", Sponge_AuraSize_PostPlayerDeath)
-    AddHook("TTTBeginRound", "Sponge_AuraSize_TTTBeginRound", Sponge_AuraSize_TTTBeginRound)
-    AddHook("TTTDrawHitMarker", "Sponge_TTTDrawHitMarker", Sponge_TTTDrawHitMarker)
-    AddHook("TTTInformantDefaultScanStage", "Sponge_TTTInformantDefaultScanStage", Sponge_TTTInformantDefaultScanStage)
-    AddHook("TTTPrintResultMessage", "Sponge_TTTPrintResultMessage", Sponge_TTTPrintResultMessage)
-    AddHook("TTTSyncGlobals", "Sponge_TTTSyncGlobals", Sponge_TTTSyncGlobals)
-    AddHook("Think", "Sponge_Aura_Think", Sponge_Aura_Think)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_SPONGE] = function()
-    RemoveHook("EntityTakeDamage", "Sponge_EntityTakeDamage")
-    RemoveHook("PlayerDeath", "Sponge_WinCheck_PlayerDeath")
-    RemoveHook("PlayerSpawn", "Sponge_AuraSize_PlayerSpawn")
-    RemoveHook("PostPlayerDeath", "Sponge_AuraSize_PostPlayerDeath")
-    RemoveHook("Think", "Sponge_Aura_Think")
-    RemoveHook("TTTBeginRound", "Sponge_AuraSize_TTTBeginRound")
-    RemoveHook("TTTDrawHitMarker", "Sponge_TTTDrawHitMarker")
-    RemoveHook("TTTInformantDefaultScanStage", "Sponge_TTTInformantDefaultScanStage")
-    RemoveHook("TTTPrintResultMessage", "Sponge_TTTPrintResultMessage")
-    RemoveHook("TTTSyncGlobals", "Sponge_TTTSyncGlobals")
-end
+ROLE_REGISTERED_HOOKS[ROLE_SPONGE] = {
+    ["EntityTakeDamage"] = Sponge_EntityTakeDamage,
+    ["PlayerDeath"] = Sponge_WinCheck_PlayerDeath,
+    ["PlayerSpawn"] = Sponge_AuraSize_PlayerSpawn,
+    ["PostPlayerDeath"] = Sponge_AuraSize_PostPlayerDeath,
+    ["TTTBeginRound"] = Sponge_AuraSize_TTTBeginRound,
+    ["TTTDrawHitMarker"] = Sponge_TTTDrawHitMarker,
+    ["TTTInformantDefaultScanStage"] = Sponge_TTTInformantDefaultScanStage,
+    ["TTTPrintResultMessage"] = Sponge_TTTPrintResultMessage,
+    ["TTTSyncGlobals"] = Sponge_TTTSyncGlobals,
+    ["Think"] = Sponge_Aura_Think
+}

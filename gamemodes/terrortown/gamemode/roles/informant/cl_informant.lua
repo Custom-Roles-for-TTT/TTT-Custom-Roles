@@ -2,7 +2,6 @@ local hook = hook
 local string = string
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local StringUpper = string.upper
 local Utf8Upper = utf8.upper
 
@@ -336,7 +335,7 @@ end
 -- TUTORIAL --
 --------------
 
-local function Informant_TTTTutorialRoleText(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_INFORMANT then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local jesterColor = ROLE_COLORS[ROLE_JESTER]
@@ -385,28 +384,17 @@ local function Informant_TTTTutorialRoleText(role, titleLabel)
 
         return html
     end
-end
+end)
 
 ------------------
 -- REGISTRATION --
 ------------------
 
-ROLE_REGISTER_HOOKS[ROLE_INFORMANT] = function()
-    AddHook("HUDPaint", "Informant_HUDPaint", Informant_HUDPaint)
-    AddHook("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", Informant_TTTScoreboardPlayerRole)
-    AddHook("TTTSettingsRolesTabSections", "Informant_TTTSettingsRolesTabSections", Informant_TTTSettingsRolesTabSections)
-    AddHook("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", Informant_TTTTargetIDPlayerRing)
-    AddHook("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", Informant_TTTTargetIDPlayerRoleIcon)
-    AddHook("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", Informant_TTTTargetIDPlayerText)
-    AddHook("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", Informant_TTTTutorialRoleText)
-end
-
-ROLE_UNREGISTER_HOOKS[ROLE_INFORMANT] = function()
-    RemoveHook("HUDPaint", "Informant_HUDPaint")
-    RemoveHook("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole")
-    RemoveHook("TTTSettingsRolesTabSections", "Informant_TTTSettingsRolesTabSections")
-    RemoveHook("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing")
-    RemoveHook("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon")
-    RemoveHook("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText")
-    RemoveHook("TTTTutorialRoleText", "Informant_TTTTutorialRoleText")
-end
+ROLE_REGISTERED_HOOKS[ROLE_INFORMANT] = {
+    ["HUDPaint"] = Informant_HUDPaint,
+    ["TTTScoreboardPlayerRole"] = Informant_TTTScoreboardPlayerRole,
+    ["TTTSettingsRolesTabSections"] = Informant_TTTSettingsRolesTabSections,
+    ["TTTTargetIDPlayerRing"] = Informant_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Informant_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Informant_TTTTargetIDPlayerText
+}
