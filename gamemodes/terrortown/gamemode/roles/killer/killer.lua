@@ -290,7 +290,7 @@ end
 ------------------
 
 -- Warn other players that there is a killer
-local function Killer_Announce_TTTBeginRound()
+AddHook("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
     if not killer_warn:GetBool() then return end
 
     timer.Simple(1.5, function()
@@ -311,7 +311,7 @@ local function Killer_Announce_TTTBeginRound()
             end
         end
     end)
-end
+end)
 
 ----------------
 -- WIN CHECKS --
@@ -376,7 +376,6 @@ ROLE_REGISTERED_HOOKS[ROLE_KILLER] = {
     ["PlayerLoadout"] = Killer_PlayerLoadout,
     ["ScalePlayerDamage"] = Killer_ScalePlayerDamage,
     ["SetupPlayerVisibility"] = Killer_SetupPlayerVisibility,
-    ["TTTBeginRound"] = Killer_Announce_TTTBeginRound,
     ["TTTCheckForWin"] = Killer_TTTCheckForWin,
     ["TTTKarmaGivePenalty"] = Killer_TTTKarmaGivePenalty,
     ["TTTKarmaGiveReward"] = Killer_TTTKarmaGiveReward,

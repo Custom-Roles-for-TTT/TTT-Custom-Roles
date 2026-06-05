@@ -111,13 +111,13 @@ AddHook("TTTPrepareRound", "Informant_TTTPrepareRound", function()
     end
 end)
 
-local function Informant_TTTBeginRound()
+AddHook("TTTBeginRound", "Informant_TTTBeginRound", function()
     if not HasInformant() then return end
 
     for _, v in PlayerIterator() do
         SetDefaultScanState(v)
     end
-end
+end)
 
 ------------------
 -- ROLE CHANGES --
@@ -377,7 +377,6 @@ end
 
 ROLE_REGISTERED_HOOKS[ROLE_INFORMANT] = {
     ["PlayerCanPickupWeapon"] = Informant_Weapons_PlayerCanPickupWeapon,
-    ["TTTBeginRound"] = Informant_TTTBeginRound,
     ["TTTDrawHitMarker"] = Informant_TTTDrawHitMarker,
     ["TTTPlayerAliveThink"] = Informant_TTTPlayerAliveThink
 }

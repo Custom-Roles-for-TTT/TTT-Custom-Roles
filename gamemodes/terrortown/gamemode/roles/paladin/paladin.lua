@@ -5,6 +5,7 @@ local math = math
 local player = player
 local timer = timer
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 local CallHook = hook.Call
 
@@ -23,7 +24,7 @@ local paladin_damage_reduction = GetConVar("ttt_paladin_damage_reduction")
 -- ROLE FEATURES --
 -------------------
 
-local function Paladin_RoleFeatures_TTTBeginRound()
+AddHook("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound", function()
     local paladinHeal = paladin_heal_rate:GetInt()
     local paladinHealSelf = paladin_heal_self:GetBool()
     local paladinRadius = paladin_aura_radius:GetFloat() * UNITS_PER_METER
@@ -41,7 +42,7 @@ local function Paladin_RoleFeatures_TTTBeginRound()
             end
         end
     end)
-end
+end)
 
 local function Paladin_RoleFeatures_TTTEndRound()
     if timer.Exists("paladinheal") then timer.Remove("paladinheal") end
@@ -78,6 +79,5 @@ end
 
 ROLE_REGISTERED_HOOKS[ROLE_PALADIN] = {
     ["ScalePlayerDamage"] = Paladin_ScalePlayerDamage,
-    ["TTTBeginRound"] = Paladin_RoleFeatures_TTTBeginRound,
     ["TTTEndRound"] = Paladin_RoleFeatures_TTTEndRound
 }

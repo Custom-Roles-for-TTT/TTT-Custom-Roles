@@ -3,6 +3,9 @@
 <head>
     <title>Custom Roles for TTT - API - Global Variables</title>
     <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark-dimmed.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
     <script type="text/javascript" src="../js/shared.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
@@ -178,6 +181,13 @@
             <em>Added in:</em> 1.0.10
         </p>
 
+        <h3><a id="role_hook_registration_key" href="#role_hook_registration_key"></a>ROLE_HOOK_REGISTRATION_KEY</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Table of role to key for use with the Hook Management system. Used when multiple roles share the same set of hooks (e.g. the Twins).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.4.6
+        </p>
+
         <h3><a id="role_none" href="#role_none">ROLE_NONE</a></h3>
         <p>
             Updated to be -1 so players who have not been given a role can be identified.<br>
@@ -204,6 +214,33 @@
             Mapping of which roles are in the currently enabled role pack.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 2.0.7
+        </p>
+
+        <h3><a id="role_registered_hooks" href="#role_registered_hooks"></a>ROLE_REGISTERED_HOOKS</a> <span data-text="Beta Only" class="betaonly betaicon tooltip">&nbsp;</span></h3>
+        <p>
+            Mapping of role to table of registered hooks. Used by automated Hook Management system.<br>
+            The inner table is a mapping of hook names to hook handler functions or a table of identifier-handler functions. For example:<br>
+            <div><pre><code class="language-lua">local function MyRole_EntityTakeDamage(ent, dmginfo)
+    if ent:IsMyRole() then
+        print("MyRole did damage!")
+    end
+end
+local function MyRole_TTTEndRound()
+    print("Round ended for MyRole!")
+end
+local function MyRole_Congrats_TTTEndRound()
+    print("Congrats to the winners from MyRole!")
+end
+
+ROLE_REGISTERED_HOOKS[ROLE_MYROLE] = {
+    ["EntityTakeDamage"] = MyRole_EntityTakeDamage,
+    ["TTTEndRound"] = {
+        ["MyRole_TTTEndRound"] = MyRole_TTTEndRound,
+        ["MyRole_Congrats_TTTEndRound"] = MyRole_Congrats_TTTEndRound
+    }
+}</code></pre></div>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 2.4.6
         </p>
 
         <h3><a id="role_sprite_icon_materials" href="#role_sprite_icon_materials">ROLE_SPRITE_ICON_MATERIALS</a></h3>

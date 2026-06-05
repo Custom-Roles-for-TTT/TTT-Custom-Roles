@@ -353,7 +353,7 @@ end
 ------------------
 
 -- Warn other players that there is an arsonist
-local function Arsonist_Announce_TTTBeginRound()
+AddHook("TTTBeginRound", "Arsonist_Announce_TTTBeginRound", function()
     if not arsonist_warn_all:GetBool() then return end
 
     timer.Simple(1.5, function()
@@ -373,7 +373,7 @@ local function Arsonist_Announce_TTTBeginRound()
             end
         end
     end)
-end
+end)
 
 ----------------
 -- WIN CHECKS --
@@ -416,7 +416,6 @@ ROLE_REGISTERED_HOOKS[ROLE_ARSONIST] = {
     ["PostPlayerDeath"] = Arsonist_PostPlayerDeath,
     ["ScalePlayerDamage"] = Arsonist_ScalePlayerDamage,
     ["Think"] = Arsonist_Douse_Think,
-    ["TTTBeginRound"] = Arsonist_Announce_TTTBeginRound,
     ["TTTCheckForWin"] = Arsonist_TTTCheckForWin,
     ["TTTOnRoleAbilityEnabled"] = Arsonist_TTTOnRoleAbilityEnabled,
     ["TTTPlayerSpawnForRound"] = Arsonist_TTTPlayerSpawnForRound,

@@ -25,7 +25,7 @@ AddHook("Initialize", "Illusionist_Initialize", function()
     SetGlobalBool("ttt_illusionist_alive", false)
 end)
 
-local function Illusionist_TTTBeginRound()
+AddHook("TTTBeginRound", "Illusionist_TTTBeginRound", function()
     local alive = player.IsRoleLiving(ROLE_ILLUSIONIST)
     SetGlobalBool("ttt_illusionist_alive", alive)
     if alive then
@@ -41,7 +41,7 @@ local function Illusionist_TTTBeginRound()
             end
         end)
     end
-end
+end)
 
 local function Illusionist_TTTEndRound()
     SetGlobalBool("ttt_illusionist_alive", false)
@@ -111,7 +111,6 @@ end
 
 ROLE_REGISTERED_HOOKS[ROLE_ILLUSIONIST] = {
     ["PlayerDeath"] = Illusionist_PlayerDeath,
-    ["TTTBeginRound"] = Illusionist_TTTBeginRound,
     ["TTTEndRound"] = Illusionist_TTTEndRound,
     ["TTTPlayerSpawnForRound"] = Illusionist_TTTPlayerSpawnForRound,
     ["TTTTeamChatTargets"] = Illusionist_TTTTeamChatTargets,

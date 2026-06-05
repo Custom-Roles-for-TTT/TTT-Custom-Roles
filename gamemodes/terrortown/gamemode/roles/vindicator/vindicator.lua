@@ -232,7 +232,7 @@ end)
 -- DEATH LINK --
 ----------------
 
-local function Vindicator_TTTBeginRound()
+AddHook("TTTBeginRound", "Vindicator_TTTBeginRound", function()
     timer.Create("TTTVindicatorTimer", 0.1, 0, function()
         if vindicator_prevent_revival:GetBool() then
             for _, v in PlayerIterator() do
@@ -256,7 +256,7 @@ local function Vindicator_TTTBeginRound()
             end
         end
     end)
-end
+end)
 
 --------------------------
 -- DISCONNECTION CHECKS --
@@ -362,7 +362,6 @@ end)
 ROLE_REGISTERED_HOOKS[ROLE_VINDICATOR] = {
     ["PlayerDeath"] = Vindicator_PlayerDeath,
     ["PlayerDisconnected"] = Vindicator_PlayerDisconnected,
-    ["TTTBeginRound"] = Vindicator_TTTBeginRound,
     ["TTTCheckForWin"] = Vindicator_TTTCheckForWin,
     ["TTTDeathNotifyOverride"] = Vindicator_TTTDeathNotifyOverride,
     ["TTTPrintResultMessage"] = Vindicator_TTTPrintResultMessage,

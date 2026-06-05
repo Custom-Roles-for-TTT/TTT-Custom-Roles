@@ -101,7 +101,7 @@ end
 
 -- Calculate how much the radius should decrease per player death
 local diff_per_death = 0
-local function Sponge_AuraSize_TTTBeginRound()
+AddHook("TTTBeginRound", "Sponge_AuraSize_TTTBeginRound", function()
     if sponge_aura_shrink:GetBool() then
         local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
         local starting_players = #util.GetAlivePlayers()
@@ -109,7 +109,7 @@ local function Sponge_AuraSize_TTTBeginRound()
     else
         diff_per_death = 0
     end
-end
+end)
 
 -- Decrease the aura radius for each player death
 local aura_deaths = {}
@@ -239,7 +239,6 @@ ROLE_REGISTERED_HOOKS[ROLE_SPONGE] = {
     ["PlayerDeath"] = Sponge_WinCheck_PlayerDeath,
     ["PlayerSpawn"] = Sponge_AuraSize_PlayerSpawn,
     ["PostPlayerDeath"] = Sponge_AuraSize_PostPlayerDeath,
-    ["TTTBeginRound"] = Sponge_AuraSize_TTTBeginRound,
     ["TTTDrawHitMarker"] = Sponge_TTTDrawHitMarker,
     ["TTTInformantDefaultScanStage"] = Sponge_TTTInformantDefaultScanStage,
     ["TTTPrintResultMessage"] = Sponge_TTTPrintResultMessage,

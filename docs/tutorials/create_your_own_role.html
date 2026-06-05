@@ -948,6 +948,53 @@ end</code></pre></div>
     end)
 end</code></pre></div>
 
+        <h3><a id="hook-management" href="#hook-management">Hook Management</a></h3>
+        <p>Hooks added in your role files are set and called even if your role is not in play that round. This can cause issues if you don't code defensively, but it also is wasting computational cycles on code that doesn't need to run, resulting is lower performance. To help combat this inefficiency, CR4TTT adds a Hook Management system that roles can take advantage where hooks are automatically registered and unregistered when a role enters or leaves a round.</p>
+
+        <p>To take advantage of CR4TTT's hook management system, define the optional <code>ROLE.registeredhooks</code> table as a mapping of hook name (e.g. <code>TTTBeginRound</code>) to handler function or table of identifier-handler function pairs.</p>
+
+        <p>For example:</p>
+
+        <div><pre><code class="language-lua">local function MyRole_EntityTakeDamage(ent, dmginfo)
+    if ent:IsMyRole() then
+        print("MyRole did damage!")
+    end
+end
+local function MyRole_TTTEndRound()
+    print("Round ended for MyRole!")
+end
+local function MyRole_Congrats_TTTEndRound()
+    print("Congrats to the winners from MyRole!")
+end
+
+ROLE.registeredhooks = {
+    ["EntityTakeDamage"] = MyRole_EntityTakeDamage,
+    ["TTTEndRound"] = {
+        ["MyRole_TTTEndRound"] = MyRole_TTTEndRound,
+        ["MyRole_Congrats_TTTEndRound"] = MyRole_Congrats_TTTEndRound
+    }
+}</code></pre></div>
+
+        <p>There are hooks that don't work with this system for one reason or another. If you try to use the system for any of the following unsupported hooks, you will receive an error:</p>
+        <ul>
+            <li>Initialize</li>
+            <li>TTTBeginRound</li>
+            <li>TTTPrepareRound</li>
+            <li>TTTPlayerRoleChanged</li>
+            <li>TTTSelectRoles</li>
+            <li>TTTTutorialRoleText</li>
+        </ul>
+
+        <p>In the rare case that multiple roles share a hook implementation (like the Good Twin and Evil Twin), then you need to also specify a shared <code>ROLE.hookregistrationkey</code>.</p>
+
+        <p>For example:</p>
+
+        <p>In <code>goodtwin.lua</code></p>
+        <div><pre><code class="language-lua">ROLE.hookregistrationkey = "Twins"</code></pre></div>
+
+        <p>In <code>eviltwin.lua</code></p>
+        <div><pre><code class="language-lua">ROLE.hookregistrationkey = "Twins"</code></pre></div>
+
         <h3><a id="role-registration" href="#role-registration">Role Registration</a></h3>
         <p>The next line simply tells CR for TTT to register your role and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, <code>ROLE_%NAMERAW%</code> as well as helper functions <code>Get%NAME%</code>, <code>Is%NAME%</code> and <code>IsActive%NAME%</code> if you would like to use them to add extra logic for your role.</p>
 

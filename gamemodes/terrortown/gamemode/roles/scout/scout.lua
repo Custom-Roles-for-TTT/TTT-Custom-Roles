@@ -86,13 +86,13 @@ local function GatherIntel(ply)
     end
 end
 
-local function Scout_TTTBeginRound()
+AddHook("TTTBeginRound", "Scout_TTTBeginRound", function()
     for _, p in player.Iterator() do
         if p:IsScout() then
             GatherIntel(p)
         end
     end
-end
+end)
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_SCOUT] = function(ply)
     if GetRoundState() == ROUND_ACTIVE then
@@ -120,10 +120,3 @@ AddHook("TTTPlayerRoleChanged", "Scout_TTTPlayerRoleChanged", function(ply, oldR
         CleanupTimers(ply)
     end
 end)
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTERED_HOOKS[ROLE_SCOUT] = {
-    ["TTTBeginRound"] = Scout_TTTBeginRound
-}

@@ -21,7 +21,7 @@ local twins_invulnerability_timer = GetConVar("ttt_twins_invulnerability_timer")
 -- ROLE SPAWNING --
 -------------------
 
-local function Twins_TTTSelectRoles()
+AddHook("TTTSelectRoles", "Twins_TTTSelectRoles", function()
     local players = {}
     local choices = {}
     local innocents = {}
@@ -100,9 +100,9 @@ local function Twins_TTTSelectRoles()
             end
         end
     end
-end
+end)
 
-local function Twins_TTTBeginRound()
+AddHook("TTTBeginRound", "Twins_TTTBeginRound", function()
     -- Delay this a frame so other hooks have a chance to change roles first
     timer.Simple(0, function()
         local goodTwins = {}
@@ -167,7 +167,7 @@ local function Twins_TTTBeginRound()
             end
         end
     end)
-end
+end)
 
 ------------------
 -- DEATH CHECKS --
@@ -384,9 +384,7 @@ end)
 local hooks = {
     ["EntityTakeDamage"] = Twins_EntityTakeDamage,
     ["PlayerDeath"] = Twins_PlayerDeath,
-    ["TTTBeginRound"] = Twins_TTTBeginRound,
-    ["TTTDrawHitMarker"] = Twins_TTTDrawHitMarker,
-    ["TTTSelectRoles"] = Twins_TTTSelectRoles
+    ["TTTDrawHitMarker"] = Twins_TTTDrawHitMarker
 }
 
 ROLE_REGISTERED_HOOKS[ROLE_GOODTWIN] = hooks

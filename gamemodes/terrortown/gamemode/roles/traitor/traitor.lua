@@ -1,8 +1,10 @@
 AddCSLuaFile()
 
+local hook = hook
 local player = player
 local timer = timer
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 -------------
@@ -35,7 +37,7 @@ end
 -- AUTO CREDITS --
 ------------------
 
-local function Traitors_TTTBeginRound()
+AddHook("TTTBeginRound", "Traitors_TTTBeginRound", function()
     local credit_timer = traitor_credits_timer:GetInt()
     if credit_timer <= 0 then return end
 
@@ -47,7 +49,7 @@ local function Traitors_TTTBeginRound()
             end
         end
     end)
-end
+end)
 
 local function Traitors_TTTEndRound()
     timer.Remove("TraitorCreditTimer")
@@ -59,6 +61,5 @@ end
 
 ROLE_REGISTERED_HOOKS[ROLE_TRAITOR] = {
     ["SetupPlayerVisibility"] = Traitors_SetupPlayerVisibility,
-    ["TTTBeginRound"] = Traitors_TTTBeginRound,
     ["TTTEndRound"] = Traitors_TTTEndRound
 }

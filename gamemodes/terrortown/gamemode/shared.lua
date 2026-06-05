@@ -1116,6 +1116,14 @@ function RegisterRole(tbl)
         ROLE_USES_SPECTATOR[roleID] = tbl.usesspectator
     end
 
+    if type(tbl.registeredhooks) == "table" then
+        ROLE_REGISTERED_HOOKS[roleID] = tbl.registeredhooks
+    end
+
+    if type(tbl.hookregistrationkey) == "string" then
+        ROLE_HOOK_REGISTRATION_KEY[roleID] = tbl.hookregistrationkey
+    end
+
     -- Equipment
     -- Make sure teams that normally have shops are added to the shop list, even if they don't have things in their shop by default
     -- This allows the "sync" and "mode" convars to be created
@@ -1187,11 +1195,11 @@ function RegisterRole(tbl)
         ROLE_CONVARS[roleID] = tbl.convars
     end
 
-    hook.Call("TTTRoleRegistered", nil, roleID)
+    CallHook("TTTRoleRegistered", nil, roleID)
 end
 
 local role_hooks_registered = {}
-local banned_hooks = {"Initialize", "TTTPrepareRound", "TTTPlayerRoleChanged", "TTTTutorialRoleText"}
+local banned_hooks = {"Initialize", "TTTBeginRound", "TTTPrepareRound", "TTTPlayerRoleChanged", "TTTSelectRoles", "TTTTutorialRoleText"}
 local function RegisterHooks(role)
     local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
     role_hooks_registered[key] = (role_hooks_registered[key] or 0) + 1
@@ -1209,7 +1217,7 @@ local function RegisterHooks(role)
                 AddHook(hookName, hookKey, hookFn)
             end
         else
-            local hookKey = ROLE_STRINGS[role] .. "_" .. hookName
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
             AddHook(hookName, hookKey, hookData)
         end
     end
@@ -1227,7 +1235,7 @@ local function UnregisterHooks(role)
                 RemoveHook(hookName, hookKey)
             end
         else
-            local hookKey = ROLE_STRINGS[role] .. "_" .. hookName
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
             RemoveHook(hookName, hookKey)
         end
     end
@@ -1347,7 +1355,7 @@ end
 AddRoleFiles("terrortown/gamemode/roles/") -- Internal roles
 AddRoleFiles("customroles/") -- External roles
 AddRoleFiles("rolemodifications/") -- Role modifications
-hook.Call("TTTRolesLoaded", nil)
+CallHook("TTTRolesLoaded", nil)
 
 local function GetRoleFromStackTrace()
     local role
@@ -1474,8 +1482,8 @@ if SERVER then
     -- Sync the Event IDs to all clients
     AddHook("TTTPrepareRound", "EventID_TTTPrepareRound", function()
         net.Start("TTT_SyncEventIDs")
-        net.WriteTable(EVENTS_BY_ROLE)
-        net.WriteUInt(EVENT_MAX, 16)
+            net.WriteTable(EVENTS_BY_ROLE)
+            net.WriteUInt(EVENT_MAX, 16)
         net.Broadcast()
     end)
 end
@@ -1558,8 +1566,8 @@ if SERVER then
     -- Sync the Event IDs to all clients
     AddHook("TTTPrepareRound", "WinID_TTTPrepareRound", function()
         net.Start("TTT_SyncWinIDs")
-        net.WriteTable(WINS_BY_ROLE)
-        net.WriteUInt(WIN_MAX, 16)
+            net.WriteTable(WINS_BY_ROLE)
+            net.WriteUInt(WIN_MAX, 16)
         net.Broadcast()
     end)
 end

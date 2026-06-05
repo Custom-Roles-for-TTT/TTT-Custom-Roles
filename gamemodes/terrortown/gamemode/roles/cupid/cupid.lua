@@ -25,7 +25,7 @@ local cupid_lovers_can_damage_cupid = GetConVar("ttt_cupid_lovers_can_damage_cup
 -- DEATH LINK --
 ----------------
 
-local function Cupid_TTTBeginRound()
+AddHook("TTTBeginRound", "Cupid_TTTBeginRound", function()
     timer.Create("TTTCupidTimer", 0.1, 0, function()
         for _, v in PlayerIterator() do
             if not v:IsActive() then continue end
@@ -45,7 +45,7 @@ local function Cupid_TTTBeginRound()
             v:QueueMessage(MSG_PRINTBOTH, "Your lover has died!")
         end
     end)
-end
+end)
 
 -- Keep track if a lover uses a "kill" bind so we don't punish their pair
 local function Cupid_Killbind_PlayerDeath(victim, infl, attacker)
@@ -230,7 +230,6 @@ ROLE_REGISTERED_HOOKS[ROLE_CUPID] = {
     },
     ["PlayerDisconnected"] = Cupid_PlayerDisconnected,
     ["ScalePlayerDamage"] = Cupid_ScalePlayerDamage,
-    ["TTTBeginRound"] = Cupid_TTTBeginRound,
     ["TTTCheckForWin"] = Cupid_TTTCheckForWin,
     ["TTTKarmaShouldGivePenalty"] = Cupid_TTTKarmaShouldGivePenalty,
     ["TTTPlayerSpawnForRound"] = Cupid_TTTPlayerSpawnForRound,

@@ -220,10 +220,10 @@ AddHook("TTTPrepareRound", "OldMan_TTTPrepareRound", function()
     net.Broadcast()
 end)
 
-local function OldMan_TTTBeginRound()
+AddHook("TTTBeginRound", "OldMan_TTTBeginRound", function()
     net.Start("TTT_ResetOldManWins")
     net.Broadcast()
-end
+end)
 
 -----------
 -- KARMA --
@@ -257,7 +257,6 @@ end
 ROLE_REGISTERED_HOOKS[ROLE_OLDMAN] = {
     ["EntityTakeDamage"] = OldMan_EntityTakeDamage,
     ["PostEntityTakeDamage"] = OldMan_PostEntityTakeDamage,
-    ["TTTBeginRound"] = OldMan_TTTBeginRound,
     ["TTTDrawHitMarker"] = OldMan_TTTDrawHitMarker,
     ["TTTEndRound"] = OldMan_RoleFeatures_TTTEndRound,
     ["TTTKarmaShouldGivePenalty"] = OldMan_TTTKarmaShouldGivePenalty,

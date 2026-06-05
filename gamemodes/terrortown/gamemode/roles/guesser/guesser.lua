@@ -94,7 +94,7 @@ end
 ------------------
 
 -- Warn other players that there is a guesser
-local function Guesser_Announce_TTTBeginRound()
+AddHook("TTTBeginRound", "Guesser_Announce_TTTBeginRound", function()
     if not guesser_warn_all:GetBool() then return end
 
     timer.Simple(1.5, function()
@@ -113,7 +113,7 @@ local function Guesser_Announce_TTTBeginRound()
             end
         end
     end)
-end
+end)
 
 -------------
 -- CLEANUP --
@@ -133,6 +133,5 @@ end)
 ------------------
 
 ROLE_REGISTERED_HOOKS[ROLE_GUESSER] = {
-    ["EntityTakeDamage"] = Guesser_EntityTakeDamage,
-    ["TTTBeginRound"] = Guesser_Announce_TTTBeginRound
+    ["EntityTakeDamage"] = Guesser_EntityTakeDamage
 }

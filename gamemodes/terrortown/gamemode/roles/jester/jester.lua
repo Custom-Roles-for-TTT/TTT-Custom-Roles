@@ -105,10 +105,10 @@ AddHook("TTTPrepareRound", "Jester_TTTPrepareRound", function()
     net.Broadcast()
 end)
 
-local function Jester_TTTBeginRound()
+AddHook("TTTBeginRound", "Jester_TTTBeginRound", function()
     net.Start("TTT_ResetJesterSecondaryWins")
     net.Broadcast()
-end
+end)
 
 ------------------
 -- REGISTRATION --
@@ -116,7 +116,6 @@ end
 
 ROLE_REGISTERED_HOOKS[ROLE_JESTER] = {
     ["PlayerDeath"] = Jester_WinCheck_PlayerDeath,
-    ["TTTBeginRound"] = Jester_TTTBeginRound,
     ["TTTOnRoleAbilityEnabled"] = Jester_TTTOnRoleAbilityEnabled,
     ["TTTPrintResultMessage"] = Jester_TTTPrintResultMessage
 }

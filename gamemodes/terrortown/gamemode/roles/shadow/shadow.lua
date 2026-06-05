@@ -542,7 +542,7 @@ local function CreateRegenTimer(shadow, weakenTimer)
     end)
 end
 
-local function Shadow_TTTBeginRound()
+AddHook("TTTBeginRound", "Shadow_TTTBeginRound", function()
     local weakenTo = shadow_weaken_health_to:GetInt()
     local weakenTimer = shadow_weaken_timer:GetInt()
     timer.Create("TTTShadowTimer", 0.1, 0, function()
@@ -602,7 +602,7 @@ local function Shadow_TTTBeginRound()
 
     net.Start("TTT_ResetShadowWins")
     net.Broadcast()
-end
+end)
 
 local function Shadow_PlayerSpawn(ply, transition)
     if GetRoundState() ~= ROUND_ACTIVE then return end
@@ -684,7 +684,6 @@ ROLE_REGISTERED_HOOKS[ROLE_SHADOW] = {
     ["PlayerSpawn"] = Shadow_PlayerSpawn,
     ["PostPlayerDeath"] = Shadow_Buff_PostPlayerDeath,
     ["ScalePlayerDamage"] = Shadow_Buff_ScalePlayerDamage,
-    ["TTTBeginRound"] = Shadow_TTTBeginRound,
     ["TTTStopPlayerRespawning"] = Shadow_TTTStopPlayerRespawning,
     ["TTTWinCheckComplete"] = Shadow_TTTWinCheckComplete
 }

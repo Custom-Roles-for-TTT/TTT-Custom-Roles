@@ -298,10 +298,10 @@ local function HandleLootGoblinWinChecks(win_type)
 end
 hook.Add("TTTWinCheckComplete", "LootGoblin_TTTWinCheckComplete", HandleLootGoblinWinChecks)
 
-local function LootGoblin_TTTBeginRound()
+AddHook("TTTBeginRound", "LootGoblin_TTTBeginRound", function()
     net.Start("TTT_ResetLootGoblinWins")
     net.Broadcast()
-end
+end)
 
 ---------------
 -- FOOTSTEPS --
@@ -382,7 +382,7 @@ end
 -----------
 
 local goblins = {}
-local function LootGoblin_Radar_TTTBeginRound()
+AddHook("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", function()
     for _, v in PlayerIterator() do
         v:SetNWVector("TTTLootGoblinRadar", v:LocalToWorld(v:OBBCenter())) -- Fallback just in case
     end
@@ -403,7 +403,7 @@ local function LootGoblin_Radar_TTTBeginRound()
             end
         end
     end)
-end
+end)
 
 -------------
 -- CLEANUP --
@@ -479,10 +479,6 @@ ROLE_REGISTERED_HOOKS[ROLE_LOOTGOBLIN] = {
     ["PlayerDeath"] = LootGoblin_PlayerDeath,
     ["PlayerFootstep"] = LootGoblin_PlayerFootstep,
     ["PostEntityTakeDamage"] = LootGoblin_PostEntityTakeDamage,
-    ["TTTBeginRound"] = {
-        ["LootGoblin_Radar_TTTBeginRound"] = LootGoblin_Radar_TTTBeginRound,
-        ["LootGoblin_TTTBeginRound"] = LootGoblin_TTTBeginRound
-    },
     ["TTTEndRound"] = LootGoblin_TTTEndRound,
     ["TTTKarmaGivePenalty"] = LootGoblin_TTTKarmaGivePenalty,
     ["TTTKarmaGiveReward"] = LootGoblin_TTTKarmaGiveReward,
