@@ -18,6 +18,10 @@
 - Fixed rare error in shop logic that could cause purchases to fail in testing scenarios
 - Ported "Fix DrawModel flags for base game entities" from base TTT
 
+### Developer
+- Added `ROLE_REGISTERED_HOOKS` (and the external equivalent `ROLE.registeredhooks`) to allow CR4TTT to manage adding and removing hooks automatically depending on whether a role is present
+- Added `ROLE_HOOK_REGISTRATION_KEY` (and the external equivalent `ROLE.hookregistrationkey`) to allow roles to share hooks managed by `ROLE_REGISTERED_HOOKS` (aka `ROLE.registeredhooks`)
+
 ## 2.4.5 (Beta)
 **Released: April 18th, 2026**
 
