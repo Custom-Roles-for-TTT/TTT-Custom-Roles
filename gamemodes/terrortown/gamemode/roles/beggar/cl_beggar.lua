@@ -145,13 +145,13 @@ net.Receive("TTT_BeggarKilled", function(len)
 end)
 
 -- Show that this person was a beggar via the icon
-local function Beggar_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+AddHook("TTTScoringSummaryRender", "Beggar_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if (ply:IsInnocent() or ply:IsTraitor()) and ply:GetNWBool("WasBeggar", false) then
         return ROLE_STRINGS_SHORT[ROLE_BEGGAR], groupingRole, roleColor, name
     end
-end
+end)
 
 ---------------
 -- TARGET ID --
@@ -537,7 +537,6 @@ ROLE_REGISTERED_HOOKS[ROLE_BEGGAR] = {
     ["TTTHUDInfoPaint"] = Beggar_TTTHUDInfoPaint,
     ["TTTRolePopupRoleStringOverride"] = Beggar_TTTRolePopupRoleStringOverride,
     ["TTTScoreboardPlayerRole"] = Beggar_TTTScoreboardPlayerRole,
-    ["TTTScoringSummaryRender"] = Beggar_TTTScoringSummaryRender,
     ["TTTSettingsRolesTabSections"] = Beggar_TTTSettingsRolesTabSections,
     ["TTTTargetIDPlayerRing"] = Beggar_TTTTargetIDPlayerRing,
     ["TTTTargetIDPlayerRoleIcon"] = Beggar_TTTTargetIDPlayerRoleIcon,

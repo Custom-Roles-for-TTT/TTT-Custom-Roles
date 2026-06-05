@@ -142,7 +142,7 @@ end
 -- HUD --
 ---------
 
-local function Bodysnatcher_TTTHUDInfoPaint(client, label_left, label_top, active_labels)
+AddHook("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
     if hide_role:GetBool() then return end
 
     if client:GetNWBool("WasBodysnatcher", false) then
@@ -174,7 +174,7 @@ local function Bodysnatcher_TTTHUDInfoPaint(client, label_left, label_top, activ
             TableInsert(active_labels, "bodysnatcher")
         end
     end
-end
+end)
 
 --------------
 -- TUTORIAL --
@@ -310,7 +310,6 @@ end)
 ------------------
 
 ROLE_REGISTERED_HOOKS[ROLE_BODYSNATCHER] = {
-    ["TTTHUDInfoPaint"] = Bodysnatcher_TTTHUDInfoPaint,
     ["TTTRolePopupRoleStringOverride"] = Bodysnatcher_TTTRolePopupRoleStringOverride,
     ["TTTScoringSummaryRender"] = Bodysnatcher_TTTScoringSummaryRender
 }

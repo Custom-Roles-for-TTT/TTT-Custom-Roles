@@ -63,13 +63,13 @@ net.Receive("TTT_Hypnotised", function(len)
 end)
 
 -- Show that this person was their original role via the icon
-local function Hypnotist_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+AddHook("TTTScoringSummaryRender", "Hypnotist_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if (ply:IsTraitor() or ply:IsImpersonator()) and ply:GetNWBool("WasHypnotised", false) then
         return ROLE_STRINGS_SHORT[startingRole], groupingRole, roleColor, name
     end
-end
+end)
 
 --------------
 -- TUTORIAL --
@@ -102,11 +102,3 @@ AddHook("TTTTutorialRoleText", "Hypnotist_TTTTutorialRoleText", function(role, t
         return html
     end
 end)
-
-------------------
--- REGISTRATION --
-------------------
-
-ROLE_REGISTERED_HOOKS[ROLE_HYPNOTIST] = {
-    ["TTTScoringSummaryRender"] = Hypnotist_TTTScoringSummaryRender
-}

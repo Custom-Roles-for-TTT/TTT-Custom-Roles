@@ -28,7 +28,7 @@ end
 -- ROLE FEATURES --
 -------------------
 
-local function Hypnotist_PlayerCanHearPlayersVoice(listener, speaker)
+AddHook("PlayerCanHearPlayersVoice", "Hypnotist_PlayerCanHearPlayersVoice", function(listener, speaker)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not IsPlayer(listener) then return end
@@ -51,9 +51,9 @@ local function Hypnotist_PlayerCanHearPlayersVoice(listener, speaker)
     end
 
     return false, false
-end
+end)
 
-local function Hypnotist_PlayerSay(ply, text, team_only)
+AddHook("PlayerSay", "Hypnotist_PlayerSay", function(ply, text, team_only)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not IsPlayer(ply) then return end
@@ -64,9 +64,9 @@ local function Hypnotist_PlayerSay(ply, text, team_only)
 
     ply:PrintMessage(HUD_PRINTTALK, "You have not yet regained your ability to speak")
     return ""
-end
+end)
 
-local function Hypnotist_TTTPlayerRadioCommand(ply, msg_name, msg_target)
+AddHook("TTTPlayerRadioCommand", "Hypnotist_TTTPlayerRadioCommand", function(ply, msg_name, msg_target)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not IsPlayer(ply) then return end
@@ -77,7 +77,7 @@ local function Hypnotist_TTTPlayerRadioCommand(ply, msg_name, msg_target)
 
     ply:PrintMessage(HUD_PRINTTALK, "You have not yet regained your ability to speak")
     return true
-end
+end)
 
 ----------------
 -- ROLE STATE --
@@ -95,8 +95,5 @@ end)
 ------------------
 
 ROLE_REGISTERED_HOOKS[ROLE_HYPNOTIST] = {
-    ["PlayerCanHearPlayersVoice"] = Hypnotist_PlayerCanHearPlayersVoice,
-    ["PlayerCanPickupWeapon"] = Hypnotist_Weapons_PlayerCanPickupWeapon,
-    ["PlayerSay"] = Hypnotist_PlayerSay,
-    ["TTTPlayerRadioCommand"] = Hypnotist_TTTPlayerRadioCommand
+    ["PlayerCanPickupWeapon"] = Hypnotist_Weapons_PlayerCanPickupWeapon
 }
