@@ -12,6 +12,7 @@ local string = string
 local table = table
 
 local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local FileExists = file.Exists
 local FileFind = file.Find
 local CallHook = hook.Call

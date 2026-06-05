@@ -5,7 +5,6 @@ local table = table
 local timer = timer
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 local TableInsert = table.insert
 
 -------------

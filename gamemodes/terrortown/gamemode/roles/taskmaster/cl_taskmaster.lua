@@ -487,7 +487,7 @@ end
 -- TUTORIAL --
 --------------
 
-AddHook("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function()
+AddHook("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role)
     if role == ROLE_TASKMASTER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to complete a series of tasks before the round ends."

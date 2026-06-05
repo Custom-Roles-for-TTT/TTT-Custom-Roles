@@ -1,10 +1,5 @@
 AddCSLuaFile()
 
-local hook = hook
-
-local AddHook = hook.Add
-local RemoveHook = hook.Remove
-
 -------------
 -- CONVARS --
 -------------

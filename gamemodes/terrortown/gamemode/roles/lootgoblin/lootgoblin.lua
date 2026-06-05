@@ -479,8 +479,10 @@ ROLE_REGISTERED_HOOKS[ROLE_LOOTGOBLIN] = {
     ["PlayerDeath"] = LootGoblin_PlayerDeath,
     ["PlayerFootstep"] = LootGoblin_PlayerFootstep,
     ["PostEntityTakeDamage"] = LootGoblin_PostEntityTakeDamage,
-    ["TTTBeginRound"] = LootGoblin_Radar_TTTBeginRound,
-    ["TTTBeginRound"] = LootGoblin_TTTBeginRound,
+    ["TTTBeginRound"] = {
+        ["LootGoblin_Radar_TTTBeginRound"] = LootGoblin_Radar_TTTBeginRound,
+        ["LootGoblin_TTTBeginRound"] = LootGoblin_TTTBeginRound
+    },
     ["TTTEndRound"] = LootGoblin_TTTEndRound,
     ["TTTKarmaGivePenalty"] = LootGoblin_TTTKarmaGivePenalty,
     ["TTTKarmaGiveReward"] = LootGoblin_TTTKarmaGiveReward,

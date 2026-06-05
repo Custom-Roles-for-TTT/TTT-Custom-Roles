@@ -2,7 +2,6 @@ local hook = hook
 local string = string
 
 local AddHook = hook.Add
-local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --

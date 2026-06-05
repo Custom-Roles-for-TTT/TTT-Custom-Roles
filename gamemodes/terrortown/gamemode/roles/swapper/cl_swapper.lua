@@ -84,7 +84,7 @@ end
 -- TUTORIAL --
 --------------
 
-AddHook("TTTTutorialRoleText", "Swapper_TTTTutorialRoleText", function()
+AddHook("TTTTutorialRoleText", "Swapper_TTTTutorialRoleText", function(role)
     if role == ROLE_SWAPPER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html = "The " .. ROLE_STRINGS[ROLE_SWAPPER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player and steal their role."
