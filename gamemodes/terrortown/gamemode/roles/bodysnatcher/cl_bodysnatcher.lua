@@ -29,7 +29,7 @@ local hide_role = GetConVar("ttt_hide_role")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Bodysnatcher_Translations_Initialize", function()
+AddHook("Initialize", "Bodysnatcher_Translations_Initialize", function()
     -- Event
     LANG.AddToLanguage("english", "ev_bodysnatch", "{attacker} bodysnatched {role}, {victim}")
     LANG.AddToLanguage("english", "ev_bodysnatch_killed", "The {bodysnatch} ({victim}) was killed by {attacker} but respawned")
@@ -67,7 +67,7 @@ end
 -------------
 
 -- Register the scoring events for the swapper
-hook.Add("Initialize", "Bodysnatcher_Scoring_Initialize", function()
+AddHook("Initialize", "Bodysnatcher_Scoring_Initialize", function()
     local bodysnatch_icon = Material("icon16/user_edit.png")
     local hourglass_go_icon = Material("icon16/hourglass_go.png")
     local heart_add_icon = Material("icon16/heart_add.png")

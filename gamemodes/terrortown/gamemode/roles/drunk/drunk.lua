@@ -547,7 +547,6 @@ end
 local function Drunk_TTTWinCheckBlocks(win_blocks)
     TableInsert(win_blocks, HandleDrunkWinBlock)
 end
-AddHook("TTTWinCheckBlocked", "Drunk_TTTWinCheckBlocked", HandleDrunkSober)
 
 AddHook("TTTPrepareRound", "Drunk_PrepareRound", function()
     for _, v in PlayerIterator() do
@@ -574,5 +573,6 @@ ROLE_REGISTERED_HOOKS[ROLE_DRUNK] = {
     ["TTTEndRound"] = StopDrunkTimers,
     ["TTTKarmaShouldGivePenalty"] = Drunk_TTTKarmaShouldGivePenalty,
     ["TTTOnRoleAbilityEnabled"] = Drunk_TTTOnRoleAbilityEnabled,
-    ["TTTWinCheckBlocks"] = Drunk_TTTWinCheckBlocks
+    ["TTTWinCheckBlocks"] = Drunk_TTTWinCheckBlocks,
+    ["TTTWinCheckBlocked"] = HandleDrunkSober
 }

@@ -1199,7 +1199,7 @@ function RegisterRole(tbl)
 end
 
 local role_hooks_registered = {}
-local banned_hooks = {"Initialize", "TTTBeginRound", "TTTPrepareRound", "TTTPlayerRoleChanged", "TTTSelectRoles", "TTTTutorialRoleText"}
+local banned_hooks = {"Initialize", "TTTBeginRound", "TTTPlayerRoleChanged", "TTTPrepareRound", "TTTSelectRoles", "TTTTutorialRoleText"}
 local function RegisterHooks(role)
     local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
     role_hooks_registered[key] = (role_hooks_registered[key] or 0) + 1

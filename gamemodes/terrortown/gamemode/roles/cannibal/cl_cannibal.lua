@@ -1,4 +1,6 @@
+local draw = draw
 local hook = hook
+local net = net
 
 local AddHook = hook.Add
 
