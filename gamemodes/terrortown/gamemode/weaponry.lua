@@ -574,7 +574,7 @@ local function OrderEquipment(ply, cmd, args)
 
         -- If it's not allowed, check the extra buyable equipment
         if not allowed then
-            for _, v in ipairs(WEPS.BuyableWeapons[role]) do
+            for _, v in ipairs(WEPS.BuyableWeapons[role] or {}) do
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)
@@ -588,7 +588,7 @@ local function OrderEquipment(ply, cmd, args)
 
         -- Lastly, if it is allowed check the exclude equipment list
         if allowed then
-            for _, v in ipairs(WEPS.ExcludeWeapons[role]) do
+            for _, v in ipairs(WEPS.ExcludeWeapons[role] or {}) do
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)
