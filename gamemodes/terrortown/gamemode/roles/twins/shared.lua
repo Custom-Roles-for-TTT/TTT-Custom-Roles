@@ -2,6 +2,9 @@ local hook = hook
 
 local AddHook = hook.Add
 
+ROLE_HOOK_REGISTRATION_KEY[ROLE_GOODTWIN] = "twins"
+ROLE_HOOK_REGISTRATION_KEY[ROLE_EVILTWIN] = "twins"
+
 -------------
 -- CONVARS --
 -------------

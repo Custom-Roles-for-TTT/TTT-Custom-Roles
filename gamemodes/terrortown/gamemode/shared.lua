@@ -937,6 +937,7 @@ ROLE_STARTING_CREDITS = {}
 ROLE_STARTING_HEALTH = {}
 ROLE_REGISTER_HOOKS = {}
 ROLE_UNREGISTER_HOOKS = {}
+ROLE_HOOK_REGISTRATION_KEY = {}
 
 -- Optional features
 ROLE_CAN_SEE_C4 = {}
@@ -1190,14 +1191,16 @@ end
 
 local role_hooks_registered = {}
 local function RegisterHooks(role)
-    role_hooks_registered[role] = (role_hooks_registered[role] or 0) + 1
-    if role_hooks_registered[role] ~= 1 then return end
+    local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
+    role_hooks_registered[key] = (role_hooks_registered[key] or 0) + 1
+    if role_hooks_registered[key] ~= 1 then return end
 
     ROLE_REGISTER_HOOKS[role]()
 end
 local function UnregisterHooks(role)
-    role_hooks_registered[role] = (role_hooks_registered[role] or 0) - 1
-    if role_hooks_registered[role] ~= 0 then return end
+    local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
+    role_hooks_registered[key] = (role_hooks_registered[key] or 0) - 1
+    if role_hooks_registered[key] ~= 0 then return end
 
     ROLE_UNREGISTER_HOOKS[role]()
 end

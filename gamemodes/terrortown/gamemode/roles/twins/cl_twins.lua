@@ -180,9 +180,7 @@ end
 -- REGISTRATION --
 ------------------
 
--- TOOD: How do we handle th is for the GOODTWIN and EVILTWIN as two roles with shared hooks?
-
-ROLE_REGISTER_HOOKS[ROLE_TWINS] = function()
+local function Register()
     AddHook("TTTHUDInfoPaint", "Twins_TTTHUDInfoPaint", Twins_TTTHUDInfoPaint)
     AddHook("TTTScoreboardPlayerRole", "Twins_TTTScoreboardPlayerRole", Twins_TTTScoreboardPlayerRole)
     AddHook("TTTTargetIDPlayerRing", "Twins_TTTTargetIDPlayerRing", Twins_TTTTargetIDPlayerRing)
@@ -191,7 +189,7 @@ ROLE_REGISTER_HOOKS[ROLE_TWINS] = function()
     AddHook("TTTTutorialRoleText", "Twins_TTTTutorialRoleText", Twins_TTTTutorialRoleText)
 end
 
-ROLE_UNREGISTER_HOOKS[ROLE_TWINS] = function()
+local function Unregister()
     RemoveHook("TTTHUDInfoPaint", "Twins_TTTHUDInfoPaint")
     RemoveHook("TTTScoreboardPlayerRole", "Twins_TTTScoreboardPlayerRole")
     RemoveHook("TTTTargetIDPlayerRing", "Twins_TTTTargetIDPlayerRing")
@@ -199,3 +197,8 @@ ROLE_UNREGISTER_HOOKS[ROLE_TWINS] = function()
     RemoveHook("TTTTargetIDPlayerText", "Twins_TTTTargetIDPlayerText")
     RemoveHook("TTTTutorialRoleText", "Twins_TTTTutorialRoleText")
 end
+
+ROLE_REGISTER_HOOKS[ROLE_GOODTWIN] = Register
+ROLE_REGISTER_HOOKS[ROLE_EVILTWIN] = Register
+ROLE_UNREGISTER_HOOKS[ROLE_GOODTWIN] = Unregister
+ROLE_UNREGISTER_HOOKS[ROLE_EVILTWIN] = Unregister
