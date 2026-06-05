@@ -2,7 +2,6 @@ local halo = halo
 local hook = hook
 local player = player
 local table = table
-local timer = timer
 
 local PlayerIterator = player.Iterator
 local HaloAdd = halo.Add

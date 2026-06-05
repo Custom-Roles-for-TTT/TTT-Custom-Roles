@@ -1,10 +1,9 @@
 AddCSLuaFile()
 
 local hook = hook
-local timer = timer
-local player = player
-local net = net
 local math = math
+local net = net
+local player = player
 local table = table
 local timer = timer
 

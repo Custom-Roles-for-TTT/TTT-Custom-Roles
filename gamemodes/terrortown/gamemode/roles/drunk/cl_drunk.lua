@@ -2,7 +2,6 @@ local hook = hook
 local math = math
 local net = net
 local surface = surface
-local timer = timer
 local util = util
 
 local AddHook = hook.Add

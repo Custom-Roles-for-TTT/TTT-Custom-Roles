@@ -5,7 +5,7 @@ local table = table
 local weapons = weapons
 
 local AddHook = hook.Add
-local TableInsert = TableInsert
+local TableInsert = table.insert
 
 SPONGE_ALL_PLAYERS = 0
 SPONGE_ATTACKER_AND_VICTIM = 1
