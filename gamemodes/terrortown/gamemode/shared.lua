@@ -1213,7 +1213,7 @@ local function RegisterHooks(role)
         end
 
         if type(hookData) == "table" then
-            for hookKey, hookFn in ipairs(hookData) do
+            for hookKey, hookFn in pairs(hookData) do
                 AddHook(hookName, hookKey, hookFn)
             end
         else
@@ -1231,7 +1231,7 @@ local function UnregisterHooks(role)
         if not hookData then continue end
 
         if type(hookData) == "table" then
-            for hookKey, _ in ipairs(hookData) do
+            for hookKey, _ in pairs(hookData) do
                 RemoveHook(hookName, hookKey)
             end
         else
