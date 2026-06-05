@@ -15,7 +15,7 @@
 - Fixed single Twin being left in a round if their sibling's role was changed immediately on role start (by a Randomat, for example)
 - Fixed all players being notified when a player becomes a twin in the middle of the round
 - Fixed Taskmaster's "Do Damage" task showing long decimal values
-- Fixed rare error in shot logic that could cause purchases to fail in testing scenarios
+- Fixed rare error in shop logic that could cause purchases to fail in testing scenarios
 - Ported "Fix DrawModel flags for base game entities" from base TTT
 
 ## 2.4.5 (Beta)
