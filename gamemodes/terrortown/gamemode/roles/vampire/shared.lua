@@ -255,7 +255,7 @@ AddHook("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
     end
 end)
 
-AddHook("TTTUpdateRoleState", "Vampire_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Vampire_TeamChange_TTTUpdateRoleState", function()
     local is_monster = vampire_is_monster:GetBool()
     -- Vampires cannot be both Monsters and Independents so don't make them Independents if they are already Monsters
     local is_independent = not is_monster and vampire_is_independent:GetBool()

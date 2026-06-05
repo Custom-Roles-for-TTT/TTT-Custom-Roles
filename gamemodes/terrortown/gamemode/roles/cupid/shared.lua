@@ -85,7 +85,7 @@ ROLE_CONVARS[ROLE_CUPID] = {
 -- ROLE FEATURES --
 -------------------
 
-AddHook("TTTUpdateRoleState", "Cupid_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Cupid_TeamChange_TTTUpdateRoleState", function()
     local is_independent = cupid_is_independent:GetBool()
     INDEPENDENT_ROLES[ROLE_CUPID] = is_independent
     JESTER_ROLES[ROLE_CUPID] = not is_independent

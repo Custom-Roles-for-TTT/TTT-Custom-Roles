@@ -327,7 +327,7 @@ end)
 -- ROLE FEATURES --
 -------------------
 
-AddHook("TTTUpdateRoleState", "Shadow_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Shadow_TeamChange_TTTUpdateRoleState", function()
     local is_jester = shadow_is_jester:GetBool()
     JESTER_ROLES[ROLE_SHADOW] = is_jester
     INDEPENDENT_ROLES[ROLE_SHADOW] = not is_jester

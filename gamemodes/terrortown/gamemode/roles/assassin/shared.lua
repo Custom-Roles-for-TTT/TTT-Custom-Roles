@@ -110,7 +110,7 @@ end
 -- ROLE FEATURES --
 -------------------
 
-AddHook("TTTUpdateRoleState", "Assassin_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Assassin_TeamChange_TTTUpdateRoleState", function()
     local is_independent = assassin_is_independent:GetBool()
     TRAITOR_ROLES[ROLE_ASSASSIN] = not is_independent
     INDEPENDENT_ROLES[ROLE_ASSASSIN] = is_independent

@@ -88,7 +88,7 @@ ROLE_VICTIM_CHANGING_ROLE[ROLE_HIVEMIND] = function(ply, victim)
     return not victim:IsHiveMind()
 end
 
-AddHook("TTTUpdateRoleState", "HiveMind_Team_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "HiveMind_TeamChange_TTTUpdateRoleState", function()
     local is_monster = hivemind_is_monster:GetBool()
     MONSTER_ROLES[ROLE_HIVEMIND] = is_monster
     INDEPENDENT_ROLES[ROLE_HIVEMIND] = not is_monster

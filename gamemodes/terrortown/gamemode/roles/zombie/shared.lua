@@ -279,7 +279,7 @@ AddHook("TTTPrepareRound", "Zombie_Shared_TTTPrepareRound", function()
     end
 end)
 
-AddHook("TTTUpdateRoleState", "Zombie_Team_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Zombie_TeamChange_TTTUpdateRoleState", function()
     local is_monster = zombie_is_monster:GetBool()
     -- Zombies cannot be both Monsters and Traitors so don't make them Traitors if they are already Monsters
     local is_traitor = not is_monster and zombie_is_traitor:GetBool()
