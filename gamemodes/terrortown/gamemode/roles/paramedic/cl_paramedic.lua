@@ -1,5 +1,8 @@
 local hook = hook
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+
 -------------
 -- CONVARS --
 -------------
@@ -14,7 +17,7 @@ local paramedic_device_shop = GetConVar("ttt_paramedic_device_shop")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Paramedic_Translations_Initialize", function()
+AddHook("Initialize", "Paramedic_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "defibrillator_help_pri", "Hold {primaryfire} to revive dead body.")
     LANG.AddToLanguage("english", "defibrillator_help_sec", "The revived player will be respawned at their body's location.")
@@ -32,7 +35,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText", function(role, titleLabel)
+local function Paramedic_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_PARAMEDIC then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_PARAMEDIC] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to resurrect dead players."
@@ -70,4 +73,16 @@ hook.Add("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText", function(role, 
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_PARAMEDIC] = function()
+    AddHook("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText", Paramedic_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_PARAMEDIC] = function()
+    RemoveHook("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText")
+end

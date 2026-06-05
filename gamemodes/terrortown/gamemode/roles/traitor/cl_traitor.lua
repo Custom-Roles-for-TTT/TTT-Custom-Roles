@@ -1,10 +1,12 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Traitor_Translations_Initialize", function()
+AddHook("Initialize", "Traitor_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_traitor", "Base member of the traitor team who can buy items to help defeat their enemies.")
 
@@ -18,7 +20,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Traitor_TTTTutorialRoleText", function(role, titleLabel)
+local function Traitor_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_TRAITOR then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_TRAITOR] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose job is to kill all of their enemies, both innocent and independent."
@@ -29,4 +31,16 @@ hook.Add("TTTTutorialRoleText", "Traitor_TTTTutorialRoleText", function(role, ti
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_TRAITOR] = function()
+    AddHook("TTTTutorialRoleText", "Traitor_TTTTutorialRoleText", Traitor_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_TRAITOR] = function()
+    RemoveHook("TTTTutorialRoleText", "Traitor_TTTTutorialRoleText")
+end

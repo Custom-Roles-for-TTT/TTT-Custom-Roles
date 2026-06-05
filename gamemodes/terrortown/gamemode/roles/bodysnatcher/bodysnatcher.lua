@@ -136,44 +136,16 @@ end
 -- REGISTRATION --
 ------------------
 
-local registered = 0
-local function Register()
-    registered = registered + 1
-    if registered ~= 1 then return end
-
+ROLE_REGISTER_HOOKS[ROLE_BODYSNATCHER] = function()
     AddHook("PlayerCanPickupWeapon", "Bodysnatcher_Weapons_PlayerCanPickupWeapon", Bodysnatcher_Weapons_PlayerCanPickupWeapon)
     AddHook("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", Bodysnatcher_KillCheck_PlayerDeath)
     AddHook("TTTCupidShouldLoverSurvive", "Bodysnatcher_TTTCupidShouldLoverSurvive", Bodysnatcher_TTTCupidShouldLoverSurvive)
     AddHook("TTTStopPlayerRespawning", "Bodysnatcher_TTTStopPlayerRespawning", Bodysnatcher_TTTStopPlayerRespawning)
 end
 
-local function Unregister()
-    registered = registered - 1
-    if registered ~= 0 then return end
-
+ROLE_UNREGISTER_HOOKS[ROLE_BODYSNATCHER] = function()
     RemoveHook("PlayerCanPickupWeapon", "Bodysnatcher_Weapons_PlayerCanPickupWeapon")
     RemoveHook("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath")
     RemoveHook("TTTCupidShouldLoverSurvive", "Bodysnatcher_TTTCupidShouldLoverSurvive")
     RemoveHook("TTTStopPlayerRespawning", "Bodysnatcher_TTTStopPlayerRespawning")
 end
-
-AddHook("TTTPlayerRoleChanged", "Bodysnatcher_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole == newRole then return end
-    if oldRole ~= ROLE_BODYSNATCHER and newRole ~= ROLE_BODYSNATCHER then return end
-
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        if oldRole == ROLE_BODYSNATCHER then
-            Unregister()
-        elseif newRole == ROLE_BODYSNATCHER then
-            Register()
-        end
-    end)
-end)
-AddHook("TTTPrepareRound", "Bodysnatcher_Registration_TTTPrepareRound", function()
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        Unregister()
-        registered = 0
-    end)
-end)

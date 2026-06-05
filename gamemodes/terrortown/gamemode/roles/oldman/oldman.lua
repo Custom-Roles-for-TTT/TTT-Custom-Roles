@@ -8,6 +8,8 @@ local player = player
 local timer = timer
 local util = util
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_UpdateOldManWins")
@@ -33,16 +35,16 @@ local function HandleOldManWinChecks(win_type)
     net.Start("TTT_UpdateOldManWins")
     net.Broadcast()
 end
-hook.Add("TTTWinCheckComplete", "OldMan_TTTWinCheckComplete", HandleOldManWinChecks)
+AddHook("TTTWinCheckComplete", "OldMan_TTTWinCheckComplete", HandleOldManWinChecks)
 
 -------------------
 -- ROLE FEATURES --
 -------------------
 
 -- Manage health drain
-hook.Add("TTTEndRound", "OldMan_RoleFeatures_TTTEndRound", function()
+local function OldMan_RoleFeatures_TTTEndRound()
     if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
-end)
+end
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_OLDMAN] = function(ply)
     local oldman_drain_health = oldman_drain_health_to:GetInt()
@@ -66,7 +68,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_OLDMAN] = function(ply)
 end
 
 local tempHealth = 10000
-hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
+local function OldMan_EntityTakeDamage(ent, dmginfo)
     -- Don't run this if adrenaline rush is disabled
     local adrenalineTime = oldman_adrenaline_rush:GetInt()
     if adrenalineTime <= 0 then return end
@@ -95,9 +97,9 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
         -- Set their health to a high number so we can detect if they take damage
         ent:SetHealth(tempHealth)
     end
-end)
+end
 
-hook.Add("TTTDrawHitMarker", "OldMan_TTTDrawHitMarker", function(victim, dmginfo)
+local function OldMan_TTTDrawHitMarker(victim, dmginfo)
     local adrenalineTime = oldman_adrenaline_rush:GetInt()
     if adrenalineTime <= 0 then return end
 
@@ -107,7 +109,7 @@ hook.Add("TTTDrawHitMarker", "OldMan_TTTDrawHitMarker", function(victim, dmginfo
     if victim:IsOldMan() and victim:IsRoleActive() then
         return true, false, true, false
     end
-end)
+end
 
 local function DoDamage(ply, dmg, damagetype, att, infl)
     if not IsValid(infl) then
@@ -127,7 +129,7 @@ local function DoDamage(ply, dmg, damagetype, att, infl)
     ply:TakeDamageInfo(dmginfo)
 end
 
-hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dmginfo, took)
+local function OldMan_PostEntityTakeDamage(ent, dmginfo, took)
     -- Don't run this if adrenaline rush is disabled
     local adrenalineTime = oldman_adrenaline_rush:GetInt()
     if adrenalineTime <= 0 then return end
@@ -206,9 +208,9 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
     else
         ent:SetHealth(health - damage)
     end
-end)
+end
 
-hook.Add("TTTPrepareRound", "OldMan_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "OldMan_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v.damageHealth = nil
         v:SetNWBool("AdrenalineRush", false)
@@ -220,16 +222,16 @@ hook.Add("TTTPrepareRound", "OldMan_TTTPrepareRound", function()
     net.Broadcast()
 end)
 
-hook.Add("TTTBeginRound", "OldMan_TTTBeginRound", function()
+local function OldMan_TTTBeginRound()
     net.Start("TTT_ResetOldManWins")
     net.Broadcast()
-end)
+end
 
 -----------
 -- KARMA --
 -----------
 
-hook.Add("TTTKarmaShouldGivePenalty", "OldMan_TTTKarmaShouldGivePenalty", function(attacker, victim)
+local function OldMan_TTTKarmaShouldGivePenalty(attacker, victim)
     -- Innocents will lose karma for killing an Old Man
     if attacker:IsInnocentTeam() and victim:IsOldMan() then
         return true
@@ -238,7 +240,7 @@ hook.Add("TTTKarmaShouldGivePenalty", "OldMan_TTTKarmaShouldGivePenalty", functi
     if attacker:IsOldMan() then
         return not attacker:GetNWBool("AdrenalineRush", false)
     end
-end)
+end
 
 -------------
 -- CREDITS --
@@ -251,5 +253,27 @@ local function OldManCreditLogic(victim, attacker, amt)
 end
 
 -- Nobody should be rewarded for killing the old man
-hook.Add("TTTRewardDetectiveTraitorDeathAmount", "OldMan_TTTRewardDetectiveTraitorDeathAmount", OldManCreditLogic)
-hook.Add("TTTRewardTraitorInnocentDeathAmount", "OldMan_TTTRewardTraitorInnocentDeathAmount", OldManCreditLogic)
+AddHook("TTTRewardDetectiveTraitorDeathAmount", "OldMan_TTTRewardDetectiveTraitorDeathAmount", OldManCreditLogic)
+AddHook("TTTRewardTraitorInnocentDeathAmount", "OldMan_TTTRewardTraitorInnocentDeathAmount", OldManCreditLogic)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_OLDMAN] = function()
+    AddHook("EntityTakeDamage", "OldMan_EntityTakeDamage", OldMan_EntityTakeDamage)
+    AddHook("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", OldMan_PostEntityTakeDamage)
+    AddHook("TTTBeginRound", "OldMan_TTTBeginRound", OldMan_TTTBeginRound)
+    AddHook("TTTDrawHitMarker", "OldMan_TTTDrawHitMarker", OldMan_TTTDrawHitMarker)
+    AddHook("TTTEndRound", "OldMan_RoleFeatures_TTTEndRound", OldMan_RoleFeatures_TTTEndRound)
+    AddHook("TTTKarmaShouldGivePenalty", "OldMan_TTTKarmaShouldGivePenalty", OldMan_TTTKarmaShouldGivePenalty)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_OLDMAN] = function()
+    RemoveHook("EntityTakeDamage", "OldMan_EntityTakeDamage")
+    RemoveHook("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage")
+    RemoveHook("TTTBeginRound", "OldMan_TTTBeginRound")
+    RemoveHook("TTTDrawHitMarker", "OldMan_TTTDrawHitMarker")
+    RemoveHook("TTTEndRound", "OldMan_RoleFeatures_TTTEndRound")
+    RemoveHook("TTTKarmaShouldGivePenalty", "OldMan_TTTKarmaShouldGivePenalty")
+end

@@ -1,7 +1,10 @@
 AddCSLuaFile()
 
 local player = player
+local timer = timer
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -19,11 +22,11 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_ILLUSIONIST] = function(ply)
     SetGlobalBool("ttt_illusionist_alive", true)
 end
 
-hook.Add("Initialize", "Illusionist_Initialize", function()
+AddHook("Initialize", "Illusionist_Initialize", function()
     SetGlobalBool("ttt_illusionist_alive", false)
 end)
 
-hook.Add("TTTBeginRound", "Illusionist_TTTBeginRound", function()
+local function Illusionist_TTTBeginRound()
     local alive = player.IsRoleLiving(ROLE_ILLUSIONIST)
     SetGlobalBool("ttt_illusionist_alive", alive)
     if alive then
@@ -39,13 +42,13 @@ hook.Add("TTTBeginRound", "Illusionist_TTTBeginRound", function()
             end
         end)
     end
-end)
+end
 
-hook.Add("TTTEndRound", "Illusionist_TTTEndRound", function()
+local function Illusionist_TTTEndRound()
     SetGlobalBool("ttt_illusionist_alive", false)
-end)
+end
 
-hook.Add("PlayerDeath", "Illusionist_PlayerDeath", function(victim, infl, attacker)
+local function Illusionist_PlayerDeath(victim, infl, attacker)
     if not victim:IsIllusionist() then return end
     local alive = player.IsRoleLiving(ROLE_ILLUSIONIST)
     if not alive then
@@ -56,9 +59,9 @@ hook.Add("PlayerDeath", "Illusionist_PlayerDeath", function(victim, infl, attack
             end
         end
     end
-end)
+end
 
-hook.Add("TTTPlayerSpawnForRound", "Illusionist_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function Illusionist_TTTPlayerSpawnForRound(ply, dead_only)
     if ply:IsIllusionist() and not GetGlobalBool("ttt_illusionist_alive", false) then
         SetGlobalBool("ttt_illusionist_alive", true)
         if GetRoundState() == ROUND_ACTIVE then
@@ -69,9 +72,9 @@ hook.Add("TTTPlayerSpawnForRound", "Illusionist_TTTPlayerSpawnForRound", functio
             end
         end
     end
-end)
+end
 
-hook.Add("TTTPlayerRoleChanged", "Illusionist_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Illusionist_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
     if newRole ~= oldRole and newRole == ROLE_ILLUSIONIST and not GetGlobalBool("ttt_illusionist_alive", false) then
         SetGlobalBool("ttt_illusionist_alive", true)
@@ -89,16 +92,38 @@ end)
 -- TEAM CHAT --
 ---------------
 
-hook.Add("TTTTeamChatTargets", "Illusionist_TTTTeamChatTargets", function(sender, msg, targets, from_chat)
+local function Illusionist_TTTTeamChatTargets(sender, msg, targets, from_chat)
     if (sender:IsTraitorTeam() or (sender:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) and IsIllusionistBlocking() then
         sender:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_ILLUSIONIST] .. " is preventing you from communicating with your allies.")
         return false
     end
-end)
+end
 
-hook.Add("TTTTeamVoiceChatTargets", "Illusionist_TTTTeamVoiceChatTargets", function(sender, targets, state)
+local function Illusionist_TTTTeamVoiceChatTargets(sender, targets, state)
     if not state and (sender:IsTraitorTeam() or (sender:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) and IsIllusionistBlocking() then
         sender:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_ILLUSIONIST] .. " is preventing you from communicating with your allies.")
         return false
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_ILLUSIONIST] = function()
+    AddHook("PlayerDeath", "Illusionist_PlayerDeath", Illusionist_PlayerDeath)
+    AddHook("TTTBeginRound", "Illusionist_TTTBeginRound", Illusionist_TTTBeginRound)
+    AddHook("TTTEndRound", "Illusionist_TTTEndRound", Illusionist_TTTEndRound)
+    AddHook("TTTPlayerSpawnForRound", "Illusionist_TTTPlayerSpawnForRound", Illusionist_TTTPlayerSpawnForRound)
+    AddHook("TTTTeamChatTargets", "Illusionist_TTTTeamChatTargets", Illusionist_TTTTeamChatTargets)
+    AddHook("TTTTeamVoiceChatTargets", "Illusionist_TTTTeamVoiceChatTargets", Illusionist_TTTTeamVoiceChatTargets)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_ILLUSIONIST] = function()
+    RemoveHook("PlayerDeath", "Illusionist_PlayerDeath")
+    RemoveHook("TTTBeginRound", "Illusionist_TTTBeginRound")
+    RemoveHook("TTTEndRound", "Illusionist_TTTEndRound")
+    RemoveHook("TTTPlayerSpawnForRound", "Illusionist_TTTPlayerSpawnForRound")
+    RemoveHook("TTTTeamChatTargets", "Illusionist_TTTTeamChatTargets")
+    RemoveHook("TTTTeamVoiceChatTargets", "Illusionist_TTTTeamVoiceChatTargets")
+end

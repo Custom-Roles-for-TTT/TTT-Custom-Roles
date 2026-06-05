@@ -1,6 +1,11 @@
 AddCSLuaFile()
 
+local hook = hook
 local table = table
+local weapons = weapons
+
+local AddHook = hook.Add
+local TableInsert = TableInsert
 
 SPONGE_ALL_PLAYERS = 0
 SPONGE_ATTACKER_AND_VICTIM = 1
@@ -23,45 +28,45 @@ CreateConVar("ttt_sponge_aura_mode", "0", FCVAR_REPLICATED, "The way in which th
 if not ROLE_CONVARS[ROLE_SPONGE] then
     ROLE_CONVARS[ROLE_SPONGE] = {}
 end
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_aura_radius",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_notify_mode",
     type = ROLE_CONVAR_TYPE_DROPDOWN,
     choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
     isNumeric = true
 })
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_notify_killer",
     type = ROLE_CONVAR_TYPE_BOOL
 })
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_notify_sound",
     type = ROLE_CONVAR_TYPE_BOOL
 })
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_notify_confetti",
     type = ROLE_CONVAR_TYPE_BOOL
 })
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_device_time",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_aura_shrink",
     type = ROLE_CONVAR_TYPE_BOOL
 })
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_aura_mode",
     type = ROLE_CONVAR_TYPE_DROPDOWN,
     choices = {"All players", "Attacker and victim"},
     isNumeric = true
 })
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_aura_float_time",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
@@ -74,7 +79,7 @@ for _, r in ipairs(GetTeamRoles(JESTER_ROLES)) do
     local convarname = "ttt_sponge_device_for_" .. rolestring
     CreateConVar(convarname, "0", FCVAR_REPLICATED, "Whether the " .. rolestring .. " should get the spongifier", 0, 1)
 
-    table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+    TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
         cvar = convarname,
         type = ROLE_CONVAR_TYPE_BOOL
     })
@@ -82,7 +87,7 @@ for _, r in ipairs(GetTeamRoles(JESTER_ROLES)) do
     convarname = "ttt_sponge_device_for_" .. rolestring .. "_heal"
     CreateConVar(convarname, "0", FCVAR_REPLICATED, "Whether the " .. rolestring .. " should be healed when they use the spongifier", 0, 1)
 
-    table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+    TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
         cvar = convarname,
         type = ROLE_CONVAR_TYPE_BOOL
     })
@@ -92,7 +97,7 @@ end
 -- ROLE WEAPON --
 -----------------
 
-hook.Add("TTTUpdateRoleState", "Sponge_Shared_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Sponge_Shared_TTTUpdateRoleState", function()
     local spongifier = weapons.GetStored("weapon_spn_spongifier")
 
     table.Empty(spongifier.InLoadoutFor)
@@ -101,7 +106,7 @@ hook.Add("TTTUpdateRoleState", "Sponge_Shared_TTTUpdateRoleState", function()
         if r == ROLE_SPONGE then continue end
 
         if cvars.Bool("ttt_sponge_device_for_" .. ROLE_STRINGS_RAW[r], false) then
-            table.insert(spongifier.InLoadoutFor, r)
+            TableInsert(spongifier.InLoadoutFor, r)
         end
     end
 end)

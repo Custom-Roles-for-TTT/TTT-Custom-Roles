@@ -1,5 +1,9 @@
 local hook = hook
+local net = net
 local string = string
+
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -12,7 +16,7 @@ local jester_healthstation_reduce_max = GetConVar("ttt_jester_healthstation_redu
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Jester_Translations_Initialize", function()
+AddHook("Initialize", "Jester_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_jester", "The {role} has fooled you all!")
     LANG.AddToLanguage("english", "ev_win_jester", "The tricky {role} won the round!")
@@ -35,35 +39,35 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Jester_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Jester_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_JESTER then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_JESTER]) }, c = ROLE_COLORS[ROLE_JESTER] }
     end
-end)
+end
 
 -- Track when the jester gets a secondary win
 local jester_secondary_wins = false
-hook.Add("TTTScoringSecondaryWins", "Jester_TTTScoringSecondaryWins", function(wintype, secondary_wins)
+local function Jester_TTTScoringSecondaryWins(wintype, secondary_wins)
     if jester_secondary_wins then
         table.insert(secondary_wins, ROLE_JESTER)
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Jester_TTTEventFinishText", function(e)
+local function Jester_TTTEventFinishText(e)
     if e.win == WIN_JESTER then
         return LANG.GetParamTranslation("ev_win_jester", { role = string.lower(ROLE_STRINGS[ROLE_JESTER]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Jester_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Jester_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_JESTER then
         return win_string, ROLE_STRINGS[ROLE_JESTER]
     end
-end)
+end
 
 -------------
 -- SCORING --
@@ -77,11 +81,11 @@ local function ResetJesterSecondaryWin()
     jester_secondary_wins = false
 end
 net.Receive("TTT_ResetJesterSecondaryWins", ResetJesterSecondaryWin)
-hook.Add("TTTPrepareRound", "Jester_WinTracking_TTTPrepareRound", ResetJesterSecondaryWin)
-hook.Add("TTTBeginRound", "Jester_WinTracking_TTTBeginRound", ResetJesterSecondaryWin)
+AddHook("TTTPrepareRound", "Jester_WinTracking_TTTPrepareRound", ResetJesterSecondaryWin)
+AddHook("TTTBeginRound", "Jester_WinTracking_TTTBeginRound", ResetJesterSecondaryWin)
 
 -- Show who killed the jester (if anyone)
-hook.Add("TTTScoringSummaryRender", "Jester_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Jester_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if ply:IsJester() then
@@ -90,13 +94,13 @@ hook.Add("TTTScoringSummaryRender", "Jester_TTTScoringSummaryRender", function(p
             return roleFileName, groupingRole, roleColor, name, jesterKiller, LANG.GetTranslation("score_jester_killedby")
         end
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Jester_TTTTutorialRoleText", function(role, titleLabel)
+local function Jester_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_JESTER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html =  "The " .. ROLE_STRINGS[ROLE_JESTER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player."
@@ -112,4 +116,26 @@ hook.Add("TTTTutorialRoleText", "Jester_TTTTutorialRoleText", function(role, tit
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_JESTER] = function()
+    AddHook("TTTEventFinishIconText", "Jester_TTTEventFinishIconText", Jester_TTTEventFinishIconText)
+    AddHook("TTTEventFinishText", "Jester_TTTEventFinishText", Jester_TTTEventFinishText)
+    AddHook("TTTScoringSecondaryWins", "Jester_TTTScoringSecondaryWins", Jester_TTTScoringSecondaryWins)
+    AddHook("TTTScoringSummaryRender", "Jester_TTTScoringSummaryRender", Jester_TTTScoringSummaryRender)
+    AddHook("TTTScoringWinTitle", "Jester_TTTScoringWinTitle", Jester_TTTScoringWinTitle)
+    AddHook("TTTTutorialRoleText", "Jester_TTTTutorialRoleText", Jester_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_JESTER] = function()
+    RemoveHook("TTTEventFinishIconText", "Jester_TTTEventFinishIconText")
+    RemoveHook("TTTEventFinishText", "Jester_TTTEventFinishText")
+    RemoveHook("TTTScoringSecondaryWins", "Jester_TTTScoringSecondaryWins")
+    RemoveHook("TTTScoringSummaryRender", "Jester_TTTScoringSummaryRender")
+    RemoveHook("TTTScoringWinTitle", "Jester_TTTScoringWinTitle")
+    RemoveHook("TTTTutorialRoleText", "Jester_TTTTutorialRoleText")
+end

@@ -371,11 +371,7 @@ end
 -- REGISTRATION --
 ------------------
 
-local registered = 0
-local function Register()
-    registered = registered + 1
-    if registered ~= 1 then return end
-
+ROLE_REGISTER_HOOKS[ROLE_ASSASSIN] = function()
     AddHook("Think", "Assassin_Highlight_Think", Assassin_Highlight_Think)
     AddHook("TTTEventFinishIconText", "Assassin_TTTEventFinishIconText", Assassin_TTTEventFinishIconText)
     AddHook("TTTEventFinishText", "Assassin_TTTEventFinishText", Assassin_TTTEventFinishText)
@@ -389,10 +385,7 @@ local function Register()
     AddHook("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState", Assassin_Highlight_TTTUpdateRoleState)
 end
 
-local function Unregister()
-    registered = registered - 1
-    if registered ~= 0 then return end
-
+ROLE_UNREGISTER_HOOKS[ROLE_ASSASSIN] = function()
     RemoveHook("Think", "Assassin_Highlight_Think")
     RemoveHook("TTTEventFinishIconText", "Assassin_TTTEventFinishIconText")
     RemoveHook("TTTEventFinishText", "Assassin_TTTEventFinishText")
@@ -405,24 +398,3 @@ local function Unregister()
     RemoveHook("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText")
     RemoveHook("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState")
 end
-
-AddHook("TTTPlayerRoleChanged", "Assassin_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole == newRole then return end
-    if oldRole ~= ROLE_ASSASSIN and newRole ~= ROLE_ASSASSIN then return end
-
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        if oldRole == ROLE_ASSASSIN then
-            Unregister()
-        elseif newRole == ROLE_ASSASSIN then
-            Register()
-        end
-    end)
-end)
-AddHook("TTTPrepareRound", "Assassin_Registration_TTTPrepareRound", function()
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        Unregister()
-        registered = 0
-    end)
-end)

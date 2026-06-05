@@ -5,6 +5,9 @@ local IsValid = IsValid
 local player = player
 local ents = ents
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+local CallHook = hook.Call
 local PlayerIterator = player.Iterator
 local FindEntsByClass = ents.FindByClass
 
@@ -27,7 +30,7 @@ local medium_hide_killer_role = GetConVar("ttt_medium_hide_killer_role")
 -------------------
 
 local spiritColor = Vector(1, 1, 1)
-hook.Add("TTTSpectatorSpiritCreated", "Medium_TTTSpectatorSpiritCreated", function(ply, spirit)
+local function Medium_TTTSpectatorSpiritCreated(ply, spirit)
     local mediumCount = 0
     for _, v in PlayerIterator() do
         if v:IsMedium() then
@@ -48,10 +51,10 @@ hook.Add("TTTSpectatorSpiritCreated", "Medium_TTTSpectatorSpiritCreated", functi
 
     -- Reset the Medium's scans on this player if they were killed then revived and killed again
     ply:SetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE)
-end)
+end
 
 -- Hide the role of the player that killed the victim if there is a medium in the round and that feature is enabled
-hook.Add("TTTDeathNotifyOverride", "Medium_TTTDeathNotifyOverride", function(victim, inflictor, attacker, reason, killerName, role)
+local function Medium_TTTDeathNotifyOverride(victim, inflictor, attacker, reason, killerName, role)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(attacker) then return end
     if victim == attacker then return end
@@ -68,13 +71,13 @@ hook.Add("TTTDeathNotifyOverride", "Medium_TTTDeathNotifyOverride", function(vic
     if not medium then return end
 
     return reason, killerName, ROLE_NONE
-end)
+end
 
 -------------
 -- SCANNER --
 -------------
 
-hook.Add("TTTPrepareRound", "Medium_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Medium_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE)
         v:SetNWInt("TTTMediumSeanceState", MEDIUM_SEANCE_IDLE)
@@ -219,12 +222,12 @@ local function Scan(ply, target)
                 ply:SetNWFloat("TTTMediumSeanceStartTime", CurTime())
             end
             target:SetNWInt("TTTMediumSeanceStage", stage)
-            hook.Call("TTTMediumScanStageChanged", nil, ply, target, stage)
+            CallHook("TTTMediumScanStageChanged", nil, ply, target, stage)
         end
     end
 end
 
-hook.Add("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", function(ply)
+local function Medium_TTTPlayerAliveThink(ply)
     if not ply:IsActiveMedium() then return end
 
     local seance_max_info = medium_seance_max_info:GetInt()
@@ -296,9 +299,9 @@ hook.Add("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", function(ply)
             ply:SetNWFloat("TTTMediumSeanceCooldown", -1)
         end
     end
-end)
+end
 
-hook.Add("TTTBodyFound", "Medium_TTTBodyFound", function(_, deadply, _)
+local function Medium_TTTBodyFound(_, deadply, _)
     if not IsPlayer(deadply) then return end
     local stage = deadply:GetNWInt("TTTMediumSeanceStage", MEDIUM_SCANNED_NONE)
     if stage >= MEDIUM_SCANNED_NAME then
@@ -310,4 +313,22 @@ hook.Add("TTTBodyFound", "Medium_TTTBodyFound", function(_, deadply, _)
             end
         end)
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_MEDIUM] = function()
+    AddHook("TTTBodyFound", "Medium_TTTBodyFound", Medium_TTTBodyFound)
+    AddHook("TTTDeathNotifyOverride", "Medium_TTTDeathNotifyOverride", Medium_TTTDeathNotifyOverride)
+    AddHook("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink", Medium_TTTPlayerAliveThink)
+    AddHook("TTTSpectatorSpiritCreated", "Medium_TTTSpectatorSpiritCreated", Medium_TTTSpectatorSpiritCreated)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_MEDIUM] = function()
+    RemoveHook("TTTBodyFound", "Medium_TTTBodyFound")
+    RemoveHook("TTTDeathNotifyOverride", "Medium_TTTDeathNotifyOverride")
+    RemoveHook("TTTPlayerAliveThink", "Medium_TTTPlayerAliveThink")
+    RemoveHook("TTTSpectatorSpiritCreated", "Medium_TTTSpectatorSpiritCreated")
+end

@@ -41,7 +41,7 @@ end)
 -- DAMAGE --
 ------------
 
-AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
+local function Guesser_EntityTakeDamage(ent, dmginfo)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
     if not ent:IsGuesser() then return end
@@ -87,14 +87,14 @@ AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
     end
 
     dmginfo:SetDamage(0)
-end)
+end
 
 ------------------
 -- ANNOUNCEMENT --
 ------------------
 
 -- Warn other players that there is a guesser
-hook.Add("TTTBeginRound", "Guesser_Announce_TTTBeginRound", function()
+local function Guesser_Announce_TTTBeginRound()
     if not guesser_warn_all:GetBool() then return end
 
     timer.Simple(1.5, function()
@@ -113,7 +113,7 @@ hook.Add("TTTBeginRound", "Guesser_Announce_TTTBeginRound", function()
             end
         end
     end)
-end)
+end
 
 -------------
 -- CLEANUP --
@@ -127,3 +127,17 @@ AddHook("TTTPrepareRound", "Guesser_TTTPrepareRound", function()
         v:SetNWFloat("TTTGuesserDamageDealt", 0)
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_GUESSER] = function()
+    AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", Guesser_EntityTakeDamage)
+    AddHook("TTTBeginRound", "Guesser_Announce_TTTBeginRound", Guesser_Announce_TTTBeginRound)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_GUESSER] = function()
+    RemoveHook("EntityTakeDamage", "Guesser_EntityTakeDamage")
+    RemoveHook("TTTBeginRound", "Guesser_Announce_TTTBeginRound")
+end

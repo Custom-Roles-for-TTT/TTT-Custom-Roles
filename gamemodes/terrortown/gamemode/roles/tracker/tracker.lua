@@ -6,6 +6,8 @@ local net = net
 local player = player
 local table = table
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -19,7 +21,7 @@ local tracker_footstep_color = GetConVar("ttt_tracker_footstep_color")
 -- ROLE FEATURES --
 -------------------
 
-hook.Add("PlayerFootstep", "Tracker_PlayerFootstep", function(ply, pos, foot, sound, volume, rf)
+local function Tracker_PlayerFootstep(ply, pos, foot, sound, volume, rf)
     if not IsValid(ply) or ply:IsSpec() or not ply:Alive() then return true end
     if ply:WaterLevel() ~= 0 then return end
     -- Trackers don't see their own footsteps
@@ -51,4 +53,16 @@ hook.Add("PlayerFootstep", "Tracker_PlayerFootstep", function(ply, pos, foot, so
         net.WriteUInt(footstep_time, 8)
         net.WriteFloat(1) -- Scale
     net.Send(tab)
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_TRACKER] = function()
+    AddHook("PlayerFootstep", "Tracker_PlayerFootstep", Tracker_PlayerFootstep)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_TRACKER] = function()
+    RemoveHook("PlayerFootstep", "Tracker_PlayerFootstep")
+end

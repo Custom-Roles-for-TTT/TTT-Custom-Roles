@@ -2,6 +2,7 @@ local halo = halo
 local hook = hook
 local player = player
 local table = table
+local timer = timer
 
 local PlayerIterator = player.Iterator
 local HaloAdd = halo.Add
@@ -55,26 +56,26 @@ players fall in love so that they win/die together.]])
 players fall in love so that they win/die together.]])
 end)
 
-AddHook("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride", function(cli, roleString)
+local function Cupid_TTTRolePopupRoleStringOverride(cli, roleString)
     if not IsPlayer(cli) or not cli:IsCupid() then return end
 
     if cupid_is_independent:GetBool() then
         return roleString .. "_indep"
     end
     return roleString .. "_jester"
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-AddHook("TTTScoringWinTitle", "Cupid_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Cupid_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_CUPID then
         return { txt = "hilite_lovers_primary", c = ROLE_COLORS[ROLE_CUPID] }
     end
-end)
+end
 
-AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(wintype, secondary_wins)
+local function Cupid_TTTScoringSecondaryWins(wintype, secondary_wins)
     if wintype == WIN_CUPID then return end
 
     for _, p in PlayerIterator() do
@@ -92,25 +93,25 @@ AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(win
             end
         end
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-AddHook("TTTEventFinishText", "Cupid_TTTEventFinishText", function(e)
+local function Cupid_TTTEventFinishText(e)
     if e.win == WIN_CUPID then
         return LANG.GetTranslation("ev_win_lovers")
     end
-end)
+end
 
-AddHook("TTTEventFinishIconText", "Cupid_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Cupid_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_CUPID then
         return win_string, ROLE_STRINGS[ROLE_CUPID]
     end
-end)
+end
 
-AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
+local function Cupid_SecondaryWinEvent_TTTEndRound()
     for _, p in PlayerIterator() do
         local lover = p:GetNWString("TTTCupidLover", "")
         if p:IsActive() and #lover > 0 then
@@ -125,7 +126,7 @@ AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
             end
         end
     end
-end)
+end
 
 -- Register the scoring events for cupid
 AddHook("Initialize", "Cupid_Scoring_Initialize", function()
@@ -161,7 +162,7 @@ end)
 -------------
 
 -- Show who the cupid paired (if anyone)
-AddHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Cupid_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if ply:IsCupid() then
@@ -180,7 +181,7 @@ AddHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender", function(ply
 
         return roleFileName, groupingRole, roleColor, name, LANG.GetParamTranslation("score_cupid_pairnames", {lover1=lover1_name, lover2=lover2_name}), LANG.GetTranslation("score_cupid_paired")
     end
-end)
+end
 
 ------------
 -- HEARTS --
@@ -188,37 +189,37 @@ end)
 
 local heart_color = Color(230, 90, 200, 255)
 
-AddHook("TTTShouldPlayerSmoke", "Cupid_TTTShouldPlayerSmoke", function(ply, cli, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
+local function Cupid_TTTShouldPlayerSmoke(ply, cli, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
     local target = ply:SteamID64()
     if (cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")))
         or (target == cli:GetNWString("TTTCupidLover", "")) then
         return true, heart_color, "particle/heart.vmt"
     end
-end)
+end
 
 ---------------
 -- TARGET ID --
 ---------------
 
 -- Show lover icon over all lover players
-hook.Add("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+local function Cupid_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     local target = ply:SteamID64()
     if cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")) then
         return "lover", false, heart_color, "up"
     elseif target == cli:GetNWString("TTTCupidLover", "") then
         return "lover", true, heart_color, "up"
     end
-end)
+end
 
-AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+local function Cupid_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return ROLE_CUPID, true
     elseif ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
         return ply:GetRole(), true, ply:GetRole()
     end
-end)
+end
 
-AddHook("TTTTargetIDPlayerRing", "Cupid_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+local function Cupid_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     if not IsPlayer(ent) then return end
 
     if ent:IsActiveCupid() and ent:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
@@ -226,9 +227,9 @@ AddHook("TTTTargetIDPlayerRing", "Cupid_TTTTargetIDPlayerRing", function(ent, cl
     elseif ent:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
         return true, ROLE_COLORS_RADAR[ent:GetRole()]
     end
-end)
+end
 
-AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
+local function Cupid_TTTTargetIDPlayerText(ent, cli, text, clr, secondaryText)
     if not IsPlayer(ent) then return end
 
     if ent:IsActiveCupid() and ent:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
@@ -236,7 +237,7 @@ AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, cl
     elseif ent:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
         return Utf8Upper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), heart_color
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_CUPID] = function(ply, target, showJester)
     if (target:IsActiveCupid() and target:SteamID64() == ply:GetNWString("TTTCupidShooter", "")) or
@@ -250,7 +251,7 @@ end
 -- SCOREBOARD --
 ----------------
 
-AddHook("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Cupid_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return ROLE_COLORS_SCOREBOARD[ROLE_CUPID], ROLE_STRINGS_SHORT[ROLE_CUPID]
     elseif ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
@@ -258,15 +259,15 @@ AddHook("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole", function(ply
     elseif ply:SteamID64() == cli:GetNWString("TTTCupidTarget1", "") or ply:SteamID64() == cli:GetNWString("TTTCupidTarget2", "") then
         return c, roleStr, ROLE_CUPID
     end
-end)
+end
 
-AddHook("TTTScoreboardPlayerName", "Cupid_TTTScoreboardPlayerName", function(ply, cli, nickTxt)
+local function Cupid_TTTScoreboardPlayerName(ply, cli, nickTxt)
     if ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
         return ply:Nick() .. " (" .. LANG.GetTranslation("scoreboard_cupid_your_lover") .. ")"
     elseif ply:SteamID64() == cli:GetNWString("TTTCupidTarget1", "") or ply:SteamID64() == cli:GetNWString("TTTCupidTarget2", "") then
         return ply:Nick() .. " (" .. LANG.GetTranslation("scoreboard_cupid_lover") .. ")"
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CUPID] = function(ply, target, showJester)
     local name = false
@@ -302,7 +303,7 @@ local function EnableLoverHighlights()
     end)
 end
 
-AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", function()
+local function Cupid_Highlight_TTTUpdateRoleState()
     client = LocalPlayer()
     lover_vision = cupid_lover_vision_enabled:GetBool()
 
@@ -311,9 +312,9 @@ AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", function()
         RemoveHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end)
+end
 
-AddHook("Think", "Cupid_Highlight_Think", function()
+local function Cupid_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
     local lover = client:GetNWString("TTTCupidLover", "")
@@ -329,7 +330,7 @@ AddHook("Think", "Cupid_Highlight_Think", function()
     if lover_vision and not vision_enabled then
         RemoveHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos")
     end
-end)
+end
 
 ---------------------
 -- CREDIT TRANSFER --
@@ -341,7 +342,7 @@ local function LoverHasShop(sid64)
     return ply:CanUseShop()
 end
 
-AddHook("TTTPlayerCanSendCredits", "Cupid_TTTPlayerCanSendCredits", function(ply, credits, hasShop, canSend)
+local function Cupid_TTTPlayerCanSendCredits(ply, credits, hasShop, canSend)
     -- Don't block a role that can send credits already
     if canSend then return end
     -- Make sure they have credits to send
@@ -375,13 +376,13 @@ AddHook("TTTPlayerCanSendCredits", "Cupid_TTTPlayerCanSendCredits", function(ply
     if shooter and #shooter > 0 and LoverHasShop(shooter) then
         return true
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-AddHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText", function(role, titleLabel)
+local function Cupid_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_CUPID then
         local roleTeam = player.GetRoleTeam(ROLE_CUPID, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
@@ -425,4 +426,50 @@ AddHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText", function(role, title
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_CUPID] = function()
+    AddHook("Think", "Cupid_Highlight_Think", Cupid_Highlight_Think)
+    AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", Cupid_SecondaryWinEvent_TTTEndRound)
+    AddHook("TTTEventFinishIconText", "Cupid_TTTEventFinishIconText", Cupid_TTTEventFinishIconText)
+    AddHook("TTTEventFinishText", "Cupid_TTTEventFinishText", Cupid_TTTEventFinishText)
+    AddHook("TTTPlayerCanSendCredits", "Cupid_TTTPlayerCanSendCredits", Cupid_TTTPlayerCanSendCredits)
+    AddHook("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride", Cupid_TTTRolePopupRoleStringOverride)
+    AddHook("TTTScoreboardPlayerName", "Cupid_TTTScoreboardPlayerName", Cupid_TTTScoreboardPlayerName)
+    AddHook("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole", Cupid_TTTScoreboardPlayerRole)
+    AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", Cupid_TTTScoringSecondaryWins)
+    AddHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender", Cupid_TTTScoringSummaryRender)
+    AddHook("TTTScoringWinTitle", "Cupid_TTTScoringWinTitle", Cupid_TTTScoringWinTitle)
+    AddHook("TTTShouldPlayerSmoke", "Cupid_TTTShouldPlayerSmoke", Cupid_TTTShouldPlayerSmoke)
+    AddHook("TTTTargetIDPlayerRing", "Cupid_TTTTargetIDPlayerRing", Cupid_TTTTargetIDPlayerRing)
+    AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", Cupid_TTTTargetIDPlayerRoleIcon)
+    AddHook("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon", Cupid_TTTTargetIDPlayerTargetIcon)
+    AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", Cupid_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText", Cupid_TTTTutorialRoleText)
+    AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", Cupid_Highlight_TTTUpdateRoleState)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_CUPID] = function()
+    RemoveHook("Think", "Cupid_Highlight_Think")
+    RemoveHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound")
+    RemoveHook("TTTEventFinishIconText", "Cupid_TTTEventFinishIconText")
+    RemoveHook("TTTEventFinishText", "Cupid_TTTEventFinishText")
+    RemoveHook("TTTPlayerCanSendCredits", "Cupid_TTTPlayerCanSendCredits")
+    RemoveHook("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride")
+    RemoveHook("TTTScoreboardPlayerName", "Cupid_TTTScoreboardPlayerName")
+    RemoveHook("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole")
+    RemoveHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins")
+    RemoveHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender")
+    RemoveHook("TTTScoringWinTitle", "Cupid_TTTScoringWinTitle")
+    RemoveHook("TTTShouldPlayerSmoke", "Cupid_TTTShouldPlayerSmoke")
+    RemoveHook("TTTTargetIDPlayerRing", "Cupid_TTTTargetIDPlayerRing")
+    RemoveHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon")
+    RemoveHook("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon")
+    RemoveHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText")
+    RemoveHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState")
+end

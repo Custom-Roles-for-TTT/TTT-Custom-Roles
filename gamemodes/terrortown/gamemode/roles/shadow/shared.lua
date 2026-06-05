@@ -2,8 +2,10 @@ AddCSLuaFile()
 
 local hook = hook
 local math = math
+local player = player
 local table = table
 
+local AddHook = hook.Add
 local MathClamp = math.Clamp
 local TableInsert = table.insert
 
@@ -66,170 +68,171 @@ local shadow_sprint_recovery = CreateConVar("ttt_shadow_sprint_recovery", "0.1",
 local shadow_sprint_recovery_max = CreateConVar("ttt_shadow_sprint_recovery_max", "0.5", FCVAR_REPLICATED, "The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius", 0, 1)
 local shadow_is_jester = CreateConVar("ttt_shadow_is_jester", "0", FCVAR_REPLICATED, "Whether shadows should be treated as members of the jester team", 0, 1)
 
-ROLE_CONVARS[ROLE_SHADOW] = {}
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_start_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_buffer_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_delay_timer_min",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_delay_timer_max",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_alive_radius",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 1
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_dead_radius",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 1
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Heal over time", "Single respawn", "Damage bonus", "Team join", "Kill and role steal"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff_resumable",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff_notify",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff_show_progress",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff_heal_amount",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff_heal_interval",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff_respawn_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff_damage_bonus",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_buff_role_copy",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_speed_mult",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 1
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_speed_mult_max",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 1
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_sprint_recovery",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_sprint_recovery_max",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_jester",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_independent",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_traitor",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_monster",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_notify_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Don't notify", "Anonymously notify", "Identify the shadow"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_soul_link",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Disable", "Shadow and Target Die Together", "Shadow Dies if Target Killed"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_weaken_health_to",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_weaken_health_to_death",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_weaken_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_can_see_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_is_jester",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_failure_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Kill", "Become Jester", "Become Swapper", "Become Bodysnatcher"},
-    isNumeric = true
-})
+ROLE_CONVARS[ROLE_SHADOW] = {
+    {
+        cvar = "ttt_shadow_start_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_buffer_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_delay_timer_min",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_delay_timer_max",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_alive_radius",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 1
+    },
+    {
+        cvar = "ttt_shadow_dead_radius",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 1
+    },
+    {
+        cvar = "ttt_shadow_target_buff",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Heal over time", "Single respawn", "Damage bonus", "Team join", "Kill and role steal"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_shadow_target_buff_resumable",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_target_buff_notify",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_target_buff_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_target_buff_show_progress",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_target_buff_heal_amount",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_target_buff_heal_interval",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_target_buff_respawn_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_target_buff_damage_bonus",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_shadow_target_buff_role_copy",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_speed_mult",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 1
+    },
+    {
+        cvar = "ttt_shadow_speed_mult_max",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 1
+    },
+    {
+        cvar = "ttt_shadow_sprint_recovery",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_shadow_sprint_recovery_max",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_shadow_target_jester",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_target_independent",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_target_traitor",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_target_monster",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_target_notify_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Don't notify", "Anonymously notify", "Identify the shadow"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_shadow_soul_link",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Disable", "Shadow and Target Die Together", "Shadow Dies if Target Killed"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_shadow_weaken_health_to",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_weaken_health_to_death",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_weaken_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_shadow_can_see_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_update_scoreboard",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_is_jester",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_shadow_failure_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Kill", "Become Jester", "Become Swapper", "Become Bodysnatcher"},
+        isNumeric = true
+    }
+}
 
 -- Add this convar to the Sponge's table so it's with the others
 if not ROLE_CONVARS[ROLE_SPONGE] then
     ROLE_CONVARS[ROLE_SPONGE] = {}
 end
-table.insert(ROLE_CONVARS[ROLE_SPONGE], {
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_device_for_shadow",
     type = ROLE_CONVAR_TYPE_BOOL
 })
@@ -263,7 +266,7 @@ local function ScaleSprintValue(value, min_value, max_value, distance, min_dista
     return MathClamp(min_value + (value * distance_diff), min_value, max_value)
 end
 
-hook.Add("TTTSprintStaminaRecovery", "Shadow_TTTSprintStaminaRecovery", function(ply, recovery)
+AddHook("TTTSprintStaminaRecovery", "Shadow_TTTSprintStaminaRecovery", function(ply, recovery)
     if ShouldHaveSprintBoost(ply) then
         local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
         -- Check to make sure the target is alive
@@ -293,7 +296,7 @@ hook.Add("TTTSprintStaminaRecovery", "Shadow_TTTSprintStaminaRecovery", function
     end
 end)
 
-hook.Add("TTTSpeedMultiplier", "Shadow_TTTSpeedMultiplier", function(ply, mults)
+AddHook("TTTSpeedMultiplier", "Shadow_TTTSpeedMultiplier", function(ply, mults)
     -- Only increase this player's movement speed when they are sprinting (and all the other checks pass)
     if ShouldHaveSprintBoost(ply) and ply:GetSprinting() then
         local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
@@ -324,13 +327,13 @@ end)
 -- ROLE FEATURES --
 -------------------
 
-hook.Add("TTTUpdateRoleState", "Shadow_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Shadow_TTTUpdateRoleState", function()
     local is_jester = shadow_is_jester:GetBool()
     JESTER_ROLES[ROLE_SHADOW] = is_jester
     INDEPENDENT_ROLES[ROLE_SHADOW] = not is_jester
 end)
 
-hook.Add("TTTIsPlayerRespawning", "Shadow_TTTIsPlayerRespawning", function(ply)
+AddHook("TTTIsPlayerRespawning", "Shadow_TTTIsPlayerRespawning", function(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 

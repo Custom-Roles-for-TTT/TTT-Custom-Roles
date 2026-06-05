@@ -6,6 +6,8 @@ local pairs = pairs
 local player = player
 local table = table
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -23,7 +25,7 @@ local veteran_announce = GetConVar("ttt_veteran_announce")
 -- ROLE STATUS --
 -----------------
 
-hook.Add("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", function(victim, infl, attacker)
+local function Veteran_RoleFeatures_PlayerDeath(victim, infl, attacker)
     local innocents_alive = 0
     local veterans = {}
     for _, v in PlayerIterator() do
@@ -68,9 +70,9 @@ hook.Add("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", function(victim, inf
             end
         end
     end
-end)
+end
 
-hook.Add("ScalePlayerDamage", "Veteran_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Veteran_ScalePlayerDamage(ply, hitgroup, dmginfo)
     local att = dmginfo:GetAttacker()
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         -- Veterans deal extra damage if they are the last innocent alive
@@ -79,16 +81,30 @@ hook.Add("ScalePlayerDamage", "Veteran_ScalePlayerDamage", function(ply, hitgrou
             dmginfo:ScaleDamage(1 + bonus)
         end
     end
-end)
+end
 
-hook.Add("TTTPrepareRound", "Veteran_RoleFeatures_PrepareRound", function()
+AddHook("TTTPrepareRound", "Veteran_RoleFeatures_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("VeteranActive", false)
     end
 end)
 
-hook.Add("TTTPlayerRoleChanged", "Veteran_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Veteran_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_VETERAN and newRole ~= ROLE_VETERAN then
         ply:SetNWBool("VeteranActive", false)
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_VETERAN] = function()
+    AddHook("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", Veteran_RoleFeatures_PlayerDeath)
+    AddHook("ScalePlayerDamage", "Veteran_ScalePlayerDamage", Veteran_ScalePlayerDamage)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_VETERAN] = function()
+    RemoveHook("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath")
+    RemoveHook("ScalePlayerDamage", "Veteran_ScalePlayerDamage")
+end

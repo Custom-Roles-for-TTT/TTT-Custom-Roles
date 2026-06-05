@@ -2,6 +2,9 @@ AddCSLuaFile()
 
 local hook = hook
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+
 -------------
 -- CONVARS --
 -------------
@@ -15,7 +18,7 @@ local deputy_damage_penalty = GetConVar("ttt_deputy_damage_penalty")
 -- DAMAGE --
 ------------
 
-hook.Add("ScalePlayerDamage", "Deputy_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Deputy_ScalePlayerDamage(ply, hitgroup, dmginfo)
     -- Only apply damage scaling after the round starts
     if GetRoundState() < ROUND_ACTIVE then return end
 
@@ -25,4 +28,16 @@ hook.Add("ScalePlayerDamage", "Deputy_ScalePlayerDamage", function(ply, hitgroup
 
     local penalty = deputy_damage_penalty:GetFloat()
     dmginfo:ScaleDamage(1 - penalty)
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_DEPUTY] = function()
+    AddHook("ScalePlayerDamage", "Deputy_ScalePlayerDamage", Deputy_ScalePlayerDamage)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_DEPUTY] = function()
+    RemoveHook("ScalePlayerDamage", "Deputy_ScalePlayerDamage")
+end

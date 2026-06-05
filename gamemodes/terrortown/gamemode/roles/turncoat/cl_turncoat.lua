@@ -1,5 +1,8 @@
 local hook = hook
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+
 -------------
 -- CONVARS --
 -------------
@@ -11,7 +14,7 @@ local turncoat_change_innocent_kill = GetConVar("ttt_turncoat_change_innocent_ki
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Turncoat_Translations_Initialize", function()
+AddHook("Initialize", "Turncoat_Translations_Initialize", function()
     -- Events
     LANG.AddToLanguage("english", "ev_turncoat", "{nick} is {role} and has joined the {traitors}")
 
@@ -33,7 +36,7 @@ end)
 -- EVENTS --
 ------------
 
-hook.Add("Initialize", "Turncoat_Scoring_Initialize", function()
+AddHook("Initialize", "Turncoat_Scoring_Initialize", function()
     local traitor_icon = Material("icon16/user_red.png")
     local Event = CLSCORE.DeclareEventDisplay
     local T = LANG.GetTranslation
@@ -56,7 +59,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText", function(role, titleLabel)
+local function Turncoat_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_TURNCOAT then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_TURNCOAT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span>."
@@ -71,4 +74,16 @@ hook.Add("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText", function(role, t
         local health = turncoat_change_health:GetInt()
         return html .. "<span style='display: block; margin-top: 10px;'>At the same time, their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>health is changed to</span> " .. health .. ".</span>"
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_TURNCOAT] = function()
+    AddHook("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText", Turncoat_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_TURNCOAT] = function()
+    RemoveHook("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText")
+end

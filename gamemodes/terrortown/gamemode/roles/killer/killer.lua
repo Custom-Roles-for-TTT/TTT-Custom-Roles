@@ -6,6 +6,8 @@ local math = math
 local player = player
 local timer = timer
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------
@@ -32,16 +34,16 @@ local killer_warn_all = GetConVar("ttt_killer_warn_all")
 -----------
 
 -- Killer has no karma, positive or negative
-hook.Add("TTTKarmaGivePenalty", "Killer_TTTKarmaGivePenalty", function(ply, penalty, victim)
+local function Killer_TTTKarmaGivePenalty(ply, penalty, victim)
     if IsPlayer(victim) and ply:IsKiller() then
         return true
     end
-end)
-hook.Add("TTTKarmaGiveReward", "Killer_TTTKarmaGiveReward", function(ply, reward, victim)
+end
+local function Killer_TTTKarmaGiveReward(ply, reward, victim)
     if IsPlayer(victim) and ply:IsKiller() then
         return true
     end
-end)
+end
 
 -----------
 -- SMOKE --
@@ -117,13 +119,13 @@ timer.Create("KillerKillCheckTimer", 1, 0, function()
 end)
 
 -- Reset smoke when the killer... kills
-hook.Add("PlayerDeath", "Killer_Smoke_PlayerDeath", function(victim, infl, attacker)
+local function Killer_Smoke_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if valid_kill and attacker:IsKiller() then
         attacker:SetNWBool("KillerSmoke", false)
         ResetKillerKillCheckTimer()
     end
-end)
+end
 
 -- Disable the smoke when the round ends, the player respawns, or they have their role changed
 hook.Add("TTTPrepareRound", "Killer_Smoke_PrepareRound", function()
@@ -132,11 +134,11 @@ hook.Add("TTTPrepareRound", "Killer_Smoke_PrepareRound", function()
     end
 end)
 
-hook.Add("TTTPlayerSpawnForRound", "Killer_Smoke_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function Killer_Smoke_TTTPlayerSpawnForRound(ply, dead_only)
     if dead_only and ply:Alive() and not ply:IsSpec() then return end
 
     ply:SetNWBool("KillerSmoke", false)
-end)
+end
 
 hook.Add("TTTPlayerRoleChanged", "Killer_Smoke_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_KILLER then
@@ -159,7 +161,7 @@ hook.Add("TTTPrepareRound", "Killer_Credits_TTTPrepareRound", function()
 end)
 
 -- Award credits for valid kill
-hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function(victim, attacker, dmginfo)
+local function Killer_Credits_DoPlayerDeath(victim, attacker, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsValid(victim) then return end
 
@@ -210,14 +212,14 @@ hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function(victim, attac
             GAMEMODE.AwardedKillerCreditsDead = ply_dead + GAMEMODE.AwardedKillerCreditsDead
         end
     end
-end)
+end
 
 ------------
 -- DAMAGE --
 ------------
 
 -- Scale a killer's damage
-hook.Add("ScalePlayerDamage", "Killer_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Killer_ScalePlayerDamage(ply, hitgroup, dmginfo)
     local att = dmginfo:GetAttacker()
     -- Only apply damage scaling after the round starts
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
@@ -233,14 +235,14 @@ hook.Add("ScalePlayerDamage", "Killer_ScalePlayerDamage", function(ply, hitgroup
             dmginfo:ScaleDamage(1 - reduction)
         end
     end
-end)
+end
 
 ------------------
 -- ROLE WEAPONS --
 ------------------
 
 -- Make sure the killer keeps their appropriate weapons
-hook.Add("TTTPlayerAliveThink", "Killer_TTTPlayerAliveThink", function(ply)
+local function Killer_TTTPlayerAliveThink(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if ply:IsKiller() then
@@ -254,10 +256,10 @@ hook.Add("TTTPlayerAliveThink", "Killer_TTTPlayerAliveThink", function(ply)
             ply:SelectWeapon("weapon_kil_crowbar")
         end
     end
-end)
+end
 
 -- Handle role weapon assignment based on convars
-hook.Add("PlayerLoadout", "Killer_PlayerLoadout", function(ply)
+local function Killer_PlayerLoadout(ply)
     if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() or not ply:IsKiller() or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if killer_knife_enabled:GetBool() then
@@ -272,24 +274,24 @@ hook.Add("PlayerLoadout", "Killer_PlayerLoadout", function(ply)
             ply:SelectWeapon("weapon_kil_crowbar")
         end
     end
-end)
+end
 
 -- Only allow the killer to pick up killer-specific weapons
-hook.Add("PlayerCanPickupWeapon", "Killer_Weapons_PlayerCanPickupWeapon", function(ply, wep)
+local function Killer_Weapons_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return end
 
     if wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar" then
         return ply:IsKiller()
     end
-end)
+end
 
 ------------------
 -- ANNOUNCEMENT --
 ------------------
 
 -- Warn other players that there is a killer
-hook.Add("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
+local function Killer_Announce_TTTBeginRound()
     if not killer_warn:GetBool() then return end
 
     timer.Simple(1.5, function()
@@ -310,13 +312,13 @@ hook.Add("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
             end
         end
     end)
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTCheckForWin", "Killer_TTTCheckForWin", function()
+local function Killer_TTTCheckForWin()
     local killer_alive = false
     local other_alive = false
     for _, v in PlayerIterator() do
@@ -334,22 +336,22 @@ hook.Add("TTTCheckForWin", "Killer_TTTCheckForWin", function()
     elseif killer_alive then
         return WIN_NONE
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", function(type)
+local function Killer_TTTPrintResultMessage(type)
     if type == WIN_KILLER then
         LANG.Msg("win_killer", { role = ROLE_STRINGS[ROLE_KILLER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_KILLER] .. " wins.\n")
         return true
     end
-end)
+end
 
 -----------------------
 -- PLAYER VISIBILITY --
 -----------------------
 
 -- Add all players to the PVS for the killer if highlighting or Kill icon are enabled
-hook.Add("SetupPlayerVisibility", "Killer_SetupPlayerVisibility", function(ply)
+local function Killer_SetupPlayerVisibility(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveKiller() then return end
     if not killer_vision_enabled:GetBool() and not killer_show_target_icon:GetBool() then return end
@@ -362,4 +364,40 @@ hook.Add("SetupPlayerVisibility", "Killer_SetupPlayerVisibility", function(ply)
             AddOriginToPVS(pos)
         end
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_KILLER] = function()
+    AddHook("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", Killer_Credits_DoPlayerDeath)
+    AddHook("PlayerCanPickupWeapon", "Killer_Weapons_PlayerCanPickupWeapon", Killer_Weapons_PlayerCanPickupWeapon)
+    AddHook("PlayerDeath", "Killer_Smoke_PlayerDeath", Killer_Smoke_PlayerDeath)
+    AddHook("PlayerLoadout", "Killer_PlayerLoadout", Killer_PlayerLoadout)
+    AddHook("ScalePlayerDamage", "Killer_ScalePlayerDamage", Killer_ScalePlayerDamage)
+    AddHook("SetupPlayerVisibility", "Killer_SetupPlayerVisibility", Killer_SetupPlayerVisibility)
+    AddHook("TTTBeginRound", "Killer_Announce_TTTBeginRound", Killer_Announce_TTTBeginRound)
+    AddHook("TTTCheckForWin", "Killer_TTTCheckForWin", Killer_TTTCheckForWin)
+    AddHook("TTTKarmaGivePenalty", "Killer_TTTKarmaGivePenalty", Killer_TTTKarmaGivePenalty)
+    AddHook("TTTKarmaGiveReward", "Killer_TTTKarmaGiveReward", Killer_TTTKarmaGiveReward)
+    AddHook("TTTPlayerAliveThink", "Killer_TTTPlayerAliveThink", Killer_TTTPlayerAliveThink)
+    AddHook("TTTPlayerSpawnForRound", "Killer_Smoke_TTTPlayerSpawnForRound", Killer_Smoke_TTTPlayerSpawnForRound)
+    AddHook("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", Killer_TTTPrintResultMessage)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_KILLER] = function()
+    RemoveHook("DoPlayerDeath", "Killer_Credits_DoPlayerDeath")
+    RemoveHook("PlayerCanPickupWeapon", "Killer_Weapons_PlayerCanPickupWeapon")
+    RemoveHook("PlayerDeath", "Killer_Smoke_PlayerDeath")
+    RemoveHook("PlayerLoadout", "Killer_PlayerLoadout")
+    RemoveHook("ScalePlayerDamage", "Killer_ScalePlayerDamage")
+    RemoveHook("SetupPlayerVisibility", "Killer_SetupPlayerVisibility")
+    RemoveHook("TTTBeginRound", "Killer_Announce_TTTBeginRound")
+    RemoveHook("TTTCheckForWin", "Killer_TTTCheckForWin")
+    RemoveHook("TTTKarmaGivePenalty", "Killer_TTTKarmaGivePenalty")
+    RemoveHook("TTTKarmaGiveReward", "Killer_TTTKarmaGiveReward")
+    RemoveHook("TTTPlayerAliveThink", "Killer_TTTPlayerAliveThink")
+    RemoveHook("TTTPlayerSpawnForRound", "Killer_Smoke_TTTPlayerSpawnForRound")
+    RemoveHook("TTTPrintResultMessage", "Killer_TTTPrintResultMessage")
+end

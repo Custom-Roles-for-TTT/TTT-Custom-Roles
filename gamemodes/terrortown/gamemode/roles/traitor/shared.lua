@@ -4,6 +4,8 @@ local hook = hook
 local table = table
 local weapons = weapons
 
+local AddHook = hook.Add
+
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_TRAITOR] = {
@@ -25,12 +27,8 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Traitor_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Traitor_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Traitor_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Traitor_Shared_TTTPrepareRound", InitializeEquipment)
 
 ------------------
 -- ROLE CONVARS --
@@ -38,17 +36,18 @@ end)
 
 local traitor_phantom_cure = CreateConVar("ttt_traitor_phantom_cure", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_TRAITOR] = {}
-table.insert(ROLE_CONVARS[ROLE_TRAITOR], {
-    cvar = "ttt_traitor_phantom_cure",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_TRAITOR] = {
+    {
+        cvar = "ttt_traitor_phantom_cure",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 ------------------
 -- ROLE WEAPONS --
 ------------------
 
-hook.Add("TTTUpdateRoleState", "Traitor_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Traitor_TTTUpdateRoleState", function()
     local phantom_device = weapons.GetStored("weapon_pha_exorcism")
     if traitor_phantom_cure:GetBool() then
         if not table.HasValue(phantom_device.CanBuy, ROLE_TRAITOR) then

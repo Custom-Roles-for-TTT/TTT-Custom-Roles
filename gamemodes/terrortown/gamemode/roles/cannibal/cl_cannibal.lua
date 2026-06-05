@@ -1,6 +1,8 @@
 local hook = hook
+local timer = timer
 
 local AddHook = hook.Add
+local RemoveHook = hook.Remove
 
 ------------------
 -- TRANSLATIONS --
@@ -36,27 +38,27 @@ end)
 -- WIN CHECKS --
 ----------------
 
-AddHook("TTTScoringWinTitle", "Cannibal_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Cannibal_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_CANNIBAL then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_CANNIBAL]) }, c = ROLE_COLORS[ROLE_CANNIBAL] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-AddHook("TTTEventFinishText", "Cannibal_TTTEventFinishText", function(e)
+local function Cannibal_TTTEventFinishText(e)
     if e.win == WIN_CANNIBAL then
         return LANG.GetParamTranslation("ev_win_cannibal", { role = string.lower(ROLE_STRINGS[ROLE_CANNIBAL]) })
     end
-end)
+end
 
-AddHook("TTTEventFinishIconText", "Cannibal_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Cannibal_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_CANNIBAL then
         return win_string, ROLE_STRINGS[ROLE_CANNIBAL]
     end
-end)
+end
 
 AddHook("Initialize", "Cannibal_Events_Initialize", function()
     local eat_icon = Material("icon16/emoticon_tongue.png")
@@ -86,52 +88,52 @@ end)
 -- HIGHLIGHTING --
 ------------------
 
-AddHook("TTTShouldHideFromHighlight", "Cannibal_TTTShouldHideFromHighlight", function(ply, cli)
+local function Cannibal_TTTShouldHideFromHighlight(ply, cli)
     if ply:IsCannibal() then
         return true
     end
-end)
+end
 
 ---------------
 -- TARGET ID --
 ---------------
 
-AddHook("TTTTargetIDPlayerBlockIcon", "Cannibal_TTTTargetIDPlayerBlockIcon", function(ply, cli)
+local function Cannibal_TTTTargetIDPlayerBlockIcon(ply, cli)
     if ply:IsCannibal() then
         return true
     end
-end)
+end
 
-AddHook("TTTTargetIDPlayerText", "Cannibal_TTTTargetIDPlayerText", function(ent, cli, text, col)
+local function Cannibal_TTTTargetIDPlayerText(ent, cli, text, col)
     if IsPlayer(ent) and ent:IsCannibal() then
         return false
     end
-end)
+end
 
-AddHook("TTTTargetIDPlayerRing", "Cannibal_TTTTargetIDPlayerRing", function(ent, cli, ring_visible)
+local function Cannibal_TTTTargetIDPlayerRing(ent, cli, ring_visible)
     if IsPlayer(ent) and ent:IsCannibal() then
         return false
     end
-end)
+end
 
 ----------------
 -- SCOREBOARD --
 ----------------
 
-AddHook("TTTScoreboardPlayerRole", "Cannibal_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Cannibal_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if ply:IsCannibal() then
         return false, false
     end
-end)
+end
 
-AddHook("TTTScoreboardPlayerName", "Cannibal_TTTScoreboardPlayerName", function(ply, cli, text)
+local function Cannibal_TTTScoreboardPlayerName(ply, cli, text)
     if not IsPlayer(ply) then return end
     if not ply.TTTCannibalEaten then return end
     if not cli:IsCannibal() then return end
     if ply.TTTCannibalEaten ~= cli:SteamID64() then return end
 
     return ply:Nick() .. " (" .. LANG.GetTranslation("cannibal_eaten") .. ")"
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CANNIBAL] = function(ply, target)
     if not IsPlayer(target) then return end
@@ -144,7 +146,7 @@ end
 
 local client
 
-AddHook("TTTScoreGroup", "Cannibal_TTTScoreGroup", function(ply)
+local function Cannibal_TTTScoreGroup(ply)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ply) then return end
     if not ply.TTTCannibalEaten then return end
@@ -156,13 +158,13 @@ AddHook("TTTScoreGroup", "Cannibal_TTTScoreGroup", function(ply)
     if client:IsSpec() or client:IsTraitorTeam() or client:IsMonsterTeam() or (client:IsIndependentTeam() and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_update_scoreboard", false)) then
         return GROUP_NOTFOUND
     end
-end)
+end
 
 ---------
 -- HUD --
 ---------
 
-AddHook("HUDDrawScoreBoard", "Cannibal_HUDDrawScoreBoard", function()
+local function Cannibal_HUDDrawScoreBoard()
     if not IsPlayer(client) then
         client = LocalPlayer()
     end
@@ -177,13 +179,13 @@ AddHook("HUDDrawScoreBoard", "Cannibal_HUDDrawScoreBoard", function()
 
     CRHUD:PaintBar(8, 20, ScrH() - 59, 230, 25, bar_colors, 1)
     draw.SimpleText(LANG.GetTranslation("cannibal_swallowed"), "HealthAmmo", 135, ScrH() - 59, Color(255, 255, 255, 200), TEXT_ALIGN_CENTER)
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-AddHook("TTTTutorialRoleText", "Cannibal_TTTTutorialRoleText", function(role, titleLabel)
+local function Cannibal_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_CANNIBAL then
         local roleTeam = player.GetRoleTeam(ROLE_CANNIBAL, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
@@ -219,4 +221,38 @@ AddHook("TTTTutorialRoleText", "Cannibal_TTTTutorialRoleText", function(role, ti
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_CANNIBAL] = function()
+    AddHook("HUDDrawScoreBoard", "Cannibal_HUDDrawScoreBoard", Cannibal_HUDDrawScoreBoard)
+    AddHook("TTTEventFinishIconText", "Cannibal_TTTEventFinishIconText", Cannibal_TTTEventFinishIconText)
+    AddHook("TTTEventFinishText", "Cannibal_TTTEventFinishText", Cannibal_TTTEventFinishText)
+    AddHook("TTTScoreGroup", "Cannibal_TTTScoreGroup", Cannibal_TTTScoreGroup)
+    AddHook("TTTScoreboardPlayerName", "Cannibal_TTTScoreboardPlayerName", Cannibal_TTTScoreboardPlayerName)
+    AddHook("TTTScoreboardPlayerRole", "Cannibal_TTTScoreboardPlayerRole", Cannibal_TTTScoreboardPlayerRole)
+    AddHook("TTTScoringWinTitle", "Cannibal_TTTScoringWinTitle", Cannibal_TTTScoringWinTitle)
+    AddHook("TTTShouldHideFromHighlight", "Cannibal_TTTShouldHideFromHighlight", Cannibal_TTTShouldHideFromHighlight)
+    AddHook("TTTTargetIDPlayerBlockIcon", "Cannibal_TTTTargetIDPlayerBlockIcon", Cannibal_TTTTargetIDPlayerBlockIcon)
+    AddHook("TTTTargetIDPlayerRing", "Cannibal_TTTTargetIDPlayerRing", Cannibal_TTTTargetIDPlayerRing)
+    AddHook("TTTTargetIDPlayerText", "Cannibal_TTTTargetIDPlayerText", Cannibal_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "Cannibal_TTTTutorialRoleText", Cannibal_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_CANNIBAL] = function()
+    RemoveHook("HUDDrawScoreBoard", "Cannibal_HUDDrawScoreBoard")
+    RemoveHook("TTTEventFinishIconText", "Cannibal_TTTEventFinishIconText")
+    RemoveHook("TTTEventFinishText", "Cannibal_TTTEventFinishText")
+    RemoveHook("TTTScoreboardPlayerName", "Cannibal_TTTScoreboardPlayerName")
+    RemoveHook("TTTScoreboardPlayerRole", "Cannibal_TTTScoreboardPlayerRole")
+    RemoveHook("TTTScoreGroup", "Cannibal_TTTScoreGroup")
+    RemoveHook("TTTScoringWinTitle", "Cannibal_TTTScoringWinTitle")
+    RemoveHook("TTTShouldHideFromHighlight", "Cannibal_TTTShouldHideFromHighlight")
+    RemoveHook("TTTTargetIDPlayerBlockIcon", "Cannibal_TTTTargetIDPlayerBlockIcon")
+    RemoveHook("TTTTargetIDPlayerRing", "Cannibal_TTTTargetIDPlayerRing")
+    RemoveHook("TTTTargetIDPlayerText", "Cannibal_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "Cannibal_TTTTutorialRoleText")
+end

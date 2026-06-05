@@ -4,10 +4,11 @@ local hook = hook
 local player = player
 local util = util
 
-util.AddNetworkString("TTT_PlaguemasterPlagued")
-
 local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
+
+util.AddNetworkString("TTT_PlaguemasterPlagued")
 
 -------------
 -- CONVARS --
@@ -73,7 +74,7 @@ local function ClearSpreadStart(ply, sid64)
     end
 end
 
-AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", function(ply)
+local function Plaguemaster_Plague_TTTPlayerAliveThink(ply)
     local plague_start = ply.TTTPlaguemasterStartTime
     if not plague_start then return end
 
@@ -141,9 +142,9 @@ AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", functi
             v.TTTPlaguemasterSpreadStartTimes = {}
         end
     end
-end)
+end
 
-AddHook("TTTOnRoleAbilityEnabled", "Plaguemaster_TTTOnRoleAbilityEnabled", function(ply)
+local function Plaguemaster_TTTOnRoleAbilityEnabled(ply)
     if not IsPlayer(ply) or not ply:IsPlaguemaster() then return end
     if not plaguemaster_immune:GetBool() then return end
 
@@ -152,10 +153,10 @@ AddHook("TTTOnRoleAbilityEnabled", "Plaguemaster_TTTOnRoleAbilityEnabled", funct
     end
     ply.TTTPlaguemasterSpreadStartTimes = {}
     ply:ClearProperty("TTTPlaguemasterStartTime")
-end)
+end
 
 -- Clear the plague from anyone this player is spreading to
-AddHook("PostPlayerDeath", "Plaguemaster_PostPlayerDeath", function(ply)
+local function Plaguemaster_PostPlayerDeath(ply)
     local plague_start = ply.TTTPlaguemasterStartTime
     if not plague_start then return end
 
@@ -197,13 +198,13 @@ AddHook("PostPlayerDeath", "Plaguemaster_PostPlayerDeath", function(ply)
             source:Give("weapon_plm_dartgun")
         end)
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-AddHook("TTTCheckForWin", "Plaguemaster_TTTCheckForWin", function()
+local function Plaguemaster_TTTCheckForWin()
     local plaguemaster_alive = false
     local other_alive = false
     for _, v in PlayerIterator() do
@@ -221,15 +222,15 @@ AddHook("TTTCheckForWin", "Plaguemaster_TTTCheckForWin", function()
     elseif plaguemaster_alive then
         return WIN_NONE
     end
-end)
+end
 
-AddHook("TTTPrintResultMessage", "Plaguemaster_TTTPrintResultMessage", function(type)
+local function Plaguemaster_TTTPrintResultMessage(type)
     if type == WIN_PLAGUEMASTER then
         LANG.Msg("win_plaguemaster", { role = ROLE_STRINGS[ROLE_PLAGUEMASTER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_PLAGUEMASTER] .. " wins.\n")
         return true
     end
-end)
+end
 
 -------------
 -- CLEANUP --
@@ -252,21 +253,47 @@ AddHook("TTTPrepareRound", "Plaguemaster_PrepareRound", function()
     end
 end)
 
-hook.Add("TTTPlayerSpawnForRound", "Plaguemaster_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function Plaguemaster_TTTPlayerSpawnForRound(ply, dead_only)
     ClearPlaguemasterState(ply)
-end)
+end
 
 ----------
 -- CURE --
 ----------
 
-hook.Add("TTTCanPlayerBeCured", "Plaguemaster_TTTCanPlayerBeCured", function(ply)
+local function Plaguemaster_TTTCanPlayerBeCured(ply)
     if ply.TTTPlaguemasterStartTime then
         return true
     end
-end)
+end
 
-hook.Add("TTTCurePlayer", "Plaguemaster_TTTCurePlayer", function(ply)
+local function Plaguemaster_TTTCurePlayer(ply)
     if not ply.TTTPlaguemasterStartTime then return end
     ClearPlaguemasterState(ply)
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_PLAGUEMASTER] = function()
+    AddHook("PostPlayerDeath", "Plaguemaster_PostPlayerDeath", Plaguemaster_PostPlayerDeath)
+    AddHook("TTTCanPlayerBeCured", "Plaguemaster_TTTCanPlayerBeCured", Plaguemaster_TTTCanPlayerBeCured)
+    AddHook("TTTCheckForWin", "Plaguemaster_TTTCheckForWin", Plaguemaster_TTTCheckForWin)
+    AddHook("TTTCurePlayer", "Plaguemaster_TTTCurePlayer", Plaguemaster_TTTCurePlayer)
+    AddHook("TTTOnRoleAbilityEnabled", "Plaguemaster_TTTOnRoleAbilityEnabled", Plaguemaster_TTTOnRoleAbilityEnabled)
+    AddHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink", Plaguemaster_Plague_TTTPlayerAliveThink)
+    AddHook("TTTPlayerSpawnForRound", "Plaguemaster_TTTPlayerSpawnForRound", Plaguemaster_TTTPlayerSpawnForRound)
+    AddHook("TTTPrintResultMessage", "Plaguemaster_TTTPrintResultMessage", Plaguemaster_TTTPrintResultMessage)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_PLAGUEMASTER] = function()
+    RemoveHook("PostPlayerDeath", "Plaguemaster_PostPlayerDeath")
+    RemoveHook("TTTCanPlayerBeCured", "Plaguemaster_TTTCanPlayerBeCured")
+    RemoveHook("TTTCheckForWin", "Plaguemaster_TTTCheckForWin")
+    RemoveHook("TTTCurePlayer", "Plaguemaster_TTTCurePlayer")
+    RemoveHook("TTTOnRoleAbilityEnabled", "Plaguemaster_TTTOnRoleAbilityEnabled")
+    RemoveHook("TTTPlayerAliveThink", "Plaguemaster_Plague_TTTPlayerAliveThink")
+    RemoveHook("TTTPlayerSpawnForRound", "Plaguemaster_TTTPlayerSpawnForRound")
+    RemoveHook("TTTPrintResultMessage", "Plaguemaster_TTTPrintResultMessage")
+end

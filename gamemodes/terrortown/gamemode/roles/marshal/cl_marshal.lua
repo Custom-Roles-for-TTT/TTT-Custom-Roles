@@ -1,4 +1,8 @@
 local hook = hook
+local net = net
+
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -13,7 +17,7 @@ local marshal_announce_deputy = GetConVar("ttt_marshal_announce_deputy")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Marshal_Translations_Initialize", function()
+AddHook("Initialize", "Marshal_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "marshalbadge_help_pri", "Hold {primaryfire} to deputize a player.")
     LANG.AddToLanguage("english", "marshalbadge_help_sec", "The target player will become " .. ROLE_STRINGS_EXT[ROLE_DEPUTY] .. " or " .. ROLE_STRINGS[ROLE_IMPERSONATOR])
@@ -35,18 +39,18 @@ Be careful, though! If used on a bad player, they will become {animpersonator} i
 Press {menukey} to receive your equipment!]])
 end)
 
-hook.Add("TTTRolePopupParams", "Marshal_TTTRolePopupParams", function(cli)
+local function Marshal_TTTRolePopupParams(cli)
     if not cli:IsMarshal() then return end
 
     return { animpersonator = ROLE_STRINGS_EXT[ROLE_IMPERSONATOR] }
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
 -- Register the scoring events for the marshal
-hook.Add("Initialize", "Marshal_Scoring_Initialize", function()
+AddHook("Initialize", "Marshal_Scoring_Initialize", function()
     local traitor_icon = Material("icon16/star.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -100,7 +104,7 @@ local function GetChanceTutorialString(chance, targetTeam, roleColor, detectiveC
     return html .. ".</span>"
 end
 
-hook.Add("TTTTutorialRoleText", "Marshal_TTTTutorialRoleText", function(role, titleLabel)
+local function Marshal_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_MARSHAL then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -124,4 +128,18 @@ hook.Add("TTTTutorialRoleText", "Marshal_TTTTutorialRoleText", function(role, ti
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_MARSHAL] = function()
+    AddHook("TTTRolePopupParams", "Marshal_TTTRolePopupParams", Marshal_TTTRolePopupParams)
+    AddHook("TTTTutorialRoleText", "Marshal_TTTTutorialRoleText", Marshal_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_MARSHAL] = function()
+    RemoveHook("TTTRolePopupParams", "Marshal_TTTRolePopupParams")
+    RemoveHook("TTTTutorialRoleText", "Marshal_TTTTutorialRoleText")
+end

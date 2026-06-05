@@ -1,11 +1,12 @@
 local halo = halo
 local hook = hook
 local IsValid = IsValid
+local net = net
 local player = player
 
 local AddHook = hook.Add
-local PlayerIterator = player.Iterator
 local RemoveHook = hook.Remove
+local PlayerIterator = player.Iterator
 local StringUpper = string.upper
 
 -------------
@@ -59,26 +60,26 @@ end)
 -- TARGET ID --
 ---------------
 
-AddHook("TTTTargetIDPlayerRoleIcon", "HiveMind_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+local function HiveMind_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if cli:IsHiveMind() and ply:IsHiveMind() then
         return ROLE_HIVEMIND
     end
-end)
+end
 
-AddHook("TTTTargetIDPlayerRing", "HiveMind_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+local function HiveMind_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     if not IsPlayer(ent) then return end
     if cli:IsHiveMind() and ent:IsHiveMind() then
         return true, ROLE_COLORS_RADAR[ROLE_HIVEMIND]
     end
-end)
+end
 
-AddHook("TTTTargetIDPlayerText", "HiveMind_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
+local function HiveMind_TTTTargetIDPlayerText(ent, cli, text, clr, secondaryText)
     if not IsPlayer(ent) then return end
 
     if cli:IsHiveMind() and ent:IsHiveMind() then
         return StringUpper(ROLE_STRINGS[ROLE_HIVEMIND]), ROLE_COLORS_RADAR[ROLE_HIVEMIND]
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_HIVEMIND] = function(ply, target, showJester)
     if not ply:IsHiveMind() then return end
@@ -92,11 +93,11 @@ end
 -- SCOREBOARD --
 ----------------
 
-AddHook("TTTScoreboardPlayerRole", "HiveMind_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function HiveMind_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if ply:IsActiveHiveMind() and cli:IsActiveHiveMind() then
         return ROLE_COLORS_SCOREBOARD[ROLE_HIVEMIND], ROLE_STRINGS_SHORT[ROLE_HIVEMIND]
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_HIVEMIND] = function(ply, target, showJester)
     if not ply:IsActiveHiveMind() then return end
@@ -130,7 +131,7 @@ local function EnableHiveMindHighlights()
     end)
 end
 
-AddHook("TTTUpdateRoleState", "HiveMind_Highlight_TTTUpdateRoleState", function()
+local function HiveMind_Highlight_TTTUpdateRoleState()
     client = LocalPlayer()
     hivemind_vision = hivemind_vision_enabled:GetBool()
 
@@ -139,10 +140,10 @@ AddHook("TTTUpdateRoleState", "HiveMind_Highlight_TTTUpdateRoleState", function(
         RemoveHook("PreDrawHalos", "HiveMind_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end)
+end
 
 -- Handle enabling and disabling of highlighting
-AddHook("Think", "HiveMind_Highlight_Think", function()
+local function HiveMind_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
     if hivemind_vision and client:IsHiveMind() then
@@ -157,7 +158,7 @@ AddHook("Think", "HiveMind_Highlight_Think", function()
     if hivemind_vision and not vision_enabled then
         RemoveHook("PreDrawHalos", "HiveMind_Highlight_PreDrawHalos")
     end
-end)
+end
 
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_HIVEMIND] = function(ply, target)
     if not ply:IsHiveMind() then return end
@@ -170,33 +171,33 @@ end
 -- WIN CHECKS --
 ----------------
 
-AddHook("TTTScoringWinTitle", "HiveMind_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function HiveMind_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_HIVEMIND then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_HIVEMIND]) }, c = ROLE_COLORS[ROLE_HIVEMIND] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-AddHook("TTTEventFinishText", "HiveMind_TTTEventFinishText", function(e)
+local function HiveMind_TTTEventFinishText(e)
     if e.win == WIN_HIVEMIND then
         return LANG.GetParamTranslation("ev_win_hivemind", { role = string.lower(ROLE_STRINGS[ROLE_HIVEMIND]) })
     end
-end)
+end
 
-AddHook("TTTEventFinishIconText", "HiveMind_TTTEventFinishIconText", function(e, win_string, role_string)
+local function HiveMind_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_HIVEMIND then
         return win_string, ROLE_STRINGS[ROLE_HIVEMIND]
     end
-end)
+end
 
 ----------------
 -- ROLE POPUP --
 ----------------
 
-AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", function(role, titleLabel)
+local function HiveMind_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_HIVEMIND then
         local roleTeam = player.GetRoleTeam(ROLE_HIVEMIND, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
@@ -234,4 +235,34 @@ AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", function(role, ti
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_HIVEMIND] = function()
+    AddHook("Think", "HiveMind_Highlight_Think", HiveMind_Highlight_Think)
+    AddHook("TTTEventFinishIconText", "HiveMind_TTTEventFinishIconText", HiveMind_TTTEventFinishIconText)
+    AddHook("TTTEventFinishText", "HiveMind_TTTEventFinishText", HiveMind_TTTEventFinishText)
+    AddHook("TTTScoreboardPlayerRole", "HiveMind_TTTScoreboardPlayerRole", HiveMind_TTTScoreboardPlayerRole)
+    AddHook("TTTScoringWinTitle", "HiveMind_TTTScoringWinTitle", HiveMind_TTTScoringWinTitle)
+    AddHook("TTTTargetIDPlayerRing", "HiveMind_TTTTargetIDPlayerRing", HiveMind_TTTTargetIDPlayerRing)
+    AddHook("TTTTargetIDPlayerRoleIcon", "HiveMind_TTTTargetIDPlayerRoleIcon", HiveMind_TTTTargetIDPlayerRoleIcon)
+    AddHook("TTTTargetIDPlayerText", "HiveMind_TTTTargetIDPlayerText", HiveMind_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", HiveMind_TTTTutorialRoleText)
+    AddHook("TTTUpdateRoleState", "HiveMind_Highlight_TTTUpdateRoleState", HiveMind_Highlight_TTTUpdateRoleState)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_HIVEMIND] = function()
+    RemoveHook("Think", "HiveMind_Highlight_Think")
+    RemoveHook("TTTEventFinishIconText", "HiveMind_TTTEventFinishIconText")
+    RemoveHook("TTTEventFinishText", "HiveMind_TTTEventFinishText")
+    RemoveHook("TTTScoreboardPlayerRole", "HiveMind_TTTScoreboardPlayerRole")
+    RemoveHook("TTTScoringWinTitle", "HiveMind_TTTScoringWinTitle")
+    RemoveHook("TTTTargetIDPlayerRing", "HiveMind_TTTTargetIDPlayerRing")
+    RemoveHook("TTTTargetIDPlayerRoleIcon", "HiveMind_TTTTargetIDPlayerRoleIcon")
+    RemoveHook("TTTTargetIDPlayerText", "HiveMind_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText")
+    RemoveHook("TTTUpdateRoleState", "HiveMind_Highlight_TTTUpdateRoleState")
+end

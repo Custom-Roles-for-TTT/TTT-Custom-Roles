@@ -10,6 +10,8 @@ local timer = timer
 local util = util
 local weapons = weapons
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local CreateEntity = ents.Create
 local MathRandom = math.random
@@ -50,16 +52,16 @@ local lootgoblin_drop_timer = GetConVar("ttt_lootgoblin_drop_timer")
 -----------
 
 -- The loot goblin has no karma, positive or negative
-hook.Add("TTTKarmaGivePenalty", "LootGoblin_TTTKarmaGivePenalty", function(ply, penalty, victim)
+local function LootGoblin_TTTKarmaGivePenalty(ply, penalty, victim)
     if IsPlayer(victim) and (ply:IsLootGoblin() or victim:IsLootGoblin())  then
         return true
     end
-end)
-hook.Add("TTTKarmaGiveReward", "LootGoblin_TTTKarmaGiveReward", function(ply, reward, victim)
+end
+local function LootGoblin_TTTKarmaGiveReward(ply, reward, victim)
     if IsPlayer(victim) and (ply:IsLootGoblin() or victim:IsLootGoblin()) then
         return true
     end
-end)
+end
 
 -----------
 -- REGEN --
@@ -94,7 +96,7 @@ local function HandleRegen(ply, delay_override)
 end
 
 local playermoveloc = {}
-hook.Add("FinishMove", "LootGoblin_FinishMove", function(ply, mv)
+local function LootGoblin_FinishMove(ply, mv)
     local mode = lootgoblin_regen_mode:GetInt()
     if mode ~= LOOTGOBLIN_REGEN_MODE_STILL then return end
 
@@ -110,9 +112,9 @@ hook.Add("FinishMove", "LootGoblin_FinishMove", function(ply, mv)
             HandleRegen(ply)
         end
     end
-end)
+end
 
-hook.Add("PostEntityTakeDamage", "LootGoblin_PostEntityTakeDamage", function(ent, dmginfo, taken)
+local function LootGoblin_PostEntityTakeDamage(ent, dmginfo, taken)
     if not taken then return end
     if not IsPlayer(ent) then return end
 
@@ -126,7 +128,7 @@ hook.Add("PostEntityTakeDamage", "LootGoblin_PostEntityTakeDamage", function(ent
 
     StopRegen(ent)
     HandleRegen(ent)
-end)
+end
 
 ----------------------
 -- HELPER FUNCTIONS --
@@ -297,10 +299,10 @@ local function HandleLootGoblinWinChecks(win_type)
 end
 hook.Add("TTTWinCheckComplete", "LootGoblin_TTTWinCheckComplete", HandleLootGoblinWinChecks)
 
-hook.Add("TTTBeginRound", "LootGoblin_TTTBeginRound", function()
+local function LootGoblin_TTTBeginRound()
     net.Start("TTT_ResetLootGoblinWins")
     net.Broadcast()
-end)
+end
 
 ---------------
 -- FOOTSTEPS --
@@ -317,13 +319,13 @@ local footsteps = {
     Sound("lootgoblin/jingle7.wav"),
     Sound("lootgoblin/jingle8.wav")
 }
-hook.Add("PlayerFootstep", "LootGoblin_PlayerFootstep", function(ply, pos, foot, snd, volume, rf)
+local function LootGoblin_PlayerFootstep(ply, pos, foot, snd, volume, rf)
     if ply:IsActiveLootGoblin() and ply:IsRoleActive() and not ply:GetNWBool("LootGoblinKilled", false) and lootgoblin_jingle_enabled:GetBool() then
         local idx = MathRandom(1, #footsteps)
         local chosen_sound = footsteps[idx]
         sound.Play(chosen_sound, pos, volume, 100, 1)
     end
-end)
+end
 
 -----------
 -- DEATH --
@@ -338,7 +340,7 @@ local function PauseIfSingleGoblin()
     end
 end
 
-hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacker)
+local function LootGoblin_PlayerDeath(victim, infl, attacker)
     if victim:IsLootGoblin() then
         if victim:IsRoleActive() and not victim:GetNWBool("LootGoblinKilled", false) and not victim:IsRoleAbilityDisabled() then
             JesterTeamKilledNotification(attacker, victim,
@@ -374,14 +376,14 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
         StopRegen(victim)
         PauseIfSingleGoblin()
     end
-end)
+end
 
 -----------
 -- RADAR --
 -----------
 
 local goblins = {}
-hook.Add("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", function()
+local function LootGoblin_Radar_TTTBeginRound()
     for _, v in PlayerIterator() do
         v:SetNWVector("TTTLootGoblinRadar", v:LocalToWorld(v:OBBCenter())) -- Fallback just in case
     end
@@ -402,7 +404,7 @@ hook.Add("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", function()
             end
         end
     end)
-end)
+end
 
 -------------
 -- CLEANUP --
@@ -416,7 +418,7 @@ local function ResetPlayer(ply)
     PauseIfSingleGoblin()
 end
 
-hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
+AddHook("TTTPrepareRound", "LootGoblin_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("LootGoblinKilled", false)
         v:SetNWVector("TTTLootGoblinRadar", vector_origin)
@@ -433,7 +435,7 @@ hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
     table.Empty(goblins)
 end)
 
-hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function(ply, deadOnly)
+local function LootGoblin_TTTPlayerSpawnForRound(ply, deadOnly)
     if ply:IsLootGoblin() then
         if lootGoblinActive then
             if ply:IsRoleActive() then
@@ -445,9 +447,9 @@ hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function
             UnPauseTimers()
         end
     end
-end)
+end
 
-hook.Add("TTTPlayerRoleChanged", "LootGoblin_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "LootGoblin_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_LOOTGOBLIN then
         ResetPlayer(ply)
     elseif newRole == ROLE_LOOTGOBLIN then
@@ -461,10 +463,40 @@ hook.Add("TTTPlayerRoleChanged", "LootGoblin_TTTPlayerRoleChanged", function(ply
     end
 end)
 
-hook.Add("TTTEndRound", "LootGoblin_TTTEndRound", function()
+local function LootGoblin_TTTEndRound()
     timer.Remove("LootGoblinActivate")
     timer.Remove("LootGoblinDrop")
     timer.Remove("LootGoblinCackle")
     timer.Remove("LootGoblinRadarDelay")
     lootGoblinActive = false
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_LOOTGOBLIN] = function()
+    AddHook("FinishMove", "LootGoblin_FinishMove", LootGoblin_FinishMove)
+    AddHook("PlayerDeath", "LootGoblin_PlayerDeath", LootGoblin_PlayerDeath)
+    AddHook("PlayerFootstep", "LootGoblin_PlayerFootstep", LootGoblin_PlayerFootstep)
+    AddHook("PostEntityTakeDamage", "LootGoblin_PostEntityTakeDamage", LootGoblin_PostEntityTakeDamage)
+    AddHook("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", LootGoblin_Radar_TTTBeginRound)
+    AddHook("TTTBeginRound", "LootGoblin_TTTBeginRound", LootGoblin_TTTBeginRound)
+    AddHook("TTTEndRound", "LootGoblin_TTTEndRound", LootGoblin_TTTEndRound)
+    AddHook("TTTKarmaGivePenalty", "LootGoblin_TTTKarmaGivePenalty", LootGoblin_TTTKarmaGivePenalty)
+    AddHook("TTTKarmaGiveReward", "LootGoblin_TTTKarmaGiveReward", LootGoblin_TTTKarmaGiveReward)
+    AddHook("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", LootGoblin_TTTPlayerSpawnForRound)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_LOOTGOBLIN] = function()
+    RemoveHook("FinishMove", "LootGoblin_FinishMove")
+    RemoveHook("PlayerDeath", "LootGoblin_PlayerDeath")
+    RemoveHook("PlayerFootstep", "LootGoblin_PlayerFootstep")
+    RemoveHook("PostEntityTakeDamage", "LootGoblin_PostEntityTakeDamage")
+    RemoveHook("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound")
+    RemoveHook("TTTBeginRound", "LootGoblin_TTTBeginRound")
+    RemoveHook("TTTEndRound", "LootGoblin_TTTEndRound")
+    RemoveHook("TTTKarmaGivePenalty", "LootGoblin_TTTKarmaGivePenalty")
+    RemoveHook("TTTKarmaGiveReward", "LootGoblin_TTTKarmaGiveReward")
+    RemoveHook("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound")
+end

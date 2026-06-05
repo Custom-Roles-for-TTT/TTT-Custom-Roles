@@ -1,6 +1,7 @@
 local hook = hook
 
 local AddHook = hook.Add
+local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -27,7 +28,7 @@ end)
 -- ROLE POPUP --
 ----------------
 
-AddHook("TTTTutorialRoleText", "Quartermaster_TTTTutorialRoleText", function(role, titleLabel)
+local function Quartermaster_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_QUARTERMASTER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -44,4 +45,16 @@ AddHook("TTTTutorialRoleText", "Quartermaster_TTTTutorialRoleText", function(rol
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_QUARTERMASTER] = function()
+    AddHook("TTTTutorialRoleText", "Quartermaster_TTTTutorialRoleText", Quartermaster_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_QUARTERMASTER] = function()
+    RemoveHook("TTTTutorialRoleText", "Quartermaster_TTTTutorialRoleText")
+end

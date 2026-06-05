@@ -1,6 +1,8 @@
 local hook = hook
 local string = string
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local StringUpper = string.upper
 local Utf8Upper = utf8.upper
 
@@ -10,7 +12,7 @@ local client = nil
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Informant_Translations_Initialize", function()
+AddHook("Initialize", "Informant_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "infscanner_help_pri", "Look at a player to start scanning.")
     LANG.AddToLanguage("english", "infscanner_help_sec", "Keep line of sight or you will lose your target.")
@@ -49,12 +51,12 @@ local informant_requires_scanner = GetConVar("ttt_informant_requires_scanner")
 
 local informant_show_scan_radius = CreateClientConVar("ttt_informant_show_scan_radius", "0", true, false, "Whether the scan radius circle should show", 0, 1)
 
-hook.Add("TTTSettingsRolesTabSections", "Informant_TTTSettingsRolesTabSections", function(role, parentForm)
+local function Informant_TTTSettingsRolesTabSections(role, parentForm)
     if role ~= ROLE_INFORMANT then return end
 
     parentForm:CheckBox(LANG.GetTranslation("informant_config_show_radius"), "ttt_informant_show_scan_radius")
     return true
-end)
+end
 
 ---------------
 -- TARGET ID --
@@ -86,7 +88,7 @@ local function GetTeamRole(ply, cli)
     elseif ply:IsMonsterTeam() then return ply:GetRole() end
 end
 
-hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+local function Informant_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if GetRoundState() < ROUND_ACTIVE then return end
 
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
@@ -116,9 +118,9 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", fun
 
         return newRole, newNoZ, newColorRole
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+local function Informant_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
@@ -142,9 +144,9 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
 
         return newRingVisible, newColor
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
+local function Informant_TTTTargetIDPlayerText(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
@@ -191,7 +193,7 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
 
         return newText, newColor, false
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
@@ -213,7 +215,7 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Informant_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if GetRoundState() < ROUND_ACTIVE then return end
 
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
@@ -236,7 +238,7 @@ hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", functio
 
         return newColor, newRoleStr
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target)
     if not IsPlayer(target) then return end
@@ -276,7 +278,7 @@ local function GetTargetScanTime(target)
     return scanner_time * informant_scanner_innocent_mult:GetFloat()
 end
 
-hook.Add("HUDPaint", "Informant_HUDPaint", function()
+local function Informant_HUDPaint()
     if not client then
         client = LocalPlayer()
     end
@@ -328,13 +330,13 @@ hook.Add("HUDPaint", "Informant_HUDPaint", function()
             CRHUD:PaintProgressBar(x, y, w, color, client:GetNWString("TTTInformantScannerMessage", ""), 1, 3, titles)
         end
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", function(role, titleLabel)
+local function Informant_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_INFORMANT then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local jesterColor = ROLE_COLORS[ROLE_JESTER]
@@ -383,4 +385,28 @@ hook.Add("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", function(role, 
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_INFORMANT] = function()
+    AddHook("HUDPaint", "Informant_HUDPaint", Informant_HUDPaint)
+    AddHook("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", Informant_TTTScoreboardPlayerRole)
+    AddHook("TTTSettingsRolesTabSections", "Informant_TTTSettingsRolesTabSections", Informant_TTTSettingsRolesTabSections)
+    AddHook("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", Informant_TTTTargetIDPlayerRing)
+    AddHook("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", Informant_TTTTargetIDPlayerRoleIcon)
+    AddHook("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", Informant_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", Informant_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_INFORMANT] = function()
+    RemoveHook("HUDPaint", "Informant_HUDPaint")
+    RemoveHook("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole")
+    RemoveHook("TTTSettingsRolesTabSections", "Informant_TTTSettingsRolesTabSections")
+    RemoveHook("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing")
+    RemoveHook("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon")
+    RemoveHook("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "Informant_TTTTutorialRoleText")
+end

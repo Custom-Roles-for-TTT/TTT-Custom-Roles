@@ -1,5 +1,7 @@
 local hook = hook
-local GetConVar = GetConVar
+
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -15,7 +17,7 @@ local spy_flare_gun_shop = GetConVar("ttt_spy_flare_gun_shop")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Spy_Translations_Initialize", function()
+AddHook("Initialize", "Spy_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_spy", "Steals the name and player model of players they kill.")
 
@@ -32,21 +34,21 @@ When you search a player's body, you steal their identity.
 Press {menukey} to receive your special equipment!]])
 end)
 
-hook.Add("TTTRolePopupRoleStringOverride", "Spy_TTTRolePopupRoleStringOverride", function(cli, roleString)
+local function Spy_TTTRolePopupRoleStringOverride(cli, roleString)
     if not IsPlayer(cli) or not cli:IsSpy() then return end
 
     if spy_steal_mode:GetInt() == SPY_STEAL_MODE_SEARCH then
         return roleString .. "_search"
     end
     return roleString
-end)
+end
 
 ----------------
 -- ROLE STATE --
 ----------------
 
 -- If enabled, the Spy's disguise changes their name to the player they last killed
-hook.Add("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", function(ply, cli, text, clr)
+local function Spy_TTTTargetIDPlayerName(ply, cli, text, clr)
     if not spy_steal_name:GetBool() then return end
     if not ply:IsActiveSpy() then return end
 
@@ -59,10 +61,10 @@ hook.Add("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", function(ply, cli
     end
 
     return disguiseName, clr
-end)
+end
 
 local client
-hook.Add("TTTChatPlayerName", "Spy_TTTChatPlayerName", function(ply, team_chat)
+local function Spy_TTTChatPlayerName(ply, team_chat)
     if not spy_steal_name:GetBool() then return end
     if not ply:IsActiveSpy() then return end
 
@@ -82,13 +84,13 @@ hook.Add("TTTChatPlayerName", "Spy_TTTChatPlayerName", function(ply, team_chat)
     end
 
     return disguiseName
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleLabel)
+local function Spy_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_SPY then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_SPY] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to sow confusion by stealing the identity of other players. </span>"
@@ -148,4 +150,22 @@ hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleL
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_SPY] = function()
+    AddHook("TTTChatPlayerName", "Spy_TTTChatPlayerName", Spy_TTTChatPlayerName)
+    AddHook("TTTRolePopupRoleStringOverride", "Spy_TTTRolePopupRoleStringOverride", Spy_TTTRolePopupRoleStringOverride)
+    AddHook("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", Spy_TTTTargetIDPlayerName)
+    AddHook("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", Spy_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_SPY] = function()
+    RemoveHook("TTTChatPlayerName", "Spy_TTTChatPlayerName")
+    RemoveHook("TTTRolePopupRoleStringOverride", "Spy_TTTRolePopupRoleStringOverride")
+    RemoveHook("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName")
+    RemoveHook("TTTTutorialRoleText", "Spy_TTTTutorialRoleText")
+end

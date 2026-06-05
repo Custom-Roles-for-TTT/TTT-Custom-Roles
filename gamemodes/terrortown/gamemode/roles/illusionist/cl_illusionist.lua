@@ -1,6 +1,7 @@
 local hook = hook
 
 local AddHook = hook.Add
+local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -29,16 +30,16 @@ end)
 -- TARGET ID --
 ---------------
 
-AddHook("TTTTargetIDPlayerRoleIcon", "Illusionist_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
+local function Illusionist_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
     if IsIllusionistBlocking() and ((cli:IsTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local icon_overridden, _, _ = cli:IsTargetIDOverridden(ply)
         if icon_overridden then return end
 
         return false
     end
-end)
+end
 
-AddHook("TTTTargetIDPlayerRing", "Illusionist_TTTTargetIDPlayerRing", function(ent, cli, ring_visible)
+local function Illusionist_TTTTargetIDPlayerRing(ent, cli, ring_visible)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
@@ -48,9 +49,9 @@ AddHook("TTTTargetIDPlayerRing", "Illusionist_TTTTargetIDPlayerRing", function(e
 
         return false
     end
-end)
+end
 
-AddHook("TTTTargetIDPlayerText", "Illusionist_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
+local function Illusionist_TTTTargetIDPlayerText(ent, cli, text, col, secondary_text)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
@@ -60,26 +61,26 @@ AddHook("TTTTargetIDPlayerText", "Illusionist_TTTTargetIDPlayerText", function(e
 
         return false
     end
-end)
+end
 
 ----------------
 -- SCOREBOARD --
 ----------------
 
-AddHook("TTTScoreboardPlayerRole", "Illusionist_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
+local function Illusionist_TTTScoreboardPlayerRole(ply, cli, color, roleFileName)
     if IsIllusionistBlocking() and ply ~= cli and ((cli:IsTraitorTeam() and (ply:IsTraitorTeam() or ply:IsGlitch())) or (cli:IsMonsterTeam() and ply:IsMonsterTeam() and illusionist_hides_monsters:GetBool())) then
         local _, role_overridden = cli:IsScoreboardInfoOverridden(ply)
         if role_overridden then return end
 
         return false, false
     end
-end)
+end
 
 -----------
 -- RADAR --
 -----------
 
-AddHook("TTTRadarPlayerRender", "Illusionist_TTTRadarPlayerRender", function(cli, tgt, color, hidden)
+local function Illusionist_TTTRadarPlayerRender(cli, tgt, color, hidden)
     if hidden then return end
     if cli == tgt then return end
     if not IsIllusionistBlocking() then return end
@@ -88,13 +89,13 @@ AddHook("TTTRadarPlayerRender", "Illusionist_TTTRadarPlayerRender", function(cli
         (cli:IsMonsterTeam() and MONSTER_ROLES[tgt.role] and illusionist_hides_monsters:GetBool()) then
         return ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], color.a)
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Illusionist_TTTTutorialRoleText", function(role, titleLabel)
+local function Illusionist_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_ILLUSIONIST then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -138,4 +139,26 @@ hook.Add("TTTTutorialRoleText", "Illusionist_TTTTutorialRoleText", function(role
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_ILLUSIONIST] = function()
+    AddHook("TTTRadarPlayerRender", "Illusionist_TTTRadarPlayerRender", Illusionist_TTTRadarPlayerRender)
+    AddHook("TTTScoreboardPlayerRole", "Illusionist_TTTScoreboardPlayerRole", Illusionist_TTTScoreboardPlayerRole)
+    AddHook("TTTTargetIDPlayerRing", "Illusionist_TTTTargetIDPlayerRing", Illusionist_TTTTargetIDPlayerRing)
+    AddHook("TTTTargetIDPlayerRoleIcon", "Illusionist_TTTTargetIDPlayerRoleIcon", Illusionist_TTTTargetIDPlayerRoleIcon)
+    AddHook("TTTTargetIDPlayerText", "Illusionist_TTTTargetIDPlayerText", Illusionist_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "Illusionist_TTTTutorialRoleText", Illusionist_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_ILLUSIONIST] = function()
+    RemoveHook("TTTRadarPlayerRender", "Illusionist_TTTRadarPlayerRender")
+    RemoveHook("TTTScoreboardPlayerRole", "Illusionist_TTTScoreboardPlayerRole")
+    RemoveHook("TTTTargetIDPlayerRing", "Illusionist_TTTTargetIDPlayerRing")
+    RemoveHook("TTTTargetIDPlayerRoleIcon", "Illusionist_TTTTargetIDPlayerRoleIcon")
+    RemoveHook("TTTTargetIDPlayerText", "Illusionist_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "Illusionist_TTTTutorialRoleText")
+end

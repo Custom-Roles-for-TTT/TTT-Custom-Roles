@@ -4,6 +4,8 @@ local hook = hook
 local table = table
 local weapons = weapons
 
+local AddHook = hook.Add
+
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_HYPNOTIST] = {
@@ -16,18 +18,14 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Hypnotist_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Hypnotist_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Hypnotist_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Hypnotist_Shared_TTTPrepareRound", InitializeEquipment)
 
 -----------------
 -- ROLE WEAPON --
 -----------------
 
-hook.Add("TTTUpdateRoleState", "Hypnotist_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Hypnotist_TTTUpdateRoleState", function()
     local hypnotist_defib = weapons.GetStored("weapon_hyp_brainwash")
     if GetConVar("ttt_hypnotist_device_loadout"):GetBool() then
         hypnotist_defib.InLoadoutFor = table.Copy(hypnotist_defib.InLoadoutForDefault)

@@ -2,7 +2,9 @@ AddCSLuaFile()
 
 local hook = hook
 local player = player
+local timer = timer
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 -------------
@@ -16,7 +18,7 @@ local traitor_credits_timer = CreateConVar("ttt_traitors_credits_timer", "0")
 -----------------------
 
 -- Add all traitors to the PVS for all players they can see via Target ID with NoZ (Traitors, Glitch)
-hook.Add("SetupPlayerVisibility", "Traitors_SetupPlayerVisibility", function(ply)
+local function Traitors_SetupPlayerVisibility(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveTraitorTeam() then return end
 
@@ -29,13 +31,13 @@ hook.Add("SetupPlayerVisibility", "Traitors_SetupPlayerVisibility", function(ply
             AddOriginToPVS(pos)
         end
     end
-end)
+end
 
 ------------------
 -- AUTO CREDITS --
 ------------------
 
-hook.Add("TTTBeginRound", "Traitors_TTTBeginRound", function()
+local function Traitors_TTTBeginRound()
     local credit_timer = traitor_credits_timer:GetInt()
     if credit_timer <= 0 then return end
 
@@ -47,8 +49,24 @@ hook.Add("TTTBeginRound", "Traitors_TTTBeginRound", function()
             end
         end
     end)
-end)
+end
 
-hook.Add("TTTEndRound", "Traitors_TTTEndRound", function()
+local function Traitors_TTTEndRound()
     timer.Remove("TraitorCreditTimer")
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_TRAITOR] = function()
+    AddHook("SetupPlayerVisibility", "Traitors_SetupPlayerVisibility", Traitors_SetupPlayerVisibility)
+    AddHook("TTTBeginRound", "Traitors_TTTBeginRound", Traitors_TTTBeginRound)
+    AddHook("TTTEndRound", "Traitors_TTTEndRound", Traitors_TTTEndRound)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_TRAITOR] = function()
+    RemoveHook("SetupPlayerVisibility", "Traitors_SetupPlayerVisibility")
+    RemoveHook("TTTBeginRound", "Traitors_TTTBeginRound")
+    RemoveHook("TTTEndRound", "Traitors_TTTEndRound")
+end

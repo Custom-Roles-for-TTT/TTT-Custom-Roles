@@ -4,6 +4,8 @@ local hook = hook
 local player = player
 local timer = timer
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local HookCall = hook.Call
 
@@ -24,7 +26,7 @@ local cupid_lovers_can_damage_cupid = GetConVar("ttt_cupid_lovers_can_damage_cup
 -- DEATH LINK --
 ----------------
 
-hook.Add("TTTBeginRound", "Cupid_TTTBeginRound", function()
+local function Cupid_TTTBeginRound()
     timer.Create("TTTCupidTimer", 0.1, 0, function()
         for _, v in PlayerIterator() do
             if not v:IsActive() then continue end
@@ -44,10 +46,10 @@ hook.Add("TTTBeginRound", "Cupid_TTTBeginRound", function()
             v:QueueMessage(MSG_PRINTBOTH, "Your lover has died!")
         end
     end)
-end)
+end
 
 -- Keep track if a lover uses a "kill" bind so we don't punish their pair
-hook.Add("PlayerDeath", "Cupid_Killbind_PlayerDeath", function(victim, infl, attacker)
+local function Cupid_Killbind_PlayerDeath(victim, infl, attacker)
     if not IsPlayer(victim) then return end
 
     local lover_sid64 = victim:GetNWString("TTTCupidLover", "")
@@ -61,13 +63,13 @@ hook.Add("PlayerDeath", "Cupid_Killbind_PlayerDeath", function(victim, infl, att
             lover:QueueMessage(MSG_PRINTBOTH, "Your lover has died by their own hand! Try to survive without them...")
         end
     end
-end)
+end
 
 -------------
 -- CLEANUP --
 -------------
 
-hook.Add("TTTPrepareRound", "Cupid_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Cupid_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWString("TTTCupidShooter", "")
         v:SetNWString("TTTCupidLover", "")
@@ -79,19 +81,19 @@ hook.Add("TTTPrepareRound", "Cupid_TTTPrepareRound", function()
 end)
 
 -- Reset the "kill" bind tracking when players respawn
-hook.Add("TTTPlayerSpawnForRound", "Cupid_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function Cupid_TTTPlayerSpawnForRound(ply, dead_only)
     if not dead_only then return end
     if not IsValid(ply) then return end
     if ply:Alive() then return end
 
     ply.TTTCupidKillbindUsed = false
-end)
+end
 
 ------------
 -- DAMAGE --
 ------------
 
-hook.Add("ScalePlayerDamage", "Cupid_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Cupid_ScalePlayerDamage(ply, hitgroup, dmginfo)
     local att = dmginfo:GetAttacker()
     local target = ply:SteamID64()
     if IsPlayer(att) and GetRoundState() == ROUND_ACTIVE then
@@ -101,10 +103,10 @@ hook.Add("ScalePlayerDamage", "Cupid_ScalePlayerDamage", function(ply, hitgroup,
             dmginfo:ScaleDamage(0)
         end
     end
-end)
+end
 
 -- Don't penalize karma for lovers who kill members on their team when their lover is not
-hook.Add("TTTKarmaShouldGivePenalty", "Cupid_TTTKarmaShouldGivePenalty", function(attacker, victim)
+local function Cupid_TTTKarmaShouldGivePenalty(attacker, victim)
     -- We only care about attackers who have lovers
     local attLover = attacker:GetNWString("TTTCupidLover", "")
     if not attLover or #attLover == 0 then return end
@@ -120,13 +122,13 @@ hook.Add("TTTKarmaShouldGivePenalty", "Cupid_TTTKarmaShouldGivePenalty", functio
     if attacker:IsSameTeam(victim) then
         return true
     end
-end)
+end
 
 --------------------------
 -- DISCONNECTION CHECKS --
 --------------------------
 
-hook.Add("PlayerDisconnected", "Cupid_PlayerDisconnected", function(ply)
+local function Cupid_PlayerDisconnected(ply)
     local sid64 = ply:SteamID64()
 
     for _, p in PlayerIterator() do
@@ -160,13 +162,13 @@ hook.Add("PlayerDisconnected", "Cupid_PlayerDisconnected", function(ply)
             p:Give("weapon_cup_bow")
         end
     end
-end)
+end
 
 ---------------------------------
 -- PLAYER DEATH DURING PAIRING --
 ---------------------------------
 
-hook.Add("PlayerDeath", "Cupid_PlayerDeath", function(ply)
+local function Cupid_PlayerDeath(ply)
     local sid64 = ply:SteamID64()
 
     for _, p in PlayerIterator() do
@@ -177,13 +179,13 @@ hook.Add("PlayerDeath", "Cupid_PlayerDeath", function(ply)
             ply:SetNWString("TTTCupidShooter", "")
         end
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
+local function Cupid_TTTCheckForWin()
     local cupidWin = true
     local loverAlive = false
     for _, v in PlayerIterator() do
@@ -208,12 +210,40 @@ hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
     if cupidWin and loverAlive then
         return WIN_CUPID
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Cupid_TTTPrintResultMessage", function(win_type)
+local function Cupid_TTTPrintResultMessage(win_type)
     if win_type == WIN_CUPID then
         LANG.Msg("win_lovers", { role = ROLE_STRINGS_PLURAL[ROLE_CUPID] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CUPID] .. " wins.\n")
         return true
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_CUPID] = function()
+    AddHook("PlayerDeath", "Cupid_Killbind_PlayerDeath", Cupid_Killbind_PlayerDeath)
+    AddHook("PlayerDeath", "Cupid_PlayerDeath", Cupid_PlayerDeath)
+    AddHook("PlayerDisconnected", "Cupid_PlayerDisconnected", Cupid_PlayerDisconnected)
+    AddHook("ScalePlayerDamage", "Cupid_ScalePlayerDamage", Cupid_ScalePlayerDamage)
+    AddHook("TTTBeginRound", "Cupid_TTTBeginRound", Cupid_TTTBeginRound)
+    AddHook("TTTCheckForWin", "Cupid_TTTCheckForWin", Cupid_TTTCheckForWin)
+    AddHook("TTTKarmaShouldGivePenalty", "Cupid_TTTKarmaShouldGivePenalty", Cupid_TTTKarmaShouldGivePenalty)
+    AddHook("TTTPlayerSpawnForRound", "Cupid_TTTPlayerSpawnForRound", Cupid_TTTPlayerSpawnForRound)
+    AddHook("TTTPrintResultMessage", "Cupid_TTTPrintResultMessage", Cupid_TTTPrintResultMessage)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_CUPID] = function()
+    RemoveHook("PlayerDeath", "Cupid_Killbind_PlayerDeath")
+    RemoveHook("PlayerDeath", "Cupid_PlayerDeath")
+    RemoveHook("PlayerDisconnected", "Cupid_PlayerDisconnected")
+    RemoveHook("ScalePlayerDamage", "Cupid_ScalePlayerDamage")
+    RemoveHook("TTTBeginRound", "Cupid_TTTBeginRound")
+    RemoveHook("TTTCheckForWin", "Cupid_TTTCheckForWin")
+    RemoveHook("TTTKarmaShouldGivePenalty", "Cupid_TTTKarmaShouldGivePenalty")
+    RemoveHook("TTTPlayerSpawnForRound", "Cupid_TTTPlayerSpawnForRound")
+    RemoveHook("TTTPrintResultMessage", "Cupid_TTTPrintResultMessage")
+end

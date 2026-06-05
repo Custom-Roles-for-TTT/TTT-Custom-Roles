@@ -1,7 +1,5 @@
 AddCSLuaFile()
 
-local table = table
-
 -- Initialize role features
 ROLE_SHOULD_SHOW_SPECTATOR_HUD[ROLE_PHANTOM] = function(ply)
     if ply:GetNWBool("PhantomPossessing") then
@@ -26,87 +24,88 @@ CreateConVar("ttt_phantom_killer_footstep_time", "0", FCVAR_REPLICATED, "The amo
 CreateConVar("ttt_phantom_respawn", "1", FCVAR_REPLICATED, "Whether the phantom should respawn when their killer is killed", 0, 1)
 CreateConVar("ttt_phantom_respawn_limit", "0", FCVAR_REPLICATED, "The amount of times a phantom can respawn. Set to 0 to have no limit", 0, 20)
 
-ROLE_CONVARS[ROLE_PHANTOM] = {}
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_respawn",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_respawn_health",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_respawn_limit",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_weaker_each_respawn",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_announce_death",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_smoke",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_footstep_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_haunt",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_haunt_power_max",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_haunt_power_rate",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_haunt_power_starting",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_haunt_move_cost",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_haunt_jump_cost",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_haunt_drop_cost",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_haunt_attack_cost",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_killer_haunt_without_body",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_cure_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
-    cvar = "ttt_phantom_haunt_saves_lover",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_PHANTOM] = {
+    {
+        cvar = "ttt_phantom_respawn",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_phantom_respawn_health",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_respawn_limit",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_weaker_each_respawn",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_phantom_announce_death",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_phantom_killer_smoke",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_phantom_killer_footstep_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_killer_haunt",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_phantom_killer_haunt_power_max",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_killer_haunt_power_rate",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_killer_haunt_power_starting",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_killer_haunt_move_cost",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_killer_haunt_jump_cost",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_killer_haunt_drop_cost",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_killer_haunt_attack_cost",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_killer_haunt_without_body",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_phantom_cure_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_phantom_haunt_saves_lover",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}

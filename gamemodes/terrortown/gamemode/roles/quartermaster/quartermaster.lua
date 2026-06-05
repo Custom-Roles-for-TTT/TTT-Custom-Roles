@@ -4,13 +4,14 @@ local hook = hook
 local player = player
 
 local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------------
 -- ROLE FEATURES --
 -------------------
 
-AddHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment", function(ply, id, is_item)
+local function Quartermaster_TTTCanOrderEquipment(ply, id, is_item)
     if ply:IsQuartermaster() then
         -- Create crate
         local crate = ents.Create("ttt_qmr_crate")
@@ -28,13 +29,13 @@ AddHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment", function(p
 
         return false
     end
-end)
+end
 
 local blockedEvents = {
     ["blackmarket"] = "makes their role unusable",
     ["future"] = "can't consistently work with the dynamic shop events"
 }
-AddHook("TTTRandomatCanEventRun", "Quartermaster_TTTRandomatCanEventRun", function(event)
+local function Quartermaster_TTTRandomatCanEventRun(event)
     if not blockedEvents[event.Id] then return end
 
     for _, ply in PlayerIterator() do
@@ -42,7 +43,7 @@ AddHook("TTTRandomatCanEventRun", "Quartermaster_TTTRandomatCanEventRun", functi
             return false, "There is " .. ROLE_STRINGS_EXT[ROLE_QUARTERMASTER] .. " in the round and this event " .. blockedEvents[event.Id]
         end
     end
-end)
+end
 
 -------------
 -- CLEANUP --
@@ -53,3 +54,17 @@ AddHook("TTTPrepareRound", "Quartermaster_PrepareRound", function()
         v:SetNWBool("TTTQuartermasterLooted", false)
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_QUARTERMASTER] = function()
+    AddHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment", Quartermaster_TTTCanOrderEquipment)
+    AddHook("TTTRandomatCanEventRun", "Quartermaster_TTTRandomatCanEventRun", Quartermaster_TTTRandomatCanEventRun)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_QUARTERMASTER] = function()
+    RemoveHook("TTTCanOrderEquipment", "Quartermaster_TTTCanOrderEquipment")
+    RemoveHook("TTTRandomatCanEventRun", "Quartermaster_TTTRandomatCanEventRun")
+end

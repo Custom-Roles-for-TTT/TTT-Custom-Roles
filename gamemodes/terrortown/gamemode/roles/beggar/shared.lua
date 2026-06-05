@@ -1,5 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
+
+local AddHook = hook.Add
+
 -- Initialize role features
 BEGGAR_UNSCANNED = 0
 BEGGAR_SCANNED_HIDDEN = 1
@@ -176,7 +180,7 @@ ROLE_CONVARS[ROLE_BEGGAR] = {
 -- ROLE FEATURES --
 -------------------
 
-hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
     if INNOCENT_ROLES[ROLE_BEGGAR] or TRAITOR_ROLES[ROLE_BEGGAR] then return end
 
     local is_independent = beggar_is_independent:GetBool()
@@ -184,7 +188,7 @@ hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
     JESTER_ROLES[ROLE_BEGGAR] = not is_independent
 end)
 
-hook.Add("TTTIsPlayerRespawning", "Beggar_TTTIsPlayerRespawning", function(ply)
+AddHook("TTTIsPlayerRespawning", "Beggar_TTTIsPlayerRespawning", function(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 

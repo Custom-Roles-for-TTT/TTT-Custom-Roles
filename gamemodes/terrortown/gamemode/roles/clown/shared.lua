@@ -1,6 +1,10 @@
 AddCSLuaFile()
 
-local table = table
+local hook = hook
+local net = net
+local util = util
+
+local AddHook = hook.Add
 
 ------------------
 -- ROLE CONVARS --
@@ -16,51 +20,52 @@ CreateConVar("ttt_clown_activation_pct", "0", FCVAR_REPLICATED, "The percentage 
 CreateConVar("ttt_clown_can_see_jesters", 1, FCVAR_REPLICATED)
 CreateConVar("ttt_clown_update_scoreboard", 1, FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_CLOWN] = {}
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_damage_bonus",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_activation_credits",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_hide_when_active",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_use_traps_when_active",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_show_target_icon",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_heal_on_activate",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_heal_bonus",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_activation_pct",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_can_see_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CLOWN], {
-    cvar = "ttt_clown_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_CLOWN] = {
+    {
+        cvar = "ttt_clown_damage_bonus",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_clown_activation_credits",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_clown_hide_when_active",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_clown_use_traps_when_active",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_clown_show_target_icon",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_clown_heal_on_activate",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_clown_heal_bonus",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_clown_activation_pct",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_clown_can_see_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_clown_update_scoreboard",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
@@ -78,7 +83,7 @@ function SetClownTeam(independent)
 
     if SERVER then
         net.Start("TTT_ClownTeamChange")
-        net.WriteBool(independent)
+            net.WriteBool(independent)
         net.Broadcast()
     end
 end
@@ -103,7 +108,7 @@ ROLE_SHOULD_ACT_LIKE_JESTER[ROLE_CLOWN] = function(ply)
 end
 
 -- Initialize role features
-hook.Add("TTTPrepareRound", "Clown_Shared_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Clown_Shared_TTTPrepareRound", function()
     -- Add radio sounds
     if not TRADIO.Sounds.cloactivate and util.CanRoleSpawn(ROLE_CLOWN) then
         TRADIO.AddNewSound("cloactivate", {

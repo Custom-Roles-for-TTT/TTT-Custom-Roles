@@ -1,7 +1,5 @@
 AddCSLuaFile()
 
-local table = table
-
 -- Initialize role features
 GUESSER_UNSCANNED = 0
 GUESSER_SCANNED_TEAM = 1
@@ -18,54 +16,55 @@ CreateConVar("ttt_guesser_show_role_threshold", "100", FCVAR_REPLICATED, "The am
 CreateConVar("ttt_guesser_show_outline_threshold", "150", FCVAR_REPLICATED, "The amount of damage that needs to be dealt to a guesser before they can see your outline", 1, 200)
 CreateConVar("ttt_guesser_warn_all", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_GUESSER] = {}
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_notify_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_notify_killer",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_notify_sound",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_notify_confetti",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_can_guess_detectives",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_unguessable_roles",
-    type = ROLE_CONVAR_TYPE_TEXT
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_minimum_radius",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_show_team_threshold",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_show_role_threshold",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_show_outline_threshold",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_GUESSER], {
-    cvar = "ttt_guesser_warn_all",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_GUESSER] = {
+    {
+        cvar = "ttt_guesser_notify_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_guesser_notify_killer",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_guesser_notify_sound",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_guesser_notify_confetti",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_guesser_can_guess_detectives",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_guesser_unguessable_roles",
+        type = ROLE_CONVAR_TYPE_TEXT
+    },
+    {
+        cvar = "ttt_guesser_minimum_radius",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_guesser_show_team_threshold",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_guesser_show_role_threshold",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_guesser_show_outline_threshold",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_guesser_warn_all",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}

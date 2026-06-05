@@ -5,6 +5,8 @@ local math = math
 local player = player
 local timer = timer
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local MathMax = math.max
 local MathMin = math.min
@@ -326,7 +328,7 @@ local function CreateBuffTimer(shadow, target)
     end)
 end
 
-hook.Add("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Shadow_Buff_ScalePlayerDamage(ply, hitgroup, dmginfo)
     local att = dmginfo:GetAttacker()
     -- Only apply damage scaling after the round starts
     if not IsPlayer(att) or GetRoundState() < ROUND_ACTIVE then return end
@@ -336,9 +338,9 @@ hook.Add("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage", function(ply, hit
     if not att:GetNWBool("ShadowBuffActive", false) then return end
 
     dmginfo:ScaleDamage(1 + shadow_target_buff_damage_bonus:GetFloat())
-end)
+end
 
-hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacker, dmg)
+local function Shadow_SoulLink_DoPlayerDeath(ply, attacker, dmg)
     if shadow_soul_link:GetInt() == SHADOW_SOUL_LINK_NONE or not IsPlayer(ply) then return end
 
     -- Kill the shadow's target as well
@@ -364,9 +366,9 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
             end
         end
     end
-end)
+end
 
-hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
+local function Shadow_Buff_PostPlayerDeath(ply)
     local vicSid64 = ply:SteamID64()
     -- If the player is going to respawn because they are being buffed by a shadow, start that process
     if shadow_target_buff:GetInt() == SHADOW_BUFF_RESPAWN and ply:GetNWBool("ShadowBuffActive", false) and not ply:GetNWBool("ShadowBuffDepleted", false) then
@@ -420,9 +422,9 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
     -- Stop weakening or regenerating a dead player
     timer.Remove("TTTShadowWeakenTimer_" .. ply:SteamID64())
     timer.Remove("TTTShadowRegenTimer_" .. ply:SteamID64())
-end)
+end
 
-hook.Add("TTTStopPlayerRespawning", "Shadow_TTTStopPlayerRespawning", function(ply)
+local function Shadow_TTTStopPlayerRespawning(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -435,7 +437,7 @@ hook.Add("TTTStopPlayerRespawning", "Shadow_TTTStopPlayerRespawning", function(p
         end
         ply:SetNWBool("ShadowTargetRespawning", false)
     end
-end)
+end
 
 local function HandleShadowFailure(shadow)
     local message = "You didn't stay close to your target!"
@@ -541,7 +543,7 @@ local function CreateRegenTimer(shadow, weakenTimer)
     end)
 end
 
-hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
+local function Shadow_TTTBeginRound()
     local weakenTo = shadow_weaken_health_to:GetInt()
     local weakenTimer = shadow_weaken_timer:GetInt()
     timer.Create("TTTShadowTimer", 0.1, 0, function()
@@ -601,9 +603,9 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
 
     net.Start("TTT_ResetShadowWins")
     net.Broadcast()
-end)
+end
 
-hook.Add("PlayerSpawn", "Shadow_PlayerSpawn", function(ply, transition)
+local function Shadow_PlayerSpawn(ply, transition)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if ply:IsShadow() then
@@ -614,9 +616,9 @@ hook.Add("PlayerSpawn", "Shadow_PlayerSpawn", function(ply, transition)
         end
         FindNewTarget(ply)
     end
-end)
+end
 
-hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, attacker)
+local function Shadow_KillCheck_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
     if not attacker:IsShadow() then return end
@@ -630,13 +632,13 @@ hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, a
         ClearBuffTimer(attacker, victim)
         ClearShadowState(attacker)
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTWinCheckComplete", "Shadow_TTTWinCheckComplete", function(win_type)
+local function Shadow_TTTWinCheckComplete(win_type)
     if win_type == WIN_NONE then return end
     -- If the shadow is stealing their target's role, they don't win just by surviving
     if shadow_target_buff:GetInt() == SHADOW_BUFF_STEAL_ROLE then return end
@@ -644,13 +646,13 @@ hook.Add("TTTWinCheckComplete", "Shadow_TTTWinCheckComplete", function(win_type)
 
     net.Start("TTT_UpdateShadowWins")
     net.Broadcast()
-end)
+end
 
 -------------
 -- CLEANUP --
 -------------
 
-hook.Add("TTTPrepareRound", "Shadow_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Shadow_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         ClearShadowState(v)
     end
@@ -665,10 +667,36 @@ hook.Add("TTTPrepareRound", "Shadow_TTTPrepareRound", function()
     net.Broadcast()
 end)
 
-hook.Add("TTTPlayerRoleChanged", "Shadow_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Shadow_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_SHADOW and oldRole ~= newRole then
         local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
         ClearBuffTimer(ply, target)
         ClearShadowState(ply)
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_SHADOW] = function()
+    AddHook("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", Shadow_SoulLink_DoPlayerDeath)
+    AddHook("PlayerDeath", "Shadow_KillCheck_PlayerDeath", Shadow_KillCheck_PlayerDeath)
+    AddHook("PlayerSpawn", "Shadow_PlayerSpawn", Shadow_PlayerSpawn)
+    AddHook("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", Shadow_Buff_PostPlayerDeath)
+    AddHook("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage", Shadow_Buff_ScalePlayerDamage)
+    AddHook("TTTBeginRound", "Shadow_TTTBeginRound", Shadow_TTTBeginRound)
+    AddHook("TTTStopPlayerRespawning", "Shadow_TTTStopPlayerRespawning", Shadow_TTTStopPlayerRespawning)
+    AddHook("TTTWinCheckComplete", "Shadow_TTTWinCheckComplete", Shadow_TTTWinCheckComplete)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_SHADOW] = function()
+    RemoveHook("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath")
+    RemoveHook("PlayerDeath", "Shadow_KillCheck_PlayerDeath")
+    RemoveHook("PlayerSpawn", "Shadow_PlayerSpawn")
+    RemoveHook("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath")
+    RemoveHook("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage")
+    RemoveHook("TTTBeginRound", "Shadow_TTTBeginRound")
+    RemoveHook("TTTStopPlayerRespawning", "Shadow_TTTStopPlayerRespawning")
+    RemoveHook("TTTWinCheckComplete", "Shadow_TTTWinCheckComplete")
+end

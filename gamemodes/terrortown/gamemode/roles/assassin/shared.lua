@@ -18,12 +18,8 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-AddHook("Initialize", "Assassin_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-AddHook("TTTPrepareRound", "Assassin_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Assassin_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Assassin_Shared_TTTPrepareRound", InitializeEquipment)
 
 ------------------
 -- ROLE CONVARS --

@@ -2,6 +2,8 @@ local hook = hook
 local math = math
 local player = player
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local MathCos = math.cos
 local MathSin = math.sin
 local StringUpper = string.upper
@@ -17,7 +19,7 @@ local sponge_aura_mode = GetConVar("ttt_sponge_aura_mode")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Sponge_Translations_Initialize", function()
+AddHook("Initialize", "Sponge_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_sponge", "The {role} has absorbed themselves to death!")
     LANG.AddToLanguage("english", "ev_win_sponge", "The absorbant {role} won the round!")
@@ -45,7 +47,7 @@ end)
 -------------------
 
 local particleVelocity = Vector(0, 0, 20)
-hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
+local function Sponge_RoleFeatures_TTTPlayerAliveClientThink(client, ply)
     local shouldDraw = false
     if ply:GetRole() == ROLE_SPONGE and ply:GetObserverMode() == OBS_MODE_NONE then
         local ply_pos = ply:GetPos()
@@ -127,11 +129,11 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
         ply.SpongeAuraDir = nil
         ply.SpongeAuraNextPart = nil
     end
-end)
+end
 
 local client = nil
 local sponge = Material("particle/sponge.vmt")
-hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
+local function Sponge_HUDPaintBackground()
     if not client then client = LocalPlayer() end
 
     if not IsPlayer(client) then return end
@@ -156,29 +158,29 @@ hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
     end
     CRHUD:PaintStatusEffect(inside and not allInside, ROLE_COLORS[ROLE_SPONGE], sponge, "SpongeAura")
     CRHUD:PaintStatusEffect(allInside, COLOR_RED, sponge, "SpongeDisabledAura")
-end)
+end
 
 ---------------
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerRoleIcon", "Sponge_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+local function Sponge_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if ply:IsActiveSponge() and ply:Alive() then
         return ROLE_SPONGE, false
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerRing", "Sponge_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+local function Sponge_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     if IsPlayer(ent) and ent:IsActiveSponge() and ent:Alive() then
         return true, ROLE_COLORS_RADAR[ROLE_SPONGE]
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerText", "Sponge_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
+local function Sponge_TTTTargetIDPlayerText(ent, cli, text, clr, secondaryText)
     if IsPlayer(ent) and ent:IsActiveSponge() and ent:Alive() then
         return StringUpper(ROLE_STRINGS[ROLE_SPONGE]), ROLE_COLORS_RADAR[ROLE_SPONGE]
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_SPONGE] = function(ply, target)
     if not IsPlayer(target) then return end
@@ -192,11 +194,11 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Sponge_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
+local function Sponge_TTTScoreboardPlayerRole(ply, cli, color, roleFileName)
     if ply:IsSponge() then
         return ROLE_COLORS_SCOREBOARD[ROLE_SPONGE], ROLE_STRINGS_SHORT[ROLE_SPONGE]
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_SPONGE] = function(ply, target)
     if not IsPlayer(target) then return end
@@ -210,34 +212,34 @@ end
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Sponge_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Sponge_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_SPONGE then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_SPONGE]) }, c = ROLE_COLORS[ROLE_SPONGE] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Sponge_TTTEventFinishText", function(e)
+local function Sponge_TTTEventFinishText(e)
     if e.win == WIN_SPONGE then
         return LANG.GetParamTranslation("ev_win_sponge", { role = string.lower(ROLE_STRINGS[ROLE_SPONGE]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Sponge_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Sponge_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_SPONGE then
         return win_string, ROLE_STRINGS[ROLE_SPONGE]
     end
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
 -- Show who killed the sponge (if anyone)
-hook.Add("TTTScoringSummaryRender", "Sponge_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Sponge_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if ply:IsSponge() then
@@ -250,13 +252,13 @@ hook.Add("TTTScoringSummaryRender", "Sponge_TTTScoringSummaryRender", function(p
             return roleFileName, groupingRole, roleColor, name, spongeKiller, LANG.GetTranslation("score_sponge_killedby")
         end
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText", function(role, titleLabel)
+local function Sponge_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_SPONGE then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html =  "The " .. ROLE_STRINGS[ROLE_SPONGE] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player."
@@ -278,4 +280,36 @@ hook.Add("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText", function(role, tit
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_SPONGE] = function()
+    AddHook("HUDPaintBackground", "Sponge_HUDPaintBackground", Sponge_HUDPaintBackground)
+    AddHook("TTTEventFinishIconText", "Sponge_TTTEventFinishIconText", Sponge_TTTEventFinishIconText)
+    AddHook("TTTEventFinishText", "Sponge_TTTEventFinishText", Sponge_TTTEventFinishText)
+    AddHook("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientThink", Sponge_RoleFeatures_TTTPlayerAliveClientThink)
+    AddHook("TTTScoreboardPlayerRole", "Sponge_TTTScoreboardPlayerRole", Sponge_TTTScoreboardPlayerRole)
+    AddHook("TTTScoringSummaryRender", "Sponge_TTTScoringSummaryRender", Sponge_TTTScoringSummaryRender)
+    AddHook("TTTScoringWinTitle", "Sponge_TTTScoringWinTitle", Sponge_TTTScoringWinTitle)
+    AddHook("TTTTargetIDPlayerRing", "Sponge_TTTTargetIDPlayerRing", Sponge_TTTTargetIDPlayerRing)
+    AddHook("TTTTargetIDPlayerRoleIcon", "Sponge_TTTTargetIDPlayerRoleIcon", Sponge_TTTTargetIDPlayerRoleIcon)
+    AddHook("TTTTargetIDPlayerText", "Sponge_TTTTargetIDPlayerText", Sponge_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText", Sponge_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_SPONGE] = function()
+    RemoveHook("HUDPaintBackground", "Sponge_HUDPaintBackground")
+    RemoveHook("TTTEventFinishIconText", "Sponge_TTTEventFinishIconText")
+    RemoveHook("TTTEventFinishText", "Sponge_TTTEventFinishText")
+    RemoveHook("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientThink")
+    RemoveHook("TTTScoreboardPlayerRole", "Sponge_TTTScoreboardPlayerRole")
+    RemoveHook("TTTScoringSummaryRender", "Sponge_TTTScoringSummaryRender")
+    RemoveHook("TTTScoringWinTitle", "Sponge_TTTScoringWinTitle")
+    RemoveHook("TTTTargetIDPlayerRing", "Sponge_TTTTargetIDPlayerRing")
+    RemoveHook("TTTTargetIDPlayerRoleIcon", "Sponge_TTTTargetIDPlayerRoleIcon")
+    RemoveHook("TTTTargetIDPlayerText", "Sponge_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText")
+end

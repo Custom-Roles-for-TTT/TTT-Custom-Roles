@@ -2,6 +2,8 @@ local hook = hook
 local math = math
 local player = player
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local MathCos = math.cos
 local MathSin = math.sin
 local PlayerIterator = player.Iterator
@@ -20,7 +22,7 @@ local sapper_c4_guaranteed_defuse = GetConVar("ttt_sapper_c4_guaranteed_defuse")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Sapper_Translations_Initialize", function()
+AddHook("Initialize", "Sapper_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_sapper", "Has an aura that makes players immune to explosions.")
 
@@ -69,7 +71,7 @@ net.Receive("Sapper_ShowDamageAura", function()
     auraEmitter:Finish()
 end)
 
-hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
+local function Sapper_RoleFeatures_TTTPlayerAliveClientThink(client, ply)
     if ply:GetDisplayedRole() == ROLE_SAPPER and ply:GetObserverMode() == OBS_MODE_NONE then
         if not ply.SapAuraEmitter then ply.SapAuraEmitter = ParticleEmitter(ply:GetPos()) end
         if not ply.SapAuraNextPart then ply.SapAuraNextPart = CurTime() end
@@ -90,11 +92,11 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
         ply.SapAuraDir = nil
         ply.SapAuraNextPart = nil
     end
-end)
+end
 
 local client = nil
 local barrel = Material("particle/sap_barrel.vmt")
-hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
+local function Sapper_HUDPaintBackground()
     if not client then client = LocalPlayer() end
 
     if not IsPlayer(client) then return end
@@ -111,13 +113,13 @@ hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
         end
     end
     CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_SAPPER], barrel, "SapperAura")
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", function(role, titleLabel)
+local function Sapper_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_SAPPER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
 
@@ -169,4 +171,20 @@ hook.Add("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", function(role, tit
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_SAPPER] = function()
+    AddHook("HUDPaintBackground", "Sapper_HUDPaintBackground", Sapper_HUDPaintBackground)
+    AddHook("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientThink", Sapper_RoleFeatures_TTTPlayerAliveClientThink)
+    AddHook("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", Sapper_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_SAPPER] = function()
+    RemoveHook("HUDPaintBackground", "Sapper_HUDPaintBackground")
+    RemoveHook("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientThink")
+    RemoveHook("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText")
+end

@@ -351,11 +351,7 @@ end
 -- REGISTRATION --
 ------------------
 
-local registered = 0
-local function Register()
-    registered = registered + 1
-    if registered ~= 1 then return end
-
+ROLE_REGISTER_HOOKS[ROLE_ARSONIST] = function()
     AddHook("HUDPaint", "Arsonist_HUDPaint", Arsonist_HUDPaint)
     AddHook("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate", Arsonist_TTTBodySearchPopulate)
     AddHook("TTTEventFinishIconText", "Arsonist_TTTEventFinishIconText", Arsonist_TTTEventFinishIconText)
@@ -369,10 +365,7 @@ local function Register()
     AddHook("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", Arsonist_TTTTutorialRoleText)
 end
 
-local function Unregister()
-    registered = registered - 1
-    if registered ~= 0 then return end
-
+ROLE_UNREGISTER_HOOKS[ROLE_ARSONIST] = function()
     RemoveHook("HUDPaint", "Arsonist_HUDPaint")
     RemoveHook("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate")
     RemoveHook("TTTEventFinishIconText", "Arsonist_TTTEventFinishIconText")
@@ -385,24 +378,3 @@ local function Unregister()
     RemoveHook("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText")
     RemoveHook("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText")
 end
-
-AddHook("TTTPlayerRoleChanged", "Arsonist_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole == newRole then return end
-    if oldRole ~= ROLE_ARSONIST and newRole ~= ROLE_ARSONIST then return end
-
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        if oldRole == ROLE_ARSONIST then
-            Unregister()
-        elseif newRole == ROLE_ARSONIST then
-            Register()
-        end
-    end)
-end)
-AddHook("TTTPrepareRound", "Arsonist_Registration_TTTPrepareRound", function()
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        Unregister()
-        registered = 0
-    end)
-end)

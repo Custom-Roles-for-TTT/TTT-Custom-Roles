@@ -5,6 +5,9 @@ local player = player
 local surface = surface
 local timer = timer
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+
 local function IsLover(cli, ply)
     return ply:SteamID64() == cli:GetNWString("RevengerLover", "")
 end
@@ -30,7 +33,7 @@ local revenger_damage_bonus = GetConVar("ttt_revenger_damage_bonus")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Revenger_Translations_Initialize", function()
+AddHook("Initialize", "Revenger_Translations_Initialize", function()
     -- Target ID
     LANG.AddToLanguage("english", "target_revenger_lover", "YOUR SOULMATE")
 
@@ -47,31 +50,31 @@ end)
 -- ROLE POPUP --
 ----------------
 
-hook.Add("TTTRolePopupParams", "Revenger_TTTRolePopupParams", function(cli)
+local function Revenger_TTTRolePopupParams(cli)
     if cli:IsRevenger() then
         local lover = GetLover(cli)
         local name = "someone"
         if IsPlayer(lover) then name = lover:Nick() end
         return { lover = name }
     end
-end)
+end
 
 ---------------
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerTargetIcon", "Revenger_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+local function Revenger_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     if cli:IsRevenger() and IsLover(cli, ply) then
         return "lover", false, ROLE_COLORS_RADAR[ROLE_REVENGER], "up"
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerText", "Revenger_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
+local function Revenger_TTTTargetIDPlayerText(ent, cli, text, col, secondary_text)
     if not IsPlayer(ent) then return end
     if cli:IsRevenger() and IsLover(cli, ent) then
         return LANG.GetTranslation("target_revenger_lover"), ROLE_COLORS_RADAR[ROLE_REVENGER], secondary_text
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_REVENGER] = function(ply, target)
     if not ply:IsRevenger() then return end
@@ -89,7 +92,7 @@ local beacon_back = surface.GetTextureID("vgui/ttt/beacon_back")
 local beacon_rev = surface.GetTextureID("vgui/ttt/beacon_rev")
 local revenger_lover_killers = {}
 
-hook.Add("TTTRadarRender", "Revenger_TTTRadarRender", function(cli)
+local function Revenger_TTTRadarRender(cli)
     if cli:IsActiveRevenger() and #revenger_lover_killers then
         surface.SetTexture(beacon_back)
         surface.SetTextColor(0, 0, 0, 0)
@@ -107,7 +110,7 @@ hook.Add("TTTRadarRender", "Revenger_TTTRadarRender", function(cli)
             RADAR:DrawTarget(target, 16, 0.5)
         end
     end
-end)
+end
 
 local beep_success = Sound("buttons/blip2.wav")
 local function SetRevengerLoverKillerPosition()
@@ -135,25 +138,25 @@ local function UpdateRevengerLoverKiller()
 end
 net.Receive("TTT_RevengerLoverKillerRadar", UpdateRevengerLoverKiller)
 
-hook.Add("TTTEndRound", "Revenger_Radar_TTTEndRound", function()
+local function Revenger_Radar_TTTEndRound()
     if timer.Exists("updaterevengerloverkiller") then timer.Remove("updaterevengerloverkiller") end
-end)
+end
 
 ----------------
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Revenger_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Revenger_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if cli:IsRevenger() and IsLover(cli, ply) then
         return c, roleStr, ROLE_REVENGER
     end
-end)
+end
 
-hook.Add("TTTScoreboardPlayerName", "Revenger_TTTScoreboardPlayerName", function(ply, cli, nickTxt)
+local function Revenger_TTTScoreboardPlayerName(ply, cli, nickTxt)
     if cli:IsRevenger() and IsLover(cli, ply) then
         return ply:Nick() .. " (" .. LANG.GetTranslation("target_revenger_lover") .. ")"
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_REVENGER] = function(ply, target)
     if not ply:IsRevenger() then return end
@@ -168,7 +171,7 @@ end
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Revenger_TTTTutorialRoleText", function(role, titleLabel)
+local function Revenger_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_REVENGER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_REVENGER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to protect their soulmate."
@@ -186,4 +189,30 @@ hook.Add("TTTTutorialRoleText", "Revenger_TTTTutorialRoleText", function(role, t
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_REVENGER] = function()
+    AddHook("TTTEndRound", "Revenger_Radar_TTTEndRound", Revenger_Radar_TTTEndRound)
+    AddHook("TTTRadarRender", "Revenger_TTTRadarRender", Revenger_TTTRadarRender)
+    AddHook("TTTRolePopupParams", "Revenger_TTTRolePopupParams", Revenger_TTTRolePopupParams)
+    AddHook("TTTScoreboardPlayerName", "Revenger_TTTScoreboardPlayerName", Revenger_TTTScoreboardPlayerName)
+    AddHook("TTTScoreboardPlayerRole", "Revenger_TTTScoreboardPlayerRole", Revenger_TTTScoreboardPlayerRole)
+    AddHook("TTTTargetIDPlayerTargetIcon", "Revenger_TTTTargetIDPlayerTargetIcon", Revenger_TTTTargetIDPlayerTargetIcon)
+    AddHook("TTTTargetIDPlayerText", "Revenger_TTTTargetIDPlayerText", Revenger_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "Revenger_TTTTutorialRoleText", Revenger_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_REVENGER] = function()
+    RemoveHook("TTTEndRound", "Revenger_Radar_TTTEndRound")
+    RemoveHook("TTTRadarRender", "Revenger_TTTRadarRender")
+    RemoveHook("TTTRolePopupParams", "Revenger_TTTRolePopupParams")
+    RemoveHook("TTTScoreboardPlayerName", "Revenger_TTTScoreboardPlayerName")
+    RemoveHook("TTTScoreboardPlayerRole", "Revenger_TTTScoreboardPlayerRole")
+    RemoveHook("TTTTargetIDPlayerTargetIcon", "Revenger_TTTTargetIDPlayerTargetIcon")
+    RemoveHook("TTTTargetIDPlayerText", "Revenger_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "Revenger_TTTTutorialRoleText")
+end

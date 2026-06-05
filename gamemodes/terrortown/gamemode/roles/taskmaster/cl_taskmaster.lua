@@ -11,11 +11,15 @@ local table = table
 local util = util
 local vgui = vgui
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+local TableInsert = table.insert
+
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Taskmaster_Translations_Initialize", function()
+AddHook("Initialize", "Taskmaster_Translations_Initialize", function()
     -- ConVars
     LANG.AddToLanguage("english", "taskmaster_config_x_pos", "Task list X (horizontal) position")
     LANG.AddToLanguage("english", "taskmaster_config_y_pos", "Task list Y (vertical) position")
@@ -62,25 +66,25 @@ local taskmaster_win_block_length = GetConVar("ttt_taskmaster_win_block_length")
 local xOffset = CreateClientConVar("ttt_taskmaster_list_x_pos", "10", true, false, "The X (horizontal) position of the Taskmaster's task list HUD", 0, ScrW())
 local yOffset = CreateClientConVar("ttt_taskmaster_list_y_pos", "10", true, false, "The Y (vertical) position of the Taskmaster's task list HUD", 0, ScrH())
 
-hook.Add("TTTSettingsRolesTabSections", "Taskmaster_TTTSettingsRolesTabSections", function(role, parentForm)
+local function Taskmaster_TTTSettingsRolesTabSections(role, parentForm)
     if role ~= ROLE_TASKMASTER then return end
 
     parentForm:NumSlider(LANG.GetTranslation("taskmaster_config_x_pos"), "ttt_taskmaster_list_x_pos", 0, ScrW(), 0)
     parentForm:NumSlider(LANG.GetTranslation("taskmaster_config_y_pos"), "ttt_taskmaster_list_y_pos", 0, ScrH(), 0)
     return true
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Taskmaster_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Taskmaster_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_TASKMASTER then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_TASKMASTER]) }, c = ROLE_COLORS[ROLE_TASKMASTER] }
     end
-end)
+end
 
-hook.Add("TTTScoringSecondaryWins", "Taskmaster_TTTScoringSecondaryWins", function(wintype, secondary_wins)
+local function Taskmaster_TTTScoringSecondaryWins(wintype, secondary_wins)
     if wintype == WIN_TASKMASTER then return end
 
     if not taskmaster_wins_with_others:GetBool() then return end
@@ -88,17 +92,17 @@ hook.Add("TTTScoringSecondaryWins", "Taskmaster_TTTScoringSecondaryWins", functi
     for _, ply in player.Iterator() do
         if not ply:IsTaskmaster() then continue end
         if ply.TaskmasterShouldWin then
-            table.insert(secondary_wins, ROLE_TASKMASTER)
+            TableInsert(secondary_wins, ROLE_TASKMASTER)
             break
         end
     end
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
-hook.Add("TTTScoringSummaryRender", "Taskmaster_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Taskmaster_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if ply:IsTaskmaster() then
@@ -106,23 +110,23 @@ hook.Add("TTTScoringSummaryRender", "Taskmaster_TTTScoringSummaryRender", functi
         local total = ply.TaskmasterTotalCount or "??"
         return roleFileName, groupingRole, roleColor, name, complete .. "/" .. total, LANG.GetTranslation("score_taskmaster_taskscomplete")
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Taskmaster_TTTEventFinishText", function(e)
+local function Taskmaster_TTTEventFinishText(e)
     if e.win == WIN_TASKMASTER then
         return LANG.GetParamTranslation("ev_win_taskmaster", { role = string.lower(ROLE_STRINGS[ROLE_TASKMASTER]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Taskmaster_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Taskmaster_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_TASKMASTER then
         return win_string, ROLE_STRINGS[ROLE_TASKMASTER]
     end
-end)
+end
 
 ---------
 -- HUD --
@@ -223,7 +227,7 @@ local function DrawTask(task, height, isShadow)
     return height
 end
 
-hook.Add("HUDPaintBackground", "Taskmaster_HUDPaintBackground", function()
+local function Taskmaster_HUDPaintBackground()
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if maxHeight == 0 or maxWidth == 0 then return end
 
@@ -235,9 +239,9 @@ hook.Add("HUDPaintBackground", "Taskmaster_HUDPaintBackground", function()
     -- Add 2 to the maxWidth here to account for the text shadows
     draw.RoundedBox(8, xOffset:GetInt(), yOffset:GetInt(), maxWidth + 2, maxHeight, Color(0, 0, 10, 200))
     maxWidth, maxHeight = 0, 0
-end)
+end
 
-hook.Add("HUDPaint", "Taskmaster_HUDPaint", function()
+local function Taskmaster_HUDPaint()
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not client then
@@ -258,9 +262,9 @@ hook.Add("HUDPaint", "Taskmaster_HUDPaint", function()
     end
 
     maxHeight = height - yOffset:GetInt()
-end)
+end
 
-hook.Add("TTTHUDInfoPaint", "Taskmaster_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
+local function Taskmaster_TTTHUDInfoPaint(cli, label_left, label_top, active_labels)
     if cli:IsActiveTaskmaster() then
         local blockEnd = GetGlobalFloat("taskmaster_block_end", 0)
         if blockEnd > 0 then
@@ -278,10 +282,10 @@ hook.Add("TTTHUDInfoPaint", "Taskmaster_TTTHUDInfoPaint", function(cli, label_le
             surface.DrawText(text)
 
             -- Track that the label was added so others can position accurately
-            table.insert(active_labels, "taskmaster")
+            TableInsert(active_labels, "taskmaster")
         end
     end
-end)
+end
 
 ----------------------
 -- TASK REROLL MENU --
@@ -376,16 +380,16 @@ local function CreateTaskList(dscrollpanel)
     for _, id in ipairs(client.TaskmasterKillTasks or {}) do
         local dtask, dline = CreateTaskReroll(TASKMASTER.KillTasks[id], dscrollpanel)
         if dtask then
-            table.insert(dtasks, dtask)
-            table.insert(dtasks, dline)
+            TableInsert(dtasks, dtask)
+            TableInsert(dtasks, dline)
         end
     end
 
     for _, id in ipairs(client.TaskmasterMiscTasks or {}) do
         local dtask, dline = CreateTaskReroll(TASKMASTER.MiscTasks[id], dscrollpanel)
         if dtask then
-            table.insert(dtasks, dtask)
-            table.insert(dtasks, dline)
+            TableInsert(dtasks, dtask)
+            TableInsert(dtasks, dline)
         end
     end
 
@@ -413,7 +417,7 @@ local function CreateTaskList(dscrollpanel)
     end
 end
 
-hook.Add("TTTEquipmentTabs", "Taskmaster_TTTEquipmentTabs", function(dsheet, dframe)
+local function Taskmaster_TTTEquipmentTabs(dsheet, dframe)
     if not client then
         client = LocalPlayer()
     end
@@ -478,13 +482,13 @@ hook.Add("TTTEquipmentTabs", "Taskmaster_TTTEquipmentTabs", function(dsheet, dfr
         dsheet:AddSheet(LANG.GetTranslation("taskmaster_reroll_name"), dscrollpanel, "icon16/table_edit.png", false, false, LANG.GetTranslation("equip_tooltip_taskmaster_reroll"))
         return true
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role, titleLabel)
+local function Taskmaster_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_TASKMASTER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to complete a series of tasks before the round ends."
@@ -531,11 +535,11 @@ hook.Add("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role,
         local tasks = {}
         for _, t in pairs(TASKMASTER.KillTasks) do
             if not t.Enabled() then continue end
-            table.insert(tasks, { name = t.Name(), desc = t.Description() })
+            TableInsert(tasks, { name = t.Name(), desc = t.Description() })
         end
         for _, t in pairs(TASKMASTER.MiscTasks) do
             if not t.Enabled() then continue end
-            table.insert(tasks, { name = t.Name(), desc = t.Description() })
+            TableInsert(tasks, { name = t.Name(), desc = t.Description() })
         end
         table.SortByMember(tasks, "name", true)
 
@@ -548,7 +552,7 @@ hook.Add("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", function(role,
 
         return html
     end
-end)
+end
 
 ------------
 -- SOUNDS --
@@ -557,3 +561,35 @@ end)
 net.Receive("TTT_TaskmasterTaskComplete", function(len, ply)
     surface.PlaySound("buttons/bell1.wav")
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_TASKMASTER] = function()
+    AddHook("HUDPaint", "Taskmaster_HUDPaint", Taskmaster_HUDPaint)
+    AddHook("HUDPaintBackground", "Taskmaster_HUDPaintBackground", Taskmaster_HUDPaintBackground)
+    AddHook("TTTEquipmentTabs", "Taskmaster_TTTEquipmentTabs", Taskmaster_TTTEquipmentTabs)
+    AddHook("TTTEventFinishIconText", "Taskmaster_TTTEventFinishIconText", Taskmaster_TTTEventFinishIconText)
+    AddHook("TTTEventFinishText", "Taskmaster_TTTEventFinishText", Taskmaster_TTTEventFinishText)
+    AddHook("TTTHUDInfoPaint", "Taskmaster_TTTHUDInfoPaint", Taskmaster_TTTHUDInfoPaint)
+    AddHook("TTTScoringSecondaryWins", "Taskmaster_TTTScoringSecondaryWins", Taskmaster_TTTScoringSecondaryWins)
+    AddHook("TTTScoringSummaryRender", "Taskmaster_TTTScoringSummaryRender", Taskmaster_TTTScoringSummaryRender)
+    AddHook("TTTScoringWinTitle", "Taskmaster_TTTScoringWinTitle", Taskmaster_TTTScoringWinTitle)
+    AddHook("TTTSettingsRolesTabSections", "Taskmaster_TTTSettingsRolesTabSections", Taskmaster_TTTSettingsRolesTabSections)
+    AddHook("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText", Taskmaster_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_TASKMASTER] = function()
+    RemoveHook("HUDPaint", "Taskmaster_HUDPaint")
+    RemoveHook("HUDPaintBackground", "Taskmaster_HUDPaintBackground")
+    RemoveHook("TTTEquipmentTabs", "Taskmaster_TTTEquipmentTabs")
+    RemoveHook("TTTEventFinishIconText", "Taskmaster_TTTEventFinishIconText")
+    RemoveHook("TTTEventFinishText", "Taskmaster_TTTEventFinishText")
+    RemoveHook("TTTHUDInfoPaint", "Taskmaster_TTTHUDInfoPaint")
+    RemoveHook("TTTScoringSecondaryWins", "Taskmaster_TTTScoringSecondaryWins")
+    RemoveHook("TTTScoringSummaryRender", "Taskmaster_TTTScoringSummaryRender")
+    RemoveHook("TTTScoringWinTitle", "Taskmaster_TTTScoringWinTitle")
+    RemoveHook("TTTSettingsRolesTabSections", "Taskmaster_TTTSettingsRolesTabSections")
+    RemoveHook("TTTTutorialRoleText", "Taskmaster_TTTTutorialRoleText")
+end

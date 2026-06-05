@@ -1,12 +1,14 @@
 AddCSLuaFile()
 
-local plymeta = FindMetaTable("Player")
-
 local hook = hook
 local player = player
 local util = util
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
+
+local plymeta = FindMetaTable("Player")
 
 util.AddNetworkString("TTT_TurncoatTeamChange")
 
@@ -52,12 +54,12 @@ function plymeta:ChangeTurncoatTeam(extra)
 end
 
 -- Reset the role back to the innocent team
-hook.Add("TTTPrepareRound", "Turncoat_PrepareRound", function()
+AddHook("TTTPrepareRound", "Turncoat_PrepareRound", function()
     SetTurncoatTeam(nil, false)
 end)
 
 -- Change the turncoat's team automatically if they kill an innocent and that setting is enabled
-hook.Add("DoPlayerDeath", "Turncoat_DoPlayerDeath", function(ply, attacker, dmginfo)
+local function Turncoat_DoPlayerDeath(ply, attacker, dmginfo)
     if not turncoat_change_innocent_kill:GetBool() then return end
     if not IsPlayer(attacker) then return end
     if not ply:IsInnocentTeam() then return end
@@ -67,4 +69,16 @@ hook.Add("DoPlayerDeath", "Turncoat_DoPlayerDeath", function(ply, attacker, dmgi
 
     attacker:ChangeTurncoatTeam(" by killing " .. ROLE_STRINGS_EXT[ROLE_INNOCENT])
     attacker:StripWeapon("weapon_tur_changer")
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_TURNCOAT] = function()
+    AddHook("DoPlayerDeath", "Turncoat_DoPlayerDeath", Turncoat_DoPlayerDeath)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_TURNCOAT] = function()
+    RemoveHook("DoPlayerDeath", "Turncoat_DoPlayerDeath")
+end

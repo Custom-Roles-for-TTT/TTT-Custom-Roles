@@ -1,10 +1,13 @@
 local hook = hook
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Detective_Translations_Initialize", function()
+AddHook("Initialize", "Detective_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_detective", "Base version of the detectives who can use their DNA scanner to track down killers.")
 
@@ -20,7 +23,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Detective_TTTTutorialRoleText", function(role, titleLabel)
+local function Detective_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_DETECTIVE then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
@@ -41,4 +44,16 @@ hook.Add("TTTTutorialRoleText", "Detective_TTTTutorialRoleText", function(role, 
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_DETECTIVE] = function()
+    AddHook("TTTTutorialRoleText", "Detective_TTTTutorialRoleText", Detective_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_DETECTIVE] = function()
+    RemoveHook("TTTTutorialRoleText", "Detective_TTTTutorialRoleText")
+end

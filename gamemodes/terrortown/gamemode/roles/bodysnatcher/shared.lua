@@ -2,6 +2,8 @@ AddCSLuaFile()
 
 local hook = hook
 
+local AddHook = hook.Add
+
 -- Bodysnatcher reveal modes
 BODYSNATCHER_REVEAL_NONE = 0
 BODYSNATCHER_REVEAL_ALL = 1
@@ -181,13 +183,13 @@ ROLE_CONVARS[ROLE_BODYSNATCHER] = {
 -- ROLE FEATURES --
 -------------------
 
-hook.Add("TTTUpdateRoleState", "Bodysnatcher_Team_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Bodysnatcher_Team_TTTUpdateRoleState", function()
     local is_independent = bodysnatcher_is_independent:GetBool()
     INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = is_independent
     JESTER_ROLES[ROLE_BODYSNATCHER] = not is_independent
 end)
 
-hook.Add("TTTIsPlayerRespawning", "Bodysnatcher_TTTIsPlayerRespawning", function(ply)
+AddHook("TTTIsPlayerRespawning", "Bodysnatcher_TTTIsPlayerRespawning", function(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 

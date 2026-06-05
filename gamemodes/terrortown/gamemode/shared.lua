@@ -934,6 +934,8 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_SHOP_ITEMS = {}
 ROLE_STARTING_CREDITS = {}
 ROLE_STARTING_HEALTH = {}
+ROLE_REGISTER_HOOKS = {}
+ROLE_UNREGISTER_HOOKS = {}
 
 -- Optional features
 ROLE_CAN_SEE_C4 = {}
@@ -1184,6 +1186,45 @@ function RegisterRole(tbl)
 
     hook.Call("TTTRoleRegistered", nil, roleID)
 end
+
+local role_hooks_registered = {}
+local function RegisterHooks(role)
+    role_hooks_registered[role] = (role_hooks_registered[role] or 0) + 1
+    if role_hooks_registered[role] ~= 1 then return end
+
+    ROLE_REGISTER_HOOKS[role]()
+end
+local function UnregisterHooks(role)
+    role_hooks_registered[role] = (role_hooks_registered[role] or 0) - 1
+    if role_hooks_registered[role] ~= 0 then return end
+
+    ROLE_UNREGISTER_HOOKS[role]()
+end
+
+AddHook("TTTPlayerRoleChanged", "HookRegistration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == newRole then return end
+    if not ROLE_UNREGISTER_HOOKS[oldRole] and not ROLE_REGISTER_HOOKS[newRole] then return end
+
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, function()
+        if ROLE_UNREGISTER_HOOKS[oldRole] then
+            UnregisterHooks(oldRole)
+        elseif ROLE_REGISTER_HOOKS[newRole] then
+            RegisterHooks(newRole)
+        end
+    end)
+end)
+AddHook("TTTPrepareRound", "HookRegistration_TTTPrepareRound", function()
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, function()
+        for role = 0, ROLE_MAX do
+            if ROLE_UNREGISTER_HOOKS[role] then
+                UnregisterHooks(role)
+            end
+        end
+        role_hooks_registered = {}
+    end)
+end)
 
 include("util.lua")
 

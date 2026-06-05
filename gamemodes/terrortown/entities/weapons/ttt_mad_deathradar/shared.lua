@@ -33,9 +33,5 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "MadScientist_DeathRadar_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "MadScientist_DeathRadar_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+hook.Add("Initialize", "MadScientist_DeathRadar_Initialize", InitializeEquipment)
+hook.Add("TTTPrepareRound", "MadScientist_DeathRadar_TTTPrepareRound", InitializeEquipment)

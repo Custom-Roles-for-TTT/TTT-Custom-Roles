@@ -2,6 +2,8 @@ local hook = hook
 local math = math
 local player = player
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local MathCos = math.cos
 local MathSin = math.sin
 local PlayerIterator = player.Iterator
@@ -19,7 +21,7 @@ local paladin_damage_reduction = GetConVar("ttt_paladin_damage_reduction")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Paladin_Translations_Initialize", function()
+AddHook("Initialize", "Paladin_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_paladin", "Has an aura that can heal players and reduce incoming damage.")
 
@@ -36,7 +38,7 @@ end)
 -------------------
 
 local particleVelocity = Vector(0, 0, 20)
-hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
+local function Paladin_RoleFeatures_TTTPlayerAliveClientThink(client, ply)
     if ply:GetDisplayedRole() == ROLE_PALADIN and ply:GetObserverMode() == OBS_MODE_NONE then
         if not ply.AuraEmitter then ply.AuraEmitter = ParticleEmitter(ply:GetPos()) end
         if not ply.AuraNextPart then ply.AuraNextPart = CurTime() end
@@ -67,11 +69,11 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
         ply.AuraDir = nil
         ply.AuraNextPart = nil
     end
-end)
+end
 
 local client = nil
 local shield = Material("particle/shield.vmt")
-hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
+local function Paladin_HUDPaintBackground()
     if not client then client = LocalPlayer() end
 
     if not IsPlayer(client) then return end
@@ -88,13 +90,13 @@ hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
         end
     end
     CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_PALADIN], shield, "PaladinAura")
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, titleLabel)
+local function Paladin_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_PALADIN then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -141,4 +143,20 @@ hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, ti
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_PALADIN] = function()
+    AddHook("HUDPaintBackground", "Paladin_HUDPaintBackground", Paladin_HUDPaintBackground)
+    AddHook("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClientThink", Paladin_RoleFeatures_TTTPlayerAliveClientThink)
+    AddHook("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", Paladin_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_PALADIN] = function()
+    RemoveHook("HUDPaintBackground", "Paladin_HUDPaintBackground")
+    RemoveHook("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClientThink")
+    RemoveHook("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText")
+end

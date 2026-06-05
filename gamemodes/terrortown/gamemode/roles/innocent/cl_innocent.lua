@@ -1,10 +1,13 @@
 local hook = hook
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Innocent_Translations_Initialize", function()
+AddHook("Initialize", "Innocent_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_innocent", "Base member of the innocent team that has no special abilities.")
 
@@ -19,9 +22,21 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Innocent_TTTTutorialRoleText", function(role, titleLabel)
+local function Innocent_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_INNOCENT then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         return "The " .. ROLE_STRINGS[ROLE_INNOCENT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> with no special abilities."
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_INNOCENT] = function()
+    AddHook("TTTTutorialRoleText", "Innocent_TTTTutorialRoleText", Innocent_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_INNOCENT] = function()
+    RemoveHook("TTTTutorialRoleText", "Innocent_TTTTutorialRoleText")
+end

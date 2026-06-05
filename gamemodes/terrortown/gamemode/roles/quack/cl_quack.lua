@@ -1,6 +1,9 @@
 local hook = hook
 local string = string
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+
 -------------
 -- CONVARS --
 -------------
@@ -12,7 +15,7 @@ local quack_station_bomb = GetConVar("ttt_quack_station_bomb")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Quack_Translations_Initialize", function()
+AddHook("Initialize", "Quack_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "fake_cure_desc", "Use on a player to trick them into thinking you cured them.")
 
@@ -48,7 +51,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Quack_TTTTutorialRoleText", function(role, titleLabel)
+local function Quack_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_QUACK then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_QUACK] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is imitate the " .. ROLE_STRINGS[ROLE_DOCTOR] .. " and \"heal\" their patients... <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>to death</span>."
@@ -65,4 +68,16 @@ hook.Add("TTTTutorialRoleText", "Quack_TTTTutorialRoleText", function(role, titl
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_QUACK] = function()
+    AddHook("TTTTutorialRoleText", "Quack_TTTTutorialRoleText", Quack_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_QUACK] = function()
+    RemoveHook("TTTTutorialRoleText", "Quack_TTTTutorialRoleText")
+end

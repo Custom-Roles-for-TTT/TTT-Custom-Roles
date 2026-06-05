@@ -9,7 +9,10 @@ local table = table
 local timer = timer
 local util = util
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
+local TableInsert = table.insert
 
 util.AddNetworkString("TTT_SwapperSwapped")
 
@@ -63,7 +66,7 @@ local function GetPlayerWeaponInfo(ply)
             secondary_ammo = ply:GetAmmoCount(secondary_ammo_type)
         end
 
-        table.insert(ply_weapons, {
+        TableInsert(ply_weapons, {
             class = WEPS.GetClass(w),
             category = w.Category,
             primary_ammo = primary_ammo,
@@ -138,7 +141,7 @@ local function SwapCupidLovers(attacker, swapper)
     CopyLoverNWVars(attacker, swapper, swaCupidSID, swaLoverSID)
 end
 
-hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, attacker)
+local function Swapper_KillCheck_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
     if not victim:IsSwapper() or victim:IsRoleAbilityDisabled() then return end
@@ -255,9 +258,9 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
     net.WriteString(attacker:Nick())
     net.WriteString(victim:SteamID64())
     net.Broadcast()
-end)
+end
 
-hook.Add("TTTStopPlayerRespawning", "Swapper_TTTStopPlayerRespawning", function(ply)
+local function Swapper_TTTStopPlayerRespawning(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -265,18 +268,34 @@ hook.Add("TTTStopPlayerRespawning", "Swapper_TTTStopPlayerRespawning", function(
         timer.Remove("Swapping_" .. ply:SteamID64())
         ply:SetNWBool("IsSwapping", false)
     end
-end)
+end
 
-hook.Add("TTTCupidShouldLoverSurvive", "Swapper_TTTCupidShouldLoverSurvive", function(ply, lover)
+local function Swapper_TTTCupidShouldLoverSurvive(ply, lover)
     if ply:GetNWBool("IsSwapping", false) or lover:GetNWBool("IsSwapping", false) then
         return true
     end
-end)
+end
 
-hook.Add("TTTPrepareRound", "Swapper_PrepareRound", function()
+AddHook("TTTPrepareRound", "Swapper_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWString("SwappedWith", "")
         v:SetNWBool("IsSwapping", false)
         timer.Remove("Swapping_" .. v:SteamID64())
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_SWAPPER] = function()
+    AddHook("PlayerDeath", "Swapper_KillCheck_PlayerDeath", Swapper_KillCheck_PlayerDeath)
+    AddHook("TTTCupidShouldLoverSurvive", "Swapper_TTTCupidShouldLoverSurvive", Swapper_TTTCupidShouldLoverSurvive)
+    AddHook("TTTStopPlayerRespawning", "Swapper_TTTStopPlayerRespawning", Swapper_TTTStopPlayerRespawning)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_SWAPPER] = function()
+    RemoveHook("PlayerDeath", "Swapper_KillCheck_PlayerDeath")
+    RemoveHook("TTTCupidShouldLoverSurvive", "Swapper_TTTCupidShouldLoverSurvive")
+    RemoveHook("TTTStopPlayerRespawning", "Swapper_TTTStopPlayerRespawning")
+end

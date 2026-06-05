@@ -1,5 +1,9 @@
 local hook = hook
 local net = net
+local table = table
+
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 
 -------------
 -- CONVARS --
@@ -22,7 +26,7 @@ local phantom_respawn_limit = GetConVar("ttt_phantom_respawn_limit")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Phantom_Translations_Initialize", function()
+AddHook("Initialize", "Phantom_Translations_Initialize", function()
     -- Target ID
     LANG.AddToLanguage("english", "target_haunted", "HAUNTED BY PHANTOM")
 
@@ -59,7 +63,7 @@ end)
 -- SCORING --
 -------------
 
-hook.Add("Initialize", "Phantom_Scoring_Initialize", function()
+AddHook("Initialize", "Phantom_Scoring_Initialize", function()
     local haunt_icon = Material("icon16/group.png")
     local PT = LANG.GetParamTranslation
     local Event = CLSCORE.DeclareEventDisplay
@@ -96,12 +100,12 @@ end
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerText", "Phantom_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
+local function Phantom_TTTTargetIDPlayerText(ent, cli, text, col, secondary_text)
     if not IsPlayer(ent) then return end
     if IsLoverHaunting(cli, ent) then
         return LANG.GetTranslation("target_haunted"), ROLE_COLORS_RADAR[ROLE_PHANTOM]
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_PHANTOM] = function(ply, target)
     if not IsPlayer(target) then return end
@@ -115,17 +119,17 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Phantom_TTTScoreboardPlayerRole", function(ply, client, c, roleStr)
+local function Phantom_TTTScoreboardPlayerRole(ply, client, c, roleStr)
     if IsLoverHaunting(client, ply) then
         return c, roleStr, ROLE_PHANTOM
     end
-end)
+end
 
-hook.Add("TTTScoreboardPlayerName", "Phantom_TTTScoreboardPlayerName", function(ply, cli, text)
+local function Phantom_TTTScoreboardPlayerName(ply, cli, text)
     if IsLoverHaunting(cli, ply) then
         return ply:Nick() .. " (" .. LANG.GetTranslation("target_haunted") .. ")"
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_PHANTOM] = function(ply, target)
     if not IsPlayer(target) then return end
@@ -139,7 +143,7 @@ end
 -- HAUNTING --
 --------------
 
-hook.Add("TTTSpectatorShowHUD", "Phantom_Haunting_TTTSpectatorShowHUD", function(cli, tgt)
+local function Phantom_Haunting_TTTSpectatorShowHUD(cli, tgt)
     if not cli:IsPhantom() or not IsPlayer(tgt) then return end
 
     local L = LANG.GetUnsafeLanguageTable()
@@ -182,19 +186,19 @@ hook.Add("TTTSpectatorShowHUD", "Phantom_Haunting_TTTSpectatorShowHUD", function
     local max_power = phantom_killer_haunt_power_max:GetInt()
 
     CRHUD:PaintPowersHUD(cli, powers, max_power, current_power, willpower_colors, L.haunt_title)
-end)
+end
 
-hook.Add("TTTShouldPlayerSmoke", "Phantom_Haunting_TTTShouldPlayerSmoke", function(v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
+local function Phantom_Haunting_TTTShouldPlayerSmoke(v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
     if v:GetNWBool("PhantomHaunted", false) and phantom_killer_smoke:GetBool() then
         return true
     end
-end)
+end
 
 -----------
 -- POPUP --
 -----------
 
-hook.Add("TTTRolePopupParams", "Phantom_TTTRolePopupParams", function(cli)
+local function Phantom_TTTRolePopupParams(cli)
     if not cli:IsPhantom() then return end
 
     local abilities = {}
@@ -217,13 +221,13 @@ hook.Add("TTTRolePopupParams", "Phantom_TTTRolePopupParams", function(cli)
     return {
         abilities = abilitiesString
     }
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", function(role, titleLabel)
+local function Phantom_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_PHANTOM then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to help defeat their team's enemies."
@@ -302,4 +306,28 @@ hook.Add("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", function(role, ti
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_PHANTOM] = function()
+    AddHook("TTTRolePopupParams", "Phantom_TTTRolePopupParams", Phantom_TTTRolePopupParams)
+    AddHook("TTTScoreboardPlayerName", "Phantom_TTTScoreboardPlayerName", Phantom_TTTScoreboardPlayerName)
+    AddHook("TTTScoreboardPlayerRole", "Phantom_TTTScoreboardPlayerRole", Phantom_TTTScoreboardPlayerRole)
+    AddHook("TTTShouldPlayerSmoke", "Phantom_Haunting_TTTShouldPlayerSmoke", Phantom_Haunting_TTTShouldPlayerSmoke)
+    AddHook("TTTSpectatorShowHUD", "Phantom_Haunting_TTTSpectatorShowHUD", Phantom_Haunting_TTTSpectatorShowHUD)
+    AddHook("TTTTargetIDPlayerText", "Phantom_TTTTargetIDPlayerText", Phantom_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", Phantom_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_PHANTOM] = function()
+    RemoveHook("TTTRolePopupParams", "Phantom_TTTRolePopupParams")
+    RemoveHook("TTTScoreboardPlayerName", "Phantom_TTTScoreboardPlayerName")
+    RemoveHook("TTTScoreboardPlayerRole", "Phantom_TTTScoreboardPlayerRole")
+    RemoveHook("TTTShouldPlayerSmoke", "Phantom_Haunting_TTTShouldPlayerSmoke")
+    RemoveHook("TTTSpectatorShowHUD", "Phantom_Haunting_TTTSpectatorShowHUD")
+    RemoveHook("TTTTargetIDPlayerText", "Phantom_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText")
+end

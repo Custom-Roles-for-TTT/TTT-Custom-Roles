@@ -384,11 +384,7 @@ end
 -- REGISTRATION --
 ------------------
 
-local registered = 0
-local function Register()
-    registered = registered + 1
-    if registered ~= 1 then return end
-
+ROLE_REGISTER_HOOKS[ROLE_ASSASSIN] = function()
     AddHook("DoPlayerDeath", "Assassin_DoPlayerDeath", Assassin_DoPlayerDeath)
     -- Update assassin target when a player disconnects
     AddHook("PlayerDisconnected", "Assassin_Target_PlayerDisconnected", UpdateAssassinTargets)
@@ -401,10 +397,7 @@ local function Register()
     AddHook("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", Assassin_TTTTurncoatTeamChanged)
 end
 
-local function Unregister()
-    registered = registered - 1
-    if registered ~= 0 then return end
-
+ROLE_UNREGISTER_HOOKS[ROLE_ASSASSIN] = function()
     RemoveHook("DoPlayerDeath", "Assassin_DoPlayerDeath")
     RemoveHook("PlayerDisconnected", "Assassin_Target_PlayerDisconnected")
     RemoveHook("ScalePlayerDamage", "Assassin_ScalePlayerDamage")
@@ -415,24 +408,3 @@ local function Unregister()
     RemoveHook("TTTPrintResultMessage", "Assassin_TTTPrintResultMessage")
     RemoveHook("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged")
 end
-
-AddHook("TTTPlayerRoleChanged", "Assassin_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole == newRole then return end
-    if oldRole ~= ROLE_ASSASSIN and newRole ~= ROLE_ASSASSIN then return end
-
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        if oldRole == ROLE_ASSASSIN then
-            Unregister()
-        elseif newRole == ROLE_ASSASSIN then
-            Register()
-        end
-    end)
-end)
-AddHook("TTTPrepareRound", "Assassin_Registration_TTTPrepareRound", function()
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        Unregister()
-        registered = 0
-    end)
-end)

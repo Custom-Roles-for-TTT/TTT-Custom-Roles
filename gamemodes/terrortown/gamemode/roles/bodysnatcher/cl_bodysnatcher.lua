@@ -311,44 +311,16 @@ end
 -- REGISTRATION --
 ------------------
 
-local registered = 0
-local function Register()
-    registered = registered + 1
-    if registered ~= 1 then return end
-
+ROLE_REGISTER_HOOKS[ROLE_BODYSNATCHER] = function()
     AddHook("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", Bodysnatcher_TTTHUDInfoPaint)
     AddHook("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride", Bodysnatcher_TTTRolePopupRoleStringOverride)
     AddHook("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender", Bodysnatcher_TTTScoringSummaryRender)
     AddHook("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", Bodysnatcher_TTTTutorialRoleText)
 end
 
-local function Unregister()
-    registered = registered - 1
-    if registered ~= 0 then return end
-
+ROLE_UNREGISTER_HOOKS[ROLE_BODYSNATCHER] = function()
     RemoveHook("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint")
     RemoveHook("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride")
     RemoveHook("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender")
     RemoveHook("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText")
 end
-
-AddHook("TTTPlayerRoleChanged", "Bodysnatcher_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole == newRole then return end
-    if oldRole ~= ROLE_BODYSNATCHER and newRole ~= ROLE_BODYSNATCHER then return end
-
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        if oldRole == ROLE_BODYSNATCHER then
-            Unregister()
-        elseif newRole == ROLE_BODYSNATCHER then
-            Register()
-        end
-    end)
-end)
-AddHook("TTTPrepareRound", "Bodysnatcher_Registration_TTTPrepareRound", function()
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        Unregister()
-        registered = 0
-    end)
-end)

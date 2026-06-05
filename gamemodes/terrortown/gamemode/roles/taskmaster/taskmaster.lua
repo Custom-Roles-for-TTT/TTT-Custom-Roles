@@ -10,6 +10,9 @@ local player = player
 local table = table
 local util = util
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+
 local plymeta = FindMetaTable("Player")
 
 util.AddNetworkString("TTT_TaskmasterRerollTask")
@@ -224,7 +227,7 @@ function plymeta:CompleteTask(taskId)
     return false
 end
 
-hook.Add("TTTOnRoleAbilityEnabled", "Taskmaster_TTTOnRoleAbilityEnabled", function(ply)
+local function Taskmaster_TTTOnRoleAbilityEnabled(ply)
     if not ply:IsTaskmaster() then return end
     if not ply.TaskmasterCompletedButBlocked then return end
 
@@ -232,7 +235,7 @@ hook.Add("TTTOnRoleAbilityEnabled", "Taskmaster_TTTOnRoleAbilityEnabled", functi
         ply:CompleteTask(taskId)
     end
     ply.TaskmasterCompletedButBlocked = nil
-end)
+end
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_TASKMASTER] = function(ply)
     ply:SetProperty("TaskmasterKillTasks", {}, ply)
@@ -253,7 +256,7 @@ end
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTWinCheckBlocks", "Taskmaster_TTTWinCheckBlocks", function(win_blocks)
+local function Taskmaster_TTTWinCheckBlocks(win_blocks)
     table.insert(win_blocks, function(win_type)
         if win_type == WIN_NONE or win_type == WIN_TASKMASTER then return win_type end
 
@@ -295,9 +298,9 @@ hook.Add("TTTWinCheckBlocks", "Taskmaster_TTTWinCheckBlocks", function(win_block
             return WIN_NONE
         end
     end)
-end)
+end
 
-hook.Add("TTTCheckForWin", "Taskmaster_TTTCheckForWin", function()
+local function Taskmaster_TTTCheckForWin()
     local winning_taskmaster_alive = false
     local other_alive = false
     for _, v in player.Iterator() do
@@ -314,15 +317,15 @@ hook.Add("TTTCheckForWin", "Taskmaster_TTTCheckForWin", function()
     if winning_taskmaster_alive and (not taskmaster_wins_with_others:GetBool() or not other_alive) then
         return WIN_TASKMASTER
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Taskmaster_TTTPrintResultMessage", function(type)
+local function Taskmaster_TTTPrintResultMessage(type)
     if type == WIN_TASKMASTER then
         LANG.Msg("win_taskmaster", { role = ROLE_STRINGS[ROLE_TASKMASTER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_TASKMASTER] .. " wins.\n")
         return true
     end
-end)
+end
 
 -------------
 -- CLEANUP --
@@ -355,17 +358,35 @@ local function CleanupTasks(ply)
     ply.TaskmasterCompletedButBlocked = nil
 end
 
-hook.Add("TTTPrepareRound", "Taskmaster_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Taskmaster_TTTPrepareRound", function()
     SetGlobalFloat("taskmaster_block_end", 0)
     for _, ply in player.Iterator() do
         CleanupTasks(ply)
     end
 end)
 
-hook.Add("TTTPlayerRoleChanged", "Taskmaster_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Taskmaster_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
 
     if oldRole == ROLE_TASKMASTER and oldRole ~= newRole then
         CleanupTasks(ply)
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_TASKMASTER] = function()
+    AddHook("TTTCheckForWin", "Taskmaster_TTTCheckForWin", Taskmaster_TTTCheckForWin)
+    AddHook("TTTOnRoleAbilityEnabled", "Taskmaster_TTTOnRoleAbilityEnabled", Taskmaster_TTTOnRoleAbilityEnabled)
+    AddHook("TTTPrintResultMessage", "Taskmaster_TTTPrintResultMessage", Taskmaster_TTTPrintResultMessage)
+    AddHook("TTTWinCheckBlocks", "Taskmaster_TTTWinCheckBlocks", Taskmaster_TTTWinCheckBlocks)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_TASKMASTER] = function()
+    RemoveHook("TTTCheckForWin", "Taskmaster_TTTCheckForWin")
+    RemoveHook("TTTOnRoleAbilityEnabled", "Taskmaster_TTTOnRoleAbilityEnabled")
+    RemoveHook("TTTPrintResultMessage", "Taskmaster_TTTPrintResultMessage")
+    RemoveHook("TTTWinCheckBlocks", "Taskmaster_TTTWinCheckBlocks")
+end

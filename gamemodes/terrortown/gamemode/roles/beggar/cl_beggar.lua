@@ -534,11 +534,7 @@ end
 -- REGISTRATION --
 ------------------
 
-local registered = 0
-local function Register()
-    registered = registered + 1
-    if registered ~= 1 then return end
-
+ROLE_REGISTER_HOOKS[ROLE_BEGGAR] = function()
     AddHook("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", Beggar_TTTTutorialRoleText)
     AddHook("HUDPaint", "Beggar_HUDPaint", Beggar_HUDPaint)
     AddHook("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", Beggar_TTTHUDInfoPaint)
@@ -551,10 +547,7 @@ local function Register()
     AddHook("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride", Beggar_TTTRolePopupRoleStringOverride)
 end
 
-local function Unregister()
-    registered = registered - 1
-    if registered ~= 0 then return end
-
+ROLE_UNREGISTER_HOOKS[ROLE_BEGGAR] = function()
     RemoveHook("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText")
     RemoveHook("HUDPaint", "Beggar_HUDPaint")
     RemoveHook("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint")
@@ -566,24 +559,3 @@ local function Unregister()
     RemoveHook("TTTSettingsRolesTabSections", "Beggar_TTTSettingsRolesTabSections")
     RemoveHook("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride")
 end
-
-AddHook("TTTPlayerRoleChanged", "Beggar_Registration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole == newRole then return end
-    if oldRole ~= ROLE_BEGGAR and newRole ~= ROLE_BEGGAR then return end
-
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        if oldRole == ROLE_BEGGAR then
-            Unregister()
-        elseif newRole == ROLE_BEGGAR then
-            Register()
-        end
-    end)
-end)
-AddHook("TTTPrepareRound", "Beggar_Registration_TTTPrepareRound", function()
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        Unregister()
-        registered = 0
-    end)
-end)

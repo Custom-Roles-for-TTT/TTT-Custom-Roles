@@ -1,5 +1,7 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -11,7 +13,7 @@ local glitch_use_traps = GetConVar("ttt_glitch_use_traps")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Glitch_Translations_Initialize", function()
+AddHook("Initialize", "Glitch_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_glitch", "Appears as a Traitor to members of the traitor team but they are actually a member of the innocent team.")
 
@@ -24,7 +26,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText", function(role, titleLabel)
+local function Glitch_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_GLITCH then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -57,4 +59,16 @@ hook.Add("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText", function(role, tit
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_GLITCH] = function()
+    AddHook("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText", Glitch_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_GLITCH] = function()
+    RemoveHook("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText")
+end

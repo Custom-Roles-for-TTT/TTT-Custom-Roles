@@ -1,5 +1,8 @@
 local hook = hook
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+
 -------------
 -- CONVARS --
 -------------
@@ -10,7 +13,7 @@ local madscientist_respawn_enabled = GetConVar("ttt_madscientist_respawn_enabled
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "MadScientist_Translations_Initialize", function()
+AddHook("Initialize", "MadScientist_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "zombificator_help_pri", "Hold {primaryfire} to zombify dead body.")
     LANG.AddToLanguage("english", "zombificator_help_sec", "The revived player will become a zombie.")
@@ -28,7 +31,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText", function(role, titleLabel)
+local function MadScientist_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_MADSCIENTIST then
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         local roleTeam = player.GetRoleTeam(ROLE_MADSCIENTIST, true)
@@ -43,4 +46,16 @@ hook.Add("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText", function(rol
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_MADSCIENTIST] = function()
+    AddHook("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText", MadScientist_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_MADSCIENTIST] = function()
+    RemoveHook("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText")
+end

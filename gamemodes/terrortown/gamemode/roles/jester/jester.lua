@@ -4,6 +4,8 @@ local hook = hook
 local player = player
 local timer = timer
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_UpdateJesterSecondaryWins")
@@ -58,7 +60,7 @@ local function HandleJesterWin()
     timer.Simple(1, function() EndRound(WIN_JESTER) end)
 end
 
-hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, attacker)
+local function Jester_WinCheck_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
 
@@ -76,25 +78,25 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
 
         HandleJesterWin()
     end
-end)
+end
 
-hook.Add("TTTOnRoleAbilityEnabled", "Jester_TTTOnRoleAbilityEnabled", function(ply)
+local function Jester_TTTOnRoleAbilityEnabled(ply)
     if not IsPlayer(ply) or not ply:IsJester() then return end
     if ply:Alive() or not ply:IsSpec() then return end
     if not ply.JesterShouldWin then return end
     ply.JesterShouldWin = false
     HandleJesterWin()
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Jester_TTTPrintResultMessage", function(type)
+local function Jester_TTTPrintResultMessage(type)
     if type == WIN_JESTER then
         LANG.Msg("win_jester", { role = ROLE_STRINGS[ROLE_JESTER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_JESTER] .. " wins.\n")
         return true
     end
-end)
+end
 
-hook.Add("TTTPrepareRound", "Jester_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Jester_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v.JesterShouldWin = false
         v:SetNWString("JesterKiller", "")
@@ -104,7 +106,25 @@ hook.Add("TTTPrepareRound", "Jester_TTTPrepareRound", function()
     net.Broadcast()
 end)
 
-hook.Add("TTTBeginRound", "Jester_TTTBeginRound", function()
+local function Jester_TTTBeginRound()
     net.Start("TTT_ResetJesterSecondaryWins")
     net.Broadcast()
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_JESTER] = function()
+    AddHook("PlayerDeath", "Jester_WinCheck_PlayerDeath", Jester_WinCheck_PlayerDeath)
+    AddHook("TTTBeginRound", "Jester_TTTBeginRound", Jester_TTTBeginRound)
+    AddHook("TTTOnRoleAbilityEnabled", "Jester_TTTOnRoleAbilityEnabled", Jester_TTTOnRoleAbilityEnabled)
+    AddHook("TTTPrintResultMessage", "Jester_TTTPrintResultMessage", Jester_TTTPrintResultMessage)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_JESTER] = function()
+    RemoveHook("PlayerDeath", "Jester_WinCheck_PlayerDeath")
+    RemoveHook("TTTBeginRound", "Jester_TTTBeginRound")
+    RemoveHook("TTTOnRoleAbilityEnabled", "Jester_TTTOnRoleAbilityEnabled")
+    RemoveHook("TTTPrintResultMessage", "Jester_TTTPrintResultMessage")
+end

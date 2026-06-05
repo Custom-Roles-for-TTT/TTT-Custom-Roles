@@ -1,7 +1,10 @@
 local hook = hook
 local net = net
 local string = string
+local timer = timer
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local StringUpper = string.upper
 
 -------------
@@ -19,7 +22,7 @@ local clown_damage_bonus = GetConVar("ttt_clown_damage_bonus")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Clown_Translations_Initialize", function()
+AddHook("Initialize", "Clown_Translations_Initialize", function()
     -- Events
     LANG.AddToLanguage("english", "ev_clown", "The clown, {player}, went on a rampage")
 
@@ -45,18 +48,18 @@ end)
 ---------------
 
 -- Show skull icon over the target's head
-hook.Add("TTTTargetIDPlayerTargetIcon", "Clown_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+local function Clown_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     if cli:IsClown() and cli:IsRoleActive() and clown_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) and not cli:IsRoleAbilityDisabled() then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_CLOWN], "down"
     end
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
 -- Register the scoring events for the clown
-hook.Add("Initialize", "Clown_Scoring_Initialize", function()
+AddHook("Initialize", "Clown_Scoring_Initialize", function()
     local clown_icon = Material("icon16/emoticon_evilgrin.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -89,7 +92,7 @@ end)
 -- ROLE FEATURES --
 -------------------
 
-hook.Add("TTTPrepareRound", "Clown_RoleFeatures_PrepareRound", function()
+AddHook("TTTPrepareRound", "Clown_RoleFeatures_PrepareRound", function()
     -- Disable traitor buttons for clown until they are activated (and the setting is enabled)
     TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = false
 end)
@@ -98,28 +101,28 @@ end)
 -- DISABLED HUD OVERRIDES --
 ----------------------------
 
-hook.Add("TTTHUDRoleColorOverride", "Clown_RoleDisabled_TTTHUDRoleColorOverride", function(cli, colType)
+local function Clown_RoleDisabled_TTTHUDRoleColorOverride(cli, colType)
     if not IsPlayer(cli) or not cli:IsClown() then return end
     if not cli:IsRoleActive() or not cli:IsRoleAbilityDisabled() then return end
 
     return GetRoleTeamColor(ROLE_TEAM_JESTER, colType)
-end)
+end
 
-hook.Add("TTTCrosshairColorOverride", "Clown_RoleDisabled_TTTCrosshairColorOverride", function(cli)
+local function Clown_RoleDisabled_TTTCrosshairColorOverride(cli)
     if not IsPlayer(cli) or not cli:IsClown() then return end
     if not cli:IsRoleActive() or not cli:IsRoleAbilityDisabled() then return end
 
     return GetRoleTeamColor(ROLE_TEAM_JESTER, "highlight")
-end)
+end
 
-hook.Add("TTTScoringSummaryRender", "Clown_RoleDisabled_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Clown_RoleDisabled_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) or not ply:IsClown() then return end
     if not ply:IsRoleActive() or not ply:IsRoleAbilityDisabled() then return end
 
     return false, false, GetRoleTeamColor(ROLE_TEAM_JESTER)
-end)
+end
 
-hook.Add("TTTScoreboardPlayerRole", "Clown_RoleDisabled_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Clown_RoleDisabled_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if not IsPlayer(cli) then return end
     if not IsPlayer(ply) or not ply:IsClown() then return end
     if not ply:IsRoleActive() or not ply:IsRoleAbilityDisabled() then return end
@@ -128,7 +131,7 @@ hook.Add("TTTScoreboardPlayerRole", "Clown_RoleDisabled_TTTScoreboardPlayerRole"
     if ply == cli or ply:ShouldRevealRoleWhenActive() then
         return GetRoleTeamColor(ROLE_TEAM_JESTER, "scoreboard")
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CLOWN] = function(ply, target)
     if not IsPlayer(ply) then return end
@@ -142,7 +145,7 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CLOWN] = function(ply, target)
     end
 end
 
-hook.Add("TTTTargetIDPlayerRoleIcon", "Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+local function Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if not IsPlayer(cli) then return end
     if not IsPlayer(ply) or not ply:IsClown() then return end
     if not ply:IsRoleActive() or not ply:IsRoleAbilityDisabled() then return end
@@ -151,9 +154,9 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Clown_RoleDisabled_TTTTargetIDPlayerRoleI
     if ply == cli or ply:ShouldRevealRoleWhenActive() then
         return role, noz, ROLE_JESTER
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerRing", "Clown_RoleDisabled_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+local function Clown_RoleDisabled_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     if not IsPlayer(cli) then return end
     if not IsPlayer(ent) or not ent:IsClown() then return end
     if not ent:IsRoleActive() or not ent:IsRoleAbilityDisabled() then return end
@@ -162,9 +165,9 @@ hook.Add("TTTTargetIDPlayerRing", "Clown_RoleDisabled_TTTTargetIDPlayerRing", fu
     if ent == cli or ent:ShouldRevealRoleWhenActive() then
         return ringVisible, GetRoleTeamColor(ROLE_TEAM_JESTER)
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerText", "Clown_RoleDisabled_TTTTargetIDPlayerText", function(ent, cli, text, col)
+local function Clown_RoleDisabled_TTTTargetIDPlayerText(ent, cli, text, col)
     if not IsPlayer(cli) then return end
     if not IsPlayer(ent) or not ent:IsClown() then return end
     if not ent:IsRoleActive() or not ent:IsRoleAbilityDisabled() then return end
@@ -173,7 +176,7 @@ hook.Add("TTTTargetIDPlayerText", "Clown_RoleDisabled_TTTTargetIDPlayerText", fu
     if ent == cli or ent:ShouldRevealRoleWhenActive() then
         return text, GetRoleTeamColor(ROLE_TEAM_JESTER)
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_CLOWN] = function(ply, target, showJester)
     if not IsPlayer(ply) then return end
@@ -191,33 +194,33 @@ end
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Clown_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Clown_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_CLOWN then
         return { txt = "hilite_win_role_singular", params = { role = StringUpper(ROLE_STRINGS[ROLE_CLOWN]) }, c = ROLE_COLORS[ROLE_CLOWN] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Clown_TTTEventFinishText", function(e)
+local function Clown_TTTEventFinishText(e)
     if e.win == WIN_CLOWN then
         return LANG.GetParamTranslation("ev_win_clown", { role = string.lower(ROLE_STRINGS[ROLE_CLOWN]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Clown_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Clown_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_CLOWN then
         return win_string, ROLE_STRINGS[ROLE_CLOWN]
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titleLabel)
+local function Clown_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_CLOWN then
         -- Use this for highlighting things like "kill"
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -267,4 +270,38 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_CLOWN] = function()
+    AddHook("TTTCrosshairColorOverride", "Clown_RoleDisabled_TTTCrosshairColorOverride", Clown_RoleDisabled_TTTCrosshairColorOverride)
+    AddHook("TTTEventFinishIconText", "Clown_TTTEventFinishIconText", Clown_TTTEventFinishIconText)
+    AddHook("TTTEventFinishText", "Clown_TTTEventFinishText", Clown_TTTEventFinishText)
+    AddHook("TTTHUDRoleColorOverride", "Clown_RoleDisabled_TTTHUDRoleColorOverride", Clown_RoleDisabled_TTTHUDRoleColorOverride)
+    AddHook("TTTScoreboardPlayerRole", "Clown_RoleDisabled_TTTScoreboardPlayerRole", Clown_RoleDisabled_TTTScoreboardPlayerRole)
+    AddHook("TTTScoringSummaryRender", "Clown_RoleDisabled_TTTScoringSummaryRender", Clown_RoleDisabled_TTTScoringSummaryRender)
+    AddHook("TTTScoringWinTitle", "Clown_TTTScoringWinTitle", Clown_TTTScoringWinTitle)
+    AddHook("TTTTargetIDPlayerRing", "Clown_RoleDisabled_TTTTargetIDPlayerRing", Clown_RoleDisabled_TTTTargetIDPlayerRing)
+    AddHook("TTTTargetIDPlayerRoleIcon", "Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon", Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon)
+    AddHook("TTTTargetIDPlayerTargetIcon", "Clown_TTTTargetIDPlayerTargetIcon", Clown_TTTTargetIDPlayerTargetIcon)
+    AddHook("TTTTargetIDPlayerText", "Clown_RoleDisabled_TTTTargetIDPlayerText", Clown_RoleDisabled_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", Clown_TTTTutorialRoleText)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_CLOWN] = function()
+    RemoveHook("TTTCrosshairColorOverride", "Clown_RoleDisabled_TTTCrosshairColorOverride")
+    RemoveHook("TTTEventFinishIconText", "Clown_TTTEventFinishIconText")
+    RemoveHook("TTTEventFinishText", "Clown_TTTEventFinishText")
+    RemoveHook("TTTHUDRoleColorOverride", "Clown_RoleDisabled_TTTHUDRoleColorOverride")
+    RemoveHook("TTTScoreboardPlayerRole", "Clown_RoleDisabled_TTTScoreboardPlayerRole")
+    RemoveHook("TTTScoringSummaryRender", "Clown_RoleDisabled_TTTScoringSummaryRender")
+    RemoveHook("TTTScoringWinTitle", "Clown_TTTScoringWinTitle")
+    RemoveHook("TTTTargetIDPlayerRing", "Clown_RoleDisabled_TTTTargetIDPlayerRing")
+    RemoveHook("TTTTargetIDPlayerRoleIcon", "Clown_RoleDisabled_TTTTargetIDPlayerRoleIcon")
+    RemoveHook("TTTTargetIDPlayerTargetIcon", "Clown_TTTTargetIDPlayerTargetIcon")
+    RemoveHook("TTTTargetIDPlayerText", "Clown_RoleDisabled_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "Clown_TTTTutorialRoleText")
+end

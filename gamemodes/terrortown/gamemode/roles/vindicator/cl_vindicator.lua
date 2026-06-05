@@ -4,15 +4,16 @@ local table = table
 local IsValid = IsValid
 local player = player
 
-local TableInsert = table.insert
+local AddHook = hook.Add
 local RemoveHook = hook.Remove
+local TableInsert = table.insert
 local PlayerIterator = player.Iterator
 
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Vindicator_Translations_Initialize", function()
+AddHook("Initialize", "Vindicator_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_vindicator", "The {role} got their revenge!")
     LANG.AddToLanguage("english", "ev_win_vindicator", "The {role} has won the round!")
@@ -39,17 +40,17 @@ end)
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerTargetIcon", "Vindicator_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+local function Vindicator_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     if cli:IsVindicator() and  cli:GetNWString("VindicatorTarget") == ply:SteamID64() and not cli:IsRoleAbilityDisabled() then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_VINDICATOR], "down"
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerText", "Vindicator_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
+local function Vindicator_TTTTargetIDPlayerText(ent, cli, text, col, secondary_text)
     if IsPlayer(ent) and cli:IsVindicator() and ent:SteamID64() == cli:GetNWString("VindicatorTarget", "") and not cli:IsRoleAbilityDisabled() then
         return LANG.GetTranslation("target_current_target"), ROLE_COLORS_RADAR[ROLE_VINDICATOR]
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_VINDICATOR] = function(ply, target, showJester)
     if not ply:IsVindicator() then return end
@@ -66,17 +67,17 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Vindicator_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Vindicator_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if cli:IsVindicator() and ply:SteamID64() == cli:GetNWString("VindicatorTarget", "") and not cli:IsRoleAbilityDisabled() then
         return c, roleStr, ROLE_VINDICATOR
     end
-end)
+end
 
-hook.Add("TTTScoreboardPlayerName", "Vindicator_TTTScoreboardPlayerName", function(ply, cli, text)
+local function Vindicator_TTTScoreboardPlayerName(ply, cli, text)
     if cli:IsVindicator() and ply:SteamID64() == cli:GetNWString("VindicatorTarget", "") and not cli:IsRoleAbilityDisabled() then
         return ply:Nick() .. " (" .. LANG.GetTranslation("target_assassin_target") .. ")" -- We can reuse the assassin translations here
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_VINDICATOR] = function(ply, target)
     if not ply:IsVindicator() then return end
@@ -97,7 +98,7 @@ local vision_enabled = false
 local client = nil
 
 local function EnableVindicatorTargetHighlights()
-    hook.Add("PreDrawHalos", "Vindicator_Highlight_PreDrawHalos", function()
+    AddHook("PreDrawHalos", "Vindicator_Highlight_PreDrawHalos", function()
         local target_sid64 = client:GetNWString("VindicatorTarget", "")
         if not target_sid64 or #target_sid64 == 0 then return end
 
@@ -115,7 +116,7 @@ local function EnableVindicatorTargetHighlights()
     end)
 end
 
-hook.Add("TTTUpdateRoleState", "Vindicator_Highlight_TTTUpdateRoleState", function()
+local function Vindicator_Highlight_TTTUpdateRoleState()
     client = LocalPlayer()
 
     -- Disable highlights on role change
@@ -123,10 +124,10 @@ hook.Add("TTTUpdateRoleState", "Vindicator_Highlight_TTTUpdateRoleState", functi
         RemoveHook("PreDrawHalos", "Vindicator_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end)
+end
 
 -- Handle enabling and disabling of highlighting
-hook.Add("Think", "Vindicator_Highlight_Think", function()
+local function Vindicator_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
     if client:IsVindicator() and not client:IsRoleAbilityDisabled() then
@@ -141,7 +142,7 @@ hook.Add("Think", "Vindicator_Highlight_Think", function()
     if not vision_enabled then
         RemoveHook("PreDrawHalos", "Vindicator_Highlight_PreDrawHalos")
     end
-end)
+end
 
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_VINDICATOR] = function(ply, target)
     if not ply:IsVindicator() then return end
@@ -159,13 +160,13 @@ end
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Vindicator_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Vindicator_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_VINDICATOR then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_VINDICATOR]) }, c = ROLE_COLORS[ROLE_VINDICATOR] }
     end
-end)
+end
 
-hook.Add("TTTScoringSecondaryWins", "Vindicator_TTTScoringSecondaryWins", function(wintype, secondary_wins)
+local function Vindicator_TTTScoringSecondaryWins(wintype, secondary_wins)
     if wintype ~= WIN_VINDICATOR then
         for _, ply in PlayerIterator() do
             if ply:IsVindicator() and ply:GetNWBool("VindicatorSuccess", false) then
@@ -173,14 +174,14 @@ hook.Add("TTTScoringSecondaryWins", "Vindicator_TTTScoringSecondaryWins", functi
             end
         end
     end
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
 -- Show who killed the vindicator
-hook.Add("TTTScoringSummaryRender", "Vindicator_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Vindicator_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if ply:IsVindicator() and ply:IsRoleActive() then
@@ -190,25 +191,25 @@ hook.Add("TTTScoringSummaryRender", "Vindicator_TTTScoringSummaryRender", functi
             return roleFileName, groupingRole, roleColor, name, target:Nick(), LANG.GetTranslation("score_vindicator_killedby")
         end
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Vindicator_TTTEventFinishText", function(e)
+local function Vindicator_TTTEventFinishText(e)
     if e.win == WIN_VINDICATOR then
         return LANG.GetParamTranslation("ev_win_vindicator", { role = string.lower(ROLE_STRINGS[ROLE_VINDICATOR]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Vindicator_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Vindicator_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_VINDICATOR then
         return win_string, ROLE_STRINGS[ROLE_VINDICATOR]
     end
-end)
+end
 
-hook.Add("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound", function()
+local function Vindicator_SecondaryWinEvent_TTTEndRound()
     for _, ply in PlayerIterator() do
         if ply:IsVindicator() and ply:GetNWBool("VindicatorSuccess", false) then
             CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
@@ -218,10 +219,10 @@ hook.Add("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound", function()
             return
         end
     end
-end)
+end
 
 -- Register the scoring events for the vindicator
-hook.Add("Initialize", "Vindicator_Scoring_Initialize", function()
+AddHook("Initialize", "Vindicator_Scoring_Initialize", function()
     local user_delete_icon = Material("icon16/user_delete.png")
     local star_icon = Material("icon16/star.png")
     local stop_icon = Material("icon16/stop.png")
@@ -290,7 +291,7 @@ local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
 local vindicator_reset_on_success = GetConVar("ttt_vindicator_reset_on_success")
 local vindicator_reset_win_on_success = GetConVar("ttt_vindicator_reset_win_on_success")
 
-hook.Add("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", function(role, titleLabel)
+local function Vindicator_TTTTutorialRoleText(role, titleLabel)
     if role == ROLE_VINDICATOR then
         local innocentColor = ROLE_COLORS[ROLE_INNOCENT]
         local independentColor = ROLE_COLORS[ROLE_DRUNK]
@@ -328,4 +329,40 @@ hook.Add("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", function(role,
 
         return html
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTER_HOOKS[ROLE_VINDICATOR] = function()
+    AddHook("Think", "Vindicator_Highlight_Think", Vindicator_Highlight_Think)
+    AddHook("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound", Vindicator_SecondaryWinEvent_TTTEndRound)
+    AddHook("TTTEventFinishIconText", "Vindicator_TTTEventFinishIconText", Vindicator_TTTEventFinishIconText)
+    AddHook("TTTEventFinishText", "Vindicator_TTTEventFinishText", Vindicator_TTTEventFinishText)
+    AddHook("TTTScoreboardPlayerName", "Vindicator_TTTScoreboardPlayerName", Vindicator_TTTScoreboardPlayerName)
+    AddHook("TTTScoreboardPlayerRole", "Vindicator_TTTScoreboardPlayerRole", Vindicator_TTTScoreboardPlayerRole)
+    AddHook("TTTScoringSecondaryWins", "Vindicator_TTTScoringSecondaryWins", Vindicator_TTTScoringSecondaryWins)
+    AddHook("TTTScoringSummaryRender", "Vindicator_TTTScoringSummaryRender", Vindicator_TTTScoringSummaryRender)
+    AddHook("TTTScoringWinTitle", "Vindicator_TTTScoringWinTitle", Vindicator_TTTScoringWinTitle)
+    AddHook("TTTTargetIDPlayerTargetIcon", "Vindicator_TTTTargetIDPlayerTargetIcon", Vindicator_TTTTargetIDPlayerTargetIcon)
+    AddHook("TTTTargetIDPlayerText", "Vindicator_TTTTargetIDPlayerText", Vindicator_TTTTargetIDPlayerText)
+    AddHook("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", Vindicator_TTTTutorialRoleText)
+    AddHook("TTTUpdateRoleState", "Vindicator_Highlight_TTTUpdateRoleState", Vindicator_Highlight_TTTUpdateRoleState)
+end
+
+ROLE_UNREGISTER_HOOKS[ROLE_VINDICATOR] = function()
+    RemoveHook("Think", "Vindicator_Highlight_Think")
+    RemoveHook("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound")
+    RemoveHook("TTTEventFinishIconText", "Vindicator_TTTEventFinishIconText")
+    RemoveHook("TTTEventFinishText", "Vindicator_TTTEventFinishText")
+    RemoveHook("TTTScoreboardPlayerName", "Vindicator_TTTScoreboardPlayerName")
+    RemoveHook("TTTScoreboardPlayerRole", "Vindicator_TTTScoreboardPlayerRole")
+    RemoveHook("TTTScoringSecondaryWins", "Vindicator_TTTScoringSecondaryWins")
+    RemoveHook("TTTScoringSummaryRender", "Vindicator_TTTScoringSummaryRender")
+    RemoveHook("TTTScoringWinTitle", "Vindicator_TTTScoringWinTitle")
+    RemoveHook("TTTTargetIDPlayerTargetIcon", "Vindicator_TTTTargetIDPlayerTargetIcon")
+    RemoveHook("TTTTargetIDPlayerText", "Vindicator_TTTTargetIDPlayerText")
+    RemoveHook("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText")
+    RemoveHook("TTTUpdateRoleState", "Vindicator_Highlight_TTTUpdateRoleState")
+end
