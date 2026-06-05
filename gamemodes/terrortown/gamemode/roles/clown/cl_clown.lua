@@ -1,7 +1,6 @@
 local hook = hook
 local net = net
 local string = string
-local timer = timer
 
 local AddHook = hook.Add
 local RemoveHook = hook.Remove

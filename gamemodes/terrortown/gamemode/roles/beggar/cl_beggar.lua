@@ -2,7 +2,6 @@ local hook = hook
 local net = net
 local surface = surface
 local string = string
-local timer = timer
 
 local AddHook = hook.Add
 local RemoveHook = hook.Remove

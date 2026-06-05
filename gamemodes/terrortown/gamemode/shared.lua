@@ -11,6 +11,7 @@ local player = player
 local string = string
 local table = table
 
+local AddHook = hook.Add
 local FileExists = file.Exists
 local FileFind = file.Find
 local CallHook = hook.Call
@@ -1439,7 +1440,7 @@ if SERVER then
     end
 
     -- Sync the Event IDs to all clients
-    hook.Add("TTTPrepareRound", "EventID_TTTPrepareRound", function()
+    AddHook("TTTPrepareRound", "EventID_TTTPrepareRound", function()
         net.Start("TTT_SyncEventIDs")
         net.WriteTable(EVENTS_BY_ROLE)
         net.WriteUInt(EVENT_MAX, 16)
@@ -1523,7 +1524,7 @@ if SERVER then
     end
 
     -- Sync the Event IDs to all clients
-    hook.Add("TTTPrepareRound", "WinID_TTTPrepareRound", function()
+    AddHook("TTTPrepareRound", "WinID_TTTPrepareRound", function()
         net.Start("TTT_SyncWinIDs")
         net.WriteTable(WINS_BY_ROLE)
         net.WriteUInt(WIN_MAX, 16)
@@ -1966,7 +1967,7 @@ for _, c in ipairs(deprecatedConVars) do
     AddOldCVarWarning(c[1], c[2])
 end
 
-hook.Add("PlayerInitialSpawn", "ConVarDeprecation_PlayerInitialSpawn", function(ply, transition)
+AddHook("PlayerInitialSpawn", "ConVarDeprecation_PlayerInitialSpawn", function(ply, transition)
     if not IsValid(ply) then return end
     if not ply:IsAdmin() and not ply:IsSuperAdmin() then return end
 

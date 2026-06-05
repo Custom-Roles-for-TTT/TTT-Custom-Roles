@@ -5,6 +5,7 @@ local player = player
 local timer = timer
 
 local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 -------------

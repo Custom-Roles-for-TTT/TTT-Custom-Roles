@@ -1,5 +1,4 @@
 local hook = hook
-local timer = timer
 
 local AddHook = hook.Add
 local RemoveHook = hook.Remove

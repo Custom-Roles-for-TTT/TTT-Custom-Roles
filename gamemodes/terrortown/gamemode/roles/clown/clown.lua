@@ -6,6 +6,8 @@ local player = player
 local table = table
 local util = util
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_ClownTeamChange")

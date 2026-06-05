@@ -5,8 +5,9 @@ local net = net
 local player = player
 local hook = hook
 
-local PlayerIterator = player.Iterator
 local AddHook = hook.Add
+local RemoveHook = hook.Remove
+local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_GuesserSelectRole")
 util.AddNetworkString("TTT_GuesserGuessed")

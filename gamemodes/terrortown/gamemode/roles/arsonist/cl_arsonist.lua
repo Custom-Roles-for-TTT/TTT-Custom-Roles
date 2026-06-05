@@ -1,7 +1,6 @@
 local hook = hook
 local surface = surface
 local table = table
-local timer = timer
 local util = util
 
 local AddHook = hook.Add
