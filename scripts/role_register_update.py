@@ -6,6 +6,7 @@ from collections import defaultdict
 rootdir = input("Path to roles folder: ")
 
 pattern = re.compile(r"^(?:hook\.Add|AddHook)\(\"(.+)\", \"(.+)\", function\((.*)\)", flags=re.MULTILINE)
+named_pattern = re.compile(r"^(?:hook\.Add|AddHook)\(\"(.+)\", \"(.+)\", (?!function)(.*)\)", flags=re.MULTILINE)
 substitution = "local function \\2(\\3)"
 
 for subdir, dirs, files in os.walk(rootdir):
@@ -26,20 +27,32 @@ for subdir, dirs, files in os.walk(rootdir):
 
         print("Processing " + path)
         for line in fileinput.input(path, inplace=True):
-            matches = pattern.finditer(line)
+            namedMatch = False
+            matches = []
+            if pattern.match(line) != None:
+                matches = pattern.finditer(line)
+            elif named_pattern.match(line) != None:
+                namedMatch = True
+                matches = named_pattern.finditer(line)
+
             replace = False
             for match_num, match in enumerate(matches, start=1):
-                replace = True
+                replace = not namedMatch
                 groups = match.groups()
                 hookName = groups[0]
+                hookId = groups[1]
                 # These hooks need to run before or after registration and un-registration happen so don't move them to the new system
                 if hookName in ["Initialize", "TTTBeginRound", "TTTPlayerRoleChanged", "TTTPrepareRound", "TTTSelectRoles", "TTTTutorialRoleText", "TTTUpdateRoleState"]:
                     replace = False
+                    namedMatch = False
                     skipped = skipped + 1
                 else:
                     if hookName not in hooks:
-                        hooks[hookName] = []
-                    hooks[hookName].append(groups[1])
+                        hooks[hookName] = {}
+                    if namedMatch:
+                        hooks[hookName][hookId] = groups[2]
+                    else:
+                        hooks[hookName][hookId] = None
 
             if line.startswith("RegisterRole(ROLE)"):
                 isRole = True
@@ -51,8 +64,12 @@ for subdir, dirs, files in os.walk(rootdir):
                 elif didReplace and (line == "end)\n" or line == "end)"):
                     didReplace = False
                     print("end")
-                elif skipNext:
+                elif skipNext or namedMatch:
                     skipNext = False
+                    if line.isspace():
+                        print(line, end='')
+                    else:
+                        line = "!PLACEHOLDER!\n"
                 else:
                     print(line, end='')
                 lastLine = line
@@ -77,19 +94,26 @@ for subdir, dirs, files in os.walk(rootdir):
                 keys.sort()
                 lastKey = keys[len(keys) - 1]
                 for key in keys:
-                    handlers = hooks[key]
+                    handlers = list(hooks[key].keys())
                     handlers.sort()
                     if len(handlers) > 1:
                         lastHandler = handlers[len(handlers) - 1]
                         f.write("    [\"" + key + "\"] = {")
                         for handlerName in handlers:
-                            f.write("        [\"" + handlerName + "\"] = " + handlerName + "")
+                            fnName = handlerName
+                            if hooks[key][handlerName] != None:
+                                fnName = hooks[key][handlerName]
+                            f.write("        [\"" + handlerName + "\"] = " + fnName + "")
                             if handlerName != lastHandler:
                                 f.write(",")
                             f.write("\n")
                         f.write("    }")
                     else:
-                        f.write("    [\"" + key + "\"] = " + handlers[0])
+                        handlerName = handlers[0]
+                        fnName = handlerName
+                        if hooks[key][handlerName] != None:
+                            fnName = hooks[key][handlerName]
+                        f.write("    [\"" + key + "\"] = " + fnName)
 
                     if key != lastKey:
                         f.write(",")
