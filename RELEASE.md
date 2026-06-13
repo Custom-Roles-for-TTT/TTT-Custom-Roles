@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.4.6 (Beta)
-**Released:**
+**Released: June 13th, 2026**
 
 ### Additions
 - Added ability for Marshal to buy their deputizing badge from the shop (disabled by default)
