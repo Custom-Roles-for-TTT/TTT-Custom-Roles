@@ -4,6 +4,9 @@ local hook = hook
 local IsValid = IsValid
 local table = table
 
+local AddHook = hook.Add
+local TableInsert = table.insert
+
 -- Vampire prime death modes
 VAMPIRE_DEATH_NONE = 0
 VAMPIRE_DEATH_KILL_CONVERTED = 1
@@ -49,10 +52,10 @@ plymeta.IsVampireAlly = plymeta.GetVampireAlly
 -----------------
 
 -- Vampire moves 3x faster temporarily while fading
-hook.Add("TTTSpeedMultiplier", "Vampire_TTTSpeedMultiplier", function(ply, mults)
+AddHook("TTTSpeedMultiplier", "Vampire_TTTSpeedMultiplier", function(ply, mults)
     local wep = ply:GetActiveWeapon()
     if IsValid(wep) and WEPS.GetClass(wep) == "weapon_vam_fangs" and wep:Clip1() < 15 then
-        table.insert(mults, 3)
+        TableInsert(mults, 3)
     end
 end)
 
@@ -70,135 +73,136 @@ CreateConVar("ttt_vampire_damage_reduction", "0", FCVAR_REPLICATED, "The fractio
 CreateConVar("ttt_vampire_can_see_jesters", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_vampire_update_scoreboard", "1", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_VAMPIRE] = {}
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_is_monster",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_is_independent",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_convert_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_drain_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_drain_first",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_drain_credits",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_drain_mute_target",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_drop_bones",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_kill_credits",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_loot_credits",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_fang_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_fang_dead_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_fang_heal",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_fang_overheal",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_fang_overheal_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Health", "Max health", "Both"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_fang_overheal_living",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_fang_unfreeze_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_damage_reduction",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_prime_only_convert",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_prime_death_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Do nothing", "Kill all thralls", "Revert role of all thralls"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_prime_friendly_fire",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Do nothing", "Reflect", "Block"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_show_target_icon",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_vision_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_can_see_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_credits_award_pct",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_credits_award_size",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_credits_award_repeat",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_VAMPIRE] = {
+    {
+        cvar = "ttt_vampire_is_monster",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_is_independent",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_convert_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_drain_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_drain_first",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_drain_credits",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_vampire_drain_mute_target",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_drop_bones",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_kill_credits",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_loot_credits",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_fang_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_vampire_fang_dead_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_vampire_fang_heal",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_vampire_fang_overheal",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_vampire_fang_overheal_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Health", "Max health", "Both"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_vampire_fang_overheal_living",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_vampire_fang_unfreeze_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_vampire_damage_reduction",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_vampire_prime_only_convert",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_prime_death_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Do nothing", "Kill all thralls", "Revert role of all thralls"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_vampire_prime_friendly_fire",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Do nothing", "Reflect", "Block"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_vampire_show_target_icon",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_vision_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_can_see_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_update_scoreboard",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_vampire_credits_award_pct",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_vampire_credits_award_size",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_vampire_credits_award_repeat",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
@@ -213,7 +217,7 @@ local function InitializeEquipment()
         -- If we haven't already registered this item, add it to the list
         if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_VAMPIRE], "id", EQUIP_ARMOR) then
             local mat_dir = "vgui/ttt/"
-            table.insert(EquipmentItems[ROLE_VAMPIRE], {
+            TableInsert(EquipmentItems[ROLE_VAMPIRE], {
                 id = EQUIP_ARMOR,
                 type = "item_passive",
                 material = mat_dir .. "icon_armor",
@@ -234,10 +238,8 @@ end
 InitializeEquipment()
 
 -- Initialize role features
-hook.Add("Initialize", "Vampire_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
+AddHook("Initialize", "Vampire_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 
     -- Add radio sounds
@@ -253,7 +255,7 @@ hook.Add("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
     end
 end)
 
-hook.Add("TTTUpdateRoleState", "Vampire_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Vampire_TeamChange_TTTUpdateRoleState", function()
     local is_monster = vampire_is_monster:GetBool()
     -- Vampires cannot be both Monsters and Independents so don't make them Independents if they are already Monsters
     local is_independent = not is_monster and vampire_is_independent:GetBool()

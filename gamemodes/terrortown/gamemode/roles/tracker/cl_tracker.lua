@@ -1,5 +1,7 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -11,7 +13,7 @@ local tracker_footstep_color = GetConVar("ttt_tracker_footstep_color")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Tracker_Translations_Initialize", function()
+AddHook("Initialize", "Tracker_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_tracker", "Can see a trail of footsteps left by other players.")
 
@@ -27,7 +29,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TRACKER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]

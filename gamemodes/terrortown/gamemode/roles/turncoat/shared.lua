@@ -1,6 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
 local net = net
+
+local CallHook = hook.Call
 
 -------------------
 -- ROLE FEATURES --
@@ -23,7 +26,7 @@ function SetTurncoatTeam(ply, traitor)
             net.WriteString(ply:Nick())
         end
         net.Broadcast()
-        hook.Call("TTTTurncoatTeamChanged", nil, ply, traitor)
+        CallHook("TTTTurncoatTeamChanged", nil, ply, traitor)
     end
 end
 
@@ -49,17 +52,18 @@ end
 CreateConVar("ttt_turncoat_change_health", "10", FCVAR_REPLICATED, "The amount of health to set the turncoat to when they change teams", 1, 200)
 CreateConVar("ttt_turncoat_change_innocent_kill", "0", FCVAR_REPLICATED, "Whether to change the turncoat's team when they kill a member of the innocent team", 0, 1)
 
-ROLE_CONVARS[ROLE_TURNCOAT] = {}
-table.insert(ROLE_CONVARS[ROLE_TURNCOAT], {
-    cvar = "ttt_turncoat_change_max_health",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_TURNCOAT], {
-    cvar = "ttt_turncoat_change_health",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_TURNCOAT], {
-    cvar = "ttt_turncoat_change_innocent_kill",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_TURNCOAT] = {
+    {
+        cvar = "ttt_turncoat_change_max_health",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_turncoat_change_health",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_turncoat_change_innocent_kill",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}

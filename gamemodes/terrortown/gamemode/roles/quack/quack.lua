@@ -1,6 +1,5 @@
 AddCSLuaFile()
 
-local hook = hook
 local player = player
 
 local PlayerIterator = player.Iterator
@@ -10,7 +9,7 @@ local PlayerIterator = player.Iterator
 -------------------
 
 -- Quacks are immune to explosions
-hook.Add("EntityTakeDamage", "Quack_EntityTakeDamage", function(ent, dmginfo)
+local function Quack_EntityTakeDamage(ent, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
@@ -18,13 +17,13 @@ hook.Add("EntityTakeDamage", "Quack_EntityTakeDamage", function(ent, dmginfo)
         dmginfo:ScaleDamage(0)
         dmginfo:SetDamage(0)
     end
-end)
+end
 
 ----------
 -- CURE --
 ----------
 
-hook.Add("TTTFakeCurePlayer", "Quack_TTTFakeCurePlayer", function(ply)
+local function Quack_TTTFakeCurePlayer(ply)
     if not ply:GetNWBool("ParasiteInfected", false) then return end
 
     for _, v in PlayerIterator() do
@@ -32,4 +31,13 @@ hook.Add("TTTFakeCurePlayer", "Quack_TTTFakeCurePlayer", function(ply)
             v:QueueMessage(MSG_PRINTCENTER, "A fake cure has been used on your host.")
         end
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_QUACK] = {
+    ["EntityTakeDamage"] = Quack_EntityTakeDamage,
+    ["TTTFakeCurePlayer"] = Quack_TTTFakeCurePlayer
+}

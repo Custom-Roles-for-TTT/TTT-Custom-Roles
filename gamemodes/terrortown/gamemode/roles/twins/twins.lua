@@ -1,3 +1,12 @@
+local hook = hook
+local math = math
+local player = player
+local table = table
+local timer = timer
+
+local AddHook = hook.Add
+local TableInsert = table.insert
+
 -------------
 -- CONVARS --
 -------------
@@ -12,7 +21,7 @@ local twins_invulnerability_timer = GetConVar("ttt_twins_invulnerability_timer")
 -- ROLE SPAWNING --
 -------------------
 
-hook.Add("TTTSelectRoles", "Twins_TTTSelectRoles", function()
+AddHook("TTTSelectRoles", "Twins_TTTSelectRoles", function()
     local players = {}
     local choices = {}
     local innocents = {}
@@ -22,17 +31,17 @@ hook.Add("TTTSelectRoles", "Twins_TTTSelectRoles", function()
 
     for _, p in player.Iterator() do
         if IsValid(p) and not p:IsSpec() then
-            table.insert(players, p)
+            TableInsert(players, p)
             if p:GetRole() == ROLE_NONE then
-                table.insert(choices, p)
+                TableInsert(choices, p)
             elseif p:IsInnocent() then
-                table.insert(innocents, p)
+                TableInsert(innocents, p)
             elseif p:IsTraitor() then
-                table.insert(traitors, p)
+                TableInsert(traitors, p)
             elseif p:IsInnocentTeam() and not p:IsDetectiveTeam() then
-                table.insert(specialInnocents, p)
+                TableInsert(specialInnocents, p)
             elseif p:IsTraitorTeam() then
-                table.insert(specialTraitors, p)
+                TableInsert(specialTraitors, p)
             end
         end
     end
@@ -93,16 +102,16 @@ hook.Add("TTTSelectRoles", "Twins_TTTSelectRoles", function()
     end
 end)
 
-hook.Add("TTTBeginRound", "Twins_TTTBeginRound", function()
+AddHook("TTTBeginRound", "Twins_TTTBeginRound", function()
     -- Delay this a frame so other hooks have a chance to change roles first
     timer.Simple(0, function()
         local goodTwins = {}
         local evilTwins = {}
         for _, p in player.Iterator() do
             if p:IsGoodTwin() then
-                table.insert(goodTwins, p)
+                TableInsert(goodTwins, p)
             elseif p:IsEvilTwin() then
-                table.insert(evilTwins, p)
+                TableInsert(evilTwins, p)
             end
         end
 
@@ -179,10 +188,10 @@ local function CheckTwinsInvulnerability(ply, oldRole)
         local livingEvilTwins = {}
         for _, p in player.Iterator() do
             if p:IsActiveGoodTwin() then
-                table.insert(livingGoodTwins, p)
+                TableInsert(livingGoodTwins, p)
                 if #livingEvilTwins > 0 then return end
             elseif p:IsActiveEvilTwin() then
-                table.insert(livingEvilTwins, p)
+                TableInsert(livingEvilTwins, p)
                 if #livingGoodTwins > 0 then return end
             end
         end
@@ -222,10 +231,10 @@ local function CheckTwinsInvulnerability(ply, oldRole)
         for _, p in player.Iterator() do
             if p:IsActive() then
                 if p:IsGoodTwin() then
-                    table.insert(twins, p)
+                    TableInsert(twins, p)
                     hasGoodTwin = true
                 elseif p:IsEvilTwin() then
-                    table.insert(twins, p)
+                    TableInsert(twins, p)
                     hasEvilTwin = true
                 elseif not p:ShouldActLikeJester() then
                     return
@@ -242,11 +251,11 @@ local function CheckTwinsInvulnerability(ply, oldRole)
     end
 end
 
-hook.Add("PlayerDeath", "Twins_PlayerDeath", function(victim, infl, attacker)
+local function Twins_PlayerDeath(victim, infl, attacker)
     CheckTwinsInvulnerability(victim)
-end)
+end
 
-hook.Add("TTTPlayerRoleChanged", "Twins_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Twins_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     -- If someone changes to a twin after the round starts, handle that specific case
     if GetRoundState() == ROUND_ACTIVE and (newRole == ROLE_GOODTWIN or newRole == ROLE_EVILTWIN) then
         local goodTwins = {}
@@ -256,13 +265,13 @@ hook.Add("TTTPlayerRoleChanged", "Twins_TTTPlayerRoleChanged", function(ply, old
             if not p:IsActiveTwin() then continue end
 
             if p ~= ply then
-                table.insert(otherTwins, p)
+                TableInsert(otherTwins, p)
             end
 
             if p:IsGoodTwin() then
-                table.insert(goodTwins, p)
+                TableInsert(goodTwins, p)
             elseif p:IsEvilTwin() then
-                table.insert(evilTwins, p)
+                TableInsert(evilTwins, p)
             end
         end
 
@@ -327,7 +336,7 @@ end)
 -- DAMAGE BLOCKING --
 ---------------------
 
-hook.Add("EntityTakeDamage", "Twins_EntityTakeDamage", function(target, dmginfo)
+local function Twins_EntityTakeDamage(target, dmginfo)
     if not IsPlayer(target) then return end
     if not target:IsTwin() then return end
 
@@ -339,26 +348,26 @@ hook.Add("EntityTakeDamage", "Twins_EntityTakeDamage", function(target, dmginfo)
         dmginfo:SetDamage(0)
         return
     end
-end)
+end
 
 ----------------
 -- HITMARKERS --
 ----------------
 
-hook.Add("TTTDrawHitMarker", "Twins_TTTDrawHitMarker", function(victim, dmginfo)
+local function Twins_TTTDrawHitMarker(victim, dmginfo)
     local att = dmginfo:GetAttacker()
     if not IsPlayer(att) or not IsPlayer(victim) then return end
 
     if not twinsCanDamageEachOther and att:IsTwin() and victim:IsTwin() then
         return true, false, true, false
     end
-end)
+end
 
 -------------
 -- CLEANUP --
 -------------
 
-hook.Add("TTTPrepareRound", "Twins_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Twins_TTTPrepareRound", function()
     invulnerabilityTriggered = false
     twinsCanDamageEachOther = false
 
@@ -367,3 +376,16 @@ hook.Add("TTTPrepareRound", "Twins_TTTPrepareRound", function()
         p:SetNWFloat("TTTTwinsInvulnerabilityEnd", 0)
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+local hooks = {
+    ["EntityTakeDamage"] = Twins_EntityTakeDamage,
+    ["PlayerDeath"] = Twins_PlayerDeath,
+    ["TTTDrawHitMarker"] = Twins_TTTDrawHitMarker
+}
+
+ROLE_REGISTERED_HOOKS[ROLE_GOODTWIN] = hooks
+ROLE_REGISTERED_HOOKS[ROLE_EVILTWIN] = hooks

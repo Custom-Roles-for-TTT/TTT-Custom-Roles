@@ -9,6 +9,7 @@ local table = table
 local timer = timer
 local util = util
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 local MathRandom = math.random
 local StringFormat = string.format
@@ -65,7 +66,7 @@ end
 -- SUCCUMB --
 -------------
 
-hook.Add("Initialize", "Infected_RoleChange_Initialize", function()
+AddHook("Initialize", "Infected_RoleChange_Initialize", function()
     SetGlobalFloat("ttt_infected_succumb", -1)
 end)
 
@@ -81,7 +82,7 @@ local function InfectedSuccumb(ply, respawn)
     ply:QueueMessage(MSG_PRINTCENTER, message .. ROLE_STRINGS_EXT[ROLE_ZOMBIE])
 
     net.Start("TTT_InfectedSuccumbed")
-    net.WriteString(ply:Nick())
+        net.WriteString(ply:Nick())
     net.Broadcast()
 
     local body = ply.server_ragdoll or ply:GetRagdollEntity()
@@ -136,7 +137,7 @@ local function StartSuccumbTimer()
     end)
 end
 
-hook.Add("PlayerDeath", "Infected_KillCheck_PlayerDeath", function(victim, infl, attacker)
+local function Infected_KillCheck_PlayerDeath(victim, infl, attacker)
     if not infected_respawn_enabled:GetBool() then return end
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
@@ -147,9 +148,9 @@ hook.Add("PlayerDeath", "Infected_KillCheck_PlayerDeath", function(victim, infl,
         InfectedSuccumb(victim, true)
         victim:SetNWBool("InfectedIsZombifying", false)
     end)
-end)
+end
 
-hook.Add("TTTStopPlayerRespawning", "Infected_TTTStopPlayerRespawning", function(ply)
+local function Infected_TTTStopPlayerRespawning(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -157,9 +158,9 @@ hook.Add("TTTStopPlayerRespawning", "Infected_TTTStopPlayerRespawning", function
         timer.Remove("Infectify_" .. ply:SteamID64())
         ply:SetNWBool("InfectedIsZombifying", false)
     end
-end)
+end
 
-hook.Add("TTTOnRoleAbilityEnabled", "Infected_TTTOnRoleAbilityEnabled", function(ply)
+local function Infected_TTTOnRoleAbilityEnabled(ply)
     if not IsPlayer(ply) or not ply:IsInfected() then return end
     if timer.Exists("InfectedSuccumb") and timer.TimeLeft("InfectedSuccumb") > 0 then return end
 
@@ -171,13 +172,13 @@ hook.Add("TTTOnRoleAbilityEnabled", "Infected_TTTOnRoleAbilityEnabled", function
     else
         InfectedSuccumb(ply, false)
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTWinCheckBlocks", "Infected_TTTWinCheckBlocks", function(win_blocks)
+local function Infected_TTTWinCheckBlocks(win_blocks)
     -- Don't block wins while the infected is innocent
     if INNOCENT_ROLES[ROLE_INFECTED] then return end
     if not infected_block_win:GetBool() then return end
@@ -198,9 +199,9 @@ hook.Add("TTTWinCheckBlocks", "Infected_TTTWinCheckBlocks", function(win_blocks)
             return WIN_NONE
         end
     end)
-end)
+end
 
-hook.Add("TTTCheckForWin", "Infected_TTTCheckForWin", function()
+local function Infected_TTTCheckForWin()
     -- Only run the win check if the infected wins by themselves
     if not INDEPENDENT_ROLES[ROLE_INFECTED] then return end
 
@@ -221,16 +222,16 @@ hook.Add("TTTCheckForWin", "Infected_TTTCheckForWin", function()
     elseif infected_alive then
         return WIN_NONE
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Infected_TTTPrintResultMessage", function(type)
+local function Infected_TTTPrintResultMessage(type)
     if type == WIN_INFECTED then
         local role_string = ROLE_STRINGS[ROLE_INFECTED]
         LANG.Msg("win_infected", { role = role_string })
         ServerLog("Result: " .. role_string .. " wins.\n")
         return true
     end
-end)
+end
 
 -----------------------
 -- ROLE CHANGE LOGIC --
@@ -245,15 +246,29 @@ end
 -- CLEANUP --
 -------------
 
-hook.Add("TTTEndRound", "Infected_TTTEndRound", function()
+local function Infected_TTTEndRound()
     if timer.Exists("InfectedSuccumb") then timer.Remove("InfectedSuccumb") end
     if timer.Exists("WaitForInfectedRespawn") then timer.Remove("WaitForInfectedRespawn") end
     if timer.Exists("InfectedCough") then timer.Remove("InfectedCough") end
-end)
+end
 
-hook.Add("TTTPrepareRound", "Infected_PrepareRound", function()
+AddHook("TTTPrepareRound", "Infected_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("InfectedIsZombifying", false)
         timer.Remove("Infectify_" .. v:SteamID64())
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_INFECTED] = {
+    ["PlayerDeath"] = Infected_KillCheck_PlayerDeath,
+    ["TTTCheckForWin"] = Infected_TTTCheckForWin,
+    ["TTTEndRound"] = Infected_TTTEndRound,
+    ["TTTOnRoleAbilityEnabled"] = Infected_TTTOnRoleAbilityEnabled,
+    ["TTTPrintResultMessage"] = Infected_TTTPrintResultMessage,
+    ["TTTStopPlayerRespawning"] = Infected_TTTStopPlayerRespawning,
+    ["TTTWinCheckBlocks"] = Infected_TTTWinCheckBlocks
+}

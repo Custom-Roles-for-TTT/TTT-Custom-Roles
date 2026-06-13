@@ -1,6 +1,8 @@
 local hook = hook
 local net = net
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -12,7 +14,7 @@ local hypnotist_device_shop = GetConVar("ttt_hypnotist_device_shop")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Hypnotist_Translations_Initialize", function()
+AddHook("Initialize", "Hypnotist_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "brainwash_help_pri", "Hold {primaryfire} to revive dead body.")
     LANG.AddToLanguage("english", "brainwash_help_sec", "The revived player will become a traitor.")
@@ -36,7 +38,7 @@ end)
 -------------
 
 -- Register the scoring events for the hypnotist
-hook.Add("Initialize", "Hypnotist_Scoring_Initialize", function()
+AddHook("Initialize", "Hypnotist_Scoring_Initialize", function()
     local traitor_icon = Material("icon16/user_red.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -61,7 +63,7 @@ net.Receive("TTT_Hypnotised", function(len)
 end)
 
 -- Show that this person was their original role via the icon
-hook.Add("TTTScoringSummaryRender", "Hypnotist_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+AddHook("TTTScoringSummaryRender", "Hypnotist_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if (ply:IsTraitor() or ply:IsImpersonator()) and ply:GetNWBool("WasHypnotised", false) then
@@ -73,7 +75,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Hypnotist_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Hypnotist_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_HYPNOTIST then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_HYPNOTIST] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to revive a dead player as an ally using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>brainwashing device</span>."

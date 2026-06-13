@@ -4,6 +4,7 @@ local hook = hook
 local IsValid = IsValid
 local player = player
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 CreateConVar("ttt_hypnotist_brainwash_credits", 0, FCVAR_NONE, "How many credits a hypnotized player should get", 0, 5)
@@ -14,20 +15,20 @@ local hypnotist_brainwash_muted = CreateConVar("ttt_hypnotist_brainwash_muted", 
 ------------------
 
 -- Only allow the hypnotist to pick up hypnotist-specific weapons
-hook.Add("PlayerCanPickupWeapon", "Hypnotist_Weapons_PlayerCanPickupWeapon", function(ply, wep)
+local function Hypnotist_Weapons_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return end
 
     if wep:GetClass() == "weapon_hyp_brainwash" then
         return ply:IsHypnotist()
     end
-end)
+end
 
 -------------------
 -- ROLE FEATURES --
 -------------------
 
-hook.Add("PlayerCanHearPlayersVoice", "Hypnotist_PlayerCanHearPlayersVoice", function(listener, speaker)
+AddHook("PlayerCanHearPlayersVoice", "Hypnotist_PlayerCanHearPlayersVoice", function(listener, speaker)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not IsPlayer(listener) then return end
@@ -52,7 +53,7 @@ hook.Add("PlayerCanHearPlayersVoice", "Hypnotist_PlayerCanHearPlayersVoice", fun
     return false, false
 end)
 
-hook.Add("PlayerSay", "Hypnotist_PlayerSay", function(ply, text, team_only)
+AddHook("PlayerSay", "Hypnotist_PlayerSay", function(ply, text, team_only)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not IsPlayer(ply) then return end
@@ -65,7 +66,7 @@ hook.Add("PlayerSay", "Hypnotist_PlayerSay", function(ply, text, team_only)
     return ""
 end)
 
-hook.Add("TTTPlayerRadioCommand", "Hypnotist_TTTPlayerRadioCommand", function(ply, msg_name, msg_target)
+AddHook("TTTPlayerRadioCommand", "Hypnotist_TTTPlayerRadioCommand", function(ply, msg_name, msg_target)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not IsPlayer(ply) then return end
@@ -82,9 +83,17 @@ end)
 -- ROLE STATE --
 ----------------
 
-hook.Add("TTTPrepareRound", "Hypnotist_PrepareRound", function()
+AddHook("TTTPrepareRound", "Hypnotist_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("WasHypnotised", false)
         v.NextHypnotistMuteWarning = nil
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_HYPNOTIST] = {
+    ["PlayerCanPickupWeapon"] = Hypnotist_Weapons_PlayerCanPickupWeapon
+}

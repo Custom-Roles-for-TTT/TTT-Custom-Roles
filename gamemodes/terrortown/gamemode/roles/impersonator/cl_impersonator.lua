@@ -1,5 +1,7 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -10,7 +12,7 @@ local impersonator_damage_penalty = GetConVar("ttt_impersonator_damage_penalty")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Impersonator_Translations_Initialize", function()
+AddHook("Initialize", "Impersonator_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_impersonator", "Promoted to replace the detective in the event of their death, but they are still a member of the traitor team.")
 
@@ -27,7 +29,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Impersonator_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Impersonator_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_IMPERSONATOR then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to wait for the " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " to die (or <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>kill them</span>)."

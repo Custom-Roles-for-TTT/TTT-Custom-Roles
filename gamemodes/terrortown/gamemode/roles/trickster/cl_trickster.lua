@@ -1,10 +1,12 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Trickster_Translations_Initialize", function()
+AddHook("Initialize", "Trickster_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_trickster", "Can activate traps like members of the traitor team.")
 
@@ -17,7 +19,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Trickster_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Trickster_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TRICKSTER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_TRICKSTER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> who can:"

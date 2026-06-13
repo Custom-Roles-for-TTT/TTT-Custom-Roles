@@ -4,6 +4,7 @@ local IsValid = IsValid
 local player = player
 local string = string
 
+local AddHook = hook.Add
 local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 
@@ -26,7 +27,7 @@ local assassin_failed_damage_penalty = GetConVar("ttt_assassin_failed_damage_pen
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Assassin_Translations_Initialize", function()
+AddHook("Initialize", "Assassin_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_assassin", "The {role} has fulfilled all their contracts!")
     LANG.AddToLanguage("english", "ev_win_assassin", "The cold-blooded {role} won the round!")
@@ -57,47 +58,47 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Assassin_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Assassin_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_ASSASSIN then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_ASSASSIN]) }, c = ROLE_COLORS[ROLE_ASSASSIN] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Assassin_TTTEventFinishText", function(e)
+local function Assassin_TTTEventFinishText(e)
     if e.win == WIN_ASSASSIN then
         return LANG.GetParamTranslation("ev_win_assassin", { role = string.lower(ROLE_STRINGS[ROLE_ASSASSIN]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Assassin_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Assassin_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_ASSASSIN then
         return win_string, ROLE_STRINGS[ROLE_ASSASSIN]
     end
-end)
+end
 
 ---------------
 -- TARGET ID --
 ---------------
 
 -- Show skull icon over the target's head
-hook.Add("TTTTargetIDPlayerTargetIcon", "Assassin_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+local function Assassin_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     if cli:IsAssassin() and assassin_show_target_icon:GetBool() and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester and not cli:IsSameTeam(ply) and not cli:IsRoleAbilityDisabled() then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_ASSASSIN], "down"
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
+local function Assassin_TTTTargetIDPlayerText(ent, cli, text, col, secondary_text)
     if cli:IsAssassin() and IsPlayer(ent) and ent:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         if TRAITOR_ROLES[ROLE_ASSASSIN] and ent:GetNWBool("ParasiteInfected", false) and ShouldShowTraitorExtraInfo() then
             secondary_text = LANG.GetTranslation("target_infected")
         end
         return LANG.GetTranslation("target_current_target"), ROLE_COLORS_RADAR[ROLE_ASSASSIN], secondary_text
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target, showJester)
     if not ply:IsAssassin() then return end
@@ -116,13 +117,13 @@ end
 ----------------
 
 -- Flash the assassin target's row on the scoreboard
-hook.Add("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Assassin_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if cli:IsAssassin() and (INDEPENDENT_ROLES[ROLE_ASSASSIN] or ShouldShowTraitorExtraInfo()) and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         return c, roleStr, ROLE_ASSASSIN
     end
-end)
+end
 
-hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function(ply, cli, text)
+local function Assassin_TTTScoreboardPlayerName(ply, cli, text)
     if cli:IsAssassin() and ply:SteamID64() == cli:GetNWString("AssassinTarget", "") and not cli:IsRoleAbilityDisabled() then
         local newText = " ("
         if TRAITOR_ROLES[ROLE_ASSASSIN] and ply:GetNWBool("ParasiteInfected", false) and ShouldShowTraitorExtraInfo() then
@@ -131,7 +132,7 @@ hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function
         newText = newText .. LANG.GetTranslation("target_assassin_target") .. ")"
         return ply:Nick() .. newText
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target)
     if not ply:IsAssassin() then return end
@@ -155,7 +156,7 @@ local vision_enabled = false
 local client = nil
 
 local function EnableAssassinTargetHighlights()
-    hook.Add("PreDrawHalos", "Assassin_Highlight_PreDrawHalos", function()
+    AddHook("PreDrawHalos", "Assassin_Highlight_PreDrawHalos", function()
         local target_sid64 = client:GetNWString("AssassinTarget", "")
         if not target_sid64 or #target_sid64 == 0 then return end
 
@@ -174,7 +175,7 @@ local function EnableAssassinTargetHighlights()
     end)
 end
 
-hook.Add("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState", function()
+local function Assassin_Highlight_TTTUpdateRoleState()
     client = LocalPlayer()
     assassin_target_vision = assassin_target_vision_enabled:GetBool()
 
@@ -183,10 +184,10 @@ hook.Add("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState", function
         RemoveHook("PreDrawHalos", "Assassin_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end)
+end
 
 -- Handle enabling and disabling of highlighting
-hook.Add("Think", "Assassin_Highlight_Think", function()
+local function Assassin_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
     if assassin_target_vision and client:IsAssassin() and not client:IsRoleAbilityDisabled() then
@@ -201,7 +202,7 @@ hook.Add("Think", "Assassin_Highlight_Think", function()
     if assassin_target_vision and not vision_enabled then
         RemoveHook("PreDrawHalos", "Assassin_Highlight_PreDrawHalos")
     end
-end)
+end
 
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_ASSASSIN] = function(ply, target)
     if not ply:IsAssassin() then return end
@@ -219,7 +220,7 @@ end
 -- ROLE POPUP --
 ----------------
 
-hook.Add("TTTRolePopupParams", "Assassin_TTTRolePopupParams", function(cli)
+local function Assassin_TTTRolePopupParams(cli)
     if not cli:IsAssassin() then return end
 
     local params = {}
@@ -235,7 +236,7 @@ hook.Add("TTTRolePopupParams", "Assassin_TTTRolePopupParams", function(cli)
     params.assassintarget = string.rep(" ", 42) .. targetNick
 
     return params
-end)
+end
 
 --------------
 -- TUTORIAL --
@@ -251,7 +252,7 @@ local function GetPunctuatedListString(tbl)
     return string.gsub(allowed_string, "(.*),(.*)", "%1" .. allowed_replace .. "%2")
 end
 
-hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ASSASSIN then
         local roleColor
         local html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is "
@@ -364,3 +365,20 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_ASSASSIN] = {
+    ["Think"] = Assassin_Highlight_Think,
+    ["TTTEventFinishIconText"] = Assassin_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Assassin_TTTEventFinishText,
+    ["TTTRolePopupParams"] = Assassin_TTTRolePopupParams,
+    ["TTTScoreboardPlayerName"] = Assassin_TTTScoreboardPlayerName,
+    ["TTTScoreboardPlayerRole"] = Assassin_TTTScoreboardPlayerRole,
+    ["TTTScoringWinTitle"] = Assassin_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerTargetIcon"] = Assassin_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Assassin_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = Assassin_Highlight_TTTUpdateRoleState
+}

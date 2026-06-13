@@ -3,6 +3,7 @@ AddCSLuaFile()
 local hook = hook
 local player = player
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 ------------------
@@ -18,53 +19,54 @@ CreateConVar("ttt_marshal_badge_loadout", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_marshal_badge_shop", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_marshal_badge_shop_rebuyable", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_MARSHAL] = {}
-table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
-    cvar = "ttt_marshal_monster_deputy_chance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
-    cvar = "ttt_marshal_jester_deputy_chance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
-    cvar = "ttt_marshal_independent_deputy_chance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
-    cvar = "ttt_marshal_announce_deputy",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
-    cvar = "ttt_marshal_prevent_deputy",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
-    cvar = "ttt_marshal_badge_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
-    cvar = "ttt_marshal_badge_loadout",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
-    cvar = "ttt_marshal_badge_shop",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
-    cvar = "ttt_marshal_badge_shop_rebuyable",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_MARSHAL] = {
+    {
+        cvar = "ttt_marshal_monster_deputy_chance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_marshal_jester_deputy_chance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_marshal_independent_deputy_chance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_marshal_announce_deputy",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_marshal_prevent_deputy",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_marshal_badge_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_marshal_badge_loadout",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_marshal_badge_shop",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_marshal_badge_shop_rebuyable",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 -----------------
 -- ROLE WEAPON --
 -----------------
 
-hook.Add("TTTUpdateRoleState", "Marshal_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Marshal_TTTUpdateRoleState", function()
     local marshal_badge = weapons.GetStored("weapon_mhl_badge")
     if GetConVar("ttt_marshal_badge_loadout"):GetBool() then
         marshal_badge.InLoadoutFor = table.Copy(marshal_badge.InLoadoutForDefault)
@@ -106,9 +108,5 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Marshal_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Marshal_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Marshal_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Marshal_Shared_TTTPrepareRound", InitializeEquipment)

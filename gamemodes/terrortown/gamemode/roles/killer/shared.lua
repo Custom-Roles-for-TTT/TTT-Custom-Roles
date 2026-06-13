@@ -3,6 +3,9 @@ AddCSLuaFile()
 local hook = hook
 local table = table
 
+local AddHook = hook.Add
+local TableInsert = table.insert
+
 -- Initialize role features
 ROLE_STARTING_HEALTH[ROLE_KILLER] = 150
 ROLE_MAX_HEALTH[ROLE_KILLER] = 150
@@ -19,7 +22,7 @@ local function InitializeEquipment()
         local mat_dir = "vgui/ttt/"
         -- If we haven't already registered these items, add them to the list
         if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_KILLER], "id", EQUIP_ARMOR) then
-            table.insert(EquipmentItems[ROLE_KILLER], {
+            TableInsert(EquipmentItems[ROLE_KILLER], {
                 id = EQUIP_ARMOR,
                 type = "item_passive",
                 material = mat_dir .. "icon_armor",
@@ -29,7 +32,7 @@ local function InitializeEquipment()
         end
 
         if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_KILLER], "id", EQUIP_RADAR) then
-            table.insert(EquipmentItems[ROLE_KILLER], {
+            TableInsert(EquipmentItems[ROLE_KILLER], {
                 id = EQUIP_RADAR,
                 type = "item_active",
                 material = mat_dir .. "icon_radar",
@@ -40,7 +43,7 @@ local function InitializeEquipment()
         end
 
         if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_KILLER], "id", EQUIP_DISGUISE) then
-            table.insert(EquipmentItems[ROLE_KILLER], {
+            TableInsert(EquipmentItems[ROLE_KILLER], {
                 id = EQUIP_DISGUISE,
                 type = "item_active",
                 material = mat_dir .. "icon_disguise",
@@ -75,12 +78,8 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Killer_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Killer_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Killer_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Killer_Shared_TTTPrepareRound", InitializeEquipment)
 
 ------------------
 -- ROLE CONVARS --
@@ -95,89 +94,90 @@ CreateConVar("ttt_killer_update_scoreboard", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_warn", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_warn_all", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_KILLER] = {}
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_knife_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_crowbar_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_smoke_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_smoke_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_show_target_icon",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_damage_penalty",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_damage_reduction",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_warn",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_warn_all",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_vision_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_knife_damage",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_knife_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_crowbar_damage",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_crowbar_thrown_damage",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_can_see_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_credits_award_pct",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_credits_award_size",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_credits_award_repeat",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_KILLER] = {
+    {
+        cvar = "ttt_killer_knife_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_killer_crowbar_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_killer_smoke_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_killer_smoke_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_killer_show_target_icon",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_killer_damage_penalty",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_killer_damage_reduction",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_killer_warn",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_killer_warn_all",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_killer_vision_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_killer_knife_damage",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_killer_knife_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_killer_crowbar_damage",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_killer_crowbar_thrown_damage",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_killer_can_see_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_killer_update_scoreboard",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_killer_credits_award_pct",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_killer_credits_award_size",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_killer_credits_award_repeat",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}

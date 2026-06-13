@@ -4,9 +4,10 @@ local hook = hook
 local net = net
 local player = player
 local util = util
+local timer = timer
 
+local AddHook = hook.Add
 local CallHook = hook.Call
-
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_Promotion")
@@ -90,25 +91,25 @@ end
 ROLE_ON_ROLE_ASSIGNED[ROLE_DEPUTY] = BeginRoleChecks
 ROLE_ON_ROLE_ASSIGNED[ROLE_IMPERSONATOR] = BeginRoleChecks
 
-hook.Add("TTTOnRoleAbilityEnabled", "DetectiveLike_TTTOnRoleAbilityEnabled", function(ply)
+AddHook("TTTOnRoleAbilityEnabled", "DetectiveLike_TTTOnRoleAbilityEnabled", function(ply)
     if not IsPlayer(ply) or not ply:IsDetectiveLikePromotable() then return end
     if not ShouldPromoteDetectiveLike() then return end
     FindAndPromoteDetectiveLike()
 end)
 
-hook.Add("TTTPrepareRound", "DetectiveLike_RoleState_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "DetectiveLike_RoleState_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("HasPromotion", false)
     end
 end)
 
-hook.Add("PlayerDeath", "DetectiveLike_RoleState_PlayerDeath", function(victim, infl, attacker)
+AddHook("PlayerDeath", "DetectiveLike_RoleState_PlayerDeath", function(victim, infl, attacker)
     if victim:IsDetectiveTeam() and GetRoundState() == ROUND_ACTIVE and ShouldPromoteDetectiveLike() then
         FindAndPromoteDetectiveLike()
     end
 end)
 
-hook.Add("TTTPlayerRoleChanged", "DetectiveLike_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "DetectiveLike_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if DETECTIVE_ROLES[oldRole] and GetRoundState() == ROUND_ACTIVE and ShouldPromoteDetectiveLike() then
         FindAndPromoteDetectiveLike()
     end
@@ -118,7 +119,7 @@ end)
 -- AUTO CREDITS --
 ------------------
 
-hook.Add("TTTBeginRound", "DetectiveLike_TTTBeginRound", function()
+AddHook("TTTBeginRound", "DetectiveLike_TTTBeginRound", function()
     local credit_timer = detectives_credits_timer:GetInt()
     if credit_timer <= 0 then return end
 
@@ -132,7 +133,7 @@ hook.Add("TTTBeginRound", "DetectiveLike_TTTBeginRound", function()
     end)
 end)
 
-hook.Add("TTTEndRound", "DetectiveLike_TTTEndRound", function()
+AddHook("TTTEndRound", "DetectiveLike_TTTEndRound", function()
     timer.Remove("DetectiveCreditTimer")
 end)
 

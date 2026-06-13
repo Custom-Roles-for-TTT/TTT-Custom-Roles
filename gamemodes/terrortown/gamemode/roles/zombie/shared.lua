@@ -4,6 +4,9 @@ local hook = hook
 local IsValid = IsValid
 local table = table
 
+local AddHook = hook.Add
+local TableInsert = table.insert
+
 -- Zombie friendly fire modes
 ZOMBIE_FF_MODE_NONE = 0
 ZOMBIE_FF_MODE_REFLECT = 1
@@ -18,7 +21,7 @@ ROLE_VICTIM_CHANGING_ROLE[ROLE_ZOMBIE] = function(ply, victim)
     return victim:IsZombifying()
 end
 
-hook.Add("TTTIsPlayerRespawning", "Zombie_TTTIsPlayerRespawning", function(ply)
+AddHook("TTTIsPlayerRespawning", "Zombie_TTTIsPlayerRespawning", function(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -27,7 +30,7 @@ hook.Add("TTTIsPlayerRespawning", "Zombie_TTTIsPlayerRespawning", function(ply)
     end
 end)
 
-hook.Add("TTTRoleSpawnsArtificially", "Zombie_TTTRoleSpawnsArtificially", function(role)
+AddHook("TTTRoleSpawnsArtificially", "Zombie_TTTRoleSpawnsArtificially", function(role)
     if role == ROLE_ZOMBIE then
         local madScientistEnabled = util.CanRoleSpawn(ROLE_MADSCIENTIST) and
             ((INDEPENDENT_ROLES[ROLE_ZOMBIE] and INDEPENDENT_ROLES[ROLE_MADSCIENTIST])
@@ -74,140 +77,142 @@ CreateConVar("ttt_zombie_damage_penalty", "0.5", FCVAR_REPLICATED, "The fraction
 CreateConVar("ttt_zombie_damage_reduction", "0", FCVAR_REPLICATED, "The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie", 0, 1)
 CreateConVar("ttt_zombie_spit_convert", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_ZOMBIE] = {}
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_round_chance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_is_monster",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_is_traitor",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_show_target_icon",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_damage_penalty",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_damage_reduction",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_prime_only_weapons",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_prime_speed_bonus",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_thrall_speed_bonus",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_vision_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_leap_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_spit_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_prime_convert_chance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_thrall_convert_chance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_respawn_health",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_prime_attack_damage",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_thrall_attack_damage",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_prime_attack_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_thrall_attack_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_friendly_fire",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Do nothing", "Reflect", "Block"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_respawn_block_win",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_can_see_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_spit_convert",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_eat_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_eat_drop_bones",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_eat_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_eat_heal",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_eat_overheal",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
+ROLE_CONVARS[ROLE_ZOMBIE] = {
+    {
+        cvar = "ttt_zombie_round_chance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_zombie_is_monster",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_is_traitor",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_show_target_icon",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_damage_penalty",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_zombie_damage_reduction",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_zombie_prime_only_weapons",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_prime_speed_bonus",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_zombie_thrall_speed_bonus",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_zombie_vision_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_leap_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_spit_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_prime_convert_chance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_zombie_thrall_convert_chance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_zombie_respawn_health",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_zombie_prime_attack_damage",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_zombie_thrall_attack_damage",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_zombie_prime_attack_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_zombie_thrall_attack_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_zombie_friendly_fire",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Do nothing", "Reflect", "Block"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_zombie_respawn_block_win",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_can_see_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_update_scoreboard",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_spit_convert",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_eat_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_eat_drop_bones",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_zombie_eat_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_zombie_eat_heal",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_zombie_eat_overheal",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    }
+}
+
 -------------------
 -- ROLE FEATURES --
 -------------------
@@ -259,10 +264,8 @@ end
 InitializeEquipment()
 
 -- Initialize role features
-hook.Add("Initialize", "Zombie_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Zombie_Shared_TTTPrepareRound", function()
+AddHook("Initialize", "Zombie_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Zombie_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 
     -- Add radio sounds
@@ -276,7 +279,7 @@ hook.Add("TTTPrepareRound", "Zombie_Shared_TTTPrepareRound", function()
     end
 end)
 
-hook.Add("TTTUpdateRoleState", "Zombie_Team_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Zombie_TeamChange_TTTUpdateRoleState", function()
     local is_monster = zombie_is_monster:GetBool()
     -- Zombies cannot be both Monsters and Traitors so don't make them Traitors if they are already Monsters
     local is_traitor = not is_monster and zombie_is_traitor:GetBool()
@@ -290,7 +293,7 @@ end)
 -----------------
 
 -- Zombies move faster when they have their claws out and if they have the speed perk
-hook.Add("TTTSpeedMultiplier", "Zombie_TTTSpeedMultiplier", function(ply, mults)
+AddHook("TTTSpeedMultiplier", "Zombie_TTTSpeedMultiplier", function(ply, mults)
     local wep = ply:GetActiveWeapon()
     if IsValid(wep) and WEPS.GetClass(wep) == "weapon_zom_claws" then
         local speed_bonus = 1
@@ -304,6 +307,6 @@ hook.Add("TTTSpeedMultiplier", "Zombie_TTTSpeedMultiplier", function(ply, mults)
             speed_bonus = speed_bonus + 0.15
         end
 
-        table.insert(mults, speed_bonus)
+        TableInsert(mults, speed_bonus)
     end
 end)

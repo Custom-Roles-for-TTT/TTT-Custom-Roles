@@ -1,10 +1,12 @@
 local hook = hook
 local math = math
+local net = net
 local string = string
 local surface = surface
 local table = table
 local util = util
 
+local AddHook = hook.Add
 local MathMax = math.max
 local StringUpper = string.upper
 
@@ -27,7 +29,7 @@ local hide_role = GetConVar("ttt_hide_role")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Infected_Translations_Initialize", function()
+AddHook("Initialize", "Infected_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_infected", "The {role} has eliminated everyone before succumbing to their infection!")
     LANG.AddToLanguage("english", "ev_win_infected", "The {role} has beat their infection... through murder!")
@@ -60,13 +62,13 @@ end)
 -- ROLE POPUP --
 ----------------
 
-hook.Add("TTTRolePopupParams", "Infected_TTTRolePopupParams", function(cli)
+local function Infected_TTTRolePopupParams(cli)
     if cli:IsInfected() then
         return { azombie = ROLE_STRINGS_EXT[ROLE_ZOMBIE] }
     end
-end)
+end
 
-hook.Add("TTTRolePopupRoleStringOverride", "Infected_TTTRolePopupRoleStringOverride", function(cli, roleString)
+local function Infected_TTTRolePopupRoleStringOverride(cli, roleString)
     if not IsPlayer(cli) or not cli:IsInfected() then return end
 
     if infected_is_independent:GetBool() then
@@ -74,33 +76,33 @@ hook.Add("TTTRolePopupRoleStringOverride", "Infected_TTTRolePopupRoleStringOverr
     elseif infected_is_jester:GetBool() then
         return roleString .. "_jester"
     end
-end)
+end
 
 ---------------
 -- TARGET ID --
 ---------------
 
 -- Reveal the infected to all zombie allies if enabled
-hook.Add("TTTTargetIDPlayerRoleIcon", "Infected_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideInfected, showJester, hideBodysnatcher)
+local function Infected_TTTTargetIDPlayerRoleIcon(ply, client, role, noz, colorRole, hideInfected, showJester, hideBodysnatcher)
     if not infected_show_icon:GetBool() then return end
     if ply:IsActiveInfected() and client:IsZombieAlly() then
         return ROLE_INFECTED, false
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerRing", "Infected_TTTTargetIDPlayerRing", function(ent, client, ringVisible)
+local function Infected_TTTTargetIDPlayerRing(ent, client, ringVisible)
     if not infected_show_icon:GetBool() then return end
     if IsPlayer(ent) and ent:IsActiveInfected() and client:IsZombieAlly() then
         return true, ROLE_COLORS_RADAR[ROLE_INFECTED]
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerText", "Infected_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
+local function Infected_TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)
     if not infected_show_icon:GetBool() then return end
     if IsPlayer(ent) and ent:IsActiveInfected() and client:IsZombieAlly() then
         return StringUpper(ROLE_STRINGS[ROLE_INFECTED]), ROLE_COLORS_RADAR[ROLE_INFECTED]
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_INFECTED] = function(ply, target)
     if not infected_show_icon:GetBool() then return end
@@ -116,12 +118,12 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Infected_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
+local function Infected_TTTScoreboardPlayerRole(ply, client, color, roleFileName)
     if not infected_show_icon:GetBool() then return end
     if ply:IsActiveInfected() and client:IsZombieAlly() then
         return ROLE_COLORS_SCOREBOARD[ROLE_INFECTED], ROLE_STRINGS_SHORT[ROLE_INFECTED]
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_INFECTED] = function(ply, target)
     if not infected_show_icon:GetBool() then return end
@@ -138,7 +140,7 @@ end
 -------------
 
 -- Register the scoring event for the infected
-hook.Add("Initialize", "Infected_Scoring_Initialize", function()
+AddHook("Initialize", "Infected_Scoring_Initialize", function()
     local zombie_icon = Material("icon16/user_green.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -164,33 +166,33 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Infected_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Infected_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_INFECTED then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_INFECTED]) }, c = ROLE_COLORS[ROLE_INFECTED] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Infected_TTTEventFinishText", function(e)
+local function Infected_TTTEventFinishText(e)
     if e.win == WIN_INFECTED then
         return LANG.GetParamTranslation("ev_win_infected", { role = string.lower(ROLE_STRINGS[ROLE_INFECTED]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Infected_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Infected_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_INFECTED then
         return win_string, ROLE_STRINGS[ROLE_INFECTED]
     end
-end)
+end
 
 ---------
 -- HUD --
 ---------
 
-hook.Add("TTTHUDInfoPaint", "Infected_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
+local function Infected_TTTHUDInfoPaint(client, label_left, label_top, active_labels)
     if hide_role:GetBool() then return end
 
     if client:IsActiveInfected() then
@@ -210,13 +212,13 @@ hook.Add("TTTHUDInfoPaint", "Infected_TTTHUDInfoPaint", function(client, label_l
         -- Track that the label was added so others can position accurately
         table.insert(active_labels, "infected")
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Infected_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Infected_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_INFECTED then
         local roleTeam = player.GetRoleTeam(ROLE_INFECTED, true)
         local roleTeamString, roleTeamColor = GetRoleTeamInfo(roleTeam, true)
@@ -256,3 +258,20 @@ hook.Add("TTTTutorialRoleText", "Infected_TTTTutorialRoleText", function(role, t
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_INFECTED] = {
+    ["TTTEventFinishIconText"] = Infected_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Infected_TTTEventFinishText,
+    ["TTTHUDInfoPaint"] = Infected_TTTHUDInfoPaint,
+    ["TTTRolePopupParams"] = Infected_TTTRolePopupParams,
+    ["TTTRolePopupRoleStringOverride"] = Infected_TTTRolePopupRoleStringOverride,
+    ["TTTScoreboardPlayerRole"] = Infected_TTTScoreboardPlayerRole,
+    ["TTTScoringWinTitle"] = Infected_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerRing"] = Infected_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Infected_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Infected_TTTTargetIDPlayerText
+}

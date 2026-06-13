@@ -2,6 +2,8 @@ AddCSLuaFile()
 
 local hook = hook
 
+local AddHook = hook.Add
+
 -- Initialize role features
 MEDIUM_SCANNED_NONE = 0
 MEDIUM_SCANNED_NAME = 1
@@ -25,12 +27,8 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Medium_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Medium_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Medium_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Medium_Shared_TTTPrepareRound", InitializeEquipment)
 
 ------------------
 -- ROLE CONVARS --
@@ -43,46 +41,47 @@ CreateConVar("ttt_medium_seance_time", "8", FCVAR_REPLICATED, "The amount of tim
 CreateConVar("ttt_medium_seance_max_info", "0", FCVAR_REPLICATED, "The maximum amount of information the Medium can learn from performing a seance. 0 - None, 1 - Name, 2 - Team, 3 - Role", 0, 3)
 CreateConVar("ttt_medium_hide_killer_role", "0", FCVAR_REPLICATED, "Whether to hide the role of a player's killer when there is a medium in the round", 0, 1)
 
-ROLE_CONVARS[ROLE_MEDIUM] = {}
-table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
-    cvar = "ttt_medium_spirit_color",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
-    cvar = "ttt_medium_spirit_vision",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
-    cvar = "ttt_medium_dead_notify",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
-    cvar = "ttt_medium_seance_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
-    cvar = "ttt_medium_seance_float_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
-    cvar = "ttt_medium_seance_cooldown",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
-    cvar = "ttt_medium_seance_distance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
-    cvar = "ttt_medium_seance_max_info",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Name", "Role", "Team"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_MEDIUM], {
-    cvar = "ttt_medium_hide_killer_role",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_MEDIUM] = {
+    {
+        cvar = "ttt_medium_spirit_color",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_medium_spirit_vision",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_medium_dead_notify",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_medium_seance_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_medium_seance_float_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_medium_seance_cooldown",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_medium_seance_distance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_medium_seance_max_info",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Name", "Role", "Team"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_medium_hide_killer_role",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}

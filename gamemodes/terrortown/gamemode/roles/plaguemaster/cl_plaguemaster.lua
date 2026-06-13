@@ -1,5 +1,6 @@
 local hook = hook
 local math = math
+local net = net
 local util = util
 
 local AddHook = hook.Add
@@ -53,7 +54,7 @@ end)
 ---------------
 
 -- Show "PLAGUED" label on players who have been infected
-AddHook("TTTTargetIDPlayerText", "Plaguemaster_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
+local function Plaguemaster_TTTTargetIDPlayerText(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
     if not cli:IsPlaguemaster() then return end
@@ -66,7 +67,7 @@ AddHook("TTTTargetIDPlayerText", "Plaguemaster_TTTTargetIDPlayerText", function(
         return T("plaguemaster_plagued"), ROLE_COLORS[ROLE_TRAITOR]
     end
     return text, col, T("plaguemaster_plagued"), ROLE_COLORS[ROLE_TRAITOR]
-end)
+end
 
 -- NOTE: ROLE_IS_TARGETID_OVERRIDDEN is not required since only secondary text is being changed and that is not tracked there
 
@@ -74,7 +75,7 @@ end)
 -- BODY SEARCHING --
 --------------------
 
-AddHook("TTTBodySearchPopulate", "Plaguemaster_TTTBodySearchPopulate", function(search, raw)
+local function Plaguemaster_TTTBodySearchPopulate(search, raw)
     local rag = Entity(raw.eidx)
     if not IsValid(rag) then return end
 
@@ -99,7 +100,7 @@ AddHook("TTTBodySearchPopulate", "Plaguemaster_TTTBodySearchPopulate", function(
         text_icon = time,
         p = 10
     }
-end)
+end
 
 -------------
 -- SCORING --
@@ -134,34 +135,34 @@ end)
 -- WIN CHECKS --
 ----------------
 
-AddHook("TTTScoringWinTitle", "Plaguemaster_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Plaguemaster_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_PLAGUEMASTER then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_PLAGUEMASTER]) }, c = ROLE_COLORS[ROLE_PLAGUEMASTER] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-AddHook("TTTEventFinishText", "Plaguemaster_TTTEventFinishText", function(e)
+local function Plaguemaster_TTTEventFinishText(e)
     if e.win == WIN_PLAGUEMASTER then
         return LANG.GetParamTranslation("ev_win_plaguemaster", { role = string.lower(ROLE_STRINGS[ROLE_PLAGUEMASTER]) })
     end
-end)
+end
 
-AddHook("TTTEventFinishIconText", "Plaguemaster_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Plaguemaster_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_PLAGUEMASTER then
         return win_string, ROLE_STRINGS[ROLE_PLAGUEMASTER]
     end
-end)
+end
 
 ---------
 -- HUD --
 ---------
 local client = nil
 
-AddHook("HUDPaint", "Plaguemaster_HUDPaint", function()
+local function Plaguemaster_HUDPaint()
     if not IsPlayer(client) then
         client = LocalPlayer()
     end
@@ -192,7 +193,7 @@ AddHook("HUDPaint", "Plaguemaster_HUDPaint", function()
     local color = Color(200 + MathSin(CurTime() * 32) * 50, 0, 0, 155)
 
     CRHUD:PaintProgressBar(x, y, w, color, message, progress)
-end)
+end
 
 --------------
 -- TUTORIAL --
@@ -243,3 +244,16 @@ AddHook("TTTTutorialRoleText", "Plaguemaster_TTTTutorialRoleText", function(role
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_PLAGUEMASTER] = {
+    ["HUDPaint"] = Plaguemaster_HUDPaint,
+    ["TTTBodySearchPopulate"] = Plaguemaster_TTTBodySearchPopulate,
+    ["TTTEventFinishIconText"] = Plaguemaster_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Plaguemaster_TTTEventFinishText,
+    ["TTTScoringWinTitle"] = Plaguemaster_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerText"] = Plaguemaster_TTTTargetIDPlayerText
+}

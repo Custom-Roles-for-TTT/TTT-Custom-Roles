@@ -12,7 +12,9 @@ local table = table
 local timer = timer
 local util = util
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
+local TableInsert = table.insert
 
 util.AddNetworkString("TTT_DrunkSober")
 
@@ -34,7 +36,7 @@ local drunk_any_role_include_disabled = GetConVar("ttt_drunk_any_role_include_di
 -- ROLE CHANGE LOGIC --
 -----------------------
 
-hook.Add("Initialize", "Drunk_RoleChange_Initialize", function()
+AddHook("Initialize", "Drunk_RoleChange_Initialize", function()
     SetGlobalFloat("ttt_drunk_remember", -1)
 end)
 
@@ -341,7 +343,7 @@ function plymeta:SoberDrunk(team)
                 -- Add every non-innocent role (except those that are excluded)
                 for r = 0, ROLE_MAX do
                     if not INNOCENT_ROLES[r] and not excludes[r] then
-                        table.insert(role_options, r)
+                        TableInsert(role_options, r)
                     end
                 end
             end
@@ -363,7 +365,7 @@ function plymeta:SoberDrunk(team)
             for _, r in ipairs(role_options) do
                 local rolestring = ROLE_STRINGS_RAW[r]
                 if cvars.Bool("ttt_drunk_can_be_" .. rolestring, false) and (DEFAULT_ROLES[r] or drunk_any_role_include_disabled:GetBool() or util.CanRoleSpawnNaturally(r)) then
-                    table.insert(allowed_options, r)
+                    TableInsert(allowed_options, r)
                 end
             end
 
@@ -471,7 +473,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_DRUNK] = function(ply)
     end)
 end
 
-hook.Add("TTTOnRoleAbilityEnabled", "Drunk_TTTOnRoleAbilityEnabled", function(ply)
+local function Drunk_TTTOnRoleAbilityEnabled(ply)
     if not IsPlayer(ply) or not ply:IsDrunk() then return end
 
     -- If they are dead, make sure the respawn timer is running
@@ -489,7 +491,7 @@ hook.Add("TTTOnRoleAbilityEnabled", "Drunk_TTTOnRoleAbilityEnabled", function(pl
     else
         ply:SoberDrunk()
     end
-end)
+end
 
 local function StopDrunkTimers()
     if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
@@ -542,19 +544,14 @@ local function HandleDrunkWinBlock(win_type)
     end
 end
 
-hook.Add("TTTWinCheckBlocks", "Drunk_TTTWinCheckBlocks", function(win_blocks)
-    table.insert(win_blocks, HandleDrunkWinBlock)
-end)
-hook.Add("TTTWinCheckBlocked", "Drunk_TTTWinCheckBlocked", HandleDrunkSober)
+local function Drunk_TTTWinCheckBlocks(win_blocks)
+    TableInsert(win_blocks, HandleDrunkWinBlock)
+end
 
-hook.Add("TTTPrepareRound", "Drunk_PrepareRound", function()
+AddHook("TTTPrepareRound", "Drunk_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("WasDrunk", false)
     end
-end)
-
-hook.Add("TTTEndRound", "Drunk_TTTEndRound", function()
-    StopDrunkTimers()
 end)
 
 -----------
@@ -562,8 +559,20 @@ end)
 -----------
 
 -- Drunk loses karma because they aren't supposed to meta-game the system to choose what team they join
-hook.Add("TTTKarmaShouldGivePenalty", "Drunk_TTTKarmaShouldGivePenalty", function(attacker, victim)
+local function Drunk_TTTKarmaShouldGivePenalty(attacker, victim)
     if attacker:IsDrunk() then
         return true
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_DRUNK] = {
+    ["TTTEndRound"] = StopDrunkTimers,
+    ["TTTKarmaShouldGivePenalty"] = Drunk_TTTKarmaShouldGivePenalty,
+    ["TTTOnRoleAbilityEnabled"] = Drunk_TTTOnRoleAbilityEnabled,
+    ["TTTWinCheckBlocks"] = Drunk_TTTWinCheckBlocks,
+    ["TTTWinCheckBlocked"] = HandleDrunkSober
+}

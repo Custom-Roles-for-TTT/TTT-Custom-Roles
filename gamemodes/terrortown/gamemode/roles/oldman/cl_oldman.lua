@@ -3,6 +3,9 @@ local net = net
 local string = string
 local table = table
 
+local AddHook = hook.Add
+local TableInsert = table.insert
+
 -------------
 -- CONVARS --
 -------------
@@ -15,7 +18,7 @@ local oldman_adrenaline_shotgun = GetConVar("ttt_oldman_adrenaline_shotgun")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "OldMan_Translations_Initialize", function()
+AddHook("Initialize", "OldMan_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "ev_win_oldman", "The {role} has somehow survived and also won the round!")
 
@@ -50,40 +53,40 @@ local function ResetOldManWin()
     oldman_wins = false
 end
 net.Receive("TTT_ResetOldManWins", ResetOldManWin)
-hook.Add("TTTPrepareRound", "OldMan_WinTracking_TTTPrepareRound", ResetOldManWin)
-hook.Add("TTTBeginRound", "OldMan_WinTracking_TTTBeginRound", ResetOldManWin)
+AddHook("TTTPrepareRound", "OldMan_WinTracking_TTTPrepareRound", ResetOldManWin)
+AddHook("TTTBeginRound", "OldMan_WinTracking_TTTBeginRound", ResetOldManWin)
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringSecondaryWins", "OldMan_TTTScoringSecondaryWins", function(wintype, secondary_wins)
+local function OldMan_TTTScoringSecondaryWins(wintype, secondary_wins)
     if oldman_wins then
-        table.insert(secondary_wins, ROLE_OLDMAN)
+        TableInsert(secondary_wins, ROLE_OLDMAN)
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "OldMan_TTTEventFinishText", function(e)
+local function OldMan_TTTEventFinishText(e)
     if e.win == WIN_OLDMAN then
         return LANG.GetParamTranslation("ev_win_oldman", { role = string.lower(ROLE_STRINGS[ROLE_OLDMAN]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "OldMan_TTTEventFinishIconText", function(e, win_string, role_string)
+local function OldMan_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_OLDMAN then
         return "ev_win_icon_also", ROLE_STRINGS[ROLE_OLDMAN]
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "OldMan_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "OldMan_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_OLDMAN then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_OLDMAN] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is just to survive until the end of the round."
@@ -109,3 +112,13 @@ hook.Add("TTTTutorialRoleText", "OldMan_TTTTutorialRoleText", function(role, tit
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_OLDMAN] = {
+    ["TTTEventFinishIconText"] = OldMan_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = OldMan_TTTEventFinishText,
+    ["TTTScoringSecondaryWins"] = OldMan_TTTScoringSecondaryWins
+}

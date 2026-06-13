@@ -3,6 +3,7 @@ AddCSLuaFile()
 local hook = hook
 local player = player
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 -------------------
@@ -11,7 +12,7 @@ local PlayerIterator = player.Iterator
 
 local paramedic_revive_muted = CreateConVar("ttt_paramedic_revive_muted", 0, FCVAR_NONE, "Whether players revived by the paramedic should be muted", 0, 1)
 
-hook.Add("PlayerCanHearPlayersVoice", "Paramedic_PlayerCanHearPlayersVoice", function(listener, speaker)
+local function Paramedic_PlayerCanHearPlayersVoice(listener, speaker)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not IsPlayer(listener) then return end
@@ -34,9 +35,9 @@ hook.Add("PlayerCanHearPlayersVoice", "Paramedic_PlayerCanHearPlayersVoice", fun
     end
 
     return false, false
-end)
+end
 
-hook.Add("PlayerSay", "Paramedic_PlayerSay", function(ply, text, team_only)
+local function Paramedic_PlayerSay(ply, text, team_only)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not IsPlayer(ply) then return end
@@ -47,9 +48,9 @@ hook.Add("PlayerSay", "Paramedic_PlayerSay", function(ply, text, team_only)
 
     ply:PrintMessage(HUD_PRINTTALK, "You have not yet regained your ability to speak")
     return ""
-end)
+end
 
-hook.Add("TTTPlayerRadioCommand", "Paramedic_TTTPlayerRadioCommand", function(ply, msg_name, msg_target)
+local function Paramedic_TTTPlayerRadioCommand(ply, msg_name, msg_target)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not IsPlayer(ply) then return end
@@ -60,15 +61,25 @@ hook.Add("TTTPlayerRadioCommand", "Paramedic_TTTPlayerRadioCommand", function(pl
 
     ply:PrintMessage(HUD_PRINTTALK, "You have not yet regained your ability to speak")
     return true
-end)
+end
 
 ----------------
 -- ROLE STATE --
 ----------------
 
-hook.Add("TTTPrepareRound", "Paramedic_PrepareRound", function()
+AddHook("TTTPrepareRound", "Paramedic_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("WasRevivedByParamedic", false)
         v.NextParamedicMuteWarning = nil
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_PARAMEDIC] = {
+    ["PlayerCanHearPlayersVoice"] = Paramedic_PlayerCanHearPlayersVoice,
+    ["PlayerSay"] = Paramedic_PlayerSay,
+    ["TTTPlayerRadioCommand"] = Paramedic_TTTPlayerRadioCommand
+}

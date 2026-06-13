@@ -2,6 +2,8 @@ AddCSLuaFile()
 
 local hook = hook
 
+local AddHook = hook.Add
+
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_DETECTIVE] = {
@@ -18,9 +20,5 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Detective_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Detective_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Detective_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Detective_Shared_TTTPrepareRound", InitializeEquipment)

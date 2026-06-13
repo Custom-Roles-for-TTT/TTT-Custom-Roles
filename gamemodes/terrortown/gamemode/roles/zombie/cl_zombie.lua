@@ -4,6 +4,7 @@ local net = net
 local player = player
 local string = string
 
+local AddHook = hook.Add
 local RemoveHook = hook.Remove
 local StringUpper = string.upper
 local Utf8Upper = utf8.upper
@@ -22,7 +23,7 @@ local zombie_spit_convert = GetConVar("ttt_zombie_spit_convert")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Zombie_Translations_Initialize", function()
+AddHook("Initialize", "Zombie_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_zombies", "The {role} have taken over!")
     LANG.AddToLanguage("english", "ev_win_zombie", "The {role} infection has taken over the world!")
@@ -52,25 +53,25 @@ Press {menukey} to receive your special equipment!]])
 end)
 
 -- If this is an independent Zombie, replace the "comrades" list with a generic kill message
-hook.Add("TTTRolePopupParams", "Zombie_TTTRolePopupParams", function(cli)
+local function Zombie_TTTRolePopupParams(cli)
     if cli:IsZombie() and cli:IsIndependentTeam() then
         return {comrades = "\n\nKill all others to win!"}
     end
-end)
+end
 
 ---------------
 -- TARGET ID --
 ---------------
 
 -- Show skull icon over all non-jester team heads when the zombie is using their claws
-hook.Add("TTTTargetIDPlayerTargetIcon", "Zombie_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+local function Zombie_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     if cli:IsZombie() and zombie_show_target_icon:GetBool() and cli.GetActiveWeapon and IsValid(cli:GetActiveWeapon()) and cli:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester and not cli:IsSameTeam(ply) then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_ZOMBIE], "down"
     end
-end)
+end
 
 -- Show the correct role icon for zombies and their allies
-hook.Add("TTTTargetIDPlayerRoleIcon", "Zombie_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+local function Zombie_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     -- This logic is not needed if zombies are traitors
     -- Traitor logic is already handled elsewhere
     if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
@@ -80,10 +81,10 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Zombie_TTTTargetIDPlayerRoleIcon", functi
     elseif cli:IsZombieAlly() and ply:IsActiveZombie() then
         return ROLE_ZOMBIE, true
     end
-end)
+end
 
 -- Show the correct target ring for zombies and their allies
-hook.Add("TTTTargetIDPlayerRing", "Zombie_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+local function Zombie_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     -- This logic is not needed if zombies are traitors
     -- Traitor logic is already handled elsewhere
     if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
@@ -94,10 +95,10 @@ hook.Add("TTTTargetIDPlayerRing", "Zombie_TTTTargetIDPlayerRing", function(ent, 
     elseif cli:IsZombieAlly() and ent:IsActiveZombie() then
         return true, ROLE_COLORS_RADAR[ROLE_ZOMBIE]
     end
-end)
+end
 
 -- Show the correct role name for zombies and their allies
-hook.Add("TTTTargetIDPlayerText", "Zombie_TTTTargetIDPlayerText", function(ent, cli, text, col)
+local function Zombie_TTTTargetIDPlayerText(ent, cli, text, col)
     -- This logic is not needed if zombies are traitors
     -- Traitor logic is already handled elsewhere
     if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
@@ -109,7 +110,7 @@ hook.Add("TTTTargetIDPlayerText", "Zombie_TTTTargetIDPlayerText", function(ent, 
     elseif cli:IsZombieAlly() and ent:IsActiveZombie() then
         return StringUpper(ROLE_STRINGS[ROLE_ZOMBIE]), ROLE_COLORS_RADAR[ROLE_ZOMBIE]
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
@@ -130,7 +131,7 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Zombie_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
+local function Zombie_TTTScoreboardPlayerRole(ply, cli, color, roleFileName)
     -- This logic is not needed if zombies are traitors
     -- Traitor logic is already handled elsewhere
     if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
@@ -140,7 +141,7 @@ hook.Add("TTTScoreboardPlayerRole", "Zombie_TTTScoreboardPlayerRole", function(p
     elseif cli:IsZombieAlly() and ply:IsActiveZombie() then
         return ROLE_COLORS_SCOREBOARD[ROLE_ZOMBIE], ROLE_STRINGS_SHORT[ROLE_ZOMBIE]
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target)
     -- This logic is not needed if zombies are traitors
@@ -159,7 +160,7 @@ end
 -------------
 
 -- Register the scoring events for the zombie
-hook.Add("Initialize", "Zombie_Scoring_Initialize", function()
+AddHook("Initialize", "Zombie_Scoring_Initialize", function()
     local zombie_icon = Material("icon16/user_green.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -182,39 +183,39 @@ net.Receive("TTT_Zombified", function(len)
 end)
 
 -- Show the player's starting role icon if they were converted to a zombie and group them with their original team
-hook.Add("TTTScoringSummaryRender", "Zombie_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Zombie_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if finalRole == ROLE_ZOMBIE then
         return ROLE_STRINGS_SHORT[startingRole], startingRole
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Zombie_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Zombie_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_ZOMBIE then
         return { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]) }, c = ROLE_COLORS[ROLE_ZOMBIE] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Zombie_TTTEventFinishText", function(e)
+local function Zombie_TTTEventFinishText(e)
     if e.win == WIN_ZOMBIE then
         return LANG.GetParamTranslation("ev_win_zombie", { role = string.lower(ROLE_STRINGS[ROLE_ZOMBIE]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Zombie_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Zombie_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_ZOMBIE then
         return win_string, ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
     end
-end)
+end
 
 ------------------
 -- HIGHLIGHTING --
@@ -230,7 +231,7 @@ local client = nil
 local function EnableZombieHighlights()
     -- Handle zombie targeting and non-traitor team logic
     -- Traitor logic is handled in cl_init and does not need to be duplicated here
-    hook.Add("PreDrawHalos", "Zombie_Highlight_PreDrawHalos", function()
+    AddHook("PreDrawHalos", "Zombie_Highlight_PreDrawHalos", function()
         local hasClaws = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
         local hideEnemies = not zombie_vision or not hasClaws
 
@@ -256,7 +257,7 @@ local function EnableZombieHighlights()
     end)
 end
 
-hook.Add("TTTUpdateRoleState", "Zombie_Highlight_TTTUpdateRoleState", function()
+local function Zombie_Highlight_TTTUpdateRoleState()
     client = LocalPlayer()
     zombie_vision = zombie_vision_enabled:GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
@@ -268,10 +269,10 @@ hook.Add("TTTUpdateRoleState", "Zombie_Highlight_TTTUpdateRoleState", function()
         RemoveHook("PreDrawHalos", "Zombie_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end)
+end
 
 -- Handle enabling and disabling of highlighting
-hook.Add("Think", "Zombie_Highlight_Think", function()
+local function Zombie_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
     if zombie_vision and client:IsZombie() then
@@ -286,7 +287,7 @@ hook.Add("Think", "Zombie_Highlight_Think", function()
     if zombie_vision and not vision_enabled then
         RemoveHook("PreDrawHalos", "Zombie_Highlight_PreDrawHalos")
     end
-end)
+end
 
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_ZOMBIE] = function(ply, target)
     if not ply:IsZombie() then return end
@@ -299,7 +300,7 @@ end
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ZOMBIE then
         -- Use this for highlighting things like "brains"
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -364,3 +365,22 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_ZOMBIE] = {
+    ["Think"] = Zombie_Highlight_Think,
+    ["TTTEventFinishIconText"] = Zombie_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Zombie_TTTEventFinishText,
+    ["TTTRolePopupParams"] = Zombie_TTTRolePopupParams,
+    ["TTTScoreboardPlayerRole"] = Zombie_TTTScoreboardPlayerRole,
+    ["TTTScoringSummaryRender"] = Zombie_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Zombie_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerRing"] = Zombie_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Zombie_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerTargetIcon"] = Zombie_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Zombie_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = Zombie_Highlight_TTTUpdateRoleState
+}

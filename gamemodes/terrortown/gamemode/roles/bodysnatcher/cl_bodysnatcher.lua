@@ -2,6 +2,10 @@ local hook = hook
 local net = net
 local surface = surface
 local string = string
+local table = table
+
+local AddHook = hook.Add
+local TableInsert = table.insert
 
 -------------
 -- CONVARS --
@@ -25,7 +29,7 @@ local hide_role = GetConVar("ttt_hide_role")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Bodysnatcher_Translations_Initialize", function()
+AddHook("Initialize", "Bodysnatcher_Translations_Initialize", function()
     -- Event
     LANG.AddToLanguage("english", "ev_bodysnatch", "{attacker} bodysnatched {role}, {victim}")
     LANG.AddToLanguage("english", "ev_bodysnatch_killed", "The {bodysnatch} ({victim}) was killed by {attacker} but respawned")
@@ -49,21 +53,21 @@ to take their role and join the fight!]])
 to take their role and join the winning team!]])
 end)
 
-hook.Add("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride", function(client, roleString)
+local function Bodysnatcher_TTTRolePopupRoleStringOverride(client, roleString)
     if not IsPlayer(client) or not client:IsBodysnatcher() then return end
 
     if bodysnatcher_is_independent:GetBool() then
         return roleString .. "_indep"
     end
     return roleString .. "_jester"
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
 -- Register the scoring events for the swapper
-hook.Add("Initialize", "Bodysnatcher_Scoring_Initialize", function()
+AddHook("Initialize", "Bodysnatcher_Scoring_Initialize", function()
     local bodysnatch_icon = Material("icon16/user_edit.png")
     local hourglass_go_icon = Material("icon16/hourglass_go.png")
     local heart_add_icon = Material("icon16/heart_add.png")
@@ -119,7 +123,7 @@ net.Receive("TTT_BodysnatcherKilled", function(len)
 end)
 
 -- Show the player's starting role icon if they were originally a bodysnatcher
-hook.Add("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Bodysnatcher_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if bodysnatcher_swap_mode:GetInt() == BODYSNATCHER_SWAP_MODE_NOTHING then
@@ -132,13 +136,13 @@ hook.Add("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender", func
             return roleFileName, groupingRole, roleColor, name, swappedWith, LANG.GetTranslation("score_bodysnatcher_bodysnatched")
         end
     end
-end)
+end
 
 ---------
 -- HUD --
 ---------
 
-hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
+AddHook("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
     if hide_role:GetBool() then return end
 
     if client:GetNWBool("WasBodysnatcher", false) then
@@ -167,7 +171,7 @@ hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, lab
             surface.DrawText(text)
 
             -- Track that the label was added so others can position accurately
-            table.insert(active_labels, "bodysnatcher")
+            TableInsert(active_labels, "bodysnatcher")
         end
     end
 end)
@@ -190,7 +194,7 @@ local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
     return modeString .. "."
 end
 
-hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_BODYSNATCHER then
         local T = LANG.GetTranslation
         local roleTeam = player.GetRoleTeam(ROLE_BODYSNATCHER, true)
@@ -300,3 +304,12 @@ hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(rol
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_BODYSNATCHER] = {
+    ["TTTRolePopupRoleStringOverride"] = Bodysnatcher_TTTRolePopupRoleStringOverride,
+    ["TTTScoringSummaryRender"] = Bodysnatcher_TTTScoringSummaryRender
+}

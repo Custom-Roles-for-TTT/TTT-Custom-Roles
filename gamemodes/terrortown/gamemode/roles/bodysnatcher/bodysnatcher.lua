@@ -7,6 +7,7 @@ local player = player
 local timer = timer
 local util = util
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_BodysnatcherKilled")
@@ -29,7 +30,7 @@ local bodysnatcher_respawn_limit = GetConVar("ttt_bodysnatcher_respawn_limit")
 ----------------
 
 -- Disable tracking that this player was a bodysnatcher at the start of a new round or if their role changes again (e.g. if they go bodysnatcher -> innocent -> dead -> hypnotist res to traitor)
-hook.Add("TTTPrepareRound", "Bodysnatcher_PrepareRound", function()
+AddHook("TTTPrepareRound", "Bodysnatcher_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("WasBodysnatcher", false)
         v:SetNWBool("BodysnatcherIsRespawning", false)
@@ -37,7 +38,7 @@ hook.Add("TTTPrepareRound", "Bodysnatcher_PrepareRound", function()
     end
 end)
 
-hook.Add("TTTPlayerRoleChanged", "Bodysnatcher_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Bodysnatcher_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole ~= ROLE_BODYSNATCHER then
         ply:SetNWBool("WasBodysnatcher", false)
 
@@ -53,14 +54,14 @@ end)
 ------------------
 
 -- Only allow the bodysnatcher to pick up bodysnatcher-specific weapons
-hook.Add("PlayerCanPickupWeapon", "Bodysnatcher_Weapons_PlayerCanPickupWeapon", function(ply, wep)
+local function Bodysnatcher_Weapons_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return end
 
     if wep:GetClass() == "weapon_bod_bodysnatch" then
         return ply:IsBodysnatcher()
     end
-end)
+end
 
 -----------------
 -- KILL CHECKS --
@@ -74,7 +75,7 @@ local function BodysnatcherKilledNotification(attacker, victim)
         end)
 end
 
-hook.Add("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", function(victim, infl, attacker)
+local function Bodysnatcher_KillCheck_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
     if not victim:IsBodysnatcher() then return end
@@ -108,9 +109,9 @@ hook.Add("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", function(victim, i
         net.WriteUInt(delay, 8)
         net.Broadcast()
     end
-end)
+end
 
-hook.Add("TTTStopPlayerRespawning", "Bodysnatcher_TTTStopPlayerRespawning", function(ply)
+local function Bodysnatcher_TTTStopPlayerRespawning(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -118,14 +119,25 @@ hook.Add("TTTStopPlayerRespawning", "Bodysnatcher_TTTStopPlayerRespawning", func
         timer.Remove(ply:Nick() .. "BodysnatcherRespawn")
         ply:SetNWBool("BodysnatcherIsRespawning", false)
     end
-end)
+end
 
 ------------------
 -- CUPID LOVERS --
 ------------------
 
-hook.Add("TTTCupidShouldLoverSurvive", "Bodysnatcher_TTTCupidShouldLoverSurvive", function(ply, lover)
+local function Bodysnatcher_TTTCupidShouldLoverSurvive(ply, lover)
     if ply:GetNWBool("BodysnatcherIsRespawning", false) or lover:GetNWBool("BodysnatcherIsRespawning", false) then
         return true
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_BODYSNATCHER] = {
+    ["PlayerCanPickupWeapon"] = Bodysnatcher_Weapons_PlayerCanPickupWeapon,
+    ["PlayerDeath"] = Bodysnatcher_KillCheck_PlayerDeath,
+    ["TTTCupidShouldLoverSurvive"] = Bodysnatcher_TTTCupidShouldLoverSurvive,
+    ["TTTStopPlayerRespawning"] = Bodysnatcher_TTTStopPlayerRespawning
+}

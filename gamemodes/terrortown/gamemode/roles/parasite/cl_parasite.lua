@@ -2,6 +2,7 @@ local hook = hook
 local net = net
 local player = player
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 ------------------
@@ -20,7 +21,7 @@ local parasite_killer_footstep_time = GetConVar("ttt_parasite_killer_footstep_ti
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Parasite_Translations_Initialize", function()
+AddHook("Initialize", "Parasite_Translations_Initialize", function()
     -- Target ID
     LANG.AddToLanguage("english", "target_infected", "INFECTED WITH PARASITE")
 
@@ -48,7 +49,7 @@ end)
 -- SCORING --
 -------------
 
-hook.Add("Initialize", "Parasite_Scoring_Initialize", function()
+AddHook("Initialize", "Parasite_Scoring_Initialize", function()
     local haunt_icon = Material("icon16/group.png")
     local PT = LANG.GetParamTranslation
     local Event = CLSCORE.DeclareEventDisplay
@@ -85,14 +86,14 @@ end
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerText", "Parasite_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
+local function Parasite_TTTTargetIDPlayerText(ent, cli, text, col, secondary_text)
     if not IsPlayer(ent) then return end
 
     -- Skip this for Assassin so they can have their own Current Target logic (it also handles parasite infection there)
     if ((ent:GetNWBool("ParasiteInfected", false) and cli:IsTraitorTeam() and ShouldShowTraitorExtraInfo()) or IsLoverInfecting(cli, ent)) and not cli:IsAssassin() then
         return LANG.GetTranslation("target_infected"), ROLE_COLORS_RADAR[ROLE_PARASITE]
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_PARASITE] = function(ply, target)
     if not IsPlayer(target) then return end
@@ -106,13 +107,13 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Parasite_TTTScoreboardPlayerRole", function(ply, client, c, roleStr)
+local function Parasite_TTTScoreboardPlayerRole(ply, client, c, roleStr)
     if (client:IsTraitorTeam() and ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false)) or IsLoverInfecting(client, ply) then
         return c, roleStr, ROLE_PARASITE
     end
-end)
+end
 
-hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function(ply, cli, text)
+local function Parasite_TTTScoreboardPlayerName(ply, cli, text)
     -- Skip this for Assassin so they can have their own Current Target logic (it also handles parasite infection there)
     local shouldShowTraitor = cli:IsTraitorTeam() and not cli:IsAssassin() and ShouldShowTraitorExtraInfo()
 
@@ -135,7 +136,7 @@ hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function
     if infected and (shouldShowTraitor or IsLoverInfecting(cli, ply)) then
         return ply:Nick() .. " (" .. LANG.GetTranslation("target_infected") .. ")"
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_PARASITE] = function(ply, target)
     if not IsPlayer(target) then return end
@@ -150,7 +151,7 @@ end
 -- INFECTING --
 ---------------
 
-hook.Add("TTTSpectatorShowHUD", "Parasite_Infecting_TTTSpectatorShowHUD", function(cli, tgt)
+local function Parasite_Infecting_TTTSpectatorShowHUD(cli, tgt)
     if not cli:IsParasite() then return end
 
     local max_power = parasite_infection_time:GetInt()
@@ -165,19 +166,19 @@ hook.Add("TTTSpectatorShowHUD", "Parasite_Infecting_TTTSpectatorShowHUD", functi
     local current_power = cli:GetNWInt("ParasiteInfectionProgress", 0)
 
     CRHUD:PaintSpectatorProgressBar(max_power, current_power, infection_colors, L.infect_title, L.infect_help)
-end)
+end
 
-hook.Add("TTTShouldPlayerSmoke", "Parasite_Infecting_TTShouldPlayerSmoke", function(v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
+local function Parasite_Infecting_TTShouldPlayerSmoke(v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
     if v:GetNWBool("ParasiteInfected", false) and parasite_killer_smoke:GetBool() then
         return true
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Parasite_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Parasite_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_PARASITE then
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         local roleTeam = player.GetRoleTeam(ROLE_PARASITE, true)
@@ -261,3 +262,15 @@ hook.Add("TTTTutorialRoleText", "Parasite_TTTTutorialRoleText", function(role, t
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_PARASITE] = {
+    ["TTTScoreboardPlayerName"] = Parasite_TTTScoreboardPlayerName,
+    ["TTTScoreboardPlayerRole"] = Parasite_TTTScoreboardPlayerRole,
+    ["TTTShouldPlayerSmoke"] = Parasite_Infecting_TTShouldPlayerSmoke,
+    ["TTTSpectatorShowHUD"] = Parasite_Infecting_TTTSpectatorShowHUD,
+    ["TTTTargetIDPlayerText"] = Parasite_TTTTargetIDPlayerText
+}

@@ -40,9 +40,5 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Tracker_TrackRadar_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Tracker_TrackRadar_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+hook.Add("Initialize", "Tracker_TrackRadar_Initialize", InitializeEquipment)
+hook.Add("TTTPrepareRound", "Tracker_TrackRadar_TTTPrepareRound", InitializeEquipment)

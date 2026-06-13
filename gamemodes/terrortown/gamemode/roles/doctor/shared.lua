@@ -4,6 +4,8 @@ local hook = hook
 local table = table
 local weapons = weapons
 
+local AddHook = hook.Add
+
 -- Initialize role features
 ROLE_STARTING_CREDITS[ROLE_DOCTOR] = 1
 local function InitializeEquipment()
@@ -16,12 +18,8 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Doctor_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Doctor_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Doctor_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Doctor_Shared_TTTPrepareRound", InitializeEquipment)
 
 ------------------
 -- ROLE CONVARS --
@@ -29,28 +27,29 @@ end)
 
 local doctor_cure_rebuyable = CreateConVar("ttt_doctor_cure_rebuyable", "0", FCVAR_REPLICATED, "Whether the cure can be bought multiple times", 0, 1)
 
-ROLE_CONVARS[ROLE_DOCTOR] = {}
-table.insert(ROLE_CONVARS[ROLE_DOCTOR], {
-    cvar = "ttt_doctor_cure_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Kill nobody", "Kill owner", "Kill target"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_DOCTOR], {
-    cvar = "ttt_doctor_cure_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_DOCTOR], {
-    cvar = "ttt_doctor_cure_rebuyable",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_DOCTOR] = {
+    {
+        cvar = "ttt_doctor_cure_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Kill nobody", "Kill owner", "Kill target"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_doctor_cure_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_doctor_cure_rebuyable",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 ------------------
 -- ROLE WEAPONS --
 ------------------
 
-hook.Add("TTTUpdateRoleState", "Doctor_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Doctor_TTTUpdateRoleState", function()
     local cure = weapons.GetStored("weapon_doc_cure")
     if hook.Call("TTTCanCureableRoleSpawn") then
         cure.CanBuy = table.Copy(cure.CanBuyDefault)

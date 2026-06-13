@@ -1,5 +1,6 @@
 local halo = halo
 local hook = hook
+local net = net
 local player = player
 local string = string
 local table = table
@@ -95,7 +96,7 @@ net.Receive("TTT_GuesserGuessed", function()
     })
 end)
 
-AddHook("TTTScoringSummaryRender", "Guesser_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Guesser_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if ply:IsGuesser() then
@@ -104,7 +105,7 @@ AddHook("TTTScoringSummaryRender", "Guesser_TTTScoringSummaryRender", function(p
             return roleFileName, groupingRole, roleColor, name, guessedBy, LANG.GetTranslation("score_guesser_guessed_by")
         end
     end
-end)
+end
 
 ---------------
 -- TARGET ID --
@@ -149,7 +150,7 @@ local function GetScanState(ply)
     return state
 end
 
-AddHook("TTTTargetIDPlayerRoleIcon", "Guesser_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+local function Guesser_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsGuesser() then return end
 
@@ -171,9 +172,9 @@ AddHook("TTTTargetIDPlayerRoleIcon", "Guesser_TTTTargetIDPlayerRoleIcon", functi
     end
 
     return newRole, newNoZ, newColorRole
-end)
+end
 
-AddHook("TTTTargetIDPlayerRing", "Guesser_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+local function Guesser_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
     if not cli:IsGuesser() then return end
@@ -193,9 +194,9 @@ AddHook("TTTTargetIDPlayerRing", "Guesser_TTTTargetIDPlayerRing", function(ent, 
     end
 
     return newRingVisible, newColor
-end)
+end
 
-AddHook("TTTTargetIDPlayerText", "Guesser_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
+local function Guesser_TTTTargetIDPlayerText(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
     if not cli:IsGuesser() then return end
@@ -246,7 +247,7 @@ AddHook("TTTTargetIDPlayerText", "Guesser_TTTTargetIDPlayerText", function(ent, 
     end
 
     return newText, newColor, false
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_GUESSER] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
@@ -263,7 +264,7 @@ end
 -- SCOREBOARD --
 ----------------
 
-AddHook("TTTScoreboardPlayerRole", "Guesser_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Guesser_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ply) then return end
     if not cli:IsGuesser() then return end
@@ -283,7 +284,7 @@ AddHook("TTTScoreboardPlayerRole", "Guesser_TTTScoreboardPlayerRole", function(p
     end
 
     return newColor, newRoleStr
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_GUESSER] = function(ply, target)
     if not IsPlayer(target) then return end
@@ -300,7 +301,7 @@ end
 -- HUD --
 ---------
 
-AddHook("TTTHUDInfoPaint", "Guesser_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
+local function Guesser_TTTHUDInfoPaint(client, label_left, label_top, active_labels)
     if hide_role:GetBool() then return end
 
     if client:IsGuesser() then
@@ -333,7 +334,7 @@ AddHook("TTTHUDInfoPaint", "Guesser_TTTHUDInfoPaint", function(client, label_lef
         -- Track that the label was added so others can position accurately
         table.insert(active_labels, "guesser")
     end
-end)
+end
 
 ------------------
 -- HIGHLIGHTING --
@@ -357,7 +358,7 @@ local function EnableGuesserTargetHighlights()
     end)
 end
 
-AddHook("TTTUpdateRoleState", "Guesser_Highlight_TTTUpdateRoleState", function()
+local function Guesser_Highlight_TTTUpdateRoleState()
     client = LocalPlayer()
 
     -- Disable highlights on role change
@@ -365,9 +366,9 @@ AddHook("TTTUpdateRoleState", "Guesser_Highlight_TTTUpdateRoleState", function()
         RemoveHook("PreDrawHalos", "Guesser_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end)
+end
 
-AddHook("Think", "Guesser_Highlight_Think", function()
+local function Guesser_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
     if client:IsGuesser() and not client:IsRoleAbilityDisabled() then
@@ -382,7 +383,7 @@ AddHook("Think", "Guesser_Highlight_Think", function()
     if not vision_enabled then
         RemoveHook("PreDrawHalos", "Guesser_Highlight_PreDrawHalos")
     end
-end)
+end
 
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_GUESSER] = function(ply, target)
     if not ply:IsGuesser() then return end
@@ -438,3 +439,18 @@ AddHook("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, tit
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_GUESSER] = {
+    ["Think"] = Guesser_Highlight_Think,
+    ["TTTHUDInfoPaint"] = Guesser_TTTHUDInfoPaint,
+    ["TTTScoreboardPlayerRole"] = Guesser_TTTScoreboardPlayerRole,
+    ["TTTScoringSummaryRender"] = Guesser_TTTScoringSummaryRender,
+    ["TTTTargetIDPlayerRing"] = Guesser_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Guesser_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Guesser_TTTTargetIDPlayerText,
+    ["TTTUpdateRoleState"] = Guesser_Highlight_TTTUpdateRoleState
+}

@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 local hook = hook
-local table = table
+
+local AddHook = hook.Add
 
 -- Bodysnatcher reveal modes
 BODYSNATCHER_REVEAL_NONE = 0
@@ -58,136 +59,137 @@ CreateConVar("ttt_bodysnatcher_can_see_jesters", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_bodysnatcher_update_scoreboard", "0", FCVAR_REPLICATED)
 local bodysnatcher_is_independent = CreateConVar("ttt_bodysnatcher_is_independent", "0", FCVAR_REPLICATED, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
 
-ROLE_CONVARS[ROLE_BODYSNATCHER] = {}
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_notify_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_notify_killer",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_notify_sound",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_notify_confetti",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_destroy_body",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_swap_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Nothing", "Role", "Identity (role, model, name, location)"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_show_role",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_is_independent",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_reveal_traitor",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_reveal_innocent",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_reveal_monster",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_reveal_independent",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_reveal_jester",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_respawn",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_respawn_limit",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_respawn_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_target_innocents",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_target_detectives",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_target_traitors",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_target_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_target_independents",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_target_monsters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_device_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_can_see_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
-    cvar = "ttt_bodysnatcher_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_BODYSNATCHER] = {
+    {
+        cvar = "ttt_bodysnatcher_notify_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_bodysnatcher_notify_killer",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_notify_sound",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_notify_confetti",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_destroy_body",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_swap_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Nothing", "Role", "Identity (role, model, name, location)"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_bodysnatcher_show_role",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_is_independent",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_reveal_traitor",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_bodysnatcher_reveal_innocent",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_bodysnatcher_reveal_monster",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_bodysnatcher_reveal_independent",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_bodysnatcher_reveal_jester",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"No one", "Everyone", "Their new team", "Roles that can see jesters"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_bodysnatcher_respawn",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_respawn_limit",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_bodysnatcher_respawn_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_bodysnatcher_target_innocents",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_target_detectives",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_target_traitors",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_target_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_target_independents",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_target_monsters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_device_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_bodysnatcher_can_see_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_bodysnatcher_update_scoreboard",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
 -------------------
 
-hook.Add("TTTUpdateRoleState", "Bodysnatcher_Team_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Bodysnatcher_Team_TTTUpdateRoleState", function()
     local is_independent = bodysnatcher_is_independent:GetBool()
     INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = is_independent
     JESTER_ROLES[ROLE_BODYSNATCHER] = not is_independent
 end)
 
-hook.Add("TTTIsPlayerRespawning", "Bodysnatcher_TTTIsPlayerRespawning", function(ply)
+AddHook("TTTIsPlayerRespawning", "Bodysnatcher_TTTIsPlayerRespawning", function(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 

@@ -5,8 +5,8 @@ local net = net
 local player = player
 local hook = hook
 
-local PlayerIterator = player.Iterator
 local AddHook = hook.Add
+local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_GuesserSelectRole")
 util.AddNetworkString("TTT_GuesserGuessed")
@@ -41,7 +41,7 @@ end)
 -- DAMAGE --
 ------------
 
-AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
+local function Guesser_EntityTakeDamage(ent, dmginfo)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
     if not ent:IsGuesser() then return end
@@ -87,14 +87,14 @@ AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
     end
 
     dmginfo:SetDamage(0)
-end)
+end
 
 ------------------
 -- ANNOUNCEMENT --
 ------------------
 
 -- Warn other players that there is a guesser
-hook.Add("TTTBeginRound", "Guesser_Announce_TTTBeginRound", function()
+AddHook("TTTBeginRound", "Guesser_Announce_TTTBeginRound", function()
     if not guesser_warn_all:GetBool() then return end
 
     timer.Simple(1.5, function()
@@ -127,3 +127,11 @@ AddHook("TTTPrepareRound", "Guesser_TTTPrepareRound", function()
         v:SetNWFloat("TTTGuesserDamageDealt", 0)
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_GUESSER] = {
+    ["EntityTakeDamage"] = Guesser_EntityTakeDamage
+}

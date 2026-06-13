@@ -1,5 +1,13 @@
 AddCSLuaFile()
 
+local hook = hook
+local player = player
+local table = table
+local timer = timer
+
+local AddHook = hook.Add
+local PlayerIterator = player.Iterator
+
 -------------
 -- CONVARS --
 -------------
@@ -35,7 +43,7 @@ local function RevealRoles(ply, delay_intel)
     ply:QueueMessage(MSG_PRINTBOTH, message)
 
     if scout_alert_targets:GetBool() then
-        for _, p in player.Iterator() do
+        for _, p in PlayerIterator() do
             local role = p:GetRole()
             if table.HasValue(rolesToReveal[sid64], role) then
                 p:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_SCOUT] .. " knows your role is in play.")
@@ -52,7 +60,7 @@ local function GatherIntel(ply)
     end
 
     local currentRoles = {}
-    for _, p in player.Iterator() do
+    for _, p in PlayerIterator() do
         local role = p:GetRole()
         if table.HasValue(hiddenRoles, ROLE_STRINGS_RAW[role]) then continue end
         if (p:IsTraitorTeam() and not p:IsTraitor()) or
@@ -78,7 +86,7 @@ local function GatherIntel(ply)
     end
 end
 
-hook.Add("TTTBeginRound", "Scout_TTTBeginRound", function()
+AddHook("TTTBeginRound", "Scout_TTTBeginRound", function()
     for _, p in player.Iterator() do
         if p:IsScout() then
             GatherIntel(p)
@@ -101,13 +109,13 @@ local function CleanupTimers(ply)
     if timer.Exists("Scout_RevealRoles_" .. sid64) then timer.Remove("Scout_RevealRoles_" .. sid64) end
 end
 
-hook.Add("TTTPrepareRound", "Scout_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Scout_TTTPrepareRound", function()
     for _, p in player.Iterator() do
         CleanupTimers(p)
     end
 end)
 
-hook.Add("TTTPlayerRoleChanged", "Scout_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Scout_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_SCOUT and newRole ~= ROLE_SCOUT then
         CleanupTimers(ply)
     end

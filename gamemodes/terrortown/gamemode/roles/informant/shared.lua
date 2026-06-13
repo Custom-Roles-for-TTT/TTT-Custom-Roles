@@ -1,6 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
 local table = table
+
+local AddHook = hook.Add
 
 -- Initialize role features
 INFORMANT_UNSCANNED = 0
@@ -28,78 +31,79 @@ CreateConVar("ttt_informant_scanner_independent_mult", "1", FCVAR_REPLICATED, "T
 CreateConVar("ttt_informant_scanner_monster_mult", "1", FCVAR_REPLICATED, "The multiplier to use with the scanner time when the target is a monster (e.g. 0.5 = 50% scanner time)", 0, 2)
 local informant_requires_scanner = CreateConVar("ttt_informant_requires_scanner", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_INFORMANT] = {}
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_share_scans",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_can_scan_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_can_scan_glitches",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_requires_scanner",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_requires_scanner",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_scanner_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_scanner_innocent_mult",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_scanner_traitor_mult",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_scanner_jester_mult",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_scanner_independent_mult",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_scanner_monster_mult",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_scanner_float_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_scanner_cooldown",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
-    cvar = "ttt_informant_scanner_distance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
+ROLE_CONVARS[ROLE_INFORMANT] = {
+    {
+        cvar = "ttt_informant_share_scans",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_informant_can_scan_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_informant_can_scan_glitches",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_informant_requires_scanner",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_informant_requires_scanner",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_informant_scanner_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_informant_scanner_innocent_mult",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_informant_scanner_traitor_mult",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_informant_scanner_jester_mult",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_informant_scanner_independent_mult",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_informant_scanner_monster_mult",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_informant_scanner_float_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_informant_scanner_cooldown",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_informant_scanner_distance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    }
+}
 
 -----------------
 -- ROLE WEAPON --
 -----------------
 
-hook.Add("TTTUpdateRoleState", "Informant_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Informant_TTTUpdateRoleState", function()
     local informant_scanner = weapons.GetStored("weapon_inf_scanner")
     if informant_requires_scanner:GetBool() then
         informant_scanner.InLoadoutFor = table.Copy(informant_scanner.InLoadoutForDefault)
