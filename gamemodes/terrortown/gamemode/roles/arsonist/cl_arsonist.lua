@@ -1,4 +1,10 @@
 local hook = hook
+local surface = surface
+local table = table
+local util = util
+
+local AddHook = hook.Add
+local TableInsert = table.insert
 
 local client
 
@@ -18,7 +24,7 @@ local hide_role = GetConVar("ttt_hide_role")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Arsonist_Translations_Initialize", function()
+AddHook("Initialize", "Arsonist_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "arsonistigniter_help_pri", "Press {primaryfire} to ignite doused players. Can only be used once.")
     LANG.AddToLanguage("english", "arsonistigniter_help_sec", "")
@@ -58,14 +64,14 @@ end)
 ---------------
 
 -- Show douse icon over all undoused players
-hook.Add("TTTTargetIDPlayerTargetIcon", "Arsonist_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+local function Arsonist_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     if cli:IsArsonist() and not cli:GetNWBool("TTTArsonistDouseComplete", false) and ply:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED) < ARSONIST_DOUSED then
         return "douse", false, ROLE_COLORS_SPRITE[ROLE_ARSONIST], "down"
     end
-end)
+end
 
 -- Show "DOUSED" label on players who have been doused
-hook.Add("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
+local function Arsonist_TTTTargetIDPlayerText(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) and not IsRagdoll(ent) then return end
     if not cli:IsArsonist() then return end
@@ -84,7 +90,7 @@ hook.Add("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", function(ent
         return T("arsdouse_doused"), ROLE_COLORS[ROLE_TRAITOR]
     end
     return text, col, T("arsdouse_doused"), ROLE_COLORS[ROLE_TRAITOR]
-end)
+end
 
 -- NOTE: ROLE_IS_TARGETID_OVERRIDDEN is not required since only secondary text is being changed and that is not tracked there
 
@@ -93,7 +99,7 @@ end)
 ----------------
 
 -- Show "DOUSED" label on the players who have been doused
-hook.Add("TTTScoreboardPlayerName", "Arsonist_TTTScoreboardPlayerName", function(ply, cli, text)
+local function Arsonist_TTTScoreboardPlayerName(ply, cli, text)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsArsonist() then return end
 
@@ -102,7 +108,7 @@ hook.Add("TTTScoreboardPlayerName", "Arsonist_TTTScoreboardPlayerName", function
 
     local T = LANG.GetTranslation
     return text .. " (" .. T("arsdouse_doused") .. ")"
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ARSONIST] = function(ply, target)
     if not ply:IsArsonist() then return end
@@ -119,7 +125,7 @@ end
 -- BODY SEARCHING --
 --------------------
 
-hook.Add("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate", function(search, raw)
+local function Arsonist_TTTBodySearchPopulate(search, raw)
     local rag = Entity(raw.eidx)
     if not IsValid(rag) then return end
 
@@ -141,14 +147,14 @@ hook.Add("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate", function(sea
         text_icon = time,
         p = 10
     }
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
 -- Register the scoring events for the arsonist
-hook.Add("Initialize", "Arsonist_Scoring_Initialize", function()
+AddHook("Initialize", "Arsonist_Scoring_Initialize", function()
     local arsonist_icon = Material("icon16/asterisk_orange.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -172,33 +178,33 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Arsonist_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Arsonist_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_ARSONIST then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_ARSONIST]) }, c = ROLE_COLORS[ROLE_ARSONIST] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Arsonist_TTTEventFinishText", function(e)
+local function Arsonist_TTTEventFinishText(e)
     if e.win == WIN_ARSONIST then
         return LANG.GetParamTranslation("ev_win_arsonist", { role = string.lower(ROLE_STRINGS[ROLE_ARSONIST]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Arsonist_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Arsonist_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_ARSONIST then
         return win_string, ROLE_STRINGS[ROLE_ARSONIST]
     end
-end)
+end
 
 -----------------
 -- DOUSING HUD --
 -----------------
 
-hook.Add("HUDPaint", "Arsonist_HUDPaint", function()
+local function Arsonist_HUDPaint()
     if not client then
         client = LocalPlayer()
     end
@@ -246,9 +252,9 @@ hook.Add("HUDPaint", "Arsonist_HUDPaint", function()
         local progress = math.min(1, 1 - ((end_time - CurTime()) / douse_time))
         CRHUD:PaintProgressBar(x, y, w, color, text, progress)
     end
-end)
+end
 
-hook.Add("TTTHUDInfoPaint", "Arsonist_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
+local function Arsonist_TTTHUDInfoPaint(cli, label_left, label_top, active_labels)
     if arsonist_early_ignite:GetBool() then return end
     if hide_role:GetBool() then return end
 
@@ -266,15 +272,37 @@ hook.Add("TTTHUDInfoPaint", "Arsonist_TTTHUDInfoPaint", function(cli, label_left
         surface.DrawText(text)
 
         -- Track that the label was added so others can position accurately
-        table.insert(active_labels, "arsonist")
+        TableInsert(active_labels, "arsonist")
     end
-end)
+end
+
+local function Arsonist_Igniter_TTTHUDInfoPaint(cli, label_left, label_top, active_labels)
+    local igniter = cli:GetWeapon("weapon_ars_igniter")
+    if not IsValid(igniter) then return end
+    if not igniter:GetOnDeath() then return end
+
+    surface.SetFont("TabLarge")
+    surface.SetTextColor(255, 255, 255, 230)
+
+    local text = LANG.GetTranslation("arsonist_igniter_ondeath_hud")
+    local _, h = surface.GetTextSize(text)
+
+    -- Move this up based on how many other labels there are
+    label_top = label_top + (20 * #active_labels)
+
+    surface.SetTextPos(label_left, ScrH() - label_top - h)
+    surface.DrawText(text)
+
+    -- Track that the label was added so others can position accurately
+    TableInsert(active_labels, "arsonist_igniter")
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, titleLabel)
+
+AddHook("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ARSONIST then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_ARSONIST] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to be the last player standing."
@@ -317,3 +345,22 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_ARSONIST] = {
+    ["HUDPaint"] = Arsonist_HUDPaint,
+    ["TTTBodySearchPopulate"] = Arsonist_TTTBodySearchPopulate,
+    ["TTTEventFinishIconText"] = Arsonist_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Arsonist_TTTEventFinishText,
+    ["TTTHUDInfoPaint"] = {
+        ["Arsonist_Igniter_TTTHUDInfoPaint"] = Arsonist_Igniter_TTTHUDInfoPaint,
+        ["Arsonist_TTTHUDInfoPaint"] = Arsonist_TTTHUDInfoPaint
+    },
+    ["TTTScoreboardPlayerName"] = Arsonist_TTTScoreboardPlayerName,
+    ["TTTScoringWinTitle"] = Arsonist_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerTargetIcon"] = Arsonist_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Arsonist_TTTTargetIDPlayerText
+}

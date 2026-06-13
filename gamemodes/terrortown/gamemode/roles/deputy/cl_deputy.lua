@@ -1,5 +1,7 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -11,7 +13,7 @@ local deputy_damage_penalty = GetConVar("ttt_deputy_damage_penalty")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Deputy_Translations_Initialize", function()
+AddHook("Initialize", "Deputy_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_deputy", "Promoted to replace the detective in the event of their death.")
 
@@ -24,7 +26,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Deputy_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Deputy_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_DEPUTY then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_DEPUTY] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to help their team while they wait for the " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " to die."

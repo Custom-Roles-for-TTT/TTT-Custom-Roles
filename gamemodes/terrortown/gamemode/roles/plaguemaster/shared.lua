@@ -1,8 +1,9 @@
 AddCSLuaFile()
 
 local hook = hook
-local table = table
 local util = util
+
+local AddHook = hook.Add
 
 -- Plaguemaster body search modes modes
 PLAGUEMASTER_SEARCH_DONT_SHOW = 0
@@ -22,46 +23,47 @@ CreateConVar("ttt_plaguemaster_warning_time", 30, FCVAR_REPLICATED, "How long (i
 CreateConVar("ttt_plaguemaster_body_search_mode", 1, FCVAR_REPLICATED, "Whether dead bodies reveal if they had the plague when searched", 0, 2)
 CreateConVar("ttt_plaguemaster_dart_replace_timer", 0, FCVAR_REPLICATED, "How long (in seconds) after the plaguemaster's infection dies out before they should receive another dart gun. Set to 0 to disable", 0, 180)
 
-ROLE_CONVARS[ROLE_PLAGUEMASTER] = {}
-table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
-    cvar = "ttt_plaguemaster_plague_length",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
-    cvar = "ttt_plaguemaster_warning_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
-    cvar = "ttt_plaguemaster_spread_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
-    cvar = "ttt_plaguemaster_spread_distance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
-    cvar = "ttt_plaguemaster_spread_require_los",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
-    cvar = "ttt_plaguemaster_immune",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
-    cvar = "ttt_plaguemaster_body_search_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Don't show", "Show if died from plague", "Show if infected"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
-    cvar = "ttt_plaguemaster_dart_replace_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
+ROLE_CONVARS[ROLE_PLAGUEMASTER] = {
+    {
+        cvar = "ttt_plaguemaster_plague_length",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_plaguemaster_warning_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_plaguemaster_spread_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_plaguemaster_spread_distance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_plaguemaster_spread_require_los",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_plaguemaster_immune",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_plaguemaster_body_search_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Don't show", "Show if died from plague", "Show if infected"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_plaguemaster_dart_replace_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
@@ -69,7 +71,7 @@ table.insert(ROLE_CONVARS[ROLE_PLAGUEMASTER], {
 
 ROLE_CAN_SEE_MIA[ROLE_PLAGUEMASTER] = true
 
-hook.Add("TTTCanCureableRoleSpawn", "Plaguemaster_TTTCanCureableRoleSpawn", function()
+AddHook("TTTCanCureableRoleSpawn", "Plaguemaster_TTTCanCureableRoleSpawn", function()
     if util.CanRoleSpawn(ROLE_PLAGUEMASTER) then
         return true
     end

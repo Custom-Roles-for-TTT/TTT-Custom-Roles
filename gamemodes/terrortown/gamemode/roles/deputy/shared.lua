@@ -4,7 +4,9 @@ local hook = hook
 local player = player
 local table = table
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
+local TableInsert = table.insert
 
 -- Initialize role features
 
@@ -36,7 +38,7 @@ local function InitializeEquipment()
         local mat_dir = "vgui/ttt/"
         -- If we haven't already registered these items, add them to the list
         if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_DEPUTY], "id", EQUIP_ARMOR) then
-            table.insert(EquipmentItems[ROLE_DEPUTY], {
+            TableInsert(EquipmentItems[ROLE_DEPUTY], {
                 id = EQUIP_ARMOR,
                 type = "item_passive",
                 material = mat_dir .. "icon_armor",
@@ -46,7 +48,7 @@ local function InitializeEquipment()
         end
 
         if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_DEPUTY], "id", EQUIP_RADAR) then
-            table.insert(EquipmentItems[ROLE_DEPUTY], {
+            TableInsert(EquipmentItems[ROLE_DEPUTY], {
                 id = EQUIP_RADAR,
                 type = "item_active",
                 material = mat_dir .. "icon_radar",
@@ -66,14 +68,10 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Deputy_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Deputy_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Deputy_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Deputy_Shared_TTTPrepareRound", InitializeEquipment)
 
-hook.Add("TTTRoleSpawnsArtificially", "Deputy_TTTRoleSpawnsArtificially", function(role)
+AddHook("TTTRoleSpawnsArtificially", "Deputy_TTTRoleSpawnsArtificially", function(role)
     if role == ROLE_DEPUTY and util.CanRoleSpawn(ROLE_MARSHAL) then
         return true
     end
@@ -86,22 +84,23 @@ end)
 CreateConVar("ttt_deputy_use_detective_icon", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_deputy_damage_penalty", "0", FCVAR_REPLICATED, "Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)", 0, 1)
 
-ROLE_CONVARS[ROLE_DEPUTY] = {}
-table.insert(ROLE_CONVARS[ROLE_DEPUTY], {
-    cvar = "ttt_deputy_damage_penalty",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_DEPUTY], {
-    cvar = "ttt_deputy_use_detective_icon",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_DEPUTY], {
-    cvar = "ttt_deputy_without_detective",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_DEPUTY], {
-    cvar = "ttt_deputy_activation_credits",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
+ROLE_CONVARS[ROLE_DEPUTY] = {
+    {
+        cvar = "ttt_deputy_damage_penalty",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_deputy_use_detective_icon",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_deputy_without_detective",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_deputy_activation_credits",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    }
+}

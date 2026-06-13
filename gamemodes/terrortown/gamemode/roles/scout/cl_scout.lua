@@ -1,12 +1,14 @@
+local hook = hook
 local string = string
 
+local AddHook = hook.Add
 local StringLower = string.lower
 
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Scout_Translations_Initialize", function()
+AddHook("Initialize", "Scout_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_scout", "Learns which traitor roles are in play.")
 
@@ -19,7 +21,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Scout_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Scout_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SCOUT then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_SCOUT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> who knows which traitor"

@@ -4,6 +4,8 @@ local hook = hook
 local table = table
 local weapons = weapons
 
+local AddHook = hook.Add
+
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_PARAMEDIC] = {
@@ -13,12 +15,8 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Paramedic_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Paramedic_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Paramedic_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Paramedic_Shared_TTTPrepareRound", InitializeEquipment)
 
 ------------------
 -- ROLE CONVARS --
@@ -31,42 +29,43 @@ local paramedic_device_loadout = CreateConVar("ttt_paramedic_device_loadout", "1
 local paramedic_device_shop = CreateConVar("ttt_paramedic_device_shop", "0", FCVAR_REPLICATED, "Whether the paramedic's defib should be purchasable in the shop", 0, 1)
 local paramedic_device_shop_rebuyable = CreateConVar("ttt_paramedic_device_shop_rebuyable", "0", FCVAR_REPLICATED, "Whether the paramedic's defib should be purchaseable multiple times", 0, 1)
 
-ROLE_CONVARS[ROLE_PARAMEDIC] = {}
-table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
-    cvar = "ttt_paramedic_defib_as_innocent",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
-    cvar = "ttt_paramedic_defib_as_is",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
-    cvar = "ttt_paramedic_defib_detectives_as_deputy",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
-    cvar = "ttt_paramedic_device_loadout",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
-    cvar = "ttt_paramedic_device_shop",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
-    cvar = "ttt_paramedic_device_shop_rebuyable",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
-    cvar = "ttt_paramedic_defib_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
+ROLE_CONVARS[ROLE_PARAMEDIC] = {
+    {
+        cvar = "ttt_paramedic_defib_as_innocent",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_paramedic_defib_as_is",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_paramedic_defib_detectives_as_deputy",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_paramedic_device_loadout",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_paramedic_device_shop",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_paramedic_device_shop_rebuyable",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_paramedic_defib_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    }
+}
 
 ------------------
 -- ROLE WEAPONS --
 ------------------
 
-hook.Add("TTTUpdateRoleState", "Paramedic_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Paramedic_TTTUpdateRoleState", function()
     local paramedic_defib = weapons.GetStored("weapon_med_defib")
     if paramedic_device_loadout:GetBool() then
         paramedic_defib.InLoadoutFor = table.Copy(paramedic_defib.InLoadoutForDefault)

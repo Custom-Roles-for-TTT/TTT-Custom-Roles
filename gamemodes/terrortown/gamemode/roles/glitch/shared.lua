@@ -4,6 +4,7 @@ local hook = hook
 local player = player
 local table = table
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 local TableInsert = table.insert
 
@@ -17,13 +18,13 @@ GLITCH_CHAT_BLOCK_ALWAYS = 1
 GLITCH_CHAT_BLOCK_WHILE_ALIVE = 2
 GLITCH_CHAT_BLOCK_WHILE_UNCONFIRMED = 3
 
-hook.Add("TTTUpdateRoleState", "Glitch_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Glitch_TTTUpdateRoleState", function()
     local glitch_use_traps = GetConVar("ttt_glitch_use_traps"):GetBool()
     CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
     TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
 end)
 
-hook.Add("TTTPlayerCanSendCreditsTo", "Glitch_TTTPlayerCanSendCreditsTo", function(sender, target, canSend)
+AddHook("TTTPlayerCanSendCreditsTo", "Glitch_TTTPlayerCanSendCreditsTo", function(sender, target, canSend)
     if sender:IsTraitorTeam() and target:IsGlitch() then
         return true
     end
@@ -37,23 +38,24 @@ CreateConVar("ttt_glitch_mode", "0", FCVAR_REPLICATED, "The way in which the gli
 local glitch_chat_block_mode = CreateConVar("ttt_glitch_chat_block_mode", "1", FCVAR_REPLICATED, "How to handle glitch chat blocking. 0 - Don't block. 1 - Always block when there's a glitch. 2 - Block while a glitch is alive. 3 - Block until all glitches are confirmed by inspecting their body.", GLITCH_CHAT_NONE, GLITCH_CHAT_BLOCK_WHILE_UNCONFIRMED)
 CreateConVar("ttt_glitch_use_traps", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_GLITCH] = {}
-TableInsert(ROLE_CONVARS[ROLE_GLITCH], {
-    cvar = "ttt_glitch_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Traitor", "Random Special Traitor", "Mask all traitors"},
-    isNumeric = true
-})
-TableInsert(ROLE_CONVARS[ROLE_GLITCH], {
-    cvar = "ttt_glitch_chat_block_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Don't block", "Always block", "Block while alive", "Block while body unconfirmed"},
-    isNumeric = true
-})
-TableInsert(ROLE_CONVARS[ROLE_GLITCH], {
-    cvar = "ttt_glitch_use_traps",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_GLITCH] = {
+    {
+        cvar = "ttt_glitch_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Traitor", "Random Special Traitor", "Mask all traitors"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_glitch_chat_block_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Don't block", "Always block", "Block while alive", "Block while body unconfirmed"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_glitch_use_traps",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 --------------------
 -- PLAYER METHODS --

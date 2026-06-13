@@ -6,6 +6,7 @@ local string = string
 local table = table
 local util = util
 
+local AddHook = hook.Add
 local MathMax = math.max
 local PlayerIterator = player.Iterator
 local TableInsert = table.insert
@@ -18,7 +19,7 @@ LOOTGOBLIN_RADAR_BEEP_OVERRIDE_OFF = 2
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "LootGoblin_Translations_Initialize", function()
+AddHook("Initialize", "LootGoblin_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "ev_win_lootgoblin", "The {role} has escaped and also won the round!")
 
@@ -60,24 +61,24 @@ local lootgoblin_radar_beep_sound_override = GetConVar("ttt_lootgoblin_radar_bee
 
 local hide_role = GetConVar("ttt_hide_role")
 
-hook.Add("TTTSettingsRolesTabSections", "LootGoblin_TTTSettingsRolesTabSections", function(role, parentForm)
+local function LootGoblin_TTTSettingsRolesTabSections(role, parentForm)
     if role ~= ROLE_LOOTGOBLIN then return end
     if not lootgoblin_radar_enabled:GetBool() then return end
     if lootgoblin_radar_beep_sound_override:GetInt() ~= LOOTGOBLIN_RADAR_BEEP_OVERRIDE_NONE then return end
 
     parentForm:CheckBox(LANG.GetTranslation("lootgoblin_config_radar_sound"), "ttt_lootgoblin_radar_beep_sound")
     return true
-end)
+end
 
 ------------------
 -- HIGHLIGHTING --
 ------------------
 
-hook.Add("TTTShouldHideFromHighlight", "LootGoblin_TTTShouldHideFromHighlight", function(ply, cli)
+local function LootGoblin_TTTShouldHideFromHighlight(ply, cli)
     if ply:IsLootGoblin() and ply:IsRoleActive() then
         return true
     end
-end)
+end
 
 -----------
 -- RADAR --
@@ -87,7 +88,7 @@ local beacon_back = surface.GetTextureID("vgui/ttt/beacon_back")
 local beacon_gob = surface.GetTextureID("vgui/ttt/beacon_gob")
 local lootgoblins = {}
 
-hook.Add("TTTRadarRender", "LootGoblin_TTTRadarRender", function(cli)
+local function LootGoblin_TTTRadarRender(cli)
     if #lootgoblins then
         surface.SetTexture(beacon_back)
         surface.SetTextColor(0, 0, 0, 0)
@@ -105,7 +106,7 @@ hook.Add("TTTRadarRender", "LootGoblin_TTTRadarRender", function(cli)
             RADAR:DrawTarget(target, 16, 0.5)
         end
     end
-end)
+end
 
 local beep_success = Sound("buttons/blip2.wav")
 local function SetLootGoblinPosition()
@@ -134,9 +135,9 @@ local function UpdateLootGoblin()
 end
 net.Receive("TTT_LootGoblinRadar", UpdateLootGoblin)
 
-hook.Add("TTTEndRound", "LootGoblin_Radar_TTTEndRound", function()
+local function LootGoblin_Radar_TTTEndRound()
     if timer.Exists("updatelootgoblin") then timer.Remove("updatelootgoblin") end
-end)
+end
 
 -------------
 -- SCORING --
@@ -157,40 +158,40 @@ local function ResetLootGoblinWin()
     lootgoblin_wins = false
 end
 net.Receive("TTT_ResetLootGoblinWins", ResetLootGoblinWin)
-hook.Add("TTTPrepareRound", "LootGoblin_WinTracking_TTTPrepareRound", ResetLootGoblinWin)
-hook.Add("TTTBeginRound", "LootGoblin_WinTracking_TTTBeginRound", ResetLootGoblinWin)
+AddHook("TTTPrepareRound", "LootGoblin_WinTracking_TTTPrepareRound", ResetLootGoblinWin)
+AddHook("TTTBeginRound", "LootGoblin_WinTracking_TTTBeginRound", ResetLootGoblinWin)
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringSecondaryWins", "LootGoblin_TTTScoringSecondaryWins", function(wintype, secondary_wins)
+local function LootGoblin_TTTScoringSecondaryWins(wintype, secondary_wins)
     if lootgoblin_wins then
         TableInsert(secondary_wins, ROLE_LOOTGOBLIN)
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "LootGoblin_TTTEventFinishText", function(e)
+local function LootGoblin_TTTEventFinishText(e)
     if e.win == WIN_LOOTGOBLIN then
         return LANG.GetParamTranslation("ev_win_lootgoblin", { role = string.lower(ROLE_STRINGS[ROLE_LOOTGOBLIN]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "LootGoblin_TTTEventFinishIconText", function(e, win_string, role_string)
+local function LootGoblin_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_LOOTGOBLIN then
         return "ev_win_icon_also", ROLE_STRINGS[ROLE_LOOTGOBLIN]
     end
-end)
+end
 
 ---------
 -- HUD --
 ---------
 
-hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
+local function LootGoblin_TTTHUDInfoPaint(client, label_left, label_top, active_labels)
     if hide_role:GetBool() then return end
 
     if client:IsActiveLootGoblin() and not client:IsRoleActive() then
@@ -210,13 +211,13 @@ hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label
         -- Track that the label was added so others can position accurately
         TableInsert(active_labels, "lootgoblin")
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_LOOTGOBLIN then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html = "The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role who likes to hoard loot."
@@ -299,3 +300,18 @@ hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role,
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_LOOTGOBLIN] = {
+    ["TTTEndRound"] = LootGoblin_Radar_TTTEndRound,
+    ["TTTEventFinishIconText"] = LootGoblin_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = LootGoblin_TTTEventFinishText,
+    ["TTTHUDInfoPaint"] = LootGoblin_TTTHUDInfoPaint,
+    ["TTTRadarRender"] = LootGoblin_TTTRadarRender,
+    ["TTTScoringSecondaryWins"] = LootGoblin_TTTScoringSecondaryWins,
+    ["TTTSettingsRolesTabSections"] = LootGoblin_TTTSettingsRolesTabSections,
+    ["TTTShouldHideFromHighlight"] = LootGoblin_TTTShouldHideFromHighlight
+}

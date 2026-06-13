@@ -1,8 +1,13 @@
 AddCSLuaFile()
 
+local cvars = cvars
 local hook = hook
 local ipairs = ipairs
+local pairs = pairs
 local table = table
+
+local AddHook = hook.Add
+local TableInsert = table.insert
 
 -- Task Features
 TASKMASTER_TF_TARGETID_PLAYERICON = 0
@@ -31,43 +36,44 @@ CreateConVar("ttt_taskmaster_win_block_length", "60", FCVAR_REPLICATED, "How lon
 CreateConVar("ttt_taskmaster_wins_with_others", "1", FCVAR_REPLICATED, "If the Taskmaster should be allowed to win alongside other teams/players", 0, 1)
 CreateConVar("ttt_taskmaster_is_passive", "0", FCVAR_REPLICATED, "Whether the Taskmaster should count as a 'passive' role for roles that need to kill other players, allowing them to win while the Taskmaster is still alive (if 'ttt_taskmaster_wins_with_others' is enabled)", 0, 1)
 
-ROLE_CONVARS[ROLE_TASKMASTER] = {}
-table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_kill_tasks",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_misc_tasks",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_completion_bonus",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_repeat_rerolls",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_blocks_team_wins",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_win_block_length",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_wins_with_others",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
-    cvar = "ttt_taskmaster_is_passive",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_TASKMASTER] = {
+    {
+        cvar = "ttt_taskmaster_kill_tasks",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_taskmaster_misc_tasks",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_taskmaster_completion_bonus",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_taskmaster_repeat_rerolls",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_taskmaster_blocks_team_wins",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_taskmaster_win_block_length",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_taskmaster_wins_with_others",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_taskmaster_is_passive",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 -----------------------
 -- TASK REGISTRATION --
@@ -91,7 +97,7 @@ function TASKMASTER.RegisterTask(task)
     task.Enabled = function()
         return enabled:GetBool()
     end
-    table.insert(ROLE_CONVARS[ROLE_TASKMASTER], {
+    TableInsert(ROLE_CONVARS[ROLE_TASKMASTER], {
         cvar = cvarName,
         type = ROLE_CONVAR_TYPE_BOOL
     })
@@ -114,7 +120,7 @@ end
 AddTaskFiles("terrortown/gamemode/roles/taskmaster/tasks/") -- Internal tasks
 AddTaskFiles("taskmastertasks/") -- External tasks
 
-hook.Add("Initialize", "Taskmaster_Task_Initialize", function()
+AddHook("Initialize", "Taskmaster_Task_Initialize", function()
     for _, t in pairs(TASKMASTER.KillTasks) do
         if t.Initialize then
             t.Initialize()

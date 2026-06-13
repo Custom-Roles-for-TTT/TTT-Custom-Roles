@@ -1,10 +1,11 @@
 AddCSLuaFile()
 
-local GetConVar = GetConVar
 local hook = hook
-local IsValid = IsValid
 local player = player
+local table = table
+local timer = timer
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 local SetMDL = FindMetaTable("Entity").SetModel
 
@@ -25,11 +26,11 @@ local spy_steal_name = GetConVar("ttt_spy_steal_name")
 ------------------
 
 -- Only allow the spy to pick up spy-specific weapons
-hook.Add("PlayerCanPickupWeapon", "Spy_Weapons_PlayerCanPickupWeapon", function(ply, wep)
+local function Spy_Weapons_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return end
     if wep:GetClass() == "weapon_spy_flaregun" then return ply:IsSpy() end
-end)
+end
 
 ----------------
 -- ROLE STATE --
@@ -99,13 +100,13 @@ local function HandleStealIdentity(spy, target, mode)
 end
 
 -- The spy can steal the identity of the victim on killing a player
-hook.Add("PlayerDeath", "Spy_PlayerDeath", function(victim, inflictor, attacker)
+local function Spy_PlayerDeath(victim, inflictor, attacker)
     HandleStealIdentity(attacker, victim, SPY_STEAL_MODE_KILL)
-end)
+end
 
-hook.Add("TTTBodyFound", "Spy_TTTBodyFound", function(ply, deadply, rag)
+local function Spy_TTTBodyFound(ply, deadply, rag)
     HandleStealIdentity(ply, deadply, SPY_STEAL_MODE_SEARCH)
-end)
+end
 
 local function ClearFullState()
     for _, ply in PlayerIterator() do
@@ -130,5 +131,15 @@ local function ClearFullState()
     table.Empty(playerModels)
 end
 
-hook.Add("TTTEndRound", "Spy_TTTEndRound", ClearFullState)
-hook.Add("TTTPrepareRound", "Spy_TTTPrepareRound", ClearFullState)
+AddHook("TTTPrepareRound", "Spy_TTTPrepareRound", ClearFullState)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_SPY] = {
+    ["PlayerCanPickupWeapon"] = Spy_Weapons_PlayerCanPickupWeapon,
+    ["PlayerDeath"] = Spy_PlayerDeath,
+    ["TTTBodyFound"] = Spy_TTTBodyFound,
+    ["TTTEndRound"] = ClearFullState
+}

@@ -2,6 +2,7 @@ AddCSLuaFile()
 
 local hook = hook
 local player = player
+local timer = timer
 
 local AddHook = hook.Add
 local PlayerIterator = player.Iterator
@@ -82,7 +83,7 @@ local function CannibalKilledNotification(attacker, victim)
             end)
 end
 
-AddHook("PlayerDeath", "Cannibal_PlayerDeath", function(victim, infl, attacker)
+local function Cannibal_PlayerDeath(victim, infl, attacker)
     if not IsPlayer(victim) then return end
     if not victim:IsCannibal() then return end
 
@@ -92,13 +93,13 @@ AddHook("PlayerDeath", "Cannibal_PlayerDeath", function(victim, infl, attacker)
     if not valid_kill then return end
 
     CannibalKilledNotification(attacker, victim)
-end)
+end
 
-AddHook("PlayerDisconnected", "Cannibal_PlayerDisconnected", function(ply)
+local function Cannibal_PlayerDisconnected(ply)
     if not ply:IsCannibal() then return end
 
     ReleaseEatenPlayers(ply, ply:Nick() .. " disconnected and you have escaped!")
-end)
+end
 
 AddHook("TTTPlayerRoleChanged", "Cannibal_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not IsPlayer(ply) then return end
@@ -107,21 +108,21 @@ AddHook("TTTPlayerRoleChanged", "Cannibal_TTTPlayerRoleChanged", function(ply, o
     ReleaseEatenPlayers(ply, ply:Nick() .. " lost their appetite and spat you out!")
 end)
 
-AddHook("TTTOnRoleAbilityDisabled", "Cannibal_TTTOnRoleAbilityDisabled", function(ply)
+local function Cannibal_TTTOnRoleAbilityDisabled(ply)
     if not IsPlayer(ply) then return end
     if not ply:IsCannibal() then return end
 
     ReleaseEatenPlayers(ply, ply:Nick() .. " felt unwell and spat you out!")
-end)
+end
 -------------------------
 -- EATEN PLAYER BLOCKS --
 -------------------------
 
-AddHook("PlayerCanPickupWeapon", "Cannibal_PlayerCanPickupWeapon", function(ply, wep)
+local function Cannibal_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(ply) then return end
 
     if ply.TTTCannibalEaten then return false end
-end)
+end
 
 local function ShouldBlockCommunications(listener, speaker)
     if not speaker.TTTCannibalEaten then return false end
@@ -129,27 +130,27 @@ local function ShouldBlockCommunications(listener, speaker)
     return true
 end
 
-AddHook("PlayerCanSeePlayersChat", "Cannibal_PlayerCanSeePlayersChat", function(text, team_only, listener, speaker)
+local function Cannibal_PlayerCanSeePlayersChat(text, team_only, listener, speaker)
     if not IsPlayer(listener) or not IsPlayer(speaker) then return end
 
     if ShouldBlockCommunications(listener, speaker) then
         return false
     end
-end)
+end
 
-AddHook("PlayerCanHearPlayersVoice", "Cannibal_PlayerCanHearPlayersVoice", function(listener, speaker)
+local function Cannibal_PlayerCanHearPlayersVoice(listener, speaker)
     if not IsPlayer(listener) or not IsPlayer(speaker) then return end
 
     if ShouldBlockCommunications(listener, speaker) then
         return false, false
     end
-end)
+end
 
 ------------
 -- DAMAGE --
 ------------
 
-hook.Add("ScalePlayerDamage", "Cannibal_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Cannibal_ScalePlayerDamage(ply, hitgroup, dmginfo)
     local att = dmginfo:GetAttacker()
 
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
@@ -158,7 +159,7 @@ hook.Add("ScalePlayerDamage", "Cannibal_ScalePlayerDamage", function(ply, hitgro
             dmginfo:ScaleDamage(1 - penalty)
         end
     end
-end)
+end
 
 ---------------------
 -- MOVE ROLE STATE --
@@ -181,7 +182,7 @@ end
 -- WIN CHECKS --
 ----------------
 
-AddHook("TTTCheckForWin", "Cannibal_TTTCheckForWin", function()
+local function Cannibal_TTTCheckForWin()
     local cannibal_alive = false
     local other_alive = false
     for _, v in PlayerIterator() do
@@ -199,15 +200,15 @@ AddHook("TTTCheckForWin", "Cannibal_TTTCheckForWin", function()
     elseif cannibal_alive then
         return WIN_NONE
     end
-end)
+end
 
-AddHook("TTTPrintResultMessage", "Cannibal_TTTPrintResultMessage", function(type)
+local function Cannibal_TTTPrintResultMessage(type)
     if type == WIN_CANNIBAL then
         LANG.Msg("win_cannibal", {role = ROLE_STRINGS[ROLE_CANNIBAL]})
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CANNIBAL] .. " wins.\n")
         return true
     end
-end)
+end
 
 -------------
 -- CLEANUP --
@@ -219,6 +220,23 @@ AddHook("TTTPrepareRound", "Cannibal_TTTPrepareRound", function()
     end
 end)
 
-AddHook("TTTEndRound", "Cannibal_TTTEndRound", function()
+local function Cannibal_TTTEndRound()
     table.Empty(CANNIBAL.playerWeapons)
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_CANNIBAL] = {
+    ["PlayerCanHearPlayersVoice"] = Cannibal_PlayerCanHearPlayersVoice,
+    ["PlayerCanPickupWeapon"] = Cannibal_PlayerCanPickupWeapon,
+    ["PlayerCanSeePlayersChat"] = Cannibal_PlayerCanSeePlayersChat,
+    ["PlayerDeath"] = Cannibal_PlayerDeath,
+    ["PlayerDisconnected"] = Cannibal_PlayerDisconnected,
+    ["ScalePlayerDamage"] = Cannibal_ScalePlayerDamage,
+    ["TTTCheckForWin"] = Cannibal_TTTCheckForWin,
+    ["TTTEndRound"] = Cannibal_TTTEndRound,
+    ["TTTOnRoleAbilityDisabled"] = Cannibal_TTTOnRoleAbilityDisabled,
+    ["TTTPrintResultMessage"] = Cannibal_TTTPrintResultMessage
+}

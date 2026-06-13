@@ -4,6 +4,7 @@ local net = net
 local surface = surface
 local util = util
 
+local AddHook = hook.Add
 local MathMax = math.max
 
 -------------
@@ -17,7 +18,7 @@ local hide_role = GetConVar("ttt_hide_role")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Drunk_Translations_Initialize", function()
+AddHook("Initialize", "Drunk_Translations_Initialize", function()
     -- HUD
     LANG.AddToLanguage("english", "drunk_hud", "You will sober up in: {time}")
 
@@ -37,7 +38,7 @@ end)
 -------------
 
 -- Register the scoring events for the vampire
-hook.Add("Initialize", "Drunk_Scoring_Initialize", function()
+AddHook("Initialize", "Drunk_Scoring_Initialize", function()
     local drunk_icon = Material("icon16/drink_empty.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -63,7 +64,7 @@ end)
 
 -- Show the player's starting role color if they used to be a drunk
 -- Also if they were a drunk that changed to a jester role, keep them in the independent section in case there is another jester in the same round
-hook.Add("TTTScoringSummaryRender", "Drunk_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+AddHook("TTTScoringSummaryRender", "Drunk_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if ply:GetNWBool("WasDrunk", false) then
@@ -79,7 +80,7 @@ end)
 -- HUD --
 ---------
 
-hook.Add("TTTHUDInfoPaint", "Drunk_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
+local function Drunk_TTTHUDInfoPaint(client, label_left, label_top, active_labels)
     if hide_role:GetBool() then return end
 
     if client:IsDrunk() then
@@ -99,13 +100,13 @@ hook.Add("TTTHUDInfoPaint", "Drunk_TTTHUDInfoPaint", function(client, label_left
         -- Track that the label was added so others can position accurately
         table.insert(active_labels, "drunk")
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Drunk_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Drunk_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_DRUNK then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_DRUNK] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role who can't quite remember what team they really belong to."
@@ -126,3 +127,11 @@ hook.Add("TTTTutorialRoleText", "Drunk_TTTTutorialRoleText", function(role, titl
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_DRUNK] = {
+    ["TTTHUDInfoPaint"] = Drunk_TTTHUDInfoPaint,
+}

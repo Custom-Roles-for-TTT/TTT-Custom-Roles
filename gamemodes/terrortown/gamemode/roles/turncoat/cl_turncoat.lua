@@ -1,5 +1,7 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -11,7 +13,7 @@ local turncoat_change_innocent_kill = GetConVar("ttt_turncoat_change_innocent_ki
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Turncoat_Translations_Initialize", function()
+AddHook("Initialize", "Turncoat_Translations_Initialize", function()
     -- Events
     LANG.AddToLanguage("english", "ev_turncoat", "{nick} is {role} and has joined the {traitors}")
 
@@ -33,7 +35,7 @@ end)
 -- EVENTS --
 ------------
 
-hook.Add("Initialize", "Turncoat_Scoring_Initialize", function()
+AddHook("Initialize", "Turncoat_Scoring_Initialize", function()
     local traitor_icon = Material("icon16/user_red.png")
     local Event = CLSCORE.DeclareEventDisplay
     local T = LANG.GetTranslation
@@ -56,7 +58,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TURNCOAT then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_TURNCOAT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span>."

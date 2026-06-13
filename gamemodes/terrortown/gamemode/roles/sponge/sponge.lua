@@ -2,8 +2,10 @@ AddCSLuaFile()
 
 local hook = hook
 local player = player
+local table = table
 local timer = timer
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 -------------
@@ -20,9 +22,9 @@ local sponge_aura_radius = GetConVar("ttt_sponge_aura_radius")
 local sponge_aura_shrink = GetConVar("ttt_sponge_aura_shrink")
 local sponge_aura_mode = GetConVar("ttt_sponge_aura_mode")
 
-hook.Add("TTTSyncGlobals", "Sponge_TTTSyncGlobals", function()
+local function Sponge_TTTSyncGlobals()
     SetGlobalFloat("ttt_sponge_aura_radius", sponge_aura_radius:GetInt() * UNITS_PER_METER)
-end)
+end
 
 ---------------------
 -- DAMAGE TRANSFER --
@@ -51,7 +53,7 @@ local function ShouldRedirectDamage(sponge, victim, attacker)
     return false
 end
 
-hook.Add("EntityTakeDamage", "Sponge_EntityTakeDamage", function(target, dmginfo)
+local function Sponge_EntityTakeDamage(target, dmginfo)
     if not IsPlayer(target) then return end
     -- Don't transfer damage done to sponges, even if two sponges are next to each other
     -- This prevents an infinite loop of transferring the damage back and forth
@@ -74,9 +76,9 @@ hook.Add("EntityTakeDamage", "Sponge_EntityTakeDamage", function(target, dmginfo
         p:TakeDamageInfo(dmginfo)
         dmginfo:SetDamage(0)
     end
-end)
+end
 
-hook.Add("TTTDrawHitMarker", "Sponge_TTTDrawHitMarker", function(victim, dmginfo)
+local function Sponge_TTTDrawHitMarker(victim, dmginfo)
     if not IsPlayer(victim) then return end
     if victim:IsSponge() then
         return true, false, false, true
@@ -91,7 +93,7 @@ hook.Add("TTTDrawHitMarker", "Sponge_TTTDrawHitMarker", function(victim, dmginfo
 
         return true, false, false, true
     end
-end)
+end
 
 ----------
 -- AURA --
@@ -99,7 +101,7 @@ end)
 
 -- Calculate how much the radius should decrease per player death
 local diff_per_death = 0
-hook.Add("TTTBeginRound", "Sponge_AuraSize_TTTBeginRound", function()
+AddHook("TTTBeginRound", "Sponge_AuraSize_TTTBeginRound", function()
     if sponge_aura_shrink:GetBool() then
         local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
         local starting_players = #util.GetAlivePlayers()
@@ -111,14 +113,14 @@ end)
 
 -- Decrease the aura radius for each player death
 local aura_deaths = {}
-hook.Add("PostPlayerDeath", "Sponge_AuraSize_PostPlayerDeath", function(ply)
+local function Sponge_AuraSize_PostPlayerDeath(ply)
     local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
     SetGlobalFloat("ttt_sponge_aura_radius", radius - diff_per_death)
     aura_deaths[ply:SteamID64()] = true
-end)
+end
 
 -- Increase the aura radius for each player who died but then respawned
-hook.Add("PlayerSpawn", "Sponge_AuraSize_PlayerSpawn", function(ply, transition)
+local function Sponge_AuraSize_PlayerSpawn(ply, transition)
     if transition or not IsValid(ply) then return end
 
     local sid64 = ply:SteamID64()
@@ -127,14 +129,14 @@ hook.Add("PlayerSpawn", "Sponge_AuraSize_PlayerSpawn", function(ply, transition)
     local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
     SetGlobalFloat("ttt_sponge_aura_radius", radius + diff_per_death)
     aura_deaths[sid64] = false
-end)
+end
 
-hook.Add("TTTPrepareRound", "Sponge_AuraSize_PrepareRound", function()
+AddHook("TTTPrepareRound", "Sponge_AuraSize_PrepareRound", function()
     table.Empty(aura_deaths)
 end)
 
 -- Flag a sponge when all living players are within their radius
-hook.Add("Think", "Sponge_Aura_Think", function()
+local function Sponge_Aura_Think()
     local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_SIX_METERS)
     local radiusSqr = radius * radius
     local alive_players = #util.GetAlivePlayers()
@@ -166,18 +168,18 @@ hook.Add("Think", "Sponge_Aura_Think", function()
             end
         end
     end
-end)
+end
 
 -----------------------
 -- ROLE INTERACTIONS --
 -----------------------
 
 -- The sponge is viewable to everyone so the informant's default scan stage should be "ROLE" since their role is already known
-hook.Add("TTTInformantDefaultScanStage", "Sponge_TTTInformantDefaultScanStage", function(ply, oldRole, newRole)
+local function Sponge_TTTInformantDefaultScanStage(ply, oldRole, newRole)
     if ply:IsSponge() then
         return INFORMANT_SCANNED_ROLE
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
@@ -191,7 +193,7 @@ local function SpongeKilledNotification(attacker, victim)
         end)
 end
 
-hook.Add("PlayerDeath", "Sponge_WinCheck_PlayerDeath", function(victim, infl, attacker)
+local function Sponge_WinCheck_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
 
@@ -209,17 +211,17 @@ hook.Add("PlayerDeath", "Sponge_WinCheck_PlayerDeath", function(victim, infl, at
         -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
         timer.Simple(1, function() EndRound(WIN_SPONGE) end)
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Sponge_TTTPrintResultMessage", function(type)
+local function Sponge_TTTPrintResultMessage(type)
     if type == WIN_SPONGE then
         LANG.Msg("win_sponge", { role = ROLE_STRINGS[ROLE_SPONGE] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_SPONGE] .. " wins.\n")
         return true
     end
-end)
+end
 
-hook.Add("TTTPrepareRound", "Sponge_PrepareRound", function()
+AddHook("TTTPrepareRound", "Sponge_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWString("SpongeKiller", "")
         v:SetNWString("SpongeProtecting", "")
@@ -227,3 +229,19 @@ hook.Add("TTTPrepareRound", "Sponge_PrepareRound", function()
         v:SetNWBool("SpongeAllInRadius", false)
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_SPONGE] = {
+    ["EntityTakeDamage"] = Sponge_EntityTakeDamage,
+    ["PlayerDeath"] = Sponge_WinCheck_PlayerDeath,
+    ["PlayerSpawn"] = Sponge_AuraSize_PlayerSpawn,
+    ["PostPlayerDeath"] = Sponge_AuraSize_PostPlayerDeath,
+    ["TTTDrawHitMarker"] = Sponge_TTTDrawHitMarker,
+    ["TTTInformantDefaultScanStage"] = Sponge_TTTInformantDefaultScanStage,
+    ["TTTPrintResultMessage"] = Sponge_TTTPrintResultMessage,
+    ["TTTSyncGlobals"] = Sponge_TTTSyncGlobals,
+    ["Think"] = Sponge_Aura_Think
+}

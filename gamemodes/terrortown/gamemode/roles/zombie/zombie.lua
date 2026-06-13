@@ -11,8 +11,10 @@ local player = player
 local table = table
 local util = util
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 local MathRandom = math.random
+local TableInsert = table.insert
 
 util.AddNetworkString("TTT_Zombified")
 
@@ -39,7 +41,7 @@ local zombie_spit_convert = GetConVar("ttt_zombie_spit_convert")
 -----------
 
 -- If the last zombie prime leaves, randomly choose a new one
-hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
+local function Zombie_Prime_PlayerDisconnected(ply)
     if not ply:IsZombie() then return end
     if not ply:IsZombiePrime() then return end
 
@@ -51,7 +53,7 @@ hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
                 return
             end
 
-            table.insert(zombies, v)
+            TableInsert(zombies, v)
         end
     end
 
@@ -62,7 +64,7 @@ hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
     new_prime:SetZombiePrime(true)
 
     new_prime:QueueMessage(MSG_PRINTBOTH, "The prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " has been lost and you've seized power in their absence!")
-end)
+end
 
 -- Keep previous naming scheme for backwards compatibility
 function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
@@ -71,14 +73,14 @@ function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
 -- ROLE STATUS --
 -----------------
 
-hook.Add("TTTPlayerRoleChanged", "Zombie_RoleFeatures_TTTPlayerRoleChanged", function(ply, oldRole, role)
+AddHook("TTTPlayerRoleChanged", "Zombie_RoleFeatures_TTTPlayerRoleChanged", function(ply, oldRole, role)
     if role ~= ROLE_ZOMBIE then return end
     if oldRole ~= ROLE_NONE then return end
 
     ply:SetZombiePrime(true)
 end)
 
-hook.Add("TTTPrepareRound", "Zombie_RoleFeatures_PrepareRound", function()
+AddHook("TTTPrepareRound", "Zombie_RoleFeatures_PrepareRound", function()
     for _, v in PlayerIterator() do
         v.WasZombieColored = false
         v:SetNWBool("IsZombifying", false)
@@ -98,19 +100,19 @@ end
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTWinCheckBlocks", "Zombie_TTTWinCheckBlocks", function(win_blocks)
+local function Zombie_TTTWinCheckBlocks(win_blocks)
     if not zombie_respawn_block_win:GetBool() then return end
 
-    table.insert(win_blocks, function(win)
+    TableInsert(win_blocks, function(win)
         for _, v in PlayerIterator() do
             if v:IsZombifying() then
                 return WIN_NONE
             end
         end
     end)
-end)
+end
 
-hook.Add("TTTCheckForWin", "Zombie_TTTCheckForWin", function()
+local function Zombie_TTTCheckForWin()
     -- Only run the win check if the zombies win by themselves (or with the Mad Scientist)
     if not INDEPENDENT_ROLES[ROLE_ZOMBIE] then return end
 
@@ -131,33 +133,33 @@ hook.Add("TTTCheckForWin", "Zombie_TTTCheckForWin", function()
     elseif zombie_alive then
         return WIN_NONE
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Zombie_TTTPrintResultMessage", function(type)
+local function Zombie_TTTPrintResultMessage(type)
     if type == WIN_ZOMBIE then
         local plural = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
         LANG.Msg("win_zombies", { role = plural })
         ServerLog("Result: " .. plural .. " win.\n")
         return true
     end
-end)
+end
 
 -----------
 -- KARMA --
 -----------
 
 -- Reduce karma if a zombie hurts or kills an ally
-hook.Add("TTTKarmaShouldGivePenalty", "Zombie_TTTKarmaShouldGivePenalty", function(attacker, victim)
+local function Zombie_TTTKarmaShouldGivePenalty(attacker, victim)
     if attacker:IsZombie() then
         return victim:IsZombieAlly()
     end
-end)
+end
 
 ------------
 -- DAMAGE --
 ------------
 
-hook.Add("ScalePlayerDamage", "Zombie_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Zombie_ScalePlayerDamage(ply, hitgroup, dmginfo)
     local att = dmginfo:GetAttacker()
     -- Only apply damage scaling after the round starts
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
@@ -173,10 +175,10 @@ hook.Add("ScalePlayerDamage", "Zombie_ScalePlayerDamage", function(ply, hitgroup
             dmginfo:ScaleDamage(1 - penalty)
         end
     end
-end)
+end
 
 -- Handle zombie team killing - this can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
-hook.Add("EntityTakeDamage", "Zombie_EntityTakeDamage", function(ent, dmginfo)
+local function Zombie_EntityTakeDamage(ent, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(ent) or not ent:IsZombie() then return end
 
@@ -214,14 +216,14 @@ hook.Add("EntityTakeDamage", "Zombie_EntityTakeDamage", function(ent, dmginfo)
     -- This is used by both ZOMBIE_FF_MODE_REFLECT and ZOMBIE_FF_MODE_IMMUNE
     dmginfo:ScaleDamage(0)
     dmginfo:SetDamage(0)
-end)
+end
 
 -- Zombies don't take fall damage
-hook.Add("OnPlayerHitGround", "Zombie_OnPlayerHitGround", function(ply, in_water, on_floater, speed)
+local function Zombie_OnPlayerHitGround(ply, in_water, on_floater, speed)
     if ply:IsZombie() and GetRoundState() >= ROUND_ACTIVE then
         return true
     end
-end)
+end
 
 ------------------
 -- ROLE WEAPONS --
@@ -230,7 +232,7 @@ end)
 local zombie_color = Color(70, 100, 25, 255)
 
 -- Make sure the zombie keeps their appropriate weapons and coloring
-hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
+local function Zombie_TTTPlayerAliveThink(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if ply:IsZombie() then
@@ -263,19 +265,19 @@ hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
         ply.WasZombieColored = false
         ply:SetColor(COLOR_WHITE)
     end
-end)
+end
 
 -- Handle role weapon assignment
-hook.Add("PlayerLoadout", "Zombie_PlayerLoadout", function(ply)
+local function Zombie_PlayerLoadout(ply)
     if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() or not ply:IsZombie() or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not ply:HasWeapon("weapon_zom_claws") then
         ply:Give("weapon_zom_claws")
     end
-end)
+end
 
 -- Only allow the zombie to pick up zombie-specific weapons
-hook.Add("PlayerCanPickupWeapon", "Zombie_Weapons_PlayerCanPickupWeapon", function(ply, wep)
+local function Zombie_Weapons_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return end
 
@@ -286,7 +288,7 @@ hook.Add("PlayerCanPickupWeapon", "Zombie_Weapons_PlayerCanPickupWeapon", functi
     if zombie_prime_only_weapons:GetBool() and ply:IsZombie() and not ply:IsZombiePrime() and GetRoundState() == ROUND_ACTIVE then
         return false
     end
-end)
+end
 
 ----------------
 -- RESPAWNING --
@@ -337,7 +339,7 @@ function plymeta:RespawnAsZombie(prime)
     end)
 end
 
-hook.Add("TTTStopPlayerRespawning", "Zombie_TTTStopPlayerRespawning", function(ply)
+local function Zombie_TTTStopPlayerRespawning(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -345,13 +347,13 @@ hook.Add("TTTStopPlayerRespawning", "Zombie_TTTStopPlayerRespawning", function(p
         timer.Remove("Zombify_" .. ply:SteamID64())
         ply:SetNWBool("IsZombifying", false)
     end
-end)
+end
 
-hook.Add("TTTCupidShouldLoverSurvive", "Zombie_TTTCupidShouldLoverSurvive", function(ply, lover)
+local function Zombie_TTTCupidShouldLoverSurvive(ply, lover)
     if ply:IsZombifying() or lover:IsZombifying() then
         return true
     end
-end)
+end
 
 local function ShouldConvert(ply)
     local chance = ply:IsZombiePrime() and zombie_prime_convert_chance:GetFloat() or zombie_thrall_convert_chance:GetFloat()
@@ -359,7 +361,7 @@ local function ShouldConvert(ply)
     return math.random() < chance
 end
 
-hook.Add("DoPlayerDeath", "Zombie_DoPlayerDeath", function(victim, attacker, dmginfo)
+local function Zombie_DoPlayerDeath(victim, attacker, dmginfo)
     if not IsPlayer(attacker) or not attacker:IsZombie() then return end
     if not ShouldConvert(attacker) then return end
 
@@ -373,14 +375,14 @@ hook.Add("DoPlayerDeath", "Zombie_DoPlayerDeath", function(victim, attacker, dmg
         hook.Call("TTTPlayerRoleChangedByItem", nil, attacker, victim, inflictor)
         victim:RespawnAsZombie()
     end
-end)
+end
 
 -----------------------
 -- PLAYER VISIBILITY --
 -----------------------
 
 -- Add all players to the PVS for the zombie if highlighting or Kill icon are enabled
-hook.Add("SetupPlayerVisibility", "Zombie_SetupPlayerVisibility", function(ply)
+local function Zombie_SetupPlayerVisibility(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveZombie() then return end
     if not zombie_vision_enabled:GetBool() and not zombie_show_target_icon:GetBool() then return end
@@ -397,4 +399,26 @@ hook.Add("SetupPlayerVisibility", "Zombie_SetupPlayerVisibility", function(ply)
             AddOriginToPVS(pos)
         end
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_ZOMBIE] = {
+    ["DoPlayerDeath"] = Zombie_DoPlayerDeath,
+    ["EntityTakeDamage"] = Zombie_EntityTakeDamage,
+    ["OnPlayerHitGround"] = Zombie_OnPlayerHitGround,
+    ["PlayerCanPickupWeapon"] = Zombie_Weapons_PlayerCanPickupWeapon,
+    ["PlayerDisconnected"] = Zombie_Prime_PlayerDisconnected,
+    ["PlayerLoadout"] = Zombie_PlayerLoadout,
+    ["ScalePlayerDamage"] = Zombie_ScalePlayerDamage,
+    ["SetupPlayerVisibility"] = Zombie_SetupPlayerVisibility,
+    ["TTTCheckForWin"] = Zombie_TTTCheckForWin,
+    ["TTTCupidShouldLoverSurvive"] = Zombie_TTTCupidShouldLoverSurvive,
+    ["TTTKarmaShouldGivePenalty"] = Zombie_TTTKarmaShouldGivePenalty,
+    ["TTTPlayerAliveThink"] = Zombie_TTTPlayerAliveThink,
+    ["TTTPrintResultMessage"] = Zombie_TTTPrintResultMessage,
+    ["TTTStopPlayerRespawning"] = Zombie_TTTStopPlayerRespawning,
+    ["TTTWinCheckBlocks"] = Zombie_TTTWinCheckBlocks
+}

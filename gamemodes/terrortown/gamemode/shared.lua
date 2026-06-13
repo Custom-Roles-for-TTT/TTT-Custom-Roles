@@ -11,6 +11,8 @@ local player = player
 local string = string
 local table = table
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local FileExists = file.Exists
 local FileFind = file.Find
 local CallHook = hook.Call
@@ -23,11 +25,12 @@ local StringSplit = string.Split
 local StringSub = string.sub
 local Utf8Lower = utf8.lower
 local Utf8Sub = utf8.sub
+local TableHasValue = table.HasValue
 
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.4.5"
+CR_VERSION = "2.4.6"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -102,7 +105,7 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
             local key = eventName .. "_" .. tostring(identifier)
             -- Keep track of which ones we've checked already so we don't spam ourselves on reload
             -- Also ignore the ones that are known to replace themselves... for whatever reason
-            if not table.HasValue(CRDebug.IgnoredHookDupes, key) then
+            if not TableHasValue(CRDebug.IgnoredHookDupes, key) then
                 local locationKey = info.short_src .. "_" .. info.currentline
                 -- If we have a location key saved but it's different this time then it's a duplicate
                 if CRDebug.HooksChecked[key] and CRDebug.HooksChecked[key] ~= locationKey then
@@ -934,6 +937,8 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_SHOP_ITEMS = {}
 ROLE_STARTING_CREDITS = {}
 ROLE_STARTING_HEALTH = {}
+ROLE_REGISTERED_HOOKS = {}
+ROLE_HOOK_REGISTRATION_KEY = {}
 
 -- Optional features
 ROLE_CAN_SEE_C4 = {}
@@ -973,12 +978,12 @@ ROLE_CONVAR_TYPE_TEXT = 2
 ROLE_CONVAR_TYPE_DROPDOWN = 3
 
 function RegisterRole(tbl)
-    if table.HasValue(ROLE_STRINGS_RAW, tbl.nameraw) then
+    if TableHasValue(ROLE_STRINGS_RAW, tbl.nameraw) then
         error("Attempting to define role with a duplicate raw name value: " .. tbl.nameraw)
         return
     end
 
-    if table.HasValue(ROLE_STRINGS_SHORT, tbl.nameshort) then
+    if TableHasValue(ROLE_STRINGS_SHORT, tbl.nameshort) then
         error("Attempting to define role with a duplicate short name value: " .. tbl.nameshort)
         return
     end
@@ -1111,6 +1116,14 @@ function RegisterRole(tbl)
         ROLE_USES_SPECTATOR[roleID] = tbl.usesspectator
     end
 
+    if type(tbl.registeredhooks) == "table" then
+        ROLE_REGISTERED_HOOKS[roleID] = tbl.registeredhooks
+    end
+
+    if type(tbl.hookregistrationkey) == "string" then
+        ROLE_HOOK_REGISTRATION_KEY[roleID] = tbl.hookregistrationkey
+    end
+
     -- Equipment
     -- Make sure teams that normally have shops are added to the shop list, even if they don't have things in their shop by default
     -- This allows the "sync" and "mode" convars to be created
@@ -1182,8 +1195,77 @@ function RegisterRole(tbl)
         ROLE_CONVARS[roleID] = tbl.convars
     end
 
-    hook.Call("TTTRoleRegistered", nil, roleID)
+    CallHook("TTTRoleRegistered", nil, roleID)
 end
+
+local role_hooks_registered = {}
+local banned_hooks = {"Initialize", "TTTBeginRound", "TTTPlayerRoleChanged", "TTTPrepareRound", "TTTSelectRoles", "TTTTutorialRoleText"}
+local function RegisterHooks(role)
+    local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
+    role_hooks_registered[key] = (role_hooks_registered[key] or 0) + 1
+    if role_hooks_registered[key] ~= 1 then return end
+
+    for hookName, hookData in pairs(ROLE_REGISTERED_HOOKS[role]) do
+        if not hookData then continue end
+        if TableHasValue(banned_hooks, hookName) then
+            ErrorNoHalt("Role '" .. ROLE_STRINGS_RAW[role] .. "' is registering an unsupported hook! Tell the developer they need to manage '" .. hookName .. "' hooks manually.\n")
+            continue
+        end
+
+        if type(hookData) == "table" then
+            for hookKey, hookFn in pairs(hookData) do
+                AddHook(hookName, hookKey, hookFn)
+            end
+        else
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
+            AddHook(hookName, hookKey, hookData)
+        end
+    end
+end
+local function UnregisterHooks(role)
+    local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
+    role_hooks_registered[key] = (role_hooks_registered[key] or 0) - 1
+    if role_hooks_registered[key] ~= 0 then return end
+
+    for hookName, hookData in pairs(ROLE_REGISTERED_HOOKS[role]) do
+        if not hookData then continue end
+
+        if type(hookData) == "table" then
+            for hookKey, _ in pairs(hookData) do
+                RemoveHook(hookName, hookKey)
+            end
+        else
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
+            RemoveHook(hookName, hookKey)
+        end
+    end
+end
+
+AddHook("TTTPlayerRoleChanged", "HookRegistration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == newRole then return end
+    if not ROLE_REGISTERED_HOOKS[oldRole] and not ROLE_REGISTERED_HOOKS[newRole] then return end
+
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, function()
+        if ROLE_REGISTERED_HOOKS[oldRole] then
+            UnregisterHooks(oldRole)
+        end
+        if ROLE_REGISTERED_HOOKS[newRole] then
+            RegisterHooks(newRole)
+        end
+    end)
+end)
+AddHook("TTTPrepareRound", "HookRegistration_TTTPrepareRound", function()
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, function()
+        for role = 0, ROLE_MAX do
+            if ROLE_REGISTERED_HOOKS[role] then
+                UnregisterHooks(role)
+            end
+        end
+        role_hooks_registered = {}
+    end)
+end)
 
 include("util.lua")
 
@@ -1273,7 +1355,7 @@ end
 AddRoleFiles("terrortown/gamemode/roles/") -- Internal roles
 AddRoleFiles("customroles/") -- External roles
 AddRoleFiles("rolemodifications/") -- Role modifications
-hook.Call("TTTRolesLoaded", nil)
+CallHook("TTTRolesLoaded", nil)
 
 local function GetRoleFromStackTrace()
     local role
@@ -1398,10 +1480,10 @@ if SERVER then
     end
 
     -- Sync the Event IDs to all clients
-    hook.Add("TTTPrepareRound", "EventID_TTTPrepareRound", function()
+    AddHook("TTTPrepareRound", "EventID_TTTPrepareRound", function()
         net.Start("TTT_SyncEventIDs")
-        net.WriteTable(EVENTS_BY_ROLE)
-        net.WriteUInt(EVENT_MAX, 16)
+            net.WriteTable(EVENTS_BY_ROLE)
+            net.WriteUInt(EVENT_MAX, 16)
         net.Broadcast()
     end)
 end
@@ -1482,10 +1564,10 @@ if SERVER then
     end
 
     -- Sync the Event IDs to all clients
-    hook.Add("TTTPrepareRound", "WinID_TTTPrepareRound", function()
+    AddHook("TTTPrepareRound", "WinID_TTTPrepareRound", function()
         net.Start("TTT_SyncWinIDs")
-        net.WriteTable(WINS_BY_ROLE)
-        net.WriteUInt(WIN_MAX, 16)
+            net.WriteTable(WINS_BY_ROLE)
+            net.WriteUInt(WIN_MAX, 16)
         net.Broadcast()
     end)
 end
@@ -1605,8 +1687,11 @@ include("lang_shd.lua") -- uses some of util
 include("equip_items_shd.lua")
 include("radio_shd.lua")
 
-function DetectiveMode() return GetGlobalBool("ttt_detective", false) end
-function HasteMode() return GetGlobalBool("ttt_haste", false) end
+local ttt_detective = CreateConVar("ttt_sherlock_mode", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+function DetectiveMode() return ttt_detective:GetBool() end
+
+local ttt_haste = CreateConVar("ttt_haste", "1", FCVAR_NOTIFY + FCVAR_REPLICATED)
+function HasteMode() return ttt_haste:GetBool() end
 
 -- Create teams
 TEAM_TERROR = 1
@@ -1922,7 +2007,7 @@ for _, c in ipairs(deprecatedConVars) do
     AddOldCVarWarning(c[1], c[2])
 end
 
-hook.Add("PlayerInitialSpawn", "ConVarDeprecation_PlayerInitialSpawn", function(ply, transition)
+AddHook("PlayerInitialSpawn", "ConVarDeprecation_PlayerInitialSpawn", function(ply, transition)
     if not IsValid(ply) then return end
     if not ply:IsAdmin() and not ply:IsSuperAdmin() then return end
 

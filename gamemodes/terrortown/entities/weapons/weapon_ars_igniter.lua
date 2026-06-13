@@ -1,10 +1,11 @@
 AddCSLuaFile()
 
+local hook = hook
 local player = player
-local table = table
+local timer = timer
+local util = util
 
 local PlayerIterator = player.Iterator
-local TableInsert = table.insert
 
 if CLIENT then
     SWEP.PrintName          = "Igniter"
@@ -258,26 +259,3 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:DryFire() return false end
-
-if CLIENT then
-    hook.Add("TTTHUDInfoPaint", "Arsonist_Igniter_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
-        local igniter = client:GetWeapon("weapon_ars_igniter")
-        if not IsValid(igniter) then return end
-        if not igniter:GetOnDeath() then return end
-
-        surface.SetFont("TabLarge")
-        surface.SetTextColor(255, 255, 255, 230)
-
-        local text = LANG.GetTranslation("arsonist_igniter_ondeath_hud")
-        local _, h = surface.GetTextSize(text)
-
-        -- Move this up based on how many other labels there are
-        label_top = label_top + (20 * #active_labels)
-
-        surface.SetTextPos(label_left, ScrH() - label_top - h)
-        surface.DrawText(text)
-
-        -- Track that the label was added so others can position accurately
-        TableInsert(active_labels, "arsonist_igniter")
-    end)
-end

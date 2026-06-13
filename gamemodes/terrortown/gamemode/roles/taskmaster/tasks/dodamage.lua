@@ -1,6 +1,8 @@
 local hook = hook
+local math = math
 local table = table
 
+local MathFloor = math.floor
 local TableHasValue = table.HasValue
 
 local TASK = {}
@@ -24,7 +26,7 @@ TASK.Name = function(ply)
     if TableHasValue(ply.TaskmasterCompletedTasks, TASK.id) then
         progress = amount
     else
-        progress = ply.Task_DoDamageTotal or 0
+        progress = MathFloor(ply.Task_DoDamageTotal) or 0
     end
 
     return name .. " (" .. progress .. "/" .. amount .. ")"

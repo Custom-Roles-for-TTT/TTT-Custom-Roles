@@ -23,6 +23,8 @@ local MathRound = math.Round
 local MathSin = math.sin
 local PlayerIterator = player.Iterator
 
+local ttt_highlight_admins = CreateConVar("ttt_highlight_admins", "1", FCVAR_REPLICATED)
+
 local OpenedVoicePanels = {}
 local function HideVolumePanels()
     for _, pnl in pairs(OpenedVoicePanels) do
@@ -46,38 +48,36 @@ function PANEL:Init()
 
     self.cols = {}
     self:AddColumn(GetTranslation("sb_ping"), function(ply) return ply:Ping() end)
-    if GetConVar("ttt_scoreboard_deaths"):GetBool() then
-        self:AddColumn(GetTranslation("sb_deaths"), function(ply) return ply:Deaths() end)
-    end
-    if GetConVar("ttt_scoreboard_score"):GetBool() then
-        self:AddColumn(GetTranslation("sb_score"), function(ply) return ply:Frags() end)
-    end
+    local dc = self:AddColumn(GetTranslation("sb_deaths"), function(ply) return ply:Deaths() end)
+    dc.ShouldShow = function() return GetConVar("ttt_scoreboard_deaths"):GetBool() end
 
-    if KARMA.IsEnabled() then
-        self:AddColumn(GetTranslation("sb_karma"), function(ply)
-            if GetConVar("ttt_show_raw_karma_value"):GetBool() then
-                return MathRound(ply:GetBaseKarma())
-            elseif GetConVar("ttt_show_karma_total_pct"):GetBool() then
-                local k = ply:GetBaseKarma()
-                local max = GetGlobalInt("ttt_karma_max", 1000)
-                local pct = MathRound(MathClamp(k / max, 0.1, 1.0) * 100)
-                return pct .. "%"
-            else
-                local dmgpct = 100
-                if ply:GetBaseKarma() < 1000 then
-                    local k = ply:GetBaseKarma() - 1000
-                    if GetGlobalBool("ttt_karma_strict", false) then
-                        dmgpct = MathRound(MathClamp(1 + (0.0007 * k) + (-0.000002 * (k ^ 2)), 0.1, 1.0) * 100)
-                    elseif GetGlobalBool("ttt_karma_lenient", false) then
-                        dmgpct = MathRound(MathClamp(1 + (0.0005 * k) + (-0.0000005 * (k ^ 2)), 0.1, 1.0) * 100)
-                    else
-                        dmgpct = MathRound(MathClamp(1 + (-0.0000025 * (k ^ 2)), 0.1, 1.0) * 100)
-                    end
+    local sc = self:AddColumn(GetTranslation("sb_score"), function(ply) return ply:Frags() end)
+    sc.ShouldShow = function() return GetConVar("ttt_scoreboard_score"):GetBool() end
+
+    local kc = self:AddColumn(GetTranslation("sb_karma"), function(ply)
+        if GetConVar("ttt_show_raw_karma_value"):GetBool() then
+            return MathRound(ply:GetBaseKarma())
+        elseif GetConVar("ttt_show_karma_total_pct"):GetBool() then
+            local k = ply:GetBaseKarma()
+            local max = GetConVar("ttt_karma_max"):GetInt()
+            local pct = MathRound(MathClamp(k / max, 0.1, 1.0) * 100)
+            return pct .. "%"
+        else
+            local dmgpct = 100
+            if ply:GetBaseKarma() < 1000 then
+                local k = ply:GetBaseKarma() - 1000
+                if GetGlobalBool("ttt_karma_strict", false) then
+                    dmgpct = MathRound(MathClamp(1 + (0.0007 * k) + (-0.000002 * (k ^ 2)), 0.1, 1.0) * 100)
+                elseif GetGlobalBool("ttt_karma_lenient", false) then
+                    dmgpct = MathRound(MathClamp(1 + (0.0005 * k) + (-0.0000005 * (k ^ 2)), 0.1, 1.0) * 100)
+                else
+                    dmgpct = MathRound(MathClamp(1 + (-0.0000025 * (k ^ 2)), 0.1, 1.0) * 100)
                 end
-                return dmgpct .. "%"
             end
-        end)
-    end
+            return dmgpct .. "%"
+        end
+    end)
+    kc.ShouldShow = KARMA.IsEnabled
 
     -- Let hooks add their custom columns
     CallHook("TTTScoreboardColumns", nil, self)
@@ -137,7 +137,7 @@ function GM:TTTScoreboardColorForPlayer(ply)
 
     if ply:SteamID() == "STEAM_0:0:1963640" then
         return namecolor.dev
-    elseif (ply:IsAdmin() or ply:IsSuperAdmin()) and GetGlobalBool("ttt_highlight_admins", true) then
+    elseif (ply:IsAdmin() or ply:IsSuperAdmin()) and ttt_highlight_admins:GetBool() then
         return namecolor.admin
     end
     return namecolor.default
@@ -500,6 +500,10 @@ function PANEL:LayoutColumns()
         v:SizeToContents()
         cx = cx - v.Width
         v:SetPos(cx - v:GetWide() / 2, (SB_ROW_HEIGHT - v:GetTall()) / 2)
+
+        if v.ShouldShow then
+            v:SetVisible(v:ShouldShow())
+        end
     end
 
     cx = cx - 70

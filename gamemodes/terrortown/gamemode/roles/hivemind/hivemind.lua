@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 local hook = hook
+local net = net
 local player = player
 local timer = timer
 
@@ -39,7 +40,7 @@ local hivemind_regen_max_pct = GetConVar("ttt_hivemind_regen_max_pct")
 -- CHAT DUPLICATION --
 ----------------------
 
-AddHook("PlayerSay", "HiveMind_PlayerSay", function(ply, text, team_only)
+local function HiveMind_PlayerSay(ply, text, team_only)
     local chat_mode = hivemind_chat_mode:GetInt()
     if chat_mode <= CHAT_MODE_NONE then return end
     if not IsPlayer(ply) then return end
@@ -51,7 +52,7 @@ AddHook("PlayerSay", "HiveMind_PlayerSay", function(ply, text, team_only)
         net.WritePlayer(ply)
         net.WriteString(text)
     net.Broadcast()
-end)
+end
 
 --------------------
 -- SHARED CREDITS --
@@ -83,10 +84,10 @@ local function HandleCreditsSync(amt)
     end
 end
 
-AddHook("TTTPlayerCreditsChanged", "HiveMind_CreditsSync_TTTPlayerCreditsChanged", function(ply, amt)
+local function HiveMind_CreditsSync_TTTPlayerCreditsChanged(ply, amt)
     if not IsPlayer(ply) or not ply:IsActiveHiveMind() then return end
     HandleCreditsSync(amt)
-end)
+end
 
 AddHook("TTTPlayerRoleChanged", "HiveMind_CreditsSync_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
@@ -94,11 +95,11 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_CreditsSync_TTTPlayerRoleChanged", fun
     HandleCreditsSync(ply:GetCredits())
 end)
 
-AddHook("TTTBodyCreditsLooted", "HiveMind_CreditsSync_TTTBodyCreditsLooted", function(ply, deadPly, rag, credits)
+local function HiveMind_CreditsSync_TTTBodyCreditsLooted(ply, deadPly, rag, credits)
     if not IsPlayer(deadPly) or not deadPly:IsHiveMind() then return end
 
     RemoveCreditsFromHivemindCorpses()
-end)
+end
 
 -------------------------
 -- ROLE CHANGE ON KILL --
@@ -119,7 +120,7 @@ local function RespawnPlayer(ply, skip_credits)
 end
 
 -- Players killed by the hive mind join the hive mind
-AddHook("PlayerDeath", "HiveMind_Assimilate_PlayerDeath", function(victim, infl, attacker)
+local function HiveMind_Assimilate_PlayerDeath(victim, infl, attacker)
     if not IsPlayer(victim) or victim:IsHiveMind() then return end
     if not IsPlayer(attacker) or not attacker:IsHiveMind() or attacker:IsRoleAbilityDisabled() then return end
 
@@ -170,9 +171,9 @@ AddHook("PlayerDeath", "HiveMind_Assimilate_PlayerDeath", function(victim, infl,
 
         SendFullStateUpdate()
     end)
-end)
+end
 
-hook.Add("TTTStopPlayerRespawning", "HiveMind_TTTStopPlayerRespawning", function(ply)
+local function HiveMind_TTTStopPlayerRespawning(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -180,7 +181,7 @@ hook.Add("TTTStopPlayerRespawning", "HiveMind_TTTStopPlayerRespawning", function
         timer.Remove("HiveMindRespawn_" .. ply:SteamID64())
         ply:SetNWBool("HiveMindRespawning", false)
     end
-end)
+end
 
 -------------------
 -- SHARED HEALTH --
@@ -252,7 +253,7 @@ local function HandleHealthSync(ply, newHealth)
     end
 end
 
-AddHook("EntityTakeDamage", "HiveMind_EntityTakeDamage", function(ent, dmginfo)
+local function HiveMind_EntityTakeDamage(ent, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not hivemind_block_environmental:GetBool() then return end
     if not IsPlayer(ent) then return end
@@ -267,21 +268,21 @@ AddHook("EntityTakeDamage", "HiveMind_EntityTakeDamage", function(ent, dmginfo)
         dmginfo:ScaleDamage(0)
         dmginfo:SetDamage(0)
     end
-end)
+end
 
-AddHook("PostEntityTakeDamage", "HiveMind_PostEntityTakeDamage", function(ent, dmginfo, taken)
+local function HiveMind_PostEntityTakeDamage(ent, dmginfo, taken)
     if not taken then return end
     if not IsPlayer(ent) or not ent:IsActiveHiveMind() then return end
     HandleHealthSync(ent, ent:Health())
-end)
+end
 
-AddHook("TTTPlayerHealthChanged", "HiveMind_TTTPlayerHealthChanged", function(ply, oldHealth, newHealth)
+local function HiveMind_TTTPlayerHealthChanged(ply, oldHealth, newHealth)
     if not IsPlayer(ply) or not ply:IsActiveHiveMind() then return end
     HandleHealthSync(ply, newHealth)
-end)
+end
 
 -- Kill all the members of the hive mind if a single hive mind is killed
-AddHook("PlayerDeath", "HiveMind_GroupDeath_PlayerDeath", function(victim, infl, attacker)
+local function HiveMind_GroupDeath_PlayerDeath(victim, infl, attacker)
     if not IsPlayer(victim) or not victim:IsHiveMind() then return end
     -- If the victim and the inflictor and the attacker are all the same thing then they probably used the "kill" console command
     if victim == attacker and IsValid(infl) and victim == infl then return end
@@ -297,7 +298,7 @@ AddHook("PlayerDeath", "HiveMind_GroupDeath_PlayerDeath", function(victim, infl,
     -- Reset the current health in case a member of the hive mind comes back somehow
     -- Let them keep their max health and weapons though because the other players are still part of the hive mind, even if dead
     currentHealth = nil
-end)
+end
 
 ------------------
 -- HEALTH REGEN --
@@ -346,7 +347,7 @@ end
 -------------------
 
 -- If friendly fire is not enabled, prevent damage between hive minds
-AddHook("ScalePlayerDamage", "HiveMind_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function HiveMind_ScalePlayerDamage(ply, hitgroup, dmginfo)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not ply:IsActiveHiveMind() then return end
     if hivemind_friendly_fire:GetBool() then return end
@@ -355,24 +356,24 @@ AddHook("ScalePlayerDamage", "HiveMind_ScalePlayerDamage", function(ply, hitgrou
     if not IsPlayer(att) or not att:IsActiveHiveMind() then return end
 
     dmginfo:ScaleDamage(0)
-end)
+end
 
 -----------
 -- KARMA --
 -----------
 
 -- Hive Mind only loses karma for hurting their own team
-AddHook("TTTKarmaShouldGivePenalty", "HiveMind_TTTKarmaShouldGivePenalty", function(ply, reward, victim)
+local function HiveMind_TTTKarmaShouldGivePenalty(ply, reward, victim)
     if IsPlayer(victim) and victim:IsActiveHiveMind() and ply:IsActiveHiveMind() then
         return true
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-AddHook("TTTCheckForWin", "HiveMind_TTTCheckForWin", function()
+local function HiveMind_TTTCheckForWin()
     -- Only independent hive minds can win on their own
     if not INDEPENDENT_ROLES[ROLE_HIVEMIND] then return end
 
@@ -393,22 +394,22 @@ AddHook("TTTCheckForWin", "HiveMind_TTTCheckForWin", function()
     elseif hivemind_alive then
         return WIN_NONE
     end
-end)
+end
 
-AddHook("TTTPrintResultMessage", "HiveMind_TTTPrintResultMessage", function(type)
+local function HiveMind_TTTPrintResultMessage(type)
     if type == WIN_HIVEMIND then
         LANG.Msg("win_hivemind", { role = ROLE_STRINGS[ROLE_HIVEMIND] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " wins.\n")
         return true
     end
-end)
+end
 
 -----------------------
 -- PLAYER VISIBILITY --
 -----------------------
 
 -- Add all hive mind members to the PVS if vision is enabled
-AddHook("SetupPlayerVisibility", "HiveMind_SetupPlayerVisibility", function(ply)
+local function HiveMind_SetupPlayerVisibility(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveHiveMind() then return end
     if not hivemind_vision_enabled:GetBool() then return end
@@ -422,7 +423,7 @@ AddHook("SetupPlayerVisibility", "HiveMind_SetupPlayerVisibility", function(ply)
             AddOriginToPVS(pos)
         end
     end
-end)
+end
 
 -------------
 -- CLEANUP --
@@ -441,3 +442,26 @@ AddHook("TTTPrepareRound", "HiveMind_PrepareRound", function()
     end
     timer.Remove("HiveMindHealthRegen")
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_HIVEMIND] = {
+    ["EntityTakeDamage"] = HiveMind_EntityTakeDamage,
+    ["PlayerDeath"] = {
+        ["HiveMind_Assimilate_PlayerDeath"] = HiveMind_Assimilate_PlayerDeath,
+        ["HiveMind_GroupDeath_PlayerDeath"] = HiveMind_GroupDeath_PlayerDeath
+    },
+    ["PlayerSay"] = HiveMind_PlayerSay,
+    ["PostEntityTakeDamage"] = HiveMind_PostEntityTakeDamage,
+    ["ScalePlayerDamage"] = HiveMind_ScalePlayerDamage,
+    ["SetupPlayerVisibility"] = HiveMind_SetupPlayerVisibility,
+    ["TTTBodyCreditsLooted"] = HiveMind_CreditsSync_TTTBodyCreditsLooted,
+    ["TTTCheckForWin"] = HiveMind_TTTCheckForWin,
+    ["TTTKarmaShouldGivePenalty"] = HiveMind_TTTKarmaShouldGivePenalty,
+    ["TTTPlayerCreditsChanged"] = HiveMind_CreditsSync_TTTPlayerCreditsChanged,
+    ["TTTPlayerHealthChanged"] = HiveMind_TTTPlayerHealthChanged,
+    ["TTTPrintResultMessage"] = HiveMind_TTTPrintResultMessage,
+    ["TTTStopPlayerRespawning"] = HiveMind_TTTStopPlayerRespawning
+}

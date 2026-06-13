@@ -21,60 +21,61 @@ CreateConVar("ttt_hivemind_regen_timer", 0, FCVAR_REPLICATED, "The amount of tim
 CreateConVar("ttt_hivemind_regen_per_member_amt", 1, FCVAR_REPLICATED, "The amount of health per-member of the hive mind that they should regenerate over time", 1, 20)
 CreateConVar("ttt_hivemind_regen_max_pct", 0.5, FCVAR_REPLICATED, "The percentage of the hive mind's maximum health to heal them up to (e.g. 0.5 = 50% of their max health)", 0.1, 1)
 
-ROLE_CONVARS[ROLE_HIVEMIND] = {}
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_vision_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_friendly_fire",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_is_monster",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_join_heal_pct",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_join_max_hp_pct",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_regen_per_member_amt",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_regen_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_regen_max_pct",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_chat_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Duplicate All", "Duplicate Prime"},
-    isNumeric = true
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_block_environmental",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_dead_kill_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Assimilate", "Assimilate and Respawn Killer", "Assimilate and Respawn Collective"},
-    isNumeric = true
-})
+ROLE_CONVARS[ROLE_HIVEMIND] = {
+    {
+        cvar = "ttt_hivemind_vision_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_hivemind_friendly_fire",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_hivemind_is_monster",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_hivemind_join_heal_pct",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_hivemind_join_max_hp_pct",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_hivemind_regen_per_member_amt",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_hivemind_regen_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_hivemind_regen_max_pct",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_hivemind_chat_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Duplicate All", "Duplicate Prime"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_hivemind_block_environmental",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_hivemind_dead_kill_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Assimilate", "Assimilate and Respawn Killer", "Assimilate and Respawn Collective"},
+        isNumeric = true
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
@@ -87,7 +88,7 @@ ROLE_VICTIM_CHANGING_ROLE[ROLE_HIVEMIND] = function(ply, victim)
     return not victim:IsHiveMind()
 end
 
-AddHook("TTTUpdateRoleState", "HiveMind_Team_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "HiveMind_TeamChange_TTTUpdateRoleState", function()
     local is_monster = hivemind_is_monster:GetBool()
     MONSTER_ROLES[ROLE_HIVEMIND] = is_monster
     INDEPENDENT_ROLES[ROLE_HIVEMIND] = not is_monster

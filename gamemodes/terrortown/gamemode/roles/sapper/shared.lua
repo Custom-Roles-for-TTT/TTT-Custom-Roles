@@ -1,5 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
+
+local AddHook = hook.Add
+
 ------------------
 -- ROLE CONVARS --
 ------------------
@@ -11,32 +15,33 @@ CreateConVar("ttt_sapper_fire_immune", "0", FCVAR_REPLICATED)
 local sapper_can_see_c4 = CreateConVar("ttt_sapper_can_see_c4", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_sapper_c4_guaranteed_defuse", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_SAPPER] = {}
-table.insert(ROLE_CONVARS[ROLE_SAPPER], {
-    cvar = "ttt_sapper_aura_radius",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SAPPER], {
-    cvar = "ttt_sapper_protect_self",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SAPPER], {
-    cvar = "ttt_sapper_fire_immune",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SAPPER], {
-    cvar = "ttt_sapper_can_see_c4",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SAPPER], {
-    cvar = "ttt_sapper_c4_guaranteed_defuse",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SAPPER], {
-    cvar = "ttt_sapper_is_innocent",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_SAPPER] = {
+    {
+        cvar = "ttt_sapper_aura_radius",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_sapper_protect_self",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_sapper_fire_immune",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_sapper_can_see_c4",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_sapper_c4_guaranteed_defuse",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_sapper_is_innocent",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
@@ -52,14 +57,10 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Sapper_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Sapper_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Sapper_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Sapper_Shared_TTTPrepareRound", InitializeEquipment)
 
-hook.Add("TTTUpdateRoleState", "Sapper_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Sapper_TTTUpdateRoleState", function()
     ROLE_CAN_SEE_C4[ROLE_SAPPER] = sapper_can_see_c4:GetBool()
 
     local is_innocent = sapper_is_innocent:GetBool()

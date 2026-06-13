@@ -1,5 +1,7 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -10,7 +12,7 @@ local mercenary_shop_mode = GetConVar("ttt_mercenary_shop_mode")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Mercenary_Translations_Initialize", function()
+AddHook("Initialize", "Mercenary_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_mercenary", "Can buy items to help defeat their enemies.")
 
@@ -24,7 +26,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Mercenary_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Mercenary_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_MERCENARY then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]

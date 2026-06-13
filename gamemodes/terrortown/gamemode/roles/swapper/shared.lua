@@ -1,6 +1,8 @@
 AddCSLuaFile()
 
-local table = table
+local hook = hook
+
+local AddHook = hook.Add
 
 -- Swapper weapon modes
 SWAPPER_WEAPON_NONE = 0
@@ -8,7 +10,7 @@ SWAPPER_WEAPON_ROLE = 1
 SWAPPER_WEAPON_ALL = 2
 
 -- Initialize role features
-hook.Add("TTTIsPlayerRespawning", "Swapper_TTTIsPlayerRespawning", function(ply)
+AddHook("TTTIsPlayerRespawning", "Swapper_TTTIsPlayerRespawning", function(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -25,55 +27,56 @@ CreateConVar("ttt_swapper_healthstation_reduce_max", "1", FCVAR_REPLICATED, "Whe
 CreateConVar("ttt_swapper_killer_health", "100", FCVAR_REPLICATED, "The amount of health the swapper's killer should set to. Set to \"0\" to kill them", 0, 200)
 CreateConVar("ttt_swapper_killer_swap", "1", FCVAR_REPLICATED, "Whether to the swapper's killer should become the new swapper")
 
-ROLE_CONVARS[ROLE_SWAPPER] = {}
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_notify_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_notify_killer",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_notify_sound",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_notify_confetti",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_killer_health",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_killer_max_health",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_respawn_health",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_weapon_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Don't swap anything", "Swap role weapons", "Swap all weapons"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_healthstation_reduce_max",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_swap_lovers",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
-    cvar = "ttt_swapper_killer_swap",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_SWAPPER] = {
+    {
+        cvar = "ttt_swapper_notify_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_swapper_notify_killer",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_swapper_notify_sound",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_swapper_notify_confetti",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_swapper_killer_health",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_swapper_killer_max_health",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_swapper_respawn_health",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_swapper_weapon_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Don't swap anything", "Swap role weapons", "Swap all weapons"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_swapper_healthstation_reduce_max",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_swapper_swap_lovers",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_swapper_killer_swap",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}

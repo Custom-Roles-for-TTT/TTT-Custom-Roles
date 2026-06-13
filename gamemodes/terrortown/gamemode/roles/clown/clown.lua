@@ -6,6 +6,7 @@ local player = player
 local table = table
 local util = util
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_ClownTeamChange")
@@ -55,13 +56,13 @@ local function ActivateClown(clown)
     TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = clown_use_traps_when_active:GetBool()
 end
 
-hook.Add("TTTPrepareRound", "Clown_RoleFeatures_PrepareRound", function()
+AddHook("TTTPrepareRound", "Clown_RoleFeatures_PrepareRound", function()
     -- Disable traitor buttons for clown until they are activated (and the setting is enabled)
     TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = false
 end)
 
 -- Activate the clown when a certain percentage of players have died
-hook.Add("PostPlayerDeath", "Clown_ActivationPercent_PostPlayerDeath", function(ply)
+local function Clown_ActivationPercent_PostPlayerDeath(ply)
     -- If they've already been activated, don't bother with this
     if INDEPENDENT_ROLES[ROLE_CLOWN] then return end
 
@@ -92,7 +93,7 @@ hook.Add("PostPlayerDeath", "Clown_ActivationPercent_PostPlayerDeath", function(
             ActivateClown(clown)
         end
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
@@ -153,24 +154,24 @@ local function HandleClownWinBlock(win_type)
     return WIN_NONE
 end
 
-hook.Add("TTTWinCheckBlocks", "Clown_TTTWinCheckBlocks", function(win_blocks)
+local function Clown_TTTWinCheckBlocks(win_blocks)
     table.insert(win_blocks, HandleClownWinBlock)
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Clown_TTTPrintResultMessage", function(type)
+local function Clown_TTTPrintResultMessage(type)
     if type == WIN_CLOWN then
         LANG.Msg("win_clown", { role = ROLE_STRINGS_PLURAL[ROLE_CLOWN] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CLOWN] .. " wins.\n")
         return true
     end
-end)
+end
 
 -------------------
 -- ROLE TRACKING --
 -------------------
 
 -- Disable tracking that clown was active at the start of a new round
-hook.Add("TTTPrepareRound", "Clown_PrepareRound", function()
+AddHook("TTTPrepareRound", "Clown_PrepareRound", function()
     SetClownTeam(false)
 end)
 
@@ -179,7 +180,7 @@ end)
 ------------
 
 -- Scale a clown's damage
-hook.Add("ScalePlayerDamage", "Clown_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Clown_ScalePlayerDamage(ply, hitgroup, dmginfo)
     -- Only apply damage scaling after the round starts
     if GetRoundState() < ROUND_ACTIVE then return end
 
@@ -189,4 +190,15 @@ hook.Add("ScalePlayerDamage", "Clown_ScalePlayerDamage", function(ply, hitgroup,
 
     local bonus = clown_damage_bonus:GetFloat()
     dmginfo:ScaleDamage(1 + bonus)
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_CLOWN] = {
+    ["PostPlayerDeath"] = Clown_ActivationPercent_PostPlayerDeath,
+    ["ScalePlayerDamage"] = Clown_ScalePlayerDamage,
+    ["TTTPrintResultMessage"] = Clown_TTTPrintResultMessage,
+    ["TTTWinCheckBlocks"] = Clown_TTTWinCheckBlocks
+}

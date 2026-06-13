@@ -561,6 +561,9 @@ ttt_marshal_monster_deputy_chance              0.5     // The chance that a mons
 ttt_marshal_announce_deputy                    1       // Whether a player being deputized will be announced to everyone
 ttt_marshal_prevent_deputy                     1       // Whether to only spawn the Marshal when there isn't already a Deputy or Impersonator in the round
 ttt_marshal_badge_time                         8       // The amount of time (in seconds) the Marshal's badge takes to use
+ttt_marshal_badge_loadout                      1       // Whether the Marshal's badge should be given to them when they spawn. Server must be restarted for changes to take effect   
+ttt_marshal_badge_shop                         0       // Whether the Marshal's badge should be purchasable in the shop. Server must be restarted for changes to take effect
+ttt_marshal_badge_shop_rebuyable               0       // Whether the Marshal's badge should be purchaseable multiple times (requires "ttt_marshal_badge_shop" to be enabled). Server must be restarted for changes to take effect
 ttt_marshal_credits_starting                   1       // The number of credits a Marshal should start with
 
 // Quartermaster
@@ -747,6 +750,7 @@ ttt_guesser_can_guess_detectives               0       // Whether the Guesser is
 ttt_guesser_minimum_radius                     5       // The minimum radius of the Guesser's device in meters. Set to 0 to disable
 ttt_guesser_show_team_threshold                50      // The amount of damage that needs to be dealt to a Guesser before they learn the attacker's team
 ttt_guesser_show_role_threshold                100     // The amount of damage that needs to be dealt to a Guesser before they learn the attacker's role
+ttt_guesser_show_outline_threshold             150     // The amount of damage that needs to be dealt to a Guesser before they can see the attacker's outline
 ttt_guesser_notify_mode                        0       // The logic to use when notifying players that a Guesser was killed. Killer is notified unless "ttt_guesser_notify_killer" is disabled. 0 - Don't notify anyone. 1 - Only notify traitors and detectives. 2 - Only notify traitors. 3 - Only notify detectives. 4 - Notify everyone
 ttt_guesser_notify_killer                      1       // Whether to notify a Guesser's killer
 ttt_guesser_notify_sound                       0       // Whether to play a cheering sound when a Guesser is killed

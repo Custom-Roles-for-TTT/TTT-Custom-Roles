@@ -127,8 +127,8 @@ function SWEP:Deploy()
     return true
 end
 
-function SWEP:DrawWorldModel()
+function SWEP:DrawWorldModel(flags)
 end
 
-function SWEP:DrawWorldModelTranslucent()
+function SWEP:DrawWorldModelTranslucent(flags)
 end
