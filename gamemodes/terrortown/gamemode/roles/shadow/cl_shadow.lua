@@ -678,3 +678,8 @@ ROLE_REGISTERED_HOOKS[ROLE_SHADOW] = {
     ["TTTTargetIDPlayerText"] = Shadow_TTTTargetIDPlayerText,
     ["TTTUpdateRoleState"] = Shadow_Highlight_TTTUpdateRoleState
 }
+
+AddHook("TTTPrepareRound", "Shadow_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "Shadow_Highlight_PreDrawHalos")
+end)

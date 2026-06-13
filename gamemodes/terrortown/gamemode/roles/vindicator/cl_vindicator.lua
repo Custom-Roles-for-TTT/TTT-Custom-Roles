@@ -353,3 +353,8 @@ ROLE_REGISTERED_HOOKS[ROLE_VINDICATOR] = {
     ["TTTTargetIDPlayerText"] = Vindicator_TTTTargetIDPlayerText,
     ["TTTUpdateRoleState"] = Vindicator_Highlight_TTTUpdateRoleState
 }
+
+AddHook("TTTPrepareRound", "Vindicator_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "Vindicator_Highlight_PreDrawHalos")
+end)

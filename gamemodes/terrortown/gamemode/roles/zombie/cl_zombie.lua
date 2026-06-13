@@ -384,3 +384,8 @@ ROLE_REGISTERED_HOOKS[ROLE_ZOMBIE] = {
     ["TTTTargetIDPlayerText"] = Zombie_TTTTargetIDPlayerText,
     ["TTTUpdateRoleState"] = Zombie_Highlight_TTTUpdateRoleState
 }
+
+AddHook("TTTPrepareRound", "Zombie_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "Zombie_Highlight_PreDrawHalos")
+end)
