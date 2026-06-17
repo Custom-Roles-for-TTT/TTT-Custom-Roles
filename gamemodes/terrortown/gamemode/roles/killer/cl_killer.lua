@@ -217,3 +217,8 @@ ROLE_REGISTERED_HOOKS[ROLE_KILLER] = {
     ["TTTTargetIDPlayerTargetIcon"] = Killer_TTTTargetIDPlayerTargetIcon,
     ["TTTUpdateRoleState"] = Killer_Highlight_TTTUpdateRoleState
 }
+
+AddHook("TTTPrepareRound", "Killer_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "Killer_Highlight_PreDrawHalos")
+end)
