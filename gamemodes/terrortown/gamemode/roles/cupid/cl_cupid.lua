@@ -450,3 +450,8 @@ ROLE_REGISTERED_HOOKS[ROLE_CUPID] = {
     ["TTTTargetIDPlayerText"] = Cupid_TTTTargetIDPlayerText,
     ["TTTUpdateRoleState"] = Cupid_Highlight_TTTUpdateRoleState
 }
+
+AddHook("TTTPrepareRound", "Cupid_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos")
+end)

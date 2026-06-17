@@ -332,3 +332,8 @@ ROLE_REGISTERED_HOOKS[ROLE_VAMPIRE] = {
     ["TTTTargetIDPlayerTargetIcon"] = Vampire_TTTTargetIDPlayerTargetIcon,
     ["TTTUpdateRoleState"] = Vampire_Highlight_TTTUpdateRoleState
 }
+
+AddHook("TTTPrepareRound", "Vampire_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
+end)

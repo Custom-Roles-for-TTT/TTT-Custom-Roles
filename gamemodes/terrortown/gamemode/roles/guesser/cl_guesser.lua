@@ -454,3 +454,8 @@ ROLE_REGISTERED_HOOKS[ROLE_GUESSER] = {
     ["TTTTargetIDPlayerText"] = Guesser_TTTTargetIDPlayerText,
     ["TTTUpdateRoleState"] = Guesser_Highlight_TTTUpdateRoleState
 }
+
+AddHook("TTTPrepareRound", "Guesser_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "Guesser_Highlight_PreDrawHalos")
+end)

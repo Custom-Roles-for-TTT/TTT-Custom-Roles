@@ -252,3 +252,8 @@ ROLE_REGISTERED_HOOKS[ROLE_HIVEMIND] = {
     ["TTTTargetIDPlayerText"] = HiveMind_TTTTargetIDPlayerText,
     ["TTTUpdateRoleState"] = HiveMind_Highlight_TTTUpdateRoleState
 }
+
+AddHook("TTTPrepareRound", "HiveMind_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "HiveMind_Highlight_PreDrawHalos")
+end)
