@@ -27,6 +27,10 @@ ROLE_CONVARS[ROLE_TRACKER] = {
         type = ROLE_CONVAR_TYPE_BOOL
     },
     {
+        cvar = "ttt_tracker_minimap_loadout",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
         cvar = "ttt_tracker_is_innocent",
         type = ROLE_CONVAR_TYPE_BOOL
     }

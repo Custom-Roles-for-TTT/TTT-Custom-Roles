@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.4.7 (Beta)
+
+### Additions
+- Added a minimap that the Tracker can buy (or have as starting equipment)
+
 ## 2.4.6 (Beta)
 **Released: June 13th, 2026**
 
