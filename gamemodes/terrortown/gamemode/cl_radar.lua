@@ -147,7 +147,7 @@ local tele_mark = surface.GetTextureID("vgui/ttt/tele_mark")
 local GetPTranslation = LANG.GetParamTranslation
 local FormatTime = util.SimpleTime
 
-local near_cursor_dist = 180
+local near_cursor_dist = 32400
 
 function RADAR:Draw(client)
     if not client then return end
@@ -227,7 +227,7 @@ function RADAR:Draw(client)
 
         scrpos = tgt.pos:ToScreen()
         if scrpos.visible then
-            md = mpos:Distance(Vector(scrpos.x, scrpos.y, 0))
+            md = mpos:DistToSqr(Vector(scrpos.x, scrpos.y, 0))
             if md < near_cursor_dist then
                 alpha = math.Clamp(alpha * (md / near_cursor_dist), 40, 230)
             end
