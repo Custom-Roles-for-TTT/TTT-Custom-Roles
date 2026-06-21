@@ -252,7 +252,7 @@ if SERVER then
         local tr = owner:GetEyeTrace(MASK_SHOT_HULL)
         local pos = owner:GetPos()
 
-        if tr.HitPos:Distance(pos) > self.MaxDistance then return end
+        if tr.HitPos:DistToSqr(pos) > (self.MaxDistance * self.MaxDistance) then return end
 
         return tr.Entity, tr.PhysicsBone
     end

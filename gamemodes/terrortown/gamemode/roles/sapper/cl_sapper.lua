@@ -57,7 +57,7 @@ net.Receive("Sapper_ShowDamageAura", function()
     local sapper = net.ReadPlayer()
     local sapperPos = sapper:GetPos()
     local pos = sapperPos + Vector(0, 0, 30)
-    if client:GetPos():Distance(pos) > 3000 then return end
+    if client:GetPos():DistToSqr(pos) > 9000000 then return end
 
     local radius = sapper_aura_radius:GetInt() * UNITS_PER_METER
     local auraEmitter = ParticleEmitter(sapperPos)

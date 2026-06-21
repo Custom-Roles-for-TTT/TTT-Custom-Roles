@@ -285,7 +285,7 @@ local function IdentifyCommand(ply, cmd, args)
     ply.search_id = nil
 
     local rag = Entity(eidx)
-    if IsValid(rag) and rag.player_ragdoll and rag:GetPos():Distance(ply:GetPos()) < 128 then
+    if IsValid(rag) and rag.player_ragdoll and rag:GetPos():DistToSqr(ply:GetPos()) < 16384 then
         if not CORPSE.GetFound(rag, false) then
             IdentifyBody(ply, rag)
         end
@@ -312,7 +312,7 @@ local function CallDetective(ply, cmd, args)
     local owner = CORPSE.GetPlayer(rag)
     if not IsPlayer(owner) then return end
 
-    if ((rag.last_detective_call or 0) < (CurTime() - 5)) and (rag:GetPos():Distance(ply:GetPos()) < 128) then
+    if ((rag.last_detective_call or 0) < (CurTime() - 5)) and (rag:GetPos():DistToSqr(ply:GetPos()) < 16384) then
         rag.last_detective_call = CurTime()
 
         if CORPSE.GetFound(rag, false) then
@@ -388,7 +388,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
                 IdentifyBody(ply, rag)
             end
         elseif IsValid(ownerEnt) and not ply:IsSpec() and not ownerEnt:GetNWBool("det_called", false) and not ownerEnt:GetNWBool("body_searched", false) then
-            if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then
+            if IsValid(rag) and rag:GetPos():DistToSqr(ply:GetPos()) < 16384 then
                 hook.Call("TTTBodyFound", GAMEMODE, ply, ownerEnt, rag)
                 hook.Call("TTTDetectiveCalledToBody", nil, ply, ownerEnt, rag)
                 net.Start("TTT_CorpseCall")
