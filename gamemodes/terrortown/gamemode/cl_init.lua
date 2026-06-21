@@ -1,6 +1,7 @@
 include("shared.lua")
 include("utf8_ext.lua")
 include("init_shd.lua")
+include("karma_shd.lua")
 
 local cam = cam
 local concommand = concommand
@@ -145,11 +146,6 @@ function GM:HUDClear()
     RADAR:Clear()
     TBHUD:Clear()
 end
-
-KARMA = {}
-
-local ttt_karma = CreateConVar("ttt_karma", "1", FCVAR_REPLICATED)
-function KARMA.IsEnabled() return ttt_karma:GetBool() end
 
 function GetRoundState() return GAMEMODE.round_state end
 
