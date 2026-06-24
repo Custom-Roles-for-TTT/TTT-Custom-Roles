@@ -27,11 +27,39 @@ ROLE_CONVARS[ROLE_TRACKER] = {
         type = ROLE_CONVAR_TYPE_BOOL
     },
     {
+        cvar = "ttt_tracker_is_innocent",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
         cvar = "ttt_tracker_minimap_loadout",
         type = ROLE_CONVAR_TYPE_BOOL
     },
     {
-        cvar = "ttt_tracker_is_innocent",
+        cvar = "ttt_tracker_minimap_range_multiplier",
+        type = ROLE_CONVAR_TYPE_NUM
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_colors",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_facing",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_outside_range",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_names",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_allow_enlarge",
         type = ROLE_CONVAR_TYPE_BOOL
     }
 }

@@ -7,17 +7,18 @@ local hook = hook
 local table = table
 
 CreateConVar("ttt_tracker_minimap_range_multiplier",   "1", FCVAR_REPLICATED, "Multiplier for the in-game radius the minimap represents", 0.1, 10)
-CreateConVar("ttt_tracker_minimap_show_colours",       "1", FCVAR_REPLICATED, "Whether players' icons are coloured", 0, 1)
+CreateConVar("ttt_tracker_minimap_show_colors",        "1", FCVAR_REPLICATED, "Whether players' icons are coloured", 0, 1)
 CreateConVar("ttt_tracker_minimap_show_facing",        "1", FCVAR_REPLICATED, "Whether players are shown as arrows or blips", 0, 1)
 CreateConVar("ttt_tracker_minimap_show_outside_range", "1", FCVAR_REPLICATED, "Whether players off the minimap edge are shown", 0, 1)
 CreateConVar("ttt_tracker_minimap_show_names",         "0", FCVAR_REPLICATED, "Whether players' names are shown below their icons", 0, 1)
 CreateConVar("ttt_tracker_minimap_allow_enlarge",      "1", FCVAR_REPLICATED, "Whether an enlarged minimap is shown beneath the scoreboard", 0, 1)
 
+local tracker_minimap_enabled = CreateConVar("ttt_tracker_minimap_enabled", "1", FCVAR_REPLICATED, "Whether the minimap should be purchasable in the Tracker's shop", 0, 1)
 local tracker_minimap_loadout = CreateConVar("ttt_tracker_minimap_loadout", "0", FCVAR_REPLICATED)
 
 EQUIP_TRK_MINIMAP = EQUIP_TRK_MINIMAP or GenerateNewEquipmentID()
 local function InitializeEquipment()
-    if DefaultEquipment then
+    if DefaultEquipment and tracker_minimap_enabled:GetBool() then
         DefaultEquipment[ROLE_TRACKER] = DefaultEquipment[ROLE_TRACKER] or {}
         table.insert(DefaultEquipment[ROLE_TRACKER], EQUIP_TRK_MINIMAP)
     end

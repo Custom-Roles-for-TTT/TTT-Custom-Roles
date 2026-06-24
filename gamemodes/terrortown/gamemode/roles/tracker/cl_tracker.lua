@@ -8,6 +8,23 @@ local AddHook = hook.Add
 
 local tracker_footstep_time = GetConVar("ttt_tracker_footstep_time")
 local tracker_footstep_color = GetConVar("ttt_tracker_footstep_color")
+local tracker_minimap_enabled = GetConVar("ttt_tracker_minimap_enabled")
+
+local function Tracker_TTTSettingsRolesTabSections(role, parentForm)
+    if role ~= ROLE_TRACKER then return end
+    if not tracker_minimap_enabled:GetBool() then return end
+
+    parentForm:NumSlider(LANG.GetTranslation("minimap_scale_tracker"), "ttt_tracker_minimap_scale", 0.1, 3, 1)
+    parentForm:CheckBox(LANG.GetTranslation("minimap_lock_north_tracker"), "ttt_tracker_minimap_lock_north")
+    local comboCardinals, _ = parentForm:ComboBox(GetTranslation("minimap_show_cardinals_tracker_label"), "ttt_tracker_minimap_show_cardinals")
+    comboCardinals:SetTooltip(GetTranslation("minimap_show_cardinals_tracker"))
+    comboCardinals:SetSortItems(false)
+    comboCardinals:AddChoice("None", 0)
+    comboCardinals:AddChoice("North only", 1)
+    comboCardinals:AddChoice("All", 2)
+    
+    return true
+end
 
 ------------------
 -- TRANSLATIONS --
@@ -23,6 +40,12 @@ You can see players' footsteps and follow their trails.
 Use your skills to keep an eye on where players have been.
 
 Press {menukey} to receive your equipment!]])
+
+    -- Minimap Config
+    LANG.AddToLanguage("english", "minimap_scale_tracker", "Overall scale multiplier for the minimap.")
+    LANG.AddToLanguage("english", "minimap_lock_north_tracker", "Whether the minimap is locked north or rotates with the player.")
+    LANG.AddToLanguage("english", "minimap_show_cardinals_tracker_label", "Cardinal labels.")
+    LANG.AddToLanguage("english", "minimap_show_cardinals_tracker", "Which cardinal direction labels to show (none, North only, all).")
 end)
 
 --------------
@@ -59,3 +82,11 @@ AddHook("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, tit
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_TRACKER] = {
+    ["TTTSettingsRolesTabSections"] = Tracker_TTTSettingsRolesTabSections
+}
