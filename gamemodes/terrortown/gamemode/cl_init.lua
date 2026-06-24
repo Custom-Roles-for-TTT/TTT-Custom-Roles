@@ -1,6 +1,7 @@
 include("shared.lua")
 include("utf8_ext.lua")
 include("init_shd.lua")
+include("karma_shd.lua")
 
 local cam = cam
 local concommand = concommand
@@ -145,11 +146,6 @@ function GM:HUDClear()
     RADAR:Clear()
     TBHUD:Clear()
 end
-
-KARMA = {}
-
-local ttt_karma = CreateConVar("ttt_karma", "1", FCVAR_REPLICATED)
-function KARMA.IsEnabled() return ttt_karma:GetBool() end
 
 function GetRoundState() return GAMEMODE.round_state end
 
@@ -529,7 +525,7 @@ function CheckIdle()
             idle.mx = gui.MouseX()
             idle.my = gui.MouseY()
             idle.t = CurTime()
-        elseif client:GetPos():Distance(idle.pos) > 10 then
+        elseif client:GetPos():DistToSqr(idle.pos) > 100 then
             -- Even if players don't move their mouse, they might still walk
             idle.pos = client:GetPos()
             idle.t = CurTime()

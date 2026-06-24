@@ -641,7 +641,7 @@ if CLIENT then
 
         local pos = ply:GetPos() + Vector(0, 0, 10)
         local client = LocalPlayer()
-        if client:GetPos():Distance(pos) > 1000 then return end
+        if client:GetPos():DistToSqr(pos) > 1000000 then return end
 
         local emitter = ParticleEmitter(pos)
         local max_height = ply:GetViewOffset().z + 10
