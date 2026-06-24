@@ -191,7 +191,7 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
         local biggerCardinalFont = GetFont(cardinalSize * 1.5)
 
         local cardinals
-        if cardinalsMode == "1" then
+        if cardinalsMode == 1 then
             cardinals = { { label = "N", yaw = 90,  colour = NORTH_COLOUR } }
         else
             cardinals = {

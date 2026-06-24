@@ -1,6 +1,7 @@
 # Release Notes
 
 ## 2.4.7 (Beta)
+**Released:**
 
 ### Additions
 - Added a minimap that the Tracker can buy (or have as starting equipment)

@@ -16,13 +16,13 @@ local function Tracker_TTTSettingsRolesTabSections(role, parentForm)
 
     parentForm:NumSlider(LANG.GetTranslation("minimap_scale_tracker"), "ttt_tracker_minimap_scale", 0.1, 3, 1)
     parentForm:CheckBox(LANG.GetTranslation("minimap_lock_north_tracker"), "ttt_tracker_minimap_lock_north")
-    local comboCardinals, _ = parentForm:ComboBox(GetTranslation("minimap_show_cardinals_tracker_label"), "ttt_tracker_minimap_show_cardinals")
-    comboCardinals:SetTooltip(GetTranslation("minimap_show_cardinals_tracker"))
+    local comboCardinals, _ = parentForm:ComboBox(LANG.GetTranslation("minimap_show_cardinals_tracker_label"), "ttt_tracker_minimap_show_cardinals")
+    comboCardinals:SetTooltip(LANG.GetTranslation("minimap_show_cardinals_tracker"))
     comboCardinals:SetSortItems(false)
     comboCardinals:AddChoice("None", 0)
     comboCardinals:AddChoice("North only", 1)
     comboCardinals:AddChoice("All", 2)
-    
+
     return true
 end
 

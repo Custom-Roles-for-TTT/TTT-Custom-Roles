@@ -535,7 +535,7 @@ ttt_tracker_radar_loadout                      0       // Whether the Tracker sh
 ttt_tracker_minimap_enabled                    1       // Whether the minimap should be purchasable in the Tracker's shop. Server or round must be restarted for changes to take effect
 ttt_tracker_minimap_loadout                    0       // Whether the Tracker should get the minimap automatically for free. Server or round must be restarted for changes to take effect
 ttt_tracker_minimap_range_multiplier           1      // Multiplier for the in-game radius the minimap represents
-ttt_tracker_minimap_show_colors                1      // Whether players' icons are coloured
+ttt_tracker_minimap_show_colors                1      // Whether players' icons are colored
 ttt_tracker_minimap_show_facing                1      // Whether players are shown as arrows or blips
 ttt_tracker_minimap_show_outside_range         1      // Whether players off the minimap edge are shown
 ttt_tracker_minimap_show_names                 0      // Whether players' names are shown below their icons
