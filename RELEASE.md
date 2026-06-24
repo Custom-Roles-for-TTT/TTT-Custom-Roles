@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.4.7 (Beta)
+**Released:**
+
+### Fixes
+- Fixed rare error in Taskmaster's Kill 360 task when the HUD is rendered before the state has been synced
+
 ## 2.4.6 (Beta)
 **Released: June 13th, 2026**
 
@@ -9,6 +15,7 @@
 
 ### Changes
 - Changed roles to register and unregister hooks automatically to reduce the performance impact of roles that aren't in the current round
+- Changed distance calculations to use more efficient methods when possible
 - Ported "TTT: Use replicated convars instead of global nwvars" from base TTT
 
 ### Fixes
