@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed rare error in Taskmaster's Kill 360 task when the HUD is rendered before the state has been synced
+- Ported "TTT: Fix prepare state hooks running before map cleanup" from base TTT
 
 ## 2.4.6 (Beta)
 **Released: June 13th, 2026**
