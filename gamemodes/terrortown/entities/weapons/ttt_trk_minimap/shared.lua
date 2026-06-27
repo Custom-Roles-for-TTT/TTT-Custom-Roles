@@ -19,7 +19,6 @@ local tracker_minimap_enabled = CreateConVar("ttt_tracker_minimap_enabled", "1",
 local tracker_minimap_loadout = CreateConVar("ttt_tracker_minimap_loadout", "0", FCVAR_REPLICATED)
 
 EQUIP_TRK_MINIMAP = EQUIP_TRK_MINIMAP or GenerateNewEquipmentID()
-EQUIP_TRK_MINIMAP = EQUIP_TRK_MINIMAP or GenerateNewEquipmentID()
 
 local function InitializeEquipment()
     if tracker_minimap_enabled:GetBool() then
