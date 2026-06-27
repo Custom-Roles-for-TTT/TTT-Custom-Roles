@@ -9,6 +9,7 @@
 
 ### Fixes
 - Fixed rare error in Taskmaster's Kill 360 task when the HUD is rendered before the state has been synced
+- Fixed a case where role features may not work if another player was that role in the previous round
 - Ported "TTT: Fix prepare state hooks running before map cleanup" from base TTT
 
 ## 2.4.6 (Beta)
