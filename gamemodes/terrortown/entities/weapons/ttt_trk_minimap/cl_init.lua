@@ -156,16 +156,20 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
         local scoreboardBase = sbY + sbH
 
         local gap = ScrH() - scoreboardBase
-        cx = ScrW() / 2
-        cy = scoreboardBase + gap / 2
-        radius = (gap / 2.5)
+        local enlargedRadius = (gap / 2.5)
 
-        local dynamicScale = radius / BASE_RADIUS
-        arrowW        = BASE_ARROW_W * dynamicScale
-        arrowH        = BASE_ARROW_H * dynamicScale
-        circleR       = BASE_CIRCLE_R * dynamicScale
-        fontSize      = MathMax(6, math.Round(BASE_FONT_SIZE * dynamicScale))
-        cardinalSize  = MathMax(6, math.Round(BASE_CARDINAL_SIZE * dynamicScale))
+        if enlargedRadius >= radius then
+            cx = ScrW() / 2
+            cy = scoreboardBase + gap / 2
+            radius = enlargedRadius
+
+            local dynamicScale = radius / BASE_RADIUS
+            arrowW        = BASE_ARROW_W * dynamicScale
+            arrowH        = BASE_ARROW_H * dynamicScale
+            circleR       = BASE_CIRCLE_R * dynamicScale
+            fontSize      = MathMax(6, math.Round(BASE_FONT_SIZE * dynamicScale))
+            cardinalSize  = MathMax(6, math.Round(BASE_CARDINAL_SIZE * dynamicScale))
+        end
     end
 
     local myPos = client:GetPos()
