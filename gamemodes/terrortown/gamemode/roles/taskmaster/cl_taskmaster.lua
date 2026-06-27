@@ -22,6 +22,7 @@ AddHook("Initialize", "Taskmaster_Translations_Initialize", function()
     -- ConVars
     LANG.AddToLanguage("english", "taskmaster_config_x_pos", "Task list X (horizontal) position")
     LANG.AddToLanguage("english", "taskmaster_config_y_pos", "Task list Y (vertical) position")
+    LANG.AddToLanguage("english", "taskmaster_config_reset_pos", "Reset task list position")
 
     -- Reroll Menu
     LANG.AddToLanguage("english", "equip_tooltip_taskmaster_reroll", "Task Reroll control")
@@ -65,11 +66,17 @@ local taskmaster_win_block_length = GetConVar("ttt_taskmaster_win_block_length")
 local xOffset = CreateClientConVar("ttt_taskmaster_list_x_pos", "10", true, false, "The X (horizontal) position of the Taskmaster's task list HUD", 0, ScrW())
 local yOffset = CreateClientConVar("ttt_taskmaster_list_y_pos", "10", true, false, "The Y (vertical) position of the Taskmaster's task list HUD", 0, ScrH())
 
+concommand.Add("ttt_taskmaster_list_offset_reset", function()
+    xOffset:SetInt(xOffset:GetDefault())
+    yOffset:SetInt(yOffset:GetDefault())
+end)
+
 local function Taskmaster_TTTSettingsRolesTabSections(role, parentForm)
     if role ~= ROLE_TASKMASTER then return end
 
     parentForm:NumSlider(LANG.GetTranslation("taskmaster_config_x_pos"), "ttt_taskmaster_list_x_pos", 0, ScrW(), 0)
     parentForm:NumSlider(LANG.GetTranslation("taskmaster_config_y_pos"), "ttt_taskmaster_list_y_pos", 0, ScrH(), 0)
+    parentForm:Button(LANG.GetTranslation("taskmaster_config_reset_pos"), "ttt_taskmaster_list_offset_reset")
     return true
 end
 
