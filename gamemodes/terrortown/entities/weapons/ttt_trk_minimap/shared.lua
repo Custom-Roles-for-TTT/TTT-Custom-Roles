@@ -6,13 +6,14 @@ end
 local hook = hook
 local table = table
 
-CreateConVar("ttt_tracker_minimap_range_multiplier",   "1", FCVAR_REPLICATED, "Multiplier for the in-game radius the minimap represents", 0.1, 10)
-CreateConVar("ttt_tracker_minimap_show_colors",        "1", FCVAR_REPLICATED, "Whether players' icons are colored", 0, 1)
-CreateConVar("ttt_tracker_minimap_show_facing",        "1", FCVAR_REPLICATED, "Whether players are shown as arrows or blips", 0, 1)
-CreateConVar("ttt_tracker_minimap_show_outside_range", "1", FCVAR_REPLICATED, "Whether players off the minimap edge are shown", 0, 1)
-CreateConVar("ttt_tracker_minimap_show_names",         "0", FCVAR_REPLICATED, "Whether players' names are shown below their icons", 0, 1)
-CreateConVar("ttt_tracker_minimap_allow_enlarge",      "1", FCVAR_REPLICATED, "Whether an enlarged minimap is shown beneath the scoreboard", 0, 1)
-CreateConVar("ttt_tracker_minimap_show_bodies",        "1", FCVAR_REPLICATED, "Whether dead players show on the minimap", 0, 1)
+CreateConVar("ttt_tracker_minimap_range_multiplier",    "1", FCVAR_REPLICATED, "Multiplier for the in-game radius the minimap represents", 0.1, 10)
+CreateConVar("ttt_tracker_minimap_show_colors",         "1", FCVAR_REPLICATED, "Whether players' icons are colored", 0, 1)
+CreateConVar("ttt_tracker_minimap_show_facing",         "1", FCVAR_REPLICATED, "Whether players are shown as arrows or blips", 0, 1)
+CreateConVar("ttt_tracker_minimap_show_outside_range",  "1", FCVAR_REPLICATED, "Whether players off the minimap edge are shown", 0, 1)
+CreateConVar("ttt_tracker_minimap_show_names",          "0", FCVAR_REPLICATED, "Whether players' names are shown below their icons", 0, 1)
+CreateConVar("ttt_tracker_minimap_allow_enlarge",       "1", FCVAR_REPLICATED, "Whether an enlarged minimap is shown beneath the scoreboard", 0, 1)
+CreateConVar("ttt_tracker_minimap_show_bodies",         "1", FCVAR_REPLICATED, "Whether dead players show on the minimap", 0, 1)
+CreateConVar("ttt_tracker_minimap_show_bodies_as_dead", "0", FCVAR_REPLICATED, "Whether the minimap icon for a dead player is an X", 0, 1)
 
 local tracker_minimap_enabled = CreateConVar("ttt_tracker_minimap_enabled", "1", FCVAR_REPLICATED, "Whether the minimap should be purchasable in the Tracker's shop", 0, 1)
 local tracker_minimap_loadout = CreateConVar("ttt_tracker_minimap_loadout", "0", FCVAR_REPLICATED)

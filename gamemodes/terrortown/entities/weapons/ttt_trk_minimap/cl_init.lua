@@ -26,19 +26,20 @@ local SurfaceDrawTexturedRectRotated = surface.DrawTexturedRectRotated
 
 local PlayerIterator = player.Iterator
 
-local tracker_minimap_scale          = CreateClientConVar("ttt_tracker_minimap_scale",          "1", true, false, "Overall scale multiplier for the minimap", 0.1, 3)
-local tracker_minimap_lock_north     = CreateClientConVar("ttt_tracker_minimap_lock_north",     "0", true, false, "Whether the minimap is locked north or rotates with the player", 0, 1)
-local tracker_minimap_show_cardinals = CreateClientConVar("ttt_tracker_minimap_show_cardinals", "2", true, false, "Cardinal direction labels to show: none (0), North only (1), all (2)", 0, 2)
-local tracker_minimap_offset_x       = CreateClientConVar("ttt_tracker_minimap_offset_x",       "0", true, false, "The screen offset from the left to render the minimap at, on the x axis (left-and-right)")
-local tracker_minimap_offset_y       = CreateClientConVar("ttt_tracker_minimap_offset_y",       "0", true, false, "The screen offset from the top to render the wheel at, on the y axes (up-and-down)")
+local tracker_minimap_scale               = CreateClientConVar("ttt_tracker_minimap_scale",          "1", true, false, "Overall scale multiplier for the minimap", 0.1, 3)
+local tracker_minimap_lock_north          = CreateClientConVar("ttt_tracker_minimap_lock_north",     "0", true, false, "Whether the minimap is locked north or rotates with the player", 0, 1)
+local tracker_minimap_show_cardinals      = CreateClientConVar("ttt_tracker_minimap_show_cardinals", "2", true, false, "Cardinal direction labels to show: none (0), North only (1), all (2)", 0, 2)
+local tracker_minimap_offset_x            = CreateClientConVar("ttt_tracker_minimap_offset_x",       "0", true, false, "The screen offset from the left to render the minimap at, on the x axis (left-and-right)")
+local tracker_minimap_offset_y            = CreateClientConVar("ttt_tracker_minimap_offset_y",       "0", true, false, "The screen offset from the top to render the wheel at, on the y axes (up-and-down)")
 
-local tracker_minimap_range_mult     = GetConVar("ttt_tracker_minimap_range_multiplier")
-local tracker_minimap_show_colours   = GetConVar("ttt_tracker_minimap_show_colors")
-local tracker_minimap_show_facing    = GetConVar("ttt_tracker_minimap_show_facing")
-local tracker_minimap_show_outside   = GetConVar("ttt_tracker_minimap_show_outside_range")
-local tracker_minimap_show_names     = GetConVar("ttt_tracker_minimap_show_names")
-local tracker_minimap_allow_enlarge  = GetConVar("ttt_tracker_minimap_allow_enlarge")
-local tracker_minimap_show_bodies    = GetConVar("ttt_tracker_minimap_show_bodies")
+local tracker_minimap_range_mult          = GetConVar("ttt_tracker_minimap_range_multiplier")
+local tracker_minimap_show_colours        = GetConVar("ttt_tracker_minimap_show_colors")
+local tracker_minimap_show_facing         = GetConVar("ttt_tracker_minimap_show_facing")
+local tracker_minimap_show_outside        = GetConVar("ttt_tracker_minimap_show_outside_range")
+local tracker_minimap_show_names          = GetConVar("ttt_tracker_minimap_show_names")
+local tracker_minimap_allow_enlarge       = GetConVar("ttt_tracker_minimap_allow_enlarge")
+local tracker_minimap_show_bodies         = GetConVar("ttt_tracker_minimap_show_bodies")
+local tracker_minimap_show_bodies_as_dead = GetConVar("ttt_tracker_minimap_show_bodies_as_dead")
 
 hook.Add("Initialize", "Tracker_Minimap_Initialize_Lang", function()
     LANG.AddToLanguage("english", "item_trk_minimap",      "Minimap")
@@ -66,7 +67,8 @@ local NAME_BG_COLOUR      = Color(0, 0, 0, 200)
 
 local scoreboard = false
 
-local arrow_mat = Material("vgui/ttt/equip/trk_minimap_arrow.png", "noclamp smooth")
+local arrow_mat = Material("vgui/ttt/equip/trk_minimap_arrow.png")
+local cross_mat = Material("vgui/ttt/equip/trk_minimap_cross.png")
 
 local function ClientGetRagdollEntity(sid64)
     local bodies = ents.FindByClass("prop_ragdoll")
@@ -99,10 +101,21 @@ local function GetPlayerColour(ply, alpha)
     return VectorToColour(vector, alpha or 255)
 end
 
-local function DrawArrow(cx, cy, w, h, angleDeg, colour)
+local function DrawArrow(cx, cy, w, h, angleDeg, colour, playerDead)
+    local drawAngle = -angleDeg
+    local width = w
+    local height = h
+
     surface.SetMaterial(arrow_mat)
+
+    if playerDead and tracker_minimap_show_bodies_as_dead:GetBool() then
+        surface.SetMaterial(cross_mat)
+        drawAngle = 0
+        height = width
+    end
+
     SurfaceSetDrawColor(colour.r, colour.g, colour.b, colour.a)
-    SurfaceDrawTexturedRectRotated(cx, cy, w, h, -angleDeg)
+    SurfaceDrawTexturedRectRotated(cx, cy, width, height, drawAngle)
 end
 
 local function DrawFilledCircle(cx, cy, r, colour)
@@ -251,11 +264,15 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
         if not IsValid(ply) or ply == client then continue end
         if not tracker_minimap_show_bodies:GetBool() and (ply:Alive() or ply:IsSpec()) then continue end
         
-        local theirPos  = ply:GetPos()
+        local playerDead = false
+        local theirPos   = ply:GetPos()
         
         if tracker_minimap_show_bodies:GetBool() and (not ply:Alive() or ply:IsSpec()) then
+            playerDead = true
             local body = ClientGetRagdollEntity(ply:SteamID64())
-            theirPos = body:GetPos()
+            if IsValid(body) then
+                theirPos = body:GetPos()
+            end
         end
 
         local dx_world  = theirPos.x - myPos.x
@@ -287,7 +304,7 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
         if showFacing and not outsideRange then
             local theirYaw = ply:EyeAngles().y
             local arrowAngle = lockNorth and -(theirYaw - 90) or -(theirYaw - myYaw)
-            DrawArrow(blipX, blipY, arrowW, arrowH, arrowAngle, colour)
+            DrawArrow(blipX, blipY, arrowW, arrowH, arrowAngle, colour, playerDead)
         else
             DrawFilledCircle(blipX, blipY, outsideRange and (circleR * 0.8) or circleR, colour)
         end
