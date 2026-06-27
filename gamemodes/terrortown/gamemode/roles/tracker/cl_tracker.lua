@@ -8,11 +8,10 @@ local AddHook = hook.Add
 
 local tracker_footstep_time = GetConVar("ttt_tracker_footstep_time")
 local tracker_footstep_color = GetConVar("ttt_tracker_footstep_color")
-local tracker_minimap_enabled = GetConVar("ttt_tracker_minimap_enabled")
 
 local function Tracker_TTTSettingsRolesTabSections(role, parentForm)
     if role ~= ROLE_TRACKER then return end
-    if not tracker_minimap_enabled:GetBool() then return end
+    if not GetConVar("ttt_tracker_minimap_enabled"):GetBool() then return end
 
     local BASE_RADIUS = 135
     local scale       = GetConVar("ttt_tracker_minimap_scale"):GetFloat()
