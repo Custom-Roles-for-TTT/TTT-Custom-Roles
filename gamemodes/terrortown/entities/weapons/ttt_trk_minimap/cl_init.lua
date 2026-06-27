@@ -38,6 +38,7 @@ local tracker_minimap_show_facing    = GetConVar("ttt_tracker_minimap_show_facin
 local tracker_minimap_show_outside   = GetConVar("ttt_tracker_minimap_show_outside_range")
 local tracker_minimap_show_names     = GetConVar("ttt_tracker_minimap_show_names")
 local tracker_minimap_allow_enlarge  = GetConVar("ttt_tracker_minimap_allow_enlarge")
+local tracker_minimap_show_bodies    = GetConVar("ttt_tracker_minimap_show_bodies")
 
 hook.Add("Initialize", "Tracker_Minimap_Initialize_Lang", function()
     LANG.AddToLanguage("english", "item_trk_minimap",      "Minimap")
@@ -66,6 +67,17 @@ local NAME_BG_COLOUR      = Color(0, 0, 0, 200)
 local scoreboard = false
 
 local arrow_mat = Material("vgui/ttt/equip/trk_minimap_arrow.png", "noclamp smooth")
+
+local function ClientGetRagdollEntity(sid64)
+    local bodies = ents.FindByClass("prop_ragdoll")
+    for _, v in pairs(bodies) do
+        local body = CORPSE.GetPlayer(v)
+        if IsPlayer(body) and body:SteamID64() == sid64 then
+            return v
+        end
+    end
+    return nil
+end
 
 local fonts_created = {}
 local function GetFont(size)
@@ -237,9 +249,15 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
 
     for _, ply in PlayerIterator() do
         if not IsValid(ply) or ply == client then continue end
-        if not ply:Alive() or ply:IsSpec() then continue end
-
+        if not tracker_minimap_show_bodies:GetBool() and (ply:Alive() or ply:IsSpec()) then continue end
+        
         local theirPos  = ply:GetPos()
+        
+        if tracker_minimap_show_bodies:GetBool() and (not ply:Alive() or ply:IsSpec()) then
+            local body = ClientGetRagdollEntity(ply:SteamID64())
+            theirPos = body:GetPos()
+        end
+
         local dx_world  = theirPos.x - myPos.x
         local dy_world  = theirPos.y - myPos.y
 

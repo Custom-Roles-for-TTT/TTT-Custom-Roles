@@ -540,6 +540,7 @@ ttt_tracker_minimap_show_facing                1      // Whether players are sho
 ttt_tracker_minimap_show_outside_range         1      // Whether players off the minimap edge are shown
 ttt_tracker_minimap_show_names                 0      // Whether players' names are shown below their icons
 ttt_tracker_minimap_allow_enlarge              1      // Whether an enlarged minimap is shown beneath the scoreboard
+ttt_tracker_minimap_show_bodies                1      // Whether dead players show on the minimap
 
 // Medium
 ttt_medium_spirit_color                        1       // Whether players' spirits should have different colors

@@ -61,6 +61,10 @@ ROLE_CONVARS[ROLE_TRACKER] = {
     {
         cvar = "ttt_tracker_minimap_allow_enlarge",
         type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_bodies",
+        type = ROLE_CONVAR_TYPE_BOOL
     }
 }
 

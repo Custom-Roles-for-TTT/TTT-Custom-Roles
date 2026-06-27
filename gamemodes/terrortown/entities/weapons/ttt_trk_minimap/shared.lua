@@ -12,6 +12,7 @@ CreateConVar("ttt_tracker_minimap_show_facing",        "1", FCVAR_REPLICATED, "W
 CreateConVar("ttt_tracker_minimap_show_outside_range", "1", FCVAR_REPLICATED, "Whether players off the minimap edge are shown", 0, 1)
 CreateConVar("ttt_tracker_minimap_show_names",         "0", FCVAR_REPLICATED, "Whether players' names are shown below their icons", 0, 1)
 CreateConVar("ttt_tracker_minimap_allow_enlarge",      "1", FCVAR_REPLICATED, "Whether an enlarged minimap is shown beneath the scoreboard", 0, 1)
+CreateConVar("ttt_tracker_minimap_show_bodies",        "1", FCVAR_REPLICATED, "Whether dead players show on the minimap", 0, 1)
 
 local tracker_minimap_enabled = CreateConVar("ttt_tracker_minimap_enabled", "1", FCVAR_REPLICATED, "Whether the minimap should be purchasable in the Tracker's shop", 0, 1)
 local tracker_minimap_loadout = CreateConVar("ttt_tracker_minimap_loadout", "0", FCVAR_REPLICATED)
