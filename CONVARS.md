@@ -1404,10 +1404,16 @@ ttt_beggar_show_scan_radius                    0       // Whether to show the ri
 // Loot Goblin
 ttt_lootgoblin_radar_beep_sound                1       // Whether to play a sound when the Loot Goblin radar location updates
 
+// Taskmaster
+ttt_taskmaster_list_x_pos                      10      // The X (horizontal) position of the Taskmaster's task list HUD
+ttt_taskmaster_list_y_pos                      10      // The Y (vertical) position of the Taskmaster's task list HUD
+
 // Tracker
-ttt_tracker_minimap_scale                      1      // Overall scale multiplier for the minimap
-ttt_tracker_minimap_lock_north                 0      // Whether the minimap is locked north or rotates with the player
-ttt_tracker_minimap_show_cardinals             2      // Cardinal direction labels to show: none (0), North only (1), all (2)
+ttt_tracker_minimap_scale                      1       // Overall scale multiplier for the minimap
+ttt_tracker_minimap_lock_north                 0       // Whether the minimap is locked north or rotates with the player
+ttt_tracker_minimap_show_cardinals             2       // Cardinal direction labels to show: none (0), North only (1), all (2)
+ttt_tracker_minimap_offset_x                   14      // The screen offset from the left to render the minimap at, on the x axis (left-and-right)
+ttt_tracker_minimap_offset_y                   14      // The screen offset from the top to render the wheel at, on the y axes (up-and-down)
 
 // ----------------------------------------
 // Misc.
