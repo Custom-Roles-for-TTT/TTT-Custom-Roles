@@ -63,7 +63,7 @@ local NAME_BG_COLOUR      = Color(0, 0, 0, 200)
 
 local scoreboard          = false
 
-local arrow_mat = Material("vgui/ttt/equip/minimap_arrow.png", "noclamp smooth")
+local arrow_mat = Material("vgui/ttt/equip/trk_minimap_arrow.png", "noclamp smooth")
 
 local fonts_created = {}
 local function GetFont(size)

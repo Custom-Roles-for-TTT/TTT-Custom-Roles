@@ -43,7 +43,7 @@ local function InitializeEquipment()
                     id = EQUIP_TRK_MINIMAP,
                     loadout = tracker_minimap_loadout:GetBool(),
                     type = "item_active",
-                    material = "vgui/ttt/icon_minimap",
+                    material = "vgui/ttt/icon_trk_minimap",
                     name = "item_minimap",
                     desc = "item_minimap_desc",
                     norandom = true
