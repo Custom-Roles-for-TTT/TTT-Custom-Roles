@@ -161,7 +161,7 @@ if CLIENT then
 
             local startTime = client.Task_Kill360Start
             if not startTime or CurTime() > startTime + time then
-                progress = client.Task_Kill360Progress / 320
+                progress = (client.Task_Kill360Progress or 0) / 320
                 message = "DO A 360"
                 color = Color(255, 0, 0, 155)
             else
