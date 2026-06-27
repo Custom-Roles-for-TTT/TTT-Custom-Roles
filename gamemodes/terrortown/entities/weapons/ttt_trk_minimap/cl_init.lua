@@ -29,8 +29,8 @@ local PlayerIterator = player.Iterator
 local tracker_minimap_scale               = CreateClientConVar("ttt_tracker_minimap_scale",          "1", true, false, "Overall scale multiplier for the minimap", 0.1, 3)
 local tracker_minimap_lock_north          = CreateClientConVar("ttt_tracker_minimap_lock_north",     "0", true, false, "Whether the minimap is locked north or rotates with the player", 0, 1)
 local tracker_minimap_show_cardinals      = CreateClientConVar("ttt_tracker_minimap_show_cardinals", "2", true, false, "Cardinal direction labels to show: none (0), North only (1), all (2)", 0, 2)
-local tracker_minimap_offset_x            = CreateClientConVar("ttt_tracker_minimap_offset_x",       "0", true, false, "The screen offset from the left to render the minimap at, on the x axis (left-and-right)")
-local tracker_minimap_offset_y            = CreateClientConVar("ttt_tracker_minimap_offset_y",       "0", true, false, "The screen offset from the top to render the wheel at, on the y axes (up-and-down)")
+local tracker_minimap_offset_x            = CreateClientConVar("ttt_tracker_minimap_offset_x",       "14", true, false, "The screen offset from the left to render the minimap at, on the x axis (left-and-right)")
+local tracker_minimap_offset_y            = CreateClientConVar("ttt_tracker_minimap_offset_y",       "14", true, false, "The screen offset from the top to render the wheel at, on the y axes (up-and-down)")
 
 local tracker_minimap_range_mult          = GetConVar("ttt_tracker_minimap_range_multiplier")
 local tracker_minimap_show_colours        = GetConVar("ttt_tracker_minimap_show_colors")
@@ -41,16 +41,12 @@ local tracker_minimap_allow_enlarge       = GetConVar("ttt_tracker_minimap_allow
 local tracker_minimap_show_bodies         = GetConVar("ttt_tracker_minimap_show_bodies")
 local tracker_minimap_show_bodies_as_dead = GetConVar("ttt_tracker_minimap_show_bodies_as_dead")
 
-hook.Add("Initialize", "Tracker_Minimap_Initialize_Lang", function()
-    LANG.AddToLanguage("english", "item_trk_minimap",      "Minimap")
-    LANG.AddToLanguage("english", "item_trk_minimap_desc", [[A minimap that shows the positions of all other players relative to you.
-
-Player icon color will match the player's footprint color and show the direction each player is facing.]])
-    LANG.AddToLanguage("english", "equip_tooltip_trackminimap", "Minimap control")
+concommand.Add("ttt_tracker_minimap_offset_reset", function()
+    tracker_minimap_offset_x:SetInt(tracker_minimap_offset_x:GetDefault())
+    tracker_minimap_offset_y:SetInt(tracker_minimap_offset_y:GetDefault())
 end)
 
 local BASE_RADIUS         = 135
-local BASE_MARGIN         = 14
 local BASE_ARROW_W        = 17
 local BASE_ARROW_H        = 21
 local BASE_CIRCLE_R       = 9
@@ -159,7 +155,6 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
 
     local scale         = tracker_minimap_scale:GetFloat()
     local radius        = BASE_RADIUS * scale
-    local margin        = BASE_MARGIN
     local offsetX       = tracker_minimap_offset_x:GetInt()
     local offsetY       = tracker_minimap_offset_y:GetInt()
     local arrowW        = BASE_ARROW_W * scale
@@ -177,8 +172,8 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
     local cardinalsMode = tracker_minimap_show_cardinals:GetInt()
     local allowEnlarge  = tracker_minimap_allow_enlarge:GetBool()
 
-    local cx = margin + radius + offsetX
-    local cy = margin + radius + offsetY
+    local cx = radius + offsetX
+    local cy = radius + offsetY
 
     if allowEnlarge and scoreboard and IsValid(sboard_panel) and sboard_panel:IsVisible() then
         local _, sbY, _, sbH = sboard_panel:GetBounds()
@@ -259,24 +254,28 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
 
     -- Other players' arrows/blips
     local unitsPerPx = rangeUnits / radius
+    local showDead = tracker_minimap_show_bodies:GetBool()
 
     for _, ply in PlayerIterator() do
         if not IsValid(ply) or ply == client then continue end
-        if not tracker_minimap_show_bodies:GetBool() and (ply:Alive() or ply:IsSpec()) then continue end
-        
-        local playerDead = false
-        local theirPos   = ply:GetPos()
-        
-        if tracker_minimap_show_bodies:GetBool() and (not ply:Alive() or ply:IsSpec()) then
-            playerDead = true
+
+        local playerDead = not ply:Alive() or ply:IsSpec()
+        if not showDead and playerDead then continue end
+
+        local theirPos
+        if playerDead then
             local body = ClientGetRagdollEntity(ply:SteamID64())
             if IsValid(body) then
                 theirPos = body:GetPos()
+            else
+                continue
             end
+        else
+            theirPos = ply:GetPos()
         end
 
-        local dx_world  = theirPos.x - myPos.x
-        local dy_world  = theirPos.y - myPos.y
+        local dx_world = theirPos.x - myPos.x
+        local dy_world = theirPos.y - myPos.y
 
         local rotAngle = lockNorth and 0 or MathRad(myYaw - 90)
         local cosA = MathCos(rotAngle)
@@ -299,7 +298,7 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
         local blipX = cx + px
         local blipY = cy + py
 
-        local colour = showColours and GetPlayerColour(ply, 255) or Color(255, 255, 255, 255)
+        local colour = showColours and GetPlayerColour(ply, 255) or COLOR_WHITE
 
         if showFacing and not outsideRange then
             local theirYaw = ply:EyeAngles().y
