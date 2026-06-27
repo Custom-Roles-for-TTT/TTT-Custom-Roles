@@ -3,6 +3,9 @@
 ## 2.4.7 (Beta)
 **Released:**
 
+### Additions
+- Added a minimap that the Tracker can buy (or have as starting equipment)
+
 ### Fixes
 - Fixed rare error in Taskmaster's Kill 360 task when the HUD is rendered before the state has been synced
 - Ported "TTT: Fix prepare state hooks running before map cleanup" from base TTT
