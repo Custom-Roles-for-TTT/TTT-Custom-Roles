@@ -38,8 +38,8 @@ local tracker_minimap_show_names     = GetConVar("ttt_tracker_minimap_show_names
 local tracker_minimap_allow_enlarge  = GetConVar("ttt_tracker_minimap_allow_enlarge")
 
 hook.Add("Initialize", "Tracker_Minimap_Initialize_Lang", function()
-    LANG.AddToLanguage("english", "item_minimap",      "Minimap")
-    LANG.AddToLanguage("english", "item_minimap_desc", [[A minimap that shows the positions of all other players relative to you.
+    LANG.AddToLanguage("english", "item_trk_minimap",      "Minimap")
+    LANG.AddToLanguage("english", "item_trk_minimap_desc", [[A minimap that shows the positions of all other players relative to you.
 
 Player icon color will match the player's footprint color and show the direction each player is facing.]])
     LANG.AddToLanguage("english", "equip_tooltip_trackminimap", "Minimap control")
