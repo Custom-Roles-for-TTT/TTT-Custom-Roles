@@ -592,6 +592,7 @@ end
 
 function PrepareRound()
     for _, v in PlayerIterator() do
+        v:SetRole(ROLE_INNOCENT)
         v:SetInvulnerable(false, false)
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         -- Workaround to prevent GMod sprint from working
@@ -606,6 +607,7 @@ function PrepareRound()
         -- Remove the spirit entity for this player, if there is one
         v:RemoveSpectatorSpirit()
     end
+    SendFullStateUpdate()
 
     -- Check playercount
     if CheckForAbort() then return end
