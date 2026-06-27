@@ -29,6 +29,8 @@ local PlayerIterator = player.Iterator
 local tracker_minimap_scale          = CreateClientConVar("ttt_tracker_minimap_scale",          "1", true, false, "Overall scale multiplier for the minimap", 0.1, 3)
 local tracker_minimap_lock_north     = CreateClientConVar("ttt_tracker_minimap_lock_north",     "0", true, false, "Whether the minimap is locked north or rotates with the player", 0, 1)
 local tracker_minimap_show_cardinals = CreateClientConVar("ttt_tracker_minimap_show_cardinals", "2", true, false, "Cardinal direction labels to show: none (0), North only (1), all (2)", 0, 2)
+local tracker_minimap_offset_x       = CreateClientConVar("ttt_tracker_minimap_offset_x",       "0", true, false, "The screen offset from the left to render the minimap at, on the x axis (left-and-right)")
+local tracker_minimap_offset_y       = CreateClientConVar("ttt_tracker_minimap_offset_y",       "0", true, false, "The screen offset from the top to render the wheel at, on the y axes (up-and-down)")
 
 local tracker_minimap_range_mult     = GetConVar("ttt_tracker_minimap_range_multiplier")
 local tracker_minimap_show_colours   = GetConVar("ttt_tracker_minimap_show_colors")
@@ -61,7 +63,7 @@ local CARDINAL_COLOUR     = Color(220, 220, 220, 255)
 local NORTH_COLOUR        = Color(255, 80, 80, 255)
 local NAME_BG_COLOUR      = Color(0, 0, 0, 200)
 
-local scoreboard          = false
+local scoreboard = false
 
 local arrow_mat = Material("vgui/ttt/equip/trk_minimap_arrow.png", "noclamp smooth")
 
@@ -132,7 +134,9 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
 
     local scale         = tracker_minimap_scale:GetFloat()
     local radius        = BASE_RADIUS * scale
-    local margin        = BASE_MARGIN * scale
+    local margin        = BASE_MARGIN
+    local offsetX       = tracker_minimap_offset_x:GetInt()
+    local offsetY       = tracker_minimap_offset_y:GetInt()
     local arrowW        = BASE_ARROW_W * scale
     local arrowH        = BASE_ARROW_H * scale
     local circleR       = BASE_CIRCLE_R * scale
@@ -148,8 +152,8 @@ hook.Add("HUDPaint", "Tracker_Minimap_HUDPaint", function()
     local cardinalsMode = tracker_minimap_show_cardinals:GetInt()
     local allowEnlarge  = tracker_minimap_allow_enlarge:GetBool()
 
-    local cx = margin + radius
-    local cy = margin + radius
+    local cx = margin + radius + offsetX
+    local cy = margin + radius + offsetY
 
     if allowEnlarge and scoreboard and IsValid(sboard_panel) and sboard_panel:IsVisible() then
         local _, sbY, _, sbH = sboard_panel:GetBounds()
