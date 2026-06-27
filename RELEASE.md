@@ -1,10 +1,11 @@
 # Release Notes
 
 ## 2.4.7 (Beta)
-**Released:**
+**Released: June 27th, 2026**
 
 ### Additions
 - Added a minimap that the Tracker can buy (or have as starting equipment)
+- Added button in the Roles section of the F1 menu to reset Taskmaster's task list to original position
 
 ### Fixes
 - Fixed rare error in Taskmaster's Kill 360 task when the HUD is rendered before the state has been synced
