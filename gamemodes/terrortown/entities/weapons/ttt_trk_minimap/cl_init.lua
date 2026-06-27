@@ -111,7 +111,7 @@ local function ClampToRing(dx, dy, r)
     return dx * frac, dy * frac
 end
 
-hook.Add("ScoreboardShow", "TTT_Minimap_Scoreboard_Open", function()
+hook.Add("ScoreboardShow", "Tracker_Minimap_ScoreboardShow", function()
     local client = LocalPlayer()
     if not IsPlayer(client) then return end
     if not client:Alive() or client:IsSpec() then return end
@@ -120,7 +120,7 @@ hook.Add("ScoreboardShow", "TTT_Minimap_Scoreboard_Open", function()
     scoreboard = true
 end)
 
-hook.Add("ScoreboardHide", "TTT_Minimap_Scoreboard_Close", function()
+hook.Add("ScoreboardHide", "Tracker_Minimap_ScoreboardHide", function()
     scoreboard = false
 end)
 
