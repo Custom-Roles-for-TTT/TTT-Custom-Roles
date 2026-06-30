@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.5.0
+**Released: June 30th, 2026**\
+Includes beta updates [2.4.2](#242-beta) to [2.4.7](#247-beta).
+
 ## 2.4.7 (Beta)
 **Released: June 27th, 2026**
 
