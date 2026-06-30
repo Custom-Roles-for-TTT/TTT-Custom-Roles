@@ -2,6 +2,8 @@ AddCSLuaFile()
 
 local hook = hook
 
+local AddHook = hook.Add
+
 ------------------
 -- ROLE CONVARS --
 ------------------
@@ -10,24 +12,65 @@ CreateConVar("ttt_tracker_footstep_time", "15", FCVAR_REPLICATED, "The amount of
 CreateConVar("ttt_tracker_footstep_color", "1", FCVAR_REPLICATED)
 local tracker_is_innocent = CreateConVar("ttt_tracker_is_innocent", "0", FCVAR_REPLICATED, "Whether the tracker should be treated as a special innocent", 0, 1)
 
-ROLE_CONVARS[ROLE_TRACKER] = {}
-table.insert(ROLE_CONVARS[ROLE_TRACKER], {
-    cvar = "ttt_tracker_footstep_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_TRACKER], {
-    cvar = "ttt_tracker_footstep_color",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_TRACKER], {
-    cvar = "ttt_tracker_radar_loadout",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_TRACKER], {
-    cvar = "ttt_tracker_is_innocent",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_TRACKER] = {
+    {
+        cvar = "ttt_tracker_footstep_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_tracker_footstep_color",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_radar_loadout",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_is_innocent",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_loadout",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_range_multiplier",
+        type = ROLE_CONVAR_TYPE_NUM
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_colors",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_facing",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_outside_range",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_names",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_allow_enlarge",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_bodies",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_tracker_minimap_show_bodies_as_dead",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
@@ -43,14 +86,10 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Tracker_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Tracker_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
+AddHook("Initialize", "Tracker_Shared_Initialize", InitializeEquipment)
+AddHook("TTTPrepareRound", "Tracker_Shared_TTTPrepareRound", InitializeEquipment)
 
-hook.Add("TTTUpdateRoleState", "Tracker_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Tracker_TTTUpdateRoleState", function()
     local is_innocent = tracker_is_innocent:GetBool()
     DETECTIVE_ROLES[ROLE_TRACKER] = not is_innocent
 end)

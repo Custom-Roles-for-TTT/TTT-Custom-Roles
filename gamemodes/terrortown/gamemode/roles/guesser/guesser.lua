@@ -5,8 +5,8 @@ local net = net
 local player = player
 local hook = hook
 
-local PlayerIterator = player.Iterator
 local AddHook = hook.Add
+local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_GuesserSelectRole")
 util.AddNetworkString("TTT_GuesserGuessed")
@@ -22,6 +22,7 @@ CreateConVar("ttt_guesser_notify_confetti", "0", FCVAR_NONE, "Whether to throw c
 
 local guesser_show_team_threshold = GetConVar("ttt_guesser_show_team_threshold")
 local guesser_show_role_threshold = GetConVar("ttt_guesser_show_role_threshold")
+local guesser_show_outline_threshold = GetConVar("ttt_guesser_show_outline_threshold")
 local guesser_can_guess_detectives = GetConVar("ttt_guesser_can_guess_detectives")
 local guesser_warn_all = GetConVar("ttt_guesser_warn_all")
 
@@ -40,7 +41,7 @@ end)
 -- DAMAGE --
 ------------
 
-AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
+local function Guesser_EntityTakeDamage(ent, dmginfo)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
     if not ent:IsGuesser() then return end
@@ -63,6 +64,7 @@ AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
 
     local team_threshold = guesser_show_team_threshold:GetInt()
     local role_threshold = guesser_show_role_threshold:GetInt()
+    local outline_threshold = guesser_show_outline_threshold:GetInt()
 
     if oldDamage < team_threshold and newDamage >= team_threshold and not DETECTIVE_ROLES[role] then
         local message = att:Nick() .. " has damaged you enough for you to learn they are "
@@ -78,16 +80,21 @@ AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
             ent:QueueMessage(MSG_PRINTBOTH, att:Nick() .. " has damaged you enough for you to learn that they are " .. ROLE_STRINGS_EXT[role])
         end
     end
+    if oldDamage < outline_threshold and newDamage >= outline_threshold then
+        if not DETECTIVE_ROLES[role] or GetConVar("ttt_detectives_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
+            ent:QueueMessage(MSG_PRINTBOTH, att:Nick() .. " has damaged you enough for you to track them")
+        end
+    end
 
     dmginfo:SetDamage(0)
-end)
+end
 
 ------------------
 -- ANNOUNCEMENT --
 ------------------
 
 -- Warn other players that there is a guesser
-hook.Add("TTTBeginRound", "Guesser_Announce_TTTBeginRound", function()
+AddHook("TTTBeginRound", "Guesser_Announce_TTTBeginRound", function()
     if not guesser_warn_all:GetBool() then return end
 
     timer.Simple(1.5, function()
@@ -120,3 +127,11 @@ AddHook("TTTPrepareRound", "Guesser_TTTPrepareRound", function()
         v:SetNWFloat("TTTGuesserDamageDealt", 0)
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_GUESSER] = {
+    ["EntityTakeDamage"] = Guesser_EntityTakeDamage
+}

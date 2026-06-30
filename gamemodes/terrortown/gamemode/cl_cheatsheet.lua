@@ -1,6 +1,23 @@
+local hook = hook
+local ipairs = ipairs
+local input = input
+local math = math
+local string = string
+local surface = surface
+local table = table
+local util = util
+local vgui = vgui
+
 local GetRawTranslation = LANG.GetRawTranslation
 local GetParamTranslation = LANG.GetParamTranslation
+local InputGetKeyCode = input.GetKeyCode
 local StringLower = string.lower
+local StringSplit = string.Split
+local SurfaceGetTextSize = surface.GetTextSize
+local SurfaceSetFont = surface.SetFont
+local TableAdd = table.Add
+local TableConcat = table.concat
+local TableIsEmpty = table.IsEmpty
 local TableInsert = table.insert
 local TableSort = table.sort
 local MathMax = math.max
@@ -8,7 +25,8 @@ local MathClamp = math.Clamp
 local MathCeil = math.ceil
 local MathSin = math.sin
 
-local hotkey = CreateClientConVar("ttt_cheatsheat_hotkey", "h", true, false, "Hotkey for opening the cheat sheet")
+local hotkey = CreateClientConVar("ttt_cheatsheet_hotkey", "h", true, false, "Hotkey for opening the cheat sheet")
+local rolepack_icon = CreateClientConVar("ttt_cheatsheet_rolepack_icon", "0", true, false, "Whether to show an icon indicating which roles are from the current rolepack")
 local panel
 
 local hide_role = GetConVar("ttt_hide_role")
@@ -19,13 +37,58 @@ local function ClosePanel()
     hook.Remove("Think", "CheetSheet_Think")
 end
 
+local function AdjustPackDescription(description, width, margin)
+    -- Split each line into a list of words so we can manually calculate sizes below
+    local lines = StringSplit(description, '\n')
+    local words = {}
+    for _, line in ipairs(lines) do
+        TableAdd(words, StringSplit(line, ' '))
+    end
+
+    -- Calculate the necessary width to fit the text, building out each line word-by-word
+    SurfaceSetFont("TabLarge")
+
+    local line = ""
+    lines = {}
+    for _, word in ipairs(words) do
+        if #word == 0 then continue end
+
+        local tempLine = line
+        if #tempLine > 0 then
+            tempLine = tempLine .. " "
+        end
+        tempLine = tempLine .. word
+
+        local lineWidth, _ = SurfaceGetTextSize(tempLine)
+
+        -- If the new line still fits within the width, keep adding words to it
+        if lineWidth < (width - (margin * 2)) then
+            line = tempLine
+        -- Otherwise save it as-is and reset it
+        else
+            TableInsert(lines, line)
+            line = word
+        end
+    end
+    -- Make sure to save the last line that was a partial width
+    TableInsert(lines, line)
+
+    local newDesc = TableConcat(lines, "\n")
+    local _, descHeight = SurfaceGetTextSize(newDesc)
+
+    -- Reset the font now that we're done messing with it
+    SurfaceSetFont("Default")
+
+    return newDesc, descHeight
+end
+
 hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button)
-    if button ~= input.GetKeyCode(hotkey:GetString()) then return end
+    if button ~= InputGetKeyCode(hotkey:GetString()) then return end
     if panel ~= nil then return end
 
     UpdateRoleColours()
 
-    if table.IsEmpty(ROLE_STARTING_TEAM) then
+    if TableIsEmpty(ROLE_STARTING_TEAM) then
         ply:PrintMessage(HUD_PRINTTALK, "Cheat sheet teams and colors may display incorrectly before the first round starts.")
     end
 
@@ -69,12 +132,26 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
     local descriptionWidth  = 256
     local labelHeight       = 16
     local rolePackHeight    = 32
+    local rolePackDescHeight= 45
     local scrollbarWidth    = 15
     local m                 = 5
 
-    local packName = GetConVar("ttt_role_pack"):GetString()
-    if #packName == 0 then
+    local packName = ROLEPACKS.GetCurrentRolePackName()
+    local packDesc
+    if #packName > 0 then
+        local displayName = ROLE_PACK_DETAILS.displayName
+        if displayName and #displayName > 0 then
+            packName = displayName
+        end
+
+        packDesc = ROLE_PACK_DETAILS.description
+        if not packDesc or #packDesc == 0 then
+            packDesc = nil
+            rolePackDescHeight = 0
+        end
+    else
         rolePackHeight = 0
+        rolePackDescHeight = 0
     end
 
     local w, h, detectivesHeight, innocentsHeight, traitorsHeight, jestersHeight, independentsHeight, monstersHeight
@@ -106,7 +183,11 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         monstersHeight      = MathMax((iconSize + m) * monsterRows, 0)
 
         w = (iconSize + descriptionWidth + (m * 3)) * columns
-        h = rolePackHeight + detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight + (labelHeight * labels) + m
+        if rolePackDescHeight > 0 then
+            packDesc, rolePackDescHeight = AdjustPackDescription(packDesc, w, m)
+        end
+
+        h = rolePackHeight + rolePackDescHeight + detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight + (labelHeight * labels) + m
 
         if needsScrollbar then -- If we know we need a scrollbar then add it
             w = w + scrollbarWidth
@@ -140,7 +221,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
 
     if rolePackHeight > 0 then
         local drolepackframe = vgui.Create("DPanel", dframe)
-        drolepackframe:SetSize(w, rolePackHeight)
+        drolepackframe:SetSize(w, rolePackHeight + rolePackDescHeight)
         drolepackframe:SetPos(0, 0)
         drolepackframe:SetBackgroundColor(COLOR_GRAY)
 
@@ -150,11 +231,21 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         drolepack:SetContentAlignment(1)
         drolepack:SetWidth(w)
         drolepack:SetPos(m + 3, 3)
+
+        if rolePackDescHeight > 0 then
+            local drolepackdesc = vgui.Create("DLabel", drolepackframe)
+            drolepackdesc:SetFont("TabLarge")
+            drolepackdesc:SetText(packDesc)
+            drolepackdesc:SetContentAlignment(4)
+            drolepackdesc:SetPos(m + 3, 25)
+            drolepackdesc:SetWidth(w)
+            drolepackdesc:SetTall(rolePackDescHeight)
+        end
     end
 
     local dlist = vgui.Create("DScrollPanel", dbackground)
-    dlist:SetSize(w, h)
-    dlist:SetPos(0, rolePackHeight)
+    dlist:SetSize(w, h - (rolePackHeight + rolePackDescHeight))
+    dlist:SetPos(0, rolePackHeight + rolePackDescHeight)
 
     local dcanvas = dlist:GetCanvas()
 
@@ -180,7 +271,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
         end
 
         for _, role in pairs(roleTable) do
-            local icon = vgui.Create("SimpleIcon", dteam)
+            local icon = vgui.Create("LayeredIcon", dteam)
 
             local roleStringShort = ROLE_STRINGS_SHORT[role]
             local material = util.GetRoleIconPath(roleStringShort, "icon", "vtf")
@@ -200,6 +291,19 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
             icon.DoClick = function()
                 HELPSCRN:OpenRoleTutorial(role)
                 ClosePanel()
+            end
+
+            if ROLE_PACK_ROLES[role] and rolepack_icon:GetBool() then
+                local rolepackicon = vgui.Create("DImage")
+                rolepackicon:SetImage("icon16/bricks.png")
+                rolepackicon.PerformLayout = function(s)
+                    s:AlignTop(6)
+                    s:AlignRight(6)
+                    s:SetSize(12, 12)
+                end
+                rolepackicon:SetTooltip(GetRawTranslation("cheatsheet_rolepack_role"))
+                icon:AddLayer(rolepackicon)
+                icon:EnableMousePassthrough(rolepackicon)
             end
 
             if role == ply_role and ply:IsActive() then
@@ -282,7 +386,7 @@ hook.Add("PlayerButtonDown", "CheatSheet_PlayerButtonDown", function(ply, button
 end)
 
 hook.Add("PlayerButtonUp", "CheatSheet_PlayerButtonUp", function(ply, button)
-    if button ~= input.GetKeyCode(hotkey:GetString()) then return end
+    if button ~= InputGetKeyCode(hotkey:GetString()) then return end
     if panel == nil then return end
 
     ClosePanel()

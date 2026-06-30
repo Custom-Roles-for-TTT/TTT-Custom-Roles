@@ -9,6 +9,7 @@ local table = table
 local timer = timer
 local util = util
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_RevengerLoverKillerRadar")
@@ -27,18 +28,18 @@ local revenger_damage_bonus = GetConVar("ttt_revenger_damage_bonus")
 -----------
 
 -- If the attacker is a revenger, don't reduce their karma if they killed the person who killed their target
-hook.Add("TTTKarmaShouldGivePenalty", "Revenger_TTTKarmaShouldGivePenalty", function(attacker, victim)
+local function Revenger_TTTKarmaShouldGivePenalty(attacker, victim)
     if attacker:IsRevenger() and victim:SteamID64() == attacker:GetNWString("RevengerKiller", "") then
         return false
     end
-end)
+end
 
 -------------------
 -- ROLE FEATURES --
 -------------------
 
 -- Clear out the revenger data when the round starts
-hook.Add("TTTPrepareRound", "Revenger_RoleFeatures_PrepareRound", function()
+AddHook("TTTPrepareRound", "Revenger_RoleFeatures_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWString("RevengerLover", "")
         v:SetNWString("RevengerKiller", "")
@@ -49,12 +50,12 @@ hook.Add("TTTPrepareRound", "Revenger_RoleFeatures_PrepareRound", function()
     net.Broadcast()
 end)
 
-hook.Add("TTTEndRound", "Revenger_RoundFeatures_TTTEndRound", function()
+local function Revenger_RoundFeatures_TTTEndRound()
     if timer.Exists("revengerhealthdrain") then timer.Remove("revengerhealthdrain") end
-end)
+end
 
 -- Handle revenger lover death
-hook.Add("PlayerDeath", "Revenger_PlayerDeath", function(victim, infl, attacker)
+local function Revenger_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     for _, v in PlayerIterator() do
         if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
@@ -85,7 +86,7 @@ hook.Add("PlayerDeath", "Revenger_PlayerDeath", function(victim, infl, attacker)
             v:QueueMessage(MSG_PRINTBOTH, message)
         end
     end
-end)
+end
 
 ROLE_MOVE_ROLE_STATE[ROLE_REVENGER] = function(ply, target, keep_on_source)
     local killer = ply:GetNWString("RevengerKiller", "")
@@ -165,7 +166,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
 end
 
 -- Assign a new lover if they disconnected
-hook.Add("PlayerDisconnected", "Revenger_Lover_PlayerDisconnected", function(ply)
+local function Revenger_Lover_PlayerDisconnected(ply)
     local sid64 = ply:SteamID64()
     local potentialSoulmates = {}
     local revenger = nil
@@ -191,13 +192,13 @@ hook.Add("PlayerDisconnected", "Revenger_Lover_PlayerDisconnected", function(ply
     end
 
     revenger:QueueMessage(MSG_PRINTBOTH, message)
-end)
+end
 
 ------------------
 -- SCALE DAMAGE --
 ------------------
 
-hook.Add("ScalePlayerDamage", "Revenger_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Revenger_ScalePlayerDamage(ply, hitgroup, dmginfo)
     -- Only apply damage scaling after the round starts
     if GetRoundState() < ROUND_ACTIVE then return end
 
@@ -207,4 +208,16 @@ hook.Add("ScalePlayerDamage", "Revenger_ScalePlayerDamage", function(ply, hitgro
 
     local bonus = revenger_damage_bonus:GetFloat()
     dmginfo:ScaleDamage(1 + bonus)
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_REVENGER] = {
+    ["PlayerDeath"] = Revenger_PlayerDeath,
+    ["PlayerDisconnected"] = Revenger_Lover_PlayerDisconnected,
+    ["ScalePlayerDamage"] = Revenger_ScalePlayerDamage,
+    ["TTTEndRound"] = Revenger_RoundFeatures_TTTEndRound,
+    ["TTTKarmaShouldGivePenalty"] = Revenger_TTTKarmaShouldGivePenalty
+}

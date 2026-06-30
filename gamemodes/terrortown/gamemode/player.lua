@@ -60,7 +60,7 @@ function GM:PlayerInitialSpawn(ply)
         ply:SetForceSpec(true)
     end
 
-    ROLEPACKS.SendRolePackRoleList(ply)
+    ROLEPACKS.SendRolePackRoleList(ply, rstate == ROUND_ACTIVE)
     ROLEPACKS.SendRolePackWeapons(ply)
     WEPS.HandleRoleEquipment(ply)
 end
@@ -229,7 +229,7 @@ local function PointsAroundSpawn(spwn)
         pos + Vector(-w, w, 0),
         pos + Vector(w, -w, 0)
         --pos + Vector( 0,  0,  h) -- just in case we're outside
-    };
+    }
 end
 
 function GM:PlayerSelectSpawn(ply)
@@ -470,7 +470,7 @@ function GM:KeyRelease(ply, key)
             endpos = ply:GetShootPos() + ply:GetAimVector() * 84,
             filter = ply,
             mask = MASK_SHOT
-        });
+        })
 
         if tr.Hit and IsValid(tr.Entity) then
             if tr.Entity.CanUseKey and tr.Entity.UseOverride then
@@ -588,7 +588,7 @@ local deathsounds = {
     Sound("hostage/hpain/hpain4.wav"),
     Sound("hostage/hpain/hpain5.wav"),
     Sound("hostage/hpain/hpain6.wav")
-};
+}
 
 local function PlayDeathSound(victim)
     if not IsValid(victim) then return end
@@ -979,8 +979,11 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
         local wep = util.WeaponFromDamage(dmginfo)
 
         if IsValid(wep) and not GetConVar("ttt_disable_headshots"):GetBool() then
-            local s = wep:GetHeadshotMultiplier(ply, dmginfo) or 2
-            dmginfo:ScaleDamage(s)
+            local s
+            if wep.GetHeadshotMultiplier then
+                s = wep:GetHeadshotMultiplier(ply, dmginfo)
+            end
+            dmginfo:ScaleDamage(s or 2)
         end
     elseif (hitgroup == HITGROUP_LEFTARM or
             hitgroup == HITGROUP_RIGHTARM or
@@ -1011,7 +1014,7 @@ local fallsounds = {
     Sound("player/damage1.wav"),
     Sound("player/damage2.wav"),
     Sound("player/damage3.wav")
-};
+}
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
     if GetRoundState() == ROUND_ACTIVE and ply:ShouldActLikeJester() and (not ply:IsJesterTeam() or not ply:IsRoleAbilityDisabled()) then
@@ -1428,9 +1431,9 @@ function GM:PlayerDroppedWeapon(ply, wep)
 end
 
 local function GetTargetPlayerByName(name, allow_dead)
-    name = string.lower(name)
+    name = utf8.lower(name)
     for _, v in RandomPairs(GetAllPlayers()) do
-        if IsValid(v) and (allow_dead or v:IsActive()) and string.lower(v:Nick()) == name then
+        if IsValid(v) and (allow_dead or v:IsActive()) and utf8.lower(v:Nick()) == name then
             return v
         end
     end
@@ -1458,7 +1461,7 @@ local function PlayerAutoComplete(cmd, args)
     local name = ""
     local other_args = ""
     if not table.IsEmpty(arg_split) then
-        name = string.Trim(string.lower(arg_split[#arg_split]))
+        name = string.Trim(utf8.lower(arg_split[#arg_split]))
         if #arg_split > 1 then
             other_args = " \"" .. table.concat(arg_split, "\" \"", 1, #arg_split - 1) .. "\""
         end
@@ -1467,7 +1470,7 @@ local function PlayerAutoComplete(cmd, args)
     -- Find player options that match the given value (or all if there is no given value)
     local options = {}
     for _, v in PlayerIterator() do
-        if #name == 0 or string.find(string.lower(v:Nick()), name) then
+        if #name == 0 or string.find(utf8.lower(v:Nick()), name) then
             TableInsert(options, cmd .. other_args .. " \"" .. v:Nick() .. "\"")
         end
     end

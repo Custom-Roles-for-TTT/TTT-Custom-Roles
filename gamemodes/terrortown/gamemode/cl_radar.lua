@@ -147,7 +147,7 @@ local tele_mark = surface.GetTextureID("vgui/ttt/tele_mark")
 local GetPTranslation = LANG.GetParamTranslation
 local FormatTime = util.SimpleTime
 
-local near_cursor_dist = 180
+local near_cursor_dist = 32400
 
 function RADAR:Draw(client)
     if not client then return end
@@ -227,7 +227,7 @@ function RADAR:Draw(client)
 
         scrpos = tgt.pos:ToScreen()
         if scrpos.visible then
-            md = mpos:Distance(Vector(scrpos.x, scrpos.y, 0))
+            md = mpos:DistToSqr(Vector(scrpos.x, scrpos.y, 0))
             if md < near_cursor_dist then
                 alpha = math.Clamp(alpha * (md / near_cursor_dist), 40, 230)
             end
@@ -252,6 +252,9 @@ function RADAR:Draw(client)
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_TRAITOR], alpha)
                 elseif TRAITOR_ROLES[role] then
                     color = ColorAlpha(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"), alpha)
+                -- Decoys
+                elseif role == ROLE_NONE then
+                    color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_NONE], alpha)
                 else
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], alpha)
                 end
@@ -413,7 +416,7 @@ function RADAR.CreateMenu(parent, frame)
     dscan:SetSize(bw, bh)
     dscan:SetText(GetTranslation("radar_scan"))
     dscan.DoClick = function(s)
-        s:SetDisabled(true)
+        s:SetEnabled(false)
         RunConsoleCommand("ttt_radar_scan")
         frame:Close()
     end
@@ -436,9 +439,9 @@ function RADAR.CreateMenu(parent, frame)
 
     dform.Think = function(s)
         if RADAR.enable or not owned then
-            dscan:SetDisabled(true)
+            dscan:SetEnabled(false)
         else
-            dscan:SetDisabled(false)
+            dscan:SetEnabled(true)
         end
     end
 

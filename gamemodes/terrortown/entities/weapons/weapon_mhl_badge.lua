@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 local math = math
 local net = net
-local string = string
 local util = util
 
 SWEP.HoldType               = "slam"
@@ -10,6 +9,13 @@ SWEP.HoldType               = "slam"
 if CLIENT then
     SWEP.PrintName          = "Deputy Badge"
     SWEP.Slot               = 8
+
+    SWEP.EquipMenuData = {
+        type = "item_weapon",
+        desc = "Deputizes a target player."
+    }
+
+    SWEP.Icon = "vgui/ttt/icon_marshalbadge"
 
     SWEP.ViewModelFOV       = 60
     SWEP.DrawCrosshair      = false
@@ -126,7 +132,7 @@ if SERVER then
 
     function SWEP:GetProgressMessage(ply, body, bone)
         ply:QueueMessage(MSG_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_MARSHAL] .. " is promoting you.")
-        return "DEPUTIZING " .. string.upper(ply:Nick())
+        return "DEPUTIZING " .. utf8.upper(ply:Nick())
     end
 
     function SWEP:GetAbortMessage()

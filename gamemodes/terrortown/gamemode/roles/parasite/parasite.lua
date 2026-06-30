@@ -10,6 +10,7 @@ local table = table
 local timer = timer
 local util = util
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_ParasiteInfect")
@@ -59,7 +60,7 @@ local function ResetPlayer(ply)
 end
 
 local deadParasites = {}
-hook.Add("TTTPrepareRound", "Parasite_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Parasite_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("ParasiteInfected", false)
         ClearParasiteState(v)
@@ -67,22 +68,22 @@ hook.Add("TTTPrepareRound", "Parasite_TTTPrepareRound", function()
     deadParasites = {}
 end)
 
-hook.Add("TTTPlayerRoleChanged", "Parasite_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Parasite_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_PARASITE and oldRole ~= newRole then
         ResetPlayer(ply)
     end
 end)
 
-hook.Add("TTTPlayerSpawnForRound", "Parasite_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function Parasite_TTTPlayerSpawnForRound(ply, dead_only)
     ResetPlayer(ply)
-end)
+end
 
 -- Un-haunt the device owner if they used their device on the parasite
-hook.Add("TTTPlayerRoleChangedByItem", "Parasite_TTTPlayerRoleChangedByItem", function(ply, tgt, item)
+local function Parasite_TTTPlayerRoleChangedByItem(ply, tgt, item)
     if tgt:IsParasite() and tgt:GetNWString("ParasiteInfectingTarget", "") == ply:SteamID64() then
         ply:SetNWBool("ParasiteInfected", false)
     end
-end)
+end
 
 local function DoParasiteRespawnWithoutBody(parasite, hide_messages)
     if not hide_messages then
@@ -232,7 +233,7 @@ local function HandleParasiteInfection(attacker, victim, keep_progress)
     end
 end
 
-hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
+local function Parasite_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if valid_kill and victim:IsParasite() and not attacker:IsVictimChangingRole(victim) and not victim:IsRoleAbilityDisabled() then
         if not attacker:IsActive() then
@@ -275,19 +276,19 @@ hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
         net.WriteString(attacker:Nick())
         net.Broadcast()
     end
-end)
+end
 
-hook.Add("TTTSpectatorHUDKeyPress", "Parasite_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
+local function Parasite_TTTSpectatorHUDKeyPress(ply, tgt, powers)
     if ply:GetNWBool("ParasiteInfecting", false) then
         return true
     end
-end)
+end
 
 ---------------
 -- FOOTSTEPS --
 ---------------
 
-hook.Add("PlayerFootstep", "Parasite_PlayerFootstep", function(ply, pos, foot, sound, volume, rf)
+local function Parasite_PlayerFootstep(ply, pos, foot, sound, volume, rf)
     if not IsValid(ply) or ply:IsSpec() or not ply:Alive() then return true end
     if ply:WaterLevel() ~= 0 then return end
     if not ply:GetNWBool("ParasiteInfected", false) then return end
@@ -305,13 +306,13 @@ hook.Add("PlayerFootstep", "Parasite_PlayerFootstep", function(ply, pos, foot, s
         net.WriteUInt(killer_footstep_time, 8)
         net.WriteFloat(1) -- Scale
     net.Broadcast()
-end)
+end
 
 -------------
 -- RESPAWN --
 -------------
 
-hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmginfo)
+local function Parasite_DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
     local parasiteUsers = table.GetKeys(deadParasites)
@@ -357,7 +358,7 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
     end
 
     ply:SetNWBool("ParasiteInfected", false)
-end)
+end
 
 ------------------
 -- CUPID LOVERS --
@@ -367,13 +368,13 @@ local function IsParasiteInfecting(ply)
     return ply:GetNWBool("ParasiteInfecting", false) and ply:IsParasite() and not ply:Alive()
 end
 
-hook.Add("TTTCupidShouldLoverSurvive", "Parasite_TTTCupidShouldLoverSurvive", function(ply, lover)
+local function Parasite_TTTCupidShouldLoverSurvive(ply, lover)
     if parasite_infection_saves_lover:GetBool() and (IsParasiteInfecting(ply) or IsParasiteInfecting(lover)) then
         return true
     end
-end)
+end
 
-hook.Add("PostPlayerDeath", "Parasite_Lovers_PostPlayerDeath", function(ply)
+local function Parasite_Lovers_PostPlayerDeath(ply)
     local loverSID = ply:GetNWString("TTTCupidLover", "")
     if #loverSID == 0 then return end
 
@@ -383,19 +384,19 @@ hook.Add("PostPlayerDeath", "Parasite_Lovers_PostPlayerDeath", function(ply)
     if IsParasiteInfecting(lover) then
         lover:QueueMessage(MSG_PRINTBOTH, "Your lover has died and so you will not survive if you respawn!")
     end
-end)
+end
 
 ----------
 -- CURE --
 ----------
 
-hook.Add("TTTCanPlayerBeCured", "Parasite_TTTCanPlayerBeCured", function(ply)
+local function Parasite_TTTCanPlayerBeCured(ply)
     if ply:GetNWBool("ParasiteInfected", false) then
         return true
     end
-end)
+end
 
-hook.Add("TTTCurePlayer", "Parasite_TTTCurePlayer", function(ply)
+local function Parasite_TTTCurePlayer(ply)
     if not ply:GetNWBool("ParasiteInfected", false) then return end
 
     ply:SetNWBool("ParasiteInfected", false)
@@ -413,4 +414,21 @@ hook.Add("TTTCurePlayer", "Parasite_TTTCurePlayer", function(ply)
             end
         end
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_PARASITE] = {
+    ["DoPlayerDeath"] = Parasite_DoPlayerDeath,
+    ["PlayerDeath"] = Parasite_PlayerDeath,
+    ["PlayerFootstep"] = Parasite_PlayerFootstep,
+    ["PostPlayerDeath"] = Parasite_Lovers_PostPlayerDeath,
+    ["TTTCanPlayerBeCured"] = Parasite_TTTCanPlayerBeCured,
+    ["TTTCupidShouldLoverSurvive"] = Parasite_TTTCupidShouldLoverSurvive,
+    ["TTTCurePlayer"] = Parasite_TTTCurePlayer,
+    ["TTTPlayerRoleChangedByItem"] = Parasite_TTTPlayerRoleChangedByItem,
+    ["TTTPlayerSpawnForRound"] = Parasite_TTTPlayerSpawnForRound,
+    ["TTTSpectatorHUDKeyPress"] = Parasite_TTTSpectatorHUDKeyPress
+}

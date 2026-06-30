@@ -4,6 +4,7 @@ local net = net
 local player = player
 local string = string
 
+local AddHook = hook.Add
 local RemoveHook = hook.Remove
 
 -------------
@@ -19,7 +20,7 @@ local vampire_damage_reduction = GetConVar("ttt_vampire_damage_reduction")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Vampire_Translations_Initialize", function()
+AddHook("Initialize", "Vampire_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_vampires", "The {role} have taken over!")
     LANG.AddToLanguage("english", "ev_win_vampire", "The {role} have sucked the life out of everyone!")
@@ -53,35 +54,35 @@ Press {menukey} to receive your special equipment!]])
 end)
 
 -- If this is an independent Vampire, replace the "comrades" list with a generic kill message
-hook.Add("TTTRolePopupParams", "Vampire_TTTRolePopupParams", function(cli)
+local function Vampire_TTTRolePopupParams(cli)
     if cli:IsVampire() and cli:IsIndependentTeam() then
         return {comrades = "\n\nKill all others to win!"}
     end
-end)
+end
 
-hook.Add("TTTCheatSheetRoleStringOverride", "Vampire_TTTCheatSheetRoleStringOverride", function(cli, roleString)
+local function Vampire_TTTCheatSheetRoleStringOverride(cli, roleString)
     if not cvars.Bool("ttt_vampire_drop_bones", true) then
         return roleString .. "_no_bones"
     end
-end)
+end
 
 ---------------
 -- TARGET ID --
 ---------------
 
 -- Show skull icon over all non-jester team heads
-hook.Add("TTTTargetIDPlayerTargetIcon", "Vampire_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+local function Vampire_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     if cli:IsVampire() and vampire_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_VAMPIRE], "down"
     end
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
 -- Register the scoring events for the vampire
-hook.Add("Initialize", "Vampire_Scoring_Initialize", function()
+AddHook("Initialize", "Vampire_Scoring_Initialize", function()
     local vampire_icon = Material("icon16/user_gray.png")
     local heart_icon = Material("icon16/heart.png")
     local wrong_icon   = Material("icon16/cross.png")
@@ -132,39 +133,39 @@ net.Receive("TTT_VampirePrimeDeath", function(len)
 end)
 
 -- Show the player's starting role icon if they were converted to a vampire and group them with their original team
-hook.Add("TTTScoringSummaryRender", "Vampire_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Vampire_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if finalRole == ROLE_VAMPIRE then
         return ROLE_STRINGS_SHORT[startingRole], startingRole
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Vampire_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Vampire_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_VAMPIRE then
         return { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]) }, c = ROLE_COLORS[ROLE_VAMPIRE] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Vampire_TTTEventFinishText", function(e)
+local function Vampire_TTTEventFinishText(e)
     if e.win == WIN_VAMPIRE then
         return LANG.GetParamTranslation("ev_win_vampire", { role = string.lower(ROLE_STRINGS[ROLE_VAMPIRE]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Vampire_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Vampire_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_VAMPIRE then
         return win_string, ROLE_STRINGS[ROLE_VAMPIRE]
     end
-end)
+end
 
 ------------------
 -- HIGHLIGHTING --
@@ -180,7 +181,7 @@ local client = nil
 local function EnableVampireHighlights()
     -- Handle vampire targeting and non-traitor team logic
     -- Traitor logic is handled in cl_init and does not need to be duplicated here
-    hook.Add("PreDrawHalos", "Vampire_Highlight_PreDrawHalos", function()
+    AddHook("PreDrawHalos", "Vampire_Highlight_PreDrawHalos", function()
         local hasFangs = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_vam_fangs"
         local hideEnemies = not vampire_vision or not hasFangs
 
@@ -206,7 +207,7 @@ local function EnableVampireHighlights()
     end)
 end
 
-hook.Add("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", function()
+local function Vampire_Highlight_TTTUpdateRoleState()
     client = LocalPlayer()
     vampire_vision = vampire_vision_enabled:GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
@@ -218,10 +219,10 @@ hook.Add("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", function(
         RemoveHook("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end)
+end
 
 -- Handle enabling and disabling of highlighting
-hook.Add("Think", "Vampire_Highlight_Think", function()
+local function Vampire_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
     if vampire_vision and client:IsVampire() then
@@ -236,7 +237,7 @@ hook.Add("Think", "Vampire_Highlight_Think", function()
     if vampire_vision and not vision_enabled then
         RemoveHook("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
     end
-end)
+end
 
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_VAMPIRE] = function(ply, target)
     if not ply:IsVampire() then return end
@@ -249,7 +250,7 @@ end
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_VAMPIRE then
         -- Use this for highlighting things like "blood"
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -314,4 +315,25 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
 
         return html
     end
+end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_VAMPIRE] = {
+    ["Think"] = Vampire_Highlight_Think,
+    ["TTTCheatSheetRoleStringOverride"] = Vampire_TTTCheatSheetRoleStringOverride,
+    ["TTTEventFinishIconText"] = Vampire_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Vampire_TTTEventFinishText,
+    ["TTTRolePopupParams"] = Vampire_TTTRolePopupParams,
+    ["TTTScoringSummaryRender"] = Vampire_TTTScoringSummaryRender,
+    ["TTTScoringWinTitle"] = Vampire_TTTScoringWinTitle,
+    ["TTTTargetIDPlayerTargetIcon"] = Vampire_TTTTargetIDPlayerTargetIcon,
+    ["TTTUpdateRoleState"] = Vampire_Highlight_TTTUpdateRoleState
+}
+
+AddHook("TTTPrepareRound", "Vampire_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
 end)

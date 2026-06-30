@@ -3,6 +3,7 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("init_shd.lua")
+AddCSLuaFile("karma_shd.lua")
 AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_msgstack.lua")
 AddCSLuaFile("cl_hudpickup.lua")
@@ -20,6 +21,7 @@ AddCSLuaFile("cl_tips.lua")
 AddCSLuaFile("cl_voice.lua")
 AddCSLuaFile("scoring_shd.lua")
 AddCSLuaFile("util.lua")
+AddCSLuaFile("utf8_ext.lua")
 AddCSLuaFile("lang_shd.lua")
 AddCSLuaFile("corpse_shd.lua")
 AddCSLuaFile("player_ext_shd.lua")
@@ -45,13 +47,15 @@ AddCSLuaFile("vgui/sb_team.lua")
 AddCSLuaFile("vgui/sb_info.lua")
 AddCSLuaFile("cl_hitmarkers.lua")
 AddCSLuaFile("cl_deathnotify.lua")
-AddCSLuaFile("cl_sprint.lua")
 AddCSLuaFile("sprint_shd.lua")
 AddCSLuaFile("cl_cheatsheet.lua")
 AddCSLuaFile("cl_sync.lua")
+AddCSLuaFile("rolepacks_shd.lua")
 
 include("shared.lua")
+include("utf8_ext.lua")
 include("init_shd.lua")
+include("karma_shd.lua")
 
 include("incompatible_addons.lua")
 include("karma.lua")
@@ -72,6 +76,7 @@ include("hitmarkers.lua")
 include("deathnotify.lua")
 include("roleweapons.lua")
 include("sprint_shd.lua")
+include("rolepacks_shd.lua")
 include("rolepacks.lua")
 include("roleblocks.lua")
 include("sync.lua")
@@ -109,7 +114,6 @@ CreateConVar("ttt_posttime_seconds", "30", FCVAR_NOTIFY)
 CreateConVar("ttt_firstpreptime", "60")
 
 -- Haste mode
-local ttt_haste = CreateConVar("ttt_haste", "1", FCVAR_NOTIFY)
 CreateConVar("ttt_haste_starting_minutes", "5", FCVAR_NOTIFY)
 CreateConVar("ttt_haste_minutes_per_death", "0.5", FCVAR_NOTIFY)
 
@@ -192,14 +196,18 @@ CreateConVar("ttt_use_weapon_spawn_scripts", "1")
 CreateConVar("ttt_weapon_spawn_count", "0")
 
 CreateConVar("ttt_round_limit", "6", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
-CreateConVar("ttt_time_limit_minutes", "75", FCVAR_NOTIFY + FCVAR_REPLICATED)
+local time_limit_minutes = CreateConVar("ttt_time_limit_minutes", "75", FCVAR_NOTIFY + FCVAR_REPLICATED)
 
-CreateConVar("ttt_idle_limit", "180", FCVAR_NOTIFY)
+local idle_limit = CreateConVar("ttt_idle_limit", "180", FCVAR_NOTIFY + FCVAR_REPLICATED)
 
-CreateConVar("ttt_voice_drain", "0", FCVAR_NOTIFY)
-CreateConVar("ttt_voice_drain_normal", "0.2", FCVAR_NOTIFY)
-CreateConVar("ttt_voice_drain_admin", "0.05", FCVAR_NOTIFY)
-CreateConVar("ttt_voice_drain_recharge", "0.05", FCVAR_NOTIFY)
+local loc_voice = GetConVar("ttt_locational_voice")
+
+local voice_drain = CreateConVar("ttt_voice_drain", "0", FCVAR_NOTIFY + FCVAR_REPLICATED)
+local voice_drain_normal = CreateConVar("ttt_voice_drain_normal", "0.2", FCVAR_NOTIFY + FCVAR_REPLICATED)
+local voice_drain_admin = CreateConVar("ttt_voice_drain_admin", "0", FCVAR_NOTIFY + FCVAR_REPLICATED)
+local voice_drain_recharge = CreateConVar("ttt_voice_drain_recharge", "0.05", FCVAR_NOTIFY + FCVAR_REPLICATED)
+
+local highlight_admins = GetConVar("ttt_highlight_admins")
 
 CreateConVar("ttt_namechange_kick", "1", FCVAR_NOTIFY)
 CreateConVar("ttt_namechange_bantime", "10")
@@ -213,7 +221,6 @@ CreateConVar("ttt_bem_sv_cols", 4, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERV
 CreateConVar("ttt_bem_sv_rows", 5, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of rows in the shop menu's item list (serverside)")
 CreateConVar("ttt_bem_sv_size", 64, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the item size in the shop menu's item list (serverside)")
 
-local ttt_detective = CreateConVar("ttt_sherlock_mode", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY)
 local ttt_minply = CreateConVar("ttt_minimum_players", "2", FCVAR_ARCHIVE + FCVAR_NOTIFY)
 
 -- debuggery
@@ -298,7 +305,7 @@ function GM:Initialize()
         [OPEN_ROT] = true,
         [OPEN_BUT] = true,
         [OPEN_NOTOGGLE] = true
-    };
+    }
 
     -- More map config ent defaults
     GAMEMODE.force_plymodel = ""
@@ -360,23 +367,21 @@ function GM:InitPostEntity()
     WEPS.ForcePrecache()
 end
 
--- Convar replication is broken in gmod, so we do this.
+-- Convar replication used to be broken in gmod, so we did this.
 -- I don't like it any more than you do, dear reader.
 function GM:SyncGlobals()
     -- For some reason hooking "SyncGlobals" directly is unreliable so... here we go
     CallHook("TTTSyncGlobals", nil)
 
-    SetGlobalBool("ttt_detective", ttt_detective:GetBool())
-    SetGlobalBool("ttt_haste", ttt_haste:GetBool())
-    SetGlobalInt("ttt_time_limit_minutes", GetConVar("ttt_time_limit_minutes"):GetInt())
-    SetGlobalBool("ttt_highlight_admins", GetConVar("ttt_highlight_admins"):GetBool())
-    SetGlobalBool("ttt_locational_voice", GetConVar("ttt_locational_voice"):GetBool())
-    SetGlobalInt("ttt_idle_limit", GetConVar("ttt_idle_limit"):GetInt())
+    SetGlobalInt("ttt_time_limit_minutes", time_limit_minutes:GetInt())
+    SetGlobalBool("ttt_highlight_admins", highlight_admins:GetBool())
+    SetGlobalBool("ttt_locational_voice", loc_voice:GetBool())
+    SetGlobalInt("ttt_idle_limit", idle_limit:GetInt())
 
-    SetGlobalBool("ttt_voice_drain", GetConVar("ttt_voice_drain"):GetBool())
-    SetGlobalFloat("ttt_voice_drain_normal", GetConVar("ttt_voice_drain_normal"):GetFloat())
-    SetGlobalFloat("ttt_voice_drain_admin", GetConVar("ttt_voice_drain_admin"):GetFloat())
-    SetGlobalFloat("ttt_voice_drain_recharge", GetConVar("ttt_voice_drain_recharge"):GetFloat())
+    SetGlobalBool("ttt_voice_drain", voice_drain:GetBool())
+    SetGlobalFloat("ttt_voice_drain_normal", voice_drain_normal:GetFloat())
+    SetGlobalFloat("ttt_voice_drain_admin", voice_drain_admin:GetFloat())
+    SetGlobalFloat("ttt_voice_drain_recharge", voice_drain_recharge:GetFloat())
 
     SetGlobalFloat("ttt_karma_strict", GetConVar("ttt_karma_strict"):GetBool())
     SetGlobalFloat("ttt_karma_lenient", GetConVar("ttt_karma_lenient"):GetBool())
@@ -424,12 +429,10 @@ end
 
 -- Used to be in Think/Tick, now in a timer
 function WaitingForPlayersChecker()
-    if GetRoundState() == ROUND_WAIT then
-        if EnoughPlayers() then
-            timer.Create("wait2prep", 1, 1, PrepareRound)
+    if GetRoundState() == ROUND_WAIT and EnoughPlayers() then
+        timer.Create("wait2prep", 1, 1, PrepareRound)
 
-            timer.Stop("waitingforply")
-        end
+        timer.Stop("waitingforply")
     end
 end
 
@@ -500,25 +503,26 @@ function StartNameChangeChecks()
     end
 end
 
-local function CleanUp()
-    local et = ents.TTT
-    -- if we are going to import entities, it's no use replacing HL2DM ones as
-    -- soon as they spawn, because they'll be removed anyway
-    et.SetReplaceChecking(not et.CanImportEntities(game.GetMap()))
+local function StopRoundTimers()
+    -- remove all timers
+    timer.Stop("wait2prep")
+    timer.Stop("prep2begin")
+    timer.Stop("end2prep")
+    timer.Stop("winchecker")
+end
 
-    et.FixParentedPreCleanup()
+-- Make sure we have the players to do a round, people can leave during our
+-- preparations so we'll call this numerous times
+local function CheckForAbort()
+    if not EnoughPlayers() then
+        LANG.Msg("round_minplayers")
+        StopRoundTimers()
 
-    game.CleanUpMap(false, nil, function() et.FixParentedPostCleanup() end)
-
-    -- Strip players now, so that their weapons are not seen by ReplaceEntities
-    for k, v in PlayerIterator() do
-        if IsValid(v) then
-            v:StripWeapons()
-        end
+        WaitForPlayers()
+        return true
     end
 
-    -- a different kind of cleanup
-    hook.Remove("PlayerSay", "ULXMeCheck")
+    return false
 end
 
 local function SpawnEntities()
@@ -548,26 +552,36 @@ local function SpawnEntities()
     SpawnWillingPlayers()
 end
 
-local function StopRoundTimers()
-    -- remove all timers
-    timer.Stop("wait2prep")
-    timer.Stop("prep2begin")
-    timer.Stop("end2prep")
-    timer.Stop("winchecker")
-end
+local function CleanUp()
+    local et = ents.TTT
+    -- if we are going to import entities, it's no use replacing HL2DM ones as
+    -- soon as they spawn, because they'll be removed anyway
+    et.SetReplaceChecking(not et.CanImportEntities(game.GetMap()))
 
--- Make sure we have the players to do a round, people can leave during our
--- preparations so we'll call this numerous times
-local function CheckForAbort()
-    if not EnoughPlayers() then
-        LANG.Msg("round_minplayers")
-        StopRoundTimers()
+    et.FixParentedPreCleanup()
 
-        WaitForPlayers()
-        return true
+    game.CleanUpMap(false, nil, function()
+        et.FixParentedPostCleanup()
+        SpawnEntities()
+
+        if CheckForAbort() then return end
+
+        -- Tell hooks and map we started prep
+        hook.Call("TTTPrepareRound")
+
+        ClearAllFootsteps()
+        et.TriggerRoundStateOutputs(ROUND_PREP)
+    end)
+
+    -- Strip players now, so that their weapons are not seen by ReplaceEntities
+    for k, v in PlayerIterator() do
+        if IsValid(v) then
+            v:StripWeapons()
+        end
     end
 
-    return false
+    -- a different kind of cleanup
+    hook.Remove("PlayerSay", "ULXMeCheck")
 end
 
 function GM:TTTDelayRoundStartForVote()
@@ -578,6 +592,7 @@ end
 
 function PrepareRound()
     for _, v in PlayerIterator() do
+        v:SetRole(ROLE_INNOCENT)
         v:SetInvulnerable(false, false)
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         -- Workaround to prevent GMod sprint from working
@@ -592,6 +607,7 @@ function PrepareRound()
         -- Remove the spirit entity for this player, if there is one
         v:RemoveSpectatorSpirit()
     end
+    SendFullStateUpdate()
 
     -- Check playercount
     if CheckForAbort() then return end
@@ -619,6 +635,10 @@ function PrepareRound()
 
     -- Update damage scaling
     KARMA.RoundBegin()
+
+    ROLEPACKS.SendRolePackRoleList()
+    ROLEPACKS.ApplyRolePackConVars()
+    ROLEPACKS.FillRolePackWeaponTables()
 
     WEPS.ResetWeaponsCache()
     WEPS.ResetRoleWeaponCache()
@@ -649,9 +669,6 @@ function PrepareRound()
     LANG.Msg("round_begintime", { num = ptime })
     SetRoundState(ROUND_PREP)
 
-    -- Delay spawning until next frame to avoid ent overload
-    timer.Simple(0.01, SpawnEntities)
-
     -- Undo the roundrestart mute, though they will once again be muted for the
     -- selectmute timer.
     timer.Create("restartmute", 1, 1, function() MuteForRestart(false) end)
@@ -663,12 +680,6 @@ function PrepareRound()
 
     -- In case client's cleanup fails, make client set all players to innocent role
     timer.Simple(1, SendRoleReset)
-
-    -- Tell hooks and map we started prep
-    RunHook("TTTPrepareRound")
-
-    ClearAllFootsteps()
-    ents.TTT.TriggerRoundStateOutputs(ROUND_PREP)
 end
 
 function SetRoundEnd(endtime)
@@ -935,7 +946,7 @@ function CheckForMapSwitch()
     local rounds_left = math.max(0, GetGlobalInt("ttt_rounds_left", 6) - 1)
     SetGlobalInt("ttt_rounds_left", rounds_left)
 
-    local time_left = math.max(0, (GetConVar("ttt_time_limit_minutes"):GetInt() * 60) - CurTime())
+    local time_left = math.max(0, (time_limit_minutes:GetInt() * 60) - CurTime())
     local switchmap = false
     local nextmap = StringUpper(game.GetMapNext())
 

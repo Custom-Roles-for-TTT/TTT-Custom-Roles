@@ -68,7 +68,7 @@ SWEP.InLoadoutFor           = {ROLE_GUESSER}
 SWEP.InLoadoutForDefault    = {ROLE_GUESSER}
 
 if SERVER then
-    CreateConVar("ttt_guesser_minimum_radius", "5", FCVAR_NONE, "The minimum radius of the guesser's device in meters. Set to 0 to disable", 1, 30)
+    CreateConVar("ttt_guesser_minimum_radius", "5", FCVAR_NONE, "The minimum radius of the guesser's device in meters. Set to 0 to disable", 0, 30)
 end
 local guesser_unguessable_roles = CreateConVar("ttt_guesser_unguessable_roles", "lootgoblin,zombie", FCVAR_REPLICATED, "Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.")
 
@@ -112,7 +112,8 @@ function SWEP:PrimaryAttack()
         if IsPlayer(tr.Entity) then
             local ply = tr.Entity
             local radius = GetConVar("ttt_guesser_minimum_radius"):GetFloat() * UNITS_PER_METER
-            if radius == 0 or ply:GetPos():Distance(owner:GetPos()) <= radius then
+            local radiusSqr = radius * radius
+            if radius == 0 or ply:GetPos():DistToSqr(owner:GetPos()) <= radiusSqr then
                 if ply:GetNWBool("TTTGuesserWasGuesser", false) then
                     owner:QueueMessage(MSG_PRINTCENTER, "That player was previously " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and so cannot be guessed!")
                     return
@@ -131,11 +132,10 @@ function SWEP:PrimaryAttack()
                     ply:QueueMessage(MSG_PRINTBOTH, "Your role was guessed by " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and you have taken their place!")
                     CallHook("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
 
-                    ply:MoveRoleState(owner)
-
                     owner:SetRole(role)
                     owner:StripRoleWeapons()
                     RunHook("PlayerLoadout", owner)
+                    ply:MoveRoleState(owner)
 
                     ply:SetRole(ROLE_GUESSER)
                     ply:StripRoleWeapons()

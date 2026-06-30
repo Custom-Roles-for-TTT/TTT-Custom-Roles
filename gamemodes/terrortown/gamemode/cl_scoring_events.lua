@@ -116,7 +116,7 @@ Event(EVENT_GAME,
                   if e.state == ROUND_ACTIVE then return T("ev_start") end
                end,
         icon = function(e)
-                  return app_icon, "Game"
+                  return app_icon, T("ev_start_tip")
                end
       })
 
@@ -132,7 +132,7 @@ Event(EVENT_SPAWN,
                   end
                end,
         icon = function(e)
-                  return app_icon, "Game"
+                  return app_icon, T("ev_start_tip")
                end
       })
 Event(EVENT_ROLECHANGE,
@@ -146,7 +146,7 @@ Event(EVENT_ROLECHANGE,
                   end
                end,
         icon = function(e)
-                  return app_icon, "Game"
+                  return app_icon, T("ev_start_tip")
                end
       })
 
@@ -158,7 +158,7 @@ Event(EVENT_CREDITFOUND,
                                           player = e.b})
                end,
         icon = function(e)
-                  return credit_icon, "Credit found"
+                  return credit_icon,  T("ev_credit_tip")
                end
      })
 
@@ -167,7 +167,7 @@ Event(EVENT_BODYFOUND,
                   return PT("ev_body", {finder = e.ni, victim = e.b})
                end,
         icon = function(e)
-                  return magnifier_icon, "Body discovered"
+                  return magnifier_icon, T("ev_body_tip")
                end
      })
 
@@ -178,7 +178,7 @@ Event(EVENT_C4DISARM,
                             {player = e.ni, owner = e.own or "aliens"})
                end,
         icon = function(e)
-                  return wrench_icon, "C4 disarm"
+                  return wrench_icon, T("ev_c4_disarm_tip")
                end
      })
 
@@ -187,7 +187,7 @@ Event(EVENT_C4EXPLODE,
                   return PT("ev_c4_boom", {player = e.ni})
                end,
         icon = function(e)
-                  return bomb_icon, "C4 exploded"
+                  return bomb_icon, T("ev_c4_boom_tip")
                end
      })
 
@@ -196,7 +196,7 @@ Event(EVENT_C4PLANT,
                   return PT("ev_c4_plant", {player = e.ni})
                end,
         icon = function(e)
-                  return bomb_icon, "C4 planted"
+                  return bomb_icon, T("ev_c4_plant_tip")
                end
      })
 
@@ -315,17 +315,17 @@ Event(EVENT_KILL,
     text = KillText,
     icon = function(e)
         if e.att.sid64 == e.vic.sid64 or e.att.sid64 == -1 then
-            return wrong_icon, "Suicide"
+            return wrong_icon, T("ev_suicide")
         end
 
-        local attacker = (e.att.tr and "Traitor") or (e.att.jes and "Jester") or (e.att.ind and "Independent") or (e.att.mon and "Monster") or "Innocent"
-        local victim = (e.vic.tr and "Traitor") or (e.vic.jes and "Jester") or (e.vic.ind and "Independent") or (e.vic.mon and "Monster") or "Innocent"
+        local attacker = (e.att.tr and "traitor") or (e.att.jes and "jester") or (e.att.ind and "independent") or (e.att.mon and "monster") or "innocent"
+        local victim = (e.vic.tr and "traitor") or (e.vic.jes and "jester") or (e.vic.ind and "independent") or (e.vic.mon and "monster") or "innocent"
         if e.tk then
-            return wrong_icon, "Teamkill"
+            return wrong_icon, T("ev_teamkill")
         elseif e.att.tr or e.att.ind or e.att.mon then
-            return right_icon, attacker.." killed "..victim
+            return right_icon, T(attacker)..T("ev_killed")..T(victim)
         else
-            return shield_icon, attacker.." killed "..victim
+            return shield_icon, T(attacker)..T("ev_killed")..T(victim)
         end
     end
 })
@@ -335,7 +335,7 @@ Event(EVENT_DEFIBRILLATED, {
         return PT("ev_defi", {victim = e.vic})
     end,
     icon = function(e)
-        return heart_icon, "Defibrillated"
+        return heart_icon, T("ev_defi_icon")
     end})
 
 Event(EVENT_DISCONNECTED, {
@@ -343,7 +343,7 @@ Event(EVENT_DISCONNECTED, {
         return PT("ev_disco", {victim = e.vic})
     end,
     icon = function(e)
-        return disconnect_icon, "Disconnected"
+        return disconnect_icon, T("ev_disco_icon")
     end})
 
 Event(EVENT_LOG, {
@@ -351,5 +351,5 @@ Event(EVENT_LOG, {
         return e.txt
     end,
     icon = function(e)
-        return info_icon, "Information"
+        return info_icon, T("ev_info_icon")
     end})

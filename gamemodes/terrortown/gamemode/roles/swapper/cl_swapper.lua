@@ -1,6 +1,8 @@
 local hook = hook
 local net = net
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -13,7 +15,7 @@ local swapper_killer_swap = GetConVar("ttt_swapper_killer_swap")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Swapper_Translations_Initialize", function()
+AddHook("Initialize", "Swapper_Translations_Initialize", function()
     -- Event
     LANG.AddToLanguage("english", "ev_swap", "{victim} swapped with {attacker}")
 
@@ -29,18 +31,18 @@ deal no damage however, if anyone kills you, they become
 the {swapper} and you take their role and can join the fight.]])
 end)
 
-hook.Add("TTTRolePopupParams", "Swapper_TTTRolePopupParams", function(cli)
+local function Swapper_TTTRolePopupParams(cli)
     if not cli:IsSwapper() then return end
 
     return { swapper = ROLE_STRINGS[ROLE_SWAPPER] }
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
 -- Register the scoring events for the swapper
-hook.Add("Initialize", "Swapper_Scoring_Initialize", function()
+AddHook("Initialize", "Swapper_Scoring_Initialize", function()
     local swap_icon = Material("icon16/arrow_refresh_small.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -67,7 +69,7 @@ net.Receive("TTT_SwapperSwapped", function(len)
 end)
 
 -- Show who the current swapper killed (if anyone)
-hook.Add("TTTScoringSummaryRender", "Swapper_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+local function Swapper_TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if ply:IsSwapper() then
@@ -76,13 +78,13 @@ hook.Add("TTTScoringSummaryRender", "Swapper_TTTScoringSummaryRender", function(
             return roleFileName, groupingRole, roleColor, name, swappedWith, LANG.GetTranslation("score_swapper_killed")
         end
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Swapper_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Swapper_TTTTutorialRoleText", function(role)
     if role == ROLE_SWAPPER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
         local html = "The " .. ROLE_STRINGS[ROLE_SWAPPER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to be killed by another player and steal their role."
@@ -100,3 +102,12 @@ hook.Add("TTTTutorialRoleText", "Swapper_TTTTutorialRoleText", function(role, ti
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_SWAPPER] = {
+    ["TTTRolePopupParams"] = Swapper_TTTRolePopupParams,
+    ["TTTScoringSummaryRender"] = Swapper_TTTScoringSummaryRender
+}

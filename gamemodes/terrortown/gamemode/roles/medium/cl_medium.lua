@@ -5,7 +5,9 @@ local table = table
 local string = string
 local ents = ents
 
+local AddHook = hook.Add
 local StringUpper = string.upper
+local Utf8Upper = utf8.upper
 local PlayerIterator = player.Iterator
 local MathRand = math.Rand
 local MathRandom = math.random
@@ -26,7 +28,7 @@ local medium_hide_killer_role = GetConVar("ttt_medium_hide_killer_role")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Medium_Translations_Initialize", function()
+AddHook("Initialize", "Medium_Translations_Initialize", function()
     -- Seance
     LANG.AddToLanguage("english", "mdmseance_name", "NAME")
     LANG.AddToLanguage("english", "mdmseance_team", "TEAM")
@@ -52,9 +54,9 @@ end)
 ------------------
 
 local spirit_vision = true
-hook.Add("TTTUpdateRoleState", "Medium_RoleFeature_TTTUpdateRoleState", function()
+local function Medium_RoleFeature_TTTUpdateRoleState()
     spirit_vision = medium_spirit_vision:GetBool()
-end)
+end
 
 local cacheTime = CurTime()
 local cacheLength = 5
@@ -96,7 +98,7 @@ local client
 local wispOffset = Vector(0, 0, 64)
 local wispVelocity = Vector(0, 0, 30)
 local wispColor = Vector(1, 1, 1)
-hook.Add("Think", "Medium_RoleFeature_Think", function()
+local function Medium_RoleFeature_Think()
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not client then
@@ -136,7 +138,7 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
             ent.WispEmitter = nil
         end
     end
-end)
+end
 
 ---------------
 -- SPIRIT ID --
@@ -145,7 +147,7 @@ end)
 local roleback = surface.GetTextureID("vgui/ttt/sprite_roleback")
 local rolefront = surface.GetTextureID("vgui/ttt/sprite_rolefront")
 
-hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderables", function()
+local function Medium_PostDrawTranslucentRenderables()
     if medium_seance_max_info:GetInt() == MEDIUM_SCANNED_NONE then return end
 
     if not client then
@@ -168,7 +170,7 @@ hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderable
                     if stage >= MEDIUM_SCANNED_TEAM then
                         local role = ply:GetRole()
                         local roleFileName = ROLE_STRINGS_SHORT[role]
-                        local roleText = StringUpper(ROLE_STRINGS[ply:GetRole()])
+                        local roleText = Utf8Upper(ROLE_STRINGS[ply:GetRole()])
                         if stage == MEDIUM_SCANNED_TEAM then
                             role = ROLE_NONE
                             if ply:IsTraitorTeam() then role = ROLE_TRAITOR
@@ -207,13 +209,13 @@ hook.Add("PostDrawTranslucentRenderables", "Medium_PostDrawTranslucentRenderable
             end
         end
     end
-end)
+end
 
 ----------------
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Medium_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Medium_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ply) then return end
     if ply:IsActive() then return end
@@ -242,9 +244,9 @@ hook.Add("TTTScoreboardPlayerRole", "Medium_TTTScoreboardPlayerRole", function(p
     end
 
     return newColor, newRoleStr
-end)
+end
 
-hook.Add("TTTScoreGroup", "Medium_TTTScoreGroup", function(ply)
+local function Medium_TTTScoreGroup(ply)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ply) then return end
     if ply:IsActive() then return end
@@ -255,13 +257,13 @@ hook.Add("TTTScoreGroup", "Medium_TTTScoreGroup", function(ply)
     if not ply.search_result and not ply:GetNWBool("body_searched", false) and not ply:GetNWBool("body_found", false) then
         return GROUP_NOTFOUND
     end
-end)
+end
 
 ----------------
 -- SEANCE HUD --
 ----------------
 
-hook.Add("HUDPaint", "Medium_HUDPaint", function()
+local function Medium_HUDPaint()
     if not client then
         client = LocalPlayer()
     end
@@ -313,13 +315,13 @@ hook.Add("HUDPaint", "Medium_HUDPaint", function()
         local color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
         CRHUD:PaintProgressBar(x, y, w, color, client:GetNWString("TTTMediumSeanceMessage", ""), 1, #titles, titles)
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Medium_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Medium_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_MEDIUM then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -368,3 +370,16 @@ hook.Add("TTTTutorialRoleText", "Medium_TTTTutorialRoleText", function(role, tit
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_MEDIUM] = {
+    ["HUDPaint"] = Medium_HUDPaint,
+    ["PostDrawTranslucentRenderables"] = Medium_PostDrawTranslucentRenderables,
+    ["Think"] = Medium_RoleFeature_Think,
+    ["TTTScoreboardPlayerRole"] = Medium_TTTScoreboardPlayerRole,
+    ["TTTScoreGroup"] = Medium_TTTScoreGroup,
+    ["TTTUpdateRoleState"] = Medium_RoleFeature_TTTUpdateRoleState
+}

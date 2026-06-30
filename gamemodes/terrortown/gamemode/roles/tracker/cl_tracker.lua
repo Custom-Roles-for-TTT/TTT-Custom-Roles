@@ -1,5 +1,7 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -7,11 +9,39 @@ local hook = hook
 local tracker_footstep_time = GetConVar("ttt_tracker_footstep_time")
 local tracker_footstep_color = GetConVar("ttt_tracker_footstep_color")
 
+local function Tracker_TTTSettingsRolesTabSections(role, parentForm)
+    if role ~= ROLE_TRACKER then return end
+    if not GetConVar("ttt_tracker_minimap_enabled"):GetBool() then return end
+
+    local BASE_RADIUS = 135
+    local scale       = GetConVar("ttt_tracker_minimap_scale"):GetFloat()
+    local size        = 2 * BASE_RADIUS * scale
+
+    local width  = ScrW() - size
+    local height = ScrH() - size
+
+    parentForm:NumSlider(LANG.GetTranslation("tracker_minimap_offset_x"), "ttt_tracker_minimap_offset_x", 0, width, 0)
+    parentForm:NumSlider(LANG.GetTranslation("tracker_minimap_offset_y"), "ttt_tracker_minimap_offset_y", 0, height, 0)
+    parentForm:Button(LANG.GetTranslation("tracker_minimap_offset_reset"), "ttt_tracker_minimap_offset_reset")
+
+    parentForm:NumSlider(LANG.GetTranslation("tracker_minimap_scale"), "ttt_tracker_minimap_scale", 0.1, 3, 1)
+    parentForm:CheckBox(LANG.GetTranslation("tracker_minimap_lock_north"), "ttt_tracker_minimap_lock_north")
+
+    local comboCardinals, _ = parentForm:ComboBox(LANG.GetTranslation("tracker_minimap_show_cardinals_label"), "ttt_tracker_minimap_show_cardinals")
+    comboCardinals:SetTooltip(LANG.GetTranslation("tracker_minimap_show_cardinals"))
+    comboCardinals:SetSortItems(false)
+    comboCardinals:AddChoice("None", 0)
+    comboCardinals:AddChoice("North only", 1)
+    comboCardinals:AddChoice("All", 2)
+
+    return true
+end
+
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Tracker_Translations_Initialize", function()
+AddHook("Initialize", "Tracker_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_tracker", "Can see a trail of footsteps left by other players.")
 
@@ -21,13 +51,27 @@ You can see players' footsteps and follow their trails.
 Use your skills to keep an eye on where players have been.
 
 Press {menukey} to receive your equipment!]])
+
+    -- Minimap
+    LANG.AddToLanguage("english", "item_trk_minimap",      "Minimap")
+    LANG.AddToLanguage("english", "item_trk_minimap_desc", [[A minimap that shows the positions of all other players relative to you.
+
+Player icon color will match the player's footprint color and show the direction each player is facing.]])
+    LANG.AddToLanguage("english", "equip_tooltip_trackminimap", "Minimap control")
+    LANG.AddToLanguage("english", "tracker_minimap_scale", "Overall scale multiplier for the minimap.")
+    LANG.AddToLanguage("english", "tracker_minimap_lock_north", "Whether the minimap is locked north or rotates with the player.")
+    LANG.AddToLanguage("english", "tracker_minimap_show_cardinals_label", "Cardinal labels.")
+    LANG.AddToLanguage("english", "tracker_minimap_show_cardinals", "Which cardinal direction labels to show (none, North only, all).")
+    LANG.AddToLanguage("english", "tracker_minimap_offset_x", "Minimap X (horizontal) position")
+    LANG.AddToLanguage("english", "tracker_minimap_offset_y", "Minimap Y (vertical) position")
+    LANG.AddToLanguage("english", "tracker_minimap_offset_reset", "Reset minimap position")
 end)
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TRACKER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
@@ -57,3 +101,11 @@ hook.Add("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, ti
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_TRACKER] = {
+    ["TTTSettingsRolesTabSections"] = Tracker_TTTSettingsRolesTabSections
+}

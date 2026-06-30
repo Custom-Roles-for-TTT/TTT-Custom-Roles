@@ -1,6 +1,7 @@
 local hook = hook
 local string = string
 
+local AddHook = hook.Add
 local RemoveHook = hook.Remove
 
 -------------
@@ -20,7 +21,7 @@ local killer_can_see_jesters = GetConVar("ttt_killer_can_see_jesters")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Killer_Translations_Initialize", function()
+AddHook("Initialize", "Killer_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_killer", "The {role} has murdered you all!")
     LANG.AddToLanguage("english", "ev_win_killer", "The butchering {role} won the round!")
@@ -54,11 +55,11 @@ end)
 ---------------
 
 -- Show skull icon over all non-jester team heads
-hook.Add("TTTTargetIDPlayerTargetIcon", "Killer_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+local function Killer_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     if cli:IsKiller() and killer_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_KILLER], "down"
     end
-end)
+end
 
 ------------------
 -- HIGHLIGHTING --
@@ -70,12 +71,12 @@ local can_see_jesters = false
 local client = nil
 
 local function EnableKillerHighlights()
-    hook.Add("PreDrawHalos", "Killer_Highlight_PreDrawHalos", function()
+    AddHook("PreDrawHalos", "Killer_Highlight_PreDrawHalos", function()
         OnPlayerHighlightEnabled(client, {}, can_see_jesters, false, false)
     end)
 end
 
-hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
+local function Killer_Highlight_TTTUpdateRoleState()
     client = LocalPlayer()
     killer_vision = killer_vision_enabled:GetBool()
     can_see_jesters = killer_can_see_jesters:GetBool()
@@ -85,10 +86,10 @@ hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
         RemoveHook("PreDrawHalos", "Killer_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end)
+end
 
 -- Handle enabling and disabling of highlighting
-hook.Add("Think", "Killer_Highlight_Think", function()
+local function Killer_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
 
     if killer_vision and client:IsKiller() and not client:IsRoleAbilityDisabled() then
@@ -103,7 +104,7 @@ hook.Add("Think", "Killer_Highlight_Think", function()
     if killer_vision and not vision_enabled then
         RemoveHook("PreDrawHalos", "Killer_Highlight_PreDrawHalos")
     end
-end)
+end
 
 ROLE_IS_TARGET_HIGHLIGHTED[ROLE_KILLER] = function(ply, target)
     if not ply:IsKiller() then return end
@@ -114,43 +115,43 @@ end
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "Killer_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+local function Killer_TTTScoringWinTitle(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_KILLER then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_KILLER]) }, c = ROLE_COLORS[ROLE_KILLER] }
     end
-end)
+end
 
 ------------
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Killer_TTTEventFinishText", function(e)
+local function Killer_TTTEventFinishText(e)
     if e.win == WIN_KILLER then
         return LANG.GetParamTranslation("ev_win_killer", { role = string.lower(ROLE_STRINGS[ROLE_KILLER]) })
     end
-end)
+end
 
-hook.Add("TTTEventFinishIconText", "Killer_TTTEventFinishIconText", function(e, win_string, role_string)
+local function Killer_TTTEventFinishIconText(e, win_string, role_string)
     if e.win == WIN_KILLER then
         return win_string, ROLE_STRINGS[ROLE_KILLER]
     end
-end)
+end
 
 -----------
 -- SMOKE --
 -----------
 
-hook.Add("TTTShouldPlayerSmoke", "Killer_TTTShouldPlayerSmoke", function(ply, cli, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
+local function Killer_TTTShouldPlayerSmoke(ply, cli, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
     if ply:IsKiller() and ply:GetNWBool("KillerSmoke", false) then
         return true
     end
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_KILLER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_KILLER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to be the last player standing."
@@ -201,4 +202,23 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
 
         return html
     end
+end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_KILLER] = {
+    ["Think"] = Killer_Highlight_Think,
+    ["TTTEventFinishIconText"] = Killer_TTTEventFinishIconText,
+    ["TTTEventFinishText"] = Killer_TTTEventFinishText,
+    ["TTTScoringWinTitle"] = Killer_TTTScoringWinTitle,
+    ["TTTShouldPlayerSmoke"] = Killer_TTTShouldPlayerSmoke,
+    ["TTTTargetIDPlayerTargetIcon"] = Killer_TTTTargetIDPlayerTargetIcon,
+    ["TTTUpdateRoleState"] = Killer_Highlight_TTTUpdateRoleState
+}
+
+AddHook("TTTPrepareRound", "Killer_TTTPrepareRound", function()
+    vision_enabled = false
+    RemoveHook("PreDrawHalos", "Killer_Highlight_PreDrawHalos")
 end)

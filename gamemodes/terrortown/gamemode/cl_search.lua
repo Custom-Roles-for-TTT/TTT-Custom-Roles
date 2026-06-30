@@ -261,7 +261,7 @@ function PreprocSearch(raw)
                 local vic = Entity(d[1])
                 local dc = d[1] == 0 -- disconnected
                 if dc or IsPlayer(vic) then
-                    search[t].text = PT("search_kills1", { player = dc and "<Disconnected>" or vic:Nick() })
+                    search[t].text = PT("search_kills1", { player = dc and Format("<%s>", T("disconnected")) or vic:Nick() })
                 end
             elseif num > 1 then
                 local txt = T("search_kills2") .. "\n"
@@ -271,7 +271,7 @@ function PreprocSearch(raw)
                     local vic = Entity(idx)
                     local dc = idx == 0
                     if dc or IsPlayer(vic) then
-                        table.insert(nicks, dc and "<Disconnected>" or vic:Nick())
+                        table.insert(nicks, dc and Format("<%s>", T("disconnected")) or vic:Nick())
                     end
                 end
 
@@ -444,7 +444,7 @@ local function ShowSearchScreen(search_raw)
             text = T("search_confirm"),
             doclick = function(btn)
                 RunConsoleCommand("ttt_confirm_death", search_raw.eidx, search_raw.eidx + search_raw.dtime)
-                btn:SetDisabled(true)
+                btn:SetEnabled(false)
             end,
             disabled = function()
                 local covert = client:KeyDownLast(IN_WALK) or not GetConVar("ttt_corpse_search_auto_confirm"):GetBool()
@@ -458,7 +458,7 @@ local function ShowSearchScreen(search_raw)
                 doclick = function(btn)
                     client.called_corpses = client.called_corpses or {}
                     table.insert(client.called_corpses, search_raw.eidx)
-                    btn:SetDisabled(true)
+                    btn:SetEnabled(false)
 
                     RunConsoleCommand("ttt_call_detective", search_raw.eidx)
                 end,
@@ -519,15 +519,15 @@ local function ShowSearchScreen(search_raw)
                 for _, dbutton in ipairs(dbuttons) do
                     if not dbutton or not dbutton.data then continue end
                     if type(dbutton.data.disabled) == "function" then
-                        dbutton:SetDisabled(dbutton.data.disabled())
+                        dbutton:SetEnabled(not dbutton.data.disabled())
                     end
                 end
             end)
         end
         if type(btn.disabled) == "function" then
-            dbtn:SetDisabled(btn.disabled())
+            dbtn:SetEnabled(not btn.disabled())
         elseif type(btn.disabled) == "boolean" then
-            dbtn:SetDisabled(btn.disabled)
+            dbtn:SetEnabled(not btn.disabled)
         end
         dbtn.data = btn
         table.insert(dbuttons, dbtn)

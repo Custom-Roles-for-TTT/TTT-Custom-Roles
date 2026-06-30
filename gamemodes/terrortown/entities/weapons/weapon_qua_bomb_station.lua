@@ -19,7 +19,7 @@ if CLIENT then
                 traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]
             })
         end
-    };
+    }
 
     SWEP.Icon = "vgui/ttt/icon_bombstation"
 end
@@ -127,8 +127,8 @@ function SWEP:Deploy()
     return true
 end
 
-function SWEP:DrawWorldModel()
+function SWEP:DrawWorldModel(flags)
 end
 
-function SWEP:DrawWorldModelTranslucent()
+function SWEP:DrawWorldModelTranslucent(flags)
 end

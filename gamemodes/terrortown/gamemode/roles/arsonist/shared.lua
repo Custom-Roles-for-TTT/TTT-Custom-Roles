@@ -1,7 +1,5 @@
 AddCSLuaFile()
 
-local table = table
-
 -- Initialize role features
 ARSONIST_UNDOUSED = 0
 ARSONIST_DOUSING = 1
@@ -19,95 +17,96 @@ ROLE_CAN_SEE_MIA[ROLE_ARSONIST] = true
 CreateConVar("ttt_arsonist_early_ignite", "0", FCVAR_REPLICATED, "Whether to allow the arsonist to use their igniter without dousing everyone first", 0, 1)
 CreateConVar("ttt_arsonist_douse_time", "8", FCVAR_REPLICATED, "The amount of time (in seconds) the arsonist takes to douse someone", 0, 60)
 CreateConVar("ttt_arsonist_douse_notify_delay_min", "10", FCVAR_REPLICATED, "The minimum delay before a player is notified they've been doused", 0, 30)
-CreateConVar("ttt_arsonist_douse_notify_delay_max", "30", FCVAR_REPLICATED, "The delay delay before a player is notified they've been doused", 3, 60)
+CreateConVar("ttt_arsonist_douse_notify_delay_max", "30", FCVAR_REPLICATED, "The maximum delay before a player is notified they've been doused", 3, 60)
 CreateConVar("ttt_arsonist_douse_corpses", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_arsonist_warn_all", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_detectives_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
 
-ROLE_CONVARS[ROLE_ARSONIST] = {}
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_douse_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_douse_distance",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_douse_notify_delay_min",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_douse_notify_delay_max",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_damage_penalty",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_burn_damage",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_early_ignite",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_detectives_search_only_arsonistdouse",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_corpse_ignite_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_can_see_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_douse_require_los",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_douse_corpses",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_douse_float_time",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_douse_cooldown",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_ignite_on_death",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_ignite_on_death_notify",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_ignite_on_death_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_arsonist_warn_all",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_ARSONIST] = {
+    {
+        cvar = "ttt_arsonist_douse_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_arsonist_douse_distance",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_arsonist_douse_notify_delay_min",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_arsonist_douse_notify_delay_max",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_arsonist_damage_penalty",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_arsonist_burn_damage",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_arsonist_early_ignite",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_detectives_search_only_arsonistdouse",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_arsonist_corpse_ignite_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_arsonist_can_see_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_arsonist_update_scoreboard",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_arsonist_douse_require_los",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_arsonist_douse_corpses",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_arsonist_douse_float_time",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_arsonist_douse_cooldown",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_arsonist_ignite_on_death",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_arsonist_ignite_on_death_notify",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_arsonist_ignite_on_death_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_arsonist_warn_all",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}

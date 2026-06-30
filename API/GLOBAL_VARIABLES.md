@@ -116,6 +116,11 @@ The role number where the externally-loaded roles start.\
 *Realm:* Client and Server\
 *Added in:* 1.0.10
 
+### ROLE_HOOK_REGISTRATION_KEY  
+Table of role to key for use with the Hook Management system. Used when multiple roles share the same set of hooks (e.g. the Twins).\
+*Realm*: Client and Server\
+*Added in*: 2.4.6 
+
 ### ROLE_NONE
 Updated to be -1 so players who have not been given a role can be identified.\
 *Realm:* Client and Server\
@@ -126,6 +131,43 @@ The maximum role number.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+### ROLE_PACK_DETAILS
+Table of extra role pack details (e.g. display name and description) for the currently enabled role pack.\
+*Realm:* Client and Server\
+*Added in:* 2.4.2
+
+### ROLE_PACK_ROLES
+Mapping of which roles are in the currently enabled role pack.\
+*Realm:* Client and Server\
+*Added in:* 2.0.7
+
+### ROLE_REGISTERED_HOOKS  
+Mapping of role to table of registered hooks. Used by automated Hook Management system.\
+The inner table is a mapping of hook names to hook handler functions or a table of identifier-handler functions. For example:
+```lua
+local function MyRole_EntityTakeDamage(ent, dmginfo)
+    if ent:IsMyRole() then
+        print("MyRole did damage!")
+    end
+end
+local function MyRole_TTTEndRound()
+    print("Round ended for MyRole!")
+end
+local function MyRole_Congrats_TTTEndRound()
+    print("Congrats to the winners from MyRole!")
+end
+
+ROLE_REGISTERED_HOOKS[ROLE_MYROLE] = {
+    ["EntityTakeDamage"] = MyRole_EntityTakeDamage,
+    ["TTTEndRound"] = {
+        ["MyRole_TTTEndRound"] = MyRole_TTTEndRound,
+        ["MyRole_Congrats_TTTEndRound"] = MyRole_Congrats_TTTEndRound
+    }
+}
+```
+*Realm*: Client and Server\
+*Added in*: 2.4.6 
+
 ### ROLE_SCORE_ICON_MATERIALS
 Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `score` icons for each role by their role short string.\
 *Realm:* Client and Server\
@@ -135,6 +177,11 @@ Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) represent
 Table of title-case names for each role.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
+
+### ROLE_STRINGS_DEFAULT
+Table of title-case names for each role. Copy of `ROLE_STRINGS` from before role strings are changed by ConVars.\
+*Realm:* Client and Server\
+*Added in:* 2.4.4
 
 ### ROLE_STRINGS_EXT
 Table of extended (e.g. prefixed by an article) names for each role.\

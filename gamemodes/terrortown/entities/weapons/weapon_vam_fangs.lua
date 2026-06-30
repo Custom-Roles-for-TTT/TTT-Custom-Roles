@@ -16,7 +16,7 @@ if CLIENT then
     SWEP.EquipMenuData = {
         type = "Weapon",
         desc = "Left-click to suck blood. Right-click to fade."
-    };
+    }
 
     SWEP.Slot = 8 -- add 1 to get the slot number key
     SWEP.ViewModelFOV = 54
@@ -641,11 +641,11 @@ if CLIENT then
 
         local pos = ply:GetPos() + Vector(0, 0, 10)
         local client = LocalPlayer()
-        if client:GetPos():Distance(pos) > 1000 then return end
+        if client:GetPos():DistToSqr(pos) > 1000000 then return end
 
         local emitter = ParticleEmitter(pos)
+        local max_height = ply:GetViewOffset().z + 10
         for _ = 0, math.random(150, 250) do
-            local max_height = ply:GetViewOffset().z + 10
             local height = math.random(0, max_height)
 
             -- Set width limits based on what the random height is so it vaguely resembles a person-shape (or just their head)
@@ -673,8 +673,8 @@ if CLIENT then
                 part:SetRoll(0)
                 part:SetRollDelta(0)
 
-                local velocity = VectorRand() * math.random(10, 15);
-                velocity.z = 5;
+                local velocity = VectorRand() * math.random(10, 15)
+                velocity.z = 5
                 part:SetVelocity(velocity)
             end
         end

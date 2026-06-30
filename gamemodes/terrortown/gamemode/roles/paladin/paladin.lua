@@ -5,6 +5,7 @@ local math = math
 local player = player
 local timer = timer
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 local CallHook = hook.Call
 
@@ -23,7 +24,7 @@ local paladin_damage_reduction = GetConVar("ttt_paladin_damage_reduction")
 -- ROLE FEATURES --
 -------------------
 
-hook.Add("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound", function()
+AddHook("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound", function()
     local paladinHeal = paladin_heal_rate:GetInt()
     local paladinHealSelf = paladin_heal_self:GetBool()
     local paladinRadius = paladin_aura_radius:GetFloat() * UNITS_PER_METER
@@ -43,15 +44,15 @@ hook.Add("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound", function()
     end)
 end)
 
-hook.Add("TTTEndRound", "Paladin_RoleFeatures_TTTEndRound", function()
+local function Paladin_RoleFeatures_TTTEndRound()
     if timer.Exists("paladinheal") then timer.Remove("paladinheal") end
-end)
+end
 
 ------------------
 -- DAMAGE SCALE --
 ------------------
 
-hook.Add("ScalePlayerDamage", "Paladin_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Paladin_ScalePlayerDamage(ply, hitgroup, dmginfo)
     if GetRoundState() < ROUND_ACTIVE then return end
 
     local att = dmginfo:GetAttacker()
@@ -70,4 +71,13 @@ hook.Add("ScalePlayerDamage", "Paladin_ScalePlayerDamage", function(ply, hitgrou
         local reduction = paladin_damage_reduction:GetFloat()
         dmginfo:ScaleDamage(1 - reduction)
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_PALADIN] = {
+    ["ScalePlayerDamage"] = Paladin_ScalePlayerDamage,
+    ["TTTEndRound"] = Paladin_RoleFeatures_TTTEndRound
+}

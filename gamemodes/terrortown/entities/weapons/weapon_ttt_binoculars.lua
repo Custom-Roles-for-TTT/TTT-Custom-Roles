@@ -15,7 +15,7 @@ if CLIENT then
    SWEP.EquipMenuData = {
       type  = "item_weapon",
       desc  = "binoc_desc"
-   };
+   }
 
    SWEP.Icon                = "vgui/ttt/icon_binoc"
 end
@@ -48,7 +48,7 @@ SWEP.ZoomLevels = {
    30,
    20,
    10
-};
+}
 
 SWEP.ProcessingDelay       = 5
 
@@ -251,7 +251,7 @@ if CLIENT then
         end
     end
 
-    function SWEP:DrawWorldModel()
+    function SWEP:DrawWorldModel(flags)
        if not self.WorldModelEnt then
            self.WorldModelEnt = ClientsideModel(self.WorldModel)
            self.WorldModelEnt:SetNoDraw(true)
@@ -276,7 +276,7 @@ if CLIENT then
            self.WorldModelEnt:SetAngles(self:GetAngles())
        end
 
-       self.WorldModelEnt:DrawModel()
+       self.WorldModelEnt:DrawModel(flags)
     end
 
     function SWEP:AdjustMouseSensitivity()

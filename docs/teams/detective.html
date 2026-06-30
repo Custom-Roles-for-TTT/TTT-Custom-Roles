@@ -336,7 +336,8 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-marshal"></i><a href="#marshal">Marshal</a></span> can use their badge to turn a player into a <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a href="../teams/innocent.html#deputy">Deputy</a></span> or an <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="../teams/traitor.html#impersonator">Impersonator</a></span>.</p>
                 <div class="expansion">
-                    <p>The Marshal is given a deputy badge as part of their loadout which can be used to convert players into either a Deputy or an Impersonator. If the badge is used on a member of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> that player will become a Deputy, and if it is used on a member of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> that player will become an Impersonator.</p>
+                    <p>The Marshal is given a deputy badge as part of their loadout which can be used to convert players into either a Deputy or an Impersonator but this can be disabled via the <code>ttt_marshal_badge_loadout</code> ConVar.</p>
+                    <p>If the badge is used on a member of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> that player will become a Deputy, and if it is used on a member of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> that player will become an Impersonator.</p>
                     <p>If the badge is used on any other player, there is a chance for that player to become either a Deputy or an Impersonator. This chance can be configured independently for each team with the ConVars below.</p>
                     <p>The Marshal has access to a shop containing a small handful of useful items. However, if the <code>ttt_marshal_shop_sync</code> ConVar is enabled the Marshal will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
@@ -361,6 +362,24 @@
                             <td>1</td>
                             <td>Boolean</td>
                             <td>Whether to only spawn the marshal when there isn't already a deputy or impersonator in the round.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_badge_loadout</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Marshal's badge should be given to them when they spawn. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_badge_shop</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Marshal's badge should be purchasable in the shop. <i>(Server must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_badge_shop_rebuyable</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Marshal's badge should be purchaseable multiple times. <i>(Requires <code>ttt_hypnotist_device_shop</code> to be enabled. Server must be restarted for changes to take effect.)</i></td>
                         </tr>
                         <tr>
                             <td>ttt_marshal_badge_time</td>
@@ -717,6 +736,66 @@
                             <td>0</td>
                             <td>Boolean</td>
                             <td>Whether the Tracker should get the tracking radar automatically for free. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_enabled</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the minimap should be purchasable in the Tracker's shop. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_loadout</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Tracker should get the minimap automatically for free. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_range_multiplier</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>Multiplier for the in-game radius the minimap represents</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_show_colors</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether players' icons are colored</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_show_facing</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether players are shown as arrows or blips</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_show_outside_range</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether players off the minimap edge are shown</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_show_names</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether players' names are shown below their icons</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_allow_enlarge</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether an enlarged minimap is shown beneath the scoreboard</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_show_bodies</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether dead players show on the minimap</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_minimap_show_bodies_as_dead</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the minimap icon for a dead player is an X</td>
                         </tr>
                         </tbody>
                     </table>

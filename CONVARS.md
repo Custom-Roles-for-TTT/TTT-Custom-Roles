@@ -255,6 +255,7 @@ ttt_hypnotist_brainwash_muted                  0       // Whether players brainw
 ttt_hypnotist_brainwash_credits                0       // How many credits a hypnotized player should get
 
 // Assassin
+ttt_assassin_is_independent                    0       // Whether Assassins should be treated as members of the independent team (rather than the traitor team)
 ttt_assassin_show_target_icon                  0       // Whether Assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_assassin_target_vision_enabled             0       // Whether Assassins have a visible aura around their target, visible through walls
 ttt_assassin_next_target_delay                 5       // The delay (in seconds) before an Assassin is assigned their next target
@@ -361,6 +362,7 @@ ttt_informant_scanner_independent_mult         1       // The multiplier to use 
 ttt_informant_scanner_monster_mult             1       // The multiplier to use with the scanner time when the target is a monster (e.g. 0.5 = 50% scanner time)
 
 // Spy
+ttt_spy_steal_mode                             1       // When a spy should steal their victim's identity. 0 - Never. 1 - When they kill a player. 2 - When they inspect a body.
 ttt_spy_steal_model                            1       // Whether the Spy should change to the victim's playermodel after killing a player
 ttt_spy_steal_model_hands                      1       // Whether the Spy should change to the victim's playermodel's 1st-person hands after killing a player
 ttt_spy_steal_model_alert                      1       // Whether the Spy should see an alert message displaying who they are disguised as after killing a player
@@ -530,6 +532,16 @@ ttt_tracker_footstep_time                      15      // The amount of time pla
 ttt_tracker_footstep_color                     1       // Whether players' footsteps should have different colors
 ttt_tracker_credits_starting                   1       // The number of credits a Tracker should start with
 ttt_tracker_radar_loadout                      0       // Whether the Tracker should get the tracking radar automatically for free. Server or round must be restarted for changes to take effect
+ttt_tracker_minimap_enabled                    1       // Whether the minimap should be purchasable in the Tracker's shop. Server or round must be restarted for changes to take effect
+ttt_tracker_minimap_loadout                    0       // Whether the Tracker should get the minimap automatically for free. Server or round must be restarted for changes to take effect
+ttt_tracker_minimap_range_multiplier           1      // Multiplier for the in-game radius the minimap represents
+ttt_tracker_minimap_show_colors                1      // Whether players' icons are colored
+ttt_tracker_minimap_show_facing                1      // Whether players are shown as arrows or blips
+ttt_tracker_minimap_show_outside_range         1      // Whether players off the minimap edge are shown
+ttt_tracker_minimap_show_names                 0      // Whether players' names are shown below their icons
+ttt_tracker_minimap_allow_enlarge              1      // Whether an enlarged minimap is shown beneath the scoreboard
+ttt_tracker_minimap_show_bodies                1      // Whether dead players show on the minimap
+ttt_tracker_minimap_show_bodies_as_dead        0      // Whether the minimap icon for a dead player is an X
 
 // Medium
 ttt_medium_spirit_color                        1       // Whether players' spirits should have different colors
@@ -559,6 +571,9 @@ ttt_marshal_monster_deputy_chance              0.5     // The chance that a mons
 ttt_marshal_announce_deputy                    1       // Whether a player being deputized will be announced to everyone
 ttt_marshal_prevent_deputy                     1       // Whether to only spawn the Marshal when there isn't already a Deputy or Impersonator in the round
 ttt_marshal_badge_time                         8       // The amount of time (in seconds) the Marshal's badge takes to use
+ttt_marshal_badge_loadout                      1       // Whether the Marshal's badge should be given to them when they spawn. Server must be restarted for changes to take effect   
+ttt_marshal_badge_shop                         0       // Whether the Marshal's badge should be purchasable in the shop. Server must be restarted for changes to take effect
+ttt_marshal_badge_shop_rebuyable               0       // Whether the Marshal's badge should be purchaseable multiple times (requires "ttt_marshal_badge_shop" to be enabled). Server must be restarted for changes to take effect
 ttt_marshal_credits_starting                   1       // The number of credits a Marshal should start with
 
 // Quartermaster
@@ -655,6 +670,12 @@ ttt_bodysnatcher_reveal_jester                 1       // Who the Bodysnatcher i
 ttt_bodysnatcher_respawn                       0       // Whether the Bodysnatcher respawns when they are killed before joining another team
 ttt_bodysnatcher_respawn_delay                 3       // The delay to use when respawning the Bodysnatcher (if "ttt_bodysnatcher_respawn" is enabled)
 ttt_bodysnatcher_respawn_limit                 0       // The maximum number of times the Bodysnatcher can respawn (if "ttt_bodysnatcher_respawn" is enabled). Set to 0 to allow infinite respawns
+ttt_bodysnatcher_target_innocents              1       // Whether the Bodysnatcher can target innocent bodies
+ttt_bodysnatcher_target_detectives             1       // Whether the Bodysnatcher can target detective bodies
+ttt_bodysnatcher_target_traitors               1       // Whether the Bodysnatcher can target traitor bodies
+ttt_bodysnatcher_target_jesters                1       // Whether the Bodysnatcher can target jester bodies
+ttt_bodysnatcher_target_independents           1       // Whether the Bodysnatcher can target independent bodies
+ttt_bodysnatcher_target_monsters               1       // Whether the Bodysnatcher can target monster bodies
 ttt_bodysnatcher_notify_mode                   0       // The logic to use when notifying players that a Bodysnatcher was killed. Killer is notified unless "ttt_bodysnatcher_notify_killer" is disabled. 0 - Don't notify anyone. 1 - Only notify traitors and detectives. 2 - Only notify traitors. 3 - Only notify detectives. 4 - Notify everyone
 ttt_bodysnatcher_notify_killer                 1       // Whether to notify a Bodysnatcher's killer
 ttt_bodysnatcher_notify_sound                  0       // Whether to play a cheering sound when a Bodysnatcher is killed
@@ -739,6 +760,7 @@ ttt_guesser_can_guess_detectives               0       // Whether the Guesser is
 ttt_guesser_minimum_radius                     5       // The minimum radius of the Guesser's device in meters. Set to 0 to disable
 ttt_guesser_show_team_threshold                50      // The amount of damage that needs to be dealt to a Guesser before they learn the attacker's team
 ttt_guesser_show_role_threshold                100     // The amount of damage that needs to be dealt to a Guesser before they learn the attacker's role
+ttt_guesser_show_outline_threshold             150     // The amount of damage that needs to be dealt to a Guesser before they can see the attacker's outline
 ttt_guesser_notify_mode                        0       // The logic to use when notifying players that a Guesser was killed. Killer is notified unless "ttt_guesser_notify_killer" is disabled. 0 - Don't notify anyone. 1 - Only notify traitors and detectives. 2 - Only notify traitors. 3 - Only notify detectives. 4 - Notify everyone
 ttt_guesser_notify_killer                      1       // Whether to notify a Guesser's killer
 ttt_guesser_notify_sound                       0       // Whether to play a cheering sound when a Guesser is killed
@@ -756,6 +778,12 @@ ttt_cannibal_eat_cooldown                      10      // The amount of time (in
 ttt_cannibal_damage_penalty                    0       // The fraction a Cannibal's damage will be scaled by when they are attacking (Only applies if ttt_cannibal_is_independent is enabled)
 ttt_cannibal_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Cannibal (Only applies if ttt_cannibal_is_independent is enabled)
 ttt_cannibal_update_scoreboard                 0       // Whether the Cannibal shows dead players as missing in action (Only applies if ttt_cannibal_is_independent is enabled)
+ttt_cannibal_gains_health                      0       // Whether the Cannibal gains their victim's health when eating them
+ttt_cannibal_gained_health_percentage          15      // What percentage of their victim's health the Cannibal gains. Set to 0 to always gain a flat 100HP (Only applies if ttt_cannibal_gains_health is enabled)
+ttt_cannibal_digestion                         0       // Whether the Cannibal digests and permanently kills their victims over time
+ttt_cannibal_digestion_time                    30      // How long in seconds a victim takes to be digested when eaten. Set to 0 for immediate digestion (Only applies if ttt_cannibal_digestion is enabled)
+ttt_cannibal_digestion_poop                    1       // Whether the Cannibal drops poop when a victim is digested (Only applies if ttt_cannibal_digestion is enabled)
+ttt_cannibal_digestion_poop_sound              1       // Whether the Cannibal causes a sound when poop is dropped from a digested victim (Only applies if ttt_cannibal_digestion is enabled)
 
 // ----------------------------------------
 
@@ -957,6 +985,7 @@ ttt_hivemind_regen_per_member_amt              1       // The amount of health p
 ttt_hivemind_regen_max_pct                     0.5     // The percentage of the Hive Mind's maximum health to heal them up to (e.g. 0.5 = 50% of their max health)
 ttt_hivemind_chat_mode                         1       // How to handle chat by the Hive Mind. 0 - Do nothing. 1 - Force all members to duplicate when any member chats. 2 - Force all members to duplicate when only the first member chats
 ttt_hivemind_block_environmental               0       // Whether to block environmental damage to the Hive Mind
+ttt_hivemind_dead_kill_mode                    0       // How to handle kills by a dead member of the Hive Mind. 0 - Do nothing. 1 - Assimilate the new player, solo. 2 - Assimilate the new player and respawn their Hive Mind killer. 3 - Assimilate the new player and respawn the entire Hive Mind
 ttt_hivemind_can_see_jesters                   1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Hive Mind
 ttt_hivemind_update_scoreboard                 1       // Whether the Hive Mind shows dead players as missing in action
 
@@ -1063,6 +1092,7 @@ ttt_twins_invulnerability_timer                20      // How long (in seconds) 
 
 // WEAPON SHOP SETTINGS
 ttt_shop_for_all                               0       // Whether all roles should have a shop. Roles that normally do not have a shop will need to have items added via the roleweapon system (see below). Also note that all supporting shop-related convars (such as ttt_*_credits_starting, ttt_*_shop_random_percent, ttt_*_shop_random_enabled, and ttt_*_shop_sync or ttt_*_shop_mode where applicable) will be automatically created but are not documented here to avoid confusion. Server must be restarted for changes to take effect
+ttt_shop_limit_count                           0       // The number of (randomly selected) items to limit each shop to
 // Random Shop Restriction Percent
 ttt_shop_random_percent                        50      // The percent chance that a weapon in the shop will be not be shown
 ttt_shop_random_position                       0       // Whether to randomize the position of the items in the shop
@@ -1320,6 +1350,8 @@ ttt_scoreboard_score                           0       // Whether to show the sc
 ttt_round_summary_tabs                         summary,hilite,events,scores // The tabs to show in the round summary screen. Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Round must be restarted for changes to take effect
 
 // Misc.
+ttt_disable_headshots                          0       // Whether to disable the headshot damage multiplier
+ttt_disable_mapwin                             0       // Whether to disable the ability for maps to set the round winner directly
 ttt_death_notifier_enabled                     1       // Whether the name and role of a player's killer should be shown to the victim
 ttt_death_notifier_show_role                   1       // Whether to show the killer's role in death notification messages
 ttt_death_notifier_show_team                   0       // Whether to show the killer's team in death notification messages (only used when "ttt_death_notifier_show_role" is disabled)
@@ -1371,6 +1403,17 @@ ttt_beggar_show_scan_radius                    0       // Whether to show the ri
 
 // Loot Goblin
 ttt_lootgoblin_radar_beep_sound                1       // Whether to play a sound when the Loot Goblin radar location updates
+
+// Taskmaster
+ttt_taskmaster_list_x_pos                      10      // The X (horizontal) position of the Taskmaster's task list HUD
+ttt_taskmaster_list_y_pos                      10      // The Y (vertical) position of the Taskmaster's task list HUD
+
+// Tracker
+ttt_tracker_minimap_scale                      1       // Overall scale multiplier for the minimap
+ttt_tracker_minimap_lock_north                 0       // Whether the minimap is locked north or rotates with the player
+ttt_tracker_minimap_show_cardinals             2       // Cardinal direction labels to show: none (0), North only (1), all (2)
+ttt_tracker_minimap_offset_x                   14      // The screen offset from the left to render the minimap at, on the x axis (left-and-right)
+ttt_tracker_minimap_offset_y                   14      // The screen offset from the top to render the wheel at, on the y axes (up-and-down)
 
 // ----------------------------------------
 // Misc.
@@ -1511,8 +1554,11 @@ At the top of the role packs window are the overall controls that are available 
 1. **Role packs dropdown** - List of current role packs available on the server. Select an entry from the list to edit it.
 1. **Add button** - Creates a new role pack when clicked, first prompting for the name of the role pack being created.
 1. **Rename button** - Renames the currently selected role pack, prompting for the new name.
+1. **Edit Details button** - Allows editing extra details such as the display name and description that are shown on the cheat sheet window.
 1. **Delete button** - Deletes the currently selected role pack, prompting for confirmation.
 1. **Save button** - Saves the changes made to the currently selected role pack.
+1. **Save As button** - Saves the currently selected role pack and any unsaved changes as a new role pack with a new given name.
+1. **Test Role Pack button** - Applies (but does *not* save) the currently selected role pack, fills the empty player slots on the server with bots, and restarts the round (if one is currently active).
 1. **Apply to Server button** - Activates the currently selected role pack on the server.
 1. **Disable Active Role Pack button** - Disables the current active role pack on the server.
 
@@ -1528,9 +1574,16 @@ To add a new role slot, click the "Add Slot" button on the bottom of the tab.
 One a slot has been added, you will be presented with three buttons:
 1. **Add role button** - Adds a new role entry to the role slot
 1. **Delete role button** - Deletes the last role entry in the role slot
-2. **Delete slot button** - Deletes the entire role slot
+1. **Delete slot button** - Deletes the entire role slot
+1. **Duplicate slot button** - Duplicates the entire role slot
 
 ![Role Packs Empty Slot](docs/tutorials/img/RolePacks_EmptySlot.png)
+
+### Reordering Role Slots
+
+To change the order of the role slots, click and hold the mouse down on the title (e.g. "Slot 2:") of the role slot you want to reorder and move your mouse to drag it around. While you're dragging the slot, a ghost (partially-opaque) version of it will appear to the left of the window. A pink line will show in the role slots list where the dragged slot will go when it is dropped. Release the mouse to drop the slot in the new location. 
+
+![Role Packs Reorder Slot](docs/tutorials/img/RolePacks_Reorder.png)
 
 #### Configuring a Role Slot Role
 
@@ -1584,8 +1637,14 @@ To add a new role blocking group, start by clicking the "Add group" button. Once
 - **Add role button** - Adds a new role entry to the blocking group
 - **Delete role button** - Deletes the last role entry in the blocking group
 - **Delete group button** - Deletes the entire blocking group
+- **Duplicate group button** - Duplicates the entire blocking group
 
 ![Role Blocks Empty Group](docs/tutorials/img/RoleBlocks_EmptyGroup.png)
+
+### Reordering Blocking Groups
+To change the order of the blocking groups, click and hold the mouse down on the title (e.g. "Blocking Group:") of the blocking group you want to reorder and move your mouse to drag it around. While you're dragging the group, a ghost (partially-opaque) version of it will appear to the left of the window. A pink line will show in the blocking groups list where the dragged group will go when it is dropped. Release the mouse to drop the group in the new location. 
+
+![Role Blocks Reorder Group](docs/tutorials/img/RoleBlocks_Reorder.png)
 
 ### Configuring a Blocking Group Role
 When a new role entry has been added to a blocking group it defaults to the "NONE" or "?" role. When this placeholder role is alone in a blocking group, it behaves the same as if the blocking group was empty and will do nothing.\

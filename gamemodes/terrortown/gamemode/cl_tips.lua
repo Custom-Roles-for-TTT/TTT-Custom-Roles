@@ -21,7 +21,7 @@ PANEL.Colors = {
    default = COLOR_LGRAY,
    hover = COLOR_WHITE,
    press = COLOR_RED
-};
+}
 
 function PANEL:Paint()
    -- parent panel will deal with the normal bg, we only need to worry about
@@ -81,7 +81,7 @@ local tip_params = {
    [35] = {detectives = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT], atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]},
    [36] = {helpkey = Key("+gm_showhelp", "F1")},
    [40] = {traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]}
-};
+}
 
 PANEL = {}
 

@@ -56,7 +56,7 @@ In order to create your own role you will need to make sure you have downloaded 
 - **.lua** - This can be done in Notepad in a pinch but at the very least we would recommend [Notepad++](https://notepad-plus-plus.org/).
 - **.vmt and .vtf** - [VTFEdit Reloaded](https://github.com/Sky-rym/VTFEdit-Reloaded/releases) is the best way to edit these files but if you know what you are doing there are plugins for other apps.
 
-In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using [here](/templates/role).
+In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using [here](/templates/role) using a tool that allows downloading directories from a GitHub repo like [this one](https://kinolien.github.io/gitzip/) *(Note: In most cases you won't need to enter a token despite its recommendation)*.
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:
 
@@ -81,7 +81,7 @@ ROLE.desc = [[]]
 
 ROLE.shortdesc = ""
 
-ROLE.team = 
+ROLE.team = ROLE_TEAM_
 
 ROLE.shop = nil
 ROLE.loadout = {}
@@ -833,9 +833,62 @@ if CLIENT then
 end
 ```
 
+### Hook Management
+
+Hooks added in your role files are set and called even if your role is not in play that round. This can cause issues if you don't code defensively, but it also is wasting computational cycles on code that doesn't need to run, resulting is lower performance. To help combat this inefficiency, CR4TTT adds a Hook Management system that roles can take advantage where hooks are automatically registered and unregistered when a role enters or leaves a round.
+
+To take advantage of CR4TTT's hook management system, define the optional `ROLE.registeredhooks` table as a mapping of hook name (e.g. `TTTBeginRound`) to handler function or table of identifier-handler function pairs.
+
+For example:
+```lua
+local function MyRole_EntityTakeDamage(ent, dmginfo)
+    if ent:IsMyRole() then
+        print("MyRole did damage!")
+    end
+end
+local function MyRole_TTTEndRound()
+    print("Round ended for MyRole!")
+end
+local function MyRole_Congrats_TTTEndRound()
+    print("Congrats to the winners from MyRole!")
+end
+
+ROLE.registeredhooks = {
+    ["EntityTakeDamage"] = MyRole_EntityTakeDamage,
+    ["TTTEndRound"] = {
+        ["MyRole_TTTEndRound"] = MyRole_TTTEndRound,
+        ["MyRole_Congrats_TTTEndRound"] = MyRole_Congrats_TTTEndRound
+    }
+}
+```
+
+There are hooks that don't work with this system for one reason or another. If you try to use the system for any of the following unsupported hooks, you will receive an error:
+- Initialize
+- TTTBeginRound
+- TTTPrepareRound
+- TTTPlayerRoleChanged
+- TTTSelectRoles
+- TTTTutorialRoleText
+
+In the rare case that multiple roles share a hook implementation (like the Good Twin and Evil Twin), then you need to also specify a shared `ROLE.hookregistrationkey`.
+
+For example:
+
+In `goodtwin.lua`
+```lua
+ROLE.hookregistrationkey = "Twins"
+```
+
+In `eviltwin.lua`
+```lua
+ROLE.hookregistrationkey = "Twins"
+```
+
 ### Role Registration
 
-The next line simply tells CR for TTT to register your role and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, `ROLE_%NAMERAW%` as well as helper functions `Get%NAMERAW%`, `Is%NAMERAW%` and `IsActive%NAMERAW%` if you would like to use them to add extra logic for your role.
+The next line simply tells CR for TTT to register your role and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, `ROLE_%NAMERAW%` as well as helper functions `Get%NAME%`, `Is%NAME%` and `IsActive%NAME%` if you would like to use them to add extra logic for your role.
+
+*(Note: All spaces are removed from `%NAME%` before `Get%NAME%`, `Is%NAME%` and `IsActive%NAME%` are created)*
 
 ### Final Block
 

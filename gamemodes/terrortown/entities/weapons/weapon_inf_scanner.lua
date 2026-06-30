@@ -78,7 +78,7 @@ if CLIENT then
         return self.BaseClass.Initialize(self)
     end
 
-    function SWEP:DrawWorldModel()
+    function SWEP:DrawWorldModel(flags)
     end
 
     function SWEP:GetViewModelPosition(pos, ang)

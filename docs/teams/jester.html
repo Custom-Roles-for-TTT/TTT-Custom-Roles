@@ -502,6 +502,42 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>ttt_bodysnatcher_target_innocents</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the bodysnatcher can target innocent bodies</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_target_detectives</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the bodysnatcher can target detective bodies</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_target_traitors</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the bodysnatcher can target traitor bodies</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_target_jesters</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the bodysnatcher can target jester bodies</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_target_independents</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the bodysnatcher can target independent bodies</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_bodysnatcher_target_monsters</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the bodysnatcher can target monster bodies</td>
+                        </tr>
+                        <tr>
                             <td>ttt_bodysnatcher_update_scoreboard</td>
                             <td>0</td>
                             <td>Boolean</td>
@@ -544,13 +580,43 @@
                             <td>ttt_cannibal_damage_penalty</td>
                             <td>0</td>
                             <td>Float</td>
-                            <td>The fraction a Cannibal's damage will be scaled by when they are attacking. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
+                            <td>The fraction a Cannibal's damage will be scaled by when they are attacking. <i>(Requires <code>ttt_cannibal_is_independent</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_digestion</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Cannibal digests and permanently kills their victims over time.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_digestion_poop</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Cannibal drops poop when a victim is digested. <i>(Requires <code>ttt_cannibal_digestion</code> to be enabled.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_digestion_poop_sound</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Cannibal causes a sound when poop is dropped from a digested victim. <i>(Requires <code>ttt_cannibal_digestion</code> to be enabled.)</i></td>
                         </tr>
                         <tr>
                             <td>ttt_cannibal_eat_cooldown</td>
                             <td>10</td>
                             <td>Integer</td>
                             <td>The amount of time in seconds between uses of the Cannibal's Cannibalizer.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_gains_health</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Cannibal gains their victim's health when eating them.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_cannibal_gained_health_percentage</td>
+                            <td>15</td>
+                            <td>Integer</td>
+                            <td>What percentage of their victim's health the Cannibal gains. Set to 0 to always gain a flat 100HP <i>(Requires <code>ttt_cannibal_gains_health</code> to be enabled.)</i></td>
                         </tr>
                         <tr>
                             <td>ttt_cannibal_is_independent</td>
@@ -562,7 +628,7 @@
                             <td>ttt_cannibal_update_scoreboard</td>
                             <td>0</td>
                             <td>Boolean</td>
-                            <td>Whether the Cannibal shows dead players as missing in action. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
+                            <td>Whether the Cannibal shows dead players as missing in action. <i>(Requires <code>ttt_cannibal_is_independent</code> to be enabled.)</i></td>
                         </tr>
                         </tbody>
                     </table>
@@ -792,7 +858,7 @@
                 <div class="moreless">[more]</div>
                 <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-guesser"></i><a href="#guesser">Guesser</a></span> must guess another player's role to swap roles with them. If they guess wrong, they die.</p>
                 <div class="expansion">
-                    <p>The Guesser is immune to almost all forms of damage. However as players attempt to deal damage to the Guesser, the attacker's team and role will be revealed to the Guesser after an amount of damage determined by <code>ttt_guesser_show_team_threshold</code> and <code>ttt_guesser_show_role_threshold</code> has been prevented.</p>
+                    <p>The Guesser is immune to almost all forms of damage. However as players attempt to deal damage to the Guesser, the attacker's team, role and location will be revealed to the Guesser after an amount of damage determined by <code>ttt_guesser_show_team_threshold</code>, <code>ttt_guesser_show_role_threshold</code> and <code>ttt_guesser_show_outline_threshold</code> has been prevented.</p>
                     <p>The Guesser is unable to guess <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span> unless <code>ttt_guesser_can_guess_detectives</code> is enabled. They are also unable to guess the <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="#loot-goblin">Loot Goblin</a></span> or the <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span> by default, but this list of unguessable roles can be configured with <code>ttt_guesser_unguessable_roles</code> as detailed in the ConVars table below.</p>
                     <p>Players will be notified if there is a Guesser at the start of the round if <code>ttt_guesser_warn_all</code> is enabled.</p>
                     <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
@@ -817,6 +883,12 @@
                             <td>5</td>
                             <td>Float</td>
                             <td>The minimum radius of the Guesser's device in meters. <i>(Set to 0 to disable.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_guesser_show_outline_threshold</td>
+                            <td>150</td>
+                            <td>Integer</td>
+                            <td>The amount of damage that needs to be dealt to a Guesser before they can see the attacker's outline.</td>
                         </tr>
                         <tr>
                             <td>ttt_guesser_show_role_threshold</td>

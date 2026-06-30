@@ -1,3 +1,5 @@
+include("utf8_ext.lua")
+
 local file = file
 local hook = hook
 local ipairs = ipairs
@@ -9,23 +11,27 @@ local player = player
 local string = string
 local table = table
 
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
 local FileExists = file.Exists
 local FileFind = file.Find
 local CallHook = hook.Call
 local RunHook = hook.Run
 local PlayerIterator = player.Iterator
 local StringUpper = string.upper
-local StringLower = string.lower
 local StringFind = string.find
 local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
+local Utf8Lower = utf8.lower
+local Utf8Sub = utf8.sub
+local TableHasValue = table.HasValue
 
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.4.1"
-CR_BETA = false
+CR_VERSION = "2.5.0"
+CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
 function CRVersion(version)
@@ -99,7 +105,7 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
             local key = eventName .. "_" .. tostring(identifier)
             -- Keep track of which ones we've checked already so we don't spam ourselves on reload
             -- Also ignore the ones that are known to replace themselves... for whatever reason
-            if not table.HasValue(CRDebug.IgnoredHookDupes, key) then
+            if not TableHasValue(CRDebug.IgnoredHookDupes, key) then
                 local locationKey = info.short_src .. "_" .. info.currentline
                 -- If we have a location key saved but it's different this time then it's a duplicate
                 if CRDebug.HooksChecked[key] and CRDebug.HooksChecked[key] ~= locationKey then
@@ -238,6 +244,7 @@ DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
 
 ROLE_PACK_ROLES = {}
+ROLE_PACK_DETAILS = {}
 
 -- Traitors get this ability by default
 TRAITOR_BUTTON_ROLES = {}
@@ -536,6 +543,8 @@ function UpdateRoleColours()
 
     ROLE_COLORS_RADAR = {}
     FillRoleColors(ROLE_COLORS_RADAR, "radar")
+    -- Keep this the same from base TTT
+    ROLE_COLORS_RADAR[ROLE_NONE] = Color(150, 150, 150, 230)
     ROLE_COLOURS_RADAR = ROLE_COLORS_RADAR
 end
 UpdateRoleColors = UpdateRoleColours
@@ -653,6 +662,8 @@ ROLE_STRINGS = {
     [ROLE_CANNIBAL] = "Cannibal",
     [ROLE_TASKMASTER] = "Taskmaster"
 }
+
+ROLE_STRINGS_DEFAULT = table.Copy(ROLE_STRINGS)
 
 ROLE_STRINGS_PLURAL = {
     [ROLE_INNOCENT] = "Innocents",
@@ -841,11 +852,11 @@ function UpdateRoleStrings()
 
             local plural = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural"):GetString()
             if #plural == 0 then -- Fallback if no plural is given. Does NOT handle all cases properly
-                local lastChar = StringLower(StringSub(name, #name, #name))
+                local lastChar = Utf8Lower(Utf8Sub(name, #name, #name))
                 if lastChar == "s" then
                     ROLE_STRINGS_PLURAL[role] = name .. "es"
                 elseif lastChar == "y" then
-                    ROLE_STRINGS_PLURAL[role] = StringSub(name, 1, #name - 1) .. "ies"
+                    ROLE_STRINGS_PLURAL[role] = Utf8Sub(name, 1, #name - 1) .. "ies"
                 else
                     ROLE_STRINGS_PLURAL[role] = name .. "s"
                 end
@@ -926,6 +937,8 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_SHOP_ITEMS = {}
 ROLE_STARTING_CREDITS = {}
 ROLE_STARTING_HEALTH = {}
+ROLE_REGISTERED_HOOKS = {}
+ROLE_HOOK_REGISTRATION_KEY = {}
 
 -- Optional features
 ROLE_CAN_SEE_C4 = {}
@@ -965,12 +978,12 @@ ROLE_CONVAR_TYPE_TEXT = 2
 ROLE_CONVAR_TYPE_DROPDOWN = 3
 
 function RegisterRole(tbl)
-    if table.HasValue(ROLE_STRINGS_RAW, tbl.nameraw) then
+    if TableHasValue(ROLE_STRINGS_RAW, tbl.nameraw) then
         error("Attempting to define role with a duplicate raw name value: " .. tbl.nameraw)
         return
     end
 
-    if table.HasValue(ROLE_STRINGS_SHORT, tbl.nameshort) then
+    if TableHasValue(ROLE_STRINGS_SHORT, tbl.nameshort) then
         error("Attempting to define role with a duplicate short name value: " .. tbl.nameshort)
         return
     end
@@ -983,6 +996,7 @@ function RegisterRole(tbl)
 
     ROLE_STRINGS_RAW[roleID] = tbl.nameraw
     ROLE_STRINGS[roleID] = tbl.name
+    ROLE_STRINGS_DEFAULT[roleID] = tbl.name
     ROLE_STRINGS_PLURAL[roleID] = tbl.nameplural
     ROLE_STRINGS_EXT[roleID] = tbl.nameext
     ROLE_STRINGS_SHORT[roleID] = tbl.nameshort
@@ -1102,6 +1116,14 @@ function RegisterRole(tbl)
         ROLE_USES_SPECTATOR[roleID] = tbl.usesspectator
     end
 
+    if type(tbl.registeredhooks) == "table" then
+        ROLE_REGISTERED_HOOKS[roleID] = tbl.registeredhooks
+    end
+
+    if type(tbl.hookregistrationkey) == "string" then
+        ROLE_HOOK_REGISTRATION_KEY[roleID] = tbl.hookregistrationkey
+    end
+
     -- Equipment
     -- Make sure teams that normally have shops are added to the shop list, even if they don't have things in their shop by default
     -- This allows the "sync" and "mode" convars to be created
@@ -1173,8 +1195,77 @@ function RegisterRole(tbl)
         ROLE_CONVARS[roleID] = tbl.convars
     end
 
-    hook.Call("TTTRoleRegistered", nil, roleID)
+    CallHook("TTTRoleRegistered", nil, roleID)
 end
+
+local role_hooks_registered = {}
+local banned_hooks = {"Initialize", "TTTBeginRound", "TTTPlayerRoleChanged", "TTTPrepareRound", "TTTSelectRoles", "TTTTutorialRoleText"}
+local function RegisterHooks(role)
+    local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
+    role_hooks_registered[key] = (role_hooks_registered[key] or 0) + 1
+    if role_hooks_registered[key] ~= 1 then return end
+
+    for hookName, hookData in pairs(ROLE_REGISTERED_HOOKS[role]) do
+        if not hookData then continue end
+        if TableHasValue(banned_hooks, hookName) then
+            ErrorNoHalt("Role '" .. ROLE_STRINGS_RAW[role] .. "' is registering an unsupported hook! Tell the developer they need to manage '" .. hookName .. "' hooks manually.\n")
+            continue
+        end
+
+        if type(hookData) == "table" then
+            for hookKey, hookFn in pairs(hookData) do
+                AddHook(hookName, hookKey, hookFn)
+            end
+        else
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
+            AddHook(hookName, hookKey, hookData)
+        end
+    end
+end
+local function UnregisterHooks(role)
+    local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
+    role_hooks_registered[key] = (role_hooks_registered[key] or 0) - 1
+    if role_hooks_registered[key] ~= 0 then return end
+
+    for hookName, hookData in pairs(ROLE_REGISTERED_HOOKS[role]) do
+        if not hookData then continue end
+
+        if type(hookData) == "table" then
+            for hookKey, _ in pairs(hookData) do
+                RemoveHook(hookName, hookKey)
+            end
+        else
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
+            RemoveHook(hookName, hookKey)
+        end
+    end
+end
+
+AddHook("TTTPlayerRoleChanged", "HookRegistration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == newRole then return end
+    if not ROLE_REGISTERED_HOOKS[oldRole] and not ROLE_REGISTERED_HOOKS[newRole] then return end
+
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, function()
+        if ROLE_REGISTERED_HOOKS[oldRole] then
+            UnregisterHooks(oldRole)
+        end
+        if ROLE_REGISTERED_HOOKS[newRole] then
+            RegisterHooks(newRole)
+        end
+    end)
+end)
+AddHook("TTTPrepareRound", "HookRegistration_TTTPrepareRound", function()
+    -- Delay this by a frame so cleanup can run first
+    timer.Simple(0, function()
+        for role = 0, ROLE_MAX do
+            if ROLE_REGISTERED_HOOKS[role] then
+                UnregisterHooks(role)
+            end
+        end
+        role_hooks_registered = {}
+    end)
+end)
 
 include("util.lua")
 
@@ -1264,7 +1355,7 @@ end
 AddRoleFiles("terrortown/gamemode/roles/") -- Internal roles
 AddRoleFiles("customroles/") -- External roles
 AddRoleFiles("rolemodifications/") -- Role modifications
-hook.Call("TTTRolesLoaded", nil)
+CallHook("TTTRolesLoaded", nil)
 
 local function GetRoleFromStackTrace()
     local role
@@ -1277,11 +1368,11 @@ local function GetRoleFromStackTrace()
             -- Get the file path
             local source = info.short_src
             -- Extract the file name from the path and drop the extension
-            local role_name = StringLower(string.StripExtension(string.GetFileFromFilename(source)))
+            local role_name = Utf8Lower(string.StripExtension(string.GetFileFromFilename(source)))
 
             -- Find the role whose raw string matches the file name
             for r, str in pairs(ROLE_STRINGS_RAW) do
-                if StringLower(str) == role_name then
+                if Utf8Lower(str) == role_name then
                     role = r
                     break
                 end
@@ -1340,7 +1431,27 @@ EVENT_PLAGUEMASTERPLAGUED = 39
 EVENT_CANNIBALEAT = 40
 
 EVENT_MAX = EVENT_MAX or 40
-EVENTS_BY_ROLE = EVENTS_BY_ROLE or {}
+-- Prepopulate this with the built-in roles
+EVENTS_BY_ROLE = EVENTS_BY_ROLE or {
+    [ROLE_SWAPPER] = EVENT_SWAPPER,
+    [ROLE_DEPUTY] = EVENT_PROMOTION,
+    [ROLE_IMPERSONATOR] = EVENT_PROMOTION,
+    [ROLE_CLOWN] = EVENT_CLOWNACTIVE,
+    [ROLE_PHANTOM] = EVENT_HAUNT,
+    [ROLE_BODYSNATCHER] = {EVENT_BODYSNATCH, EVENT_BODYSNATCHERKILLED},
+    [ROLE_ZOMBIE] = EVENT_ZOMBIFIED,
+    [ROLE_VAMPIRE] = {EVENT_VAMPIFIED, EVENT_VAMPPRIME_DEATH},
+    [ROLE_BEGGAR] = {EVENT_BEGGARCONVERTED, EVENT_BODYSNATCHERKILLED},
+    [ROLE_PARASITE] = EVENT_INFECT,
+    [ROLE_MARSHAL] = EVENT_DEPUTIZED,
+    [ROLE_INFECTED] = EVENT_INFECTEDSUCCUMBED,
+    [ROLE_CUPID] = EVENT_CUPIDPAIRED,
+    [ROLE_ARSONIST] = EVENT_ARSONISTIGNITED,
+    [ROLE_GUESSER] = {EVENT_GUESSERCORRECT, EVENT_GUESSERINCORRECT},
+    [ROLE_VINDICATOR] = {EVENT_VINDICATORACTIVE, EVENT_VINDICATORSUCCESS, EVENT_VINDICATORFAIL},
+    [ROLE_PLAGUEMASTER] = EVENT_PLAGUEMASTERPLAGUED,
+    [ROLE_CANNIBAL] = EVENT_CANNIBALEAT
+}
 
 if SERVER then
     util.AddNetworkString("TTT_SyncEventIDs")
@@ -1369,10 +1480,10 @@ if SERVER then
     end
 
     -- Sync the Event IDs to all clients
-    hook.Add("TTTPrepareRound", "EventID_TTTPrepareRound", function()
+    AddHook("TTTPrepareRound", "EventID_TTTPrepareRound", function()
         net.Start("TTT_SyncEventIDs")
-        net.WriteTable(EVENTS_BY_ROLE)
-        net.WriteUInt(EVENT_MAX, 16)
+            net.WriteTable(EVENTS_BY_ROLE)
+            net.WriteUInt(EVENT_MAX, 16)
         net.Broadcast()
     end)
 end
@@ -1407,9 +1518,30 @@ WIN_INFECTED = 19
 WIN_PLAGUEMASTER = 20
 WIN_CANNIBAL = 21
 WIN_TASKMASTER = 22
+WIN_ASSASSIN = 23
 
-WIN_MAX = WIN_MAX or 22
-WINS_BY_ROLE = WINS_BY_ROLE or {}
+WIN_MAX = WIN_MAX or 23
+-- Prepopulate this with the built-in roles
+WINS_BY_ROLE = WINS_BY_ROLE or {
+    [ROLE_JESTER] = WIN_JESTER,
+    [ROLE_CLOWN] = WIN_CLOWN,
+    [ROLE_OLDMAN] = WIN_OLDMAN,
+    [ROLE_KILLER] = WIN_KILLER,
+    [ROLE_ZOMBIE] = WIN_ZOMBIE,
+    [ROLE_VAMPIRE] = WIN_VAMPIRE,
+    [ROLE_LOOTGOBLIN] = WIN_LOOTGOBLIN,
+    [ROLE_CUPID] = WIN_CUPID,
+    [ROLE_SHADOW] = WIN_SHADOW,
+    [ROLE_SPONGE] = WIN_SPONGE,
+    [ROLE_ARSONIST] = WIN_ARSONIST,
+    [ROLE_HIVEMIND] = WIN_HIVEMIND,
+    [ROLE_VINDICATOR] = WIN_VINDICATOR,
+    [ROLE_INFECTED] = WIN_INFECTED,
+    [ROLE_PLAGUEMASTER] = WIN_PLAGUEMASTER,
+    [ROLE_CANNIBAL] = WIN_CANNIBAL,
+    [ROLE_TASKMASTER] = WIN_TASKMASTER,
+    [ROLE_ASSASSIN] = WIN_ASSASSIN
+}
 
 if SERVER then
     util.AddNetworkString("TTT_SyncWinIDs")
@@ -1432,10 +1564,10 @@ if SERVER then
     end
 
     -- Sync the Event IDs to all clients
-    hook.Add("TTTPrepareRound", "WinID_TTTPrepareRound", function()
+    AddHook("TTTPrepareRound", "WinID_TTTPrepareRound", function()
         net.Start("TTT_SyncWinIDs")
-        net.WriteTable(WINS_BY_ROLE)
-        net.WriteUInt(WIN_MAX, 16)
+            net.WriteTable(WINS_BY_ROLE)
+            net.WriteUInt(WIN_MAX, 16)
         net.Broadcast()
     end)
 end
@@ -1555,8 +1687,11 @@ include("lang_shd.lua") -- uses some of util
 include("equip_items_shd.lua")
 include("radio_shd.lua")
 
-function DetectiveMode() return GetGlobalBool("ttt_detective", false) end
-function HasteMode() return GetGlobalBool("ttt_haste", false) end
+local ttt_detective = CreateConVar("ttt_sherlock_mode", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY + FCVAR_REPLICATED)
+function DetectiveMode() return ttt_detective:GetBool() end
+
+local ttt_haste = CreateConVar("ttt_haste", "1", FCVAR_NOTIFY + FCVAR_REPLICATED)
+function HasteMode() return ttt_haste:GetBool() end
 
 -- Create teams
 TEAM_TERROR = 1
@@ -1577,7 +1712,7 @@ local ttt_playermodels = {
     Model("models/player/arctic.mdl"),
     Model("models/player/guerilla.mdl"),
     Model("models/player/leet.mdl")
-};
+}
 
 function GetRandomPlayerModel()
     return table.Random(ttt_playermodels)
@@ -1607,7 +1742,7 @@ local ttt_playercolors = {
         COLOR_DGREEN,
         COLOR_OLIVE
     }
-};
+}
 
 local playercolor_mode = CreateConVar("ttt_playercolor_mode", "1")
 function GM:TTTPlayerColor(model)
@@ -1654,6 +1789,9 @@ function GM:Move(ply, mv)
         mv:SetMaxClientSpeed(mv:GetMaxClientSpeed() * mul)
         mv:SetMaxSpeed(mv:GetMaxSpeed() * mul)
     end
+
+    -- Call base movement code
+    if drive.Move(ply, mv) then return true end
 end
 
 function UpdateRoleWeaponState()
@@ -1836,7 +1974,7 @@ DefaultEquipment = {
         "weapon_zm_sledge",
         "weapon_ttt_glock"
     }
-};
+}
 
 -----------------
 -- Old ConVars --
@@ -1869,7 +2007,7 @@ for _, c in ipairs(deprecatedConVars) do
     AddOldCVarWarning(c[1], c[2])
 end
 
-hook.Add("PlayerInitialSpawn", "ConVarDeprecation_PlayerInitialSpawn", function(ply, transition)
+AddHook("PlayerInitialSpawn", "ConVarDeprecation_PlayerInitialSpawn", function(ply, transition)
     if not IsValid(ply) then return end
     if not ply:IsAdmin() and not ply:IsSuperAdmin() then return end
 

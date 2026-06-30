@@ -327,7 +327,7 @@ function plymeta:GetBaseKarma() return self:GetNWFloat("karma", 1000) end
 
 function plymeta:HasEquipmentWeapon()
     for _, wep in ipairs(self:GetWeapons()) do
-        if IsValid(wep) and wep:IsEquipment() then
+        if IsValid(wep) and wep.IsEquipment and wep:IsEquipment() then
             return true
         end
     end
@@ -599,7 +599,7 @@ if CLIENT then
             end
             return w
         end
-    };
+    }
 
     -- Insert all the "simple" gestures that do not need weight control
     for _, a in ipairs(simple_runners) do

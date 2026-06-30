@@ -1,5 +1,7 @@
 local hook = hook
 
+local AddHook = hook.Add
+
 -------------
 -- CONVARS --
 -------------
@@ -11,7 +13,7 @@ local veteran_announce = GetConVar("ttt_veteran_announce")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Veteran_Translations_Initialize", function()
+AddHook("Initialize", "Veteran_Translations_Initialize", function()
     -- Cheat Sheet
     LANG.AddToLanguage("english", "cheatsheet_desc_veteran", "Gets a buff if they are the last member of the innocent team left alive.")
 
@@ -25,7 +27,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Veteran_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Veteran_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_VETERAN then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]

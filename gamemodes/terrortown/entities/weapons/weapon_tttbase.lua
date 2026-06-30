@@ -38,7 +38,7 @@ if CLIENT then
     --
     ---- Desc is the description in the menu. Needs manual linebreaks (via \n).
     --     desc = "Text."
-    -- };
+    -- }
 
     -- This sets the icon shown for the weapon in the DNA sampler, search window,
     -- equipment menu (if buyable), etc.
@@ -189,7 +189,11 @@ if CLIENT then
         local bright = crosshair_brightness:GetFloat() or 1
 
         gap = gap or math.floor(20 * scale * (sights and 0.8 or 1))
-        local length = math.floor(gap + (25 * crosshair_size:GetFloat()) * scale)
+        local size = crosshair_size:GetFloat()
+        if client.GetSprinting and client:GetSprinting() then
+            size = size + 1
+        end
+        local length = math.floor(gap + (25 * size) * scale)
 
         local thickness = math.max(1, crosshair_thickness:GetInt())
         local rect = thickness > 1
@@ -307,7 +311,7 @@ if CLIENT then
         secondaryfire = Key("+attack2", "MOUSE2"),
         reload = Key("+reload", "R"),
         usekey = Key("+use", "E")
-    };
+    }
 
     function SWEP:AddHUDHelp(primary_text, secondary_text, translate, extra_params)
         extra_params = extra_params or {}
@@ -317,7 +321,14 @@ if CLIENT then
             secondary = secondary_text,
             translatable = translate,
             translate_params = table.Merge(extra_params, default_key_params)
-        };
+        }
+    end
+
+    -- CallOnClient only works with lua functions
+    if game.SinglePlayer() then
+        function SWEP:SPLastShoot()
+            self:SetLastShootTime()
+        end
     end
 end
 
@@ -343,6 +354,10 @@ function SWEP:PrimaryAttack(worldsnd)
     if not IsValid(owner) or owner:IsNPC() or (not owner.ViewPunch) then return end
 
     owner:ViewPunch(Angle(util.SharedRandom(self:GetClass(), -0.2, -0.1, 0) * self.Primary.Recoil, util.SharedRandom(self:GetClass(), -0.1, 0.1, 1) * self.Primary.Recoil, 0))
+
+    if game.SinglePlayer() then
+        self:CallOnClient("SPLastShoot")
+    end
 end
 
 function SWEP:DryFire(setnext)
@@ -550,7 +565,10 @@ function SWEP:SetIronsights(b)
     if (b ~= self:GetIronsights()) then
         self:SetIronsightsPredicted(b)
         self:SetIronsightsTime(CurTime())
-        if CLIENT then
+
+        if game.SinglePlayer() then
+            self:CallOnClient("CalcViewModel")
+        elseif CLIENT then
             self:CalcViewModel()
         end
     end

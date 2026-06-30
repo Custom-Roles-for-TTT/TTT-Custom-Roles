@@ -1,6 +1,6 @@
 ---- English language strings
 
-local L = LANG.CreateLanguage("English")
+local L = LANG.CreateLanguage("English", "en")
 
 --- General text used in various places
 L.hidden = "Hidden"
@@ -150,10 +150,6 @@ L.radio_button_huge = "H.U.G.E burst"
 L.radio_button_c4 = "C4 beeping"
 L.radio_button_burn = "Burning"
 L.radio_button_steps = "Footsteps"
-L.radio_button_glock = "Glock shots"
-L.radio_button_sipist = "Silenced shots"
-L.radio_button_tele = "Teleport"
-L.radio_button_heal = "Healing"
 
 -- Intro screen shown after joining
 L.intro_help = "If you're new to the game, press F1 for instructions!"
@@ -287,8 +283,6 @@ L.set_wswitch_tip = "By default the weapon switcher automatically closes a few s
 L.set_swselect = "Close menu when weapon selected"
 L.set_swselect_tip = "By default the weapon switcher closes when a weapon is selected. Disable this to make it stay up. Ignored when fast switching is enabled."
 L.set_cues = "Play sound cue when a round begins or ends"
-L.set_msg_cue = "Play sound cue when a notification appears"
-L.set_msg_cue_tip = "Whether to play a sound whenever a popup message appears (Popup messages appear in the top right corner when rounds begin/end and when bodies are found/searched)"
 L.set_raw_karma = "Show the raw karma value"
 L.set_raw_karma_tip = "Shows the raw karma value in the scoreboard instead of the percentage of damage each player deals"
 L.set_karma_total_pct = "Show karma as percent of total"
@@ -304,8 +298,10 @@ L.set_bypass_culling = "Bypass map culling"
 L.set_bypass_culling_tip = "Whether to bypass vis leafs and culling in maps for player icons and highlighting. Disable for performance if you don't care about icons and highlighting lagging behind players sometimes."
 L.set_distance_unit = "Distance unit"
 L.set_distance_unit_tip = "What distance unit to display. Used for things like radar"
-L.set_cheatsheat_hotkey = "Cheat sheet hotkey"
-L.set_cheatsheat_hotkey_tip = "What button to hold to open the cheat sheet"
+L.set_cheatsheet_hotkey = "Cheat sheet hotkey"
+L.set_cheatsheet_hotkey_tip = "What button to hold to open the cheat sheet"
+L.set_cheatsheet_rolepack_icon = "Show rolepack inclusion icons on cheat sheet"
+L.set_cheatsheet_rolepack_icon_tip = "Whether to show an icon on each role on the cheat sheet if it belongs to the currently enabled role pack"
 
 L.set_title_play = "Gameplay settings"
 
@@ -1193,6 +1189,10 @@ L.idle_popup_title = "Idle"
 --- 2021-06-07
 L.sb_playervolume = "Player Volume"
 
+--- 2023-07-28
+L.set_msg_cue = "Play sound cue when a notification appears"
+L.set_msg_cue_tip = "Whether to play a sound whenever a popup message appears (Popup messages appear in the top right corner when rounds begin/end and when bodies are found/searched)"
+
 --- 2025-03-11
 L.set_title_cross = "Crosshair settings"
 
@@ -1202,9 +1202,47 @@ L.set_hip_cross_opacity = "Opacity"
 L.set_cross_thickness = "Thickness"
 L.set_cross_outlinethickness = "Outline thickness"
 
+--- 2025-09-04
+L.radio_button_glock = "Glock shots"
+L.radio_button_sipist = "Silenced shots"
+L.radio_button_tele = "Teleport"
+L.radio_button_heal = "Healing"
+
+--- 2026-02-27
+L.dead         = "Dead"
+L.disconnected = "Disconnected"
+L.unknown = "Unknown"
+
+L.words_suicide = "kills self"
+L.words_fall    = "SPLUT"
+L.words_burn    = "crackle"
+
+L.ev_start_tip = "Game"
+L.ev_credit_tip = "Credit found"
+L.ev_body_tip = "Body discovered"
+
+L.ev_c4_disarm_tip = "C4 disarm"
+L.ev_c4_boom_tip = "C4 exploded"
+L.ev_c4_plant_tip = "C4 planted"
+
+L.ev_suicide = "Suicide"
+L.ev_teamkill = "Teamkill"
+L.ev_killed = "killed"
+
+-- 2026-03-11
+L.equip_sort_default = "Default"
+L.equip_sort_slot    = "Slot"
+
+L.equip_sort_direction_tip = "Sort direction"
+
+L.set_hide_unbuyable = "Move unbuyable equipment items to the bottom of the list"
+
 -- Custom Events
 L.ev_defi = "{victim} was respawned"
+L.ev_defi_icon = "Defibrillated"
 L.ev_disco = "{victim} disconnected"
+L.ev_disco_icon = "Disconnected"
+L.ev_info_icon = "Information"
 
 -- Role Weapons Configuration
 L.roleweapons_title = "Role Weapons Configuration"
@@ -1238,6 +1276,10 @@ L.roleweapons_exclude_tooltip = "Excluded"
 L.roleweapons_norandom_tooltip = "Randomization Bypassed"
 L.roleweapons_loadout_tooltip = "In Loadout"
 
+-- Common dialogs
+L.dialog_yes = "Yes"
+L.dialog_no = "No"
+
 -- Role Packs Configuration
 L.rolepacks_title = "Role Packs Configuration"
 L.rolepacks_role_tabtitle = "Roles"
@@ -1249,21 +1291,43 @@ L.rolepacks_weapon_tabtitle_tooltip = "Configure which weapons are buyable in ea
 L.rolepacks_convar_tabtitle = "ConVars"
 L.rolepacks_convar_tabtitle_tooltip = "Configure which ConVars are changed in each role pack"
 L.rolepacks_add = "Add"
+L.rolepacks_add_title = "Create new role pack"
 L.rolepacks_rename = "Rename"
+L.rolepacks_rename_title = "Renaming {name}"
+L.rolepacks_details = "Edit Details"
+L.rolepacks_details_title = "Editing details for {name}"
 L.rolepacks_delete = "Delete"
+L.rolepacks_delete_title = "Are you sure you want to delete {name}?"
 L.rolepacks_save = "Save"
+L.rolepacks_save_title = "Would you like to save your changes?"
+L.rolepacks_saveas = "Save As"
+L.rolepacks_saveas_title = "Duplicating {name}"
+L.rolepacks_saveas_override_title = "\"{name}\" already exists, would you like to overwrite?"
+L.rolepacks_test = "Test Role Pack"
 L.rolepacks_apply = "Apply to Server"
 L.rolepacks_clear = "Disable Active Role Pack"
 L.rolepacks_add_role = "Add role"
 L.rolepacks_delete_role = "Delete role"
 L.rolepacks_add_slot = "Add slot"
 L.rolepacks_delete_slot = "Delete slot"
+L.rolepacks_duplicate_slot = "Duplicate slot"
 L.rolepacks_use_default = "Use Default"
+L.rolepacks_unknown_role = "Unknown role: \"{role}\""
+L.rolepacks_allow_duplicate = "Allow Duplicate Roles"
+L.rolepacks_slot_title = "Slot {num}:"
+L.rolepacks_confirm = "Confirm"
+L.rolepacks_displayname = "Display Name:"
+L.rolepacks_description = "Description:"
 
 -- Role Blocks Configuration
 L.roleblocks_title = "Role Blocks Configuration"
 L.roleblocks_add_group = "Add group"
 L.roleblocks_delete_group = "Delete group"
+L.roleblocks_duplicate_group = "Duplicate group"
+L.roleblocks_unknown_role = "Unknown role: \"{role}\""
+L.roleblocks_group_title = "Blocking Group:"
+L.roleblocks_use_default = "Use Default Role Blocks"
+L.roleblocks_save_title = "Would you like to save your changes?"
 
 -- Player name disguising
 L.player_name_disguised = "{name} (Disguised as {disguise})"
@@ -1271,3 +1335,4 @@ L.player_name_disguised = "{name} (Disguised as {disguise})"
 -- Cheat Sheet
 L.cheatsheet_current_role = "{role} (CURRENT ROLE)"
 L.cheatsheet_rolepack = "Role Pack: {name}"
+L.cheatsheet_rolepack_role = "Included in current role pack"

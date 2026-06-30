@@ -1,12 +1,15 @@
 AddCSLuaFile()
 
 local hook = hook
-local timer = timer
-local player = player
-local net = net
 local math = math
+local net = net
+local player = player
+local table = table
+local timer = timer
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
+local TableInsert = table.insert
 
 util.AddNetworkString("TTT_VindicatorTeamChange")
 util.AddNetworkString("TTT_VindicatorActive")
@@ -111,7 +114,7 @@ local function OnVindicatorSuccess(vindicator, target, msg)
     end
 end
 
-hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacker)
+local function Vindicator_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and GetRoundState() == ROUND_ACTIVE
     local handled = false
     if valid_kill then
@@ -159,9 +162,9 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
             end
         end
     end
-end)
+end
 
-hook.Add("TTTStopPlayerRespawning", "Vindicator_TTTStopPlayerRespawning", function(ply)
+local function Vindicator_TTTStopPlayerRespawning(ply)
     if not IsPlayer(ply) then return end
     if ply:Alive() then return end
 
@@ -169,9 +172,9 @@ hook.Add("TTTStopPlayerRespawning", "Vindicator_TTTStopPlayerRespawning", functi
         timer.Remove("VindicatorRespawn" .. ply:SteamID64())
         ply:SetNWBool("VindicatorIsRespawning", false)
     end
-end)
+end
 
-hook.Add("TTTDeathNotifyOverride", "Vindicator_TTTDeathNotifyOverride", function(victim, inflictor, attacker, reason, killerName, role)
+local function Vindicator_TTTDeathNotifyOverride(victim, inflictor, attacker, reason, killerName, role)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsValid(inflictor) or not IsValid(attacker) then return end
     if not attacker:IsPlayer() then return end
@@ -180,7 +183,7 @@ hook.Add("TTTDeathNotifyOverride", "Vindicator_TTTDeathNotifyOverride", function
     if victim:IsRoleActive() then return end
 
     return reason, killerName, ROLE_NONE
-end)
+end
 
 local function HandleVindicatorMidRound(ply)
     if not IsPlayer(ply) then return end
@@ -196,7 +199,7 @@ end
 
 local unkillable_roles = { ROLE_GUESSER }
 
-hook.Add("TTTPlayerRoleChanged", "Vindicator_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Vindicator_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
 
     -- Do these checks regardless of the current team of the role in case we swap and swap back,
@@ -229,7 +232,7 @@ end)
 -- DEATH LINK --
 ----------------
 
-hook.Add("TTTBeginRound", "Vindicator_TTTBeginRound", function()
+AddHook("TTTBeginRound", "Vindicator_TTTBeginRound", function()
     timer.Create("TTTVindicatorTimer", 0.1, 0, function()
         if vindicator_prevent_revival:GetBool() then
             for _, v in PlayerIterator() do
@@ -259,7 +262,7 @@ end)
 -- DISCONNECTION CHECKS --
 --------------------------
 
-hook.Add("PlayerDisconnected", "Vindicator_PlayerDisconnected", function(ply)
+local function Vindicator_PlayerDisconnected(ply)
     local sid64 = ply:SteamID64()
 
     for _, v in PlayerIterator() do
@@ -282,7 +285,7 @@ hook.Add("PlayerDisconnected", "Vindicator_PlayerDisconnected", function(ply)
             end
         end
     end
-end)
+end
 
 ----------------
 -- WIN CHECKS --
@@ -307,11 +310,11 @@ local function HandleVindicatorWinBlock(win_type)
     return WIN_NONE
 end
 
-hook.Add("TTTWinCheckBlocks", "Vindicator_TTTWinCheckBlocks", function(win_blocks)
-    table.insert(win_blocks, HandleVindicatorWinBlock)
-end)
+local function Vindicator_TTTWinCheckBlocks(win_blocks)
+    TableInsert(win_blocks, HandleVindicatorWinBlock)
+end
 
-hook.Add("TTTCheckForWin", "Vindicator_TTTCheckForWin", function()
+local function Vindicator_TTTCheckForWin()
     local vindicator_win = false
     local other_alive = false
     for _, ply in PlayerIterator() do
@@ -327,21 +330,21 @@ hook.Add("TTTCheckForWin", "Vindicator_TTTCheckForWin", function()
     if vindicator_win and not other_alive then
         return WIN_VINDICATOR
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Vindicator_TTTPrintResultMessage", function(type)
+local function Vindicator_TTTPrintResultMessage(type)
     if type == WIN_VINDICATOR then
         LANG.Msg("win_vindicator", { role = ROLE_STRINGS[ROLE_VINDICATOR] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " wins.\n")
         return true
     end
-end)
+end
 
 -------------
 -- CLEANUP --
 -------------
 
-hook.Add("TTTPrepareRound", "Vindicator_PrepareRound", function()
+AddHook("TTTPrepareRound", "Vindicator_PrepareRound", function()
     SetVindicatorTeam(false)
     for _, ply in PlayerIterator() do
         ply:SetNWString("VindicatorTarget", "")
@@ -351,3 +354,17 @@ hook.Add("TTTPrepareRound", "Vindicator_PrepareRound", function()
     end
     timer.Remove("TTTVindicatorTimer")
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_VINDICATOR] = {
+    ["PlayerDeath"] = Vindicator_PlayerDeath,
+    ["PlayerDisconnected"] = Vindicator_PlayerDisconnected,
+    ["TTTCheckForWin"] = Vindicator_TTTCheckForWin,
+    ["TTTDeathNotifyOverride"] = Vindicator_TTTDeathNotifyOverride,
+    ["TTTPrintResultMessage"] = Vindicator_TTTPrintResultMessage,
+    ["TTTStopPlayerRespawning"] = Vindicator_TTTStopPlayerRespawning,
+    ["TTTWinCheckBlocks"] = Vindicator_TTTWinCheckBlocks
+}

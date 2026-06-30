@@ -1,7 +1,5 @@
 AddCSLuaFile()
 
-local hook = hook
-
 -------------
 -- CONVARS --
 -------------
@@ -16,7 +14,7 @@ local impersonator_damage_penalty = GetConVar("ttt_impersonator_damage_penalty")
 -- DAMAGE --
 ------------
 
-hook.Add("ScalePlayerDamage", "Impersonator_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Impersonator_ScalePlayerDamage(ply, hitgroup, dmginfo)
     -- Only apply damage scaling after the round starts
     if GetRoundState() < ROUND_ACTIVE then return end
 
@@ -26,4 +24,12 @@ hook.Add("ScalePlayerDamage", "Impersonator_ScalePlayerDamage", function(ply, hi
 
     local penalty = impersonator_damage_penalty:GetFloat()
     dmginfo:ScaleDamage(1 - penalty)
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_IMPERSONATOR] = {
+    ["ScalePlayerDamage"] = Impersonator_ScalePlayerDamage
+}

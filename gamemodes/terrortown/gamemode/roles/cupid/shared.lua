@@ -1,6 +1,8 @@
 AddCSLuaFile()
 
-local table = table
+local hook = hook
+
+local AddHook = hook.Add
 
 ------------------
 -- ROLE CONVARS --
@@ -15,80 +17,81 @@ CreateConVar("ttt_cupid_can_damage_lovers", "0", FCVAR_REPLICATED, "Whether cupi
 CreateConVar("ttt_cupid_lovers_can_damage_lovers", "1", FCVAR_REPLICATED, "Whether the lovers should be able to damage each other", 0, 1)
 CreateConVar("ttt_cupid_lovers_can_damage_cupid", "0", FCVAR_REPLICATED, "Whether the lovers should be able to damage cupid", 0, 1)
 
-ROLE_CONVARS[ROLE_CUPID] = {}
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_arrow_speed_mult",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_arrow_hitscan",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_notify_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_notify_killer",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_notify_sound",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_notify_confetti",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_lovers_notify_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No one", "Everyone", "Traitors", "Innocents"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_is_independent",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_can_damage_lovers",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_lovers_can_damage_lovers",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_lovers_can_damage_cupid",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_lover_vision_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_can_see_jesters",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
+ROLE_CONVARS[ROLE_CUPID] = {
+    {
+        cvar = "ttt_cupid_arrow_speed_mult",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_cupid_arrow_hitscan",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_notify_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_cupid_notify_killer",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_notify_sound",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_notify_confetti",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_lovers_notify_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"No one", "Everyone", "Traitors", "Innocents"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_cupid_is_independent",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_can_damage_lovers",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_lovers_can_damage_lovers",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_lovers_can_damage_cupid",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_lover_vision_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_can_see_jesters",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cupid_update_scoreboard",
+        type = ROLE_CONVAR_TYPE_BOOL
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
 -------------------
 
-hook.Add("TTTUpdateRoleState", "Cupid_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Cupid_TeamChange_TTTUpdateRoleState", function()
     local is_independent = cupid_is_independent:GetBool()
     INDEPENDENT_ROLES[ROLE_CUPID] = is_independent
     JESTER_ROLES[ROLE_CUPID] = not is_independent
 end)
 
-hook.Add("TTTPlayerCanSendCreditsTo", "Cupid_TTTPlayerCanSendCreditsTo", function(ply, target, canSend)
+AddHook("TTTPlayerCanSendCreditsTo", "Cupid_TTTPlayerCanSendCreditsTo", function(ply, target, canSend)
     -- Don't block a role that can send credits already
     if canSend then return end
     -- Only roles that have shops can transfer

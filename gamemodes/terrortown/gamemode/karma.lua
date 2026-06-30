@@ -9,18 +9,13 @@ local CallHook = hook.Call
 local RunHook = hook.Run
 local PlayerIterator = player.Iterator
 
-KARMA = {}
-
 -- ply steamid64 -> karma table for disconnected players who might reconnect
 KARMA.RememberedPlayers = {}
 
 -- Convars, more convenient access than GetConVar bla bla
-KARMA.cv = {}
-KARMA.cv.enabled = CreateConVar("ttt_karma", "1", FCVAR_ARCHIVE)
 KARMA.cv.strict = CreateConVar("ttt_karma_strict", "0")
 KARMA.cv.lenient = CreateConVar("ttt_karma_lenient", "0")
 KARMA.cv.starting = CreateConVar("ttt_karma_starting", "1000")
-KARMA.cv.max = CreateConVar("ttt_karma_max", "1000")
 KARMA.cv.ratio = CreateConVar("ttt_karma_ratio", "0.001")
 KARMA.cv.killpenalty = CreateConVar("ttt_karma_kill_penalty", "15")
 KARMA.cv.roundheal = CreateConVar("ttt_karma_round_increment", "5")
@@ -50,13 +45,8 @@ cvars.AddChangeCallback("ttt_karma_max", function(cvar, old, new)
 end)
 
 function KARMA.InitState()
-    SetGlobalBool("ttt_karma", config.enabled:GetBool())
     SetGlobalInt("ttt_karma_max", config.max:GetInt())
     SetGlobalInt("ttt_karma_starting", config.starting:GetInt())
-end
-
-function KARMA.IsEnabled()
-    return GetGlobalBool("ttt_karma", false)
 end
 
 -- Compute penalty for hurting someone a certain amount

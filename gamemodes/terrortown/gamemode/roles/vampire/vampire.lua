@@ -11,6 +11,7 @@ local player = player
 local table = table
 local util = util
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 local MathRandom = math.random
 
@@ -36,17 +37,17 @@ local vampire_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode")
 -------------
 
 -- Reset credit status
-hook.Add("Initialize", "Vampire_Credits_Initialize", function()
+AddHook("Initialize", "Vampire_Credits_Initialize", function()
     GAMEMODE.AwardedVampireCredits = false
     GAMEMODE.AwardedVampireCreditsDead = 0
 end)
-hook.Add("TTTPrepareRound", "Vampire_Credits_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Vampire_Credits_TTTPrepareRound", function()
     GAMEMODE.AwardedVampireCredits = false
     GAMEMODE.AwardedVampireCreditsDead = 0
 end)
 
 -- Award credits for valid kill
-hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, attacker, dmginfo)
+local function Vampire_Credits_DoPlayerDeath(victim, attacker, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsValid(victim) then return end
 
@@ -97,14 +98,14 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
             GAMEMODE.AwardedVampireCreditsDead = ply_dead + GAMEMODE.AwardedVampireCreditsDead
         end
     end
-end)
+end
 
 -----------
 -- PRIME --
 -----------
 
 -- Handle when the prime dies
-hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl, attacker)
+local function Vampire_PrimeDeath_PlayerDeath(victim, infl, attacker)
     local prime_death_mode = vampire_prime_death_mode:GetFloat()
     -- If the prime died and we're doing something when that happens
     if victim:IsVampirePrime() and prime_death_mode > VAMPIRE_DEATH_NONE then
@@ -123,8 +124,8 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
         -- If there are no more living primes, do something with the non-primes
         if living_vampire_primes == 0 and #vampires > 0 then
             net.Start("TTT_VampirePrimeDeath")
-            net.WriteUInt(prime_death_mode, 4)
-            net.WriteString(victim:Nick())
+                net.WriteUInt(prime_death_mode, 4)
+                net.WriteString(victim:Nick())
             net.Broadcast()
 
             -- Kill them
@@ -154,10 +155,10 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
             end
         end
     end
-end)
+end
 
 -- If the last vampire prime leaves, randomly choose a new one
-hook.Add("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", function(ply)
+local function Vampire_Prime_PlayerDisconnected(ply)
     if not ply:IsVampire() then return end
     if not ply:IsVampirePrime() then return end
 
@@ -180,7 +181,7 @@ hook.Add("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", function(ply)
     new_prime:SetVampirePrime(true)
 
     new_prime:QueueMessage(MSG_PRINTBOTH, "The prime " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " has faded away and you've seized power in their absence!")
-end)
+end
 
 -- Keep previous naming scheme for backwards compatibility
 function plymeta:SetVampirePrime(p) self:SetNWBool("vampire_prime", p) end
@@ -190,14 +191,14 @@ function plymeta:SetVampirePreviousRole(r) self:SetNWInt("vampire_previous_role"
 -- ROLE STATUS --
 -----------------
 
-hook.Add("TTTPlayerRoleChanged", "Vampire_RoleFeatures_TTTPlayerRoleChanged", function(ply, oldRole, role)
+AddHook("TTTPlayerRoleChanged", "Vampire_RoleFeatures_TTTPlayerRoleChanged", function(ply, oldRole, role)
     if role ~= ROLE_VAMPIRE then return end
     if oldRole ~= ROLE_NONE then return end
 
     ply:SetVampirePrime(true)
 end)
 
-hook.Add("TTTPrepareRound", "Vampire_RoleFeatures_PrepareRound", function()
+AddHook("TTTPrepareRound", "Vampire_RoleFeatures_PrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWInt("VampireFreezeCount", 0)
         v:SetVampirePrime(false)
@@ -216,7 +217,7 @@ end
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTCheckForWin", "Vampire_TTTCheckForWin", function()
+local function Vampire_TTTCheckForWin()
     -- Only run the win check if the vampires win by themselves
     if not INDEPENDENT_ROLES[ROLE_VAMPIRE] then return end
 
@@ -237,34 +238,34 @@ hook.Add("TTTCheckForWin", "Vampire_TTTCheckForWin", function()
     elseif vampire_alive then
         return WIN_NONE
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Vampire_TTTPrintResultMessage", function(type)
+local function Vampire_TTTPrintResultMessage(type)
     if type == WIN_VAMPIRE then
         local plural = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
         LANG.Msg("win_vampires", { role = plural })
         ServerLog("Result: " .. plural .. " win.\n")
         return true
     end
-end)
+end
 
 -----------
 -- KARMA --
 -----------
 
 -- Reduce karma if a vampire hurts or kills an ally
-hook.Add("TTTKarmaShouldGivePenalty", "Vampire_TTTKarmaShouldGivePenalty", function(attacker, victim)
+local function Vampire_TTTKarmaShouldGivePenalty(attacker, victim)
     if attacker:IsVampire() then
         return victim:IsVampireAlly()
     end
-end)
+end
 
 ------------
 -- DAMAGE --
 ------------
 
 -- Vampire damage scaling and friendly fire reflecting
-hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Vampire_ScalePlayerDamage(ply, hitgroup, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     -- Only run these checks if we're handling damage to a vampire
@@ -313,46 +314,46 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
         local reduction = vampire_damage_reduction:GetFloat()
         dmginfo:ScaleDamage(1 - reduction)
     end
-end)
+end
 
 ------------------
 -- ROLE WEAPONS --
 ------------------
 
 -- Make sure the vampire keeps their appropriate weapons
-hook.Add("TTTPlayerAliveThink", "Vampire_TTTPlayerAliveThink", function(ply)
+local function Vampire_TTTPlayerAliveThink(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if ply:IsVampire() and not ply:HasWeapon("weapon_vam_fangs") then
         ply:Give("weapon_vam_fangs")
     end
-end)
+end
 
 -- Handle role weapon assignment
-hook.Add("PlayerLoadout", "Vampire_PlayerLoadout", function(ply)
+local function Vampire_PlayerLoadout(ply)
     if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() or not ply:IsVampire() or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not ply:HasWeapon("weapon_vam_fangs") then
         ply:Give("weapon_vam_fangs")
     end
-end)
+end
 
 -- Only allow the vampire to pick up vampire-specific weapons
-hook.Add("PlayerCanPickupWeapon", "Vampire_Weapons_PlayerCanPickupWeapon", function(ply, wep)
+local function Vampire_Weapons_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return end
 
     if wep:GetClass() == "weapon_vam_fangs" then
         return ply:IsVampire()
     end
-end)
+end
 
 -----------------------
 -- PLAYER VISIBILITY --
 -----------------------
 
 -- Add all players to the PVS for the vampire if highlighting or Kill icon are enabled
-hook.Add("SetupPlayerVisibility", "Vampire_SetupPlayerVisibility", function(ply)
+local function Vampire_SetupPlayerVisibility(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveVampire() then return end
     if not vampire_vision_enabled:GetBool() and not vampire_show_target_icon:GetBool() then return end
@@ -369,4 +370,22 @@ hook.Add("SetupPlayerVisibility", "Vampire_SetupPlayerVisibility", function(ply)
             AddOriginToPVS(pos)
         end
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_VAMPIRE] = {
+    ["DoPlayerDeath"] = Vampire_Credits_DoPlayerDeath,
+    ["PlayerCanPickupWeapon"] = Vampire_Weapons_PlayerCanPickupWeapon,
+    ["PlayerDeath"] = Vampire_PrimeDeath_PlayerDeath,
+    ["PlayerDisconnected"] = Vampire_Prime_PlayerDisconnected,
+    ["PlayerLoadout"] = Vampire_PlayerLoadout,
+    ["ScalePlayerDamage"] = Vampire_ScalePlayerDamage,
+    ["SetupPlayerVisibility"] = Vampire_SetupPlayerVisibility,
+    ["TTTCheckForWin"] = Vampire_TTTCheckForWin,
+    ["TTTKarmaShouldGivePenalty"] = Vampire_TTTKarmaShouldGivePenalty,
+    ["TTTPlayerAliveThink"] = Vampire_TTTPlayerAliveThink,
+    ["TTTPrintResultMessage"] = Vampire_TTTPrintResultMessage
+}

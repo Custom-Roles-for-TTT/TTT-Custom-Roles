@@ -5,7 +5,9 @@ local hook = hook
 local ipairs = ipairs
 local math = math
 local player = player
+local timer = timer
 
+local AddHook = hook.Add
 local FindEntsByClass = ents.FindByClass
 local PlayerIterator = player.Iterator
 local MathRandom = math.random
@@ -86,7 +88,7 @@ local function FindArsonistTarget(arsonist, douseDistanceSqr)
 end
 
 local arsonist_early_ignite
-hook.Add("Think", "Arsonist_Douse_Think", function()
+local function Arsonist_Douse_Think()
     -- Make sure we have this cached when it's available
     if not arsonist_early_ignite then
         arsonist_early_ignite = GetConVar("ttt_arsonist_early_ignite")
@@ -214,45 +216,43 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             end
         end
 
-        if stage == ARSONIST_DOUSING or stage == ARSONIST_DOUSING_LOSING then
-            -- If we're done dousing, mark the target and reset the arsonist state
-            if CurTime() - start_time > douse_time then
-                target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSED)
-                target:SetNWInt("TTTArsonistDouseTime", CurTime())
-                if IsValid(target_rag) then
-                    target_rag:SetNWBool("TTTArsonistDoused", true)
-                end
-                p:SetNWFloat("TTTArsonistDouseStartTime", -1)
-                p:SetNWString("TTTArsonistDouseTarget", "")
+        -- If we're done dousing, mark the target and reset the arsonist state
+        if (stage == ARSONIST_DOUSING or stage == ARSONIST_DOUSING_LOSING) and CurTime() - start_time > douse_time then
+            target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSED)
+            target:SetNWInt("TTTArsonistDouseTime", CurTime())
+            if IsValid(target_rag) then
+                target_rag:SetNWBool("TTTArsonistDoused", true)
+            end
+            p:SetNWFloat("TTTArsonistDouseStartTime", -1)
+            p:SetNWString("TTTArsonistDouseTarget", "")
 
-                -- Send message (after a random delay) that this player has been doused, but only if it's enabled
-                if douse_notify_delay_min > 0 then
-                    local delay = MathRandom(douse_notify_delay_min, douse_notify_delay_max)
-                    timer.Create("TTTArsonistNotifyDelay_" .. target_sid64, delay, 1, function()
-                        if not IsPlayer(target) then return end
-                        if not target:Alive() or target:IsSpec() then return end
+            -- Send message (after a random delay) that this player has been doused, but only if it's enabled
+            if douse_notify_delay_min > 0 then
+                local delay = MathRandom(douse_notify_delay_min, douse_notify_delay_max)
+                timer.Create("TTTArsonistNotifyDelay_" .. target_sid64, delay, 1, function()
+                    if not IsPlayer(target) then return end
+                    if not target:Alive() or target:IsSpec() then return end
 
-                        local message = ""
-                        if target_dead then
-                            message = message .. "Your corpse has "
-                        else
-                            message = message .. "You have "
-                        end
-                        message = message .. "been doused in gasoline by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
-                        target:QueueMessage(MSG_PRINTBOTH, message)
-                    end)
-                end
+                    local message = ""
+                    if target_dead then
+                        message = message .. "Your corpse has "
+                    else
+                        message = message .. "You have "
+                    end
+                    message = message .. "been doused in gasoline by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
+                    target:QueueMessage(MSG_PRINTBOTH, message)
+                end)
             end
         end
     end
-end)
+end
 
-hook.Add("TTTOnRoleAbilityEnabled", "Arsonist_TTTOnRoleAbilityEnabled", function(ply)
+local function Arsonist_TTTOnRoleAbilityEnabled(ply)
     if not IsPlayer(ply) or not ply:IsArsonist() then return end
     ply.DouseDisabled = false
-end)
+end
 
-hook.Add("PostPlayerDeath", "Arsonist_PostPlayerDeath", function(ply)
+local function Arsonist_PostPlayerDeath(ply)
     -- Remove the notification delay timer since the player is already dead
     timer.Remove("TTTArsonistNotifyDelay_" .. ply:SteamID64())
 
@@ -262,9 +262,9 @@ hook.Add("PostPlayerDeath", "Arsonist_PostPlayerDeath", function(ply)
     if not ply.ignite_info.att:IsArsonist() then return end
 
     ply.ignite_info = nil
-end)
+end
 
-hook.Add("TTTPlayerRoleChanged", "Arsonist_ClearNotifications_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Arsonist_ClearNotifications_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
 
     -- If we no longer have an arsonist, clear any notification delays that remain
@@ -275,9 +275,9 @@ hook.Add("TTTPlayerRoleChanged", "Arsonist_ClearNotifications_TTTPlayerRoleChang
     end
 end)
 
-hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
-        v.DouseDisabled = false
+        v.DouseDisabled = nil
         v:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
         v:SetNWInt("TTTArsonistDouseTime", -1)
         v:SetNWString("TTTArsonistDouseTarget", "")
@@ -288,7 +288,7 @@ hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
     end
 end)
 
-hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function Arsonist_TTTPlayerSpawnForRound(ply, dead_only)
     if dead_only and ply:Alive() and not ply:IsSpec() then return end
 
     -- Player is respawning that has not been doused
@@ -310,9 +310,9 @@ hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(p
             end
         end
     end
-end)
+end
 
-hook.Add("ScalePlayerDamage", "Arsonist_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+local function Arsonist_ScalePlayerDamage(ply, hitgroup, dmginfo)
     -- Only apply damage scaling after the round starts
     if GetRoundState() < ROUND_ACTIVE then return end
 
@@ -323,9 +323,9 @@ hook.Add("ScalePlayerDamage", "Arsonist_ScalePlayerDamage", function(ply, hitgro
     if not att:GetNWBool("TTTArsonistDouseComplete", false) then
         dmginfo:ScaleDamage(1 - arsonist_damage_penalty:GetFloat())
     end
-end)
+end
 
-hook.Add("EntityTakeDamage", "Arsonist_EntityTakeDamage", function(ent, dmginfo)
+local function Arsonist_EntityTakeDamage(ent, dmginfo)
     if not IsPlayer(ent) then return end
 
     -- Make sure the player is on fire and being damaged by fire
@@ -346,14 +346,14 @@ hook.Add("EntityTakeDamage", "Arsonist_EntityTakeDamage", function(ent, dmginfo)
         dmginfo:SetInflictor(ent.ignite_info.infl)
         dmginfo:SetDamage(arsonist_burn_damage:GetInt())
     end
-end)
+end
 
 ------------------
 -- ANNOUNCEMENT --
 ------------------
 
 -- Warn other players that there is an arsonist
-hook.Add("TTTBeginRound", "Arsonist_Announce_TTTBeginRound", function()
+AddHook("TTTBeginRound", "Arsonist_Announce_TTTBeginRound", function()
     if not arsonist_warn_all:GetBool() then return end
 
     timer.Simple(1.5, function()
@@ -379,7 +379,7 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTCheckForWin", "Arsonist_TTTCheckForWin", function()
+local function Arsonist_TTTCheckForWin()
     local arsonist_alive = false
     local other_alive = false
     for _, v in PlayerIterator() do
@@ -397,12 +397,27 @@ hook.Add("TTTCheckForWin", "Arsonist_TTTCheckForWin", function()
     elseif arsonist_alive then
         return WIN_NONE
     end
-end)
+end
 
-hook.Add("TTTPrintResultMessage", "Arsonist_TTTPrintResultMessage", function(type)
+local function Arsonist_TTTPrintResultMessage(type)
     if type == WIN_ARSONIST then
         LANG.Msg("win_arsonist", { role = ROLE_STRINGS[ROLE_ARSONIST] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_ARSONIST] .. " wins.\n")
         return true
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_ARSONIST] = {
+    ["EntityTakeDamage"] = Arsonist_EntityTakeDamage,
+    ["PostPlayerDeath"] = Arsonist_PostPlayerDeath,
+    ["ScalePlayerDamage"] = Arsonist_ScalePlayerDamage,
+    ["Think"] = Arsonist_Douse_Think,
+    ["TTTCheckForWin"] = Arsonist_TTTCheckForWin,
+    ["TTTOnRoleAbilityEnabled"] = Arsonist_TTTOnRoleAbilityEnabled,
+    ["TTTPlayerSpawnForRound"] = Arsonist_TTTPlayerSpawnForRound,
+    ["TTTPrintResultMessage"] = Arsonist_TTTPrintResultMessage
+}

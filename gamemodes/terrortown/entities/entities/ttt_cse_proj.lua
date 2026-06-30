@@ -15,7 +15,7 @@ if CLIENT then
         name = "vis_name",
         hint = "vis_hint",
         fmt  = function(ent, txt) return GetPTranslation(txt, hint_params) end
-    };
+    }
 end
 
 ENT.Type = "anim"

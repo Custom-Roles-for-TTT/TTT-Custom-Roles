@@ -2,13 +2,14 @@ local surface = surface
 local math = math
 local table = table
 
+local AddHook = hook.Add
 local MathMax = math.max
 
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Twins_Translations_Initialize", function()
+AddHook("Initialize", "Twins_Translations_Initialize", function()
     -- HUD
     LANG.AddToLanguage("english", "twins_hud", "Invulnerability ends in: {time}")
 
@@ -37,7 +38,7 @@ end)
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerRoleIcon", "Twins_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+local function Twins_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if not cli:IsActiveTwin() then return end
     if ply == cli then return end
 
@@ -46,9 +47,9 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Twins_TTTTargetIDPlayerRoleIcon", functio
     elseif ply:IsActiveEvilTwin() then
         return ROLE_EVILTWIN, cli:IsActiveEvilTwin()
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerRing", "Twins_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+local function Twins_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     if not IsPlayer(ent) then return end
     if not cli:IsActiveTwin() then return end
     if ent == cli then return end
@@ -56,18 +57,18 @@ hook.Add("TTTTargetIDPlayerRing", "Twins_TTTTargetIDPlayerRing", function(ent, c
     if ent:IsActiveTwin() then
         return true, ROLE_COLORS_RADAR[ent:GetRole()]
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerText", "Twins_TTTTargetIDPlayerText", function(ent, cli, text, col)
+local function Twins_TTTTargetIDPlayerText(ent, cli, text, col)
     if not IsPlayer(ent) then return end
     if not cli:IsActiveTwin() then return end
     if ent == cli then return end
 
     if ent:IsActiveTwin() then
         local role = ent:GetRole()
-        return string.upper(ROLE_STRINGS[role]), ROLE_COLORS_RADAR[role]
+        return utf8.upper(ROLE_STRINGS[role]), ROLE_COLORS_RADAR[role]
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_GOODTWIN] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
@@ -89,7 +90,7 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Twins_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
+local function Twins_TTTScoreboardPlayerRole(ply, cli, color, roleFileName)
     if not cli:IsActiveTwin() then return end
     if ply == cli then return end
 
@@ -97,7 +98,7 @@ hook.Add("TTTScoreboardPlayerRole", "Twins_TTTScoreboardPlayerRole", function(pl
         local role = ply:GetRole()
         return ROLE_COLORS_SCOREBOARD[role], ROLE_STRINGS_SHORT[role]
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_GOODTWIN] = function(ply, target)
     return false, ply:IsActiveGoodTwin() and target:IsActiveTwin()
@@ -113,7 +114,7 @@ end
 
 local hide_role = GetConVar("ttt_hide_role")
 
-hook.Add("TTTHUDInfoPaint", "Twins_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
+local function Twins_TTTHUDInfoPaint(client, label_left, label_top, active_labels)
     if hide_role:GetBool() then return end
 
     if not client:IsActiveTwin() or not client:IsInvulnerable() then return end
@@ -128,7 +129,7 @@ hook.Add("TTTHUDInfoPaint", "Twins_TTTHUDInfoPaint", function(client, label_left
     local text = LANG.GetParamTranslation("twins_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
     local _, h = surface.GetTextSize(text)
 
-    -- Move this up based on how many other labels here are
+    -- Move this up based on how many other labels there are
     label_top = label_top + (20 * #active_labels)
 
     surface.SetTextPos(label_left, ScrH() - label_top - h)
@@ -136,13 +137,13 @@ hook.Add("TTTHUDInfoPaint", "Twins_TTTHUDInfoPaint", function(client, label_left
 
     -- Track that the label was added so others can position accurately
     table.insert(active_labels, "twins")
-end)
+end
 
 --------------
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Twins_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Twins_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_GOODTWIN then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -173,3 +174,18 @@ hook.Add("TTTTutorialRoleText", "Twins_TTTTutorialRoleText", function(role, titl
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+local hooks = {
+    ["TTTHUDInfoPaint"] = Twins_TTTHUDInfoPaint,
+    ["TTTScoreboardPlayerRole"] = Twins_TTTScoreboardPlayerRole,
+    ["TTTTargetIDPlayerRing"] = Twins_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Twins_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Twins_TTTTargetIDPlayerText
+}
+
+ROLE_REGISTERED_HOOKS[ROLE_GOODTWIN] = hooks
+ROLE_REGISTERED_HOOKS[ROLE_EVILTWIN] = hooks

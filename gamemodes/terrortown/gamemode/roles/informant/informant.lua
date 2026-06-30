@@ -4,8 +4,9 @@ local hook = hook
 local IsValid = IsValid
 local player = player
 
-local PlayerIterator = player.Iterator
+local AddHook = hook.Add
 local CallHook = hook.Call
+local PlayerIterator = player.Iterator
 
 -------------
 -- CONVARS --
@@ -31,14 +32,14 @@ local informant_scanner_monster_mult = GetConVar("ttt_informant_scanner_monster_
 ------------------
 
 -- Only allow the informant to pick up informant-specific weapons
-hook.Add("PlayerCanPickupWeapon", "Informant_Weapons_PlayerCanPickupWeapon", function(ply, wep)
+local function Informant_Weapons_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return end
 
     if wep:GetClass() == "weapon_inf_scanner" then
         return ply:IsInformant()
     end
-end)
+end
 
 ----------------
 -- ROLE STATE --
@@ -98,7 +99,7 @@ local function SetDefaultScanState(ply, oldRole, newRole)
     end
 end
 
-hook.Add("TTTPrepareRound", "Informant_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Informant_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
         v:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
@@ -110,7 +111,7 @@ hook.Add("TTTPrepareRound", "Informant_TTTPrepareRound", function()
     end
 end)
 
-hook.Add("TTTBeginRound", "Informant_TTTBeginRound", function()
+AddHook("TTTBeginRound", "Informant_TTTBeginRound", function()
     if not HasInformant() then return end
 
     for _, v in PlayerIterator() do
@@ -122,7 +123,7 @@ end)
 -- ROLE CHANGES --
 ------------------
 
-hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
@@ -293,7 +294,7 @@ local function Scan(ply, target)
     end
 end
 
-hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
+local function Informant_TTTPlayerAliveThink(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if ply:IsInformant() and not ply:IsRoleAbilityDisabled() then
@@ -311,7 +312,7 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
                 if stage < INFORMANT_SCANNED_TRACKED and ScanAllowed(ply, target) then
                     ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOCKED)
                     ply:SetNWString("TTTInformantScannerTarget", target:SteamID64())
-                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. utf8.upper(target:Nick()))
                     ply:SetNWFloat("TTTInformantScannerStartTime", CurTime())
                 end
             end
@@ -320,7 +321,7 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
             if target:IsActive() then
                 if not InRange(ply, target) then
                     ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_SEARCHING)
-                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()) .. " (LOSING TARGET)")
+                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. utf8.upper(target:Nick()) .. " (LOSING TARGET)")
                     ply:SetNWFloat("TTTInformantScannerTargetLostTime", CurTime())
                 end
                 Scan(ply, target)
@@ -335,7 +336,7 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
                 else
                     if InRange(ply, target) then
                         ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOCKED)
-                        ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                        ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. utf8.upper(target:Nick()))
                         ply:SetNWFloat("TTTInformantScannerTargetLostTime", -1)
                     end
                     Scan(ply, target)
@@ -351,13 +352,13 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
             end
         end
     end
-end)
+end
 
 ----------------
 -- HITMARKERS --
 ----------------
 
-hook.Add("TTTDrawHitMarker", "Informant_TTTDrawHitMarker", function(victim, dmginfo)
+local function Informant_TTTDrawHitMarker(victim, dmginfo)
     local att = dmginfo:GetAttacker()
     if not IsPlayer(att) or not IsPlayer(victim) then return end
 
@@ -368,4 +369,14 @@ hook.Add("TTTDrawHitMarker", "Informant_TTTDrawHitMarker", function(victim, dmgi
     if victim:IsJester() or victim:IsSwapper() or victim:IsGuesser() or (victim:IsBeggar() and GetConVar("ttt_beggar_respawn_change_role"):GetBool()) then
         return true, false, false, true
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_INFORMANT] = {
+    ["PlayerCanPickupWeapon"] = Informant_Weapons_PlayerCanPickupWeapon,
+    ["TTTDrawHitMarker"] = Informant_TTTDrawHitMarker,
+    ["TTTPlayerAliveThink"] = Informant_TTTPlayerAliveThink
+}

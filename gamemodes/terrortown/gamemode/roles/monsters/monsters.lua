@@ -3,6 +3,7 @@ AddCSLuaFile()
 local hook = hook
 local player = player
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 -----------------------
@@ -10,7 +11,7 @@ local PlayerIterator = player.Iterator
 -----------------------
 
 -- Add all monsters to the PVS for other monsters since they can see eachother
-hook.Add("SetupPlayerVisibility", "Monsters_SetupPlayerVisibility", function(ply)
+AddHook("SetupPlayerVisibility", "Monsters_SetupPlayerVisibility", function(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveMonsterTeam() then return end
 

@@ -26,7 +26,7 @@ if CLIENT then
     local smokeparticles = {
         Model("particle/particle_smokegrenade"),
         Model("particle/particle_noisesphere")
-    };
+    }
 
    function ENT:CreateSmoke(center)
         local em = ParticleEmitter(center)
@@ -82,9 +82,12 @@ function ENT:Explode(tr)
             local entities = ents.FindInSphere(pos, 100)
             local was_extinguished = false
             for _, e in ipairs(entities) do
+                local should_extinguish, remove_entity = CallHook("TTTSmokeGrenadeShouldExtinguish", nil, e, pos)
                 local ent_class = e:GetClass()
-                if table.HasValue(target_ents, ent_class) then
-                    SafeRemoveEntity(e)
+                if should_extinguish == true or table.HasValue(target_ents, ent_class) then
+                    if remove_entity ~= false then
+                        SafeRemoveEntity(e)
+                    end
                     was_extinguished = true
                     CallHook("TTTSmokeGrenadeExtinguish", nil, ent_class, pos)
                 end

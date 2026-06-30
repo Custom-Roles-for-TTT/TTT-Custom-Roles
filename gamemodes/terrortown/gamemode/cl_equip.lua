@@ -1,6 +1,7 @@
 include("shared.lua")
 
 local concommand = concommand
+local cvars = cvars
 local hook = hook
 local ipairs = ipairs
 local math = math
@@ -13,17 +14,25 @@ local weapons = weapons
 
 ---- Traitor equipment menu
 
+local AddHook = hook.Add
 local CallHook = hook.Call
-local RunHook = hook.Run
-local GetWeapon = weapons.GetStored
-local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
+local GetTranslation = LANG.GetTranslation
+local GetWeapon = weapons.GetStored
+local MathClamp = math.Clamp
+local MathFloor = math.floor
+local MathRandom = math.random
+local RunHook = hook.Run
+local SafeTranslate = LANG.TryTranslation
 local StringFind = string.find
 local StringLower = string.lower
+local TableCopy = table.Copy
 local TableHasValue = table.HasValue
 local TableInsert = table.insert
+local TableMerge = table.Merge
+local TableRemove = table.remove
+local TableShuffle = table.Shuffle
 local TableSort = table.sort
-local TableCopy = table.Copy
 
 -- BEM client convars and config menu
 local numColsVar = CreateClientConVar("ttt_bem_cols", 4, true, false, "Sets the number of columns in the Traitor/Detective menu's item list.")
@@ -33,21 +42,21 @@ local showCustomVar = CreateClientConVar("ttt_bem_marker_custom", 1, true, false
 local showFavoriteVar = CreateClientConVar("ttt_bem_marker_fav", 1, true, false, "Should favorite items get a marker?")
 local showSlotVar = CreateClientConVar("ttt_bem_marker_slot", 1, true, false, "Should items get a slot-marker?")
 local showLoadoutEquipment = CreateClientConVar("ttt_show_loadout_equipment", 0, true, false, "Should loadout equipment show in shops?")
-local sortAlphabetically = CreateClientConVar("ttt_sort_alphabetically", 1, true, false, "Should the shop sort alphabetically?")
-local sortBySlotFirst = CreateClientConVar("ttt_sort_by_slot_first", 0, true, false, "Should the shop sort by slot first?")
 
-hook.Add("Initialize", "EquipmentMenu_Initialize", function()
+local equipment_sorting = CreateClientConVar("ttt_equipment_sorting", "default", true)
+local equipment_ascending = CreateClientConVar("ttt_equipment_ascending", "1", true)
+local equipment_hide_unbuyable = CreateClientConVar("ttt_equipment_hide_unbuyable", "0", true)
+
+AddHook("Initialize", "EquipmentMenu_Initialize", function()
     LANG.AddToLanguage("english", "set_title_equipment", "Equipment/Shop settings")
     LANG.AddToLanguage("english", "set_label_equipment", "All changes made here are clientside and will only apply to your own menu!")
     LANG.AddToLanguage("english", "set_equipment_convar_slot", "Show slot marker")
     LANG.AddToLanguage("english", "set_equipment_convar_custom", "Show custom item marker")
     LANG.AddToLanguage("english", "set_equipment_convar_fav", "Show favourite item marker")
     LANG.AddToLanguage("english", "set_equipment_convar_loadout", "Show loadout items")
-    LANG.AddToLanguage("english", "set_equipment_convar_alpha", "Sort alphabetically")
-    LANG.AddToLanguage("english", "set_equipment_convar_sort_by_slot", "Sort by slot first")
 end)
 
-hook.Add("TTTSettingsConfigTabSections", "EquipmentMenu_TTTSettingsConfigTabSections", function(dsettings)
+AddHook("TTTSettingsConfigTabSections", "EquipmentMenu_TTTSettingsConfigTabSections", function(dsettings)
     local dbemsettings = vgui.Create("DForm", dsettings)
     dbemsettings:Dock(TOP)
     dbemsettings:DockMargin(0, 0, 5, 10)
@@ -67,8 +76,7 @@ hook.Add("TTTSettingsConfigTabSections", "EquipmentMenu_TTTSettingsConfigTabSect
     dbemsettings:CheckBox(GetTranslation("set_equipment_convar_custom"), "ttt_bem_marker_custom")
     dbemsettings:CheckBox(GetTranslation("set_equipment_convar_fav"), "ttt_bem_marker_fav")
     dbemsettings:CheckBox(GetTranslation("set_equipment_convar_loadout"), "ttt_show_loadout_equipment")
-    dbemsettings:CheckBox(GetTranslation("set_equipment_convar_alpha"), "ttt_sort_alphabetically")
-    dbemsettings:CheckBox(GetTranslation("set_equipment_convar_sort_by_slot"), "ttt_sort_by_slot_first")
+    dbemsettings:CheckBox(GetTranslation("set_hide_unbuyable"), "ttt_equipment_hide_unbuyable")
 
     CallHook("TTTSettingsConfigTabFields", nil, "BEM", dbemsettings)
 
@@ -137,7 +145,7 @@ local function ItemIsWeapon(item) return not tonumber(item.id) end
 function GetEquipmentForRole(role, promoted, block_randomization, block_exclusion, ignore_cache, rolepack_weps)
     WEPS.PrepWeaponsLists(role)
 
-    local packName = GetConVar("ttt_role_pack"):GetString()
+    local packName = ROLEPACKS.GetCurrentRolePackName()
     if rolepack_weps == nil and #packName > 0 then
         rolepack_weps = {Buyables = WEPS.RolePackBuyableWeapons[role], Excludes = WEPS.RolePackExcludeWeapons[role], NoRandoms = WEPS.RolePackBypassRandomWeapons[role]}
     elseif rolepack_weps == false or #packName == 0 then
@@ -175,7 +183,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
     -- Cache the equipment unless the role's shop can change mid round
     if ignore_cache or not Equipment[role] then
         -- start with all the non-weapon goodies
-        local tbl = table.Copy(EquipmentItems)
+        local tbl = TableCopy(EquipmentItems)
 
         -- find buyable weapons to load info from
         for _, v in pairs(weapons.GetList()) do
@@ -195,7 +203,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     type = "Type not specified",
                     model = "models/weapons/w_bugbait.mdl",
                     desc = "No description specified."
-                };
+                }
 
                 -- Force material to nil so that model key is used when we are
                 -- explicitly told to do so (ie. material is false rather than nil).
@@ -203,7 +211,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     base.material = nil
                 end
 
-                table.Merge(base, data)
+                TableMerge(base, data)
 
                 -- add this buyable weapon to all relevant equipment tables
                 for _, r in pairs(v.CanBuy) do
@@ -244,7 +252,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                         end
 
                         -- If we have sync roles and this role is one of them, save the item info for later
-                        if sync_roles and table.HasValue(sync_roles, r) then
+                        if sync_roles and TableHasValue(sync_roles, r) then
                             TableInsert(sync_equipment, i)
                         end
                     end
@@ -333,7 +341,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     if equip ~= nil then
                         for idx, i in ipairs(tbl[role]) do
                             if not ItemIsWeapon(i) and i.id == equip.id then
-                                table.remove(tbl[role], idx)
+                                TableRemove(tbl[role], idx)
                                 break
                             end
                         end
@@ -344,17 +352,17 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
             end
         end
 
+        local mergedNoRandomWeapons = TableCopy(WEPS.BypassRandomWeapons[role])
+        for _, v in pairs(rolepack_weps.NoRandoms) do
+            if not TableHasValue(mergedNoRandomWeapons, v) then
+                TableInsert(mergedNoRandomWeapons, v)
+            end
+        end
+
         -- Lastly, apply randomization to passive items
         -- Weapons have randomization applied in WEPS.HandleCanBuyOverrides
         local random_cvar_enabled = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_enabled", false)
         if not block_randomization and random_cvar_enabled then
-            local mergedNoRandomWeapons = TableCopy(WEPS.BypassRandomWeapons[role])
-            for _, v in pairs(rolepack_weps.NoRandoms) do
-                if not TableHasValue(mergedNoRandomWeapons, v) then
-                    TableInsert(mergedNoRandomWeapons, v)
-                end
-            end
-
             local random_cvar_percent_global = GetConVar("ttt_shop_random_percent"):GetInt()
             local random_cvar_percent = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_percent"):GetInt()
             -- Use the global value if the per-role override isn't set
@@ -375,11 +383,52 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                 if TableHasValue(mergedNoRandomWeapons, equip.name) then continue end
 
                 -- Check if the random value is less than the randomization percent
-                if math.random() < (random_cvar_percent / 100.0) then
+                if MathRandom() < (random_cvar_percent / 100.0) then
                     -- If it is, remove it from the table
-                    table.remove(tbl[role], idx)
+                    TableRemove(tbl[role], idx)
                     available[equip.id] = false
                 end
+            end
+        end
+
+        -- If randomization and max shop counts are enabled then limit the items in the table
+        if not block_randomization then
+            local max_shop_items = GetConVar("ttt_shop_limit_count"):GetInt()
+            if max_shop_items > 0 and #tbl[role] > max_shop_items then
+                TableShuffle(tbl[role])
+
+                local new_tbl = {}
+                -- Put the items that can't be randomized away into the new table first
+                -- Loop backwards so removing something from the table doesn't mess up our loop
+                for idx = #tbl[role], 1, -1 do
+                    local item = tbl[role][idx]
+                    if item == nil then continue end
+
+                    if ItemIsWeapon(item) then
+                        local id = WEPS.GetClass(item)
+                        if not item.BlockShopRandomization and not TableHasValue(mergedNoRandomWeapons, id) then continue end
+                    else
+                        if not item.norandom and not TableHasValue(mergedNoRandomWeapons, item.name) then continue end
+                    end
+
+                    TableInsert(new_tbl, item)
+                    TableRemove(tbl[role], idx)
+
+                    -- If we have enough "required" items then stop adding more
+                    if #new_tbl >= max_shop_items then
+                        break
+                    end
+                end
+
+                -- Then add any remaining items in after to fill the total count (if there are any)
+                local additional_item_count = max_shop_items - #new_tbl
+                if additional_item_count > 0 then
+                    for i=1, additional_item_count do
+                        TableInsert(new_tbl, tbl[role][i])
+                    end
+                end
+
+                tbl[role] = new_tbl
             end
         end
 
@@ -422,7 +471,7 @@ end
 local color_bad = Color(220, 60, 60, 255)
 local color_good = Color(255, 255, 255, 255)
 
--- Creates tabel of labels showing the status of ordering prerequisites
+-- Creates table of labels showing the status of ordering prerequisites
 local function PreqLabels(parent, x, y)
     local tbl = {}
 
@@ -538,8 +587,6 @@ function PANEL:SelectPanel(pnl)
 end
 vgui.Register("EquipSelect", PANEL, "DPanelSelect")
 
-local SafeTranslate = LANG.TryTranslation
-
 local color_darkened = Color(255, 255, 255, 80)
 
 -- BEM helper functions
@@ -590,12 +637,167 @@ local function ForceCloseTraitorMenu()
 end
 concommand.Add("ttt_cl_traitorpopup_close", ForceCloseTraitorMenu)
 
-hook.Add("OnPauseMenuShow", "EquipMenu_OnPauseMenuShow", function()
+AddHook("OnPauseMenuShow", "EquipMenu_OnPauseMenuShow", function()
     -- If we needed to close the traitor menu, don't open the pause menu too
     if ForceCloseTraitorMenu() then
         return false
     end
 end)
+
+local ListPanel = nil
+local function CanOrder(item, owned_ids)
+    -- not orderable
+    if not ListPanel.update_preqs(item) then return false end
+
+    local ply = LocalPlayer()
+    if ply:GetCredits() <= 0 then return false end
+
+    -- already owned
+    if TableHasValue(owned_ids, item.id) then
+        return false
+    end
+
+    if ItemIsWeapon(item) then
+        -- already carrying a weapon for this slot
+        if not CanCarryWeapon(item) then return false end
+    elseif ply:HasEquipmentItem(tonumber(item.id)) then
+        return false
+    end
+
+    -- already bought the item before
+    if item.limited and ply:HasBought(tostring(item.id)) then return false end
+    -- doesn't have the required items
+    if not WEPS.PlayerOwnsWepReqs(ply, item) then return false end
+
+    return true
+end
+
+local function GetOwnedEquipment()
+    -- Determine if we already have equipment
+    local owned_ids = {}
+    for _, wep in ipairs(LocalPlayer():GetWeapons()) do
+        if IsValid(wep) and wep.IsEquipment and wep:IsEquipment() then
+            TableInsert(owned_ids, wep:GetClass())
+        end
+    end
+
+    -- Stick to one value for no equipment
+    if #owned_ids == 0 then
+        owned_ids = nil
+    end
+
+    return owned_ids
+end
+
+local sort_funcs = {
+   default = {
+      name = "equip_sort_default",
+      func = function(a, b)
+                local aItem, bItem = not ItemIsWeapon(a), not ItemIsWeapon(b)
+
+                if aItem or bItem then
+                   -- sort items by id
+                   if aItem and bItem then
+                      return a.id < b.id
+                   end
+
+                   -- keep items above weapons
+                   return aItem
+                end
+
+                return StringLower(SafeTranslate(a.name)) < StringLower(SafeTranslate(b.name))
+             end
+   },
+   name = {
+      name = "equip_spec_name",
+      func = function(a, b)
+                return StringLower(SafeTranslate(a.name)) < StringLower(SafeTranslate(b.name))
+             end
+   },
+   slot = {
+      name = "equip_sort_slot",
+      func = function(a, b)
+                local aSlot = a.slot or 0
+                local bSlot = b.slot or 0
+
+                -- sort items by id
+                if aSlot == 0 and bSlot == 0 then
+                   return a.id < b.id
+                end
+
+                if aSlot == bSlot then
+                   return StringLower(SafeTranslate(a.name)) < StringLower(SafeTranslate(b.name))
+                end
+
+                return aSlot < bSlot
+             end
+   }
+}
+
+local function SortEquipmentPanels(pnls)
+   local sort = equipment_sorting:GetString() or "default"
+   local sort_func = sort_funcs[sort].func
+
+   local ascending = equipment_ascending:GetBool()
+   local hide_unbuyable = equipment_hide_unbuyable:GetBool()
+
+   local owned_ids = hide_unbuyable and GetOwnedEquipment()
+
+   TableSort(pnls, function(a, b)
+      local aItem, bItem = a.item, b.item
+
+      if hide_unbuyable then
+         local aBuyable, bBuyable = CanOrder(aItem, owned_ids), CanOrder(bItem, owned_ids)
+
+         if aBuyable ~= bBuyable then
+            return aBuyable
+         end
+      end
+
+      local ret = sort_func(aItem, bItem)
+
+      -- if table.sort is comparing an item to itself, don't mess with the result otherwise weird stuff happens
+      if not ascending and aItem.id ~= bItem.id then
+         ret = not ret
+      end
+
+      return ret
+   end)
+end
+
+local function AddSortedPanels(panels)
+    if GetConVar("ttt_shop_random_position"):GetBool() then
+        panels = TableShuffle(panels)
+    else
+        SortEquipmentPanels(panels)
+    end
+    for _, panel in pairs(panels) do
+        ListPanel:AddPanel(panel)
+    end
+end
+
+local function ReSortEquipment()
+    if not IsValid(ListPanel) then return end
+
+    -- temp table for sorting
+    local paneltablefav = {}
+    local paneltable = {}
+    for _, ic in ipairs(ListPanel:GetItems()) do
+        if ic.favorite then
+            TableInsert(paneltablefav, ic)
+        else
+            TableInsert(paneltable, ic)
+        end
+    end
+
+    ListPanel:Clear()
+    AddSortedPanels(paneltablefav)
+    AddSortedPanels(paneltable)
+    ListPanel:InvalidateLayout()
+end
+AddHook("TTTLanguageChanged", "TTT_ReSortEquipment", ReSortEquipment)
+cvars.AddChangeCallback("ttt_equipment_sorting", ReSortEquipment)
+cvars.AddChangeCallback("ttt_equipment_ascending", ReSortEquipment)
 
 local function DoesValueMatch(item, data, value)
     if not item[data] then return false end
@@ -675,43 +877,69 @@ local function TraitorMenuPopup()
         dequip:SetPaintBackground(false)
         dequip:StretchToParent(padding, padding, padding, padding)
 
-        -- Determine if we already have equipment
-        local owned_ids = {}
-        for _, wep in ipairs(ply:GetWeapons()) do
-            if IsValid(wep) and wep.IsEquipment and wep:IsEquipment() then
-                TableInsert(owned_ids, wep:GetClass())
-            end
-        end
-
-        -- Stick to one value for no equipment
-        if #owned_ids == 0 then
-            owned_ids = nil
-        end
-
         local dsearchheight = 25
         local dsearchpadding = 5
+        local dsortdirsize = 16
+        local sw = MathFloor((dlistw - dsearchpadding) / 2)
+
         local dsearch = vgui.Create("DTextEntry", dequip)
         dsearch:SetPos(0, 0)
-        dsearch:SetSize(dlistw, dsearchheight)
+        dsearch:SetSize(sw, dsearchheight)
         dsearch:SetPlaceholderText("Search...")
         dsearch:SetUpdateOnType(true)
         dsearch.OnGetFocus = function() dframe:SetKeyboardInputEnabled(true) end
         dsearch.OnLoseFocus = function() dframe:SetKeyboardInputEnabled(false) end
 
+        local dsort = vgui.Create("DPanel", dequip)
+        dsort:SetPos(sw + dsearchpadding, 0)
+        dsort:SetSize(sw, dsearchheight)
+        dsort:SetPaintBackground(false)
+
+        local dsortlbl = vgui.Create("DLabel", dsort)
+        dsortlbl:SetFont("DermaDefaultBold")
+        dsortlbl:SetText(GetTranslation("sb_sortby"))
+        dsortlbl:SizeToContentsX()
+        dsortlbl:SetTall(dsearchheight)
+        dsortlbl:SetColor(COLOR_WHITE)
+
+        local dsorttype = vgui.Create("DComboBox", dsort)
+        dsorttype:MoveRightOf(dsortlbl, m)
+        dsorttype:SetSize(dsort:GetWide() - dsortlbl:GetWide() - m - dsortdirsize, dsearchheight)
+
+        for key, data in pairs(sort_funcs) do
+            dsorttype:AddChoice(GetTranslation(data.name), key, StringLower(equipment_sorting:GetString()) == key)
+        end
+
+        dsorttype.OnSelect = function(s, idx, val, data) equipment_sorting:SetString(data) end
+
+        local dsortasc = vgui.Create("DButton", dsort)
+        dsortasc:SetSize(dsortdirsize, dsortdirsize)
+        dsortasc:MoveRightOf(dsorttype)
+        dsortasc:SetY(dsearchpadding)
+        dsortasc:SetText("")
+        dsortasc:SetTooltip(GetTranslation("equip_sort_direction_tip"))
+
+        dsortasc.Paint = function(s, pw, ph)
+            local name = equipment_ascending:GetBool() and "ButtonUp" or "ButtonDown"
+            derma.SkinHook("Paint", name, s, dsortdirsize, dsortdirsize)
+        end
+
+        dsortasc.DoClick = function(s) equipment_ascending:SetBool(not equipment_ascending:GetBool()) end
+
         --- Construct icon listing
         --- icon size = 64 x 64
         local dlist = vgui.Create("EquipSelect", dequip)
-        -- local dlistw = 288
         dlist:SetPos(0, dsearchheight + dsearchpadding)
         dlist:SetSize(dlistw, dlisth - dsearchheight - dsearchpadding)
         dlist:EnableVerticalScrollbar()
         dlist:EnableHorizontal(true)
 
+        ListPanel = dlist
+
         local bw, bh = 102, 25
 
         -- Whole right column
         local dih = h - bh - m * 5
-        -- local diw = w - dlistw - m*6 - 2
         local dinfobg = vgui.Create("DPanel", dequip)
         dinfobg:SetPaintBackground(false)
         dinfobg:SetSize(diw - m, dih)
@@ -745,21 +973,7 @@ local function TraitorMenuPopup()
         dhelp:SetSize(diw, 64)
         dhelp:MoveBelow(dinfo, m)
 
-        local update_preqs = PreqLabels(dhelp, m * 7, m * 2)
-
-        local function CannotBuyItem(item)
-            local orderable = update_preqs(item)
-            return (not orderable) or
-                    -- already owned
-                    TableHasValue(owned_ids, item.id) or
-                    (tonumber(item.id) and ply:HasEquipmentItem(tonumber(item.id))) or
-                    -- already carrying a weapon for this slot
-                    (ItemIsWeapon(item) and (not CanCarryWeapon(item))) or
-                    -- already bought the item before
-                    (item.limited and ply:HasBought(tostring(item.id))) or
-                    -- doesn't have the required items
-                    not WEPS.PlayerOwnsWepReqs(ply, item)
-        end
+        ListPanel.update_preqs = PreqLabels(dhelp, m * 7, m * 2)
 
         local function FillEquipmentList(itemlist)
             dlist:Clear()
@@ -767,10 +981,6 @@ local function TraitorMenuPopup()
             -- temp table for sorting
             local paneltablefav = {}
             local paneltable = {}
-            for i = 0, 9 do
-                paneltablefav[i] = {}
-                paneltable[i] = {}
-            end
 
             for _, item in pairs(itemlist) do
                 local ic = nil
@@ -831,7 +1041,7 @@ local function TraitorMenuPopup()
                             -- Credit to @Angela and @Technofrood on the Lonely Yogs Discord for the fix!
                             -- Clamp the item slot within the correct limits
                             if ic.slot ~= nil then
-                                ic.slot = math.Clamp(ic.slot, 1, #paneltable)
+                                ic.slot = MathClamp(ic.slot, 1, 9)
                             end
 
                             slot:SetIconProperties(COLOR_WHITE,
@@ -861,7 +1071,7 @@ local function TraitorMenuPopup()
                 ic:SetTooltip(tip)
 
                 -- If we cannot order this item, darken it
-                if CannotBuyItem(item) then
+                if not CanOrder(item, GetOwnedEquipment()) then
                     ic:SetIconColor(color_darkened)
                 end
 
@@ -871,80 +1081,15 @@ local function TraitorMenuPopup()
                     ic:Remove()
                 else
                     if ic.favorite then
-                        TableInsert(paneltablefav[ic.slot or 1], ic)
+                        TableInsert(paneltablefav, ic)
                     else
-                        TableInsert(paneltable[ic.slot or 1], ic)
+                        TableInsert(paneltable, ic)
                     end
                 end
             end
 
-            local AddNameSortedItems = function(panels)
-                if sortAlphabetically:GetBool() then
-                    TableSort(panels, function(a, b) return StringLower(a.item.name) < StringLower(b.item.name) end)
-                end
-                for _, panel in pairs(panels) do
-                    dlist:AddPanel(panel)
-                end
-            end
-
-            -- add favorites first
-            -- Add equipment items separately
-            AddNameSortedItems(paneltablefav[0])
-
-            if sortBySlotFirst:GetBool() then
-                for i = 1, 9 do
-                    AddNameSortedItems(paneltablefav[i])
-                end
-            else
-                -- Gather all the panels into one list
-                local panels = {}
-                for i = 1, 9 do
-                    for _, p in pairs(paneltablefav[i]) do
-                        TableInsert(panels, p)
-                    end
-                end
-
-                AddNameSortedItems(panels)
-            end
-
-            -- non favorites second
-            -- Randomize positions if this is enabled
-            if GetConVar("ttt_shop_random_position"):GetBool() then
-                -- Gather all the panels into one list
-                local panels = {}
-                for i = 0, 9 do
-                    for _, p in pairs(paneltable[i]) do
-                        TableInsert(panels, p)
-                    end
-                end
-
-                -- Randomize it
-                panels = table.Shuffle(panels)
-
-                -- Add them all to the list
-                for _, p in ipairs(panels) do
-                    dlist:AddPanel(p)
-                end
-            else
-                -- Add equipment items separately
-                AddNameSortedItems(paneltable[0])
-
-                if sortBySlotFirst:GetBool() then
-                    for i = 1, 9 do
-                        AddNameSortedItems(paneltable[i])
-                    end
-                else
-                    -- Gather all the panels into one list
-                    local panels = {}
-                    for i = 1, 9 do
-                        for _, p in pairs(paneltable[i]) do
-                            TableInsert(panels, p)
-                        end
-                    end
-
-                    AddNameSortedItems(panels)
-                end
-            end
+            AddSortedPanels(paneltablefav)
+            AddSortedPanels(paneltable)
 
             -- select first
             dlist:SelectPanel(dlist:GetItems()[1])
@@ -965,7 +1110,7 @@ local function TraitorMenuPopup()
         local dconfirm = vgui.Create("DButton", dinfobg)
         dconfirm:SetPos(0, dih - bh * 2)
         dconfirm:SetSize(bw, bh)
-        dconfirm:SetDisabled(true)
+        dconfirm:SetEnabled(false)
         dconfirm:SetText(GetTranslation("equip_confirm"))
 
         dsheet:AddSheet(GetTranslation("equip_tabtitle"), dequip, "icon16/bomb.png", false, false, GetTranslation("equip_tooltip_main"))
@@ -991,7 +1136,7 @@ local function TraitorMenuPopup()
                 -- force a good size.
                 dfields.desc:SetTall(70)
 
-                can_order = update_preqs(new.item)
+                can_order = ListPanel.update_preqs(new.item)
             else
                 for _, v in pairs(dfields) do
                     if v then
@@ -1002,7 +1147,7 @@ local function TraitorMenuPopup()
                 end
             end
 
-            dconfirm:SetDisabled(not can_order)
+            dconfirm:SetEnabled(can_order)
         end
 
         -- prep confirm action
@@ -1023,15 +1168,15 @@ local function TraitorMenuPopup()
             if not pnl or not pnl.item then return end
 
             if new:GetPanel() == dequip then
-                can_order = update_preqs(pnl.item)
-                dconfirm:SetDisabled(not can_order)
+                can_order = ListPanel.update_preqs(pnl.item)
+                dconfirm:SetEnabled(can_order)
             end
         end
 
         local dcancel = vgui.Create("DButton", dframe)
         dcancel:SetPos(w - 17 - bw, h - bh - 17)
         dcancel:SetSize(bw, bh)
-        dcancel:SetDisabled(false)
+        dcancel:SetEnabled(true)
         dcancel:SetText(GetTranslation("close"))
         dcancel.DoClick = function() dframe:Close() end
 
@@ -1040,7 +1185,7 @@ local function TraitorMenuPopup()
         dfav:SetPos(0, dih - bh * 2)
         dfav:MoveRightOf(dconfirm)
         dfav:SetSize(bh, bh)
-        dfav:SetDisabled(false)
+        dfav:SetEnabled(true)
         dfav:SetText("")
         dfav:SetImage("icon16/star.png")
         dfav:SetTooltip(GetTranslation("buy_favorite_toggle"))
@@ -1067,7 +1212,7 @@ local function TraitorMenuPopup()
         local bx, _ = drdm:GetPos()
         drdm:SetPos(bx + 1, dih - bh * 2)
         drdm:SetSize(bh, bh)
-        drdm:SetDisabled(false)
+        drdm:SetEnabled(true)
         drdm:SetText("")
         drdm:SetImage("icon16/basket_go.png")
         drdm:SetTooltip(GetTranslation("buy_random"))
@@ -1075,14 +1220,14 @@ local function TraitorMenuPopup()
             local item_panels = dlist:GetItems()
             local buyable_items = {}
             for _, item_panel in pairs(item_panels) do
-                if item_panel.item and not CannotBuyItem(item_panel.item) then
+                if item_panel.item and CanOrder(item_panel.item, GetOwnedEquipment()) then
                     TableInsert(buyable_items, item_panel)
                 end
             end
 
             if #buyable_items == 0 then return end
 
-            local random_panel = buyable_items[math.random(1, #buyable_items)]
+            local random_panel = buyable_items[MathRandom(1, #buyable_items)]
             dlist:SelectPanel(random_panel)
             dconfirm.DoClick()
             CallHook("TTTShopRandomBought", nil, LocalPlayer(), random_panel.item)

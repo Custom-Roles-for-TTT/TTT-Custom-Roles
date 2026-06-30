@@ -3,6 +3,7 @@ AddCSLuaFile()
 local hook = hook
 local table = table
 
+local AddHook = hook.Add
 local TableInsert = table.insert
 
 LOOTGOBLIN_REGEN_MODE_NONE = 0
@@ -27,124 +28,125 @@ CreateConVar("ttt_lootgoblin_jingle_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_lootgoblin_drop_timer", 0, FCVAR_REPLICATED, "How often (in seconds) the loot goblin should drop a piece of loot behind them",  0, 300)
 CreateConVar("ttt_lootgoblin_radar_beep_sound_override", 0, FCVAR_REPLICATED, "Forces all players to have the loot goblin radar sound on/off, 0 - Let user decide, 1 - Force on, 2 - Force off", 0, 2)
 
-ROLE_CONVARS[ROLE_LOOTGOBLIN] = {}
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_notify_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_notify_killer",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_notify_sound",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_notify_confetti",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_activation_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_activation_timer_max",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_announce",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_size",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_cackle_timer_min",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_cackle_timer_max",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_cackle_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_weapons_dropped",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_jingle_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_speed_mult",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 1
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_sprint_recovery",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_regen_mode",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"No regeneration", "Constant regen while active", "Regen while standing still", "Regen after taking damage"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_regen_rate",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_regen_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_radar_enabled",
-    type = ROLE_CONVAR_TYPE_BOOL,
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_radar_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_radar_delay",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_radar_beep_sound_override",
-    type = ROLE_CONVAR_TYPE_DROPDOWN,
-    choices = {"Let user decide", "Force on", "Force off"},
-    isNumeric = true
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_active_display",
-    type = ROLE_CONVAR_TYPE_BOOL,
-})
-table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
-    cvar = "ttt_lootgoblin_drop_timer",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 0
-})
+ROLE_CONVARS[ROLE_LOOTGOBLIN] = {
+    {
+        cvar = "ttt_lootgoblin_notify_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_lootgoblin_notify_killer",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_lootgoblin_notify_sound",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_lootgoblin_notify_confetti",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_lootgoblin_activation_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_lootgoblin_activation_timer_max",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_lootgoblin_announce",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_lootgoblin_size",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_lootgoblin_cackle_timer_min",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_lootgoblin_cackle_timer_max",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_lootgoblin_cackle_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_lootgoblin_weapons_dropped",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_lootgoblin_jingle_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_lootgoblin_speed_mult",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 1
+    },
+    {
+        cvar = "ttt_lootgoblin_sprint_recovery",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 2
+    },
+    {
+        cvar = "ttt_lootgoblin_regen_mode",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"No regeneration", "Constant regen while active", "Regen while standing still", "Regen after taking damage"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_lootgoblin_regen_rate",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_lootgoblin_regen_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_lootgoblin_radar_enabled",
+        type = ROLE_CONVAR_TYPE_BOOL,
+    },
+    {
+        cvar = "ttt_lootgoblin_radar_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_lootgoblin_radar_delay",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
+        cvar = "ttt_lootgoblin_radar_beep_sound_override",
+        type = ROLE_CONVAR_TYPE_DROPDOWN,
+        choices = {"Let user decide", "Force on", "Force off"},
+        isNumeric = true
+    },
+    {
+        cvar = "ttt_lootgoblin_active_display",
+        type = ROLE_CONVAR_TYPE_BOOL,
+    },
+    {
+        cvar = "ttt_lootgoblin_drop_timer",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    }
+}
 
 -------------------
 -- ROLE FEATURES --
@@ -161,20 +163,20 @@ ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[ROLE_LOOTGOBLIN] = function()
     return lootgoblin_active_display:GetBool()
 end
 
-hook.Add("TTTSprintStaminaRecovery", "LootGoblin_TTTSprintStaminaRecovery", function(ply, recovery)
+AddHook("TTTSprintStaminaRecovery", "LootGoblin_TTTSprintStaminaRecovery", function(ply, recovery)
     if IsPlayer(ply) and ply:IsActiveLootGoblin() and ply:IsRoleActive() then
         return lootgoblin_sprint_recovery:GetFloat()
     end
 end)
 
-hook.Add("TTTSpeedMultiplier", "LootGoblin_TTTSpeedMultiplier", function(ply, mults)
+AddHook("TTTSpeedMultiplier", "LootGoblin_TTTSpeedMultiplier", function(ply, mults)
     if IsPlayer(ply) and ply:IsActiveLootGoblin() and ply:IsRoleActive() then
         TableInsert(mults, lootgoblin_speed_mult:GetFloat())
     end
 end)
 
 -- Initialize role features
-hook.Add("TTTPrepareRound", "LootGoblin_Shared_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "LootGoblin_Shared_TTTPrepareRound", function()
     -- Add radio sounds
     if not TRADIO.Sounds.lgobcackle and util.CanRoleSpawn(ROLE_LOOTGOBLIN) then
         TRADIO.AddNewSound("lgobcackle", {

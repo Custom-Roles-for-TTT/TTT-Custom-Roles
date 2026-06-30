@@ -26,6 +26,7 @@ local StringSub = string.sub
 local TableCopy = table.Copy
 local TableHasValue = table.HasValue
 local TableInsert = table.insert
+local Utf8Lower = utf8.lower
 
 -- Prevent players from picking up multiple weapons of the same type etc
 function GM:PlayerCanPickupWeapon(ply, wep)
@@ -245,7 +246,7 @@ function GM:PlayerLoadout(ply)
             -- Gather the list of extra loadout weapons for this role
             local role = ply:GetRole()
             local mergedLoadoutWeapons = TableCopy(WEPS.LoadoutWeapons[role] or {})
-            local packName = GetConVar("ttt_role_pack"):GetString()
+            local packName = ROLEPACKS.GetCurrentRolePackName()
             if #packName > 0 then
                 for _, v in pairs(WEPS.RolePackLoadoutWeapons[role] or {}) do
                     if not TableHasValue(mergedLoadoutWeapons, v) then
@@ -573,7 +574,7 @@ local function OrderEquipment(ply, cmd, args)
 
         -- If it's not allowed, check the extra buyable equipment
         if not allowed then
-            for _, v in ipairs(WEPS.BuyableWeapons[role]) do
+            for _, v in ipairs(WEPS.BuyableWeapons[role] or {}) do
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)
@@ -587,7 +588,7 @@ local function OrderEquipment(ply, cmd, args)
 
         -- Lastly, if it is allowed check the exclude equipment list
         if allowed then
-            for _, v in ipairs(WEPS.ExcludeWeapons[role]) do
+            for _, v in ipairs(WEPS.ExcludeWeapons[role] or {}) do
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)
@@ -687,7 +688,9 @@ concommand.Add("ttt_order_for_someone", function(ply, cmd, args)
 
     if not IsValid(target) then return end
     local new_args = {}
-    new_args[1] = args[2]
+
+    local num_arg = tonumber(args[2])
+    new_args[1] = num_arg or args[2]
 
     OrderEquipment(target, cmd, new_args)
 end, nil, nil, FCVAR_CHEAT)
@@ -963,7 +966,7 @@ net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
     local excludeSelected = net.ReadBool()
     local noRandomSelected = net.ReadBool()
     local loadoutSelected = net.ReadBool()
-    local roleName = StringLower(ROLE_STRINGS_RAW[role])
+    local roleName = Utf8Lower(ROLE_STRINGS_RAW[role])
 
     -- Ensure directories exist
     if not file.IsDir("roleweapons", "DATA") then

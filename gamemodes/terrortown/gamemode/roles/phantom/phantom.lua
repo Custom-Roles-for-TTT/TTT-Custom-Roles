@@ -10,6 +10,7 @@ local table = table
 local timer = timer
 local util = util
 
+local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
 util.AddNetworkString("TTT_PhantomHaunt")
@@ -41,7 +42,7 @@ local phantom_haunt_saves_lover = CreateConVar("ttt_phantom_haunt_saves_lover", 
 --------------
 
 local deadPhantoms = {}
-hook.Add("TTTPrepareRound", "Phantom_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Phantom_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
         v:SetNWBool("PhantomHaunted", false)
         v:SetNWBool("PhantomHaunting", false)
@@ -73,25 +74,25 @@ local function ResetPlayer(ply)
     timer.Remove(ply:Nick() .. "PhantomPossessingSpectate")
 end
 
-hook.Add("TTTPlayerRoleChanged", "Phantom_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Phantom_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_PHANTOM and oldRole ~= newRole then
         ResetPlayer(ply)
     end
 end)
 
-hook.Add("TTTPlayerSpawnForRound", "Phantom_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function Phantom_TTTPlayerSpawnForRound(ply, dead_only)
     ResetPlayer(ply)
-end)
+end
 
 -- Un-haunt the device owner if they used their device on the phantom
-hook.Add("TTTPlayerRoleChangedByItem", "Phantom_TTTPlayerRoleChangedByItem", function(ply, tgt, item)
+local function Phantom_TTTPlayerRoleChangedByItem(ply, tgt, item)
     if tgt:IsPhantom() and tgt:GetNWString("PhantomHauntingTarget", "") == ply:SteamID64() then
         ply:SetNWBool("PhantomHaunted", false)
     end
-end)
+end
 
 -- Hide the role of the player that killed the phantom if haunting is enabled
-hook.Add("TTTDeathNotifyOverride", "Phantom_TTTDeathNotifyOverride", function(victim, inflictor, attacker, reason, killerName, role)
+local function Phantom_TTTDeathNotifyOverride(victim, inflictor, attacker, reason, killerName, role)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsValid(inflictor) or not IsValid(attacker) then return end
     if not attacker:IsPlayer() then return end
@@ -100,9 +101,9 @@ hook.Add("TTTDeathNotifyOverride", "Phantom_TTTDeathNotifyOverride", function(vi
     if not phantom_killer_haunt:GetBool() then return end
 
     return reason, killerName, ROLE_NONE
-end)
+end
 
-hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
+local function Phantom_PlayerDeath(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if valid_kill and victim:IsPhantom() and not victim:IsRoleAbilityDisabled() then
         local attacker_alive = attacker:IsActive()
@@ -200,9 +201,9 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
         net.WriteString(attacker:Nick())
         net.Broadcast()
     end
-end)
+end
 
-hook.Add("TTTSpectatorHUDKeyPress", "Phantom_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
+local function Phantom_TTTSpectatorHUDKeyPress(ply, tgt, powers)
     if ply:GetNWBool("PhantomPossessing", false) and IsValid(tgt) and tgt:IsActive() then
         powers[IN_ATTACK] = {
             start_command = "+attack",
@@ -249,13 +250,13 @@ hook.Add("TTTSpectatorHUDKeyPress", "Phantom_TTTSpectatorHUDKeyPress", function(
 
         return true, "PhantomPossessingPower"
     end
-end)
+end
 
 -------------
 -- RESPAWN --
 -------------
 
-hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmginfo)
+local function Phantom_DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
     if not ply:GetNWBool("PhantomHaunted", false) then return end
 
@@ -318,13 +319,13 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
 
     ply:SetNWBool("PhantomHaunted", false)
     SendFullStateUpdate()
-end)
+end
 
 ---------------
 -- FOOTSTEPS --
 ---------------
 
-hook.Add("PlayerFootstep", "Phantom_PlayerFootstep", function(ply, pos, foot, sound, volume, rf)
+local function Phantom_PlayerFootstep(ply, pos, foot, sound, volume, rf)
     if not IsValid(ply) or ply:IsSpec() or not ply:Alive() then return true end
     if ply:WaterLevel() ~= 0 then return end
     if not ply:GetNWBool("PhantomHaunted", false) then return end
@@ -342,7 +343,7 @@ hook.Add("PlayerFootstep", "Phantom_PlayerFootstep", function(ply, pos, foot, so
         net.WriteUInt(killer_footstep_time, 8)
         net.WriteFloat(1) -- Scale
     net.Broadcast()
-end)
+end
 
 ------------------
 -- CUPID LOVERS --
@@ -352,13 +353,13 @@ local function IsPhantomHaunting(ply)
     return ply:GetNWBool("PhantomHaunting", false) and ply:IsPhantom() and not ply:Alive()
 end
 
-hook.Add("TTTCupidShouldLoverSurvive", "Phantom_TTTCupidShouldLoverSurvive", function(ply, lover)
+local function Phantom_TTTCupidShouldLoverSurvive(ply, lover)
     if phantom_haunt_saves_lover:GetBool() and (IsPhantomHaunting(ply) or IsPhantomHaunting(lover)) then
         return true
     end
-end)
+end
 
-hook.Add("PostPlayerDeath", "Phantom_Lovers_PostPlayerDeath", function(ply)
+local function Phantom_Lovers_PostPlayerDeath(ply)
     local loverSID = ply:GetNWString("TTTCupidLover", "")
     if #loverSID == 0 then return end
 
@@ -368,4 +369,20 @@ hook.Add("PostPlayerDeath", "Phantom_Lovers_PostPlayerDeath", function(ply)
     if IsPhantomHaunting(lover) then
         lover:QueueMessage(MSG_PRINTBOTH, "Your lover has died and so you will not survive if you respawn!")
     end
-end)
+end
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_PHANTOM] = {
+    ["DoPlayerDeath"] = Phantom_DoPlayerDeath,
+    ["PlayerDeath"] = Phantom_PlayerDeath,
+    ["PlayerFootstep"] = Phantom_PlayerFootstep,
+    ["PostPlayerDeath"] = Phantom_Lovers_PostPlayerDeath,
+    ["TTTCupidShouldLoverSurvive"] = Phantom_TTTCupidShouldLoverSurvive,
+    ["TTTDeathNotifyOverride"] = Phantom_TTTDeathNotifyOverride,
+    ["TTTPlayerRoleChangedByItem"] = Phantom_TTTPlayerRoleChangedByItem,
+    ["TTTPlayerSpawnForRound"] = Phantom_TTTPlayerSpawnForRound,
+    ["TTTSpectatorHUDKeyPress"] = Phantom_TTTSpectatorHUDKeyPress
+}

@@ -1,5 +1,153 @@
 # Release Notes
 
+## 2.5.0
+**Released: June 30th, 2026**\
+Includes beta updates [2.4.2](#242-beta) to [2.4.7](#247-beta).
+
+## 2.4.7 (Beta)
+**Released: June 27th, 2026**
+
+### Additions
+- Added a minimap that the Tracker can buy (or have as starting equipment)
+- Added button in the Roles section of the F1 menu to reset Taskmaster's task list to original position
+
+### Fixes
+- Fixed rare error in Taskmaster's Kill 360 task when the HUD is rendered before the state has been synced
+- Fixed a case where role features may not work if another player was that role in the previous round
+- Ported "TTT: Fix prepare state hooks running before map cleanup" from base TTT
+
+## 2.4.6 (Beta)
+**Released: June 13th, 2026**
+
+### Additions
+- Added ability for Marshal to buy their deputizing badge from the shop (disabled by default)
+- Added ability for a Guesser to see a player's outline after they've received a certain amount of damage (default 150)
+
+### Changes
+- Changed roles to register and unregister hooks automatically to reduce the performance impact of roles that aren't in the current round
+- Changed distance calculations to use more efficient methods when possible
+- Ported "TTT: Use replicated convars instead of global nwvars" from base TTT
+
+### Fixes
+- Fixed single Twin being left in a round if their sibling's role was changed immediately on role start (by a Randomat, for example)
+- Fixed all players being notified when a player becomes a twin in the middle of the round
+- Fixed Taskmaster's "Do Damage" task showing long decimal values
+- Fixed rare error in shop logic that could cause purchases to fail in testing scenarios
+- Ported "Fix DrawModel flags for base game entities" from base TTT
+
+### Developer
+- Added `ROLE_REGISTERED_HOOKS` (and the external equivalent `ROLE.registeredhooks`) to allow CR4TTT to manage adding and removing hooks automatically depending on whether a role is present
+- Added `ROLE_HOOK_REGISTRATION_KEY` (and the external equivalent `ROLE.hookregistrationkey`) to allow roles to share hooks managed by `ROLE_REGISTERED_HOOKS` (aka `ROLE.registeredhooks`)
+
+## 2.4.5 (Beta)
+**Released: April 18th, 2026**
+
+### Fixes
+- Ported "Fix drive system not working fully in TTT" from base TTT
+- Fixed error using the roleweapons UI and the weapons tab of the rolepacks UI due to recent changes in shop sorting
+- Fixed crosshair size sometimes not going back to the old size when sprinting
+  - Fixes crosshair growing into crazy sizes
+
+### Developer
+- Added `TTTPlayerPassesTraitorCheck` to allow override traitor tester logic
+
+## 2.4.4 (Beta)
+**Released: March 21st, 2026**
+
+### Additions
+- Added messages to existing twins when a player becomes a twin during an active round
+- Added option to allow Cannibal to gain a configurable percentage of their victims' health (disabled by default) (Thanks Joel!)
+- Added option to allow Cannibal to "digest" (permanently kill) their victims a configurable amount of time after eating them (disabled by default) (Thanks Joel!)
+- Added option to allow Cannibal to drop a poop when a victim is fully digested, with or without an audible cue (enabled by default, but depends on digestion being enabled) (Thanks Joel!)
+
+### Changes
+- Changed role pack to apply next round, if the round is already active
+- Changed logic to reassign a player's role if they change roles into being a solo twin during an active round
+- Ported "TTT: Use gmod_language setting by default" from base TTT
+- Ported "TTT: Translatability improvements" from base TTT
+- Ported "TTT: Equipment menu sorting options" from base TTT
+
+### Fixes
+- Fixed cheat sheet getting cut off when it exceeded the height of the screen and a role pack was enabled
+- Fixed jester, detective, innocent, and traitor role rename ConVars not working
+- Fixed error in Cannibal's role weapon HUD when weapon was selected from last round (Thanks Stig!)
+- Fixed detective hats not hiding when the owning player was eaten by the Cannibal
+- Fixed Loot Goblin not being able to drop some weapons that were droppable
+- Fixed errors in shop with weapons that don't use the TTT base weapon (like the holdable cat)
+- Fixed role selection predicates being ignored by the role pack selection logic
+- Ported "Add check for checking weapon GetHeadshotMultiplier" from base TTT
+
+### Developer
+- Added `ROLE_STRINGS_DEFAULT` as a copy of `ROLE_STRINGS` from before role strings are changed by ConVars
+
+## 2.4.3 (Beta)
+**Released: February 21st, 2026**
+
+### Additions
+- Added ability to configure how a player killed by a dead Hive Mind member is handled
+  - 0 (Default) - Do nothing
+  - 1 - Assimilate the killed player (they will be the only Hive Mind member alive). NOTE: This is previously how the Hive Mind behaved before this change was implemented, but we considered that unintended.
+  - 2 - Assimilate the killed player and resurrect their Hive Mind killer (there would be two Hive Mind members alive)
+  - 3 - Assimilate the killed player and resurrect all Hive Mind members
+
+### Changes
+- Updated Killer's throwable crowbar so the primary attack works exactly the same as a normal crowbar
+  - The main difference is it is now able to open openable entities which it couldn't do before
+
+### Fixes
+- Ported "TTT: Singleplayer weapon fixes" from base TTT
+- Ported "TTT: Fix SimpleImage PaintOver handling" from base TTT
+- Fixed a player who joins the Hive Mind after the rest of the collective has died due to a large amount of damage (e.g. an explosion) getting a larger-than-expected amount of starting health
+  - Now if a player joins the Hive Mind after the rest have died, they start with the same amount of health as the first player who was assimilated
+- Fixed Hive Minds losing their credits if they were somehow resurrected and tried to loot credits off the body of another member of the Hive Mind who was still dead
+- Fixed Hive Mind credits, health, and max health not resetting between rounds
+- Fixed `ttt_guesser_minimum_radius 0` not working, despite the description saying it should
+- Fixed Old Man's shotgun not playing the empty click sound when trying to use the secondary fire with no shells remaining
+- Fixed Shadow not getting role weapons when `ttt_shadow_target_buff` is set to `4` and they copy a role that has one
+
+### Developer
+- Added `hintname` as a property of `ENT.TargetIDHint` allowing entities to render a name in the same style as a player
+- Added `TTTTargetIDEntityHintName` hook to allow overwriting or modifying an entity's hint name before it is rendered
+- Added `TTTSmokeGrenadeShouldExtinguish` hook to allow non-standard entities (e.g. not smoke or fire) to be extinguished by a smoke grenade
+- Added "left", "right", "up", and "down" as valid keys to `CRHUD:PaintPowersHUD`
+- Changed `EVENTS_BY_ROLE` and `WINS_BY_ROLE` to be prepopulated for the built-in roles as well (except those that win with their team, due to issues with roles who can switch teams)
+- Changed `cr4ttt_role_cvars` to give a more descriptive error if the role doesn't have any convars
+
+## 2.4.2 (Beta)
+**Released: February 7th, 2026**
+
+### Additions
+- Added ability for Spy to steal a player's identity when they search a body instead of when they kill a player (disabled by default)
+- Added optional `ttt_shop_limit_count` convar to limit the number of items available in the equipment shop
+  - The items are chosen randomly (obeying the equipment and SWEP properties as well as the role weapons and role pack configurations for bypassing randomization) and will change each round
+- Added ability for the Assassin to be an independent role (disabled by default) (Thanks Joel!)
+- Added ability for Bodysnatcher to have the roles they can snatch restricted by team-based convars
+- Added unknown role name to the tooltip for rolepack and roleblock edit UIs to help in troubleshooting
+- Added buttons to easily duplicate rolepack slot and roleblock group
+- Added ability to rearrange rolepack slot and roleblock group rows by dragging and dropping them
+- Added ability to save a rolepack with a new name as a way of duplicating it
+- Added button to test a rolepack by enabling it, filling the server with bots, and restarting the round (if one is running)
+- Added ability to set display name and description for a rolepack which is then shown on the cheat sheet
+- Added ability to show which roles belong to the current rolepack on the cheat sheet (disabled by default, enabled in the F1 menu)
+
+### Changes
+- Ported "TTT: Remove usages of Panel:Set/GetDisabled" from base TTT
+- Ported "TTT: Add TTTRadarScan hook" from base TTT
+
+### Fixes
+- Fixed decoy not showing as grey on traitor team radars
+- Fixed player names and custom role names with non-English characters in them not changing case correctly
+- Fixed bodysnatching device progress message ignoring overwritten role names
+- **BREAKING CHANGE** - Fixed spelling of "cheatsheet" convar and translations
+    - Any player that changed their cheatsheet button from the default ("h") will need to set it again the F1 menu
+    - Any translations that were done for the cheatsheet help entry will need to be renamed to match
+- Ported "TTT: Fix auto weapon spawning on non-TTT maps" from base TTT
+
+### Developer
+- Added `TTTTrackRadarScan` hook that allows addons to add or modify the targets used by the Tracking Radar
+- Added `ROLEPACKS.GetRolePackDetails` to get the role pack details for any rolepack by name on the server
+- Fixed `ttt_order_for_someone` with equipment IDs triggering errors for addons that expected it to be a number
+
 ## 2.4.1
 **Released: November 6th, 2025**
 
@@ -34,18 +182,18 @@ Includes beta updates [2.3.1](#231-beta) to [2.3.6](#236-beta).
 ### Changes
 - Changed Taskmaster's "Stay Hidden" task to be a bit less lenient
 - Updated Phantom tutorial to show the maximum number of respawns they have, if that setting is enabled
-- Ported "TTT: Reduce Healing sound repetition count in Radio"
-- Ported "TTT: Do not stack round start popups"
+- Ported "TTT: Reduce Healing sound repetition count in Radio" from base TTT
+- Ported "TTT: Do not stack round start popups" from base TTT
   - There is no change in functionality, we just adjusted our implementation of this feature to match the base
-- Ported "TTT: make Radio buttons a bit wider"
+- Ported "TTT: make Radio buttons a bit wider" from base TTT
 
 ### Fixes
 - Fixed spectators counting against the Taskmaster in the "Stay Hidden" task
 - Fixed the Taskmaster's "Kill a Player After a 360" task
-- Ported "TTT: Fixed font warnings (no visual changes)"
+- Ported "TTT: Fixed font warnings (no visual changes)" from base TTT
 
 ### Developer
-- Ported "TTT: Added ability to use parameters when defining custom radio sound names"
+- Ported "TTT: Added ability to use parameters when defining custom radio sound names" from base TTT
 
 ## 2.3.5 (Beta)
 **Released: September 5th, 2025**

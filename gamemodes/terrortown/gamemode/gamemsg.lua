@@ -272,7 +272,7 @@ function MuteForRestart(state)
     mute_all = state
 end
 
-local loc_voice = CreateConVar("ttt_locational_voice", "0")
+local loc_voice = CreateConVar("ttt_locational_voice", "0", FCVAR_REPLICATED)
 
 -- Of course voice has to be limited as well
 function GM:PlayerCanHearPlayersVoice(listener, speaker)
@@ -424,20 +424,22 @@ local LastWordContext = {
     [KILL_SUICIDE] = " *kills self*",
     [KILL_FALL] = " *SPLUT*",
     [KILL_BURN] = " *crackle*"
-};
+}
 
 local function LastWordsMsg(ply, words)
     -- only append "--" if there's no ending interpunction
     local final = string.match(words, "[\\.\\!\\?]$") ~= nil
 
     -- add optional context relating to death type
-    local context = LastWordContext[ply.death_type] or ""
+    local death_type = ply.death_type
+    local context = LastWordContext[death_type] or ""
     local lastWordsStr = words .. (final and "" or "--") .. context
 
-    if RunHook("TTTLastWordsMsg", ply, lastWordsStr, words) ~= true then
+    if RunHook("TTTLastWordsMsg", ply, lastWordsStr, words, death_type) ~= true then
         net.Start("TTT_LastWordsMsg")
             net.WritePlayer(ply)
-            net.WriteString(lastWordsStr)
+            net.WriteString(words)
+            net.WriteUInt(death_type, 2)
         net.Broadcast()
     end
 end

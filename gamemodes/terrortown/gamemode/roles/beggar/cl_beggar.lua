@@ -3,6 +3,7 @@ local net = net
 local surface = surface
 local string = string
 
+local AddHook = hook.Add
 local StringUpper = string.upper
 
 local client = nil
@@ -28,7 +29,7 @@ local hide_role = GetConVar("ttt_hide_role")
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Beggar_Translations_Initialize", function()
+AddHook("Initialize", "Beggar_Translations_Initialize", function()
     -- ConVars
     LANG.AddToLanguage("english", "beggar_config_show_radius", "Show tracking radius circle")
 
@@ -53,14 +54,14 @@ you a shop item you will join their team.]])
 you a shop item you will join their team.]])
 end)
 
-hook.Add("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride", function(cli, roleString)
+local function Beggar_TTTRolePopupRoleStringOverride(cli, roleString)
     if not IsPlayer(cli) or not cli:IsBeggar() then return end
 
     if beggar_is_independent:GetBool() then
         return roleString .. "_indep"
     end
     return roleString .. "_jester"
-end)
+end
 
 -------------
 -- CONVARS --
@@ -68,21 +69,21 @@ end)
 
 local beggar_show_scan_radius = CreateClientConVar("ttt_beggar_show_scan_radius", "0", true, false, "Whether the scan radius circle should show", 0, 1)
 
-hook.Add("TTTSettingsRolesTabSections", "Beggar_TTTSettingsRolesTabSections", function(role, parentForm)
+local function Beggar_TTTSettingsRolesTabSections(role, parentForm)
     if role ~= ROLE_BEGGAR then return end
     local scanMode = beggar_scan:GetInt()
     if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     parentForm:CheckBox(LANG.GetTranslation("beggar_config_show_radius"), "ttt_beggar_show_scan_radius")
     return true
-end)
+end
 
 -------------
 -- SCORING --
 -------------
 
 -- Register the scoring events for the beggar
-hook.Add("Initialize", "Beggar_Scoring_Initialize", function()
+AddHook("Initialize", "Beggar_Scoring_Initialize", function()
     local innocent_icon = Material("icon16/user_green.png")
     local traitor_icon = Material("icon16/user_red.png")
     local hourglass_go_icon = Material("icon16/hourglass_go.png")
@@ -144,7 +145,7 @@ net.Receive("TTT_BeggarKilled", function(len)
 end)
 
 -- Show that this person was a beggar via the icon
-hook.Add("TTTScoringSummaryRender", "Beggar_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+AddHook("TTTScoringSummaryRender", "Beggar_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if (ply:IsInnocent() or ply:IsTraitor()) and ply:GetNWBool("WasBeggar", false) then
@@ -156,7 +157,7 @@ end)
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerRoleIcon", "Beggar_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+local function Beggar_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsBeggar() then return end
 
@@ -176,9 +177,9 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Beggar_TTTTargetIDPlayerRoleIcon", functi
     elseif ply:IsShopRole() then
         return ROLE_NONE, noz, ROLE_NONE
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerRing", "Beggar_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+local function Beggar_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsBeggar() then return end
     if not IsPlayer(ent) then return end
@@ -199,9 +200,9 @@ hook.Add("TTTTargetIDPlayerRing", "Beggar_TTTTargetIDPlayerRing", function(ent, 
     elseif ent:IsShopRole() then
         return true, ROLE_COLORS_RADAR[ROLE_NONE]
     end
-end)
+end
 
-hook.Add("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
+local function Beggar_TTTTargetIDPlayerText(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
     if not cli:IsBeggar() then return end
@@ -233,7 +234,7 @@ hook.Add("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", function(ent, 
         end
         return PT(labelName, { targettype = StringUpper(T("shoprole")) }), newCol, false
     end
-end)
+end
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
@@ -268,7 +269,7 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Beggar_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+local function Beggar_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsBeggar() then return end
     if not IsPlayer(ply) then return end
@@ -289,7 +290,7 @@ hook.Add("TTTScoreboardPlayerRole", "Beggar_TTTScoreboardPlayerRole", function(p
     elseif ply:IsShopRole() then
         return ROLE_COLORS_SCOREBOARD[ROLE_NONE], "nil"
     end
-end)
+end
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target)
     if not ply:IsBeggar() then return end
@@ -322,7 +323,7 @@ end
 -- HUD INFO --
 --------------
 
-hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
+local function Beggar_TTTHUDInfoPaint(cli, label_left, label_top, active_labels)
     if hide_role:GetBool() then return end
 
     if (cli:IsInnocent() or cli:IsTraitor()) and cli:GetNWBool("WasBeggar", false) then
@@ -343,7 +344,7 @@ hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(cli, label_left, 
             end
             local _, h = surface.GetTextSize(text)
 
-            -- Move this up based on how many other labels here are
+            -- Move this up based on how many other labels there are
             label_top = label_top + (20 * #active_labels)
 
             surface.SetTextPos(label_left, ScrH() - label_top - h)
@@ -353,13 +354,13 @@ hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(cli, label_left, 
             table.insert(active_labels, "beggar")
         end
     end
-end)
+end
 
 -----------------
 -- SCANNER HUD --
 -----------------
 
-hook.Add("HUDPaint", "Beggar_HUDPaint", function()
+local function Beggar_HUDPaint()
     if not client then
         client = LocalPlayer()
     end
@@ -404,7 +405,7 @@ hook.Add("HUDPaint", "Beggar_HUDPaint", function()
         local color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
         CRHUD:PaintProgressBar(x, y, w, color, client:GetNWString("TTTBeggarScannerMessage", ""), 1)
     end
-end)
+end
 
 ---------------
 -- TEAM SYNC --
@@ -459,7 +460,7 @@ local function GetRevealModeInfo(roleColor, revealMode, teamName, teamColor)
     return modeString .. ".", revealed
 end
 
-hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_BEGGAR then
         local roleTeam = player.GetRoleTeam(ROLE_BEGGAR, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
@@ -526,3 +527,18 @@ hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, tit
         return html
     end
 end)
+
+------------------
+-- REGISTRATION --
+------------------
+
+ROLE_REGISTERED_HOOKS[ROLE_BEGGAR] = {
+    ["HUDPaint"] = Beggar_HUDPaint,
+    ["TTTHUDInfoPaint"] = Beggar_TTTHUDInfoPaint,
+    ["TTTRolePopupRoleStringOverride"] = Beggar_TTTRolePopupRoleStringOverride,
+    ["TTTScoreboardPlayerRole"] = Beggar_TTTScoreboardPlayerRole,
+    ["TTTSettingsRolesTabSections"] = Beggar_TTTSettingsRolesTabSections,
+    ["TTTTargetIDPlayerRing"] = Beggar_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Beggar_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerText"] = Beggar_TTTTargetIDPlayerText
+}

@@ -60,43 +60,43 @@ local bg_colors = {
     background_main = Color(0, 0, 10, 200),
     noround = Color(100, 100, 100, 255),
     hidden = Color(75, 75, 75, 200)
-};
+}
 
 local health_colors = {
     border = COLOR_WHITE,
     background = Color(100, 25, 25, 222),
     fill = Color(200, 50, 50, 255)
-};
+}
 
 local overhealth_colors = {
     border = COLOR_WHITE,
     background = Color(0, 0, 0, 0),
     fill = Color(255, 150, 175, 255)
-};
+}
 
 local extraoverhealth_colors = {
     border = COLOR_WHITE,
     background = Color(0, 0, 0, 0),
     fill = Color(255, 200, 255, 255)
-};
+}
 
 local ammo_colors = {
     border = COLOR_WHITE,
     background = Color(100, 60, 0, 222),
     fill = Color(205, 155, 0, 255)
-};
+}
 
 local sprint_colors = {
     border = COLOR_WHITE,
     background = Color(30, 60, 100, 222),
     fill = Color(75, 150, 255, 255)
-};
+}
 
 local drown_colors = {
     border = Color(0, 0, 0, 0),
     background = Color(255, 255, 255, 1),
     fill = COLOR_WHITE
-};
+}
 
 -- Modified RoundedBox
 local Tex_Corner8 = surface.GetTextureID("gui/corner8")
@@ -358,7 +358,7 @@ local roundstate_string = {
     [ROUND_PREP] = "round_prep",
     [ROUND_ACTIVE] = "round_active",
     [ROUND_POST] = "round_post"
-};
+}
 
 -- Returns player's ammo information
 local function GetAmmo(ply)
@@ -567,7 +567,12 @@ local function InfoPaint(client)
         if hide_role:GetBool() then
             text = GetTranslation("hidden")
         else
-            text = LANG.GetRawTranslation(client:GetRoleStringRaw()) or client:GetRoleString()
+            local role_string = client:GetRoleString()
+            if role_string ~= ROLE_STRINGS_DEFAULT[client:GetRole()] then
+                text = role_string
+            else
+                text = LANG.GetRawTranslation(client:GetRoleStringRaw()) or role_string
+            end
 
             local new_text = CallHook("TTTHUDRoleNameOverride", nil, client, text)
             if new_text then text = new_text end

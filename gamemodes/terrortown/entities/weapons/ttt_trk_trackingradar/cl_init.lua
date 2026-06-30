@@ -116,7 +116,7 @@ hook.Add("TTTHUDInfoPaint", "TrackRadar_TTTHUDInfoPaint", function(cli, label_le
     local text = GetPTranslation("trackradar_hud", { time = FormatTime(remaining, "%02i:%02i") })
     local _, h = surface.GetTextSize(text)
 
-    -- Move this up based on how many other labels here are
+    -- Move this up based on how many other labels there are
     label_top = label_top + (20 * #active_labels)
 
     surface.SetTextPos(label_left, ScrH() - label_top - h)
@@ -170,7 +170,7 @@ function TRACKRADAR.CreateMenu(parent, frame)
     dscan:SetSize(bw, bh)
     dscan:SetText(GetTranslation("trackradar_scan"))
     dscan.DoClick = function(s)
-        s:SetDisabled(true)
+        s:SetEnabled(false)
         RunConsoleCommand("ttt_trackradar_scan")
         frame:Close()
     end
@@ -193,9 +193,9 @@ function TRACKRADAR.CreateMenu(parent, frame)
 
     dform.Think = function(s)
         if TRACKRADAR.enable or not owned then
-            dscan:SetDisabled(true)
+            dscan:SetEnabled(false)
         else
-            dscan:SetDisabled(false)
+            dscan:SetEnabled(true)
         end
     end
 

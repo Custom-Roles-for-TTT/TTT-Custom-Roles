@@ -1,5 +1,7 @@
 include("shared.lua")
+include("utf8_ext.lua")
 include("init_shd.lua")
+include("karma_shd.lua")
 
 local cam = cam
 local concommand = concommand
@@ -24,9 +26,9 @@ local RemoveHook = hook.Remove
 local PlayerIterator = player.Iterator
 local MathRand = math.Rand
 local MathRandom = math.random
-local StringUpper = string.upper
 local TableInsert = table.insert
 local TableHasValue = table.HasValue
+local Utf8Upper = utf8.upper
 
 -- Define GM12 fonts for compatibility
 surface.CreateFont("DefaultBold", {
@@ -47,6 +49,7 @@ include("corpse_shd.lua")
 include("player_ext_shd.lua")
 include("weaponry_shd.lua")
 include("sprint_shd.lua")
+include("rolepacks_shd.lua")
 
 include("vgui/ColoredBox.lua")
 include("vgui/SimpleIcon.lua")
@@ -78,7 +81,6 @@ include("cl_roleblocks.lua")
 include("cl_roleweapons.lua")
 include("cl_hitmarkers.lua")
 include("cl_deathnotify.lua")
-include("cl_sprint.lua")
 include("cl_cheatsheet.lua")
 include("cl_sync.lua")
 
@@ -144,9 +146,6 @@ function GM:HUDClear()
     RADAR:Clear()
     TBHUD:Clear()
 end
-
-KARMA = {}
-function KARMA.IsEnabled() return GetGlobalBool("ttt_karma", false) end
 
 function GetRoundState() return GAMEMODE.round_state end
 
@@ -251,7 +250,7 @@ local function ReceiveRole()
 
     if role > ROLE_NONE then
         Msg("You are: ")
-        MsgN(StringUpper(client:GetRoleString()))
+        MsgN(Utf8Upper(client:GetRoleString()))
     end
 end
 net.Receive("TTT_Role", ReceiveRole)
@@ -495,6 +494,7 @@ function GM:Tick()
 end
 
 -- Simple client-based idle checking
+local ttt_idle_limit = CreateConVar("ttt_idle_limit", "180", FCVAR_REPLICATED)
 local idle = { ang = nil, pos = nil, mx = 0, my = 0, t = 0 }
 function CheckIdle()
     local client = LocalPlayer()
@@ -513,9 +513,8 @@ function CheckIdle()
 
     -- Player is alive, not a spectator, and round is active
     if client:IsActive() then
-        local idle_limit = GetGlobalInt("ttt_idle_limit", 300) or 300
-        if idle_limit <= 0 then idle_limit = 300 end -- networking sucks sometimes
-
+        local idle_limit = ttt_idle_limit:GetInt()
+        if idle_limit <= 0 then return end
 
         if client:GetAngles() ~= idle.ang then
             -- Normal players will move their viewing angles all the time
@@ -526,7 +525,7 @@ function CheckIdle()
             idle.mx = gui.MouseX()
             idle.my = gui.MouseY()
             idle.t = CurTime()
-        elseif client:GetPos():Distance(idle.pos) > 10 then
+        elseif client:GetPos():DistToSqr(idle.pos) > 100 then
             -- Even if players don't move their mouse, they might still walk
             idle.pos = client:GetPos()
             idle.t = CurTime()

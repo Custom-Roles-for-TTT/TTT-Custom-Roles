@@ -23,6 +23,12 @@ local RunHook = hook.Run
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
+local LastWordContext = {
+    [KILL_SUICIDE] = "words_suicide",
+    [KILL_FALL] = "words_fall",
+    [KILL_BURN] = "words_burn"
+}
+
 local function GetChatPlayerName(ply, team_chat)
     local name = CallHook("TTTChatPlayerName", nil, ply, team_chat or false)
     if not name or #name == 0 then
@@ -37,16 +43,27 @@ end
 local function LastWordsRecv()
     local sender = net.ReadPlayer()
     local words = net.ReadString()
+    local death_type = net.ReadUInt(2)
+
+    -- only append "--" if there's no ending interpunction
+    local final = string.match(words, "[\\.\\!\\?]$") ~= nil
+    local lastWordsStr = words .. (final and " " or "-- ")
+
+    -- add optional context relating to death type
+    if death_type ~= KILL_NORMAL then
+        local context = LastWordContext[death_type] or ""
+        lastWordsStr = lastWordsStr .. Format("*%s*", GetTranslation(context))
+    end
 
     local was_detective = IsValid(sender) and sender:IsDetectiveTeam()
-    local nick = IsValid(sender) and GetChatPlayerName(sender) or "<Unknown>"
+    local nick = IsValid(sender) and GetChatPlayerName(sender) or Format("<%s>", GetTranslation("unknown"))
 
     chat.AddText(Color(150, 150, 150),
             Format("(%s) ", string.upper(GetTranslation("last_words"))),
             was_detective and Color(50, 200, 255) or Color(0, 200, 0),
             nick,
             COLOR_WHITE,
-            ": " .. words)
+            ": " .. lastWordsStr)
 end
 net.Receive("TTT_LastWordsMsg", LastWordsRecv)
 
@@ -65,7 +82,7 @@ local function RoleChatRecv()
     end
 
     chat.AddText(ROLE_COLORS[visible_role],
-        Format("(%s) ", string.upper(ROLE_STRINGS[visible_role])),
+        Format("(%s) ", utf8.upper(ROLE_STRINGS[visible_role])),
         ROLE_COLORS[visible_role],
         name,
         COLOR_WHITE,
@@ -199,7 +216,7 @@ RADIO.Commands = {
     { cmd = "traitor", text = "quick_traitor", format = true, params = { atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR] } },
     { cmd = "innocent", text = "quick_inno", format = true, params = { aninnocent = ROLE_STRINGS_EXT[ROLE_INNOCENT] } },
     { cmd = "check", text = "quick_check", format = false }
-};
+}
 
 local radioframe = nil
 
@@ -495,7 +512,7 @@ local radio_gestures = {
     quick_see = ACT_GMOD_GESTURE_WAVE,
     quick_check = ACT_SIGNAL_GROUP,
     quick_suspect = ACT_SIGNAL_HALT
-};
+}
 
 function GM:PlayerSentRadioCommand(ply, name, target)
     local act = radio_gestures[name]
@@ -507,6 +524,13 @@ end
 --- voicechat stuff
 VOICE = {}
 
+local loc_voice = CreateConVar("ttt_locational_voice", "0", FCVAR_REPLICATED)
+
+local voice_drain = CreateConVar("ttt_voice_drain", "0", FCVAR_REPLICATED)
+local voice_drain_normal = CreateConVar("ttt_voice_drain_normal", "0.2", FCVAR_REPLICATED)
+local voice_drain_admin = CreateConVar("ttt_voice_drain_admin", "0", FCVAR_REPLICATED)
+local voice_drain_recharge = CreateConVar("ttt_voice_drain_recharge", "0.05", FCVAR_REPLICATED)
+
 local MutedState = nil
 
 -- voice popups, copied from base gamemode and modified
@@ -517,7 +541,7 @@ g_VoicePanelList = nil
 -- 5 at 5000
 local function VoiceNotifyThink(pnl)
     if not (IsValid(pnl) and LocalPlayer() and IsValid(pnl.ply)) then return end
-    if not (GetGlobalBool("ttt_locational_voice", false) and (not pnl.ply:IsSpec()) and (pnl.ply ~= LocalPlayer())) then return end
+    if not (loc_voice:GetBool() and (not pnl.ply:IsSpec()) and (pnl.ply ~= LocalPlayer())) then return end
     if LocalPlayer():IsActiveTraitorTeam() and pnl.ply:IsActiveTraitorTeam() then return end
 
     local d = LocalPlayer():GetPos():Distance(pnl.ply:GetPos())
@@ -692,7 +716,7 @@ local MuteText = {
     [MUTE_TERROR] = "mute_living",
     [MUTE_ALL] = "mute_all",
     [MUTE_SPEC] = "mute_specs"
-};
+}
 
 local function SetMuteState(state)
     if MutedState then
@@ -719,7 +743,7 @@ function VOICE.InitBattery()
 end
 
 local function GetRechargeRate()
-    local r = GetGlobalFloat("ttt_voice_drain_recharge", 0.05)
+    local r = voice_drain_recharge:GetFloat()
     if LocalPlayer().voice_battery < battery_min then
         r = r / 2
     end
@@ -727,16 +751,16 @@ local function GetRechargeRate()
 end
 
 local function GetDrainRate()
-    if not GetGlobalBool("ttt_voice_drain", false) then return 0 end
+    if not voice_drain:GetBool() then return 0 end
 
     if GetRoundState() ~= ROUND_ACTIVE then return 0 end
     local ply = LocalPlayer()
     if (not IsValid(ply)) or ply:IsSpec() then return 0 end
 
     if ply:IsAdmin() or ply:IsSuperAdmin() or ply:IsDetectiveTeam() then
-        return GetGlobalFloat("ttt_voice_drain_admin", 0)
+        return voice_drain_admin:GetFloat()
     else
-        return GetGlobalFloat("ttt_voice_drain_normal", 0)
+        return voice_drain_normal:GetFloat()
     end
 end
 
@@ -745,7 +769,7 @@ local function IsTraitorChatting(client)
 end
 
 function VOICE.Tick()
-    if not GetGlobalBool("ttt_voice_drain", false) then return end
+    if not voice_drain:GetBool() then return end
 
     local client = LocalPlayer()
     if VOICE.IsSpeaking() and (not IsTraitorChatting(client)) then
@@ -766,13 +790,15 @@ function VOICE.IsSpeaking() return LocalPlayer().speaking end
 function VOICE.SetSpeaking(state) LocalPlayer().speaking = state end
 
 function VOICE.CanSpeak()
-    if not GetGlobalBool("ttt_voice_drain", false) then return true end
+    if not voice_drain:GetBool() then return true end
 
     return LocalPlayer().voice_battery > battery_min or IsTraitorChatting(LocalPlayer())
 end
 
 local speaker = surface.GetTextureID("voice/icntlk_sv")
 function VOICE.Draw(client)
+    if not voice_drain:GetBool() then return end
+
     local b = client.voice_battery
     if b >= battery_max then return end
 
