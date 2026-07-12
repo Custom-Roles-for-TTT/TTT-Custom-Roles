@@ -9,6 +9,7 @@
 ### Fixes
 - Ported "Correction of the calculation that was incorrect." from base TTT
 - Ported "[TTT] Fix undefined variables and malformed patterns" from base TTT
+- Ported "Fix TTT state and report chunking" from base TTT
 
 ## 2.5.0
 **Released: June 30th, 2026**\
