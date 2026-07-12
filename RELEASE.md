@@ -5,6 +5,7 @@
 
 ### Changes
 - Ported "Some TTT cleanups" from base TTT
+- Ported "Minor cleanups" from base TTT
 
 ### Fixes
 - Ported "Correction of the calculation that was incorrect." from base TTT
