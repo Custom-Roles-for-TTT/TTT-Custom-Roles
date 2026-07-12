@@ -3,6 +3,9 @@
 ## 2.5.1
 **Released:**
 
+### Changes
+- Ported "Some TTT cleanups" from base TTT
+
 ### Fixes
 - Ported "Correction of the calculation that was incorrect." from base TTT
 - Ported "[TTT] Fix undefined variables and malformed patterns" from base TTT
