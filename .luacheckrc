@@ -612,7 +612,6 @@ globals = {
     "ROLE_INNOCENT",
     "ROLE_TRAITOR",
     "ROUND_ACTIVE",
-    "ROUND_BEGIN",
     "ROUND_POST",
     "ROUND_PREP",
     "ROUND_WAIT",
