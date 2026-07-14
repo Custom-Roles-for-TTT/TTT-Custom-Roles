@@ -1,53 +1,53 @@
 # Creating Your Own Custom Roles for TTT Role
 
 ## Table of Contents
-1. [Before You Start](#Before-You-Start)
-1. [Code](#Code)
-   1. [Role Table](#Role-Table)
-   1. [Role Strings](#Role-Strings)
-   1. [Description](#Description)
-   1. [Short Description](#Short-Description)
-   1. [Team](#Team)
-   1. [Shop and Loadout Items](#Shop-and-Loadout-Items)
-      1. [Weapon](#Weapon)
-      1. [Equipment](#Equipment)
-   1. [Credits](#Credits)
-   1. [Health](#Health)
-   1. [Role Activation](#Role-Activation)
-   1. [Role Selection](#Role-Selection)
-   1. [Acting Like a Jester](#Acting-Like-a-Jester)
-   1. [Translations](#Translations)
-   1. [Custom Spectator HUD](#Custom-Spectator-HUD)
-   1. [Optional Rules](#Optional-Rules)
-   1. [ConVars](#ConVars)
-   1. [Custom Win Conditions](#Custom-Win-Conditions)
-      1. [Win Identifier](#Win-Identifier)
-      1. [Win Condition](#Win-Condition)
-      1. [Round Summary Title](#Round-Summary-Title)
-      1. [Round Summary Events](#Round-Summary-Events)
-      1. [Round Result Message](#Round-Result-Message)
-      1. [Full Win Condition Example](#Full-Win-Condition-Example)
-   1. [Tutorial Page](#Tutorial-Page)
-   1. [Role Registration](#Role-Registration)
-   1. [Final Block](#Final-Block)
-   1. [Example File](#Example-File)
-   1. [File Separation](#File-Separation)
-   1. [Role Modifications](#Role-Modifications)
-1. [Sprites](#Sprites)
-   1. [Updating the Sprite Folder Name](#Updating-the-Sprite-Folder-Name)
-   1. [Finding a Role Icon](#Finding-a-Role-Icon)
-   1. [Tab File](#Tab-File)
-   1. [Score File](#Score-File)
-   1. [Sprite File](#Sprite-File)
-   1. [Icon File](#Icon-File)
-   1. [.vmt Files](#vmt-Files)
-1. [Uploading Your Addon](#Uploading-Your-Addon)
+1. [Before You Start](#before-you-start)
+1. [Code](#code)
+   1. [Role Table](#role-table)
+   1. [Role Strings](#role-strings)
+   1. [Description](#description)
+   1. [Short Description](#short-description)
+   1. [Team](#team)
+   1. [Shop and Loadout Items](#shop-and-loadout-items)
+      1. [Weapon](#weapon)
+      1. [Equipment](#equipment)
+   1. [Credits](#credits)
+   1. [Health](#health)
+   1. [Role Activation](#role-activation)
+   1. [Role Selection](#role-selection)
+   1. [Acting Like a Jester](#acting-like-a-jester)
+   1. [Translations](#translations)
+   1. [Custom Spectator HUD](#custom-spectator-hud)
+   1. [Optional Rules](#optional-rules)
+   1. [ConVars](#convars)
+   1. [Custom Win Conditions](#custom-win-conditions)
+      1. [Win Identifier](#win-identifier)
+      1. [Win Condition](#win-condition)
+      1. [Round Summary Title](#round-summary-title)
+      1. [Round Summary Events](#round-summary-events)
+      1. [Round Result Message](#round-result-message)
+      1. [Full Win Condition Example](#full-win-condition-example)
+   1. [Tutorial Page](#tutorial-page)
+   1. [Role Registration](#role-registration)
+   1. [Final Block](#final-block)
+   1. [Example File](#example-file)
+   1. [File Separation](#file-separation)
+   1. [Role Modifications](#role-modifications)
+1. [Sprites](#sprites)
+   1. [Updating the Sprite Folder Name](#updating-the-sprite-folder-name)
+   1. [Finding a Role Icon](#finding-a-role-icon)
+   1. [Tab File](#tab-file)
+   1. [Score File](#score-file)
+   1. [Sprite File](#sprite-file)
+   1. [Icon File](#icon-file)
+   1. [.vmt Files](#vmt-files)
+1. [Uploading Your Addon](#uploading-your-addon)
    1. [addon.json](#addonjson)
-   1. [Workshop Icon](#Workshop-Icon)
-   1. [Folder Name](#Folder-Name)
-   1. [Final Checks](#Final-Checks)
-   1. [Uploading](#Uploading)
-1. [Wrapping Up](#Wrapping-Up)
+   1. [Workshop Icon](#workshop-icon)
+   1. [Folder Name](#folder-name)
+   1. [Final Checks](#final-checks)
+   1. [Uploading](#uploading)
+1. [Wrapping Up](#wrapping-up)
 
 ## Before You Start
 In order to create your own role you will need to make sure you have downloaded tools to edit the following file types:
@@ -280,7 +280,7 @@ ROLE.maxhealth = 150
 
 ### Role Activation
 
-Some roles may have special logic that changes how they behave after some activation event. For example, the Clown is activated when only one team remains and the effect of their activation is they can now do damage. If you want to be able to do something like that we recommend using the entity networked properties system (such as [SetNWBool](https://wiki.facepunch.com/gmod/Entity:SetNWBool)). When the role is activated you could `ply:SetNWBool("SummonerActive", true)` and then check that they are active in other places to change their behavior using `ply:GetNWBool("SummonerActive", false)`. To make this slightly nicer, we introduced the `ply:IsRoleActive()` method in v1.2.2 which is also used in delayed shop activation (see [Optional Rules](#Optional-Rules)).
+Some roles may have special logic that changes how they behave after some activation event. For example, the Clown is activated when only one team remains and the effect of their activation is they can now do damage. If you want to be able to do something like that we recommend using the entity networked properties system (such as [SetNWBool](https://wiki.facepunch.com/gmod/Entity:SetNWBool)). When the role is activated you could `ply:SetNWBool("SummonerActive", true)` and then check that they are active in other places to change their behavior using `ply:GetNWBool("SummonerActive", false)`. To make this slightly nicer, we introduced the `ply:IsRoleActive()` method in v1.2.2 which is also used in delayed shop activation (see [Optional Rules](#optional-rules)).
 
 The next line in our role definition has to do with tying into the `ply:IsRoleActive()` method, allowing you to define if your role is "active" on your own terms:
 
@@ -382,7 +382,7 @@ Some roles have features which are activated once the player dies, such as the p
 
 This section of the guide will explain the pieces of the system which should make these kind of spectator HUDs easier and provide a proof-of-concept example with the summoner role.
 
-To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about [above](#Translations). The `TTTSpectatorShowHUD` hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the `TTTSpectatorHUDKeyPress` hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The `ROLE.shouldshowspectatorhud` method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.
+To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about [above](#translations). The `TTTSpectatorShowHUD` hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the `TTTSpectatorHUDKeyPress` hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The `ROLE.shouldshowspectatorhud` method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.
 
 Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.
 
@@ -458,7 +458,7 @@ There are a few options for roles that aren't covered in the template because th
 |-----------------------------------|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
 | `ROLE.canlootcredits`             | boolean                           | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop and will automatically create the `ttt_%NAMERAW%_credits_starting` convar.                                    | 1.1.8    |
 | `ROLE.canusetraitorbuttons`       | boolean                           | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association.                                                                                        | 1.1.8    |
-| `ROLE.shoulddelayshop`            | boolean                           | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)). | 1.2.2    |
+| `ROLE.shoulddelayshop`            | boolean                           | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#role-activation)). | 1.2.2    |
 | `ROLE.haspassivewin`              | boolean                           | Whether this role should not block another role from winning (like the old man).                                                                                                                                                                                                                                                                                                                       | 1.3.1    |
 | `ROLE.shouldnotdrown`             | boolean                           | Whether the player should not show the drown effect or take drowning damage.                                                                                                                                                                                                                                                                                                                           | 1.5.7    |
 | `ROLE.canseec4`                   | boolean                           | Whether the player should be able to see the C4 icons like traitors can.                                                                                                                                                                                                                                                                                                                               | 1.5.14   |
@@ -705,7 +705,7 @@ ROLE.translations = {
 }
 ```
 
-The first hook (`TTTEventFinishText`) is used to control the text to show in the row on the Events tab itself. We recommend using a translatable string (as we do in the example) but that is not strictly necessary. Don't forget to use the role translations system ([detailed above](#Translations)) to set up the translation string to use.
+The first hook (`TTTEventFinishText`) is used to control the text to show in the row on the Events tab itself. We recommend using a translatable string (as we do in the example) but that is not strictly necessary. Don't forget to use the role translations system ([detailed above](#translations)) to set up the translation string to use.
 
 The second hook (`TTTEventFinishIconText`) is used to control the text that shows when you hover over the icon in the row on the Events tab. The second hook's first return value is the name of a translation string and in most cases doesn't need to be changed at all. In the most common case the only thing you need to do is return the plural string for the winning role (or team) as the second return value.
 
@@ -818,7 +818,7 @@ if CLIENT then
 end
 ```
 
-*(Note: If you would like to make this information translatable, see the [Translations](#Translations) section of this document. )*
+*(Note: If you would like to make this information translatable, see the [Translations](#translations) section of this document. )*
 
 For a more complex example, lets take the same string from before but change the phrase "traitor team" to be the color of the traitor team in TTT. To do that, we're going to use some fairly basic HTML instead of just raw text:
 
@@ -970,7 +970,7 @@ For example in the case of the summoner, if I wanted to use this method my file 
 
 If instead of creating your own role from scratch you would like to modify a pre-existing role, you can do this by placing your code inside of 'lua/rolemodifications' instead of 'lua/customroles'. You *SHOULD NOT* create the `ROLE` table or call `RegisterRole(ROLE)` when creating a role modification as the role you are modifying already exists.
 
-You can either place your code inside a single file, or you can split it between three separate client, server, and shared files as is described in the [File Separation](#File-Separation) section.
+You can either place your code inside a single file, or you can split it between three separate client, server, and shared files as is described in the [File Separation](#file-separation) section.
 
 Modifying pre-existing roles can end up being more confusing than creating one from scratch if you don't know what you are doing, and unfortunately as the scope of modifying a role is almost endless an in depth walkthrough would be impossible. It is strongly recommended that you familiarise yourself with Lua, Garry's Mod and Custom Roles for TTT before getting started with a role modification. If you would like to see an example of a role modification you can look at the code behind the enhanced detectives pack [here](https://github.com/NoxxFlame/TTT-Enhanced-Detectives).
 
