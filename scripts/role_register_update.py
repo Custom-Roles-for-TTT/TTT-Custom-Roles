@@ -86,6 +86,7 @@ for subdir, dirs, files in os.walk(rootdir):
         lastLine = None
         isRole = False
         skipped = 0
+        updated = 0
         lineSpaces = ""
         inScope = False
         scopeSpaces = None
@@ -115,7 +116,7 @@ for subdir, dirs, files in os.walk(rootdir):
                 if hookName in ["Initialize", "TTTBeginRound", "TTTPlayerRoleChanged", "TTTPrepareRound", "TTTSelectRoles", "TTTTutorialRoleText", "TTTUpdateRoleState"]:
                     replace = False
                     namedMatch = False
-                    skipped = skipped + 1
+                    skipped += 1
                 else:
                     if hookName not in hooks:
                         hooks[hookName] = {}
@@ -138,11 +139,14 @@ for subdir, dirs, files in os.walk(rootdir):
                             scopeSpaces = space_match.group()
                     # And we're ending the scope, print out the hooks that belong to it
                     if line == "end\n" or line == "end":
-                        lastLine = write_hooks(file, isRole, hooks, lastLine, None, scopeSpaces)
-                        print("")
-                        hooks = {}
-                        scopeSpaces = None
-                        inScope = False
+                        hooksToAdd = len(hooks)
+                        if hooksToAdd > 0:
+                            updated += hooksToAdd
+                            lastLine = write_hooks(file, isRole, hooks, lastLine, None, scopeSpaces)
+                            print("")
+                            hooks = {}
+                            scopeSpaces = None
+                            inScope = False
 
                 if replace:
                     didReplace = True
@@ -171,6 +175,7 @@ for subdir, dirs, files in os.walk(rootdir):
                 lastLine = line
 
         with open(os.path.join(subdir, file), "a") as f:
+            updated += len(hooks)
             lastLine = write_hooks(file, isRole, hooks, lastLine, f)
             if isRole:
                 if not lastLine.endswith("\n"):
@@ -179,4 +184,4 @@ for subdir, dirs, files in os.walk(rootdir):
                     f.write("\n")
                 f.write("RegisterRole(ROLE)")
 
-        print("\tCleaned up " + str(len(hooks)) + " hook(s) and skipped " + str(skipped))
+        print("\tCleaned up " + str(updated) + " hook(s) and skipped " + str(skipped))
