@@ -170,7 +170,7 @@ for subdir, dirs, files in os.walk(rootdir):
                 if inScope:
                     # Save the first line within it's spaces so we know how
                     # many spaces to add to the hook mapping in this scope
-                    if scopeSpaces == None:
+                    if scopeSpaces == None or scopeSpaces == "":
                         space_match = space_pattern.match(line)
                         if space_match:
                             scopeSpaces = space_match.group()
