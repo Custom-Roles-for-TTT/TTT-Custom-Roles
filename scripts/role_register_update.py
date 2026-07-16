@@ -20,7 +20,7 @@ def file_output(fileHandle, line, newline = False):
     else:
         print(line, end='')
 
-def write_hooks(file, isRole, hooks, lastLine, fileHandle, lineSpaces = ""):
+def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces = ""):
     if len(hooks) == 0:
         return lastLine
 
@@ -36,40 +36,50 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, lineSpaces = ""):
     file_output(fileHandle, lineSpaces + "-- REGISTRATION --", True)
     file_output(fileHandle, lineSpaces + "------------------\n", True)
 
-    if isRole:
-        file_output(fileHandle, lineSpaces + "ROLE.registeredhooks = {", True)
-    else:
-        file_output(fileHandle, lineSpaces + "ROLE_REGISTERED_HOOKS[ROLE_" + role + "] = {", True)
     keys = list(hooks.keys())
     keys.sort()
     lastKey = keys[len(keys) - 1]
+    prefix = "    "
+
+    if hasScope:
+        if isRole:
+            prefix = "ROLE.registeredhooks"
+        else:
+            prefix = "ROLE_REGISTERED_HOOKS[ROLE_" + role + "]"
+    else:
+        if isRole:
+            file_output(fileHandle, lineSpaces + "ROLE.registeredhooks = {", True)
+        else:
+            file_output(fileHandle, lineSpaces + "ROLE_REGISTERED_HOOKS[ROLE_" + role + "] = {", True)
     for key in keys:
         handlers = list(hooks[key].keys())
         handlers.sort()
         if len(handlers) > 1:
             lastHandler = handlers[len(handlers) - 1]
-            file_output(fileHandle, lineSpaces + "    [\"" + key + "\"] = {")
+            file_output(fileHandle, lineSpaces + prefix + "[\"" + key + "\"] = {", True)
             for handlerName in handlers:
                 fnName = handlerName
                 if hooks[key][handlerName] != None:
                     fnName = hooks[key][handlerName]
-                file_output(fileHandle, lineSpaces + "        [\"" + handlerName + "\"] = " + fnName + "")
+                file_output(fileHandle, lineSpaces + "    " + prefix + "[\"" + handlerName + "\"] = " + fnName + "")
                 if handlerName != lastHandler:
                     file_output(fileHandle, ",")
-                file_output(fileHandle, "\n")
+                file_output(fileHandle, "", True)
             file_output(fileHandle, lineSpaces + "    }")
         else:
             handlerName = handlers[0]
             fnName = handlerName
             if hooks[key][handlerName] != None:
                 fnName = hooks[key][handlerName]
-            file_output(fileHandle, lineSpaces + "    [\"" + key + "\"] = " + fnName)
+            file_output(fileHandle, lineSpaces + prefix + "[\"" + key + "\"] = " + fnName)
 
-        if key != lastKey:
+        if not hasScope and key != lastKey:
             file_output(fileHandle, ",")
         file_output(fileHandle, "\n")
-    file_output(fileHandle, lineSpaces + "}")
-    return "!PLACEHOLDER!"
+    if not hasScope:
+        file_output(fileHandle, lineSpaces + "}")
+        return "!PLACEHOLDER!"
+    return " "
 
 for subdir, dirs, files in os.walk(rootdir):
     for file in files:
@@ -81,15 +91,27 @@ for subdir, dirs, files in os.walk(rootdir):
             continue
 
         hooks = {}
-        didReplace = False
-        skipNext = False
-        lastLine = None
+
+        # File state
         isRole = False
-        skipped = 0
-        updated = 0
-        lineSpaces = ""
+        hasScope = False
+        didReplace = False
+
+        # Scope state
         inScope = False
         scopeSpaces = None
+
+        # Function state
+        inFunction = False
+
+        # Line state
+        skipNext = False
+        lastLine = None
+        lineSpaces = ""
+
+        # Stats
+        skipped = 0
+        updated = 0
 
         # Check if this file registers a role because we handle the hooks differently
         with open(os.path.join(subdir, file)) as f:
@@ -106,24 +128,30 @@ for subdir, dirs, files in os.walk(rootdir):
                 namedMatch = True
                 matches = named_pattern.finditer(line)
 
+            # local function Something()
+            # local something = function()
+            if not inFunction:
+                inFunction = ("function " in line) or ("= function(" in line) or ("=function(" in line)
+
             replace = False
-            for match_num, match in enumerate(matches, start=1):
-                replace = not namedMatch
-                groups = match.groups()
-                hookName = groups[0]
-                hookId = groups[1]
-                # These hooks need to run before or after registration and un-registration happen so don't move them to the new system
-                if hookName in ["Initialize", "TTTBeginRound", "TTTPrepareRound", "TTTPlayerRoleChanged", "TTTSelectRoles", "TTTTutorialRoleText", "TTTUpdateRoleState", "TTTSyncEventIDs", "TTTSyncWinIDs"]:
-                    replace = False
-                    namedMatch = False
-                    skipped += 1
-                else:
-                    if hookName not in hooks:
-                        hooks[hookName] = {}
-                    if namedMatch:
-                        hooks[hookName][hookId] = groups[2]
+            if not inFunction:
+                for match_num, match in enumerate(matches, start=1):
+                    replace = not namedMatch
+                    groups = match.groups()
+                    hookName = groups[0]
+                    hookId = groups[1]
+                    # These hooks need to run before or after registration and un-registration happen so don't move them to the new system
+                    if hookName in ["Initialize", "TTTBeginRound", "TTTPrepareRound", "TTTPlayerRoleChanged", "TTTSelectRoles", "TTTTutorialRoleText", "TTTUpdateRoleState", "TTTSyncEventIDs", "TTTSyncWinIDs"]:
+                        replace = False
+                        namedMatch = False
+                        skipped += 1
                     else:
-                        hooks[hookName][hookId] = None
+                        if hookName not in hooks:
+                            hooks[hookName] = {}
+                        if namedMatch:
+                            hooks[hookName][hookId] = groups[2]
+                        else:
+                            hooks[hookName][hookId] = None
 
             # If this is the registration line we want to skip it and the next (assumingly blank) line
             if line.startswith("RegisterRole(ROLE)"):
@@ -142,11 +170,16 @@ for subdir, dirs, files in os.walk(rootdir):
                         hooksToAdd = len(hooks)
                         if hooksToAdd > 0:
                             updated += hooksToAdd
-                            lastLine = write_hooks(file, isRole, hooks, lastLine, None, scopeSpaces)
+                            lastLine = write_hooks(file, isRole, hooks, lastLine, None, False, scopeSpaces)
                             print("")
                             hooks = {}
                             scopeSpaces = None
                             inScope = False
+                # If we're inside another function and it's ending, reset the state
+                if inFunction and line.endswith("end\n") or line.endswith("end"):
+                    inFunction = False
+
+                lastLine = line
 
                 if replace:
                     didReplace = True
@@ -162,21 +195,20 @@ for subdir, dirs, files in os.walk(rootdir):
                     didReplace = False
                     print(lineSpaces + "end")
                     lineSpaces = ""
+                    # Setting this to a space fixes extra newlines when an ending block is at the end of the file
+                    lastLine = " "
                 elif skipNext or namedMatch:
                     skipNext = False
-                    if line.isspace():
-                        print(line, end='')
-                    else:
-                        line = "!PLACEHOLDER!\n"
+                    line = "!PLACEHOLDER!\n"
                 else:
                     if line.startswith("if SERVER then") or line.startswith("if CLIENT then"):
                         inScope = True
+                        hasScope = True
                     print(line, end='')
-                lastLine = line
 
         with open(os.path.join(subdir, file), "a") as f:
             updated += len(hooks)
-            lastLine = write_hooks(file, isRole, hooks, lastLine, f)
+            lastLine = write_hooks(file, isRole, hooks, lastLine, f, hasScope)
             if isRole:
                 if not lastLine.endswith("\n"):
                     f.write("\n")
