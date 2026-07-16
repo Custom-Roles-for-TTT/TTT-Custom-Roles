@@ -21,9 +21,6 @@ def file_output(fileHandle, line, newline = False):
         print(line, end='')
 
 def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces = ""):
-    if len(hooks) == 0:
-        return lastLine
-
     # If we didn't just write a blank line, we might want to add a spacer
     if len(lastLine) > 0:
         if not lastLine.isspace():
@@ -34,7 +31,8 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
     role = os.path.splitext(file)[0].removeprefix("cl_").removeprefix("sh_").upper()
     keys = list(hooks.keys())
     keys.sort()
-    lastKey = keys[len(keys) - 1]
+    keyLen = len(keys)
+    lastKey = None
     prefix = "    "
 
     file_output(fileHandle, lineSpaces + "------------------", True)
@@ -52,6 +50,12 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
             file_output(fileHandle, lineSpaces + "ROLE.registeredhooks = {", True)
         else:
             file_output(fileHandle, lineSpaces + "ROLE_REGISTERED_HOOKS[ROLE_" + role + "] = {", True)
+
+    if keyLen > 0:
+        lastKey = keys[keyLen - 1]
+    else:
+        file_output(fileHandle, lineSpaces + "    -- Create an empty table here so any hooks in a shared context can be added to it below", True)
+        file_output(fileHandle, lineSpaces + "    -- If no hooks are registered in a shared context, this block can be removed", True)
 
     for key in keys:
         handlers = list(hooks[key].keys())
@@ -87,7 +91,7 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
     if hasScope:
         return " "
 
-    file_output(fileHandle, lineSpaces + "}")
+    file_output(fileHandle, lineSpaces + "}", keyLen == 0)
     return "!PLACEHOLDER!"
 
 for subdir, dirs, files in os.walk(rootdir):
@@ -177,13 +181,13 @@ for subdir, dirs, files in os.walk(rootdir):
                     # And we're ending the scope, print out the hooks that belong to it
                     if line == "end\n" or line == "end":
                         hooksToAdd = len(hooks)
+                        lastLine = write_hooks(file, isRole, hooks, lastLine, None, False, scopeSpaces)
                         if hooksToAdd > 0:
-                            updated += hooksToAdd
-                            lastLine = write_hooks(file, isRole, hooks, lastLine, None, False, scopeSpaces)
+                            updated += len(hooks)
                             print("")
-                            hooks = {}
-                            scopeSpaces = None
-                            inScope = False
+                        hooks = {}
+                        scopeSpaces = None
+                        inScope = False
                 # If we're inside another function and it's ending, reset the state
                 if inFunction and line.endswith("end\n") or line.endswith("end"):
                     inFunction = False
@@ -217,8 +221,10 @@ for subdir, dirs, files in os.walk(rootdir):
                     print(line, end='')
 
         with open(os.path.join(subdir, file), "a") as f:
-            updated += len(hooks)
-            lastLine = write_hooks(file, isRole, hooks, lastLine, f, hasScope)
+            hooksToAdd = len(hooks)
+            if hooksToAdd > 0:
+                updated += hooksToAdd
+                lastLine = write_hooks(file, isRole, hooks, lastLine, f, hasScope)
             # Output the registration line at the end
             if isRole:
                 if not lastLine.endswith("\n"):
