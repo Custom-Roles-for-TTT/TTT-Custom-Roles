@@ -869,6 +869,9 @@ There are hooks that don't work with this system for one reason or another. If y
 - TTTPlayerRoleChanged
 - TTTSelectRoles
 - TTTTutorialRoleText
+- TTTUpdateRoleState
+- TTTSyncEventIDs
+- TTTSyncWinIDs
 
 In the rare case that multiple roles share a hook implementation (like the Good Twin and Evil Twin), then you need to also specify a shared `ROLE.hookregistrationkey`.
 

@@ -113,7 +113,7 @@ for subdir, dirs, files in os.walk(rootdir):
                 hookName = groups[0]
                 hookId = groups[1]
                 # These hooks need to run before or after registration and un-registration happen so don't move them to the new system
-                if hookName in ["Initialize", "TTTBeginRound", "TTTPlayerRoleChanged", "TTTPrepareRound", "TTTSelectRoles", "TTTTutorialRoleText", "TTTUpdateRoleState"]:
+                if hookName in ["Initialize", "TTTBeginRound", "TTTPrepareRound", "TTTPlayerRoleChanged", "TTTSelectRoles", "TTTTutorialRoleText", "TTTUpdateRoleState", "TTTSyncEventIDs", "TTTSyncWinIDs"]:
                     replace = False
                     namedMatch = False
                     skipped += 1
