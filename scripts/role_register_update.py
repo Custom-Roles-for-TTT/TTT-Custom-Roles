@@ -24,6 +24,7 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
     if len(hooks) == 0:
         return lastLine
 
+    # If we didn't just write a blank line, we might want to add a spacer
     if len(lastLine) > 0:
         if not lastLine.isspace():
             file_output(fileHandle, "\n")
@@ -31,16 +32,16 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
             file_output(fileHandle, "\n")
 
     role = os.path.splitext(file)[0].removeprefix("cl_").removeprefix("sh_").upper()
-
-    file_output(fileHandle, lineSpaces + "------------------", True)
-    file_output(fileHandle, lineSpaces + "-- REGISTRATION --", True)
-    file_output(fileHandle, lineSpaces + "------------------\n", True)
-
     keys = list(hooks.keys())
     keys.sort()
     lastKey = keys[len(keys) - 1]
     prefix = "    "
 
+    file_output(fileHandle, lineSpaces + "------------------", True)
+    file_output(fileHandle, lineSpaces + "-- REGISTRATION --", True)
+    file_output(fileHandle, lineSpaces + "------------------\n", True)
+
+    # Set up the table accessor depending on the current state
     if hasScope:
         if isRole:
             prefix = "ROLE.registeredhooks"
@@ -51,9 +52,11 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
             file_output(fileHandle, lineSpaces + "ROLE.registeredhooks = {", True)
         else:
             file_output(fileHandle, lineSpaces + "ROLE_REGISTERED_HOOKS[ROLE_" + role + "] = {", True)
+
     for key in keys:
         handlers = list(hooks[key].keys())
         handlers.sort()
+        # If there are multiple handlers for this hook, structure it as a nested table
         if len(handlers) > 1:
             lastHandler = handlers[len(handlers) - 1]
             file_output(fileHandle, lineSpaces + prefix + "[\"" + key + "\"] = {", True)
@@ -66,6 +69,7 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
                     file_output(fileHandle, ",")
                 file_output(fileHandle, "", True)
             file_output(fileHandle, lineSpaces + "    }")
+        # Otherwise just output the mapping directly
         else:
             handlerName = handlers[0]
             fnName = handlerName
@@ -76,10 +80,15 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
         if not hasScope and key != lastKey:
             file_output(fileHandle, ",")
         file_output(fileHandle, "\n")
-    if not hasScope:
-        file_output(fileHandle, lineSpaces + "}")
-        return "!PLACEHOLDER!"
-    return " "
+
+    # If this file has SERVER or CLIENT context scopes we don't need the ending bracket
+    # and we want to modify the last line (the return value) so it doesn't output
+    # an unnecessary empty line after this
+    if hasScope:
+        return " "
+
+    file_output(fileHandle, lineSpaces + "}")
+    return "!PLACEHOLDER!"
 
 for subdir, dirs, files in os.walk(rootdir):
     for file in files:
@@ -201,6 +210,7 @@ for subdir, dirs, files in os.walk(rootdir):
                     skipNext = False
                     line = "!PLACEHOLDER!\n"
                 else:
+                    # Keep track of the context scope
                     if line.startswith("if SERVER then") or line.startswith("if CLIENT then"):
                         inScope = True
                         hasScope = True
@@ -209,6 +219,7 @@ for subdir, dirs, files in os.walk(rootdir):
         with open(os.path.join(subdir, file), "a") as f:
             updated += len(hooks)
             lastLine = write_hooks(file, isRole, hooks, lastLine, f, hasScope)
+            # Output the registration line at the end
             if isRole:
                 if not lastLine.endswith("\n"):
                     f.write("\n")
