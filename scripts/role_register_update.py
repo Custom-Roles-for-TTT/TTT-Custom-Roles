@@ -103,6 +103,7 @@ for subdir, dirs, files in os.walk(rootdir):
             print("Skipping " + path + ", shared files are not supported")
             continue
 
+        topLevelHooks = {}
         hooks = {}
 
         # File state
@@ -116,6 +117,7 @@ for subdir, dirs, files in os.walk(rootdir):
 
         # Function state
         inFunction = False
+        functionSpaces = ""
 
         # Line state
         skipNext = False
@@ -142,9 +144,14 @@ for subdir, dirs, files in os.walk(rootdir):
                 matches = named_pattern.finditer(line)
 
             # local function Something()
-            # local something = function()
+            # local Something = function()
+            # net.Receive("Something"
             if not inFunction:
-                inFunction = ("function " in line) or ("= function(" in line) or ("=function(" in line)
+                inFunction = ("function " in line) or ("= function(" in line) or ("=function(" in line) or ("net.Receive(" in line)
+                if inFunction:
+                    space_match = space_pattern.match(line)
+                    if space_match:
+                        functionSpaces = space_match.group()
 
             replace = False
             if not inFunction:
@@ -166,7 +173,7 @@ for subdir, dirs, files in os.walk(rootdir):
                         else:
                             hooks[hookName][hookId] = None
 
-            # If this is the registration line we want to skip it and the next (assumingly blank) line
+            # If this is the registration line we want to skip it and the next (assumedly blank) line
             if line.startswith("RegisterRole(ROLE)"):
                 skipNext = True
             else:
@@ -189,7 +196,7 @@ for subdir, dirs, files in os.walk(rootdir):
                         scopeSpaces = None
                         inScope = False
                 # If we're inside another function and it's ending, reset the state
-                if inFunction and line.endswith("end\n") or line.endswith("end"):
+                if inFunction and ((line == functionSpaces + "end\n") or (line == functionSpaces + "end")):
                     inFunction = False
 
                 lastLine = line
@@ -218,9 +225,14 @@ for subdir, dirs, files in os.walk(rootdir):
                     if line.startswith("if SERVER then") or line.startswith("if CLIENT then"):
                         inScope = True
                         hasScope = True
+                        if len(hooks) > 0:
+                            topLevelHooks = hooks
+                            hooks = {}
                     print(line, end='')
 
         with open(os.path.join(subdir, file), "a") as f:
+            if len(topLevelHooks) > 0:
+                hooks = topLevelHooks
             hooksToAdd = len(hooks)
             if hooksToAdd > 0:
                 updated += hooksToAdd
