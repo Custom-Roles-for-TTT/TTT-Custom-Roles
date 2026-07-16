@@ -28,7 +28,7 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
         if not lastLine.endswith("\n"):
             file_output(fileHandle, "\n")
 
-    role = os.path.splitext(file)[0].removeprefix("cl_").removeprefix("sh_").upper()
+    role = os.path.splitext(file)[0].removeprefix("cl_").removeprefix("sv_").removeprefix("sh_").upper()
     keys = list(hooks.keys())
     keys.sort()
     keyLen = len(keys)
