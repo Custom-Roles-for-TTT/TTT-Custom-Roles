@@ -12,6 +12,9 @@
 - Ported "[TTT] Fix undefined variables and malformed patterns" from base TTT
 - Ported "Fix TTT state and report chunking" from base TTT
 
+### Developer
+- Changed automatic role registration hooks to remove spaces from role names for consistency
+
 ## 2.5.0
 **Released: June 30th, 2026**\
 Includes beta updates [2.4.2](#242-beta) to [2.4.7](#247-beta).

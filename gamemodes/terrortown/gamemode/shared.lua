@@ -23,6 +23,7 @@ local StringFind = string.find
 local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
+local StringGsub = string.gsub
 local Utf8Lower = utf8.lower
 local Utf8Sub = utf8.sub
 local TableHasValue = table.HasValue
@@ -1217,7 +1218,7 @@ local function RegisterHooks(role)
                 AddHook(hookName, hookKey, hookFn)
             end
         else
-            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or StringGsub(ROLE_STRINGS[role], "%s+", "")) .. "_" .. hookName
             AddHook(hookName, hookKey, hookData)
         end
     end
@@ -1235,7 +1236,7 @@ local function UnregisterHooks(role)
                 RemoveHook(hookName, hookKey)
             end
         else
-            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or StringGsub(ROLE_STRINGS[role], "%s+", "")) .. "_" .. hookName
             RemoveHook(hookName, hookKey)
         end
     end
