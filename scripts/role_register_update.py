@@ -196,7 +196,7 @@ for subdir, dirs, files in os.walk(rootdir):
                         scopeSpaces = None
                         inScope = False
                 # If we're inside another function and it's ending, reset the state
-                if inFunction and ((line == functionSpaces + "end\n") or (line == functionSpaces + "end")):
+                if inFunction and ((line == functionSpaces + "end\n") or (line == functionSpaces + "end") or (line == functionSpaces + "end)\n") or (line == functionSpaces + "end)")):
                     inFunction = False
 
                 lastLine = line
