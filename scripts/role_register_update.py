@@ -7,7 +7,7 @@ rootdir = input("Path to roles folder: ")
 
 pattern = re.compile(r"(?:hook\.Add|AddHook)\(\"(.+)\", \"(.+)\", function\((.*)\)", flags=re.MULTILINE)
 named_pattern = re.compile(r"(?:hook\.Add|AddHook)\(\"(.+)\", \"(.+)\", (?!function)(.*)\)", flags=re.MULTILINE)
-space_pattern = re.compile(r"\s*")
+space_pattern = re.compile(r" *")
 substitution = "local function \\2(\\3)"
 
 def file_output(fileHandle, line, newline = False):
@@ -67,7 +67,7 @@ def write_hooks(file, isRole, hooks, lastLine, fileHandle, hasScope, lineSpaces 
                 file_output(fileHandle, lineSpaces + "    " + prefix + "[\"" + handlerName + "\"] = " + fnName + "")
                 if handlerName != lastHandler:
                     file_output(fileHandle, ",")
-                file_output(fileHandle, "", True)
+                file_output(fileHandle, "\n")
             file_output(fileHandle, lineSpaces + "    }")
         # Otherwise just output the mapping directly
         else:
