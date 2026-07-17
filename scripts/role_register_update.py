@@ -147,7 +147,7 @@ for subdir, dirs, files in os.walk(rootdir):
             # local Something = function()
             # net.Receive("Something"
             if not inFunction:
-                inFunction = ("function " in line) or ("= function(" in line) or ("=function(" in line) or ("net.Receive(" in line)
+                inFunction = ("function " in line) or ("= function(" in line) or ("=function(" in line) or (("net.Receive(" in line) and (" function(" in line))
                 if inFunction:
                     space_match = space_pattern.match(line)
                     if space_match:
@@ -161,7 +161,7 @@ for subdir, dirs, files in os.walk(rootdir):
                     hookName = groups[0]
                     hookId = groups[1]
                     # These hooks need to run before or after registration and un-registration happen so don't move them to the new system
-                    if hookName in ["Initialize", "TTTBeginRound", "TTTPrepareRound", "TTTPlayerRoleChanged", "TTTSelectRoles", "TTTTutorialRoleText", "TTTUpdateRoleState", "TTTSyncEventIDs", "TTTSyncWinIDs"]:
+                    if hookName in ["Initialize", "PreRegisterSWEP", "TTTBeginRound", "TTTPrepareRound", "TTTPlayerRoleChanged", "TTTSelectRoles", "TTTTutorialRoleText", "TTTUpdateRoleState", "TTTSyncEventIDs", "TTTSyncWinIDs"]:
                         replace = False
                         namedMatch = False
                         skipped += 1

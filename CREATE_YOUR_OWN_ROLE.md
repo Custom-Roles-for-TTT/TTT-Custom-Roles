@@ -864,6 +864,7 @@ ROLE.registeredhooks = {
 
 There are hooks that don't work with this system for one reason or another. If you try to use the system for any of the following unsupported hooks, you will receive an error:
 - Initialize
+- PreRegisterSWEP
 - TTTBeginRound
 - TTTPrepareRound
 - TTTPlayerRoleChanged
