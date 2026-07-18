@@ -51,6 +51,41 @@ Changed `eq` parameter to be a table of the body's owned equipment IDs instead o
 - *search* - The body's search info
 - *eq* - A table of the body's owned equipment IDs 
 
+### TTTBlockHUDAmmoPickedUp(itemname, amount)
+Called when ammunition is being picked up by the local player, allowing addons to block the display.\
+*Realm:* Client\
+*Added in:* 2.5.1\
+*Parameters:*
+- *itemname* - The name of the ammo being picked up
+- *amount* - The amount of ammo being picked up
+
+*Return:* `true` to block the display of this ammo's pickup HUD. Otherwise do not return anything.
+
+### TTTBlockHUDDrawPickupHistory()
+Called when weapon pickup history is being displayed by the local player, allowing addons to block the display.\
+*Realm:* Client\
+*Added in:* 2.5.1
+
+*Return:* `true` to block the display of the weapon pickup history HUD. Otherwise do not return anything.
+
+### TTTBlockHUDItemPickedUp(itemname)
+Called when an equipment item is being picked up by the local player, allowing addons to block the display.\
+*Realm:* Client\
+*Added in:* 2.5.1\
+*Parameters:*
+- *itemname* - The name of the equipment item being picked up
+
+*Return:* `true` to block the display of this equipment item's pickup HUD. Otherwise do not return anything.
+
+### TTTBlockHUDWeaponPickedUp(wep)
+Called when a weapon is being picked up by the local player, allowing addons to block the display.\
+*Realm:* Client\
+*Added in:* 2.5.1\
+*Parameters:*
+- *wep* - The weapon being picked up
+
+*Return:* `true` to block the display of this weapon's pickup HUD. Otherwise do not return anything. 
+
 ### TTTBlockPlayerFootstepSound(ply)
 Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.\
 *Realm:* Client and Server\

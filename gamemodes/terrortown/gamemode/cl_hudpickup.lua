@@ -21,6 +21,7 @@ GM.PickupHistoryCorner = surface.GetTextureID("gui/corner8")
 local custom_ammo = CreateClientConVar("ttt_custom_ammo", 0, true, false, "Use custom ammo names.")
 local hide_role = GetConVar("ttt_hide_role")
 
+local default_pickup = Color(100, 100, 100, 255)
 local function GetPickupColor()
     local role = LocalPlayer().GetDisplayedRole and LocalPlayer():GetDisplayedRole() or ROLE_INNOCENT
 
@@ -32,11 +33,12 @@ local function GetPickupColor()
         return ROLE_COLORS[role]
     end
 
-    return Color(100, 100, 100, 255)
+    return default_pickup
 end
 
 function GM:HUDWeaponPickedUp(wep)
     if not (IsValid(wep) and IsValid(LocalPlayer())) or (not LocalPlayer():Alive()) then return end
+    if CallHook("TTTBlockHUDWeaponPickedUp", nil, wep) == true then return end
 
     local name = TryTranslation(wep.GetPrintName and wep:GetPrintName() or wep.PrintName or wep:GetClass() or "Unknown Weapon Name")
 
@@ -68,6 +70,7 @@ end
 
 function GM:HUDItemPickedUp(itemname)
     if not (IsValid(LocalPlayer()) and LocalPlayer():Alive()) then return end
+    if CallHook("TTTBlockHUDItemPickedUp", nil, itemname) == true then return end
 
     local pickup = {}
     pickup.time = CurTime()
@@ -96,6 +99,7 @@ end
 
 function GM:HUDAmmoPickedUp(itemname, amount)
     if not (IsValid(LocalPlayer()) and LocalPlayer():Alive()) then return end
+    if CallHook("TTTBlockHUDAmmoPickedUp", nil, itemname, amount) == true then return end
 
     local itemname_trans = TryTranslation(StringLower("ammo_" .. itemname))
 
@@ -151,6 +155,7 @@ end
 
 function GM:HUDDrawPickupHistory()
     if (not self.PickupHistory) then return end
+    if CallHook("TTTBlockHUDDrawPickupHistory", nil) == true then return end
 
     local x, y = ScrW() - self.PickupHistoryWide - 20, self.PickupHistoryTop
     local tall = 0

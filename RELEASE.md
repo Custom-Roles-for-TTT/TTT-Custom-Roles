@@ -14,6 +14,7 @@
 - Fixed some ragdoll logic not resetting when a player is unragdolled
 
 ### Developer
+- Added `TTTBlockHUDAmmoPickedUp`, `TTTBlockHUDDrawPickupHistory`, `TTTBlockHUDItemPickedUp`, and `TTTBlockHUDWeaponPickedUp` to block different parts of the weapon pickup HUD
 - Changed automatic role registration hooks to remove spaces from role names for consistency
 
 ## 2.5.0
