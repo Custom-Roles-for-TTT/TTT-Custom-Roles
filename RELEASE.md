@@ -11,6 +11,7 @@
 - Ported "Correction of the calculation that was incorrect." from base TTT
 - Ported "[TTT] Fix undefined variables and malformed patterns" from base TTT
 - Ported "Fix TTT state and report chunking" from base TTT
+- Fixed some ragdoll logic not resetting when a player is unragdolled
 
 ### Developer
 - Changed automatic role registration hooks to remove spaces from role names for consistency
