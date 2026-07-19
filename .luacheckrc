@@ -696,6 +696,7 @@ globals = {
     "sboard_panel",
     "setmetatable",
     "sql",
+    "system",
     "tobool",
     "tonumber",
     "tostring",
