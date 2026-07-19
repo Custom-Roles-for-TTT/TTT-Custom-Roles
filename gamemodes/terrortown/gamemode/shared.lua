@@ -72,6 +72,13 @@ GM.Version = "Custom Roles for TTT v" .. CR_VERSION
 
 GM.Customized = false
 
+-- Font definition
+GAMEMODE_DEFAULT_UI_FONT = "Tahoma"
+
+if system.IsLinux() then
+   GAMEMODE_DEFAULT_UI_FONT = "DejaVu Sans"
+end
+
 local function IsCustomRolesMounted()
     for _, a in ipairs(engine.GetAddons()) do
         if tostring(a.wsid) == CR_WORKSHOP_ID and a.mounted then

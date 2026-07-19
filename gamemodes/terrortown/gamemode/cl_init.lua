@@ -32,16 +32,16 @@ local Utf8Upper = utf8.upper
 
 -- Define GM12 fonts for compatibility
 surface.CreateFont("DefaultBold", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 13,
     weight = 1000 })
 surface.CreateFont("TabLarge", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 13,
     weight = 700,
     shadow = true, antialias = false })
 surface.CreateFont("Trebuchet22", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 22,
     weight = 900 })
 
