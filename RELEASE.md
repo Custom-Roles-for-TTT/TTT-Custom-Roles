@@ -13,6 +13,7 @@
 - Ported "Fix TTT state and report chunking" from base TTT
 - Ported "TTT: Fix italic fonts on Linux" from base TTT
 - Fixed some ragdoll logic not resetting when a player is unragdolled
+- Fixed Mad Scientist not blocking the round from ending
 
 ### Developer
 - Added `TTTBlockHUDAmmoPickedUp`, `TTTBlockHUDDrawPickupHistory`, `TTTBlockHUDItemPickedUp`, and `TTTBlockHUDWeaponPickedUp` to block different parts of the weapon pickup HUD
