@@ -1237,6 +1237,9 @@ L.equip_sort_direction_tip = "Sort direction"
 
 L.set_hide_unbuyable = "Move unbuyable equipment items to the bottom of the list"
 
+-- 2026-07-24
+L.flame_burn = "FIRE! IT BURNS!"
+
 -- Custom Events
 L.ev_defi = "{victim} was respawned"
 L.ev_defi_icon = "Defibrillated"
