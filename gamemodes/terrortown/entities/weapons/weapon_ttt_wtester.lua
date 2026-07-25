@@ -107,6 +107,7 @@ function SWEP:SetupDataTables()
 end
 
 function SWEP:Initialize()
+    self.ItemSamples = {}
     self:SetCharge(MAX_CHARGE)
     self:SetLastScanned(-1)
 

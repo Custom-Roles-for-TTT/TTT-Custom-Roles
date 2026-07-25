@@ -15,7 +15,7 @@ Allows for viewing and editing which weapons are available in each role's shop.\
   - *copy FROM TO [REPLACE]* - Duplicates a role configuration. If `true` is provided for the REPLACE parameter, any existing configuration will be removed *(Added in 2.1.10)*
   - *duplicate* - Alias for *copy* *(Added in 2.1.10)*
   - *list* - Prints the current configuration in the server console, highlighting anything invalid
-  - *open (aka show)* - Opens the configuration UI. See [this tutorial](../CONVARS.md#Configuration-by-UI) for how to use the UI. (This command is the default if no parameter is provided)
+  - *open (aka show)* - Opens the configuration UI. See [this tutorial](../CONVARS.md#configuration-by-ui) for how to use the UI. (This command is the default if no parameter is provided)
   - *print* - Alias for *list*
   - *reload* - Reloads the configurations from the server's filesystem
   - *show* - Alias for *open*

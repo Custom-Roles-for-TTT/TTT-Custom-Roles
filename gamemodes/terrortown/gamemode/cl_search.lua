@@ -188,7 +188,7 @@ function PreprocSearch(raw)
         elseif t == "words" then
             if #d > 0 then
                 -- only append "--" if there's no ending interpunction
-                local final = string.match(d, "[\\.\\!\\?]$") ~= nil
+                local final = string.match(d, "[.!?]$") ~= nil
                 search[t].text = PT("search_words", { lastwords = d .. (final and "" or "--.") })
                 search[t].p = 16
             end

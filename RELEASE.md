@@ -1,5 +1,24 @@
 # Release Notes
 
+## 2.5.1
+**Released: July 25th, 2026**
+
+### Changes
+- Ported "Some TTT cleanups" from base TTT
+- Ported "Minor cleanups" from base TTT
+
+### Fixes
+- Ported "Correction of the calculation that was incorrect." from base TTT
+- Ported "[TTT] Fix undefined variables and malformed patterns" from base TTT
+- Ported "Fix TTT state and report chunking" from base TTT
+- Ported "TTT: Fix italic fonts on Linux" from base TTT
+- Fixed some ragdoll logic not resetting when a player is unragdolled
+- Fixed Mad Scientist not blocking the round from ending
+
+### Developer
+- Added `TTTBlockHUDAmmoPickedUp`, `TTTBlockHUDDrawPickupHistory`, `TTTBlockHUDItemPickedUp`, and `TTTBlockHUDWeaponPickedUp` to block different parts of the weapon pickup HUD
+- Changed automatic role registration hooks to remove spaces from role names for consistency
+
 ## 2.5.0
 **Released: June 30th, 2026**\
 Includes beta updates [2.4.2](#242-beta) to [2.4.7](#247-beta).
