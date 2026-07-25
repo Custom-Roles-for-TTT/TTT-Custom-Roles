@@ -26,32 +26,32 @@ local hide_role = GetConVar("ttt_hide_role")
 
 -- Fonts
 surface.CreateFont("TraitorState", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 28,
     weight = 1000
 })
 surface.CreateFont("TraitorStateSmall", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 24,
     weight = 1000
 })
 surface.CreateFont("TimeLeft", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 24,
     weight = 800
 })
 surface.CreateFont("HealthAmmo", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 24,
     weight = 750
 })
 surface.CreateFont("UseHintCaption", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 24,
     weight = 750
 })
 surface.CreateFont("UseHint", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 18,
     weight = 750
 })

@@ -23,6 +23,7 @@ local StringFind = string.find
 local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
+local StringGsub = string.gsub
 local Utf8Lower = utf8.lower
 local Utf8Sub = utf8.sub
 local TableHasValue = table.HasValue
@@ -30,7 +31,7 @@ local TableHasValue = table.HasValue
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.5.0"
+CR_VERSION = "2.5.1"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -70,6 +71,13 @@ GM.Website = "ttt.badking.net"
 GM.Version = "Custom Roles for TTT v" .. CR_VERSION
 
 GM.Customized = false
+
+-- Font definition
+GAMEMODE_DEFAULT_UI_FONT = "Tahoma"
+
+if system.IsLinux() then
+   GAMEMODE_DEFAULT_UI_FONT = "DejaVu Sans"
+end
 
 local function IsCustomRolesMounted()
     for _, a in ipairs(engine.GetAddons()) do
@@ -1217,7 +1225,7 @@ local function RegisterHooks(role)
                 AddHook(hookName, hookKey, hookFn)
             end
         else
-            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or StringGsub(ROLE_STRINGS[role], "%s+", "")) .. "_" .. hookName
             AddHook(hookName, hookKey, hookData)
         end
     end
@@ -1235,7 +1243,7 @@ local function UnregisterHooks(role)
                 RemoveHook(hookName, hookKey)
             end
         else
-            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or ROLE_STRINGS[role]) .. "_" .. hookName
+            local hookKey = (ROLE_HOOK_REGISTRATION_KEY[role] or StringGsub(ROLE_STRINGS[role], "%s+", "")) .. "_" .. hookName
             RemoveHook(hookName, hookKey)
         end
     end

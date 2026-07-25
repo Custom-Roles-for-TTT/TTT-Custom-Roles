@@ -1,9 +1,9 @@
 # Creating a Custom Weapon
 
 ## Table of Contents
-1. [Creating a Custom Weapon](#Creating-a-Custom-Weapon)
-1. [Custom SWEP Properties](#Custom-SWEP-Properties)
-   1. [Required Items](#Required-Items)
+1. [Creating a Custom Weapon](#creating-a-custom-weapon)
+1. [Custom SWEP Properties](#custom-swep-properties)
+   1. [Required Items](#required-items)
 
 ## Creating a Custom Weapon
 This tutorial will not go in-depth on how to create custom weapons in general, for that please see the official TTT SWEP tutorial [here](https://www.troubleinterroristtown.com/development/sweps/).
