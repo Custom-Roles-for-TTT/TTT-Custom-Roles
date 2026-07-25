@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.5.1
-**Released:**
+**Released: July 25th, 2026**
 
 ### Changes
 - Ported "Some TTT cleanups" from base TTT
