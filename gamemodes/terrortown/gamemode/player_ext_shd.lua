@@ -922,7 +922,6 @@ if SERVER then
 
                 -- Turn a ragdoll back into a player if they have essentially stopped moving and have been a ragdoll "long enough"
                 if physObj:GetVelocity():Length() <= 10 and (CurTime() - ply.last_ragdoll) > len then
-                    RemoveHook("Think", hookId)
                     ply:UnRagdoll()
                 end
             end)
@@ -1037,6 +1036,10 @@ if SERVER then
     end
 
     function plymeta:UnRagdoll()
+        local sid64 = self:SteamID64()
+        RemoveHook("Think", "PlayerRagdollTimer_" .. sid64)
+        RemoveHook("PostEntityTakeDamage", "PlayerRagdollDamageTransfer_" .. sid64)
+
         if not self:IsRagdolled() then return end
 
         -- Save a local reference to use in the timer below

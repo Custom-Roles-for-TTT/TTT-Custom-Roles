@@ -84,6 +84,59 @@
             <li><em>eq</em> - A table of the body's owned equipment IDs </li>
         </ul>
 
+        <h3><a id="tttblockhudammopickedupitemname-amount" href="#tttblockhudammopickedupitemname-amount"></a>TTTBlockHUDAmmoPickedUp(itemname, amount)</a></h3>
+        <p>
+            Called when ammunition is being picked up by the local player, allowing addons to block the display.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.5.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>itemname</em> - The name of the ammo being picked up</li>
+            <li><em>amount</em> - The amount of ammo being picked up</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to block the display of this ammo's pickup HUD. Otherwise do not return anything.
+        </p>
+
+        <h3><a id="tttblockhuddrawpickuphistory" href="#tttblockhuddrawpickuphistory"></a>TTTBlockHUDDrawPickupHistory()</a></h3>
+        <p>
+            Called when weapon pickup history is being displayed by the local player, allowing addons to block the display.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.5.1<br>
+        </p>
+        <p>
+            <em>Return:</em> <code>true</code> to block the display of the weapon pickup history HUD. Otherwise do not return anything.
+        </p>
+
+        <h3><a id="tttblockhuditempickedupitemname" href="#tttblockhuditempickedupitemname"></a>TTTBlockHUDItemPickedUp(itemname)</a></h3>
+        <p>
+            Called when an equipment item is being picked up by the local player, allowing addons to block the display.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.5.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>itemname</em> - The name of the equipment item being picked up</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to block the display of this equipment item's pickup HUD. Otherwise do not return anything.
+        </p>
+
+        <h3><a id="tttblockhudweaponpickedupwep" href="#tttblockhudweaponpickedupwep"></a>TTTBlockHUDWeaponPickedUp(wep)</a></h3>
+        <p>
+            Called when a weapon is being picked up by the local player, allowing addons to block the display.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.5.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>wep</em> - The weapon being picked up</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to block the display of this weapon's pickup HUD. Otherwise do not return anything.
+        </p>
+
         <h3><a id="tttblockplayerfootstepsoundply" href="#tttblockplayerfootstepsoundply">TTTBlockPlayerFootstepSound(ply)</a></h3>
         <p>
             Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.<br>

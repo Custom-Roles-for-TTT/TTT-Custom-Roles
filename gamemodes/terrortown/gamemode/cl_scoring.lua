@@ -39,7 +39,7 @@ include("scoring_shd.lua")
 local skull_icon = Material("HUD/killicons/default")
 
 surface.CreateFont("WinHuge", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 72,
     weight = 1000,
     shadow = true,
@@ -47,7 +47,7 @@ surface.CreateFont("WinHuge", {
 })
 
 surface.CreateFont("WinLarge", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 48,
     weight = 1000,
     shadow = true,
@@ -55,7 +55,7 @@ surface.CreateFont("WinLarge", {
 })
 
 surface.CreateFont("WinMedium", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 40,
     weight = 1000,
     shadow = true,
@@ -63,7 +63,7 @@ surface.CreateFont("WinMedium", {
 })
 
 surface.CreateFont("WinSmall", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 32,
     weight = 1000,
     shadow = true,
@@ -71,7 +71,7 @@ surface.CreateFont("WinSmall", {
 })
 
 surface.CreateFont("WinTiny", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 24,
     weight = 1000,
     shadow = true,
@@ -79,13 +79,13 @@ surface.CreateFont("WinTiny", {
 })
 
 surface.CreateFont("ScoreNicks", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 32,
     weight = 100
 })
 
 surface.CreateFont("IconText", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 24,
     weight = 100
 })

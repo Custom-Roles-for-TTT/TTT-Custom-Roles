@@ -64,7 +64,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 
 ## FAQs
 **How do I use Custom Roles for TTT?**\
-To use CR for TTT, subscribe to the addon in the Steam workshop and refer to the [Configuration](#Configuration) section above for how to change settings (including enabling the new roles).
+To use CR for TTT, subscribe to the addon in the Steam workshop and refer to the [Configuration](#configuration) section above for how to change settings (including enabling the new roles).
 
 **How do I get this on my server?**\
 The easiest way to get CR for TTT onto a dedicated server is to create use an addon collection. See [this guide](https://wiki.facepunch.com/gmod/Workshop_for_Dedicated_Servers) on how to create and use a collection for your dedicated server.
@@ -84,7 +84,7 @@ Everyone needs to subscribe to this workshop item, not just the host. We're not 
 We would suggest making a workshop collection of the addons you have and then having your friends subscribe to them all.
 
 **How do I enable the new roles? How do I change X, Y, or Z?**\
-Check out the [Configuration](#Configuration) section above and add the setting value you want in your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer, listen, and local servers). If you don't see a setting for what you want to change, leave a comment on the workshop or join the Discord server (see below) and we'll either help you find it or try to add one.
+Check out the [Configuration](#configuration) section above and add the setting value you want in your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer, listen, and local servers). If you don't see a setting for what you want to change, leave a comment on the workshop or join the Discord server (see below) and we'll either help you find it or try to add one.
 
 **How do I make a Detective spawn every round?**\
 Set the following settings:\

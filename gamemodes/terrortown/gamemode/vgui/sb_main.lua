@@ -39,7 +39,7 @@ surface.CreateFont("cool_large", {
     weight = 400
 })
 surface.CreateFont("treb_small", {
-    font = "Tahoma",
+    font = GAMEMODE_DEFAULT_UI_FONT,
     size = 14,
     weight = 700
 })

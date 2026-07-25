@@ -33,7 +33,7 @@ body {
     border-radius: 15px 0 15px 0;
     color: white;
     font-size: 1.3em;
-    font-family: "Trebuchet MS", Tahoma, sans-serif;
+    font-family: "Trebuchet MS", Tahoma, "DejaVu Sans", sans-serif;
     font-weight: bold;
     cursor: pointer;
     padding: 6px 8px;
@@ -48,7 +48,7 @@ body {
     border-radius: 0 0 15px 0;
     background-color: #787878;
     color: white;
-    font-family: "Trebuchet MS", Tahoma, sans-serif;
+    font-family: "Trebuchet MS", Tahoma, "DejaVu Sans", sans-serif;
     padding: 0 10px;
     position: relative;
 }
@@ -112,7 +112,7 @@ p {
 html {
     background-color: #282828;
     color: white;
-    font-family: "Trebuchet MS", Tahoma, sans-serif;
+    font-family: "Trebuchet MS", Tahoma, "DejaVu Sans", sans-serif;
     overflow-y: scroll;
 }
 
@@ -236,7 +236,7 @@ code {
     gap: 6px;
     border-radius: 15px 0 15px 0;
     font-size: 1.3em;
-    font-family: "Trebuchet MS", Tahoma, sans-serif;
+    font-family: "Trebuchet MS", Tahoma, "DejaVu Sans", sans-serif;
     font-weight: bold;
     padding: 10px 12px;
     text-align: left;

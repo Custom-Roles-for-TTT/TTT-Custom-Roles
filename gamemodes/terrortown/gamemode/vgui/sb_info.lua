@@ -256,9 +256,10 @@ function PANEL:DoClick()
     end
 end
 
+local select_color = Color(255, 200, 0, 255)
 function PANEL:PaintOver()
     if self.Player and self.Player.sb_tag == self.Tag then
-        surface.SetDrawColor(255,200,0,255)
+        surface.SetDrawColor(select_color)
         surface.DrawOutlinedRect(0, 0, self:GetWide(), self:GetTall())
     end
 end

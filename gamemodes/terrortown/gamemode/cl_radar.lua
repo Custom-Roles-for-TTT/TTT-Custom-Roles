@@ -147,7 +147,8 @@ local tele_mark = surface.GetTextureID("vgui/ttt/tele_mark")
 local GetPTranslation = LANG.GetParamTranslation
 local FormatTime = util.SimpleTime
 
-local near_cursor_dist = 32400
+local near_cursor_dist = 180
+local near_cursor_distsqrt = near_cursor_dist * near_cursor_dist
 
 function RADAR:Draw(client)
     if not client then return end
@@ -221,14 +222,15 @@ function RADAR:Draw(client)
     local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
     local beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
     local bodysnatcherMode = GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt()
-    local role, alpha, scrpos, md
+    local role, alpha, scrpos
     for _, tgt in pairs(RADAR.targets) do
         alpha = alpha_base
 
         scrpos = tgt.pos:ToScreen()
         if scrpos.visible then
-            md = mpos:DistToSqr(Vector(scrpos.x, scrpos.y, 0))
-            if md < near_cursor_dist then
+            local md_sqrt = mpos:DistToSqr(Vector(scrpos.x, scrpos.y, 0))
+            if md_sqrt < near_cursor_distsqrt then
+                local md = math.sqrt(md_sqrt)
                 alpha = math.Clamp(alpha * (md / near_cursor_dist), 40, 230)
             end
 

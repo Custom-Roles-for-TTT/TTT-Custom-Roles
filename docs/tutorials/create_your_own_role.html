@@ -978,11 +978,15 @@ ROLE.registeredhooks = {
         <p>There are hooks that don't work with this system for one reason or another. If you try to use the system for any of the following unsupported hooks, you will receive an error:</p>
         <ul>
             <li>Initialize</li>
+            <li>PreRegisterSWEP</li>
             <li>TTTBeginRound</li>
             <li>TTTPrepareRound</li>
             <li>TTTPlayerRoleChanged</li>
             <li>TTTSelectRoles</li>
             <li>TTTTutorialRoleText</li>
+            <li>TTTUpdateRoleState</li>
+            <li>TTTSyncEventIDs</li>
+            <li>TTTSyncWinIDs</li>
         </ul>
 
         <p>In the rare case that multiple roles share a hook implementation (like the Good Twin and Evil Twin), then you need to also specify a shared <code>ROLE.hookregistrationkey</code>.</p>
