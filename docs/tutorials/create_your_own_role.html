@@ -1002,6 +1002,8 @@ ROLE.registeredhooks = {
 
         <p>If your role has features that depend on other roles' hooks running (such as the Ghostwhisperer using the Soulbound's hooks for its death abilities), you need to provide a table of roles in the ROLE.hookregistrationdependencies property.</p>
 
+        <p><em>(Note: Hook registration dependencies are not transitive, meaning if role <code>A</code> depends on <code>B</code> and <code>B</code> depends on <code>C</code>, registering <code>A</code> will not also register <code>C</code>. To work around this, you should set both <code>B</code> and <code>C</code> as dependencies of <code>A</code>)</em></p>
+
         <p>For example:</p>
 
         <p>In <code>ghostwhisperer.lua</code></p>

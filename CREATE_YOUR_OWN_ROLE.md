@@ -891,6 +891,8 @@ ROLE.hookregistrationkey = "Twins"
 
 If your role has features that depend on other roles' hooks running (such as the Ghostwhisperer using the Soulbound's hooks for its death abilities), you need to provide a table of roles in the `ROLE.hookregistrationdependencies` property.
 
+*(Note: Hook registration dependencies are not transitive, meaning if role `A` depends on `B` and `B` depends on `C`, registering `A` will not also register `C`. To work around this, you should set both `B` and `C` as dependencies of `A`)*
+
 For example:
 
 In `ghostwhisperer.lua`
