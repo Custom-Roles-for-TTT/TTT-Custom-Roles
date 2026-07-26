@@ -866,13 +866,14 @@ There are hooks that don't work with this system for one reason or another. If y
 - Initialize
 - PreRegisterSWEP
 - TTTBeginRound
-- TTTPrepareRound
 - TTTPlayerRoleChanged
+- TTTPrepareRound
+- TTTRoleSpawnsArtificially
 - TTTSelectRoles
-- TTTTutorialRoleText
-- TTTUpdateRoleState
 - TTTSyncEventIDs
 - TTTSyncWinIDs
+- TTTTutorialRoleText
+- TTTUpdateRoleState
 
 In the rare case that multiple roles share a hook implementation (like the Good Twin and Evil Twin), then you need to also specify a shared `ROLE.hookregistrationkey`.
 
@@ -886,6 +887,15 @@ ROLE.hookregistrationkey = "Twins"
 In `eviltwin.lua`
 ```lua
 ROLE.hookregistrationkey = "Twins"
+```
+
+If your role has features that depend on other roles' hooks running (such as the Ghostwhisperer using the Soulbound's hooks for its death abilities), you need to provide a table of roles in the `ROLE.hookregistrationdependencies` property.
+
+For example:
+
+In `ghostwhisperer.lua`
+```lua
+ROLE.hookregistrationdependencies = {ROLE_SOULBOUND}
 ```
 
 ### Role Registration

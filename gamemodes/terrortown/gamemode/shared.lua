@@ -27,6 +27,7 @@ local StringGsub = string.gsub
 local Utf8Lower = utf8.lower
 local Utf8Sub = utf8.sub
 local TableHasValue = table.HasValue
+local TableInsert = table.insert
 
 include("player_class/player_ttt.lua")
 
@@ -215,7 +216,7 @@ function GetTeamRoles(tbl, excludes)
     local roles = {}
     for r, v in pairs(tbl) do
         if v and (not excludes or not excludes[r]) then
-            table.insert(roles, r)
+            TableInsert(roles, r)
         end
     end
     return roles
@@ -947,6 +948,7 @@ ROLE_STARTING_CREDITS = {}
 ROLE_STARTING_HEALTH = {}
 ROLE_REGISTERED_HOOKS = {}
 ROLE_HOOK_REGISTRATION_KEY = {}
+ROLE_HOOK_REGISTRATION_DEPENDENCIES = {}
 
 -- Optional features
 ROLE_CAN_SEE_C4 = {}
@@ -1132,6 +1134,10 @@ function RegisterRole(tbl)
         ROLE_HOOK_REGISTRATION_KEY[roleID] = tbl.hookregistrationkey
     end
 
+    if type(tbl.hookregistrationdependencies) == "table" then
+        ROLE_HOOK_REGISTRATION_DEPENDENCIES[roleID] = tbl.hookregistrationdependencies
+    end
+
     -- Equipment
     -- Make sure teams that normally have shops are added to the shop list, even if they don't have things in their shop by default
     -- This allows the "sync" and "mode" convars to be created
@@ -1207,7 +1213,7 @@ function RegisterRole(tbl)
 end
 
 local role_hooks_registered = {}
-local banned_hooks = {"Initialize", "TTTBeginRound", "TTTPlayerRoleChanged", "TTTPrepareRound", "TTTSelectRoles", "TTTTutorialRoleText"}
+local banned_hooks = {"Initialize", "TTTBeginRound", "TTTPlayerRoleChanged", "TTTPrepareRound", "TTTRoleSpawnsArtificially", "TTTSelectRoles", "TTTTutorialRoleText"}
 local function RegisterHooks(role)
     local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
     role_hooks_registered[key] = (role_hooks_registered[key] or 0) + 1
@@ -1251,15 +1257,36 @@ end
 
 AddHook("TTTPlayerRoleChanged", "HookRegistration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
-    if not ROLE_REGISTERED_HOOKS[oldRole] and not ROLE_REGISTERED_HOOKS[newRole] then return end
+
+    local oldHooks = ROLE_REGISTERED_HOOKS[oldRole]
+    local oldDepRoles = ROLE_HOOK_REGISTRATION_DEPENDENCIES[oldRole]
+    local newHooks = ROLE_REGISTERED_HOOKS[newRole]
+    local newDepRoles = ROLE_HOOK_REGISTRATION_DEPENDENCIES[newRole]
+
+    if not oldHooks and not oldDepRoles and not newHooks and not newDepRoles then return end
 
     -- Delay this by a frame so cleanup can run first
     timer.Simple(0, function()
-        if ROLE_REGISTERED_HOOKS[oldRole] then
+        if oldHooks then
             UnregisterHooks(oldRole)
         end
-        if ROLE_REGISTERED_HOOKS[newRole] then
+        if oldDepRoles then
+            for _, r in ipairs(oldDepRoles) do
+                if ROLE_REGISTERED_HOOKS[r] then
+                    UnregisterHooks(r)
+                end
+            end
+        end
+
+        if newHooks then
             RegisterHooks(newRole)
+        end
+        if newDepRoles then
+            for _, r in ipairs(newDepRoles) do
+                if ROLE_REGISTERED_HOOKS[r] then
+                    RegisterHooks(r)
+                end
+            end
         end
     end)
 end)
@@ -1317,11 +1344,11 @@ local function AddRoleFiles(root)
         local files, _ = FileFind(root .. dir .. "/*.lua", "LUA")
         for _, fil in ipairs(files) do
             if StringFind(fil, "cl_") then
-                table.insert(clientFiles, fil)
+                TableInsert(clientFiles, fil)
             elseif fil == "shared.lua" or StringFind(fil, "sh_") then
-                table.insert(sharedFiles, fil)
+                TableInsert(sharedFiles, fil)
             else
-                table.insert(serverFiles, fil)
+                TableInsert(serverFiles, fil)
             end
         end
 
@@ -1478,7 +1505,7 @@ if SERVER then
             if type(EVENTS_BY_ROLE[role]) == "number" then
                 EVENTS_BY_ROLE[role] = { EVENTS_BY_ROLE[role], EVENT_MAX }
             elseif type(EVENTS_BY_ROLE[role]) == "table" then
-                table.insert(EVENTS_BY_ROLE[role], EVENT_MAX)
+                TableInsert(EVENTS_BY_ROLE[role], EVENT_MAX)
             else
                 EVENTS_BY_ROLE[role] = EVENT_MAX
             end
