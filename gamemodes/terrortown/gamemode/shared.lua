@@ -1236,6 +1236,7 @@ local function RegisterHooks(role)
         end
     end
 end
+
 local function UnregisterHooks(role)
     local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
     role_hooks_registered[key] = (role_hooks_registered[key] or 0) - 1
@@ -1255,39 +1256,51 @@ local function UnregisterHooks(role)
     end
 end
 
+function RegisterRoleHooks(role)
+    local newHooks = ROLE_REGISTERED_HOOKS[role]
+    local newDepRoles = ROLE_HOOK_REGISTRATION_DEPENDENCIES[role]
+    if not newHooks and not newDepRoles then return end
+
+    if newHooks then
+        RegisterHooks(role)
+    end
+    if newDepRoles then
+        for _, r in ipairs(newDepRoles) do
+            if ROLE_REGISTERED_HOOKS[r] then
+                RegisterHooks(r)
+            end
+        end
+    end
+end
+
+function UnregisterRoleHooks(role)
+    local oldHooks = ROLE_REGISTERED_HOOKS[role]
+    local oldDepRoles = ROLE_HOOK_REGISTRATION_DEPENDENCIES[role]
+    if not oldHooks and not oldDepRoles then return end
+
+    if oldHooks then
+        UnregisterHooks(role)
+    end
+    if oldDepRoles then
+        for _, r in ipairs(oldDepRoles) do
+            if ROLE_REGISTERED_HOOKS[r] then
+                UnregisterHooks(r)
+            end
+        end
+    end
+end
+
 AddHook("TTTPlayerRoleChanged", "HookRegistration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
-
-    local oldHooks = ROLE_REGISTERED_HOOKS[oldRole]
-    local oldDepRoles = ROLE_HOOK_REGISTRATION_DEPENDENCIES[oldRole]
-    local newHooks = ROLE_REGISTERED_HOOKS[newRole]
-    local newDepRoles = ROLE_HOOK_REGISTRATION_DEPENDENCIES[newRole]
-
-    if not oldHooks and not oldDepRoles and not newHooks and not newDepRoles then return end
+    if not ROLE_REGISTERED_HOOKS[oldRole] and
+        not ROLE_HOOK_REGISTRATION_DEPENDENCIES[oldRole] and
+        not ROLE_REGISTERED_HOOKS[newRole] and
+        not ROLE_HOOK_REGISTRATION_DEPENDENCIES[newRole] then return end
 
     -- Delay this by a frame so cleanup can run first
     timer.Simple(0, function()
-        if oldHooks then
-            UnregisterHooks(oldRole)
-        end
-        if oldDepRoles then
-            for _, r in ipairs(oldDepRoles) do
-                if ROLE_REGISTERED_HOOKS[r] then
-                    UnregisterHooks(r)
-                end
-            end
-        end
-
-        if newHooks then
-            RegisterHooks(newRole)
-        end
-        if newDepRoles then
-            for _, r in ipairs(newDepRoles) do
-                if ROLE_REGISTERED_HOOKS[r] then
-                    RegisterHooks(r)
-                end
-            end
-        end
+        UnregisterRoleHooks(oldRole)
+        RegisterRoleHooks(newRole)
     end)
 end)
 AddHook("TTTPrepareRound", "HookRegistration_TTTPrepareRound", function()
