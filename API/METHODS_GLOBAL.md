@@ -179,6 +179,11 @@ Registers a role with Custom Roles for TTT. See [here](CREATE_YOUR_OWN_ROLE.md) 
 *Realm:* Client and Server\
 *Added in:* 1.0.9
 
+### RegisterRoleHooks(role)
+Registers a role as active, causing its managed hooks to be active if they aren't already.\
+*Realm:* Client and Server\
+*Added in:* 2.5.1 
+
 ### SetRoleHealth(ply)
 Sets the target player's health and max health based on their role convars.\
 *Realm:* Client and Server\
@@ -219,6 +224,11 @@ Whether an unpromoted detective-like player (deputy/impersonator) should be prom
 Whether the given string starts with a vowel.\
 *Realm:* Client and Server\
 *Added in:* 1.0.8
+
+### UnregisterRoleHooks(role)
+Unregisters a role as active, causing its managed hooks to be removed if they are active.\
+*Realm:* Client and Server\
+*Added in:* 2.5.1 
 
 ### UpdateRoleColours()/UpdateRoleColors()
 Updates the role color tables based on the color convars and color type convar.\

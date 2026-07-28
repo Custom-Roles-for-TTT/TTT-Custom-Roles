@@ -17,6 +17,8 @@
 
 ### Developer
 - Added `TTTBlockHUDAmmoPickedUp`, `TTTBlockHUDDrawPickupHistory`, `TTTBlockHUDItemPickedUp`, and `TTTBlockHUDWeaponPickedUp` to block different parts of the weapon pickup HUD
+- Added `ROLE_HOOK_REGISTRATION_DEPENDENCIES` and `ROLE.hookregistrationdependencies` to allow a role to depend on another role's implementation hooks
+- Added `RegisterRoleHooks` and `UnregisterRoleHooks` global methods to allow other addons to trigger role hook registration and unregistration on demand
 - Changed automatic role registration hooks to remove spaces from role names for consistency
 
 ## 2.5.0

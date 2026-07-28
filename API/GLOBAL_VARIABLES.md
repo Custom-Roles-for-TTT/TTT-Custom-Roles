@@ -116,10 +116,15 @@ The role number where the externally-loaded roles start.\
 *Realm:* Client and Server\
 *Added in:* 1.0.10
 
-### ROLE_HOOK_REGISTRATION_KEY  
-Table of role to key for use with the Hook Management system. Used when multiple roles share the same set of hooks (e.g. the Twins).\
+### ROLE_HOOK_REGISTRATION_DEPENDENCIES
+Mapping of role to table of roles which need to also be registered for this role to work.\
 *Realm*: Client and Server\
-*Added in*: 2.4.6 
+*Added in*: 2.5.1
+
+### ROLE_HOOK_REGISTRATION_KEY  
+Mapping of role to key for use with the Hook Management system. Used when multiple roles share the same set of hooks (e.g. the Twins).\
+*Realm*: Client and Server\
+*Added in*: 2.4.6
 
 ### ROLE_NONE
 Updated to be -1 so players who have not been given a role can be identified.\
