@@ -980,13 +980,14 @@ ROLE.registeredhooks = {
             <li>Initialize</li>
             <li>PreRegisterSWEP</li>
             <li>TTTBeginRound</li>
-            <li>TTTPrepareRound</li>
             <li>TTTPlayerRoleChanged</li>
+            <li>TTTPrepareRound</li>
+            <li>TTTRoleSpawnsArtificially</li>
             <li>TTTSelectRoles</li>
-            <li>TTTTutorialRoleText</li>
-            <li>TTTUpdateRoleState</li>
             <li>TTTSyncEventIDs</li>
             <li>TTTSyncWinIDs</li>
+            <li>TTTTutorialRoleText</li>
+            <li>TTTUpdateRoleState</li>
         </ul>
 
         <p>In the rare case that multiple roles share a hook implementation (like the Good Twin and Evil Twin), then you need to also specify a shared <code>ROLE.hookregistrationkey</code>.</p>
@@ -998,6 +999,15 @@ ROLE.registeredhooks = {
 
         <p>In <code>eviltwin.lua</code></p>
         <div><pre><code class="language-lua">ROLE.hookregistrationkey = "Twins"</code></pre></div>
+
+        <p>If your role has features that depend on other roles' hooks running (such as the Ghostwhisperer using the Soulbound's hooks for its death abilities), you need to provide a table of roles in the ROLE.hookregistrationdependencies property.</p>
+
+        <p><em>(Note: Hook registration dependencies are not transitive, meaning if role <code>A</code> depends on <code>B</code> and <code>B</code> depends on <code>C</code>, registering <code>A</code> will not also register <code>C</code>. To work around this, you should set both <code>B</code> and <code>C</code> as dependencies of <code>A</code>)</em></p>
+
+        <p>For example:</p>
+
+        <p>In <code>ghostwhisperer.lua</code></p>
+        <div><pre><code class="language-lua">ROLE.hookregistrationdependencies = {ROLE_SOULBOUND}</code></pre></div>
 
         <h3><a id="role-registration" href="#role-registration">Role Registration</a></h3>
         <p>The next line simply tells CR for TTT to register your role and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, <code>ROLE_%NAMERAW%</code> as well as helper functions <code>Get%NAME%</code>, <code>Is%NAME%</code> and <code>IsActive%NAME%</code> if you would like to use them to add extra logic for your role.</p>
