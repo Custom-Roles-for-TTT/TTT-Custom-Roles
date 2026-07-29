@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.5.2 (Beta)
+**Released:**
+
+### Additions
+- Added ability to adjust the Cannibal's eat and digestion poop sound volumes
+
 ## 2.5.1
 **Released: July 25th, 2026**
 

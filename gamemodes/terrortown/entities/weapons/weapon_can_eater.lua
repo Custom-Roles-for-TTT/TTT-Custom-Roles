@@ -43,8 +43,10 @@ SWEP.DigestionConVar = CreateConVar("ttt_cannibal_digestion", "0", FCVAR_REPLICA
 SWEP.DigestionTimeConVar = CreateConVar("ttt_cannibal_digestion_time", "30", FCVAR_REPLICATED, "How long in seconds a victim takes to be digested when eaten (set to 0 for immediate digestion)", 0, 300)
 
 if SERVER then
+    SWEP.EatSoundLevelConVar = CreateConVar("ttt_cannibal_eat_sound_level", "100", FCVAR_NONE, "The sound level (volume) to play the Cannibal's eat sound (set to 0 to disable)", 0, 511)
     SWEP.DigestionPoopConVar = CreateConVar("ttt_cannibal_digestion_poop", "1", FCVAR_NONE, "Whether the Cannibal drops poop when a victim is digested", 0, 1)
-    SWEP.DigestionPoopSoundConVar = CreateConVar("ttt_cannibal_digestion_poop_sound", "1", FCVAR_NONE, "Whether the Cannibal causes a sound when poop is dropped from a digested victim.", 0, 1)
+    SWEP.DigestionPoopSoundConVar = CreateConVar("ttt_cannibal_digestion_poop_sound", "1", FCVAR_NONE, "Whether the Cannibal causes a sound when poop is dropped from a digested victim", 0, 1)
+    SWEP.DigestionPoopSoundLevelConVar = CreateConVar("ttt_cannibal_digestion_poop_sound_level", "100", FCVAR_NONE, "The sound level (volume) to play the Cannibal's digestion poop sound (set to 0 to disable)", 0, 511)
 end
 
 local eatSounds = {
@@ -148,7 +150,10 @@ function SWEP:PrimaryAttack()
         hitEnt:SetProperty("TTTCannibalEaten", owner:SteamID64())
         hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been eaten by " .. owner:Nick() .. "!")
 
-        owner:EmitSound(eatSounds[math.random(1, #eatSounds)], 100)
+        local soundLevel = self.EatSoundLevelConVar:GetInt()
+        if soundLevel > 0 then
+            owner:EmitSound(eatSounds[math.random(1, #eatSounds)], soundLevel)
+        end
 
         local cooldown = self.DeviceCooldownConVar:GetInt()
         if cooldown > 0 then
@@ -214,8 +219,9 @@ function SWEP:PrimaryAttack()
                         poop:SetCollisionGroup(COLLISION_GROUP_WEAPON)
                         poop.fingerprints = fingerprints
 
-                        if self.DigestionPoopSoundConVar:GetBool()then
-                            owner:EmitSound(poopSounds[math.random(#poopSounds)], 100)
+                        soundLevel = self.DigestionPoopSoundLevelConVar:GetInt()
+                        if self.DigestionPoopSoundConVar:GetBool() and soundLevel > 0 then
+                            owner:EmitSound(poopSounds[math.random(#poopSounds)], soundLevel)
                         end
                     end
                 end

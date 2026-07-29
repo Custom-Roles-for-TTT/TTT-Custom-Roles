@@ -775,6 +775,7 @@ ttt_cannibal_notify_killer                     1       // Whether to notify a Ca
 ttt_cannibal_notify_sound                      0       // Whether to play a cheering sound when a Cannibal is killed
 ttt_cannibal_notify_confetti                   0       // Whether to throw confetti when a Cannibal is a killed
 ttt_cannibal_eat_cooldown                      10      // The amount of time (in seconds) between uses of the Cannibal's Cannibalizer
+ttt_cannibal_eat_sound_level                   100     // The sound level (volume) to play the Cannibal's eat sound (set to 0 to disable)
 ttt_cannibal_damage_penalty                    0       // The fraction a Cannibal's damage will be scaled by when they are attacking (Only applies if ttt_cannibal_is_independent is enabled)
 ttt_cannibal_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the Cannibal (Only applies if ttt_cannibal_is_independent is enabled)
 ttt_cannibal_update_scoreboard                 0       // Whether the Cannibal shows dead players as missing in action (Only applies if ttt_cannibal_is_independent is enabled)
@@ -784,6 +785,7 @@ ttt_cannibal_digestion                         0       // Whether the Cannibal d
 ttt_cannibal_digestion_time                    30      // How long in seconds a victim takes to be digested when eaten. Set to 0 for immediate digestion (Only applies if ttt_cannibal_digestion is enabled)
 ttt_cannibal_digestion_poop                    1       // Whether the Cannibal drops poop when a victim is digested (Only applies if ttt_cannibal_digestion is enabled)
 ttt_cannibal_digestion_poop_sound              1       // Whether the Cannibal causes a sound when poop is dropped from a digested victim (Only applies if ttt_cannibal_digestion is enabled)
+ttt_cannibal_digestion_poop_sound_level        100     // The sound level (volume) to play the Cannibal's digestion poop sound (set to 0 to disable). (Only applies if ttt_cannibal_digestion is enabled)
 
 // ----------------------------------------
 
