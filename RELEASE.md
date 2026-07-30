@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.5.2
+
+### Developer
+- Added `TTTHUDInfoPositionOverride` hook to override the position of the player information HUD element (role, health, ammo etc.)
+
 ## 2.5.1
 **Released: July 25th, 2026**
 

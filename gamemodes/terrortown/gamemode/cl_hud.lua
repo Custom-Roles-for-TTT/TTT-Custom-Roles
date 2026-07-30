@@ -490,8 +490,15 @@ local function InfoPaint(client)
     local width = 250
     local height = 94
 
-    local x = margin
-    local y = ScrH() - margin - height
+    local defaultX = margin
+    local defaultY = ScrH() - margin - height
+
+    local x = defaultX
+    local y = defaultY
+
+    local overrideX, overrideY = CallHook("TTTHUDInfoPositionOverride", nil, client, x, y, width, height)
+    if overrideX then x = overrideX end
+    if overrideY then y = overrideY end
 
     DrawBg(x, y, width, height, client)
 
@@ -508,7 +515,7 @@ local function InfoPaint(client)
     CRHUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, MathMax(0, health - maxHealth) / maxHealth)
     CRHUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, MathMax(0, health - (2 * maxHealth)) / maxHealth)
 
-    CRHUD:ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+    CRHUD:ShadowedText(tostring(health), "HealthAmmo", x + bar_width - margin, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 
     local health_offset = 0
     if client:HasEquipmentItem(EQUIP_ARMOR) then
@@ -533,7 +540,7 @@ local function InfoPaint(client)
             CRHUD:PaintBar(8, x + margin, ammo_y, bar_width, bar_height, ammo_colors, ammo_clip / ammo_max)
             local text = format("%i + %02i", ammo_clip, ammo_inv)
 
-            CRHUD:ShadowedText(text, "HealthAmmo", bar_width, ammo_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+            CRHUD:ShadowedText(text, "HealthAmmo", x + bar_width - margin, ammo_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
         end
     end
 
