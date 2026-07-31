@@ -480,6 +480,11 @@ end
 
 local ttt_health_label = CreateClientConVar("ttt_health_label", "0", true)
 
+local infohud_offset_max_x = ScrW() - 250 - (margin * 2)
+local infohud_offset_max_y = ScrH() - 94 - (margin * 2) - 30 -- `traitor_y` is 30
+local ttt_infohud_offset_x = CreateClientConVar("ttt_infohud_offset_x", "0", true, false, "The X (horizontal) offset of the player information HUD element", 0, infohud_offset_max_x)
+local ttt_infohud_offset_y = CreateClientConVar("ttt_infohud_offset_y", "0", true, false, "The Y (vertical) offset of the player information HUD element", 0, infohud_offset_max_y)
+
 local armor_tex = surface.GetTextureID("vgui/ttt/equip/armor")
 local drown_start = nil
 -- Found in the "Drowning Indicator for TTT" addon which in turn found it "in Source™ Code"
@@ -493,8 +498,8 @@ local function InfoPaint(client)
     local defaultX = margin
     local defaultY = ScrH() - margin - height
 
-    local x = defaultX
-    local y = defaultY
+    local x = defaultX + ttt_infohud_offset_x:GetInt()
+    local y = defaultY - ttt_infohud_offset_y:GetInt()
 
     local overrideX, overrideY = CallHook("TTTHUDInfoPositionOverride", nil, client, x, y, width, height)
     if overrideX then x = overrideX end

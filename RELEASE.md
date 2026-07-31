@@ -2,8 +2,11 @@
 
 ## 2.5.2
 
+### Additions
+- Added `ttt_infohud_offset_x` and `ttt_infohud_offset_y` client convars to allow players to reposition the player information HUD (role, health, ammo etc.)
+
 ### Developer
-- Added `TTTHUDInfoPositionOverride` hook to override the position of the player information HUD element (role, health, ammo etc.)
+- Added `TTTHUDInfoPositionOverride` hook to override the position of the player information HUD (role, health, ammo etc.)
 
 ## 2.5.1
 **Released: July 25th, 2026**

@@ -1419,6 +1419,8 @@ ttt_tracker_minimap_offset_y                   14      // The screen offset from
 // Misc.
 // ----------------------------------------
 ttt_distance_unit                              1       // What unit to use when displaying distance. 0 - None (Source). 1 - Meters. 2 - Feet
+ttt_infohud_offset_x                           0       // The X (horizontal) offset of the player information HUD element
+ttt_infohud_offset_y                           0       // The Y (vertical) offset of the player information HUD element
 ```
 
 ## Role Weapon Shop

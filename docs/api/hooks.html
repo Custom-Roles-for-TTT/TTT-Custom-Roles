@@ -509,6 +509,27 @@
             <li><em>activeLabels</em> - The list of current active additional labels. Used to determine the labelY offset to use via: <code>labelY = labelY + (20 * #activeLabels)</code>. Be sure to insert an entry when you add your own label so other addons can space appropriately. <em>(Added in 1.6.11)</em></li>
         </ul>
 
+        <h3><a id="ttthudinfopositionoverrideclient-x-y-width-height" href="#ttthudinfopositionoverrideclient-x-y-width-height">TTTHUDInfoPositionOverride(client, x, y, width, height)</a></h3>
+        <p>
+            Allows overriding the position of the player information HUD (role, health, ammo etc.).<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.5.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>x</em> - The player information HUD's current x position</li>
+            <li><em>y</em> - The player information HUD's current y position</li>
+            <li><em>width</em> - The player information HUD's width</li>
+            <li><em>height</em> - The player information HUD's height</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new x and y positions for the element (e.g. <code>return newX, newY</code>)
+        </p>
+        <p>
+            <em>Note:</em> Because of how TTT draws the player information HUD, the height of the element is actually 30 pixels taller than exposed by this hook, and the top left corner of the element is similarly 30 pixels above the <code>y</code> position value exposed.
+        </p>
+
         <h3><a id="ttthudrolecoloroverrideclient-colortype" href="#ttthudrolecoloroverrideclient-colortype">TTTHUDRoleColorOverride(client, colorType)</a></h3>
         <p>
             Allows overriding the color to use in place of the given player's normal role color.<br>

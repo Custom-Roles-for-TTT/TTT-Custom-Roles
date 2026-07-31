@@ -330,17 +330,19 @@ Called after player information such as role, health, and ammo and equipment inf
 - *activeLabels* - The list of current active additional labels. Used to determine the labelY offset to use via: `labelY = labelY + (20 * #activeLabels)`. Be sure to insert an entry when you add your own label so other addons can space appropriately. *(Added in 1.6.11)*
 
 ### TTTHUDInfoPositionOverride(client, x, y, width, height)
-Allows overriding the position of the player information HUD element (role, health, ammo etc.).
+Allows overriding the position of the player information HUD (role, health, ammo etc.).\
 *Realm:* Client\
 *Added in:* 2.5.2\
 *Parameters:*
 - *client* - The local player
-- *x* - The current x position of the element's top left corner
-- *y* - The current y position of the element's top left corner
-- *width* - The element's width
-- *height* - The element's height
+- *x* - The player information HUD's current x position
+- *y* - The player information HUD's current y position
+- *width* - The player information HUD's width
+- *height* - The player information HUD's height
 
 *Return:* The new x and y positions for the element (e.g. `return newX, newY`)
+
+*Note:* Because of how TTT draws the player information HUD, the height of the element is actually 30 pixels taller than exposed by this hook, and the top left corner of the element is similarly 30 pixels above the `y` position value exposed.
 
 ### TTTHUDRoleColorOverride(client, colorType)
 Allows overriding the color to use in place of the given player's normal role color.\
