@@ -25,12 +25,12 @@ local format = string.format
 local hide_role = GetConVar("ttt_hide_role")
 
 -- Fonts
-surface.CreateFont("TraitorState", {
+surface.CreateFont("RoleState", {
     font = GAMEMODE_DEFAULT_UI_FONT,
     size = 28,
     weight = 1000
 })
-surface.CreateFont("TraitorStateSmall", {
+surface.CreateFont("RoleStateSmall", {
     font = GAMEMODE_DEFAULT_UI_FONT,
     size = 24,
     weight = 1000
@@ -372,24 +372,27 @@ local function GetAmmo(ply)
     return ammo_clip, ammo_max, ammo_inv
 end
 
+local roleAreaHeight = 30
+local roleAreaWidth  = 170
+
 local function DrawBg(x, y, width, height, client)
     if not hide_role then
         hide_role = GetConVar("ttt_hide_role")
     end
 
-    -- Traitor area sizes
-    local th = 30
-    local tw = 170
+    -- Role area sizes
+    local rh = roleAreaHeight
+    local rw = roleAreaWidth
 
     -- Adjust for these
-    y = y - th
-    height = height + th
+    y = y - rh
+    height = height + rh
 
     -- main bg area, invariant
     -- encompasses entire area
     draw.RoundedBox(8, x, y, width, height, bg_colors.background_main)
 
-    -- main border, traitor based
+    -- main border, role based
     local col = ROLE_COLORS[client:GetDisplayedRole()]
     if GAMEMODE.round_state ~= ROUND_ACTIVE then
         col = bg_colors.noround
@@ -400,7 +403,7 @@ local function DrawBg(x, y, width, height, client)
         if new_col then col = new_col end
     end
 
-    draw.RoundedBoxEx(8, x, y, tw, th, col, true, false, false, true)
+    draw.RoundedBoxEx(8, x, y, rw, rh, col, true, false, false, true)
 end
 
 function CRHUD:ShadowedText(text, font, x, y, color, xalign, yalign)
@@ -460,7 +463,7 @@ local function SpecHUDPaint(client)
     draw.RoundedBox(8, x, round_y, time_x - x, height, bg_colors.noround)
 
     local text = L[roundstate_string[GAMEMODE.round_state]]
-    CRHUD:ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
+    CRHUD:ShadowedText(text, "RoleState", x + margin, round_y, COLOR_WHITE)
 
     -- Draw round/prep/post time remaining
     text = util.SimpleTime(MathMax(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
@@ -480,8 +483,11 @@ end
 
 local ttt_health_label = CreateClientConVar("ttt_health_label", "0", true)
 
-local infohud_offset_max_x = ScrW() - 250 - (margin * 2)
-local infohud_offset_max_y = ScrH() - 94 - (margin * 2) - 30 -- `traitor_y` is 30
+infoWidth  = 250
+infoHeight = 94
+
+local infohud_offset_max_x = ScrW() - infoWidth - (margin * 2)
+local infohud_offset_max_y = ScrH() - infoHeight - (margin * 2) - roleAreaHeight
 local ttt_infohud_offset_x = CreateClientConVar("ttt_infohud_offset_x", "0", true, false, "The X (horizontal) offset of the player information HUD element", 0, infohud_offset_max_x)
 local ttt_infohud_offset_y = CreateClientConVar("ttt_infohud_offset_y", "0", true, false, "The Y (vertical) offset of the player information HUD element", 0, infohud_offset_max_y)
 
@@ -492,8 +498,8 @@ local MAX_AIR_TIME_SECONDS = 8
 local function InfoPaint(client)
     local L = GetLang()
 
-    local width = 250
-    local height = 94
+    local width  = infoWidth
+    local height = infoHeight
 
     local defaultX = margin
     local defaultY = ScrH() - margin - height
@@ -570,10 +576,10 @@ local function InfoPaint(client)
         drown_start = nil
     end
 
-    -- Draw traitor state
+    -- Draw role state
     local round_state = GAMEMODE.round_state
 
-    local traitor_y = y - 30
+    local role_y = y - roleAreaHeight
     local text
     if round_state == ROUND_ACTIVE then
         if hide_role:GetBool() then
@@ -595,9 +601,9 @@ local function InfoPaint(client)
 
     if text then
         if #text > 10 then
-            CRHUD:ShadowedText(text, "TraitorStateSmall", x + margin + 74, traitor_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
+            CRHUD:ShadowedText(text, "RoleStateSmall", x + margin + 74, role_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
         else
-            CRHUD:ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
+            CRHUD:ShadowedText(text, "RoleState", x + margin + 74, role_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
         end
     end
 
@@ -610,7 +616,7 @@ local function InfoPaint(client)
     local font = "TimeLeft"
     local color = COLOR_WHITE
     local rx = x + margin + 170
-    local ry = traitor_y + 3
+    local ry = role_y + 3
 
     -- Time displays differently depending on whether haste mode is on,
     -- whether the player is traitor or not, and whether it is overtime.

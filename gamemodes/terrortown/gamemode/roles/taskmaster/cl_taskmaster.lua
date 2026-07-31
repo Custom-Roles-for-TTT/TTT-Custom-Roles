@@ -172,7 +172,7 @@ local function DrawTask(task, height, isShadow)
     surface.DrawRect(xPos + margin + 2 + offset, height + checkboxSize + offset, checkboxSize, 2)
     surface.DrawRect(xPos + margin + checkboxSize + offset, height + 2 + offset, 2, checkboxSize)
 
-    surface.SetFont("TraitorStateSmall")
+    surface.SetFont("RoleStateSmall")
     surface.SetTextPos(xPos + (margin * 2) + checkboxSize + offset, height + offset)
     surface.DrawText(name)
 
@@ -320,7 +320,7 @@ local function CreateTaskReroll(task, dscrollpanel)
     local buttonWidth, buttonHeight = 80, 45
 
     local dname = vgui.Create("DLabel", dpanel)
-    dname:SetFont("TraitorStateSmall")
+    dname:SetFont("RoleStateSmall")
     dname:SetText(name)
     dname:SetPos(margin, margin)
     dname:SetWidth(width - (margin * 2) - buttonWidth - scrollBarWidth)
