@@ -507,9 +507,9 @@ local function InfoPaint(client)
     local x = defaultX + ttt_infohud_offset_x:GetInt()
     local y = defaultY - ttt_infohud_offset_y:GetInt()
 
-    local overrideX, overrideY = CallHook("TTTHUDInfoPositionOverride", nil, client, x, y, width, height)
+    local overrideX, overrideY = CallHook("TTTHUDInfoPositionOverride", nil, client, x, y - roleAreaHeight, width, height + roleAreaHeight)
     if overrideX then x = overrideX end
-    if overrideY then y = overrideY end
+    if overrideY then y = overrideY + roleAreaHeight end
 
     DrawBg(x, y, width, height, client)
 
