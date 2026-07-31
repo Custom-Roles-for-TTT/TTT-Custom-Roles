@@ -335,14 +335,12 @@ Allows overriding the position of the player information HUD (role, health, ammo
 *Added in:* 2.5.2\
 *Parameters:*
 - *client* - The local player
-- *x* - The player information HUD's current x position
-- *y* - The player information HUD's current y position
-- *width* - The player information HUD's width
-- *height* - The player information HUD's height
+- *x* - The X position value of the top left corner of the element
+- *y* - The Y position value of the top left corner of the element
+- *width* - The element's width
+- *height* - The element's height
 
 *Return:* The new x and y positions for the element (e.g. `return newX, newY`)
-
-*Note:* Because of how TTT draws the player information HUD, the height of the element is actually 30 pixels taller than exposed by this hook, and the top left corner of the element is similarly 30 pixels above the `y` position value exposed.
 
 ### TTTHUDRoleColorOverride(client, colorType)
 Allows overriding the color to use in place of the given player's normal role color.\

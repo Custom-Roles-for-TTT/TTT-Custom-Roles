@@ -518,16 +518,13 @@
         </p>
         <ul>
             <li><em>client</em> - The local player</li>
-            <li><em>x</em> - The player information HUD's current x position</li>
-            <li><em>y</em> - The player information HUD's current y position</li>
-            <li><em>width</em> - The player information HUD's width</li>
-            <li><em>height</em> - The player information HUD's height</li>
+            <li><em>x</em> - The X position value of the top left corner of the element</li>
+            <li><em>y</em> - The Y position value of the top left corner of the element</li>
+            <li><em>width</em> - The element's width</li>
+            <li><em>height</em> - The element's height</li>
         </ul>
         <p>
             <em>Return:</em> The new x and y positions for the element (e.g. <code>return newX, newY</code>)
-        </p>
-        <p>
-            <em>Note:</em> Because of how TTT draws the player information HUD, the height of the element is actually 30 pixels taller than exposed by this hook, and the top left corner of the element is similarly 30 pixels above the <code>y</code> position value exposed.
         </p>
 
         <h3><a id="ttthudrolecoloroverrideclient-colortype" href="#ttthudrolecoloroverrideclient-colortype">TTTHUDRoleColorOverride(client, colorType)</a></h3>
