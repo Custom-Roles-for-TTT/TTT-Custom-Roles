@@ -6,6 +6,9 @@
 ### Additions
 - Added ability to adjust the Cannibal's eat and digestion poop sound volumes
 
+### Changes
+- Ported "Optimize player spawn queue randomization in TTT" from base TTT
+
 ## 2.5.1
 **Released: July 25th, 2026**
 

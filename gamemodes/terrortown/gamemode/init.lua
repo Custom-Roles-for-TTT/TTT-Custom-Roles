@@ -100,12 +100,12 @@ local util = util
 
 local CallHook = hook.Call
 local RunHook = hook.Run
-local GetAllPlayers = player.GetAll
 local PlayerIterator = player.Iterator
 local MathRand = math.Rand
 local StringFormat = string.format
 local StringLower = string.lower
 local StringUpper = string.upper
+local TableShuffle = table.Shuffle
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
@@ -743,12 +743,15 @@ function SpawnWillingPlayers(dead_only)
         local num_spawns = #GetSpawnEnts()
 
         local to_spawn = {}
-        for _, ply in RandomPairs(GetAllPlayers()) do
+        for _, ply in PlayerIterator() do
             if IsValid(ply) and ply:ShouldSpawn() then
                 table.insert(to_spawn, ply)
                 GAMEMODE:PlayerSpawnAsSpectator(ply)
             end
         end
+
+        -- Shuffle the table of queued players to randomize the spawn order
+        TableShuffle(to_spawn)
 
         local sfn = function()
             local c = 0
@@ -1222,7 +1225,7 @@ function SelectRoles()
         end
     end
 
-    table.Shuffle(choices)
+    TableShuffle(choices)
     local choice_count = #choices
 
     -- special spawning cvars
@@ -1349,7 +1352,7 @@ function SelectRoles()
                     end
                 end
             end
-            table.Shuffle(groupRoles)
+            TableShuffle(groupRoles)
             local chosenRole = groupRoles[1]
             for _, role in ipairs(groupRoles) do
                 if role ~= chosenRole then
