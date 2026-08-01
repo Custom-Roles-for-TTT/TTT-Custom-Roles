@@ -28,6 +28,11 @@ RADAR.teleport_marks = {}
 
 local detectives_corpse_call_expiration = GetConVar("ttt_detectives_corpse_call_expiration")
 
+local labelX = 0
+local labelY = 0
+
+hook.Remove("TTTHUDInfoPaint", "RadarTimeRemainingPos")
+
 function RADAR:EndScan()
     self.enable = false
     self.endtime = CurTime()
@@ -76,6 +81,15 @@ end
 function RADAR.Bought(is_item, id)
     if is_item and id == EQUIP_RADAR then
         RunConsoleCommand("ttt_radar_scan")
+
+        hook.Add("TTTHUDInfoPaint", "RadarTimeRemainingPos", function(client, label_left, label_top, _)
+            labelX = label_left
+            labelY = ScrH() - label_top + 20
+
+            if not client:HasEquipmentItem(EQUIP_RADAR) then
+                hook.Remove("TTTHUDInfoPaint", "RadarTimeRemainingPos")
+            end
+        end)
     end
 end
 hook.Add("TTTBoughtItem", "RadarBoughtItem", RADAR.Bought)
@@ -294,7 +308,10 @@ function RADAR:Draw(client)
     local text = GetPTranslation("radar_hud", { time = FormatTime(remaining, "%02i:%02i") })
     local _, h = surface.GetTextSize(text)
 
-    surface.SetTextPos(36, ScrH() - 140 - h)
+    if client:HasEquipmentItem(EQUIP_DISGUISE) and client:GetNWBool("disguised", false) then
+        labelY = labelY + 20
+    end
+    surface.SetTextPos(labelX, labelY - h)
     surface.DrawText(text)
 end
 

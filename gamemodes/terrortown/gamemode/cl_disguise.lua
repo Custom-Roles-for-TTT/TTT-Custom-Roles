@@ -15,8 +15,8 @@ function DISGUISE.CreateMenu(parent)
     local owned = LocalPlayer():HasEquipmentItem(EQUIP_DISGUISE)
 
     if not owned then
-       dform:Help(T("disg_not_owned"))
-       return dform
+        dform:Help(T("disg_not_owned"))
+        return dform
     end
 
     local dcheck = vgui.Create("DCheckBoxLabel", dform)
@@ -24,8 +24,8 @@ function DISGUISE.CreateMenu(parent)
     dcheck:SetIndent(5)
     dcheck:SetValue(LocalPlayer():GetNWBool("disguised", false))
     dcheck.OnChange = function(s, val)
-                         RunConsoleCommand("ttt_set_disguise", val and "1" or "0")
-                      end
+        RunConsoleCommand("ttt_set_disguise", val and "1" or "0")
+    end
     dform:AddItem(dcheck)
 
     dform:Help(T("disg_help1"))
@@ -37,6 +37,23 @@ function DISGUISE.CreateMenu(parent)
     return dform
 end
 
+local labelX = 0
+local labelY = 0
+
+function DISGUISE.Bought(is_item, id)
+    if is_item and id == EQUIP_DISGUISE then
+        hook.Add("TTTHUDInfoPaint", "DisguiseLabelPos", function(client, label_left, label_top, _)
+            labelX = label_left
+            labelY = ScrH() - label_top + 20
+
+            if not client:HasEquipmentItem(EQUIP_DISGUISE) then
+                hook.Remove("TTTHUDInfoPaint", "DisguiseLabelPos")
+            end
+        end)
+    end
+end
+hook.Add("TTTBoughtItem", "DisguiseBoughtItem", DISGUISE.Bought)
+
 function DISGUISE.Draw(client)
     if (not client) or not client:HasEquipmentItem(EQUIP_DISGUISE) then return end
     if not client:GetNWBool("disguised", false) then return end
@@ -47,11 +64,7 @@ function DISGUISE.Draw(client)
     local text = T("disg_hud")
     local _, h = surface.GetTextSize(text)
 
-    local label_top = 140
-    if client:HasEquipmentItem(EQUIP_RADAR) then
-        label_top = label_top + 20
-    end
-    surface.SetTextPos(36, ScrH() - label_top - h)
+    surface.SetTextPos(labelX, labelY - h)
     surface.DrawText(text)
 end
 
