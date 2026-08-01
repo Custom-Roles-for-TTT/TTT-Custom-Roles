@@ -483,8 +483,8 @@ end
 
 local ttt_health_label = CreateClientConVar("ttt_health_label", "0", true)
 
-infoWidth  = 250
-infoHeight = 94
+local infoWidth  = 250
+local infoHeight = 94
 
 local infohud_offset_max_x = ScrW() - infoWidth - (margin * 2)
 local infohud_offset_max_y = ScrH() - infoHeight - (margin * 2) - roleAreaHeight
