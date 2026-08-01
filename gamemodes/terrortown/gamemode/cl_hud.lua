@@ -652,8 +652,9 @@ local function InfoPaint(client)
 
     CRHUD:ShadowedText(text, font, rx, ry, color)
 
-    local label_top = 140
-    local label_left = 36
+    local label_top = ScrH() - y + roleAreaHeight + 6
+    local label_left = x
+
     if client:HasEquipmentItem(EQUIP_RADAR) and RADAR.enable then
         label_top = label_top + 20
     end
