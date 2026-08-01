@@ -319,7 +319,7 @@ Called when someone uses a fake cure on a player.\
 *Parameters:*
 - *ply* - The target player who is being "cured"
 
-### TTTHUDInfoPaint(client, labelX, labelY, activeLabels)
+### TTTHUDInfoPaint(client, labelX, labelY, activeLabels, x, y)
 Called after player information such as role, health, and ammo and equipment information such as radar cooldown and disguiser activation are drawn on the screen. Used to write additional persistent text on the screen for player reference.\
 *Realm:* Client\
 *Added in:* 1.3.1\
@@ -328,6 +328,8 @@ Called after player information such as role, health, and ammo and equipment inf
 - *labelX* - The X value representing the correct indentation from the left side of the screen to add information
 - *labelY* - The Y value representing the first clear space to add information
 - *activeLabels* - The list of current active additional labels. Used to determine the labelY offset to use via: `labelY = labelY + (20 * #activeLabels)`. Be sure to insert an entry when you add your own label so other addons can space appropriately. *(Added in 1.6.11)*
+- *x* - The X value representing the left edge of the player information HUD *(Added in 2.5.2)*
+- *y* - The Y value representing the top edge of the player information HUD *(Added in 2.5.2)*
 
 ### TTTHUDInfoPositionOverride(client, x, y, width, height)
 Allows overriding the position of the player information HUD (role, health, ammo etc.).\

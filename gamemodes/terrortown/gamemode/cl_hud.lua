@@ -25,12 +25,12 @@ local format = string.format
 local hide_role = GetConVar("ttt_hide_role")
 
 -- Fonts
-surface.CreateFont("RoleState", {
+surface.CreateFont("TraitorState", {
     font = GAMEMODE_DEFAULT_UI_FONT,
     size = 28,
     weight = 1000
 })
-surface.CreateFont("RoleStateSmall", {
+surface.CreateFont("TraitorStateSmall", {
     font = GAMEMODE_DEFAULT_UI_FONT,
     size = 24,
     weight = 1000
@@ -463,7 +463,7 @@ local function SpecHUDPaint(client)
     draw.RoundedBox(8, x, round_y, time_x - x, height, bg_colors.noround)
 
     local text = L[roundstate_string[GAMEMODE.round_state]]
-    CRHUD:ShadowedText(text, "RoleState", x + margin, round_y, COLOR_WHITE)
+    CRHUD:ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
 
     -- Draw round/prep/post time remaining
     text = util.SimpleTime(MathMax(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
@@ -483,8 +483,8 @@ end
 
 local ttt_health_label = CreateClientConVar("ttt_health_label", "0", true)
 
-infoWidth  = 250
-infoHeight = 94
+local infoWidth  = 250
+local infoHeight = 94
 
 local infohud_offset_max_x = ScrW() - infoWidth - (margin * 2)
 local infohud_offset_max_y = ScrH() - infoHeight - (margin * 2) - roleAreaHeight
@@ -601,9 +601,9 @@ local function InfoPaint(client)
 
     if text then
         if #text > 10 then
-            CRHUD:ShadowedText(text, "RoleStateSmall", x + margin + 74, role_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
+            CRHUD:ShadowedText(text, "TraitorStateSmall", x + margin + 74, role_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
         else
-            CRHUD:ShadowedText(text, "RoleState", x + margin + 74, role_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
+            CRHUD:ShadowedText(text, "TraitorState", x + margin + 74, role_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
         end
     end
 
@@ -664,7 +664,7 @@ local function InfoPaint(client)
 
     -- Allow other addons to add stuff to the player info HUD
     local active_labels = {}
-    CallHook("TTTHUDInfoPaint", nil, client, label_left, label_top, active_labels)
+    CallHook("TTTHUDInfoPaint", nil, client, label_left, label_top, active_labels, x, y - roleAreaHeight)
 end
 
 -- Paints player status HUD element in the bottom left

@@ -7,6 +7,7 @@
 
 ### Developer
 - Added `TTTHUDInfoPositionOverride` hook to override the position of the player information HUD (role, health, ammo etc.)
+- Added new `x` and `y` parameters to `TTTHUDInfoPaint` hook which provide the raw position of the player information HUD (i.e. agnostic of any existing labels)
 
 ## 2.5.1
 **Released: July 25th, 2026**
