@@ -3,6 +3,9 @@
 ## 2.5.2 (Beta)
 **Released:**
 
+### Fixes
+- Fixed players swallowed by the Cannibal still being able to trigger traitor traps
+
 ### Additions
 - Added ability to adjust the Cannibal's eat and digestion poop sound volumes
 
