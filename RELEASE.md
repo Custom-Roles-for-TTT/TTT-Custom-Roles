@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed players swallowed by the Cannibal still being able to trigger traitor traps
+- Fixed various roles erroring about unsupported hook 'TTTUpdateRoleState'
 
 ### Additions
 - Added ability to adjust the Cannibal's eat and digestion poop sound volumes

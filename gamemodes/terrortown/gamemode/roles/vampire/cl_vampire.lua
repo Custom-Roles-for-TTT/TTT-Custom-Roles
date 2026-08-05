@@ -207,7 +207,7 @@ local function EnableVampireHighlights()
     end)
 end
 
-local function Vampire_Highlight_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     vampire_vision = vampire_vision_enabled:GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
@@ -219,7 +219,7 @@ local function Vampire_Highlight_TTTUpdateRoleState()
         RemoveHook("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end
+end)
 
 -- Handle enabling and disabling of highlighting
 local function Vampire_Highlight_Think()
@@ -329,8 +329,7 @@ ROLE_REGISTERED_HOOKS[ROLE_VAMPIRE] = {
     ["TTTRolePopupParams"] = Vampire_TTTRolePopupParams,
     ["TTTScoringSummaryRender"] = Vampire_TTTScoringSummaryRender,
     ["TTTScoringWinTitle"] = Vampire_TTTScoringWinTitle,
-    ["TTTTargetIDPlayerTargetIcon"] = Vampire_TTTTargetIDPlayerTargetIcon,
-    ["TTTUpdateRoleState"] = Vampire_Highlight_TTTUpdateRoleState
+    ["TTTTargetIDPlayerTargetIcon"] = Vampire_TTTTargetIDPlayerTargetIcon
 }
 
 AddHook("TTTPrepareRound", "Vampire_TTTPrepareRound", function()
