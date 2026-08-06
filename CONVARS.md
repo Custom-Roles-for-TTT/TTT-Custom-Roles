@@ -740,6 +740,8 @@ ttt_sponge_device_for_beggar                   0       // Whether the Beggar sho
 ttt_sponge_device_for_beggar_heal              0       // Whether the Beggar should be fully healed when using the spongifier
 ttt_sponge_device_for_bodysnatcher             0       // Whether the Bodysnatcher should get the spongifier
 ttt_sponge_device_for_bodysnatcher_heal        0       // Whether the Bodysnatcher be fully healed when using the spongifier
+ttt_sponge_device_for_cannibal                 0       // Whether the Cannibal should get the spongifier
+ttt_sponge_device_for_cannibal_heal            0       // Whether the Cannibal should be fully healed when using the spongifier
 ttt_sponge_device_for_clown                    0       // Whether the Clown should get the spongifier
 ttt_sponge_device_for_clown_heal               0       // Whether the Clown should be fully healed when using the spongifier
 ttt_sponge_device_for_cupid                    0       // Whether the Cupid should get the spongifier
@@ -754,6 +756,7 @@ ttt_sponge_device_for_shadow                   0       // Whether the Shadow sho
 ttt_sponge_device_for_shadow_heal              0       // Whether the Shadow should be fully healed when using the spongifier (only created and used when "ttt_shadow_is_jester" is enabled)
 ttt_sponge_device_for_swapper                  0       // Whether the Swapper should get the spongifier
 ttt_sponge_device_for_swapper_heal             0       // Whether the Swapper should be fully healed when using the spongifier
+ttt_sponge_win_ends_round                      1       // Whether the round should end when the Sponge wins
 
 // Guesser
 ttt_guesser_can_guess_detectives               0       // Whether the Guesser is allowed to guess detectives
