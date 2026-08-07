@@ -10,6 +10,7 @@ if SERVER then
     local CreateEntity = ents.Create
     local PlayerIterator = player.Iterator
 
+    local defaultColor = Vector(1, 1, 1)
     local function CreateSpectatorSpirit(ply)
         if IsValid(ply.SpiritEnt) then return end
         if IsValid(ply.SpecSpiritEnt) then return end
@@ -23,7 +24,7 @@ if SERVER then
         spirit:DrawShadow(false)
         spirit:AddFlags(FL_NOTARGET)
         spirit:SetNWString("SpecSpiritOwner", ply:SteamID64())
-        spirit:SetNWVector("SpecSpiritColor", ply:GetNWVector("PlayerColor", col))
+        spirit:SetNWVector("SpecSpiritColor", ply:GetNWVector("PlayerColor", defaultColor))
         spirit:Spawn()
 
         ply.SpecSpiritEnt = spirit
