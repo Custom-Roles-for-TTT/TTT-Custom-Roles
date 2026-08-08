@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.5.2 (Beta)
-**Released:**
+**Released: August 8th, 2026**
 
 ### Additions
 - Added the new role that a player gets by being deputized by a Marshal to the event log message
