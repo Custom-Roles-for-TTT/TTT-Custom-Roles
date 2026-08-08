@@ -54,9 +54,9 @@ end)
 ------------------
 
 local spirit_vision = true
-local function Medium_RoleFeature_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "Medium_RoleFeature_TTTUpdateRoleState", function()
     spirit_vision = medium_spirit_vision:GetBool()
-end
+end)
 
 local cacheTime = CurTime()
 local cacheLength = 5
@@ -380,6 +380,5 @@ ROLE_REGISTERED_HOOKS[ROLE_MEDIUM] = {
     ["PostDrawTranslucentRenderables"] = Medium_PostDrawTranslucentRenderables,
     ["Think"] = Medium_RoleFeature_Think,
     ["TTTScoreboardPlayerRole"] = Medium_TTTScoreboardPlayerRole,
-    ["TTTScoreGroup"] = Medium_TTTScoreGroup,
-    ["TTTUpdateRoleState"] = Medium_RoleFeature_TTTUpdateRoleState
+    ["TTTScoreGroup"] = Medium_TTTScoreGroup
 }

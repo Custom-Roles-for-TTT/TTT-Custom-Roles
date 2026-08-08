@@ -46,7 +46,6 @@ SWEP.Secondary.Delay = 1.0
 SWEP.Kind = WEAPON_EQUIP
 SWEP.CanBuy = { ROLE_QUACK }
 SWEP.LimitedStock = true
-SWEP.WeaponID = AMMO_HEALTHSTATION
 
 SWEP.AllowDrop = false
 SWEP.NoSights = true

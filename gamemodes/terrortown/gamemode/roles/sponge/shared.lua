@@ -34,6 +34,10 @@ TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     decimal = 0
 })
 TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
+    cvar = "ttt_sponge_win_ends_round",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+TableInsert(ROLE_CONVARS[ROLE_SPONGE], {
     cvar = "ttt_sponge_notify_mode",
     type = ROLE_CONVAR_TYPE_DROPDOWN,
     choices = {"None", "Detective and Traitor", "Traitor", "Detective", "Everyone"},

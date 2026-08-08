@@ -131,7 +131,7 @@ local function EnableHiveMindHighlights()
     end)
 end
 
-local function HiveMind_Highlight_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "HiveMind_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     hivemind_vision = hivemind_vision_enabled:GetBool()
 
@@ -140,7 +140,7 @@ local function HiveMind_Highlight_TTTUpdateRoleState()
         RemoveHook("PreDrawHalos", "HiveMind_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end
+end)
 
 -- Handle enabling and disabling of highlighting
 local function HiveMind_Highlight_Think()
@@ -249,8 +249,7 @@ ROLE_REGISTERED_HOOKS[ROLE_HIVEMIND] = {
     ["TTTScoringWinTitle"] = HiveMind_TTTScoringWinTitle,
     ["TTTTargetIDPlayerRing"] = HiveMind_TTTTargetIDPlayerRing,
     ["TTTTargetIDPlayerRoleIcon"] = HiveMind_TTTTargetIDPlayerRoleIcon,
-    ["TTTTargetIDPlayerText"] = HiveMind_TTTTargetIDPlayerText,
-    ["TTTUpdateRoleState"] = HiveMind_Highlight_TTTUpdateRoleState
+    ["TTTTargetIDPlayerText"] = HiveMind_TTTTargetIDPlayerText
 }
 
 AddHook("TTTPrepareRound", "HiveMind_TTTPrepareRound", function()

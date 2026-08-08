@@ -126,7 +126,7 @@ local function EnableVindicatorTargetHighlights()
     end)
 end
 
-local function Vindicator_Highlight_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "Vindicator_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
 
     -- Disable highlights on role change
@@ -134,7 +134,7 @@ local function Vindicator_Highlight_TTTUpdateRoleState()
         RemoveHook("PreDrawHalos", "Vindicator_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end
+end)
 
 -- Handle enabling and disabling of highlighting
 local function Vindicator_Highlight_Think()
@@ -350,8 +350,7 @@ ROLE_REGISTERED_HOOKS[ROLE_VINDICATOR] = {
     ["TTTScoringSummaryRender"] = Vindicator_TTTScoringSummaryRender,
     ["TTTScoringWinTitle"] = Vindicator_TTTScoringWinTitle,
     ["TTTTargetIDPlayerTargetIcon"] = Vindicator_TTTTargetIDPlayerTargetIcon,
-    ["TTTTargetIDPlayerText"] = Vindicator_TTTTargetIDPlayerText,
-    ["TTTUpdateRoleState"] = Vindicator_Highlight_TTTUpdateRoleState
+    ["TTTTargetIDPlayerText"] = Vindicator_TTTTargetIDPlayerText
 }
 
 AddHook("TTTPrepareRound", "Vindicator_TTTPrepareRound", function()
