@@ -757,6 +757,12 @@ function HELPSCRN:CreateConfig(dsettings)
     cb = dgui:CheckBox(GetTranslation("set_hide_ammo"), "ttt_hide_ammo")
     cb:SetTooltip(GetTranslation("set_hide_ammo_tip"))
 
+    cb = dgui:NumSlider(GetTranslation("set_infohud_offset_x"), "ttt_infohud_offset_x", 0, GetConVar("ttt_infohud_offset_x"):GetMax(), 0)
+    cb:SetTooltip(GetTranslation("set_infohud_offset_x_tip"))
+
+    cb = dgui:NumSlider(GetTranslation("set_infohud_offset_y"), "ttt_infohud_offset_y", 0, GetConVar("ttt_infohud_offset_y"):GetMax(), 0)
+    cb:SetTooltip(GetTranslation("set_infohud_offset_y_tip"))
+
     cb = dgui:TextEntry(GetTranslation("set_radio_button"), "ttt_radio_button")
     cb:SetTooltip(GetTranslation("set_radio_button_tip"))
 

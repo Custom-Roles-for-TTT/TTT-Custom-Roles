@@ -41,7 +41,6 @@ SWEP.Kind                  = WEAPON_ROLE
 SWEP.CanBuy                = {} -- only traitors can buy
 SWEP.LimitedStock          = true -- only buyable once
 SWEP.AllowDrop             = false
-SWEP.WeaponID              = AMMO_FLARE
 
 SWEP.Tracer                = "AR2Tracer"
 

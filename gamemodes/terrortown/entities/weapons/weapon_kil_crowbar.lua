@@ -41,7 +41,6 @@ SWEP.Secondary.Delay         = 1
 SWEP.IsGrenade = false
 
 SWEP.Kind                   = WEAPON_MELEE
-SWEP.WeaponID               = AMMO_CROWBAR
 
 SWEP.NoSights                = true
 SWEP.IsSilent                = true

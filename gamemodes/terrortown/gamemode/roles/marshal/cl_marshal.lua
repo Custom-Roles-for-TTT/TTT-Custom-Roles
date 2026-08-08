@@ -22,7 +22,7 @@ AddHook("Initialize", "Marshal_Translations_Initialize", function()
     LANG.AddToLanguage("english", "marshalbadge_help_sec", "The target player will become " .. ROLE_STRINGS_EXT[ROLE_DEPUTY] .. " or " .. ROLE_STRINGS[ROLE_IMPERSONATOR])
 
     -- Event
-    LANG.AddToLanguage("english", "ev_marshal_deputize", "{target} was deputized by {marshal}")
+    LANG.AddToLanguage("english", "ev_marshal_deputize", "{target} was deputized by {marshal}, converting them into {role}")
 
     -- Announcement
     LANG.AddToLanguage("english", "marshal_deputize_announce", "{amarshal} has promoted {target} to be {adeputy}")
@@ -55,7 +55,7 @@ AddHook("Initialize", "Marshal_Scoring_Initialize", function()
     local PT = LANG.GetParamTranslation
     Event(EVENT_DEPUTIZED, {
         text = function(e)
-            return PT("ev_marshal_deputize", {target = e.tar, marshal = e.ply})
+            return PT("ev_marshal_deputize", {target = e.tar, marshal = e.ply, role = e.rol})
          end,
         icon = function(e)
             return traitor_icon, "Deputized"
@@ -66,9 +66,17 @@ net.Receive("TTT_Deputized", function(len)
     local marshalname = net.ReadString()
     local targetname = net.ReadString()
     local targetsid = net.ReadString()
+
+    local targetply = player.GetBySteamID64(targetsid)
+    local targetrole = "<UNKNOWN>"
+    if IsValid(targetply) then
+        targetrole = ROLE_STRINGS_EXT[targetply:GetRole()]
+    end
+
     CLSCORE:AddEvent({
         id = EVENT_DEPUTIZED,
         tar = targetname,
+        rol = targetrole,
         ply = marshalname,
         sid64 = targetsid,
         bonus = 1

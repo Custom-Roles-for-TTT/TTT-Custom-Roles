@@ -114,11 +114,18 @@ local function Cannibal_TTTOnRoleAbilityDisabled(ply)
 
     ReleaseEatenPlayers(ply, ply:Nick() .. " felt unwell and spat you out!")
 end
+
 -------------------------
 -- EATEN PLAYER BLOCKS --
 -------------------------
 
 local function Cannibal_PlayerCanPickupWeapon(ply, wep)
+    if not IsValid(ply) then return end
+
+    if ply.TTTCannibalEaten then return false end
+end
+
+local function Cannibal_TTTCanUseTraitorButton(ent, ply)
     if not IsValid(ply) then return end
 
     if ply.TTTCannibalEaten then return false end
@@ -235,6 +242,7 @@ ROLE_REGISTERED_HOOKS[ROLE_CANNIBAL] = {
     ["PlayerDeath"] = Cannibal_PlayerDeath,
     ["PlayerDisconnected"] = Cannibal_PlayerDisconnected,
     ["ScalePlayerDamage"] = Cannibal_ScalePlayerDamage,
+    ["TTTCanUseTraitorButton"] = Cannibal_TTTCanUseTraitorButton,
     ["TTTCheckForWin"] = Cannibal_TTTCheckForWin,
     ["TTTEndRound"] = Cannibal_TTTEndRound,
     ["TTTOnRoleAbilityDisabled"] = Cannibal_TTTOnRoleAbilityDisabled,

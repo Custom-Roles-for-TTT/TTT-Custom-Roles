@@ -358,7 +358,7 @@ local function EnableGuesserTargetHighlights()
     end)
 end
 
-local function Guesser_Highlight_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "Guesser_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
 
     -- Disable highlights on role change
@@ -366,7 +366,7 @@ local function Guesser_Highlight_TTTUpdateRoleState()
         RemoveHook("PreDrawHalos", "Guesser_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end
+end)
 
 local function Guesser_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
@@ -451,8 +451,7 @@ ROLE_REGISTERED_HOOKS[ROLE_GUESSER] = {
     ["TTTScoringSummaryRender"] = Guesser_TTTScoringSummaryRender,
     ["TTTTargetIDPlayerRing"] = Guesser_TTTTargetIDPlayerRing,
     ["TTTTargetIDPlayerRoleIcon"] = Guesser_TTTTargetIDPlayerRoleIcon,
-    ["TTTTargetIDPlayerText"] = Guesser_TTTTargetIDPlayerText,
-    ["TTTUpdateRoleState"] = Guesser_Highlight_TTTUpdateRoleState
+    ["TTTTargetIDPlayerText"] = Guesser_TTTTargetIDPlayerText
 }
 
 AddHook("TTTPrepareRound", "Guesser_TTTPrepareRound", function()

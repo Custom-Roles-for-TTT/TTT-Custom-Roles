@@ -41,6 +41,11 @@ ROLE_CONVARS[ROLE_CANNIBAL] = {
         decimal = 0
     },
     {
+        cvar = "ttt_cannibal_eat_sound_level",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
+    },
+    {
         cvar = "ttt_cannibal_damage_penalty",
         type = ROLE_CONVAR_TYPE_NUM,
         decimal = 2
@@ -76,6 +81,11 @@ ROLE_CONVARS[ROLE_CANNIBAL] = {
     {
         cvar = "ttt_cannibal_digestion_poop_sound",
         type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
+        cvar = "ttt_cannibal_digestion_poop_sound_level",
+        type = ROLE_CONVAR_TYPE_NUM,
+        decimal = 0
     }
 }
 

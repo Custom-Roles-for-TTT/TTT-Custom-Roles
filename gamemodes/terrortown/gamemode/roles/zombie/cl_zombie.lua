@@ -257,7 +257,7 @@ local function EnableZombieHighlights()
     end)
 end
 
-local function Zombie_Highlight_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "Zombie_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     zombie_vision = zombie_vision_enabled:GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
@@ -269,7 +269,7 @@ local function Zombie_Highlight_TTTUpdateRoleState()
         RemoveHook("PreDrawHalos", "Zombie_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end
+end)
 
 -- Handle enabling and disabling of highlighting
 local function Zombie_Highlight_Think()
@@ -381,8 +381,7 @@ ROLE_REGISTERED_HOOKS[ROLE_ZOMBIE] = {
     ["TTTTargetIDPlayerRing"] = Zombie_TTTTargetIDPlayerRing,
     ["TTTTargetIDPlayerRoleIcon"] = Zombie_TTTTargetIDPlayerRoleIcon,
     ["TTTTargetIDPlayerTargetIcon"] = Zombie_TTTTargetIDPlayerTargetIcon,
-    ["TTTTargetIDPlayerText"] = Zombie_TTTTargetIDPlayerText,
-    ["TTTUpdateRoleState"] = Zombie_Highlight_TTTUpdateRoleState
+    ["TTTTargetIDPlayerText"] = Zombie_TTTTargetIDPlayerText
 }
 
 AddHook("TTTPrepareRound", "Zombie_TTTPrepareRound", function()
