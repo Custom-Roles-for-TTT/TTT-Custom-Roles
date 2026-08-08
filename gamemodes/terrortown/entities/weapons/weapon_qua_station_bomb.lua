@@ -27,7 +27,6 @@ SWEP.Category = WEAPON_CATEGORY_ROLE
 SWEP.CanBuy = { ROLE_QUACK }
 -- This is special equipment
 SWEP.Kind = WEAPON_EQUIP2
-SWEP.WeaponID = AMMO_STATIONBOMB
 
 SWEP.BlockShopRandomization = true
 
