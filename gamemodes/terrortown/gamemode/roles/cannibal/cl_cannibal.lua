@@ -165,11 +165,7 @@ end
 ---------
 
 local function Cannibal_TTTHUDInfoPaint(cli, label_left, label_top, active_labels, x, y)
-    if not IsPlayer(client) then
-        client = LocalPlayer()
-    end
-
-    if not client.TTTCannibalEaten then return end
+    if not cli.TTTCannibalEaten then return end
 
     local bar_colors = {
         border = COLOR_WHITE,
