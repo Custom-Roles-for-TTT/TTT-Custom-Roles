@@ -17,5 +17,7 @@
   - [ ] ConVars added to ULX list
   - [ ] `plymeta:IsRoleAbilityDisabled` used
 - Otherwise:
-  - [ ] CONVARS.md updated, if applicable
+  - [ ] Documentation
+    - [ ] CONVARS.md
+    - [ ] Website (changes marked with "beta only" notation if applicable)
   - [ ] ULX updated (either added to list of convars for a role, or PR created in [ULX](https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles-ULX) repo \[Add link below\])

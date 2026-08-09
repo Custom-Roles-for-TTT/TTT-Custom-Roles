@@ -1,5 +1,25 @@
 # Release Notes
 
+## 2.5.2
+**Released: August 8th, 2026**
+
+### Additions
+- Added the new role that a player gets by being deputized by a Marshal to the event log message
+- Added ability to control whether killing the Sponge ends the round (enabled by default)
+- Added ability to adjust the Cannibal's eat and digestion poop sound volumes
+- Added `ttt_infohud_offset_x` and `ttt_infohud_offset_y` client convars to allow players to reposition the player information HUD (role, health, ammo etc.)
+
+### Changes
+- Ported "Optimize player spawn queue randomization in TTT" from base TTT
+
+### Fixes
+- Fixed players swallowed by the Cannibal still being able to trigger traitor traps
+- Fixed various roles erroring about unsupported hook 'TTTUpdateRoleState'
+
+### Developer
+- Added `TTTHUDInfoPositionOverride` hook to override the position of the player information HUD (role, health, ammo etc.)
+- Added new `x` and `y` parameters to `TTTHUDInfoPaint` hook which provide the raw position of the player information HUD (i.e. agnostic of any existing labels)
+
 ## 2.5.1
 **Released: July 25th, 2026**
 

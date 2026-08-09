@@ -1,12 +1,14 @@
 local hook = hook
 local math = math
 local player = player
+local table = table
 
 local AddHook = hook.Add
 local MathCos = math.cos
 local MathSin = math.sin
-local StringUpper = string.upper
 local PlayerIterator = player.Iterator
+local StringUpper = string.upper
+local TableInsert = table.insert
 
 -------------
 -- CONVARS --
@@ -217,6 +219,21 @@ local function Sponge_TTTScoringWinTitle(wintype, wintitles, title, secondary_wi
     end
 end
 
+local sponge_wins = false
+local function Sponge_TTTScoringSecondaryWins(wintype, secondary_wins)
+    if sponge_wins then
+        TableInsert(secondary_wins, ROLE_SPONGE)
+    end
+end
+
+net.Receive("TTT_SpongeWin", function()
+    sponge_wins = true
+end)
+
+AddHook("TTTPrepareRound", "Sponge_TTTPrepareRound", function()
+    sponge_wins = false
+end)
+
 ------------
 -- EVENTS --
 ------------
@@ -291,6 +308,7 @@ ROLE_REGISTERED_HOOKS[ROLE_SPONGE] = {
     ["TTTEventFinishText"] = Sponge_TTTEventFinishText,
     ["TTTPlayerAliveClientThink"] = Sponge_RoleFeatures_TTTPlayerAliveClientThink,
     ["TTTScoreboardPlayerRole"] = Sponge_TTTScoreboardPlayerRole,
+    ["TTTScoringSecondaryWins"] = Sponge_TTTScoringSecondaryWins,
     ["TTTScoringSummaryRender"] = Sponge_TTTScoringSummaryRender,
     ["TTTScoringWinTitle"] = Sponge_TTTScoringWinTitle,
     ["TTTTargetIDPlayerRing"] = Sponge_TTTTargetIDPlayerRing,

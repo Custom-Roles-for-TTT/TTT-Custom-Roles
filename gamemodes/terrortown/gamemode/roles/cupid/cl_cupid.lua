@@ -302,7 +302,7 @@ local function EnableLoverHighlights()
     end)
 end
 
-local function Cupid_Highlight_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     lover_vision = cupid_lover_vision_enabled:GetBool()
 
@@ -311,7 +311,7 @@ local function Cupid_Highlight_TTTUpdateRoleState()
         RemoveHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end
+end)
 
 local function Cupid_Highlight_Think()
     if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
@@ -447,8 +447,7 @@ ROLE_REGISTERED_HOOKS[ROLE_CUPID] = {
     ["TTTTargetIDPlayerRing"] = Cupid_TTTTargetIDPlayerRing,
     ["TTTTargetIDPlayerRoleIcon"] = Cupid_TTTTargetIDPlayerRoleIcon,
     ["TTTTargetIDPlayerTargetIcon"] = Cupid_TTTTargetIDPlayerTargetIcon,
-    ["TTTTargetIDPlayerText"] = Cupid_TTTTargetIDPlayerText,
-    ["TTTUpdateRoleState"] = Cupid_Highlight_TTTUpdateRoleState
+    ["TTTTargetIDPlayerText"] = Cupid_TTTTargetIDPlayerText
 }
 
 AddHook("TTTPrepareRound", "Cupid_TTTPrepareRound", function()

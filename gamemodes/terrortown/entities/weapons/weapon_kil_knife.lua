@@ -44,7 +44,6 @@ SWEP.Secondary.Ammo         = "none"
 SWEP.Secondary.Delay        = 12
 
 SWEP.Kind                    = WEAPON_NONE
-SWEP.WeaponID                = AMMO_CROWBAR
 
 SWEP.IsSilent               = true
 

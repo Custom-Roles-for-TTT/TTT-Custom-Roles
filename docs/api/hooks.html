@@ -507,7 +507,27 @@
             <li><em>labelX</em> - The X value representing the correct indentation from the left side of the screen to add information</li>
             <li><em>labelY</em> - The Y value representing the first clear space to add information</li>
             <li><em>activeLabels</em> - The list of current active additional labels. Used to determine the labelY offset to use via: <code>labelY = labelY + (20 * #activeLabels)</code>. Be sure to insert an entry when you add your own label so other addons can space appropriately. <em>(Added in 1.6.11)</em></li>
+            <li><em>x</em> - The X value representing the left edge of the player information HUD <em>(Added in 2.5.2)</em></li>
+            <li><em>y</em> - The Y value representing the top edge of the player information HUD <em>(Added in 2.5.2)</em></li>
         </ul>
+
+        <h3><a id="ttthudinfopositionoverrideclient-x-y-width-height" href="#ttthudinfopositionoverrideclient-x-y-width-height">TTTHUDInfoPositionOverride(client, x, y, width, height)</a></h3>
+        <p>
+            Allows overriding the position of the player information HUD (role, health, ammo etc.).<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 2.5.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>x</em> - The X position value of the top left corner of the element</li>
+            <li><em>y</em> - The Y position value of the top left corner of the element</li>
+            <li><em>width</em> - The element's width</li>
+            <li><em>height</em> - The element's height</li>
+        </ul>
+        <p>
+            <em>Return:</em> The new x and y positions for the element (e.g. <code>return newX, newY</code>)
+        </p>
 
         <h3><a id="ttthudrolecoloroverrideclient-colortype" href="#ttthudrolecoloroverrideclient-colortype">TTTHUDRoleColorOverride(client, colorType)</a></h3>
         <p>

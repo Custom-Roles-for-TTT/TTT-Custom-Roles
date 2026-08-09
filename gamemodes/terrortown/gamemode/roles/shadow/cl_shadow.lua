@@ -256,7 +256,7 @@ local function EnableShadowTargetHighlights()
     end)
 end
 
-local function Shadow_Highlight_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "Shadow_Highlight_TTTUpdateRoleState", function()
     client = client or LocalPlayer()
 
     -- Disable highlights on role change
@@ -264,7 +264,7 @@ local function Shadow_Highlight_TTTUpdateRoleState()
         RemoveHook("PreDrawHalos", "Shadow_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end
+end)
 
 -- Handle enabling and disabling of highlighting
 local function Shadow_Highlight_Think()
@@ -675,8 +675,7 @@ ROLE_REGISTERED_HOOKS[ROLE_SHADOW] = {
     ["TTTTargetIDPlayerRing"] = Shadow_TTTTargetIDPlayerRing,
     ["TTTTargetIDPlayerRoleIcon"] = Shadow_TTTTargetIDPlayerRoleIcon,
     ["TTTTargetIDPlayerTargetIcon"] = Shadow_TTTTargetIDPlayerTargetIcon,
-    ["TTTTargetIDPlayerText"] = Shadow_TTTTargetIDPlayerText,
-    ["TTTUpdateRoleState"] = Shadow_Highlight_TTTUpdateRoleState
+    ["TTTTargetIDPlayerText"] = Shadow_TTTTargetIDPlayerText
 }
 
 AddHook("TTTPrepareRound", "Shadow_TTTPrepareRound", function()

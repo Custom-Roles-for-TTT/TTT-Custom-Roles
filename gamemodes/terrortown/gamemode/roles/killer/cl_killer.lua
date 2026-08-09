@@ -76,7 +76,7 @@ local function EnableKillerHighlights()
     end)
 end
 
-local function Killer_Highlight_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     killer_vision = killer_vision_enabled:GetBool()
     can_see_jesters = killer_can_see_jesters:GetBool()
@@ -86,7 +86,7 @@ local function Killer_Highlight_TTTUpdateRoleState()
         RemoveHook("PreDrawHalos", "Killer_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end
+end)
 
 -- Handle enabling and disabling of highlighting
 local function Killer_Highlight_Think()
@@ -214,8 +214,7 @@ ROLE_REGISTERED_HOOKS[ROLE_KILLER] = {
     ["TTTEventFinishText"] = Killer_TTTEventFinishText,
     ["TTTScoringWinTitle"] = Killer_TTTScoringWinTitle,
     ["TTTShouldPlayerSmoke"] = Killer_TTTShouldPlayerSmoke,
-    ["TTTTargetIDPlayerTargetIcon"] = Killer_TTTTargetIDPlayerTargetIcon,
-    ["TTTUpdateRoleState"] = Killer_Highlight_TTTUpdateRoleState
+    ["TTTTargetIDPlayerTargetIcon"] = Killer_TTTTargetIDPlayerTargetIcon
 }
 
 AddHook("TTTPrepareRound", "Killer_TTTPrepareRound", function()

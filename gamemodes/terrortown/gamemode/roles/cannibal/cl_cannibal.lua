@@ -164,12 +164,8 @@ end
 -- HUD --
 ---------
 
-local function Cannibal_HUDDrawScoreBoard()
-    if not IsPlayer(client) then
-        client = LocalPlayer()
-    end
-
-    if not client.TTTCannibalEaten then return end
+local function Cannibal_TTTHUDInfoPaint(cli, label_left, label_top, active_labels, x, y)
+    if not cli.TTTCannibalEaten then return end
 
     local bar_colors = {
         border = COLOR_WHITE,
@@ -177,8 +173,10 @@ local function Cannibal_HUDDrawScoreBoard()
         fill = ROLE_COLORS[ROLE_CANNIBAL]
     }
 
-    CRHUD:PaintBar(8, 20, ScrH() - 59, 230, 25, bar_colors, 1)
-    draw.SimpleText(LANG.GetTranslation("cannibal_swallowed"), "HealthAmmo", 135, ScrH() - 59, Color(255, 255, 255, 200), TEXT_ALIGN_CENTER)
+    local barX = x + 10
+    local barY = y + 75
+    CRHUD:PaintBar(8, barX, barY, 230, 25, bar_colors, 1)
+    draw.SimpleText(LANG.GetTranslation("cannibal_swallowed"), "HealthAmmo", x + 125, barY, Color(255, 255, 255, 200), TEXT_ALIGN_CENTER)
 end
 
 --------------
@@ -228,9 +226,9 @@ end)
 ------------------
 
 ROLE_REGISTERED_HOOKS[ROLE_CANNIBAL] = {
-    ["HUDDrawScoreBoard"] = Cannibal_HUDDrawScoreBoard,
     ["TTTEventFinishIconText"] = Cannibal_TTTEventFinishIconText,
     ["TTTEventFinishText"] = Cannibal_TTTEventFinishText,
+    ["TTTHUDInfoPaint"] = Cannibal_TTTHUDInfoPaint,
     ["TTTScoreGroup"] = Cannibal_TTTScoreGroup,
     ["TTTScoreboardPlayerName"] = Cannibal_TTTScoreboardPlayerName,
     ["TTTScoreboardPlayerRole"] = Cannibal_TTTScoreboardPlayerRole,

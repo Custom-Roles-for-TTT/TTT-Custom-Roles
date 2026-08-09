@@ -8,6 +8,8 @@ local timer = timer
 local AddHook = hook.Add
 local PlayerIterator = player.Iterator
 
+util.AddNetworkString("TTT_SpongeWin")
+
 -------------
 -- CONVARS --
 -------------
@@ -16,6 +18,7 @@ CreateConVar("ttt_sponge_notify_mode", "0", FCVAR_NONE, "The logic to use when n
 CreateConVar("ttt_sponge_notify_killer", "1", FCVAR_NONE, "Whether to notify a sponge's killer", 0, 1)
 CreateConVar("ttt_sponge_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a sponge is killed", 0, 1)
 CreateConVar("ttt_sponge_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a sponge is a killed", 0, 1)
+local sponge_win_ends_round = CreateConVar("ttt_sponge_win_ends_round", "1", FCVAR_NONE, "Whether the round should end when the sponge wins", 0, 1)
 local sponge_aura_float_time = CreateConVar("ttt_sponge_aura_float_time", "0", FCVAR_NONE, "The amount of time (in seconds) a player can spend outside the Sponge's aura before they are no longer considered inside", 0, 10)
 
 local sponge_aura_radius = GetConVar("ttt_sponge_aura_radius")
@@ -200,6 +203,12 @@ local function Sponge_WinCheck_PlayerDeath(victim, infl, attacker)
     if victim:IsSponge() then
         SpongeKilledNotification(attacker, victim)
         victim:SetNWString("SpongeKiller", attacker:Nick())
+
+        if not sponge_win_ends_round:GetBool() then
+            net.Start("TTT_SpongeWin")
+            net.Broadcast()
+            return
+        end
 
         -- If we're debugging, don't end the round
         if GetConVar("ttt_debug_preventwin"):GetBool() then

@@ -175,7 +175,7 @@ local function EnableAssassinTargetHighlights()
     end)
 end
 
-local function Assassin_Highlight_TTTUpdateRoleState()
+AddHook("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     assassin_target_vision = assassin_target_vision_enabled:GetBool()
 
@@ -184,7 +184,7 @@ local function Assassin_Highlight_TTTUpdateRoleState()
         RemoveHook("PreDrawHalos", "Assassin_Highlight_PreDrawHalos")
         vision_enabled = false
     end
-end
+end)
 
 -- Handle enabling and disabling of highlighting
 local function Assassin_Highlight_Think()
@@ -379,8 +379,7 @@ ROLE_REGISTERED_HOOKS[ROLE_ASSASSIN] = {
     ["TTTScoreboardPlayerRole"] = Assassin_TTTScoreboardPlayerRole,
     ["TTTScoringWinTitle"] = Assassin_TTTScoringWinTitle,
     ["TTTTargetIDPlayerTargetIcon"] = Assassin_TTTTargetIDPlayerTargetIcon,
-    ["TTTTargetIDPlayerText"] = Assassin_TTTTargetIDPlayerText,
-    ["TTTUpdateRoleState"] = Assassin_Highlight_TTTUpdateRoleState
+    ["TTTTargetIDPlayerText"] = Assassin_TTTTargetIDPlayerText
 }
 
 AddHook("TTTPrepareRound", "Assassin_TTTPrepareRound", function()
