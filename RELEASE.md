@@ -1,6 +1,6 @@
 # Release Notes
 
-## 2.5.2 (Beta)
+## 2.5.2
 **Released: August 8th, 2026**
 
 ### Additions
