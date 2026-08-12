@@ -28,6 +28,8 @@ CreateConVar("ttt_cannibal_notify_confetti", "0", FCVAR_NONE, "Whether to throw 
 --------------------
 
 local function ReleaseEatenPlayers(ply, message)
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
     local cannibalSID64 = ply:SteamID64()
     for _, v in PlayerIterator() do
         if v.TTTCannibalEaten and v.TTTCannibalEaten == cannibalSID64 then
