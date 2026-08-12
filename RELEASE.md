@@ -15,6 +15,7 @@
 ### Fixes
 - Fixed players swallowed by the Cannibal still being able to trigger traitor traps
 - Fixed various roles erroring about unsupported hook 'TTTUpdateRoleState'
+- Fixed error causing rounds to not end when the Cannibal should have won
 
 ### Developer
 - Added `TTTHUDInfoPositionOverride` hook to override the position of the player information HUD (role, health, ammo etc.)
