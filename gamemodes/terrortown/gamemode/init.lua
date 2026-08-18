@@ -724,7 +724,10 @@ function TellTraitorsAboutTraitors()
                 v:QueueMessage(MSG_PRINTBOTH, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
             end
 
-            if #traitornicks < 2 then
+            if IsIllusionistBlocking() then
+                LANG.Msg(v, "round_traitors_illusionist", { role = ROLE_STRINGS[ROLE_TRAITOR], anillusionist = ROLE_STRINGS_EXT[ROLE_ILLUSIONIST] })
+                return
+            elseif #traitornicks < 2 then
                 LANG.Msg(v, "round_traitors_one", { role = ROLE_STRINGS[ROLE_TRAITOR] })
                 return
             else

@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.5.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed message stack message (top-right) on round start showing Traitors who their allies are even if there was an Illusionist in the round
+- Fixed (mostly unused) previous round role tracking
+
 ## 2.5.2
 **Released: August 8th, 2026**
 
