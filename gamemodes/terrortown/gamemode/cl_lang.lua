@@ -353,6 +353,7 @@ local styledmessages = {
     rolecolour = {
         "round_traitors_one",
         "round_traitors_more",
+        "round_traitors_illusionist",
 
         "body_found",
         "body_found_updated",

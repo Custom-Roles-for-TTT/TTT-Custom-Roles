@@ -16,6 +16,8 @@
 - Fixed players swallowed by the Cannibal still being able to trigger traitor traps
 - Fixed various roles erroring about unsupported hook 'TTTUpdateRoleState'
 - Fixed error causing rounds to not end when the Cannibal should have won
+- Fixed message stack message (top-right) on round start showing Traitors who their allies are even if there was an Illusionist in the round
+- Fixed (mostly unused) previous round role tracking
 
 ### Developer
 - Added `TTTHUDInfoPositionOverride` hook to override the position of the player information HUD (role, health, ammo etc.)

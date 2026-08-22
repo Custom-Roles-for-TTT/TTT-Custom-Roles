@@ -590,8 +590,22 @@ function GM:TTTDelayRoundStartForVote()
     return false
 end
 
+local prev_roles = {}
 function PrepareRound()
+    table.Empty(prev_roles)
+
+    -- Initialize the table for every role
+    for wrole = ROLE_NONE, ROLE_MAX do
+        prev_roles[wrole] = {}
+    end
+
+    if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
+
     for _, v in PlayerIterator() do
+        -- save previous role and sign up as a possible role
+        local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_NONE
+        table.insert(prev_roles[r], v)
+
         v:SetRole(ROLE_INNOCENT)
         v:SetInvulnerable(false, false)
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
@@ -710,7 +724,10 @@ function TellTraitorsAboutTraitors()
                 v:QueueMessage(MSG_PRINTBOTH, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
             end
 
-            if #traitornicks < 2 then
+            if IsIllusionistBlocking() then
+                LANG.Msg(v, "round_traitors_illusionist", { role = ROLE_STRINGS[ROLE_TRAITOR], anillusionist = ROLE_STRINGS_EXT[ROLE_ILLUSIONIST] })
+                return
+            elseif #traitornicks < 2 then
                 LANG.Msg(v, "round_traitors_one", { role = ROLE_STRINGS[ROLE_TRAITOR] })
                 return
             else
@@ -1202,22 +1219,11 @@ end
 
 function SelectRoles()
     local choices = {}
-    local prev_roles = {}
-    -- Initialize the table for every role
-    for wrole = ROLE_NONE, ROLE_MAX do
-        prev_roles[wrole] = {}
-    end
-
-    if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
 
     for _, v in PlayerIterator() do
         if IsValid(v) then
             -- everyone on the spec team is in specmode
             if not v:IsSpec() then
-                -- save previous role and sign up as a possible role
-                local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_NONE
-
-                table.insert(prev_roles[r], v)
                 table.insert(choices, v)
             end
 
