@@ -22,6 +22,9 @@
 ### Developer
 - Added `TTTHUDInfoPositionOverride` hook to override the position of the player information HUD (role, health, ammo etc.)
 - Added new `x` and `y` parameters to `TTTHUDInfoPaint` hook which provide the raw position of the player information HUD (i.e. agnostic of any existing labels)
+- Changed role registration system so role hooks are only removed in the prep phase of the next round
+    - This fixes some issues with role logic ending early or experiencing odd bugs when a player's role is changed after their role ability is already active
+    - Also removes `UnregisterRoleHooks` global method
 
 ## 2.5.1
 **Released: July 25th, 2026**
