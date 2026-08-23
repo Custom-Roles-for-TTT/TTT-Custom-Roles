@@ -1212,13 +1212,8 @@ function RegisterRole(tbl)
     CallHook("TTTRoleRegistered", nil, roleID)
 end
 
-local role_hooks_registered = {}
 local banned_hooks = {"Initialize", "PreRegisterSWEP", "TTTBeginRound", "TTTPlayerRoleChanged", "TTTPrepareRound", "TTTRoleSpawnsArtificially", "TTTSelectRoles", "TTTSyncEventIDs", "TTTSyncWinIDs", "TTTTutorialRoleText", "TTTUpdateRoleState"}
 local function RegisterHooks(role)
-    local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
-    role_hooks_registered[key] = (role_hooks_registered[key] or 0) + 1
-    if role_hooks_registered[key] ~= 1 then return end
-
     for hookName, hookData in pairs(ROLE_REGISTERED_HOOKS[role]) do
         if not hookData then continue end
         if TableHasValue(banned_hooks, hookName) then
@@ -1238,10 +1233,6 @@ local function RegisterHooks(role)
 end
 
 local function UnregisterHooks(role)
-    local key = ROLE_HOOK_REGISTRATION_KEY[role] or role
-    role_hooks_registered[key] = (role_hooks_registered[key] or 0) - 1
-    if role_hooks_registered[key] ~= 0 then return end
-
     for hookName, hookData in pairs(ROLE_REGISTERED_HOOKS[role]) do
         if not hookData then continue end
 
@@ -1273,35 +1264,12 @@ function RegisterRoleHooks(role)
     end
 end
 
-function UnregisterRoleHooks(role)
-    local oldHooks = ROLE_REGISTERED_HOOKS[role]
-    local oldDepRoles = ROLE_HOOK_REGISTRATION_DEPENDENCIES[role]
-    if not oldHooks and not oldDepRoles then return end
-
-    if oldHooks then
-        UnregisterHooks(role)
-    end
-    if oldDepRoles then
-        for _, r in ipairs(oldDepRoles) do
-            if ROLE_REGISTERED_HOOKS[r] then
-                UnregisterHooks(r)
-            end
-        end
-    end
-end
-
 AddHook("TTTPlayerRoleChanged", "HookRegistration_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
-    if not ROLE_REGISTERED_HOOKS[oldRole] and
-        not ROLE_HOOK_REGISTRATION_DEPENDENCIES[oldRole] and
-        not ROLE_REGISTERED_HOOKS[newRole] and
+    if not ROLE_REGISTERED_HOOKS[newRole] and
         not ROLE_HOOK_REGISTRATION_DEPENDENCIES[newRole] then return end
 
-    -- Delay this by a frame so cleanup can run first
-    timer.Simple(0, function()
-        UnregisterRoleHooks(oldRole)
-        RegisterRoleHooks(newRole)
-    end)
+    RegisterRoleHooks(newRole)
 end)
 AddHook("TTTPrepareRound", "HookRegistration_TTTPrepareRound", function()
     -- Delay this by a frame so cleanup can run first
@@ -1311,7 +1279,6 @@ AddHook("TTTPrepareRound", "HookRegistration_TTTPrepareRound", function()
                 UnregisterHooks(role)
             end
         end
-        role_hooks_registered = {}
     end)
 end)
 
