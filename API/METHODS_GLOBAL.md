@@ -225,11 +225,6 @@ Whether the given string starts with a vowel.\
 *Realm:* Client and Server\
 *Added in:* 1.0.8
 
-### UnregisterRoleHooks(role)
-Unregisters a role as active, causing its managed hooks to be removed if they are active.\
-*Realm:* Client and Server\
-*Added in:* 2.5.1 
-
 ### UpdateRoleColours()/UpdateRoleColors()
 Updates the role color tables based on the color convars and color type convar.\
 *Realm:* Client and Server\
