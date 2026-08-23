@@ -1346,7 +1346,6 @@ globals = {
     "ShouldShowTraitorExtraInfo",
     "StartsWithVowel",
     "SyncShopConVars",
-    "UnregisterRoleHooks",
     "UpdateRoleColors",
     "UpdateRoleColours",
     "UpdateRoleState",
