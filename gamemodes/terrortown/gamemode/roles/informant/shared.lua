@@ -49,10 +49,6 @@ ROLE_CONVARS[ROLE_INFORMANT] = {
         type = ROLE_CONVAR_TYPE_BOOL
     },
     {
-        cvar = "ttt_informant_requires_scanner",
-        type = ROLE_CONVAR_TYPE_BOOL
-    },
-    {
         cvar = "ttt_informant_scanner_time",
         type = ROLE_CONVAR_TYPE_NUM,
         decimal = 0
