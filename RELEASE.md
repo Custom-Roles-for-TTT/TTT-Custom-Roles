@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.5.3
+
+### Developer
+- Updated `CRHUD:PaintProgressBar` to allow for a segment title to be displayed if there is only one segment
+
 ## 2.5.2
 **Released: August 8th, 2026**
 
