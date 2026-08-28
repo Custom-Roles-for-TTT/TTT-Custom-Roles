@@ -1,10 +1,5 @@
 # Release Notes
 
-## 2.5.3
-
-### Developer
-- Updated `CRHUD:PaintProgressBar` to allow for a segment title to be displayed if there is only one segment
-
 ## 2.5.2
 **Released: August 8th, 2026**
 
@@ -23,6 +18,7 @@
 - Fixed error causing rounds to not end when the Cannibal should have won
 - Fixed message stack message (top-right) on round start showing Traitors who their allies are even if there was an Illusionist in the round
 - Fixed (mostly unused) previous round role tracking
+- Fixed error when `ttt_beggar_respawn` was enabled
 
 ### Developer
 - Added `TTTHUDInfoPositionOverride` hook to override the position of the player information HUD (role, health, ammo etc.)
@@ -30,6 +26,7 @@
 - Changed role registration system so role hooks are only removed in the prep phase of the next round
     - This fixes some issues with role logic ending early or experiencing odd bugs when a player's role is changed after their role ability is already active
     - Also removes `UnregisterRoleHooks` global method
+- Updated `CRHUD:PaintProgressBar` to allow for a segment title to be displayed if there is only one segment
 
 ## 2.5.1
 **Released: July 25th, 2026**
