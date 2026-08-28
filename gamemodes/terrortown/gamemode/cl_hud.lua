@@ -246,8 +246,13 @@ function CRHUD:PaintProgressBar(x, y, width, color, heading, progress, segments,
     heading = heading or ""
     progress = progress or 1
     segments = segments or 1
-    titles = titles or {}
     m = m or 10
+
+    if type(titles) == "string" then
+        titles = {titles}
+    else
+        titles = titles or {}
+    end
 
     local left = x - width / 2
     local height = 20
@@ -263,6 +268,13 @@ function CRHUD:PaintProgressBar(x, y, width, color, heading, progress, segments,
     if segments == 1 then
         surface.DrawOutlinedRect(left, y - height, width, height)
         surface.DrawRect(left, y - height, width * progress, height)
+
+        if #titles > 0 then
+            local title = titles[1]
+            local offset = (width - surface.GetTextSize(title)) / 2
+            surface.SetTextPos(left + offset, y - height + 3)
+            surface.DrawText(title)
+        end
     elseif segments > 1 then
         local segmentWidth = (width - m * (segments - 1)) / segments
         for segment = 0, segments - 1 do
