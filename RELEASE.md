@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.5.3 (Beta)
+**Released:**
+
+### Changes
+- Ported "TTT: restore original arctic playermodel colour if in 'serious mode'" from base TTT
+
 ## 2.5.2
 **Released: August 8th, 2026**
 
