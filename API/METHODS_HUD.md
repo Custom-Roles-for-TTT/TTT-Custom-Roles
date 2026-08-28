@@ -56,7 +56,7 @@ Paints a HUD for showing a progress bar, optionally divided into multiple segmen
 - *heading* - The heading to be displayed above the progress bar (Defaults to "")
 - *progress* - The progress the bar should display as a value from 0 to 1 (Defaults to 1)
 - *segments* - The number of segments the progress bar should have (Defaults to 1)
-- *titles* - A table of strings containing the titles for each segment. Must have length equal to the number of segments. Ignored if segments is equal to 1 (Defaults to {})
+- *titles* - A table of strings containing the titles for each segment, or a single string if *segments* is 1. When passed as a table, its length must equal the number of segments (Defaults to {})
 - *m* - The margin between each segment (Defaults to 10)
 
 ### CRHUD:PaintSpectatorProgressBar(max_value, current_value, colors, title, subtitle)

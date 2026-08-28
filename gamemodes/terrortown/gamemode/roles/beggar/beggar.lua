@@ -281,9 +281,8 @@ end)
 -- ROLE CHANGES --
 ------------------
 
-AddHook("TTTPlayerRoleChanged", "Beggar_Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "Beggar_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
-    if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if oldRole ~= ROLE_BEGGAR then
         ply:SetNWBool("WasBeggar", false)
@@ -294,6 +293,7 @@ AddHook("TTTPlayerRoleChanged", "Beggar_Informant_TTTPlayerRoleChanged", functio
         end
     end
 
+    if GetRoundState() ~= ROUND_ACTIVE then return end
     if beggar_scan:GetInt() <= BEGGAR_SCAN_MODE_DISABLED then return end
 
     if oldRole == ROLE_BEGGAR then

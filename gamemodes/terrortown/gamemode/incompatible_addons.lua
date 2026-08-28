@@ -61,6 +61,12 @@ local incompatible = {
     ["878772496"] = { reason = "Better Equipment Menu is included in Custom Roles for TTT." }, -- [TTT] Better Equipment Menu by Ping
     ["1107420703"] = { reason = "Better Equipment Menu is included in Custom Roles for TTT." }, -- [TTT] Better Equipment menu / shop by Fresh Garry
 
+    -- Hitmarkers
+    ["296385367"] = { reason = "Hitmarkers are already included in Custom Roles for TTT." }, -- Hitmarkers for Gmod! by Exho
+
+    -- Drowning indicator
+    ["481440358"] = { reason = "A drowning indicator is already included in Custom Roles for TTT." }, -- Drowning Indicator for TTT by Moe
+
     -- Sprint
     ["933056549"] = { reason = "Sprinting is included in Custom Roles for TTT." }, -- TTT Sprint by Fresh Garry
     ["1729301513"] = { reason = "Sprinting is included in Custom Roles for TTT." }, -- [TTT] Sprint by Lesh
