@@ -5,6 +5,7 @@
 
 ### Changes
 - Ported "TTT: restore original arctic playermodel colour if in 'serious mode'" from base TTT
+- Ported "Rollback some changes to VoiceNotify pnl to fix regressions with addons" from base TTT
 
 ## 2.5.2
 **Released: August 8th, 2026**
