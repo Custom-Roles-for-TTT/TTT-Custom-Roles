@@ -254,6 +254,7 @@ globals = {
     "COLOR_ORANGE",
     "COLOR_PINK",
     "COLOR_RED",
+    "color_transparent",
     "COLOR_WHITE",
     "COLOR_YELLOW",
     "CONTENTS_AREAPORTAL",
