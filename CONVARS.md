@@ -786,6 +786,7 @@ ttt_cannibal_gains_health                      0       // Whether the Cannibal g
 ttt_cannibal_gained_health_percentage          15      // What percentage of their victim's health the Cannibal gains. Set to 0 to always gain a flat 100HP (Only applies if ttt_cannibal_gains_health is enabled)
 ttt_cannibal_digestion                         0       // Whether the Cannibal digests and permanently kills their victims over time
 ttt_cannibal_digestion_time                    30      // How long in seconds a victim takes to be digested when eaten. Set to 0 for immediate digestion (Only applies if ttt_cannibal_digestion is enabled)
+ttt_cannibal_digestion_corpse                  0       // Whether the Cannibal drops the victim's corpse when they are digested (Only applies if ttt_cannibal_digestion is enabled)
 ttt_cannibal_digestion_poop                    1       // Whether the Cannibal drops poop when a victim is digested (Only applies if ttt_cannibal_digestion is enabled)
 ttt_cannibal_digestion_poop_sound              1       // Whether the Cannibal causes a sound when poop is dropped from a digested victim (Only applies if ttt_cannibal_digestion is enabled)
 ttt_cannibal_digestion_poop_sound_level        100     // The sound level (volume) to play the Cannibal's digestion poop sound (set to 0 to disable). (Only applies if ttt_cannibal_digestion is enabled)
