@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.5.3 (Beta)
-**Released:**
+**Released: September 5th, 2026**
 
 ### Changes
 - Changed Cannibal's digestion to not drop the victim's corpse
