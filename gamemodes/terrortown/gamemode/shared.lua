@@ -32,7 +32,7 @@ local TableInsert = table.insert
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.5.2"
+CR_VERSION = "2.5.3"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -1763,6 +1763,9 @@ local playercolor_mode = CreateConVar("ttt_playercolor_mode", "1")
 function GM:TTTPlayerColor(model)
     local mode = playercolor_mode:GetInt()
     if mode == 1 then
+        if model == "models/player/arctic.mdl" then
+            return COLOR_WHITE
+        end
         return table.Random(ttt_playercolors.serious)
     elseif mode == 2 then
         return table.Random(ttt_playercolors.all)

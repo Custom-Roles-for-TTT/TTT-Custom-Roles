@@ -44,6 +44,7 @@ SWEP.DigestionTimeConVar = CreateConVar("ttt_cannibal_digestion_time", "30", FCV
 
 if SERVER then
     SWEP.EatSoundLevelConVar = CreateConVar("ttt_cannibal_eat_sound_level", "100", FCVAR_NONE, "The sound level (volume) to play the Cannibal's eat sound (set to 0 to disable)", 0, 511)
+    SWEP.DigestionCorpseConVar = CreateConVar("ttt_cannibal_digestion_corpse", "0", FCVAR_NONE, "Whether the Cannibal drops the victim's corpse when they are digested", 0, 1)
     SWEP.DigestionPoopConVar = CreateConVar("ttt_cannibal_digestion_poop", "1", FCVAR_NONE, "Whether the Cannibal drops poop when a victim is digested", 0, 1)
     SWEP.DigestionPoopSoundConVar = CreateConVar("ttt_cannibal_digestion_poop_sound", "1", FCVAR_NONE, "Whether the Cannibal causes a sound when poop is dropped from a digested victim", 0, 1)
     SWEP.DigestionPoopSoundLevelConVar = CreateConVar("ttt_cannibal_digestion_poop_sound_level", "100", FCVAR_NONE, "The sound level (volume) to play the Cannibal's digestion poop sound (set to 0 to disable)", 0, 511)
@@ -201,6 +202,15 @@ function SWEP:PrimaryAttack()
 
                 hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been fully digested!")
                 owner:QueueMessage(MSG_PRINTBOTH, "You have fully digested " .. hitEnt:Nick() .. "!")
+
+                if not self.DigestionCorpseConVar:GetBool() then
+                    timer.Simple(0, function()
+                        if not IsPlayer(hitEnt) then return end
+
+                        local rag = hitEnt.server_ragdoll or hitEnt:GetRagdollEntity()
+                        SafeRemoveEntity(rag)
+                    end)
+                end
 
                 -- Spawn poop at cannibal's position
                 if self.DigestionPoopConVar:GetBool() then
