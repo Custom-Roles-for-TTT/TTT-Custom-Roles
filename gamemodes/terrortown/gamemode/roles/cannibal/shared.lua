@@ -75,6 +75,10 @@ ROLE_CONVARS[ROLE_CANNIBAL] = {
         type = ROLE_CONVAR_TYPE_NUM
     },
     {
+        cvar = "ttt_cannibal_digestion_corpse",
+        type = ROLE_CONVAR_TYPE_BOOL
+    },
+    {
         cvar = "ttt_cannibal_digestion_poop",
         type = ROLE_CONVAR_TYPE_BOOL
     },
