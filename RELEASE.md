@@ -7,6 +7,8 @@
 - Changed Cannibal's digestion to not drop the victim's corpse
   - Added a convar to re-enable the previous behavior
 - Ported "TTT: restore original arctic playermodel colour if in 'serious mode'" from base TTT
+
+### Fixes
 - Ported "Fix TTT erroring due to it using base gamemode panels" from base TTT
 
 ## 2.5.2
