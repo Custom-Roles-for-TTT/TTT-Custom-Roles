@@ -7,7 +7,7 @@
 - Changed Cannibal's digestion to not drop the victim's corpse
   - Added a convar to re-enable the previous behavior
 - Ported "TTT: restore original arctic playermodel colour if in 'serious mode'" from base TTT
-- Ported "Rollback some changes to VoiceNotify pnl to fix regressions with addons" from base TTT
+- Ported "Fix TTT erroring due to it using base gamemode panels" from base TTT
 
 ## 2.5.2
 **Released: August 8th, 2026**
