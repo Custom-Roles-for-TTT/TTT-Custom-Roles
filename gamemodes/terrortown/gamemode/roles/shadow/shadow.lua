@@ -137,6 +137,7 @@ end
 -- ROLE FEATURES --
 -------------------
 
+local pausedBuffTimers = {}
 local buffTimers = {}
 local function ClearShadowState(ply)
     ply.TTTShadowMaxHealth = nil
@@ -184,6 +185,7 @@ local function ClearBuffTimer(shadow, target, sendMessage)
             local remaining = shadow:GetNWFloat("ShadowBuffTimer", -1) - CurTime()
             shadow:SetNWFloat("ShadowBuffTimerRemaining", remaining)
             timer.Pause(timerId)
+            pausedBuffTimers[timerId] = true
         else
             timer.Remove(timerId)
         end
@@ -228,6 +230,7 @@ local function CreateBuffTimer(shadow, target)
         shadow:SetNWFloat("ShadowBuffTimer", CurTime() + remaining)
         shadow:SetNWFloat("ShadowBuffTimerRemaining", -1)
         timer.UnPause(timerId)
+        pausedBuffTimers[timerId] = nil
         SendBuffInfoMessage(shadow, math.Round(remaining, 0))
         return
     end
@@ -647,10 +650,17 @@ AddHook("TTTPrepareRound", "Shadow_TTTPrepareRound", function()
     end
     timer.Remove("TTTShadowTimer")
 
+    -- Most of these are moved by ClearShadowState, but just in case someone left the game and their timer is still active...
     for timerId, _ in pairs(buffTimers) do
         timer.Remove(timerId)
     end
     table.Empty(buffTimers)
+
+    -- Make sure to clear these too or they will resume the next round where this player is a shadow again and cause weird issues
+    for timerId, _ in pairs(pausedBuffTimers) do
+        timer.Remove(timerId)
+    end
+    table.Empty(pausedBuffTimers)
 
     net.Start("TTT_ResetShadowWins")
     net.Broadcast()

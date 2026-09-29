@@ -7,6 +7,7 @@
 - Fixed player weapons still being green in firstperson view if they were a zombie who changes roles while their claws were out
 - Fixed rare error that can occur when joining a server where someone had footsteps drawn for them
 - Fixed Guesser being told what their own team or role is when they attempt to damage themselves (e.g. via an Artillery Cannon)
+- Fixed a rare timing issue with resumable Shadow buffs which can cause weird issues if the same player is Shadow again in future rounds
 - Ported "Fixed regressions with TTT voice chat HUD" from base TTT
 
 ### Developer
