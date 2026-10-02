@@ -30,6 +30,7 @@ local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
 local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
 local vindicator_reset_on_success = GetConVar("ttt_vindicator_reset_on_success")
 local vindicator_reset_win_on_success = GetConVar("ttt_vindicator_reset_win_on_success")
+local vindicator_target_only_damage = GetConVar("ttt_vindicator_target_only_damage")
 
 -------------------
 -- ROLE FEATURES --
@@ -90,6 +91,64 @@ local function ActivateVindicator(vindicator, target)
                 end
             end
         end
+    end
+end
+
+local function IsWorkingVindicator(ply)
+    return ply:IsActiveVindicator() and ply:IsRoleActive() and not ply:IsRoleAbilityDisabled()
+end
+
+local function Vindicator_ScalePlayerDamage(victim, hitgroup, dmg)
+    if not vindicator_target_only_damage:GetBool() then return end
+
+    local attacker = dmg:GetAttacker()
+    if not (IsValid(victim) and victim:IsPlayer() and IsValid(attacker) and attacker:IsPlayer()) then return end
+
+    -- Vindicator can only damage their target
+    if IsWorkingVindicator(attacker) and attacker:GetNWString("VindicatorTarget", "") ~= victim:SteamID64() then
+        dmg:SetDamage(0)
+    end
+
+    -- Vindicator can only be damaged by their target
+    if IsWorkingVindicator(victim) and victim:GetNWString("VindicatorTarget", "") ~= attacker:SteamID64() then
+        dmg:SetDamage(0)
+    end
+
+    -- Vindicator target can only damage their Vindicator
+    for _, ply in PlayerIterator() do
+        if IsWorkingVindicator(ply) and ply:GetNWString("VindicatorTarget", "") == attacker:SteamID64() and victim ~= ply then
+            dmg:SetDamage(0)
+        end
+    end
+
+    -- Vindicator target can only be damaged by their Vindicator
+    for _, ply in PlayerIterator() do
+        if IsWorkingVindicator(ply) and ply:GetNWString("VindicatorTarget", "") == victim:SteamID64() and attacker ~= ply then
+            dmg:SetDamage(0)
+        end
+    end
+end
+
+local function ShouldEmit(ply, att)
+    if IsWorkingVindicator(ply) and ply:GetNWString("VindicatorTarget", "") ~= att:SteamID64() then
+        return true
+    end
+
+    for _, v in PlayerIterator() do
+        if v ~= att and IsWorkingVindicator(v) and v:GetNWString("VindicatorTarget", "") == ply:SteamID64() then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function Vindicator_TTTDrawHitMarker(ent, dmginfo)
+    if not vindicator_target_only_damage:GetBool() then return end
+
+    local att = dmginfo:GetAttacker()
+    if ShouldEmit(ent, att) then
+        return true, false, true, false
     end
 end
 
@@ -362,8 +421,10 @@ end)
 ROLE_REGISTERED_HOOKS[ROLE_VINDICATOR] = {
     ["PlayerDeath"] = Vindicator_PlayerDeath,
     ["PlayerDisconnected"] = Vindicator_PlayerDisconnected,
+    ["ScalePlayerDamage"] = Vindicator_ScalePlayerDamage,
     ["TTTCheckForWin"] = Vindicator_TTTCheckForWin,
     ["TTTDeathNotifyOverride"] = Vindicator_TTTDeathNotifyOverride,
+    ["TTTDrawHitMarker"] = Vindicator_TTTDrawHitMarker,
     ["TTTPrintResultMessage"] = Vindicator_TTTPrintResultMessage,
     ["TTTStopPlayerRespawning"] = Vindicator_TTTStopPlayerRespawning,
     ["TTTWinCheckBlocks"] = Vindicator_TTTWinCheckBlocks

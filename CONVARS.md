@@ -475,6 +475,7 @@ ttt_vindicator_kill_on_fail                    1       // Whether the Vindicator
 ttt_vindicator_kill_on_success                 0       // Whether the Vindicator should be killed after they kill their target (Not used when `ttt_vindicator_reset_on_success` is enabled)
 ttt_vindicator_reset_on_success                0       // Whether the Vindicator should be reset to the innocent team after they kill their target
 ttt_vindicator_reset_win_on_success            0       // Whether the Vindicator, when they are reset to the innocent team after killing their target, should only win with the innocent team. When disabled, the Vindicator will also have a solo secondary win. (Requires `ttt_vindicator_reset_on_success` to be enabled)
+ttt_vindicator_target_only_damage              0       // Whether an activated Vindicator and their target are prevented from damaging, or taking damage from, other players
 ttt_vindicator_can_see_jesters                 0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to Vindicators when they are on the independent team
 ttt_vindicator_update_scoreboard               0       // Whether Vindicators show dead players as missing in action when they are on the independent team
 
