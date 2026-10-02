@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.5.4 (Beta)
-**Released:**
+**Released: October 3rd, 2026**
 
 ### Additions
 - Added convar option to prevent an activated Vindicator and their target from damaging, or taking damage from, other players
