@@ -49,6 +49,9 @@ local function Guesser_EntityTakeDamage(ent, dmginfo)
     local att = dmginfo:GetAttacker()
     if not IsPlayer(att) then return end
 
+    -- If we somehow damage ourselves, ignore it
+    if att == ent then return end
+
     local role = att:GetRole()
 
     -- We don't need to reveal the role for players that can't be guessed

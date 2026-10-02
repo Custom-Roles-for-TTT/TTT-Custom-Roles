@@ -267,15 +267,6 @@ local function Zombie_TTTPlayerAliveThink(ply)
     end
 end
 
--- Handle role weapon assignment
-local function Zombie_PlayerLoadout(ply)
-    if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() or not ply:IsZombie() or GetRoundState() ~= ROUND_ACTIVE then return end
-
-    if not ply:HasWeapon("weapon_zom_claws") then
-        ply:Give("weapon_zom_claws")
-    end
-end
-
 -- Only allow the zombie to pick up zombie-specific weapons
 local function Zombie_Weapons_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
@@ -411,7 +402,6 @@ ROLE_REGISTERED_HOOKS[ROLE_ZOMBIE] = {
     ["OnPlayerHitGround"] = Zombie_OnPlayerHitGround,
     ["PlayerCanPickupWeapon"] = Zombie_Weapons_PlayerCanPickupWeapon,
     ["PlayerDisconnected"] = Zombie_Prime_PlayerDisconnected,
-    ["PlayerLoadout"] = Zombie_PlayerLoadout,
     ["ScalePlayerDamage"] = Zombie_ScalePlayerDamage,
     ["SetupPlayerVisibility"] = Zombie_SetupPlayerVisibility,
     ["TTTCheckForWin"] = Zombie_TTTCheckForWin,

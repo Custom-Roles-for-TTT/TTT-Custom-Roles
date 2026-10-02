@@ -107,7 +107,6 @@ if SERVER then
         else
             ply:SetRole(ROLE_TRAITOR)
         end
-        ply:StripRoleWeapons()
         ply:QueueMessage(MSG_PRINTCENTER, "You have been brainwashed and are now " .. ROLE_STRINGS_EXT[ROLE_TRAITOR] .. ".")
         if GetConVar("ttt_hypnotist_brainwash_muted"):GetBool() then
             ply:PrintMessage(HUD_PRINTTALK, "You have not yet regained your ability to speak")

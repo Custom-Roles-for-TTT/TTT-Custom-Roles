@@ -1,9 +1,21 @@
 # Release Notes
 
 ## 2.5.4 (Beta)
+**Released: October 3rd, 2026**
 
 ### Additions
 - Added convar option to prevent an activated Vindicator and their target from damaging, or taking damage from, other players
+
+### Fixes
+- Fixed player weapons still being green in firstperson view if they were a zombie who changes roles while their claws were out
+- Fixed rare error that can occur when joining a server where someone had footsteps drawn for them
+- Fixed Guesser being told what their own team or role is when they attempt to damage themselves (e.g. via an Artillery Cannon)
+- Fixed a rare timing issue with resumable Shadow buffs which can cause weird issues if the same player is Shadow again in future rounds
+- Ported "Fixed regressions with TTT voice chat HUD" from base TTT
+
+### Developer
+- Added optional parameter to `WEPS.ResetRoleWeaponCache` to only clear the cache of a single role rather than all roles
+- Changed `plymeta:SetRole` to automatically strip role old weapons and give new role weapons
 
 ## 2.5.3 (Beta)
 **Released: September 5th, 2026**

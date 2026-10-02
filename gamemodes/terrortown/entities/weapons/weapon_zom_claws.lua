@@ -475,6 +475,16 @@ function SWEP:Holster(weap)
 end
 
 if CLIENT then
+    function SWEP:OnRemove()
+        local owner = self:GetOwner()
+        if not IsPlayer(owner) then return end
+
+        local vm = owner:GetViewModel()
+        if not IsValid(vm) or vm:GetColor() == COLOR_WHITE then return end
+
+        vm:SetColor(COLOR_WHITE)
+    end
+
     function SWEP:DrawHUD()
         self.BaseClass.DrawHUD(self)
 

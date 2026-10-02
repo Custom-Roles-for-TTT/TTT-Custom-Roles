@@ -708,7 +708,7 @@ function AddFootstep(ply, pos, ang, foot, col, fade_time, scale)
         filter = ply
     }
     local tr = util.TraceLine(trace)
-    if tr.Hit then
+    if tr and tr.Hit then
         local tbl = {
             pos = tr.HitPos,
             curtime = CurTime(),

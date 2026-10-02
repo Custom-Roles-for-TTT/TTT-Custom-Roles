@@ -15,7 +15,6 @@ local TableHasValue = table.HasValue
 local MathMax = math.max
 local MathClamp = math.Clamp
 local MathCeil = math.ceil
-local RunHook = hook.Run
 local CallHook = hook.Call
 
 if CLIENT then
@@ -133,13 +132,8 @@ function SWEP:PrimaryAttack()
                     CallHook("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
 
                     owner:SetRole(role)
-                    owner:StripRoleWeapons()
-                    RunHook("PlayerLoadout", owner)
                     ply:MoveRoleState(owner)
-
                     ply:SetRole(ROLE_GUESSER)
-                    ply:StripRoleWeapons()
-                    RunHook("PlayerLoadout", ply)
 
                     SendFullStateUpdate()
 

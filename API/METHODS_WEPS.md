@@ -63,10 +63,12 @@ Prepares the roleweapons lists for the provided role.\
 *Parameters:*
 - *role* - The role whose roleweapons lists are being prepared
 
-### WEPS.ResetRoleWeaponCache()
+### WEPS.ResetRoleWeaponCache(role)
 Resets the cache of the role weapon overrides.\
 *Realm:* Client and Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
+- *role* - The role whose role weapon override cache is being cleared (Optional, if not provided then the cache is cleared for all roles) *(Added in 2.5.4)*
 
 ### WEPS.ResetWeaponsCache()
 Resets the cache of the role weapon overrides and resets all changed weapon `CanBuy` properties back to their defaults.\

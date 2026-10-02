@@ -329,15 +329,6 @@ local function Vampire_TTTPlayerAliveThink(ply)
     end
 end
 
--- Handle role weapon assignment
-local function Vampire_PlayerLoadout(ply)
-    if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() or not ply:IsVampire() or GetRoundState() ~= ROUND_ACTIVE then return end
-
-    if not ply:HasWeapon("weapon_vam_fangs") then
-        ply:Give("weapon_vam_fangs")
-    end
-end
-
 -- Only allow the vampire to pick up vampire-specific weapons
 local function Vampire_Weapons_PlayerCanPickupWeapon(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
@@ -381,7 +372,6 @@ ROLE_REGISTERED_HOOKS[ROLE_VAMPIRE] = {
     ["PlayerCanPickupWeapon"] = Vampire_Weapons_PlayerCanPickupWeapon,
     ["PlayerDeath"] = Vampire_PrimeDeath_PlayerDeath,
     ["PlayerDisconnected"] = Vampire_Prime_PlayerDisconnected,
-    ["PlayerLoadout"] = Vampire_PlayerLoadout,
     ["ScalePlayerDamage"] = Vampire_ScalePlayerDamage,
     ["SetupPlayerVisibility"] = Vampire_SetupPlayerVisibility,
     ["TTTCheckForWin"] = Vampire_TTTCheckForWin,

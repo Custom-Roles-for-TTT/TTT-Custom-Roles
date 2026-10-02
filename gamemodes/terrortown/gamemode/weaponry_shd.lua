@@ -154,9 +154,13 @@ local function GetRoleMode(role)
     return RoleModes[role]
 end
 
-function WEPS.ResetRoleWeaponCache()
-    for id, _ in pairs(ROLE_STRINGS_RAW) do
-        DoesRoleHaveWeaponCache[id] = nil
+function WEPS.ResetRoleWeaponCache(role)
+    if type(role) == "number" then
+         DoesRoleHaveWeaponCache[role] = nil
+    else
+        for id, _ in pairs(ROLE_STRINGS_RAW) do
+            DoesRoleHaveWeaponCache[id] = nil
+        end
     end
 end
 

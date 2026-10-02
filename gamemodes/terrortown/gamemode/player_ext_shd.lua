@@ -22,6 +22,7 @@ local util = util
 local CallHook = hook.Call
 local AddHook = hook.Add
 local RemoveHook = hook.Remove
+local RunHook = hook.Run
 local MathAbs = math.abs
 local MathAcos = math.acos
 local PlayerIterator = player.Iterator
@@ -76,14 +77,22 @@ function plymeta:SetRole(role)
 
     CallHook("TTTPlayerRoleChanged", nil, self, oldRole, role)
 
-    -- Role checks only run on the server
+    -- Remaining logic only happens on the server
     if not SERVER then return end
+    -- Only do this if the player's role actually changed
+    if oldRole == role then return end
+
+    -- Remove the old role's weapons and give them the new one's role weapons
+    self:StripRoleWeapons()
+    -- Give loadout weapons if the player is alive
+    if self:Alive() and not self:IsSpec() then
+        RunHook("PlayerLoadout", self)
+    end
+
     -- Only do this if they had an old role. This handles the case where they were assigned a role at the beginning of the round
     if not oldRole or oldRole <= ROLE_NONE or oldRole > ROLE_MAX then return end
     -- Only do this if the new role is valid. This is not strictly necessary since there wouldn't be a role check for an invalid role, but just for safety
     if not role or role <= ROLE_NONE or role > ROLE_MAX then return end
-    -- Only do this if the player's role actually changed
-    if oldRole == role then return end
 
     self:BeginRoleChecks()
 end

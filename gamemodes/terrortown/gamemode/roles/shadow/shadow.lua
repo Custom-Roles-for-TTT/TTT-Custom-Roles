@@ -11,7 +11,6 @@ local MathMax = math.max
 local MathMin = math.min
 local MathRandom = math.random
 local MathRound = math.Round
-local RunHook = hook.Run
 
 util.AddNetworkString("TTT_UpdateShadowWins")
 util.AddNetworkString("TTT_ResetShadowWins")
@@ -138,6 +137,7 @@ end
 -- ROLE FEATURES --
 -------------------
 
+local pausedBuffTimers = {}
 local buffTimers = {}
 local function ClearShadowState(ply)
     ply.TTTShadowMaxHealth = nil
@@ -185,6 +185,7 @@ local function ClearBuffTimer(shadow, target, sendMessage)
             local remaining = shadow:GetNWFloat("ShadowBuffTimer", -1) - CurTime()
             shadow:SetNWFloat("ShadowBuffTimerRemaining", remaining)
             timer.Pause(timerId)
+            pausedBuffTimers[timerId] = true
         else
             timer.Remove(timerId)
         end
@@ -229,6 +230,7 @@ local function CreateBuffTimer(shadow, target)
         shadow:SetNWFloat("ShadowBuffTimer", CurTime() + remaining)
         shadow:SetNWFloat("ShadowBuffTimerRemaining", -1)
         timer.UnPause(timerId)
+        pausedBuffTimers[timerId] = nil
         SendBuffInfoMessage(shadow, math.Round(remaining, 0))
         return
     end
@@ -268,8 +270,6 @@ local function CreateBuffTimer(shadow, target)
             end
 
             shadow:SetRole(role)
-            shadow:StripRoleWeapons()
-            RunHook("PlayerLoadout", shadow)
             SendFullStateUpdate()
 
             -- Update the player's health
@@ -289,13 +289,8 @@ local function CreateBuffTimer(shadow, target)
             end
 
             shadow:SetRole(role)
-            shadow:StripRoleWeapons()
-            RunHook("PlayerLoadout", shadow)
-
-            target:SetRole(ROLE_SHADOW)
-            target:StripRoleWeapons()
-            RunHook("PlayerLoadout", target)
             target:MoveRoleState(shadow)
+            target:SetRole(ROLE_SHADOW)
 
             target:Kill()
 
@@ -451,8 +446,6 @@ local function HandleShadowFailure(shadow)
 
         message = message .. " As punishment, you have become " .. ROLE_STRINGS_EXT[target_role]
         shadow:SetRole(target_role)
-        shadow:StripRoleWeapons()
-        RunHook("PlayerLoadout", shadow)
 
         local maxhealth = shadow:GetMaxHealth()
         local health = shadow:Health()
@@ -657,10 +650,17 @@ AddHook("TTTPrepareRound", "Shadow_TTTPrepareRound", function()
     end
     timer.Remove("TTTShadowTimer")
 
+    -- Most of these are moved by ClearShadowState, but just in case someone left the game and their timer is still active...
     for timerId, _ in pairs(buffTimers) do
         timer.Remove(timerId)
     end
     table.Empty(buffTimers)
+
+    -- Make sure to clear these too or they will resume the next round where this player is a shadow again and cause weird issues
+    for timerId, _ in pairs(pausedBuffTimers) do
+        timer.Remove(timerId)
+    end
+    table.Empty(pausedBuffTimers)
 
     net.Start("TTT_ResetShadowWins")
     net.Broadcast()
