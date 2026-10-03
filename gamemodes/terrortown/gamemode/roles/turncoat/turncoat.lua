@@ -62,7 +62,7 @@ local function Turncoat_DoPlayerDeath(ply, attacker, dmginfo)
     if not turncoat_change_innocent_kill:GetBool() then return end
     if not IsPlayer(attacker) then return end
     if not ply:IsInnocentTeam() then return end
-    if not attacker:IsTurncoat() then return end
+    if not attacker:IsActiveTurncoat() then return end
     if ply == attacker then return end
     if attacker:IsTraitorTeam() then return end
 

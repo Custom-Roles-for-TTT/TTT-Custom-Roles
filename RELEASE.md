@@ -1,5 +1,10 @@
 # Release Notes
 
+## 2.5.5 (Beta)
+
+### Fixes
+- Fixed Turncoat killing an innocent after the round ended still becoming a Traitor
+
 ## 2.5.4 (Beta)
 **Released: October 3rd, 2026**
 
