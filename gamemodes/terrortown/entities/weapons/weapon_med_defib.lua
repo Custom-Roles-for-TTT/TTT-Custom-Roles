@@ -59,14 +59,12 @@ if SERVER then
         if not GetConVar("ttt_paramedic_defib_as_is"):GetBool() then
             if GetConVar("ttt_paramedic_defib_as_innocent"):GetBool() then
                 ply:SetRole(ROLE_INNOCENT)
-                ply:StripRoleWeapons()
             elseif ply:GetDetectiveLike() then
                 -- Convert detective roles to promoted deputy
                 -- This leaves everyone else as their existing role
                 if GetConVar("ttt_paramedic_defib_detectives_as_deputy"):GetBool() then
                     if ply:IsDetectiveTeam() then
                         ply:SetRole(ROLE_DEPUTY)
-                        ply:StripRoleWeapons()
                         ply:HandleDetectiveLikePromotion()
                     end
                 -- Otherwise demote detective-like roles to their base role
@@ -78,7 +76,6 @@ if SERVER then
                     else
                         ply:SetRole(ROLE_INNOCENT)
                     end
-                    ply:StripRoleWeapons()
                 end
             end
         end

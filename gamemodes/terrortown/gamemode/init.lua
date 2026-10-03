@@ -655,7 +655,6 @@ function PrepareRound()
     ROLEPACKS.FillRolePackWeaponTables()
 
     WEPS.ResetWeaponsCache()
-    WEPS.ResetRoleWeaponCache()
     WEPS.ClearRetryTimers()
 
     -- New look. Random if no forced model set.

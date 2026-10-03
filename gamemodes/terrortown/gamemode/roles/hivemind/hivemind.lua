@@ -164,7 +164,6 @@ local function HiveMind_Assimilate_PlayerDeath(victim, infl, attacker)
         victim:SetNWBool("HiveMindRespawning", false)
 
         victim.HiveMindPreviousMaxHealth = victim:GetMaxHealth()
-        victim:StripRoleWeapons()
         RespawnPlayer(victim)
         victim:SetRole(ROLE_HIVEMIND)
         victim:QueueMessage(MSG_PRINTCENTER, "You have become part of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ".")

@@ -819,7 +819,7 @@ function GM:HUDDrawTargetID()
         -- If either text return value is a boolean and it's "false" then save that so we know to skip rendering the text
         if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
         if new_color then col = new_color end
-        if new_secondary_text  or (type(new_secondary_text) == "boolean" and not new_secondary_text) then secondary_text = new_secondary_text end
+        if new_secondary_text or (type(new_secondary_text) == "boolean" and not new_secondary_text) then secondary_text = new_secondary_text end
         if new_secondary_col then secondary_col = new_secondary_col end
     end
 

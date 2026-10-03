@@ -1,5 +1,4 @@
 local concommand = concommand
-local hook = hook
 local IsValid = IsValid
 local net = net
 local player = player
@@ -120,20 +119,13 @@ local function force_terror(ply)
 end
 concommand.Add("ttt_force_terror", force_terror, nil, nil, FCVAR_CHEAT)
 
-local function clear_role_effects(ply)
-    ply:StripRoleWeapons()
-    ply:Give("weapon_zm_improvised")
-    ply:SetDefaultCredits()
-    SetRoleHealth(ply)
-end
-
 for role = 0, ROLE_MAX do
     local rolestring = ROLE_STRINGS_RAW[role]
     concommand.Add("ttt_force_" .. rolestring, function(ply)
         ply:SetRoleAndBroadcast(role)
-        clear_role_effects(ply)
-        -- Give loadout weapons
-        hook.Run("PlayerLoadout", ply)
+        ply:Give("weapon_zm_improvised")
+        ply:SetDefaultCredits()
+        SetRoleHealth(ply)
         SendFullStateUpdate()
     end, nil, nil, FCVAR_CHEAT)
 end

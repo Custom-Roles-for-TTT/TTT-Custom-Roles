@@ -301,7 +301,7 @@ end
 
 function GM:UpdatePlayerLoadouts()
     for _, ply in PlayerIterator() do
-        hook.Call("PlayerLoadout", GAMEMODE, ply)
+        hook.Run("PlayerLoadout", ply)
     end
 end
 

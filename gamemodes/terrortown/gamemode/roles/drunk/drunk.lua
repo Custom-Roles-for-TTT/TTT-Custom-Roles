@@ -426,9 +426,6 @@ function plymeta:DrunkRememberRole(role, hidecenter)
     -- Start role special logic checks
     self:BeginRoleChecks()
 
-    -- Give loadout weapons
-    hook.Run("PlayerLoadout", self)
-
     net.Start("TTT_DrunkSober")
     net.WriteString(self:Nick())
     net.WriteString(ROLE_STRINGS_EXT[role])

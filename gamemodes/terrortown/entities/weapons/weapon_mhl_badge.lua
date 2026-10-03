@@ -89,7 +89,6 @@ if SERVER then
             ply:SetHealth(ply:GetMaxHealth())
         end
 
-        ply:StripRoleWeapons()
         if not ply:HasWeapon("weapon_ttt_unarmed") then
             ply:Give("weapon_ttt_unarmed")
         end

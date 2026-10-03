@@ -8,6 +8,8 @@ local AddHook = hook.Add
 local RemoveHook = hook.Remove
 local TableInsert = table.insert
 local PlayerIterator = player.Iterator
+local MathRand = math.Rand
+local MathRandom = math.random
 
 ------------------
 -- ROLE CONVARS --
@@ -18,6 +20,7 @@ local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
 local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
 local vindicator_reset_on_success = GetConVar("ttt_vindicator_reset_on_success")
 local vindicator_reset_win_on_success = GetConVar("ttt_vindicator_reset_win_on_success")
+local vindicator_target_only_damage = GetConVar("ttt_vindicator_target_only_damage")
 
 ------------------
 -- TRANSLATIONS --
@@ -56,9 +59,18 @@ local function Vindicator_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     end
 end
 
-local function Vindicator_TTTTargetIDPlayerText(ent, cli, text, col, secondary_text)
-    if IsPlayer(ent) and cli:IsVindicator() and ent:SteamID64() == cli:GetNWString("VindicatorTarget", "") and not cli:IsRoleAbilityDisabled() then
+local function Vindicator_TTTTargetIDPlayerText(ent, cli, text, col)
+    if not IsPlayer(ent) then return end
+    if cli:IsVindicator() and ent:SteamID64() == cli:GetNWString("VindicatorTarget", "") and not cli:IsRoleAbilityDisabled() then
         return LANG.GetTranslation("target_current_target"), ROLE_COLORS_RADAR[ROLE_VINDICATOR]
+    end
+
+    if vindicator_target_only_damage:GetBool() and ent.Vindicator_InvEmitter then
+        if not text then
+            return "INVULNERABLE", COLOR_CYAN
+        else
+            return text, col, "INVULNERABLE", COLOR_CYAN
+        end
     end
 end
 
@@ -164,6 +176,67 @@ ROLE_IS_TARGET_HIGHLIGHTED[ROLE_VINDICATOR] = function(ply, target)
 
     local isTarget = target_sid64 == target:SteamID64()
     return isTarget
+end
+
+-------------------------------
+-- INVULNERABILITY PARTICLES --
+-------------------------------
+
+local function IsWorkingVindicator(ply)
+    return ply:IsActiveVindicator() and ply:IsRoleActive() and not ply:IsRoleAbilityDisabled()
+end
+
+local function ShouldEmit(ply)
+    if IsWorkingVindicator(ply) and ply:GetNWString("VindicatorTarget", "") ~= client:SteamID64() then
+        return true
+    end
+
+    for _, v in PlayerIterator() do
+        if v ~= client and IsWorkingVindicator(v) and v:GetNWString("VindicatorTarget", "") == ply:SteamID64() then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function Vindicator_InvulnerableEmitter_Think()
+    if not vindicator_target_only_damage:GetBool() then return end
+
+    if not client or not IsPlayer(client) then
+        client = LocalPlayer()
+    end
+
+    for _, v in PlayerIterator() do
+        if not v:Alive() or v:IsSpec() then continue end
+
+        if v ~= client and ShouldEmit(v) then
+            if not v.Vindicator_InvEmitter then v.Vindicator_InvEmitter = ParticleEmitter(v:GetPos()) end
+            if not v.Vindicator_InvNextPart then v.Vindicator_InvNextPart = CurTime() end
+            local pos = v:GetPos()
+            -- Use DistToSqr as it's more efficient and this is called very frequently
+            -- 9000000 = 3000^2
+            if v.Vindicator_InvNextPart < CurTime() and client:GetPos():DistToSqr(pos) <= 9000000 then
+                v.Vindicator_InvEmitter:SetPos(pos)
+                v.Vindicator_InvNextPart = CurTime() + MathRand(0.0005, 0.02)
+                local vec = Vector(MathRand(-8, 8), MathRand(-8, 8), MathRand(-25, 25))
+                local particle = v.Vindicator_InvEmitter:Add("particle/wisp.vmt", v:LocalToWorld(vec + Vector(0, 0, 35)))
+                particle:SetVelocity(vec:GetNormalized() * 50)
+                particle:SetDieTime(MathRand(0.2, 0.5))
+                particle:SetStartAlpha(MathRandom(150, 220))
+                particle:SetEndAlpha(0)
+                local size = MathRandom(2, 5)
+                particle:SetStartSize(size)
+                particle:SetEndSize(size + 1)
+                particle:SetRoll(MathRand(0, math.pi))
+                particle:SetRollDelta(0)
+                particle:SetColor(0, 255, 255)
+            end
+        elseif v.Vindicator_InvEmitter then
+            v.Vindicator_InvEmitter:Finish()
+            v.Vindicator_InvEmitter = nil
+        end
+    end
 end
 
 ----------------
@@ -340,7 +413,10 @@ end)
 ------------------
 
 ROLE_REGISTERED_HOOKS[ROLE_VINDICATOR] = {
-    ["Think"] = Vindicator_Highlight_Think,
+    ["Think"] = {
+        ["Vindicator_Highlight_Think"] = Vindicator_Highlight_Think,
+        ["Vindicator_InvulnerableEmitter_Think"] = Vindicator_InvulnerableEmitter_Think,
+    },
     ["TTTEndRound"] = Vindicator_SecondaryWinEvent_TTTEndRound,
     ["TTTEventFinishIconText"] = Vindicator_TTTEventFinishIconText,
     ["TTTEventFinishText"] = Vindicator_TTTEventFinishText,

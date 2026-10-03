@@ -40,7 +40,6 @@ if SERVER then
 
         local originalRole = owner:GetRole()
         owner:SetRole(ROLE_SPONGE)
-        owner:StripRoleWeapons()
         owner:QueueMessage(MSG_PRINTCENTER, "You have converted yourself to be " .. ROLE_STRINGS_EXT[ROLE_SPONGE])
 
         local maxhealth = owner:GetMaxHealth()

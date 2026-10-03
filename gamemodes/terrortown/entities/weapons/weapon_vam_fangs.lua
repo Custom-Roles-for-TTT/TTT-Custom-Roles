@@ -300,7 +300,6 @@ end
 
 function SWEP:DoConvert()
     local ply = self.TargetEntity
-    ply:StripRoleWeapons()
     if not ply:HasWeapon("weapon_zm_improvised") then
         ply:Give("weapon_zm_improvised")
     end
