@@ -54,7 +54,7 @@ local function StartCoughTimer()
                 if v:IsActiveInfected() then
                     local idx = MathRandom(1, coughCount)
                     local chosen_sound = coughs[idx]
-                    sound.Play(chosen_sound, v:GetPos())
+                    v:EmitSound(chosen_sound)
                 end
             end
             timer.Adjust("InfectedCough", MathRandom(min, max), 0, nil)

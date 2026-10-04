@@ -4,6 +4,7 @@
 
 ### Fixes
 - Fixed Turncoat killing an innocent after the round ended still becoming a Traitor
+- Fixed some Loot Goblin and Infected sounds not being attributed to the source player
 
 ## 2.5.4 (Beta)
 **Released: October 3rd, 2026**
