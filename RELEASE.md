@@ -10,6 +10,7 @@
 - Fixed Turncoat killing an innocent after the round ended still becoming a Traitor
 - Fixed some Loot Goblin and Infected sounds not being attributed to the source player
 - Fixed the Hive Mind assimilation messages stacking up and not clearing fast enough when multiple players were killed in quick succession
+- Fixed players whose role has been revealed not showing the correct color or icon on the scoreboard
 
 ### Developer
 - Added ability to set a role as having team chat when it normally wouldn't via the new `ROLE.hasteamchat` optional feature
