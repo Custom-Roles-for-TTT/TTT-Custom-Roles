@@ -3,6 +3,9 @@
 ## 2.5.5 (Beta)
 **Released:**
 
+### Changes
+- Changed Hive Mind to have team chat with other members of the hive
+
 ### Fixes
 - Fixed Turncoat killing an innocent after the round ended still becoming a Traitor
 - Fixed some Loot Goblin and Infected sounds not being attributed to the source player

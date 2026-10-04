@@ -83,6 +83,7 @@ ROLE_CONVARS[ROLE_HIVEMIND] = {
 
 ROLE_CAN_SEE_JESTERS[ROLE_HIVEMIND] = true
 ROLE_CAN_SEE_MIA[ROLE_HIVEMIND] = true
+ROLE_HAS_TEAM_CHAT[ROLE_HIVEMIND] = true
 
 ROLE_VICTIM_CHANGING_ROLE[ROLE_HIVEMIND] = function(ply, victim)
     return not victim:IsHiveMind()
@@ -118,7 +119,7 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_ShopSync_TTTPlayerRoleChanged", functi
                     timer.Simple(0.25, function()
                         -- Sanity check
                         if not IsPlayer(p) or not p:IsActiveHiveMind() then return end
-p:ClearQueuedMessage("hivemindNewWeapons")
+                        p:ClearQueuedMessage("hivemindNewWeapons")
                         p:QueueMessage(MSG_PRINTCENTER, "New weapons from the assimilated player are now available in your shop", nil, "hivemindNewWeapons")
                     end)
                 end
