@@ -1,10 +1,12 @@
 # Release Notes
 
 ## 2.5.5 (Beta)
+**Released:**
 
 ### Fixes
 - Fixed Turncoat killing an innocent after the round ended still becoming a Traitor
 - Fixed some Loot Goblin and Infected sounds not being attributed to the source player
+- Fixed the Hive Mind assimilation messages stacking up and not clearing fast enough when multiple players were killed in quick succession
 
 ## 2.5.4 (Beta)
 **Released: October 3rd, 2026**
