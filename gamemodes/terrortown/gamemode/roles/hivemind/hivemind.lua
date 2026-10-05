@@ -230,7 +230,8 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_HealthSync_TTTPlayerRoleChanged", func
             end
 
             if p ~= ply then
-                p:QueueMessage(MSG_PRINTCENTER, ply:Nick() .. " (" .. ROLE_STRINGS_EXT[oldRole] .. ") has joined the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ".")
+                p:ClearQueuedMessage("hivemindNewMember")
+                p:QueueMessage(MSG_PRINTBOTH, ply:Nick() .. " (" .. ROLE_STRINGS_EXT[oldRole] .. ") has joined the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ".", nil, "hivemindNewMember")
             end
         end
     end
