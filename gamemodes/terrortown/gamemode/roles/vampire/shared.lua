@@ -25,6 +25,7 @@ VAMPIRE_OVERHEAL_MODE_BOTH = 2
 -- Initialize role features
 ROLE_CAN_SEE_JESTERS[ROLE_VAMPIRE] = true
 ROLE_CAN_SEE_MIA[ROLE_VAMPIRE] = true
+ROLE_HAS_TEAM_CHAT[ROLE_VAMPIRE] = true
 
 --------------------
 -- PLAYER METHODS --
