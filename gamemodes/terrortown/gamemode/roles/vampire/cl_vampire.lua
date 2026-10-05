@@ -80,7 +80,7 @@ end
 
 local function Vampire_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if not INDEPENDENT_ROLES[ROLE_VAMPIRE] then return end
-    
+
     if cli:IsVampire() and ply:IsVampire() then
         return ROLE_VAMPIRE
     end
@@ -89,7 +89,7 @@ end
 local function Vampire_TTTTargetIDPlayerRing(ent, cli, ringVisible)
     if not INDEPENDENT_ROLES[ROLE_VAMPIRE] then return end
     if not IsPlayer(ent) then return end
-    
+
     if cli:IsVampire() and ent:IsVampire() then
         return true, ROLE_COLORS_RADAR[ROLE_VAMPIRE]
     end
