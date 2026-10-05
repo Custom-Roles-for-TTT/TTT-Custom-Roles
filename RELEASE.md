@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.5.5 (Beta)
-**Released:**
+**Released: October 5th, 2026**
 
 ### Changes
 - Changed Hive Mind to have team chat with other members of the hive
