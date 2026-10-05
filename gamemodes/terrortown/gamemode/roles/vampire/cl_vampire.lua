@@ -6,6 +6,7 @@ local string = string
 
 local AddHook = hook.Add
 local RemoveHook = hook.Remove
+local StringUpper = string.upper
 
 -------------
 -- CONVARS --
@@ -75,6 +76,62 @@ local function Vampire_TTTTargetIDPlayerTargetIcon(ply, cli, showJester)
     if cli:IsVampire() and vampire_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_VAMPIRE], "down"
     end
+end
+
+local function Vampire_TTTTargetIDPlayerRoleIcon(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+    if not INDEPENDENT_ROLES[ROLE_VAMPIRE] then return end
+
+    if cli:IsVampire() and ply:IsVampire() then
+        return ROLE_VAMPIRE
+    end
+end
+
+local function Vampire_TTTTargetIDPlayerRing(ent, cli, ringVisible)
+    if not INDEPENDENT_ROLES[ROLE_VAMPIRE] then return end
+    if not IsPlayer(ent) then return end
+
+    if cli:IsVampire() and ent:IsVampire() then
+        return true, ROLE_COLORS_RADAR[ROLE_VAMPIRE]
+    end
+end
+
+local function Vampire_TTTTargetIDPlayerText(ent, cli, text, clr, secondaryText)
+    if not INDEPENDENT_ROLES[ROLE_VAMPIRE] then return end
+    if not IsPlayer(ent) then return end
+
+    if cli:IsVampire() and ent:IsVampire() then
+        return StringUpper(ROLE_STRINGS[ROLE_VAMPIRE]), ROLE_COLORS_RADAR[ROLE_VAMPIRE]
+    end
+end
+
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_VAMPIRE] = function(ply, target, showJester)
+    if not INDEPENDENT_ROLES[ROLE_VAMPIRE] then return end
+    if not ply:IsVampire() then return end
+    if not IsPlayer(target) or not target:IsVampire() then return end
+
+    ------ icon, ring, text
+    return true, true, true
+end
+
+----------------
+-- SCOREBOARD --
+----------------
+
+local function Vampire_TTTScoreboardPlayerRole(ply, cli, c, roleStr)
+    if not INDEPENDENT_ROLES[ROLE_VAMPIRE] then return end
+
+    if ply:IsActiveVampire() and cli:IsActiveVampire() then
+        return ROLE_COLORS_SCOREBOARD[ROLE_VAMPIRE], ROLE_STRINGS_SHORT[ROLE_VAMPIRE]
+    end
+end
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_VAMPIRE] = function(ply, target, showJester)
+    if not INDEPENDENT_ROLES[ROLE_VAMPIRE] then return end
+    if not ply:IsActiveVampire() then return end
+    if not IsPlayer(target) or not target:IsActiveVampire() then return end
+
+    ------ name,  role
+    return false, true
 end
 
 -------------
@@ -327,9 +384,13 @@ ROLE_REGISTERED_HOOKS[ROLE_VAMPIRE] = {
     ["TTTEventFinishIconText"] = Vampire_TTTEventFinishIconText,
     ["TTTEventFinishText"] = Vampire_TTTEventFinishText,
     ["TTTRolePopupParams"] = Vampire_TTTRolePopupParams,
+    ["TTTScoreboardPlayerRole"] = Vampire_TTTScoreboardPlayerRole,
     ["TTTScoringSummaryRender"] = Vampire_TTTScoringSummaryRender,
     ["TTTScoringWinTitle"] = Vampire_TTTScoringWinTitle,
-    ["TTTTargetIDPlayerTargetIcon"] = Vampire_TTTTargetIDPlayerTargetIcon
+    ["TTTTargetIDPlayerRing"] = Vampire_TTTTargetIDPlayerRing,
+    ["TTTTargetIDPlayerRoleIcon"] = Vampire_TTTTargetIDPlayerRoleIcon,
+    ["TTTTargetIDPlayerTargetIcon"] = Vampire_TTTTargetIDPlayerTargetIcon,
+    ["TTTTargetIDPlayerText"] = Vampire_TTTTargetIDPlayerText
 }
 
 AddHook("TTTPrepareRound", "Vampire_TTTPrepareRound", function()
