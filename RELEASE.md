@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.5.5 (Beta)
+**Released: **
+
+### Fixes
+- Fixed Vampire's not seeing their teammates target ID and scoreboard information if `ttt_vampire_is_independent` is enabled
+
 ## 2.5.4 (Beta)
 **Released: October 3rd, 2026**
 
