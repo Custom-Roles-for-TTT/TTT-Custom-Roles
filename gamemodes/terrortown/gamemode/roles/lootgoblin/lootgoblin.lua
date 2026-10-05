@@ -218,7 +218,7 @@ local function StartGoblinTimers()
                     if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
                         local idx = MathRandom(1, #cackles)
                         local chosen_sound = cackles[idx]
-                        sound.Play(chosen_sound, v:GetPos())
+                        v:EmitSound(chosen_sound)
                     end
                 end
                 timer.Adjust("LootGoblinCackle", MathRandom(min, max), 0, nil)

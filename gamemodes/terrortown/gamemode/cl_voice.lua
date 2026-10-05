@@ -161,12 +161,13 @@ function GM:OnPlayerChat(ply, text, teamchat, dead)
         return true
     end
 
-    local team = ply:Team() == TEAM_SPEC
-    if team and not dead then
+    local isSpec = ply:Team() == TEAM_SPEC
+    if isSpec and not dead then
         dead = true
     end
 
-    if teamchat and ((not team and not (ply:IsTraitorTeam() or ply:IsDetectiveTeam() or ply:IsMonsterTeam())) or team) then
+    -- Spectators and roles that don't have team chat shouldn't be able to chat in team chat
+    if teamchat and (isSpec or not ROLE_HAS_TEAM_CHAT[ply:GetRole()]) then
         teamchat = false
     end
 

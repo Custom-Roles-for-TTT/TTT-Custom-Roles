@@ -300,39 +300,41 @@ function PANEL:Paint(width, height)
     if c ~= defaultcolor and not ShouldSpectatorSeeRoles(client) then
         local color = nil
 
-        if client:IsTraitorTeam() then
-            if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
-                local glitch_role, color_role = GetGlitchedRole(ply, GetConVar("ttt_glitch_mode"):GetInt())
-                role = glitch_role
-                if color_role then
-                    color = ROLE_COLORS_SCOREBOARD[color_role]
-                else
-                    color = ROLE_COLORS_SCOREBOARD[role]
+        if not IsSearchedRoleKnown(ply) and not ply.body_found_role then
+            if client:IsTraitorTeam() then
+                if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
+                    local glitch_role, color_role = GetGlitchedRole(ply, GetConVar("ttt_glitch_mode"):GetInt())
+                    role = glitch_role
+                    if color_role then
+                        color = ROLE_COLORS_SCOREBOARD[color_role]
+                    else
+                        color = ROLE_COLORS_SCOREBOARD[role]
+                    end
+                elseif ply:IsImpersonator() then
+                    if ply:IsRoleActive() and GetConVar("ttt_impersonator_use_detective_icon"):GetBool() then
+                        role = ROLE_DETECTIVE
+                    end
+                    color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
                 end
-            elseif ply:IsImpersonator() then
-                if ply:IsRoleActive() and GetConVar("ttt_impersonator_use_detective_icon"):GetBool() then
-                    role = ROLE_DETECTIVE
-                end
-                color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
             end
-        end
 
-        -- Swap the deputy/impersonator icons depending on which settings are enabled
-        -- Only do this if we haven't set a value above
-        if not IsSearchedRoleKnown(ply) and not color and ply:IsDetectiveLike() then
-            if ply:IsDetectiveTeam() then
-                local disp_role, changed = ply:GetDisplayedRole()
-                -- If the displayed role was changed, use it for the color but use the question mark for the icon
-                if changed then
-                    color = ROLE_COLORS_SCOREBOARD[ROLE_DETECTIVE]
-                    role = ROLE_NONE
+            -- Swap the deputy/impersonator icons depending on which settings are enabled
+            -- Only do this if we haven't set a value above
+            if not color and ply:IsDetectiveLike() then
+                if ply:IsDetectiveTeam() then
+                    local disp_role, changed = ply:GetDisplayedRole()
+                    -- If the displayed role was changed, use it for the color but use the question mark for the icon
+                    if changed then
+                        color = ROLE_COLORS_SCOREBOARD[ROLE_DETECTIVE]
+                        role = ROLE_NONE
+                    else
+                        role = disp_role
+                    end
+                elseif GetConVar("ttt_deputy_use_detective_icon"):GetBool() then
+                    role = ROLE_DETECTIVE
                 else
-                    role = disp_role
+                    role = ROLE_DEPUTY
                 end
-            elseif GetConVar("ttt_deputy_use_detective_icon"):GetBool() then
-                role = ROLE_DETECTIVE
-            else
-                role = ROLE_DEPUTY
             end
         end
 

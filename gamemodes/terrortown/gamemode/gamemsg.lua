@@ -70,6 +70,8 @@ local function GetRoleChatTargets(sender, msg, from_chat)
         targets = GetDetectiveTeamFilter()
     elseif sender:IsMonsterTeam() then
         targets = GetMonsterTeamFilter()
+    elseif ROLE_HAS_TEAM_CHAT[sender:GetRole()] then
+        targets = GetRoleFilter(sender:GetRole(), true)
     end
 
     local result = CallHook("TTTTeamChatTargets", nil, sender, msg, targets, from_chat)
@@ -226,8 +228,8 @@ function GM:PlayerSay(ply, text, team_only)
     if not IsValid(ply) then return text or "" end
 
     if GetRoundState() == ROUND_ACTIVE then
-        local team = ply:Team() == TEAM_SPEC
-        if team and not DetectiveMode() then
+        local isSpec = ply:Team() == TEAM_SPEC
+        if isSpec and not DetectiveMode() then
             local filtered = {}
             for _, v in ipairs(string.Explode(" ", text)) do
                 -- grab word characters and whitelisted interpunction
@@ -245,7 +247,7 @@ function GM:PlayerSay(ply, text, team_only)
 
             table.insert(filtered, 1, "[MUMBLED]")
             return table.concat(filtered, " ")
-        elseif team_only and not team and (ply:IsTraitorTeam() or ply:IsDetectiveLike() or ply:IsMonsterTeam()) then
+        elseif team_only and not isSpec then
             if ply:IsTraitorTeam() and ShouldGlitchBlockCommunications() then
                 ply:PrintMessage(HUD_PRINTTALK, "The glitch is scrambling your communications")
                 return ""

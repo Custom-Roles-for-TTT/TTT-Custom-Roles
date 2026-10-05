@@ -940,28 +940,29 @@ ROLE_TRANSLATIONS = {}
 
 -- Role features
 ROLE_CONVARS = {}
+ROLE_HOOK_REGISTRATION_DEPENDENCIES = {}
+ROLE_HOOK_REGISTRATION_KEY = {}
 ROLE_LOADOUT_ITEMS = {}
 ROLE_MAX_HEALTH = {}
+ROLE_REGISTERED_HOOKS = {}
 ROLE_SELECTION_PREDICATE = {}
 ROLE_SHOP_ITEMS = {}
 ROLE_STARTING_CREDITS = {}
 ROLE_STARTING_HEALTH = {}
-ROLE_REGISTERED_HOOKS = {}
-ROLE_HOOK_REGISTRATION_KEY = {}
-ROLE_HOOK_REGISTRATION_DEPENDENCIES = {}
 
 -- Optional features
+ROLE_BLOCK_HEALTH_CONVARS = {}
+ROLE_BLOCK_SHOP_CONVARS = {}
+ROLE_BLOCK_SPAWN_CONVARS = {}
 ROLE_CAN_SEE_C4 = {}
 ROLE_CAN_SEE_JESTERS = {}
 ROLE_CAN_SEE_MIA = {}
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_HAS_SHOP_MODE = {}
 ROLE_HAS_SHOP_SYNC = {}
+ROLE_HAS_TEAM_CHAT = {}
 ROLE_SHOP_SYNC_ROLES = {}
 ROLE_SHOULD_NOT_DROWN = {}
-ROLE_BLOCK_SPAWN_CONVARS = {}
-ROLE_BLOCK_HEALTH_CONVARS = {}
-ROLE_BLOCK_SHOP_CONVARS = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -1092,6 +1093,10 @@ function RegisterRole(tbl)
 
     if type(tbl.hasshopsync) == "boolean" then
         ROLE_HAS_SHOP_SYNC[roleID] = tbl.hasshopsync
+    end
+
+    if type(tbl.hasteamchat) == "boolean" then
+        ROLE_HAS_TEAM_CHAT[roleID] = tbl.hasteamchat
     end
 
     if type(tbl.isdetectivelike) == "boolean" then
