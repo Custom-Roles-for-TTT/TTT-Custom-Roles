@@ -1,5 +1,13 @@
 # Release Notes
 
+## 2.5.6 (Beta)
+**Released:**
+
+### Fixes
+- Fixed independent Vampire losing karma when killing non-allied independents
+- Fixed independent Vampire not being able able to use fangs on non-allied independents
+- Fixed independent Vampire not getting credits on the correct intervals because non-allied independents were being counted as Vampires
+
 ## 2.5.5 (Beta)
 **Released: October 5th, 2026**
 
