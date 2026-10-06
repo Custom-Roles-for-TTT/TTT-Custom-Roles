@@ -1,5 +1,18 @@
 # Release Notes
 
+## 2.5.6 (Beta)
+**Released:**
+
+### Additions
+- Added ability to have the Revenger prioritize innocents as their soulmate (disabled by default)
+
+### Fixes
+- Fixed independent Vampire losing karma when killing non-allied independents
+- Fixed independent Vampire not being able able to use fangs on non-allied independents
+- Fixed independent Vampire not getting credits on the correct intervals because non-allied independents were being counted as Vampires
+- Fixed Vampire fang progress bar showing "CONVERTING" when conversion was disabled
+- Fixed vampire fang progress bar changing from "\*ING" to "\*" (e.g. "KILLING" -> "KILL") after 50% progress even if there was only 1 stage (e.g. conversion is disabled)
+
 ## 2.5.5 (Beta)
 **Released: October 5th, 2026**
 
