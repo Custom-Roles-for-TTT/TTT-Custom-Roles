@@ -1038,7 +1038,7 @@ function CLSCORE:ShowPanel()
     local padding = parentTabs:GetPadding()
 
     local summary_tabs = GetConVar("ttt_round_summary_tabs"):GetString()
-    local tab_order = string.Explode(",", summary_tabs, false)
+    local tab_order = string.Split(summary_tabs, ",")
 
     -- If the convar is empty, use the default list
     if #summary_tabs == 0 then

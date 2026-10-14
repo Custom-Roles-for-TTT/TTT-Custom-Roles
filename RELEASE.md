@@ -13,6 +13,9 @@
 - Fixed Vampire fang progress bar showing "CONVERTING" when conversion was disabled
 - Fixed vampire fang progress bar changing from "\*ING" to "\*" (e.g. "KILLING" -> "KILL") after 50% progress even if there was only 1 stage (e.g. conversion is disabled)
 
+### Developer
+- Ported "Minor cleanup: Get rid of usages of string.Explode" from base TTT
+
 ## 2.5.5 (Beta)
 **Released: October 5th, 2026**
 

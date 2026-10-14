@@ -56,7 +56,7 @@ local function GatherIntel(ply)
     local hiddenRoles = {}
     local hiddenRolesString = scout_hidden_roles:GetString()
     if #hiddenRolesString > 0 then
-        hiddenRoles = string.Explode(",", hiddenRolesString)
+        hiddenRoles = string.Split(hiddenRolesString, ",")
     end
 
     local currentRoles = {}

@@ -1450,7 +1450,7 @@ end
 local function PlayerAutoComplete(cmd, args)
     -- Split all the arguments out so we can keep track of them
     local arg_split = {}
-    for _, v in ipairs(string.Explode("\"", args, false)) do
+    for _, v in ipairs(string.Split(args, "\"")) do
         local trimmed = string.Trim(v)
         if #trimmed > 0 then
             TableInsert(arg_split, trimmed)
