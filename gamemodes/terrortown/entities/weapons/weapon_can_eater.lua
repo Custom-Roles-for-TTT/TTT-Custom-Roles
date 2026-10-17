@@ -148,6 +148,8 @@ function SWEP:PrimaryAttack()
 
         hitEnt:SetFOV(0, 0.2)
 
+        hitEnt.TTTCannibalCredits = hitEnt:GetCredits()
+        hitEnt.TTTCannibalEquipment = hitEnt.equipment_items
         hitEnt:SetProperty("TTTCannibalEaten", owner:SteamID64())
         hitEnt:QueueMessage(MSG_PRINTBOTH, "You have been eaten by " .. owner:Nick() .. "!")
 

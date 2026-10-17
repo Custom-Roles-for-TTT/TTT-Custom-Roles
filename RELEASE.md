@@ -11,7 +11,8 @@
 - Fixed independent Vampire not being able able to use fangs on non-allied independents
 - Fixed independent Vampire not getting credits on the correct intervals because non-allied independents were being counted as Vampires
 - Fixed Vampire fang progress bar showing "CONVERTING" when conversion was disabled
-- Fixed vampire fang progress bar changing from "\*ING" to "\*" (e.g. "KILLING" -> "KILL") after 50% progress even if there was only 1 stage (e.g. conversion is disabled)
+- Fixed Vampire fang progress bar changing from "\*ING" to "\*" (e.g. "KILLING" -> "KILL") after 50% progress even if there was only 1 stage (e.g. conversion is disabled)
+- Fixed Cannibal victims losing their credits and passive items when they are released
 
 ### Developer
 - Ported "Minor cleanup: Get rid of usages of string.Explode" from base TTT
