@@ -179,7 +179,7 @@ for subdir, dirs, files in os.walk(rootdir):
             else:
                 # If we're in a SERVER or CLIENT scope
                 if inScope:
-                    # Save the first line within it's spaces so we know how
+                    # Save the first line within its spaces so we know how
                     # many spaces to add to the hook mapping in this scope
                     if scopeSpaces == None or scopeSpaces == "":
                         space_match = space_pattern.match(line)
