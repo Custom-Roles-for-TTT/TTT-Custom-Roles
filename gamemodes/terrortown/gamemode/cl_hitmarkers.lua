@@ -11,7 +11,7 @@ local GetTranslation = LANG.GetTranslation
 local HookCall = hook.Call
 local MathApproach = math.Approach
 local StringLower = string.lower
-local StringExplode = string.Explode
+local StringSplit = string.Split
 
 -- Config menu
 hook.Add("Initialize", "Hitmarkers_Initialize", function()
@@ -78,7 +78,7 @@ local hm_CanPlayS = true
 local hm_Alpha = 0
 
 local function GrabColor(convar)
-    local coltable = StringExplode(",", convar:GetString())
+    local coltable = StringSplit(convar:GetString(), ",")
     local newcol = {}
 
     for k, v in pairs(coltable) do

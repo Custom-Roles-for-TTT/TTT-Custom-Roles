@@ -405,6 +405,7 @@ ttt_revenger_radar_timer                       15      // The amount of time bet
 ttt_revenger_damage_bonus                      0       // Extra damage that the Revenger deals to their lover's killer (e.g. 0.5 = 50% extra damage)
 ttt_revenger_drain_health_to                   -1      // The amount of health to drain the Revenger down to after their lover has died. Setting to 0 will kill them. Set to -1 to disable
 ttt_revenger_drain_health_rate                 3       // How often, in seconds, health will be drained from a Revenger whose lover has died
+ttt_revenger_target_innocents                  0       // Whether the Revenger will prioritize targeting innocent players as their soulmate
 
 // Deputy
 ttt_deputy_damage_penalty                      0       // Damage penalty that the Deputy has before being promoted (e.g. 0.5 = 50% less damage)

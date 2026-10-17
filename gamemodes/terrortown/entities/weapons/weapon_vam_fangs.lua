@@ -564,7 +564,11 @@ if CLIENT then
 
         local firstVerb
         local secondVerb
-        if vampire_drain_first:GetBool() then
+        local canConvert = self:CanConvert() and not self:GetTargetIsBody()
+        if not canConvert then
+            firstVerb = "vam_fangs_kill"
+            secondVerb = ""
+        elseif vampire_drain_first:GetBool() then
             firstVerb = "vam_fangs_kill"
             secondVerb = "vam_fangs_convert"
         else
@@ -581,7 +585,7 @@ if CLIENT then
             progress = math.TimeFraction(self:GetStartTime(), self:GetStartTime() + self:GetFangDuration(), CurTime())
             color = Color(0, 255, 0, 155)
 
-            if progress < 0.5 then
+            if progress < 0.5 or #secondVerb == 0 then
                 firstVerb = firstVerb .. "ing"
                 secondVerb = ""
             else
@@ -596,11 +600,10 @@ if CLIENT then
         progress = math.Clamp(progress, 0, 1)
 
         local T = LANG.GetTranslation
-        local split = self:CanConvert() and not self:GetTargetIsBody()
         local x = ScrW() / 2.0
         local y = ScrH() / 2.0
         y = y + (y / 3)
-        CRHUD:PaintProgressBar(x, y, 255, color, self:GetMessage(), progress, split and 2 or 1, {T(firstVerb), T(secondVerb)})
+        CRHUD:PaintProgressBar(x, y, 255, color, self:GetMessage(), progress, canConvert and 2 or 1, {T(firstVerb), T(secondVerb)})
     end
 else
     function SWEP:Reset()

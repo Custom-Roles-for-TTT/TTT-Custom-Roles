@@ -46,6 +46,15 @@ local function ReleaseEatenPlayers(ply, message)
                 v.hat:SetNoDraw(false)
             end
             v:Spawn()
+            if v.TTTCannibalEquipment then
+                v.equipment_items = v.TTTCannibalEquipment
+                v:SendEquipment()
+                v.TTTCannibalEquipment = nil
+            end
+            if v.TTTCannibalCredits then
+                v:SetCredits(v.TTTCannibalCredits)
+                v.TTTCannibalCredits = nil
+            end
             local pos = ply:GetPos()
             v:SetPos(FindRespawnLocation(pos) or pos)
             v:SetEyeAngles(Angle(0, ply:GetAngles().y, 0))
@@ -225,6 +234,8 @@ end
 
 AddHook("TTTPrepareRound", "Cannibal_TTTPrepareRound", function()
     for _, v in PlayerIterator() do
+        v.TTTCannibalCredits = nil
+        v.TTTCannibalEquipment = nil
         v:ClearProperty("TTTCannibalEaten")
     end
 end)

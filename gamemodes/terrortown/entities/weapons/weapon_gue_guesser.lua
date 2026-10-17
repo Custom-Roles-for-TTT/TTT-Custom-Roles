@@ -166,7 +166,7 @@ function SWEP:SecondaryAttack()
             local bannedRoles = {}
             local bannedRolesString = guesser_unguessable_roles:GetString()
             if #bannedRolesString > 0 then
-                bannedRoles = string.Explode(",", bannedRolesString)
+                bannedRoles = string.Split(bannedRolesString, ",")
             end
             local roles = {}
             for role = 3, ROLE_MAX do -- Skip over the three default roles as they will be added later to avoid sorting
