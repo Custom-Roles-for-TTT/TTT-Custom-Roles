@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.5.6 (Beta)
-**Released:**
+**Released: October 17th, 2026**
 
 ### Additions
 - Added ability to have the Revenger prioritize innocents as their soulmate (disabled by default)
