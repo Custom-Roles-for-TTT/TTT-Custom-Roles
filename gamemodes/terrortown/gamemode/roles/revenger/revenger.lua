@@ -18,6 +18,7 @@ util.AddNetworkString("TTT_RevengerLoverKillerRadar")
 -- CONVARS --
 -------------
 
+local revenger_target_innocents = CreateConVar("ttt_revenger_target_innocents", "0", FCVAR_NONE, "Whether the revenger will prioritize targeting innocent players as their soulmate ", 0, 1)
 local revenger_drain_health_to = CreateConVar("ttt_revenger_drain_health_to", "-1", FCVAR_NONE, "The amount of health to drain the revenger down to after their lover has died. Setting to 0 will kill them. Set to -1 to disable", -1, 200)
 local revenger_drain_health_rate = CreateConVar("ttt_revenger_drain_health_rate", "3", FCVAR_NONE, "How often, in seconds, health will be drained from a revenger whose lover has died", 1, 60)
 
@@ -128,11 +129,21 @@ end
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
     local potentialSoulmates = {}
+    local otherPlayers = {}
     for _, p in PlayerIterator() do
         if p:Alive() and not p:IsSpec() and p ~= ply then
-            table.insert(potentialSoulmates, p)
+            if revenger_target_innocents:GetBool() and p:IsInnocentTeam() then
+                table.insert(potentialSoulmates, p)
+            else
+                table.insert(otherPlayers, p)
+            end
         end
     end
+
+    if #potentialSoulmates == 0 then
+        potentialSoulmates = otherPlayers
+    end
+
     if #potentialSoulmates > 0 then
         local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
         ply:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")

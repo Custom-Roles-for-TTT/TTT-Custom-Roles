@@ -27,5 +27,9 @@ ROLE_CONVARS[ROLE_REVENGER] = {
         cvar = "ttt_revenger_drain_health_rate",
         type = ROLE_CONVAR_TYPE_NUM,
         decimal = 0
+    },
+    {
+        cvar = "ttt_revenger_target_innocents",
+        type = ROLE_CONVAR_TYPE_BOOL
     }
 }

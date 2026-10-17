@@ -498,7 +498,7 @@ if SERVER then
         end
 
         local fileContent = FileRead(filePath, "GAME")
-        local lines = string.Explode("\n", fileContent)
+        local lines = string.Split(fileContent, "\n")
         for _, line in ipairs(lines) do
             line = StringTrim(line)
             if #line == 0 then continue end

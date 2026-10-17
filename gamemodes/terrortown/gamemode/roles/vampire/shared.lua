@@ -42,7 +42,7 @@ function plymeta:GetVampireAlly()
     elseif TRAITOR_ROLES[ROLE_VAMPIRE] then
         return TRAITOR_ROLES[role]
     end
-    return INDEPENDENT_ROLES[role]
+    return role == ROLE_VAMPIRE
 end
 
 plymeta.IsVampirePrime = plymeta.GetVampirePrime

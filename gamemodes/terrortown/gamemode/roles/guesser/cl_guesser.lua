@@ -410,7 +410,7 @@ AddHook("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, tit
         local unguessableRoles = {}
         local unguessableRolesString = GetConVar("ttt_guesser_unguessable_roles"):GetString()
         if #unguessableRolesString > 0 then
-            unguessableRoles = string.Explode(",", unguessableRolesString)
+            unguessableRoles = string.Split(unguessableRolesString, ",")
         end
         local bannedRoles = ""
         local addComma = false
