@@ -1836,11 +1836,9 @@ function UpdateRoleState()
 
             -- If this isn't a regular detective, update the armor equipment loadout status to match the setting
             if not DEFAULT_ROLES[r] then
-                for _, i in ipairs(EquipmentItems[r]) do
-                    if i.id == EQUIP_ARMOR then
-                        i.loadout = special_detectives_armor_loadout
-                        break
-                    end
+                local equip = GetEquipmentItem(r, EQUIP_ARMOR)
+                if equip then
+                    equip.loadout = special_detectives_armor_loadout
                 end
             end
         end
