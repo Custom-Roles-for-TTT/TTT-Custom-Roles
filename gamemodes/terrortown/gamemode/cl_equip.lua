@@ -142,6 +142,26 @@ end)
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end
 
+local equipmentExcludesByRole = {}
+local function IsBuyableEquipmentItem(item, r)
+    if not item then return false end
+    if not showLoadoutEquipment:GetBool() and item.loadout then return false end
+
+    if not equipmentExcludesByRole[r] then
+        equipmentExcludesByRole[r] = TableCopy(WEPS.ExcludeWeapons[r] or {})
+        if #ROLEPACKS.GetCurrentRolePackName() > 0 then
+            local excludes = WEPS.RolePackExcludesWeapons[r]
+            for _, v in pairs(excludes) do
+                if not TableHasValue(equipmentExcludesByRole[r], v) then
+                    TableInsert(equipmentExcludesByRole[r], v)
+                end
+            end
+        end
+    end
+
+    return not TableHasValue(equipmentExcludesByRole[r], item.name)
+end
+
 function GetEquipmentForRole(role, promoted, block_randomization, block_exclusion, ignore_cache, rolepack_weps)
     WEPS.PrepWeaponsLists(role)
 
@@ -237,7 +257,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     i.custom = not TableHasValue(DefaultEquipment[r], i.id)
 
                     -- Save the equipment to be synced below
-                    if not ItemIsWeapon(i) and (showLoadoutEquipment:GetBool() or not i.loadout) then
+                    if not ItemIsWeapon(i) and IsBuyableEquipmentItem(i, r) then
                         -- Track the items already available to this role to avoid duplicates
                         if r == role then
                             available[i.id] = true
@@ -850,6 +870,9 @@ local function TraitorMenuPopup()
     dframe:ShowCloseButton(true)
     dframe:SetMouseInputEnabled(true)
     dframe:SetDeleteOnClose(true)
+    function dframe:OnClose()
+        equipmentExcludesByRole = {}
+    end
 
     local dsheet = vgui.Create("DPropertySheet", dframe)
 
