@@ -9,6 +9,7 @@
 - Fixed weapons that only show under certain conditions (e.g. the Cure) being added to the Hive Mind's shop upon assimilation even if they should have been disabled
 - Fixed detectives that are not detectives on initial load (e.g. the ones with `ttt_*_is_detective` convars) not being given their loadout body armor
 - Fixed passive items bought by roles with shop delays enabled (e.g. `ttt_*_shop_delay 1`) being activated immediately
+- Fixed Exorcism Device not being added to the Hive Mind's shop when they assimilated someone who had it available
 
 ## 2.5.6 (Beta)
 **Released: October 17th, 2026**

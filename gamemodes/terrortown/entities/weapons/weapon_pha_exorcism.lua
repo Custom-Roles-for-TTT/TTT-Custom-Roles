@@ -35,7 +35,7 @@ SWEP.WorldModel             = "models/weapons/w_toolgun.mdl"
 SWEP.Base                   = "weapon_cr_defibbase"
 SWEP.Category               = WEAPON_CATEGORY_ROLE
 SWEP.Kind                   = WEAPON_EQUIP
-SWEP.CanBuy                 = { }
+SWEP.CanBuy                 = { ROLE_TRAITOR, ROLE_QUACK }
 SWEP.AllowDrop              = true
 
 SWEP.BlockShopRandomization = true
