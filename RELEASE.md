@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.5.7 (Beta)
+**Released:**
+
+### Fixes
+- Fixed loadout items being included in synced role shops (e.g., body armor from the Detective being given to the Hive Mind) when `ttt_show_loadout_equipment` was disabled
+  - The intent of role shop syncing is to only sync the things that are actually buyable
+
 ## 2.5.6 (Beta)
 **Released: October 17th, 2026**
 

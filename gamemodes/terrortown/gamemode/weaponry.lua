@@ -537,6 +537,7 @@ local function OrderEquipment(ply, cmd, args)
 
     -- Don't give roles their items if delayed shop is enabled
     local should_give = not ply:ShouldDelayShopPurchase()
+    local show_loadout = ply:GetInfoNum("ttt_show_loadout_equipment", 0) == 1
     local received = false
     if is_item then
         id = tonumber(id)
@@ -546,18 +547,23 @@ local function OrderEquipment(ply, cmd, args)
         -- Check for the syncing options
         if not allowed then
             if rolemode > SHOP_SYNC_MODE_NONE then
+                local traItem = GetEquipmentItem(ROLE_TRAITOR, id)
+                local detItem = GetEquipmentItem(ROLE_DETECTIVE, id)
+                local hasTra = traItem and (show_loadout or not traItem.loadout)
+                local hasDet = detItem and (show_loadout or not detItem.loadout)
+
                 -- Traitor OR Detective
                 if rolemode == SHOP_SYNC_MODE_UNION then
-                    allowed = GetEquipmentItem(ROLE_TRAITOR, id) or GetEquipmentItem(ROLE_DETECTIVE, id)
+                    allowed = hasTra or hasDet
                 -- Traitor AND Detective
                 elseif rolemode == SHOP_SYNC_MODE_INTERSECT then
-                    allowed = GetEquipmentItem(ROLE_TRAITOR, id) and GetEquipmentItem(ROLE_DETECTIVE, id)
+                    allowed = hasTra and hasDet
                 -- Detective only
                 elseif rolemode == SHOP_SYNC_MODE_DETECTIVE then
-                    allowed = GetEquipmentItem(ROLE_DETECTIVE, id)
+                    allowed = hasDet
                 -- Traitor only
                 elseif rolemode == SHOP_SYNC_MODE_TRAITOR then
-                    allowed = GetEquipmentItem(ROLE_TRAITOR, id)
+                    allowed = hasTra
                 end
             end
         end
@@ -565,8 +571,9 @@ local function OrderEquipment(ply, cmd, args)
         -- Check each sync role for their equipment as well
         if not allowed and #sync_roles > 0 then
             for _, r in pairs(sync_roles) do
-                allowed = GetEquipmentItem(r, id)
-                if allowed then
+                local equip = GetEquipmentItem(r, id)
+                if equip ~= nil and (show_loadout or not equip.loadout) then
+                    allowed = true
                     break
                 end
             end
@@ -578,7 +585,7 @@ local function OrderEquipment(ply, cmd, args)
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)
-                    if equip ~= nil and equip.id == id then
+                    if equip ~= nil and equip.id == id and (show_loadout or not equip.loadout) then
                         allowed = true
                         break
                     end
