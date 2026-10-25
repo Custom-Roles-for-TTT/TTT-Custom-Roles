@@ -6,6 +6,7 @@
 ### Fixes
 - Fixed loadout items being included in synced role shops (e.g., body armor from the Detective being given to the Hive Mind) when `ttt_show_loadout_equipment` was disabled
   - The intent of role shop syncing is to only sync the things that are actually buyable
+- Fixed weapons that only show under certain conditions (e.g. the Cure) being added to the Hive Mind's shop upon assimilation even if they should have been disabled
 
 ## 2.5.6 (Beta)
 **Released: October 17th, 2026**
