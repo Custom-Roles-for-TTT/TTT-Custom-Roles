@@ -659,26 +659,27 @@ local function OrderEquipment(ply, cmd, args)
         ply:SubtractCredits(1)
         if should_give then
             LANG.Msg(ply, "buy_received")
+
+            timer.Simple(0.5,
+                    function()
+                        if not IsValid(ply) then return end
+                        net.Start("TTT_BoughtItem")
+                            net.WriteBit(is_item)
+                            if is_item then
+                                net.WriteUInt(id, 32)
+                            else
+                                net.WriteString(id)
+                            end
+                        net.Send(ply)
+                    end)
+
+            hook.Call("TTTOrderedEquipment", GAMEMODE, ply, id, is_item)
         else
             LANG.Msg(ply, "buy_received_delay")
         end
 
+        -- Add to the bought list immediately so we can't buy it multiple times
         ply:AddBought(id)
-
-        timer.Simple(0.5,
-                function()
-                    if not IsValid(ply) then return end
-                    net.Start("TTT_BoughtItem")
-                    net.WriteBit(is_item)
-                    if is_item then
-                        net.WriteUInt(id, 32)
-                    else
-                        net.WriteString(id)
-                    end
-                    net.Send(ply)
-                end)
-
-        hook.Call("TTTOrderedEquipment", GAMEMODE, ply, id, is_item)
     end
 end
 concommand.Add("ttt_order_equipment", OrderEquipment)
