@@ -79,11 +79,16 @@ local dframe = nil
 hook.Add("OnPauseMenuShow", "Help_OnPauseMenuShow", function()
     -- If we needed to close the help menu, don't open the pause menu too
     if IsValid(dframe) then
-        dframe:Close()
-        dframe = nil
+        HELPSCRN:Close()
         return false
     end
 end)
+
+function HELPSCRN:Close()
+    if not IsValid(dframe) then return end
+    dframe:Close()
+    dframe = nil
+end
 
 function HELPSCRN:Show()
     if IsValid(dframe) then return end

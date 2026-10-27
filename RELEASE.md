@@ -12,6 +12,9 @@
 - Fixed Exorcism Device not being added to the Hive Mind's shop when they assimilated someone who had it available
 - Fixed equipment items excluded from a role's shop still being added to the Hive Mind's shop when they assimilated someone of that role
 
+### Developer
+- Added `HELPSCRN:Close()` to allow programmatically closing the F1 menu
+
 ## 2.5.6 (Beta)
 **Released: October 17th, 2026**
 
