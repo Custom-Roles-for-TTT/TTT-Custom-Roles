@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.5.7 (Beta)
-**Released:**
+**Released: October 31st, 2026**
 
 ### Fixes
 - Fixed loadout items being included in synced role shops (e.g., body armor from the Detective being given to the Hive Mind) when `ttt_show_loadout_equipment` was disabled
@@ -11,6 +11,7 @@
 - Fixed passive items bought by roles with shop delays enabled (e.g. `ttt_*_shop_delay 1`) being activated immediately
 - Fixed Exorcism Device not being added to the Hive Mind's shop when they assimilated someone who had it available
 - Fixed equipment items excluded from a role's shop still being added to the Hive Mind's shop when they assimilated someone of that role
+- Fixed typo in Phantom's cheat sheet text
 
 ### Developer
 - Added `HELPSCRN:Close()` to allow programmatically closing the F1 menu
