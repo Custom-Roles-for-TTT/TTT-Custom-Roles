@@ -79,6 +79,9 @@ AddHook("TTTUpdateRoleState", "Quack_TTTUpdateRoleState", function()
         end
     elseif table.HasValue(phantom_device.CanBuy, ROLE_QUACK) then
         table.RemoveByValue(phantom_device.CanBuy, ROLE_QUACK)
+        if phantom_device.CanBuyOrig then
+            table.RemoveByValue(phantom_device.CanBuyOrig, ROLE_QUACK)
+        end
     end
 
     local station_bomb = weapons.GetStored("weapon_qua_station_bomb")
@@ -88,6 +91,9 @@ AddHook("TTTUpdateRoleState", "Quack_TTTUpdateRoleState", function()
         end
     elseif table.HasValue(station_bomb.CanBuy, ROLE_QUACK) then
         table.RemoveByValue(station_bomb.CanBuy, ROLE_QUACK)
+        if station_bomb.CanBuyOrig then
+            table.RemoveByValue(station_bomb.CanBuyOrig, ROLE_QUACK)
+        end
     end
 
     local fake_cure = weapons.GetStored("weapon_qua_fake_cure")
@@ -95,6 +101,9 @@ AddHook("TTTUpdateRoleState", "Quack_TTTUpdateRoleState", function()
         fake_cure.CanBuy = table.Copy(fake_cure.CanBuyDefault)
     else
         table.Empty(fake_cure.CanBuy)
+        if fake_cure.CanBuyOrig then
+            table.Empty(fake_cure.CanBuyOrig)
+        end
     end
 
     fake_cure.LimitedStock = not quack_fake_cure_rebuyable:GetBool()

@@ -32,7 +32,7 @@ local TableInsert = table.insert
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "2.5.6"
+CR_VERSION = "2.5.7"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -1836,11 +1836,9 @@ function UpdateRoleState()
 
             -- If this isn't a regular detective, update the armor equipment loadout status to match the setting
             if not DEFAULT_ROLES[r] then
-                for _, i in ipairs(EquipmentItems[r]) do
-                    if i.id == EQUIP_ARMOR then
-                        i.loadout = special_detectives_armor_loadout
-                        break
-                    end
+                local equip = GetEquipmentItem(r, EQUIP_ARMOR)
+                if equip then
+                    equip.loadout = special_detectives_armor_loadout
                 end
             end
         end

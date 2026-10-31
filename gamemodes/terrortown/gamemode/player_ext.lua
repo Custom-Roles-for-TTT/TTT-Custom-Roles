@@ -481,13 +481,15 @@ function plymeta:GiveDelayedShopItems()
         -- Also let them know they bought this item "again" so hooks are called
         -- NOTE: The net event and the give action cannot be done at the same time because GiveEquipmentItem calls its own net event which causes an error
         net.Start("TTT_BoughtItem")
-        net.WriteBit(isequip)
-        if id_num then
-            net.WriteUInt(id_num, 32)
-        else
-            net.WriteString(item_id)
-        end
+            net.WriteBit(isequip)
+            if id_num then
+                net.WriteUInt(id_num, 32)
+            else
+                net.WriteString(item_id)
+            end
         net.Send(self)
+
+        CallHook("TTTOrderedEquipment", GAMEMODE, self, id_num or item_id, id_num)
     end
 end
 

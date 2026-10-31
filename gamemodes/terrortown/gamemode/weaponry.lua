@@ -471,6 +471,26 @@ function GM:TTTCanOrderEquipment(ply, id, is_item)
     return true
 end
 
+local equipmentExcludesByRole = {}
+local function IsBuyableEquipmentItem(item, r, show_loadout)
+    if not item then return false end
+    if not show_loadout and item.loadout then return false end
+
+    if not equipmentExcludesByRole[r] then
+        equipmentExcludesByRole[r] = TableCopy(WEPS.ExcludeWeapons[r] or {})
+        if #ROLEPACKS.GetCurrentRolePackName() > 0 then
+            local excludes = WEPS.RolePackExcludesWeapons[r]
+            for _, v in pairs(excludes) do
+                if not TableHasValue(equipmentExcludesByRole[r], v) then
+                    TableInsert(equipmentExcludesByRole[r], v)
+                end
+            end
+        end
+    end
+
+    return not TableHasValue(equipmentExcludesByRole[r], item.name)
+end
+
 -- Equipment buying
 local function OrderEquipment(ply, cmd, args)
     if not IsValid(ply) or #args ~= 1 then return end
@@ -541,23 +561,28 @@ local function OrderEquipment(ply, cmd, args)
     if is_item then
         id = tonumber(id)
 
+        local show_loadout = ply:GetInfoNum("ttt_show_loadout_equipment", 0) == 1
+
         -- item whitelist check
         local allowed = GetEquipmentItem(role, id)
         -- Check for the syncing options
         if not allowed then
             if rolemode > SHOP_SYNC_MODE_NONE then
+                local hasTra = IsBuyableEquipmentItem(GetEquipmentItem(ROLE_TRAITOR, id), ROLE_TRAITOR, show_loadout)
+                local hasDet = IsBuyableEquipmentItem(GetEquipmentItem(ROLE_DETECTIVE, id), ROLE_DETECTIVE, show_loadout)
+
                 -- Traitor OR Detective
                 if rolemode == SHOP_SYNC_MODE_UNION then
-                    allowed = GetEquipmentItem(ROLE_TRAITOR, id) or GetEquipmentItem(ROLE_DETECTIVE, id)
+                    allowed = hasTra or hasDet
                 -- Traitor AND Detective
                 elseif rolemode == SHOP_SYNC_MODE_INTERSECT then
-                    allowed = GetEquipmentItem(ROLE_TRAITOR, id) and GetEquipmentItem(ROLE_DETECTIVE, id)
+                    allowed = hasTra and hasDet
                 -- Detective only
                 elseif rolemode == SHOP_SYNC_MODE_DETECTIVE then
-                    allowed = GetEquipmentItem(ROLE_DETECTIVE, id)
+                    allowed = hasDet
                 -- Traitor only
                 elseif rolemode == SHOP_SYNC_MODE_TRAITOR then
-                    allowed = GetEquipmentItem(ROLE_TRAITOR, id)
+                    allowed = hasTra
                 end
             end
         end
@@ -565,8 +590,9 @@ local function OrderEquipment(ply, cmd, args)
         -- Check each sync role for their equipment as well
         if not allowed and #sync_roles > 0 then
             for _, r in pairs(sync_roles) do
-                allowed = GetEquipmentItem(r, id)
-                if allowed then
+                local equip = GetEquipmentItem(r, id)
+                if equip ~= nil and IsBuyableEquipmentItem(equip, r, show_loadout) then
+                    allowed = true
                     break
                 end
             end
@@ -578,7 +604,7 @@ local function OrderEquipment(ply, cmd, args)
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)
-                    if equip ~= nil and equip.id == id then
+                    if equip ~= nil and equip.id == id and IsBuyableEquipmentItem(equip, role, show_loadout) then
                         allowed = true
                         break
                     end
@@ -592,7 +618,7 @@ local function OrderEquipment(ply, cmd, args)
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemByName(v)
-                    if equip ~= nil and equip.id == id then
+                    if equip ~= nil and equip.id == id and IsBuyableEquipmentItem(equip, role, show_loadout) then
                         allowed = false
                         break
                     end
@@ -652,26 +678,27 @@ local function OrderEquipment(ply, cmd, args)
         ply:SubtractCredits(1)
         if should_give then
             LANG.Msg(ply, "buy_received")
+
+            timer.Simple(0.5,
+                    function()
+                        if not IsValid(ply) then return end
+                        net.Start("TTT_BoughtItem")
+                            net.WriteBit(is_item)
+                            if is_item then
+                                net.WriteUInt(id, 32)
+                            else
+                                net.WriteString(id)
+                            end
+                        net.Send(ply)
+                    end)
+
+            hook.Call("TTTOrderedEquipment", GAMEMODE, ply, id, is_item)
         else
             LANG.Msg(ply, "buy_received_delay")
         end
 
+        -- Add to the bought list immediately so we can't buy it multiple times
         ply:AddBought(id)
-
-        timer.Simple(0.5,
-                function()
-                    if not IsValid(ply) then return end
-                    net.Start("TTT_BoughtItem")
-                    net.WriteBit(is_item)
-                    if is_item then
-                        net.WriteUInt(id, 32)
-                    else
-                        net.WriteString(id)
-                    end
-                    net.Send(ply)
-                end)
-
-        hook.Call("TTTOrderedEquipment", GAMEMODE, ply, id, is_item)
     end
 end
 concommand.Add("ttt_order_equipment", OrderEquipment)

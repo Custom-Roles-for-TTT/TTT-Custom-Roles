@@ -93,6 +93,7 @@ local function PrepareRoleEquipment()
     end
 end
 PrepareRoleEquipment()
+hook.Add("TTTPrepareRound", "PrepareRoleEquipment", PrepareRoleEquipment)
 
 -- Search if an item is in the equipment table of a given role, and return it if
 -- it exists, else return nil.

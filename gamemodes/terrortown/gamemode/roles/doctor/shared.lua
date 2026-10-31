@@ -55,6 +55,9 @@ AddHook("TTTUpdateRoleState", "Doctor_TTTUpdateRoleState", function()
         cure.CanBuy = table.Copy(cure.CanBuyDefault)
     else
         table.Empty(cure.CanBuy)
+        if cure.CanBuyOrig then
+            table.Empty(cure.CanBuyOrig)
+        end
     end
 
     cure.LimitedStock = not doctor_cure_rebuyable:GetBool()
