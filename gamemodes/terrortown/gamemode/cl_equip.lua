@@ -150,7 +150,7 @@ local function IsBuyableEquipmentItem(item, r)
     if not equipmentExcludesByRole[r] then
         equipmentExcludesByRole[r] = TableCopy(WEPS.ExcludeWeapons[r] or {})
         if #ROLEPACKS.GetCurrentRolePackName() > 0 then
-            local excludes = WEPS.RolePackExcludeWeapons[r]
+            local excludes = WEPS.RolePackExcludeWeapons[r] or {}
             for _, v in pairs(excludes) do
                 if not TableHasValue(equipmentExcludesByRole[r], v) then
                     TableInsert(equipmentExcludesByRole[r], v)
