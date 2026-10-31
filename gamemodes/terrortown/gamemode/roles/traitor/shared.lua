@@ -55,6 +55,9 @@ AddHook("TTTUpdateRoleState", "Traitor_TTTUpdateRoleState", function()
         end
     elseif table.HasValue(phantom_device.CanBuy, ROLE_TRAITOR) then
         table.RemoveByValue(phantom_device.CanBuy, ROLE_TRAITOR)
+        if phantom_device.CanBuyOrig then
+            table.RemoveByValue(phantom_device.CanBuyOrig, ROLE_TRAITOR)
+        end
     end
 end)
 
