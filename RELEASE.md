@@ -1,5 +1,11 @@
 # Release Notes
 
+## 2.5.8 (Beta)
+**Released:**
+
+### Fixes
+- Ported "Ignore unknown modes in ttt_mute_team" from base TTT
+
 ## 2.5.7 (Beta)
 **Released: October 31st, 2026**
 
