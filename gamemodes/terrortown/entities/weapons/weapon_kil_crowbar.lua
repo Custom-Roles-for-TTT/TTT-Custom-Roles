@@ -93,6 +93,8 @@ function SWEP:Throw()
     if owner:IsKiller() and owner:IsRoleAbilityDisabled() then return end
 
     local ent = ents.Create("ttt_kil_crowbar")
+    if not IsValid(ent) then print("Failed to create crowbar entity!") return end
+
     ent:SetDamage(GetConVar("ttt_killer_crowbar_thrown_damage"):GetInt())
     ent:SetOwner(owner)
     ent:SetPos(owner:EyePos() + (owner:GetAimVector() * 16))

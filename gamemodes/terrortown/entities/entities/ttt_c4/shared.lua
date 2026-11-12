@@ -270,13 +270,14 @@ function ENT:Explode(tr)
 
         -- extra push
         local phexp = ents.Create("env_physexplosion")
-        phexp:SetPos(pos)
-        phexp:SetKeyValue("magnitude", self:GetDmg())
-        phexp:SetKeyValue("radius", r_outer)
-        phexp:SetKeyValue("spawnflags", "19")
-        phexp:Spawn()
-        phexp:Fire("Explode", "", 0)
-
+        if IsValid(phexp) then
+            phexp:SetPos(pos)
+            phexp:SetKeyValue("magnitude", self:GetDmg())
+            phexp:SetKeyValue("radius", r_outer)
+            phexp:SetKeyValue("spawnflags", "19")
+            phexp:Spawn()
+            phexp:Fire("Explode")
+        end
 
         -- few fire bits to ignite things
         timer.Simple(0.2, function() StartFires(pos, tr, 4, 5, true, dmgowner) end)
