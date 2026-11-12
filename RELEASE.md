@@ -5,6 +5,7 @@
 
 ### Fixes
 - Ported "Ignore unknown modes in ttt_mute_team" from base TTT
+- Ported "TTT: Stop traitors from disarming a living traitor's C4 with ttt_c4_disarm" from base TTT
 
 ## 2.5.7 (Beta)
 **Released: October 31st, 2026**
