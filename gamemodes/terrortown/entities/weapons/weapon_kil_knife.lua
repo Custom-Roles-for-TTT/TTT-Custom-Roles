@@ -155,6 +155,8 @@ function SWEP:SecondaryAttack()
 
     local owner = self:GetOwner()
     local nade = ents.Create("tot_smokenade")
+    if not IsValid(nade) then print("Failed to create smoke grenade entity!") return end
+
     nade.HmcdSpawned = self.HmcdSpawned
     nade:SetPos(owner:GetShootPos() + owner:GetAimVector() * 20)
     nade:Spawn()

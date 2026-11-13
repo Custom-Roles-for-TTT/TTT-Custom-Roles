@@ -270,13 +270,14 @@ function ENT:Explode(tr)
 
         -- extra push
         local phexp = ents.Create("env_physexplosion")
-        phexp:SetPos(pos)
-        phexp:SetKeyValue("magnitude", self:GetDmg())
-        phexp:SetKeyValue("radius", r_outer)
-        phexp:SetKeyValue("spawnflags", "19")
-        phexp:Spawn()
-        phexp:Fire("Explode", "", 0)
-
+        if IsValid(phexp) then
+            phexp:SetPos(pos)
+            phexp:SetKeyValue("magnitude", self:GetDmg())
+            phexp:SetKeyValue("radius", r_outer)
+            phexp:SetKeyValue("spawnflags", "19")
+            phexp:Spawn()
+            phexp:Fire("Explode")
+        end
 
         -- few fire bits to ignite things
         timer.Simple(0.2, function() StartFires(pos, tr, 4, 5, true, dmgowner) end)
@@ -519,8 +520,8 @@ if SERVER then
         if type(new_result) == "boolean" then result = new_result end
 
         net.Start("TTT_C4DisarmResult")
-        net.WriteEntity(bomb)
-        net.WriteBit(result) -- this way we can squeeze this bit into 16
+            net.WriteEntity(bomb)
+            net.WriteBit(result) -- this way we can squeeze this bit into 16
         net.Send(ply)
 
         return result
@@ -537,7 +538,14 @@ if SERVER then
         if IsValid(bomb) and bomb:GetClass() == "ttt_c4" and not bomb.DisarmCausedExplosion and bomb:GetArmed() then
             if bomb:GetPos():DistToSqr(ply:GetPos()) > 65536 then return end
 
-            local result = ply:HasWeapon("weapon_ttt_defuser") or bomb.SafeWires[wire] or ply:IsTraitorTeam() or ply == bomb:GetOwner()
+            local owner = bomb:GetOwner()
+            if ply ~= owner and ply:IsTraitorTeam() and IsValid(owner) and owner:Alive() and owner:IsTraitorTeam() then
+                -- same rule as UseOverride, which only guards the menu
+                LANG.Msg(ply, "c4_no_disarm", { traitor = ROLE_STRINGS[ROLE_TRAITOR] })
+                return
+            end
+
+            local result = ply:HasWeapon("weapon_ttt_defuser") or bomb.SafeWires[wire] or ply:IsTraitorTeam() or ply == owner
             result = SendDisarmResult(ply, bomb, result)
             if result then
                 LANG.Msg(ply, "c4_disarmed")
