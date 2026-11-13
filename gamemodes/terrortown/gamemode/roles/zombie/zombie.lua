@@ -100,7 +100,7 @@ end
 -- WIN CHECKS --
 ----------------
 
-local function Zombie_TTTWinCheckBlocks(win_blocks)
+AddHook("TTTWinCheckBlocks", "Zombie_TTTWinCheckBlocks", function(win_blocks)
     if not zombie_respawn_block_win:GetBool() then return end
 
     TableInsert(win_blocks, function(win)
@@ -110,7 +110,7 @@ local function Zombie_TTTWinCheckBlocks(win_blocks)
             end
         end
     end)
-end
+end)
 
 local function Zombie_TTTCheckForWin()
     -- Only run the win check if the zombies win by themselves (or with the Mad Scientist)
@@ -409,6 +409,5 @@ ROLE_REGISTERED_HOOKS[ROLE_ZOMBIE] = {
     ["TTTKarmaShouldGivePenalty"] = Zombie_TTTKarmaShouldGivePenalty,
     ["TTTPlayerAliveThink"] = Zombie_TTTPlayerAliveThink,
     ["TTTPrintResultMessage"] = Zombie_TTTPrintResultMessage,
-    ["TTTStopPlayerRespawning"] = Zombie_TTTStopPlayerRespawning,
-    ["TTTWinCheckBlocks"] = Zombie_TTTWinCheckBlocks
+    ["TTTStopPlayerRespawning"] = Zombie_TTTStopPlayerRespawning
 }

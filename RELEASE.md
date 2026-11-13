@@ -4,6 +4,7 @@
 **Released:**
 
 ### Fixes
+- Fixed Mad Scientist and Infected respawning as Zombie not blocking round from ending when `ttt_zombie_respawn_block_win` was enabled
 - Ported "Ignore unknown modes in ttt_mute_team" from base TTT
 - Ported "TTT: Stop traitors from disarming a living traitor's C4 with ttt_c4_disarm" from base TTT
 - Ported "[TTT] Edict Limit" from base TTT
