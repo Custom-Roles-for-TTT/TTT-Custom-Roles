@@ -35,6 +35,8 @@ function ENT:PhysicsCollide(data, physObj)
         end
 
         local ent = ents.Create("ttt_crowbar")
+        if not IsValid(ent) then print("Failed to create crowbar entity!") return end
+
         ent:SetPos(self:GetPos())
         ent:SetAngles(self:GetAngles())
         ent:Spawn()
