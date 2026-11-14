@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 2.5.8 (Beta)
-**Released:**
+**Released: November 14th, 2026**
 
 ### Fixes
 - Fixed Mad Scientist and Infected respawning as Zombie not blocking round from ending when `ttt_zombie_respawn_block_win` was enabled
