@@ -39,13 +39,12 @@ local vindicator_target_only_damage = GetConVar("ttt_vindicator_target_only_dama
 local function ActivateVindicator(vindicator, target)
     if not vindicator:IsVindicator() then return end
 
-    -- Change their team and set their target even if the target is already dead
     SetVindicatorTeam(true)
     vindicator:SetNWBool("VindicatorIsRespawning", false)
 
     net.Start("TTT_VindicatorActive")
-    net.WriteString(vindicator:Nick())
-    net.WriteString(target:Nick())
+        net.WriteString(vindicator:Nick())
+        net.WriteString(target:Nick())
     net.Broadcast()
 
     if not target:Alive() then
@@ -77,6 +76,13 @@ local function ActivateVindicator(vindicator, target)
 
     local vect = target:GetPos() - vindicator:GetPos()
     vindicator:SetEyeAngles(vect:Angle())
+
+    if target:IsJesterTeam() then
+        vindicator:SetNWString("VindicatorTarget", "")
+        SetVindicatorTeam(false)
+        vindicator:QueueMessage(MSG_PRINTBOTH, "Your target has changed to a new role that you should not kill. You have calmed your need for revenge.")
+        return
+    end
 
     vindicator:QueueMessage(MSG_PRINTBOTH, "Hunt down your killer and get your revenge!")
     local mode = vindicator_announcement_mode:GetInt()
@@ -256,8 +262,6 @@ local function HandleVindicatorMidRound(ply)
     end
 end
 
-local unkillable_roles = { ROLE_GUESSER }
-
 AddHook("TTTPlayerRoleChanged", "Vindicator_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
 
@@ -268,8 +272,8 @@ AddHook("TTTPlayerRoleChanged", "Vindicator_TTTPlayerRoleChanged", function(ply,
         HandleVindicatorMidRound(vindicator)
     elseif newRole == ROLE_VINDICATOR then
         HandleVindicatorMidRound(ply)
-    -- If the player has changed to an unkillable role
-    elseif table.HasValue(unkillable_roles, newRole) then
+    -- If the player has changed to a role you shouldn't kill
+    elseif ply:IsJesterTeam() then
         local plySid64 = ply:SteamID64()
         -- Find activated vindicators who have this player as their target
         for _, p in PlayerIterator() do
@@ -281,7 +285,7 @@ AddHook("TTTPlayerRoleChanged", "Vindicator_TTTPlayerRoleChanged", function(ply,
             if plySid64 == targetSid64 then
                 p:SetNWString("VindicatorTarget", "")
                 SetVindicatorTeam(false)
-                p:QueueMessage(MSG_PRINTBOTH, "Your target has changed to a new role that you cannot kill. You have calmed your need for revenge.")
+                p:QueueMessage(MSG_PRINTBOTH, "Your target has changed to a new role that you should not kill. You have calmed your need for revenge.")
             end
         end
     end

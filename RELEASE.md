@@ -3,6 +3,10 @@
 ## 2.5.8 (Beta)
 **Released: November 14th, 2026**
 
+### Changes
+- Changed Vindicator to deactivate if their target becomes a jester while they are respawning
+- Changed Vindicator to deactivate if their target becomes any jester rather than specifically a Guesser
+
 ### Fixes
 - Fixed Mad Scientist and Infected respawning as Zombie not blocking round from ending when `ttt_zombie_respawn_block_win` was enabled
 - Ported "Ignore unknown modes in ttt_mute_team" from base TTT
