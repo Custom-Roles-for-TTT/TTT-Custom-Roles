@@ -1,5 +1,9 @@
 # Release Notes
 
+## 2.5.9 (Beta)
+### Additions
+- Added a `ttt_shop_sync_default` convar which, if enabled, syncs all Special Detective/Special Traitor role shops with those of the Detective/Traitor, unless specifically excluded by setting `ttt_*_shop_sync` to 0 for a specific role
+
 ## 2.5.8 (Beta)
 **Released: November 14th, 2026**
 

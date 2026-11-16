@@ -1104,6 +1104,8 @@ ttt_shop_limit_count                           0       // The number of (randoml
 // Random Shop Restriction Percent
 ttt_shop_random_percent                        50      // The percent chance that a weapon in the shop will be not be shown
 ttt_shop_random_position                       0       // Whether to randomize the position of the items in the shop
+// Default Shop Syncing
+ttt_shop_sync_default                          1       // Whether roles' shops will be synced by default unless ttt_*_shop_sync is set to 0 for that role
 
 // Role Specific Random Shop Restriction Percent
 ttt_traitor_shop_random_percent                0       // The percent chance that a weapon in the shop will be not be shown for Traitors

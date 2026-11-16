@@ -172,9 +172,12 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
         rolepack_weps = {Buyables = {}, Excludes = {}, NoRandoms = {}}
     end
 
+    local defaultSyncConVar = GetConVar("ttt_shop_sync_default")
+
     -- Determine which role sync variable to use, if any
     local rolemode = cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
-    local traitorsync = TRAITOR_ROLES[role] and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false)
+    local traitorsyncRole = TRAITOR_ROLES[role] and cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false)
+    local traitorsync = traitorsyncRole == -1 and defaultSyncConVar:GetBool() or traitorsyncRole == 1
     local sync_traitor_weapons = traitorsync or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
@@ -182,7 +185,8 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
         GetEquipmentForRole(ROLE_TRAITOR, false, true, block_exclusion, ignore_cache)
     end
 
-    local detectivesync = DETECTIVE_ROLES[role] and cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false)
+    local detectivesyncRole = DETECTIVE_ROLES[role] and cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false)
+    local detectivesync = detectivesyncRole == -1 and defaultSyncConVar:GetBool() or detectivesyncRole == 1
     local sync_detective_weapons = detectivesync or promoted or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
