@@ -516,7 +516,7 @@ function CreateShopConVars(role)
 
     -- Roles don't get both shop sync and shop mode
     if (INDEPENDENT_ROLES[role] or DELAYED_SHOP_ROLES[role] or ROLE_HAS_SHOP_MODE[role]) and not hassync then
-        CreateConVar("ttt_" .. rolestring .. "_shop_mode", "-1", FCVAR_REPLICATED)
+        CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
     end
 
     if DELAYED_SHOP_ROLES[role] then
