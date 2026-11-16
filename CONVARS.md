@@ -1104,6 +1104,9 @@ ttt_shop_limit_count                           0       // The number of (randoml
 // Random Shop Restriction Percent
 ttt_shop_random_percent                        50      // The percent chance that a weapon in the shop will be not be shown
 ttt_shop_random_position                       0       // Whether to randomize the position of the items in the shop
+// Default Shop Syncing
+ttt_traitors_shop_sync_default                 0       // Whether Special Traitors' shops will be synced by default unless ttt_*_shop_sync is set to 0 for that role
+ttt_detectives_shop_sync_default               0       // Whether Special Detectives' shops will be synced by default unless ttt_*_shop_sync is set to 0 for that role
 
 // Role Specific Random Shop Restriction Percent
 ttt_traitor_shop_random_percent                0       // The percent chance that a weapon in the shop will be not be shown for Traitors
@@ -1192,25 +1195,25 @@ ttt_madscientist_shop_mode                     0       // What additional items 
 ttt_hivemind_shop_mode                         0       // What additional items are available to the Hive Mind in the shop (See above for possible values)
 
 // Traitor Role Shop Sync (Server or round must be restarted for changes to take effect)
-ttt_hypnotist_shop_sync                        0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
-ttt_impersonator_shop_sync                     0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
-ttt_assassin_shop_sync                         0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
-ttt_vampire_shop_sync                          0       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are a traitor)
-ttt_zombie_shop_sync                           0       // Whether Zombies should have all weapons that vanilla Traitors have in their weapon shop (if they are a traitor)
-ttt_quack_shop_sync                            0       // Whether Quacks should have all weapons that vanilla Traitors have in their weapon shop
-ttt_parasite_shop_sync                         0       // Whether Parasites should have all weapons that vanilla Traitors have in their weapon shop
-ttt_informant_shop_sync                        0       // Whether Informants should have all weapons that vanilla Traitors have in their weapon shop
-ttt_spy_shop_sync                              0       // Whether Spies should have all weapons that vanilla Traitors have in their weapon shop
-ttt_eviltwin_shop_sync                         0       // Whether Evil Twins should have all weapons that vanilla Traitors have in their weapon shop
+ttt_hypnotist_shop_sync                        -1       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
+ttt_impersonator_shop_sync                     -1       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
+ttt_assassin_shop_sync                         -1       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
+ttt_vampire_shop_sync                          -1       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are a traitor)
+ttt_zombie_shop_sync                           -1       // Whether Zombies should have all weapons that vanilla Traitors have in their weapon shop (if they are a traitor)
+ttt_quack_shop_sync                            -1       // Whether Quacks should have all weapons that vanilla Traitors have in their weapon shop
+ttt_parasite_shop_sync                         -1       // Whether Parasites should have all weapons that vanilla Traitors have in their weapon shop
+ttt_informant_shop_sync                        -1       // Whether Informants should have all weapons that vanilla Traitors have in their weapon shop
+ttt_spy_shop_sync                              -1       // Whether Spies should have all weapons that vanilla Traitors have in their weapon shop
+ttt_eviltwin_shop_sync                         -1       // Whether Evil Twins should have all weapons that vanilla Traitors have in their weapon shop
 
 // Detective Role Shop Sync (Server or round must be restarted for changes to take effect)
-ttt_paladin_shop_sync                          0       // Whether Paladins should have all weapons that vanilla Detectives have in their weapon shop
-ttt_tracker_shop_sync                          0       // Whether Trackers should have all weapons that vanilla Detectives have in their weapon shop
-ttt_medium_shop_sync                           0       // Whether Mediums should have all weapons that vanilla Detectives have in their weapon shop
-ttt_sapper_shop_sync                           0       // Whether Sappers should have all weapons that vanilla Detectives have in their weapon shop
-ttt_marshal_shop_sync                          0       // Whether Marshals should have all weapons that vanilla Detectives have in their weapon shop
-ttt_quartermaster_shop_sync                    0       // Whether Quartermasters should have all weapons that vanilla Detectives have in their weapon shop
-ttt_illusionist_shop_sync                      0       // Whether Illusionists should have all weapons that vanilla Detectives have in their weapon shop
+ttt_paladin_shop_sync                          -1       // Whether Paladins should have all weapons that vanilla Detectives have in their weapon shop
+ttt_tracker_shop_sync                          -1       // Whether Trackers should have all weapons that vanilla Detectives have in their weapon shop
+ttt_medium_shop_sync                           -1       // Whether Mediums should have all weapons that vanilla Detectives have in their weapon shop
+ttt_sapper_shop_sync                           -1       // Whether Sappers should have all weapons that vanilla Detectives have in their weapon shop
+ttt_marshal_shop_sync                          -1       // Whether Marshals should have all weapons that vanilla Detectives have in their weapon shop
+ttt_quartermaster_shop_sync                    -1       // Whether Quartermasters should have all weapons that vanilla Detectives have in their weapon shop
+ttt_illusionist_shop_sync                      -1       // Whether Illusionists should have all weapons that vanilla Detectives have in their weapon shop
 
 // ----------------------------------------
 

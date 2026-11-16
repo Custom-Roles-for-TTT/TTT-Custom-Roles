@@ -511,13 +511,17 @@ local function OrderEquipment(ply, cmd, args)
     local swep_table = (not is_item) and weapons.GetStored(id) or nil
 
     local role = ply:GetRole()
+    local defaultSyncTraitorsConVar = GetConVar("ttt_traitors_shop_sync_default")
+    local defaultSyncDetectivesConVar = GetConVar("ttt_detectives_shop_sync_default")
 
     local rolemode = cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
-    local traitorsync = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
+    local traitorsyncRole = TRAITOR_ROLES[role] and cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", 0)
+    local traitorsync = traitorsyncRole == -1 and defaultSyncTraitorsConVar:GetBool() or traitorsyncRole == 1
     local sync_traitor_weapons = traitorsync or (rolemode > SHOP_SYNC_MODE_NONE)
 
     local promoted = ply:IsDetectiveLike() and not DETECTIVE_ROLES[role]
-    local detectivesync = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
+    local detectivesyncRole = DETECTIVE_ROLES[role] and cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", 0)
+    local detectivesync = detectivesyncRole == -1 and defaultSyncDetectivesConVar:GetBool() or detectivesyncRole == 1
     local sync_detective_weapons = detectivesync or promoted or (rolemode > SHOP_SYNC_MODE_NONE)
 
     local sync_roles = ROLE_SHOP_SYNC_ROLES[role]
