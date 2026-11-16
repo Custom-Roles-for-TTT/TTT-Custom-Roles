@@ -503,7 +503,8 @@ function CreateShopConVars(role)
     local rolestring = ROLE_STRINGS_RAW[role]
     CreateCreditConVar(role)
 
-    CreateConVar("ttt_shop_sync_default", "1", FCVAR_REPLICATED, "Whether roles' shops will be synced by default unless \"ttt_*_shop_sync\" is 0", 0, 1)
+    CreateConVar("ttt_traitors_shop_sync_default", "0", FCVAR_REPLICATED, "Whether Special Traitors' shops will be synced by default unless \"ttt_*_shop_sync\" is 0", 0, 1)
+    CreateConVar("ttt_detectives_shop_sync_default", "0", FCVAR_REPLICATED, "Whether Special Detectives' shops will be synced by default unless \"ttt_*_shop_sync\" is 0", 0, 1)
 
     CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
     CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring, 0, 1)
