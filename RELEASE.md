@@ -6,13 +6,11 @@
 
 ### Changes
 - **BREAKING CHANGE** Changed `ttt_*_shop_sync` convars to default to `-1` (which allows `ttt_traitors_shop_sync_default` and `ttt_detectives_shop_sync_default` to work)
+- Changed Vindicator to deactivate if their target becomes a jester while they are respawning
+- Changed Vindicator to deactivate if their target becomes any jester rather than specifically a Guesser
 
 ## 2.5.8 (Beta)
 **Released: November 14th, 2026**
-
-### Changes
-- Changed Vindicator to deactivate if their target becomes a jester while they are respawning
-- Changed Vindicator to deactivate if their target becomes any jester rather than specifically a Guesser
 
 ### Fixes
 - Fixed Mad Scientist and Infected respawning as Zombie not blocking round from ending when `ttt_zombie_respawn_block_win` was enabled
